@@ -1,0 +1,122 @@
+[
+  {
+    "name": "ActionProperty",
+    "tooltip": "ODT based piece of business logic that can be invoked by the user interface. This could be through a user interface element like a\nmenu item, or a button, but it can also be invoked programmatically from the javascript user interface layer.",
+    "attributes": {
+      "id": {
+        "type": "string",
+        "node": "scalar",
+        "description": "String",
+        "tooltip": "id for this Action in the model, if not provided a random id token is generated"
+      },
+      "title": {
+        "type": "interpolatedString",
+        "node": "scalar",
+        "description": "String",
+        "tooltip": "Title of this Action that is typically shown to the end user in the user interface. Since this is an interpolated string you\ncan use ODT queries between `${` and `}`.\n\nWhen using `dynamicActionQuery`, each ODT query in the interpolated title string is executed in the context of an entry from\n`dynamicActionQuery`."
+      },
+      "description": {
+        "type": "interpolatedString",
+        "node": "scalar",
+        "description": "String",
+        "tooltip": "Description of this Action that is typically shown to the end user in the user interface. Since this is an interpolated string you\ncan use ODT queries between `${` and `}`. Whereas the `title` property is intended to be short and unique within a list, the\n`description` property can contain a slightly longer description of the action.\n\nWhen using `dynamicActionQuery`, each ODT query in the interpolated title string is executed in the context of an entry from\n`dynamicActionQuery`."
+      },
+      "promoteSubMenuItemToMainMenu": {
+        "type": "boolean",
+        "node": "scalar",
+        "description": "boolean (default false)",
+        "tooltip": "Optional indicator for the action. The interpretation of this value is up to the user interface layer, but it\nindicates that this action item should be shown as a main menu item (with its own icon) when it is the only subitem in a menu folder"
+      },
+      "icon": {
+        "type": "string",
+        "node": "scalar",
+        "description": "String",
+        "tooltip": "The interpretation of this value is up to the user interface layer, but it should typically be the name of a font ligature in the icon font."
+      },
+      "params": {
+        "type": "ParamDef",
+        "node": "sequence",
+        "description": "List of parameters",
+        "tooltip": "A list of parameters for this action. Values have to be supplied for this when executing the action."
+      },
+      "precondition": {
+        "node": "scalar",
+        "description": "ODT query",
+        "tooltip": "ODT query to suppress an Action. Can be used to implement things like authorization. For the javascript user interface layer, it\nis as if the Action does not exist when this query returns false.\n\nWhen using `dynamicActionQuery` the query is executed in the context of an entry from `dynamicActionQuery`."
+      },
+      "disabled": {
+        "type": "boolean",
+        "node": "query",
+        "description": "ODT query",
+        "tooltip": "ODT query to disable an Action. Unlike `precondition`, when query returns true the javascript user interface layer still sees the\nAction. But the enabled/disabled state is included in the Action metadata and can be used by the javascript user interface layer\nto hide/disable links or buttons associated with this action.\n\nWhen using `dynamicActionQuery` the query is executed in the context of an entry from `dynamicActionQuery`."
+      },
+      "busyDisabled": {
+        "node": "boolean",
+        "description": "boolean",
+        "tooltip": "Disable busy indicator for actions that need multiple instances be running at the same time."
+      },
+      "dynamicActionQuery": {
+        "node": "scalar",
+        "description": "ODT query",
+        "tooltip": "ODT query that can be used to create multiple Actions from a single Action definition. Each result from this query will create an\nAction. Can be used for things like create a menu item for each pending task for a user, or having an Action to edit each Sibling\nof a given Person.\n\nWhen using `dynamicActionQuery` all other ODT queries in the Action definition (`title`, `precondition`, `disbabled`) are executed\nin the context of a single item from the `dynamicActionQuery`. This means that `.` in each of those queries refers to a result\nfrom `dynamicActionQuery`. This allows for disabled queries like `. / x:status == 'LOCKED'`"
+      },
+      "onSelect": {
+        "node": "scalar",
+        "description": "ODT script",
+        "script": true,
+        "tooltip": "ODT script that gets executed once when the Action is activated, typically by a user interaction with a button or link or a\nprogrammatic action from the javascript user interface layer. Invoking the action requires the parameters as defined by `params`\nand the values for these parameters are available as variables in the executed `onSelect` hook under their parameter name.\n\nWhen the action used `dynamicActionQuery` to generate multiple actions from the same action definition, an additional variable\n`$value` is set during the `onSelect` hook with the item from the `dynamicActionQuery` that created this specific Action."
+      }
+    }
+  },
+  {
+    "name": "ActionList",
+    "node": "sequence",
+    "type": "ActionPropertyDef"
+  },
+  {
+    "name": "DossierAction",
+    "attributes": {
+      "title": {
+        "type": "interpolatedString",
+        "node": "scalar"
+      },
+      "icon": {
+        "type": "string",
+        "node": "scalar"
+      },
+      "params": {
+        "node": "sequence",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "GlobalActions",
+    "attributes": {
+      "notifications": {
+        "type": "ActionPropertyDef",
+        "node": "sequence"
+      },
+      "bottomNavigation": {
+        "type": "ActionPropertyDef",
+        "node": "sequence"
+      },
+      "dashboard": {
+        "type": "ActionPropertyDef",
+        "node": "sequence"
+      },
+      "dossier": {
+        "type": "DossierActionDef",
+        "node": "sequence"
+      },
+      "fixed": {
+        "type": "ActionPropertyDef",
+        "node": "sequence"
+      },
+      "entitybar": {
+        "type": "ActionPropertyDef",
+        "node": "sequence"
+      }
+    }
+  }
+]

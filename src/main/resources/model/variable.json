@@ -1,0 +1,38 @@
+{
+  "name": "Variable",
+  "shortcut": {
+    "regEx": {
+      "pattern": "^\\s*(\\$\\w+)\\s*(?:=\\s*(.+))?$",
+      "assignTo": [
+        "name",
+        "value"
+      ]
+    }
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "node": "scalar",
+      "required": true,
+      "description": "String (must start with $)",
+      "tooltip": "The name of the variable. Has to start with a `$` sign."
+    },
+    "readonly": {
+      "type": "boolean",
+      "description": "boolean (default false)",
+      "tooltip": "Whether the variable is readonly"
+    },
+    "value": {
+      "node": "scalar",
+      "tooltip": "The initial value of the variable",
+      "description": "ODT query"
+    },
+    "onChange": {
+      "type": "onChangeDef",
+      "node": "scalar",
+      "description": "ODT script",
+      "script": true,
+      "tooltip": "An ODT script that gets executed each time the ODT query for this variable returns a different value. The `onChange` script is executed\nwith two additonal variables: `$oldValue` and `$newValue`. Those contain the previous and the current value of the ODT query result."
+    }
+  }
+}

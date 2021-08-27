@@ -1,0 +1,105 @@
+{
+  "commands": {
+    "ADD_TO": {
+      "returns": "ARGUMENT.0"
+    },
+    "ASSIGN": {
+      "returns": "ARGUMENT.0"
+    },
+    "COPY_IN_GRAPH": {
+      "returns": "ARGUMENT.0"
+    },
+    "HTTP_GET": {
+      "returns": "any",
+      "returns.1": "int",
+      "suggestName": "json",
+      "suggestName.1": "statusCode"
+    },
+    "HTTP_POST": {
+      "returns": "any",
+      "returns.1": "int",
+      "suggestName": "json",
+      "suggestName.1": "statusCode"
+    },
+    "HTTP_PUT": {
+      "returns": "any",
+      "returns.1": "int",
+      "suggestName": "json",
+      "suggestName.1": "statusCode"
+    },
+    "FOREACH": {
+      "$value": "ARGUMENT.0",
+      "$index": "int",
+      "$array": "ARGUMENT.0"
+    },
+    "MAP": {
+      "$value": "ARGUMENT.0",
+      "$index": "int",
+      "$array": "ARGUMENT.0"
+    },
+    "NEW": {
+      "returns": "ARGUMENT.0"
+    }
+  },
+  "operators": {
+    "CAST": {
+      "returns": "ARGUMENT.0"
+    },
+    "CATCH": {
+      "returns": "ARGUMENT.0",
+      "mode": "APPEND"
+    },
+    "DISTINCT": {
+      "returns": "INPUT"
+    },
+    "FILTER": {
+      "returns": "INPUT"
+    },
+    "FIRST": {
+      "returns": "INPUT"
+    },
+    "IDENTITY": {
+      "returns": "INPUT"
+    },
+    "IF_EMPTY": {
+      "returns": "ARGUMENT.0",
+      "mode": "APPEND"
+    },
+    "LAST": {
+      "returns": "INPUT"
+    },
+    "LOG": {
+      "returns": "INPUT"
+    },
+    "MAX": {
+      "returns": "INPUT",
+      "byQueryOnArgument": "0"
+    },
+    "MIN": {
+      "returns": "INPUT",
+      "byQueryOnArgument": "0"
+    },
+    "ORDER_BY": {
+      "returns": "INPUT",
+      "byQueryOnArgument": "0"
+    },
+    "REPEAT": {
+      "returns": "ARGUMENT.0"
+    },
+    "REVERSE": {
+      "returns": "INPUT"
+    },
+    "SKIP": {
+      "returns": "INPUT"
+    },
+    "PICK": {
+      "returns": "INPUT"
+    },
+    "PLUS": {
+      "returns": "ARGUMENT.0"
+    },
+    "TAKE": {
+      "returns": "INPUT"
+    }
+  }
+}

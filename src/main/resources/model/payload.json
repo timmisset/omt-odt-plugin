@@ -1,0 +1,36 @@
+[
+  {
+    "shortcut": {
+      "assignTo": "value"
+    },
+    "name": "PayloadProperty",
+    "attributes": {
+      "value": {
+        "node": "scalar",
+        "type": "query",
+        "description": "ODT query",
+        "tooltip": "ODT query that returns rdf literals or iris. These will be exposed as `LiveValue`, `LiveObject` or `LiveList`\nto the JavaScript user interface layer"
+      },
+      "query": {
+        "node": "scalar",
+        "namedReference": true,
+        "description": "Reference (Query)",
+        "tooltip": "Reference to a Defined Query. To expose as a method on the payload.\n\nThe first parameter of the method will be used as input for the Query.\nThe rest of the parameters will be used as parameters for the Query."
+      },
+      "list": {
+        "type": "boolean",
+        "node": "scalar",
+        "default": false,
+        "description": "boolean (default false)",
+        "tooltip": "Set `list` to `true` if the ODT query from `object` or `value` can return multiple values. By default `list` is `false` and\nthe payload assumes the ODT query to return a single (or no) value. This determines what type of JavaScript object is exposed to\nthe user interface layer. When `list` is `false` the user interface layer gets a `LiveObject` or `LiveValue`. When list is `true`\nthe user interface layer gets a `LiveList` that contains `LiveObjects` or `LiveValues`"
+      },
+      "onChange": {
+        "type": "onChangeDef",
+        "node": "scalar",
+        "description": "ODT script",
+        "script": true,
+        "tooltip": "An ODT script that gets executed each time the ODT query for this payload property returns a different value. This means the payload\nproperty is going to 'listen' for changes in that query. It does a shallow compare and does not check for changes within the objects.\nFor example, when the payload property is based on a query with employees, the `onChange` will be invoked when the query returns\nmore or less employees, but it will not fire when the name of one of the existing employees changes.\n\nThe `onChange` script is executed with two additional variables: `$oldValue` and `$newValue`. Those contain the previous and the\ncurrent value of the ODT query result.\n"
+      }
+    }
+  }
+]

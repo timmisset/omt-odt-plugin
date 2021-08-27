@@ -1,0 +1,143 @@
+[
+  {
+    "name": "Activity",
+    "modelRoot": true,
+    "tooltip": "An OMT Activity is a interactive piece of business logic that can be executed by an end user. It is typically invoked from the menu\nor from another activity. It gets the necessary data from the RDF store and exposes some data objects to the user interface layer\nas `payload`. It also has `actions` that can be invoked by the user interface layer to execute business logic.\n\nThe angular user interface layer links this OMT Activity to an Angular component with a html template that renders the user interface\nfor this activity.\n\nEach Activity creates an ODT [`Command`](#commands-define-command-name--command) to invoke the activity. This command accepts an\noptional flag `!nested`, `!sibling`, `!autonomous`, or `!dialog` postfix.\n\nBy default, the command will open the Activity in its own autonomous transaction, as if given the `!autonomous` flag. Using the\n`!nested` flag will create a subtransaction, based on the transaction of the caller. Providing the `!sibling` flag results in the\ntoggling of all edit mode graphs of the caller's transaction to live mode, after which the command is run in a sibling transaction.\nUpon completion of the sibling the graphs are switched back to edit mode. Starting a sibling transaction while there are open changes\nwould lead to data loss and therefore throws an error.\n\nIt is possible to combine any one other flag with `!dialog`. The other flags cannot be combined.\n\nWhen ActivityA starts ActivityB using `@ActivityB` ActivityB gets its own transaction. It will not see the data changes\nthat might have been made by ActivityA that have not been committed yet. When ActivityB commits its changes they will be persisted\nindependent of ActityA.\n\nWhen ActivityA starts ActivityB using `@ActivityB!nested` ActivityB gets a sub-transaction based on the current transaction of\nActivityA. This means it can see the data changes from ActivityA that have not been committed yet. It also means that when ActivityB\ncommits its changes, the changes will become part of the changes in ActivityA and won't be persisted until ActivityA commits its changes.\n",
+    "flags": [
+      "nested",
+      "autonomous",
+      "dialog",
+      "sidebar",
+      "sibling",
+      "entitybar",
+      "siblingCommit"
+    ],
+    "localCommands": [
+      "COMMIT",
+      "CANCEL",
+      "DONE",
+      "DRAFT",
+      "ROLLBACK",
+      "HAS_ERROR",
+      "GET_ERROR_STATE"
+    ],
+    "attributes": {
+      "title": {
+        "type": "interpolatedString",
+        "node": "scalar",
+        "tooltip": "Title of this activity that is typically shown to the end user in the user interface. Since this is an interpolated string you\ncan use ODT queries between `${` and `}`.",
+        "description": "String"
+      },
+      "onDefaultClose": {
+        "type": "interpolatedString",
+        "node": "scalar",
+        "tooltip": "The name of the method to use for calling back on a UI view, as soon as the android hardware backbutton is pressed. possible values: ['cancel' (default), 'done']. any other string will call a force close.",
+        "description": "String",
+        "values": {
+          "cancel": "Will not commit the transaction",
+          "done": "Will commit the transaction"
+        }
+      },
+      "params": {
+        "type": "ParamDef",
+        "node": "sequence",
+        "tooltip": "List of parameters",
+        "description": "A list of parameters"
+      },
+      "variables": {
+        "type": "VariableDef",
+        "node": "sequence",
+        "description": "List of variables",
+        "tooltip": "A list of variables for this activity. These exist for the duration of the activity and can be used in\nany ODT statement within the activity."
+      },
+      "handlers": {
+        "type": "HandlerDef",
+        "node": "sequence",
+        "description": "Array of MergeHandlers",
+        "tooltip": "Array of merge handlers for this Activity. The handlers will be run in the defined order.\nChanges can and will only be merged if the total of merge handlers together handle every incoming change."
+      },
+      "graphs": {
+        "type": "GraphSelectionDef",
+        "node": "map",
+        "description": "Graph selection",
+        "tooltip": "Defines which named graphs should be available to ODT statements in this Activity."
+      },
+      "watchers": {
+        "type": "QueryWatcherDef",
+        "node": "sequence",
+        "description": "List of QueryWatchers",
+        "tooltip": "List of QueryWatchers for this activity. These exist for the duration of the activity and react to changes\nof the query's result. The `onChange` method receives the previous and current value in the variables `$oldValue` and `$newValue`,\nrespectively."
+      },
+      "payload": {
+        "type": "PayloadPropertyDef",
+        "node": "map",
+        "description": "Dictionary of items",
+        "tooltip": "Dictionary of items that should be made available to the javascript user interface layer. Each item is a single literal value, an\nobject or a list and are based on ODT queries. Each iri is translated to a javascript object. When the ODT query for a payload item\nis writeable the payload item is also writable by the javascript user interface layer and will modify the underlying RDF data."
+      },
+      "rules": {
+        "type": "RulesPropertyDef",
+        "node": "map",
+        "description": "Dictionary of data validation rules",
+        "tooltip": "Dictionary of data validation rules. Each item is an ODT query that should return a boolean. A `true` value means the rule is valid,\nso `false` means the rule is violated. The current state of all rules is exposed to the javascript user interface layer through a number\nof convenience properties: `errors` (map with each individual rule), `getErrorState$` (string with the current error state,\nreturns 'true' if at least one rule fails),\n`listOfErrors$` (list of names of currently failing rules), and `throwOnError$` (observable that throws if a rule is invalid or completes\nwhen all rules are valid)."
+      },
+      "prefixes": {
+        "node": "map",
+        "description": "A dictionary with prefixes",
+        "tooltip": "A dictionary with prefixes that will be used to resolve short iris in this activity. These prefixes are in addition to the ones\nimported and defined at the document level. Each key is a short string which is the prefix and the value is the full iri which will\nbe used as a replacement for the prefix."
+      },
+      "queries": {
+        "node": "scalar",
+        "script": true,
+        "description": "`DEFINE QUERY` statements",
+        "tooltip": "An ODT script with one or more `DEFINE QUERY` statements to define reusable queries that can be used within this Activity. These\nqueries are in addition to the ones imported and defined at the document level. Each `DEFINE QUERY` specifies the name of the query\nwith an optional list of arguments and the actual ODT query.\n\nDefined queries can be standalone queries or as a subquery in another odt-query. A standalone query starts with`/` to indicate\n`root` and is used as the starting point in another query. For example the `AllFoos` query in the example below is simply used\nas `AllFoos` or as the starting point of a longer query, such as `AllFoos / x:somePredicate`.\n\nDefined queries can also be intended to be used as subqueries, like the `IsOfType` in the example below. These would be used\nin another odt query like `$someObject / IsOfType( / x:someType )` or `$someObject / AllSuperclasses / ^rdf:type`\n"
+      },
+      "commands": {
+        "node": "scalar",
+        "script": true,
+        "description": "`DEFINE COMMAND` statements",
+        "tooltip": "An ODT script with one or more `DEFINE COMMAND` statements to define reusable commands that can be used within this Activity. These\ncommands are in addition to the ones imported and defined at the document level. Each `DEFINE COMMAND` specifies the name of the\ncommand with an optional list of arguments and the actual ODT command.\n\nCommands can have a list of arguments that can be used in the odt script and have to be supplied by the caller.\n\nCommands can include a `RETURN` statement to specify which value should be returned to the caller. Without a `RETURN` statement\nthe result of the last command in the ODT script will be used as the return value."
+      },
+      "onStart": {
+        "node": "scalar",
+        "description": "ODT script",
+        "script": true,
+        "tooltip": "ODT script that gets executed once when the Activity starts. Execution of this script is delayed until all initial variable values\nand parameter values are set and until all the named graphs from the `graphs` section have been fetched. The `onStart` script\ncan assume all this data to be present in the in-memory RDF store."
+      },
+      "onCommit": {
+        "node": "scalar",
+        "script": true,
+        "description": "ODT script",
+        "tooltip": "ODT script that gets executed before the Activity commits. This commit can be initiated by the javascript user interface or by the\nODT command @COMMIT. The `onCommit` script gets executed just before the commit so you can still inspect or change the data before\ncommit. This script can also throw an error to abort the commit. The script will not be executed when at least on of the `rules` are\ninvalid as the commit will fail on invalid rules before even getting to this script.\n\nThis script only runs on the `commit` action which is to save the changes in the currenty activity without leaving the activity. The\n`onCommit` script is not executed at the end of the activity. The `onDone` hook is executed at the end of the activity. If you want\nto run some logic both in `onCommit` and `onDone` you can define a custom command and call that from both hooks.\n"
+      },
+      "onCancel": {
+        "node": "scalar",
+        "script": true,
+        "description": "ODT script",
+        "tooltip": "ODT script that gets executed before the Activity is cancelled. This cancel can be initiated by the javascript user interface or by\nthe ODT command @CANCEL. The `onCancel` script gets executed just before the cancel so you can still inspect or change the data.\nThis script can also throw an error to abort the cancel. When this script completes the activity will be cancelled and closed without\nsaving any pending changes."
+      },
+      "onDone": {
+        "node": "scalar",
+        "script": true,
+        "description": "ODT script",
+        "tooltip": "ODT script that gets executed before the Activity is completes and saves its changes. This completion can be initiated by the\njavascript user interface or by the ODT command @DONE. The `onDone` script gets executed just before the completion so you can still\ninspect or change the data before commit. This script can also throw an error to abort the activity ending. The script will not be\nexecuted when at least on of the `rules` are invalid as the completion will fail on invalid rules before even getting to this script.\nWhen this script completes the activity will save its pending changes and then close itself.\n\nIf the user also has the option to save changes without ending the transaction with `commit` there might logic that you want to run\nin both the `onCommit` and `onDone`. You should then define a custom command and call that from both hooks."
+      },
+      "returns": {
+        "node": "scalar",
+        "description": "ODT query",
+        "tooltip": "ODT query that gets the value to return to the caller. If `returns` is defined, that query will be executed in the scope of this\nrunning activity just before it is closing but while you still have all the named graphs. The resulting literal or iri is then\nreturned to the caller."
+      },
+      "actions": {
+        "type": "ActionPropertyDef",
+        "node": "map",
+        "description": "A dictionary of actions",
+        "actions": "\nA dictionary of actions that are made available to the javascript user interface layer. The user interface might show these\nas menu items, buttons, or other actionable components. The javascript layer might also not show these directly to the user but\ninvoke the actions programmatically. It is a way for the javascript layer to call back into OMT and execute business logic.\n"
+      },
+      "reason": {
+        "node": "scalar",
+        "type": "string",
+        "description": "String",
+        "tooltip": "Reason field for the transaction that is sent to the backend. Can be used as a trigger for workers there.\nNested Activities do not send their reason."
+      }
+    }
+  }
+]

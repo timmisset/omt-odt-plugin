@@ -1,0 +1,21 @@
+[
+  {
+    "name": "ModuleDeclare",
+    "type": "MemberDeclareDef",
+    "node": "map"
+  },
+  {
+    "name": "MemberDeclare",
+    "attributes": {
+      "type": {
+        "type": "string",
+        "node": "type",
+        "required": true
+      },
+      "params": {
+        "node": "sequence",
+        "duplicationAllowed": true
+      }
+    }
+  }
+]

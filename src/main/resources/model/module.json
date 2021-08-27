@@ -1,0 +1,101 @@
+{
+  "name": "module",
+  "flags": [
+    "nested",
+    "autonomous",
+    "dialog",
+    "sidebar"
+  ],
+  "localCommands": [
+    "COMMIT",
+    "CANCEL",
+    "DONE",
+    "DRAFT",
+    "ROLLBACK"
+  ],
+  "attributes": {
+    "moduleName": {
+      "type": "string",
+      "node": "scalar",
+      "required": true,
+      "description": "String",
+      "tooltip": "Name of the module. Has to be unique across the entire application"
+    },
+    "graphs": {
+      "type": "GraphSelectionDef",
+      "node": "map",
+      "description": "Graph selection",
+      "tooltip": "Specifies which named graphs should be available for the ODT queries in this module. These graphs are only available for ODT\nstatements within this file, typically the menu items. The model files within this module have their own `graphs` that are\ndistinct from these module level `graphs`"
+    },
+    "onSessionStart": {
+      "node": "scalar",
+      "description": "ODT script",
+      "script": true,
+      "tooltip": "ODT script that gets executed once when the application starts.\nExecution of this script is delayed until all the named graphs from the `graphs` section have been fetched.\nThe `onStart` script can assume all this data to be present in the in-memory RDF store."
+    },
+    "menu": {
+      "type": "ActionListDef",
+      "node": "map",
+      "description": "Dictionary of (menu) actions",
+      "tooltip": "A dictionary of menu items that should be presented to the end user. The key in this dictionary is the name of a \"menu group\" and\neach entry contains a list of menu items. Menu groups with the same name across multiple modules are merged into a single menu group.\n"
+    },
+    "actions": {
+      "type": "GlobalActionsDef",
+      "node": "map",
+      "description": "Dictionary of (global) actions",
+      "tooltip": "Global actions that will be accessible from the OMT Session runtime object, regardless whether any activity is running or not. These\nglobal actions can be executed from the JavaScript layer (through the OMT Session) but can also be accessed from ODT queries,\nfor example `/ <globalActions:notifications> / ELEMENTS[ <title> / CONTAINS('abc') ]` to select all notifications that contain\n`abc` in their title. Such an ODT query can be used to combine actions from the OMT files with data from the quadstore. Any\nactions returned from such an ODT query can be exposed through an Activity or Component payload to the JavaScript layer.\n"
+    },
+    "services": {
+      "type": "ServiceDef",
+      "node": "sequence",
+      "namedReference": true,
+      "description": "List of services",
+      "tooltip": "List of services that are exposed by this module. Those services are available as REST endpoints in a backend that supports server\nside OMT"
+    },
+    "procedures": {
+      "node": "sequence",
+      "namedReference": true,
+      "description": "List of procedures",
+      "tooltip": "List of procedures that are exposed by this module. Procedures can be invoked from the command line with the OMT CLI (command line\ninterface)"
+    },
+    "declare": {
+      "type": "ModuleDeclareDef",
+      "node": "map",
+      "description": "Map of Modules",
+      "tooltip": "Declares which commands are assumed to be available from other modules. `declares` is a dictionary of external modules where each key is the moduleName of that external module. The value in the dictionary\nis itself another dictionary with the name of the exported object as key and the type, the parameters and return type of the object as value.\n\nThe parameters and return types of the command are a dictionary with two keys: `params` and 'returns'. `params` is a list of the\ndata types of the parameters and `returns` is simply the data type of the return value. Both `params` and `returns` are optional. In\nthe rare case that a command has neither parameters, nor a return value, you have to specify an empty object `{}`."
+    },
+    "export": {
+      "node": "map",
+      "description": "List of commands",
+      "tooltip": "A list of commands that are exported from this module, so other modules can import them. The importing module would have to specify\n`declare` with the names and signatures of these commands."
+    },
+    "import": {
+      "node": "map",
+      "description": "Dictionary of imports",
+      "tooltip": "A dictionary to specify constructs that should be imported from other OMT files.\n\nEach key is a relative path to another OMT file if that file lives in your same module or the name of another module prefixed with\n`module:`. See ModelDocument for more details on exports/import between different modules using the `module:`\nprefix.\n\nEach value in the dictionary is a list of the names of items to import from the other OMT file or module. The could be commands,\nqueries or any object defined in the `model` of a ModelDocument"
+    },
+    "queries": {
+      "node": "scalar",
+      "script": true,
+      "description": "`DEFINE QUERY` statements",
+      "tooltip": "An ODT script with one or more `DEFINE QUERY` statements to define reusable queries that can be used within this Activity. These\nqueries are in addition to the ones imported and defined at the document level. Each `DEFINE QUERY` specifies the name of the query\nwith an optional list of arguments and the actual ODT query.\n\nDefined queries can be standalone queries or as a subquery in another odt-query. A standalone query starts with`/` to indicate\n`root` and is used as the starting point in another query. For example the `AllFoos` query in the example below is simply used\nas `AllFoos` or as the starting point of a longer query, such as `AllFoos / x:somePredicate`.\n\nDefined queries can also be intended to be used as subqueries, like the `IsOfType` in the example below. These would be used\nin another odt query like `$someObject / IsOfType( / x:someType )` or `$someObject / AllSuperclasses / ^rdf:type`\n"
+    },
+    "commands": {
+      "node": "scalar",
+      "script": true,
+      "description": "`DEFINE COMMAND` statements",
+      "tooltip": "An ODT script with one or more `DEFINE COMMAND` statements to define reusable commands that can be used within this Activity. These\ncommands are in addition to the ones imported and defined at the document level. Each `DEFINE COMMAND` specifies the name of the\ncommand with an optional list of arguments and the actual ODT command.\n\nCommands can have a list of arguments that can be used in the odt script and have to be supplied by the caller.\n\nCommands can include a `RETURN` statement to specify which value should be returned to the caller. Without a `RETURN` statement\nthe result of the last command in the ODT script will be used as the return value."
+    },
+    "prefixes": {
+      "node": "map",
+      "description": "Dictionary of prefixes",
+      "tooltip": "A dictionary with prefixes that will be used to resolve short iris in the associated document. Each key is a short string\nwhich is the prefix and the value is the full iri which will be used as a replacement for the prefix.\n"
+    },
+    "model": {
+      "node": "map",
+      "type": "ModelItemDef",
+      "description": "Dictionary of ModelItem",
+      "tooltip": "A dictionary of objects to use in or export from this document. Each key is the name by which the object is exported and the\nvalue is the actual object. Since this can be any type of object you explicitly have to set the type using the `!Type` YAML syntax.\n"
+    }
+  }
+}

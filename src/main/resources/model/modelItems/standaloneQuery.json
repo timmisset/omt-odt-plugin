@@ -1,0 +1,35 @@
+{
+  "name": "StandaloneQuery",
+  "modelRoot": true,
+  "tooltip": "An OMT StandaloneQuery is comparable with a reusable-(parameterized)-ODT-query, but this query is responsible for his own graph-selection.\nUnder the hood, a reusable-query will be automaticly created and registrated under the name of the StandaloneQuery; so you can use it\nin every ODT-query.\n\nTo use a standalone query from the command line, you can use the `@opp/omt-service` module which includes an `opp-omt` command\nline interface.",
+  "attributes": {
+    "base": {
+      "type": "string",
+      "description": "variable",
+      "tooltip": "the input to (or starting point of) the run of the Query"
+    },
+    "params": {
+      "type": "ParamDef",
+      "node": "sequence",
+      "description": "List of parameters",
+      "tooltip": "A list of parameters for this StandaloneQuery. The value of each parameter has to be specified by the caller which could be\nthe omt command line tool"
+    },
+    "graphs": {
+      "type": "GraphSelectionDef",
+      "node": "map",
+      "description": "Graph selection",
+      "tooltip": "Defines which named graphs should be in scope during execution of the ODT-query \"query\" (defined in this StandaloneQuery).\nGraphSelection has two sections; `live` and `edit`, but only `live` is supported/allowed. Named graphs cannot be changed but their\ncontents are kept up-to-date which means that changes by other users in the same named graph are propagated to the client.\n"
+    },
+    "prefixes": {
+      "node": "map",
+      "description": "Dictionary with prefixes",
+      "tooltip": "A dictionary with prefixes that will be used to resolve short iris in this StandaloneQuery. These prefixes are in addition to the ones\nimported and defined at the document level. Each key is a short string which is the prefix and the value is the full iri which will\nbe used as a replacement for the prefix."
+    },
+    "query": {
+      "type": "query",
+      "required": true,
+      "description": "ODT Query",
+      "tooltip": "ODT query that returns rdf literals or iris"
+    }
+  }
+}

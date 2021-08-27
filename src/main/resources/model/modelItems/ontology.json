@@ -1,0 +1,78 @@
+[
+  {
+    "name": "Ontology",
+    "modelRoot": true,
+    "description": "An Ontology describes and restricts the structure of data. It is used to translate RDF data to type safe javascript\nobjects in Payload. For most data, the ontology is supplied at module startup and globally\navailable. But sometimes a local/temporary ontology is needed, such as describing the response from a REST endpoint\nor creating a temporary objects that is used in communication between OMT activities. Such a local or temporary\nontology can be defined in OMT with this `!Ontology`.\n\nUnlike normal ontologies, which are loaded with the OMT module, a locally defined ontology has to be explicitly\nloaded. A special ODT command `@LOAD_ONTOLOGY` is used to load an ontology in the current OMT activity, procedure,\ncommand, or other OMT object. This means that if two activities share data through a locally loaded ontology,\nthey would both have to load the same ontology. `@LOAD_ONTOLOGY` needs a single argument which is the name of\nOMT defined ontology as a symbol (so without quotes).",
+    "localCommands": [
+      "LOAD_ONTOLOGY"
+    ],
+    "attributes": {
+      "prefix": {
+        "type": "prefix",
+        "node": "scalar",
+        "required": true,
+        "description": "String",
+        "tooltip": "The prefix to be used by this ontology. All classes and predicated defined in this ontology\nwill use this prefix. For example, when the prefix is `s` which is defined as\n`<rdf://example.com/search#>` and a Class named `Foo` is defined the full iri for that class\nwould be `<rdf://example.com/search#Foo`\n\nThe `prefix` property of the Ontology has to be the name of an already existing prefix defined\nin the `prefixes` section of the OMT document."
+      },
+      "classes": {
+        "type": "OntologyClassDef",
+        "node": "sequence",
+        "required": true,
+        "description": "List of OntologyClass",
+        "tooltip": "A collection or dictionary of classes defined in this ontology. When using a collection of classes,\neach class needs to have its own `id` property. When using a dictionary of classes, the key in the\ndictionary is used as the `id` for each class."
+      }
+    }
+  },
+  {
+    "name": "OntologyClass",
+    "attributes": {
+      "id": {
+        "type": "id",
+        "required": true,
+        "description": "String",
+        "tooltip": "ID of the ontology class. Is normally automatically determined by the key in an Ontology for this class. But can be set explicitly as an `id` property\nwhen the OntologyClasses are defined as a standalone object or as an array item."
+      },
+      "properties": {
+        "type": "OntologyPropertyDef",
+        "node": "map",
+        "required": true,
+        "description": "Dictionary of OntologyProperty",
+        "tooltip": "A dictionary of OntologyProperty definitions that make up this class."
+      }
+    }
+  },
+  {
+    "name": "OntologyProperty",
+    "shortcut": {
+      "assignTo": "type"
+    },
+    "attributes": {
+      "type": {
+        "node": "type",
+        "required": true,
+        "description": "Type (iri or primitive)",
+        "tooltip": "The data type of the property"
+      },
+      "required": {
+        "type": "boolean",
+        "node": "scalar",
+        "default": false,
+        "description": "boolean (default false)",
+        "tooltip": "Indicates whether the property is a required value. Default is `false`. Setting this to `true`\nsets the `minCardinality` in the generated ontology to `1`."
+      },
+      "multiple": {
+        "type": "boolean",
+        "node": "scalar",
+        "default": false,
+        "description": "boolean (default false)",
+        "tooltip": "Indicates whether the property is a single value or can contain multiple values (a collection).\nDefault is `false` (single  value). Setting this to `false` sets the `maxCardinality` in the\ngenerated ontology to `1`."
+      },
+      "maxCardinality": {
+        "type": "number",
+        "node": "scalar",
+        "description": "number",
+        "tooltip": "Sets the maximum cardinality for this property. Setting it to `1` is of little use as this would\nindicate at most a single value is allowed, which is easier controlled with the `multiple` property\nand is the default value. `maxCardinality` is mainly aimed at setting it larger than 1 but less than infinity."
+      }
+    }
+  }
+]

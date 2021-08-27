@@ -1,0 +1,57 @@
+{
+  "name": "Procedure",
+  "tooltip": "An OMT Procedure is a piece of business logic that can be executed at will, for example from the command line or in response to some\nexternal event.",
+  "modelRoot": true,
+  "flags": [
+    "nested",
+    "autonomous",
+    "sibling",
+    "siblingCommit"
+  ],
+  "localCommands": [
+    "COMMIT"
+  ],
+  "attributes": {
+    "params": {
+      "type": "ParamDef",
+      "node": "sequence",
+      "description": "List of parameters",
+      "tooltip": "A list of parameters for this Procedure. The value of each parameter has to be specified by the caller which could be\nthe omt command line tool."
+    },
+    "variables": {
+      "type": "VariableDef",
+      "node": "sequence",
+      "description": "List of variables",
+      "tooltip": "A list of variables for this Procedure. These exist for the duration of the Procedure and can be used in\nany ODT statement within the Procedure."
+    },
+    "graphs": {
+      "type": "GraphSelectionDef",
+      "node": "map",
+      "description": "Graph selection",
+      "tooltip": "Defines which named graphs should be available to ODT statements in this Procedure"
+    },
+    "prefixes": {
+      "node": "map",
+      "description": "Dictionary with prefixes",
+      "tooltip": "A dictionary with prefixes that will be used to resolve short iris in this Procedure. These prefixes are in addition to the ones\nimported and defined at the document level. Each key is a short string which is the prefix and the value is the full iri which will\nbe used as a replacement for the prefix"
+    },
+    "handlers": {
+      "type": "HandlerDef",
+      "node": "sequence",
+      "description": "Array of MergeHandlers",
+      "tooltip": "Array of merge handlers for this Procedure. The handlers will be run in the defined order.\nChanges can and will only be merged if the total of merge handlers together handle every incoming change."
+    },
+    "onRun": {
+      "node": "scalar",
+      "script": true,
+      "description": "ODT script",
+      "tooltip": "ODT script that gets executed once when the Procedure is invoked. Execution of this script is delayed until all\nparameter values are set and until all the named graphs from the `graphs` section have been fetched. The `onRun` script\ncan assume all this data to be present in the in-memory RDF store."
+    },
+    "reason": {
+      "node": "scalar",
+      "type": "string",
+      "description": "String",
+      "tooltip": "Reason field for the transaction that is sent to the backend. Can be used as a trigger for workers there.\nNested Procedures do not send their reason."
+    }
+  }
+}

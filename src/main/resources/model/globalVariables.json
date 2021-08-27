@@ -1,0 +1,22 @@
+[
+  {
+    "name": "$offline",
+    "type": "boolean"
+  },
+  {
+    "name": "$medewerkerGraph",
+    "type": "any"
+  },
+  {
+    "name": "$username",
+    "type": "string"
+  },
+  {
+    "name": "$heeftPreviewRol",
+    "type": "boolean"
+  },
+  {
+    "name": "$mockvalue[0-9]+",
+    "type": "any"
+  }
+]

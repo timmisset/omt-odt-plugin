@@ -1,0 +1,91 @@
+{
+  "name": "Component",
+  "modelRoot": true,
+  "tooltip": "An OMT Component is an interactive piece of business logic that can be executed by an end user. A Component runs within an\nActivity or another component. Whereas an Activity is typically a full screen interaction in the user interface,\na Component is just part of the user interface and can be nested. The lifecycle of the Component is the same as its parent. This\nmakes Components the ideal way to reuse user interactions.\n\nSimilar to an Activity, a Component gets the necessary data from the RDF store and exposes some data objects to the user interface\nlayer as `payload` without the parent Activity/Component ever knowing about the need for this data. It also has `actions` that can be\ninvoked by the user interface layer to execute business logic.\n\nThe angular user interface layer links this OMT Component to an Angular component with the @ForOmtComponent decorator. That Angular\ncomponent has a html template that renders the user interface.",
+  "flags": [],
+  "localCommands": [
+    "COMMIT",
+    "ROLLBACK"
+  ],
+  "localCommandConditions": {
+    "COMMIT": {
+      "autonomous": true
+    },
+    "ROLLBACK": {
+      "autonomous": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "interpolatedString",
+      "node": "scalar",
+      "tooltip": "Title of this component that might be shown to the end user in the user interface. Since this is an interpolated string you\ncan use ODT queries between `${` and `}`.",
+      "description": "String"
+    },
+    "bindings": {
+      "type": "BindingDef",
+      "node": "map",
+      "description": "Dictionary of Bindings",
+      "tooltip": "Dictionary of Bindings. A Binding is the bridge between the user interface layer and OMT. The user interface and\nthe OMT component can exchange information by reading and writing to a binding."
+    },
+    "variables": {
+      "type": "VariableDef",
+      "node": "sequence",
+      "description": "List of Variables",
+      "tooltip": "A list of variables for this component. These exist for the duration of the component and can be used in any ODT statement within the component."
+    },
+    "graphs": {
+      "type": "GraphSelectionDef",
+      "node": "map",
+      "description": "Graph selection",
+      "tooltip": "Defines which named graphs should be available to ODT statements in this Component"
+    },
+    "watchers": {
+      "type": "QueryWatcherDef",
+      "node": "sequence",
+      "description": "List of QueryWatchers",
+      "tooltip": "Array of QueryWatchers for this component. These exist for the duration of the component and react to changes\nof the query's result. The `onChange` method receives the previous and current value in the variables `$oldValue` and `$newValue`,\nrespectively."
+    },
+    "payload": {
+      "type": "PayloadPropertyDef",
+      "node": "map",
+      "description": "Dictionary of items",
+      "tooltip": "Dictionary of items that should be made available to the javascript user interface layer. Each item is a single literal value, an\nobject or a list and are based on ODT queries. Each iri is translated to a javascript object. When the ODT query for a payload item\nis writeable the payload item is also writable by the javascript user interface layer and will modify the underlying RDF data."
+    },
+    "rules": {
+      "type": "RulesPropertyMap",
+      "node": "map",
+      "description": "Dictionary of Rules",
+      "tooltip": "Dictionary of data validation rules. Each item is an ODT query that should return a boolean. A `true` value means the rule is valid,\nso `false` means the rule is violated. The current state of all rules is exposed to the javascript user interface layer through a number\nof convenience properties: `errors` (map with each individual rule), `getErrorState$` (string with the current error state,\nreturns 'true' if at least one rule fails),\n`listOfErrors$` (list of names of currently failing rules), and `throwOnError$` (observable that throws if a rule is invalid or completes\nwhen all rules are valid)."
+    },
+    "prefixes": {
+      "node": "map",
+      "description": "Dictionary with prefixes",
+      "tooltip": "A dictionary with prefixes that will be used to resolve short iris in this component. These prefixes are in addition to the ones\nimported and defined at the document level. Each key is a short string which is the prefix and the value is the full iri which will\nbe used as a replacement for the prefix."
+    },
+    "queries": {
+      "node": "scalar",
+      "script": true,
+      "description": "`DEFINE QUERY` statements",
+      "tooltip": "An ODT script with one or more `DEFINE QUERY` statements to define reusable queries that can be used within this Component. These\nqueries are in addition to the ones imported and defined at the document level. Each `DEFINE QUERY` specifies the name of the query\nwith an optional list of arguments and the actual ODT query.\n\nDefined queries can be standalone queries or as a subquery in another odt-query. A standalone query starts with`/` to indicate\n`root` and is used as the starting point in another query. For example the `AllFoos` query in the example below is simply used\nas `AllFoos` or as the starting point of a longer query, such as `AllFoos / x:somePredicate`.\n\nDefined queries can also be intended to be used as subqueries, like the `IsOfType` in the example below. These would be used\nin another odt query like `$someObject / IsOfType( / x:someType )` or `$someObject / AllSuperclasses / ^rdf:type`\n"
+    },
+    "commands": {
+      "node": "scalar",
+      "script": true,
+      "description": "`DEFINE COMMAND` statements",
+      "tooltip": "An ODT script with one or more `DEFINE COMMAND` statements to define reusable commands that can be used within this Component. These\ncommands are in addition to the ones imported and defined at the document level. Each `DEFINE COMMAND` specifies the name of the\ncommand with an optional list of arguments and the actual ODT command.\n\nCommands can have a list of arguments that can be used in the odt script and have to be supplied by the caller.\n\nCommands can include a `RETURN` statement to specify which value should be returned to the caller. Without a `RETURN` statement\nthe result of the last command in the ODT script will be used as the return value."
+    },
+    "onInit": {
+      "node": "scalar",
+      "script": true,
+      "description": "ODT script",
+      "tooltip": "ODT script that gets executed once when the Component starts. Execution of this script is delayed until all initial variable values\nand bindings are set and until all the named graphs from the `graphs` section have been fetched. The `onInit` script\ncan assume all this data to be present in the in-memory RDF store."
+    },
+    "actions": {
+      "type": "ActionPropertyDef",
+      "node": "map",
+      "description": "Dictionary of actions",
+      "tooltip": "A dictionary of actions that are made available to the javascript user interface layer. The user interface might show these\nas menu items, buttons, or other actionable components. The javascript layer might also not show these directly to the user but\ninvoke the actions programmatically. It is a way for the javascript layer to call back into OMT and execute business logic."
+    }
+  }
+}

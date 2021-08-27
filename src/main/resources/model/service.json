@@ -1,0 +1,35 @@
+{
+  "name": "Service",
+  "flags": [],
+  "localCommands": [
+    "SET_HEADER",
+    "STATUS",
+    "COMMIT"
+  ],
+  "attributes": {
+    "params": {
+      "node": "sequence",
+      "required": true,
+      "description": "List of parameters",
+      "tooltip": "A list of paremeters for this Service. The value of each parameter can be specified as query parameter in the URL to\ninvoke the Service.\n"
+    },
+    "graphs": {
+      "type": "GraphSelectionDef",
+      "node": "map",
+      "description": "Graph selection",
+      "tooltip": "Defines which named graphs should be available to ODT statements in this Service"
+    },
+    "prefixes": {
+      "node": "map",
+      "required": true,
+      "description": "Dictionary with prefixes",
+      "tooltip": "A dictionary with prefixes that will be used to resolve short iris in this Service. These prefixes are in addition to the ones\nimported and defined at the document level. Each key is a short string which is the prefix and the value is the full iri which will\nbe used as a replacement for the prefix."
+    },
+    "onRequest": {
+      "node": "scalar",
+      "description": "ODT Script",
+      "script": true,
+      "tooltip": "ODT script that gets executed once when the Service is invoked. Execution of this script is delayed until all\nparameter values are set and until all the named graphs from the `graphs` section have been fetched. The `onRequest` script\ncan assume all this data to be present in the in-memory RDF store."
+    }
+  }
+}

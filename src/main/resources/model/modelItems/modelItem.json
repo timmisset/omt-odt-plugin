@@ -1,0 +1,11 @@
+{
+  "name": "ModelItem",
+  "requiresTagIdentifier": true,
+  "tags": [
+    "Activity",
+    "Procedure",
+    "Ontology",
+    "Component",
+    "StandaloneQuery"
+  ]
+}

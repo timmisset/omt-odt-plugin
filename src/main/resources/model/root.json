@@ -1,0 +1,33 @@
+{
+  "name": "root",
+  "attributes": {
+    "model": {
+      "node": "map",
+      "type": "ModelItemDef",
+      "description": "Dictionary of ModelItem",
+      "tooltip": "A dictionary of objects to use in or export from this document. Each key is the name by which the object is exported and the\nvalue is the actual object. Since this can be any type of object you explicitly have to set the type using the `!Type` YAML syntax.\n"
+    },
+    "import": {
+      "node": "map",
+      "description": "Dictionary of Import",
+      "tooltip": "A dictionary to specify constructs that should be imported from other OMT files.\n\nEach key is a relative path to another OMT file if that file lives in your same module or the name of another module prefixed with\n`module:`. See ModelDocument for more details on exports/import between different modules using the `module:`\nprefix.\n\nEach value in the dictionary is a list of the names of items to import from the other OMT file or module. The could be commands,\nqueries or any object defined in the `model` of a ModelDocument"
+    },
+    "queries": {
+      "node": "scalar",
+      "description": "`DEFINE QUERY` statements",
+      "script": true,
+      "tooltip": "An ODT script with one or more `DEFINE QUERY` statements to define reusable queries that can be used within this Activity. These\nqueries are in addition to the ones imported and defined at the document level. Each `DEFINE QUERY` specifies the name of the query\nwith an optional list of arguments and the actual ODT query.\n\nDefined queries can be standalone queries or as a subquery in another odt-query. A standalone query starts with`/` to indicate\n`root` and is used as the starting point in another query. For example the `AllFoos` query in the example below is simply used\nas `AllFoos` or as the starting point of a longer query, such as `AllFoos / x:somePredicate`.\n\nDefined queries can also be intended to be used as subqueries, like the `IsOfType` in the example below. These would be used\nin another odt query like `$someObject / IsOfType( / x:someType )` or `$someObject / AllSuperclasses / ^rdf:type`\n"
+    },
+    "commands": {
+      "node": "scalar",
+      "description": "`DEFINE COMMAND` statements",
+      "script": true,
+      "tooltip": "An ODT script with one or more `DEFINE COMMAND` statements to define reusable commands that can be used within this Activity. These\ncommands are in addition to the ones imported and defined at the document level. Each `DEFINE COMMAND` specifies the name of the\ncommand with an optional list of arguments and the actual ODT command.\n\nCommands can have a list of arguments that can be used in the odt script and have to be supplied by the caller.\n\nCommands can include a `RETURN` statement to specify which value should be returned to the caller. Without a `RETURN` statement\nthe result of the last command in the ODT script will be used as the return value."
+    },
+    "prefixes": {
+      "node": "map",
+      "description": "Dictionary of Prefixes",
+      "tooltip": "A dictionary with prefixes that will be used to resolve short iris in the associated document. Each key is a short string\nwhich is the prefix and the value is the full iri which will be used as a replacement for the prefix.\n"
+    }
+  }
+}

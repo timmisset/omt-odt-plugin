@@ -1,0 +1,9 @@
+{
+  "name": "Handler",
+  "requiresTagIdentifier": true,
+  "tags": [
+    "MergePredicates",
+    "MergeValidation",
+    "MergeLists"
+  ]
+}

@@ -1,0 +1,41 @@
+<idea-plugin>
+    <id>com.misset.OMT</id>
+    <name>OMT / ODT Language</name>
+    <vendor email="tim.misset@live.com" url="https://github.com/timmisset/omt">Misset</vendor>
+
+    <description>Plugin for the OPP specific languages OMT and ODT</description>
+    <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.java</depends>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- YAML extensions -->
+        <!--    The YAML language is considered the language of the elements that are parsed by the YAML Parser, this is because the IElementType for the nodes
+                has YAML as language and cannot be modified to be OMT for .omt files
+                Therefore, certain extensions need to be hooked into the yaml language, not the OMT extension of yaml
+                -->
+        <psi.referenceContributor language="yaml"
+                                  implementation="com.misset.opp.omt.psi.references.OMTVariableReferenceContributor"/>
+        <!-- OMT Language -->
+        <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
+                  language="OMT" extensions="omt"/>
+        <lang.parserDefinition language="OMT"
+                               implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
+
+        <!-- ODT Language -->
+        <fileType name="ODT File" implementationClass="com.misset.opp.odt.ODTFileType" fieldName="INSTANCE"
+                  language="ODT" extensions="odt"/>
+        <multiHostInjector implementation="com.misset.opp.odt.ODTMultiHostInjector"/>
+        <lang.parserDefinition language="ODT"
+                               implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
+
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>

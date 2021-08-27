@@ -1,0 +1,22 @@
+[
+  {
+    "shortcut": {
+      "assignTo": "query"
+    },
+    "name": "RulesProperty",
+    "attributes": {
+      "query": {
+        "node": "scalar",
+        "required": true,
+        "description": "ODT query",
+        "tooltip": "ODT query that is evaluated to check the rule"
+      },
+      "strict": {
+        "type": "boolean",
+        "node": "scalar",
+        "description": "boolean (default true)",
+        "tooltip": "Indicates whether this rule should block a commit when not valid. The default value is `true`"
+      }
+    }
+  }
+]

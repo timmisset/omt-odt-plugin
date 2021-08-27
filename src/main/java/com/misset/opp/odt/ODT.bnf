@@ -1,0 +1,132 @@
+{
+  parserClass="org.intellij.sdk.language.parser.ODTParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="ODT"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.misset.opp.odt.psi"
+  psiImplPackage="com.misset.opp.odt.psi.impl"
+
+  elementTypeHolderClass="com.misset.opp.odt.psi.ODTTypes"
+  elementTypeClass="com.misset.opp.odt.psi.ODTElementType"
+  tokenTypeClass="com.misset.opp.odt.psi.ODTTokenType"
+}
+
+// the end of the file (or the entire file) can be a (set of) comment(s)
+ODTFile ::= script
+
+namespacePrefix::=                          PROPERTY COLON
+curieElement ::=                            (namespacePrefix NAMESPACE_MEMBER) | IRI
+curieConstantElement ::=                    (CURIE_CONSTANT_ELEMENT_PREFIX | FORWARD_SLASH) curieElement queryFilter*
+
+// ////////////////////////////////////////////////////
+// ODT
+// ////////////////////////////////////////////////////
+constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE
+// a variable is declared using VAR and one or more variable names. Optionally an assignment is added
+// the assignment is deconstructed to the entire set of variables that is declared. i.e. VAR $a, $b = [1, 2]. $a == 1, $b == 2
+// or can be VAR $a = 1, $b = 2 etc.
+declareVariable ::=                         DECLARE_VAR (variableAssignment | variable) (COMMA (variableAssignment | variable))*
+// a variable assignment is $var = 1234
+variableAssignment::=                       variable (COMMA variable)* EQUALS variableValue
+// a variable can be assigned with anything
+variableValue ::=                           query | commandCall
+variable ::=                                VARIABLE_NAME
+
+// SCRIPT
+// an ODT (script) block is always started by a Yaml scalar node
+// it can start on the same line and be restricted to that line (not required) or it can be started by the
+// literal indentifier, the "|" in Yaml. In which case it should be followed by an empty line and and 
+script ::=                                  scriptLine+
+// a scriptline is contained by the addition of the semicolon at the end
+scriptLine ::=                              ((scriptContent SEMICOLON*) | commandBlock | logicalBlock | defineQueryStatement | defineCommandStatement)
+// the contents of a script, contained by a scriptLine or Scalar
+scriptContent ::=                           declareVariable | variableAssignment | definePrefix | commandCall | assignmentStatement |
+                                            addToCollection | removeFromCollection | returnStatement | query
+
+commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
+
+// DEFINED MEMBERS
+// ODT Members are Operator and Commands, both can be created by a DEFINE statement
+// there is also a collection of BuiltIn operators and commands which are included
+// and finally, all runnable OMT modelitems are available as Commands (Activity, Procedure) or Operator (StandAloneQuery)
+// only the Defined members are part of set of the grammar parser
+defineName ::=                              NAME
+defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*
+defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock
+definePrefix ::=                            PREFIX_DEFINE_START COLON prefix
+defineParam ::=                             PARENTHESES_OPEN (variable (COMMA variable)*)? PARENTHESES_CLOSE
+callName ::=                                NAME | BOOLEAN_OPERATOR
+// MEMBER CALLS
+// A call to either an Operator or a Command. In case of the latter, it's always prefixed with @
+operatorCall ::=                            callName flagSignature? signature?
+commandCall ::=                             AT callName flagSignature? signature?
+signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
+signatureArgument ::=                       resolvableValue | commandBlock
+flagSignature ::=                           TAG
+resolvableValue ::=                         query | commandCall
+logicalBlock ::=                            ifBlock commandBlock? (ELSE_OPERATOR ifBlock commandBlock?)* elseBlock?
+ifBlock ::=                                 IF_OPERATOR (query | (PARENTHESES_OPEN query PARENTHESES_CLOSE))
+elseBlock ::=                               ELSE_OPERATOR commandBlock
+returnStatement ::=                         RETURN_OPERATOR resolvableValue?
+chooseBlock ::=                             CHOOSE_OPERATOR 
+                                                whenPath*
+                                                otherwisePath?
+                                                endPath?
+whenPath ::=                                WHEN_OPERATOR booleanStatement? LAMBDA? query?
+otherwisePath ::=                           OTHERWISE_OPERATOR LAMBDA? query?
+endPath ::=                                 END_OPERATOR 
+// QUERIES
+// A query is the superclass of different variants of a query.
+// it is used to break the array into meaningful subsections based on detected tokens
+// for example, the queryArray will break the array into subsections by the delimiter '|' for the array
+//
+// with regular bnf -> psi generation, the query would encapsulate the queryPath, ... items
+// by using the extension mechanism, it only becomes their superclass
+query     ::=                               queryPath | queryArray | booleanStatement | equationStatement
+// The queryPath is the base, eventually all queries will descent into a queryPath even for single steps
+// For example, a queryArray can consist of 'a' | 'b' in which both 'a' and 'b' are encapsulated
+// into a queryPath and subsequently a queryStep
+// The queryPath is constructed using the Forward slash as delimiter a contains as many steps as possible
+queryPath ::=                               (curieConstantElement | queryStep) ((FORWARD_SLASH | DUMMY_SLASH) queryStep?)* { extends=query }
+// The queryArray uses the PIPE symbol to split the array where both can be resolved separately
+queryArray ::=                              query (PIPE query)+ { extends=query }
+// A booleanStatement works the same as the queryArray but using a BOOLEAN_OPERATOR
+// When resolving, it should be checked that all parts of the query are resolved to boolean types
+booleanStatement ::=                        query (BOOLEAN_OPERATOR query)+ { extends=query }
+// The equationStatement uses a conditional operator (like ==, >=, <=) to split the statement
+// it only allows a left-hand and right-hand query, both should be resolved to boolean type
+equationStatement ::=                       query CONDITIONAL_OPERATOR query { extends=query }
+// The negated statement detects the usage of the NOT operator
+// This can be used as '.. / NOT IN (...)' OR '.. / NOT'. In the former the negation is based on the subsequent
+// query whereas the latter it's based on the preceding query
+//
+// A negated stap should not encapsulate a booleanStatement
+// x == 0 AND NOT y == 1 should resolve in a booleanStatement where the latter contains the negation
+negatedStep ::=                             NOT_OPERATOR (equationStatement | queryPath | queryArray)  { extends=query }
+
+queryStep ::=
+        (queryReverseStep | constantValue | variable | curieElement | operatorCall | IRI | DOT | OWLPROPERTY |
+         chooseBlock | negatedStep | NOT_OPERATOR | subQuery | queryFilter)
+
+                                            stepDecorator? queryFilter*
+queryReverseStep ::=                        CARET curieElement? stepDecorator? queryFilter* { extends=queryStep }
+// Decorators for the query steps, can be added to individual steps or subqueries
+// QUESTION_MARK ?  == 0 or 1
+// PLUS +           == 1 or more
+// ASTERIX          == 0 or more
+stepDecorator ::=                           ASTERIX | PLUS | QUESTION_MARK
+// a query filter is contained by brackets [] and should resolve to boolean
+queryFilter ::=                             BRACKET_OPEN query (COMMA query)? BRACKET_CLOSED | EMPTY_ARRAY
+
+// the subQuery encapsulated a query by PARENTHESES, it can be resolved as-is, for example in an equation
+// or be cast to a traverse-like behavior using the ASTERIX and PLUS appendixes
+subQuery ::=                                PARENTHESES_OPEN query PARENTHESES_CLOSE { extends=queryStep }
+
+// the assignment statement is used to assign a value to a left-hand target, like a variable or a resolved resource iri
+// addTo and removeFrom are similar which will add/remove the item to/from the collection
+// these are not used defined query statement but in command blocks
+assignmentStatement ::=                     query EQUALS resolvableValue
+addToCollection ::=                         query ADD resolvableValue
+removeFromCollection ::=                    query REMOVE resolvableValue
