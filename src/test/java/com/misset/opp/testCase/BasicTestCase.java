@@ -6,10 +6,24 @@ import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
+import com.misset.opp.omt.psi.OMTFile;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.stream.Collectors;
 
 public abstract class BasicTestCase extends LightJavaCodeInsightFixtureTestCase {
+
+    @BeforeEach
+    protected void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @AfterEach
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
 
     private FileType fileType;
     public BasicTestCase(FileType fileType) {
@@ -27,19 +41,26 @@ public abstract class BasicTestCase extends LightJavaCodeInsightFixtureTestCase 
     }
 
 
-    protected PsiFile configureByText(String content) {
+    protected OMTFile configureByText(String content) {
         return configureByText(getFileName(), content, false);
     }
 
-    protected PsiFile configureByText(String fileName, String content) {
+    protected OMTFile configureByText(String fileName, String content) {
         return configureByText(fileName, content, false);
     }
 
-    protected PsiFile configureByText(String content, boolean acceptErrorElements) {
+    protected OMTFile configureByText(String content, boolean acceptErrorElements) {
         return configureByText(getFileName(), content, acceptErrorElements);
     }
-
-    protected PsiFile configureByText(String fileName, String content, boolean acceptErrorElements) {
+    protected OMTFile configureByText(String fileName,
+                                                    String content,
+                                                    boolean acceptErrorElements) {
+        return configureByText(fileName, content, acceptErrorElements, OMTFile.class);
+    }
+    protected <T extends PsiFile> T configureByText(String fileName,
+                                                    String content,
+                                                    boolean acceptErrorElements,
+                                                    Class<T> type) {
         if (myFixture == null) {
             fail("Fixture is not defined, call super.setUp()");
         }
@@ -52,7 +73,7 @@ public abstract class BasicTestCase extends LightJavaCodeInsightFixtureTestCase 
             fail(String.format("Configured PsiFile has an error element: %n%s%n%n%s", errorMessage, ReadAction.compute(
                     psiFile::getText)));
         }
-        return psiFile;
+        return type.cast(psiFile);
     }
 
 }

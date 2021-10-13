@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.psi.OMTVariable;
-import com.misset.opp.omt.psi.impl.OMTVariableImpl;
+import com.misset.opp.omt.psi.impl.variables.OMTVariableImpl;
 import org.jetbrains.yaml.psi.YAMLSequenceItem;
 
 public class OMTElementFactory {

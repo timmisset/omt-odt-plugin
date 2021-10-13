@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.misset.opp.omt.util.OMTModelUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +57,17 @@ public class JsonModelLoader extends Helper {
                 addToJson(jsonElement);
             }
         }
+    }
+
+    public static boolean hasValue(JsonObject jsonObject, String key, Object value) {
+        return jsonObject.has(key) && jsonObject.get(key).equals(value);
+    }
+    public static <T extends JsonElement> JsonElement getOrDefault(JsonObject jsonObject, String key, T defaultValue) {
+        return getOrDefault(jsonObject, key, defaultValue, JsonElement.class);
+    }
+    public static <T extends JsonElement> T getOrDefault(JsonObject jsonObject, String key, T defaultValue, Class<T> clazz) {
+        if(jsonObject.has(key)) { return clazz.cast(jsonObject.get(key)); }
+        return defaultValue;
     }
 
 }

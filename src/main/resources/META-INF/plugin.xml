@@ -7,6 +7,7 @@
     <depends>com.intellij.modules.java</depends>
     <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.plugins.yaml</depends>
 
     <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
          on how to target different products -->
@@ -20,6 +21,11 @@
                 -->
         <psi.referenceContributor language="yaml"
                                   implementation="com.misset.opp.omt.psi.references.OMTVariableReferenceContributor"/>
+        <localInspection displayName="UnknownKeyInspection"
+                         groupName="Model"
+                         language="yaml"
+                         implementationClass="com.misset.opp.omt.inspection.OMTUnkownKeysInspection"/>
+
         <!-- OMT Language -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>

@@ -16,16 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class OMTVariableImplTest extends OMTTestCase {
 
-    @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @AfterEach
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     @Test
     void testGetNameShorthand() {
         String content = insideActivityWithPrefixes("variables:\n" +

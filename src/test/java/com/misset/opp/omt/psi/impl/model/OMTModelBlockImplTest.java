@@ -13,16 +13,6 @@ import java.util.List;
 
 class OMTModelBlockImplTest extends OMTTestCase {
 
-    @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @AfterEach
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     @Test
     void getSingleModelItem() {
         configureByText(insideActivityWithPrefixes("onStart: \n"));

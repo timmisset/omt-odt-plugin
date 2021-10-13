@@ -6,24 +6,10 @@ import com.intellij.psi.PsiReference;
 import com.misset.opp.odt.psi.wrapping.impl.ODTDefinedVariableImpl;
 import com.misset.opp.odt.psi.wrapping.impl.ODTUsageVariableImpl;
 import com.misset.opp.testCase.OMTTestCase;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ODTVariableReferenceTest extends OMTTestCase {
-
-    @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @AfterEach
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     @Test
     void testODTReferenceCanResolve() {

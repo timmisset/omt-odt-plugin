@@ -11,15 +11,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OMTFileImplTest extends OMTTestCase {
-    @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @AfterEach
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     @Test
     void getModelBlock() {

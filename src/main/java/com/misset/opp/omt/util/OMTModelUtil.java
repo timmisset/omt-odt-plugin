@@ -114,6 +114,8 @@ public class OMTModelUtil {
                 .orElse(EMPTY_JSON);
     }
 
-
-
+    public static boolean hasAttribute(JsonObject jsonObject, String attribute) {
+        return jsonObject.has(ATTRIBUTES) && jsonObject.getAsJsonObject(ATTRIBUTES).has(attribute);
+    }
+    
 }

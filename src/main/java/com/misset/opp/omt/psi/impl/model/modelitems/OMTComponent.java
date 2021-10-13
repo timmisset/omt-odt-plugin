@@ -2,11 +2,14 @@ package com.misset.opp.omt.psi.impl.model.modelitems;
 
 import com.intellij.lang.ASTNode;
 import com.misset.opp.omt.psi.OMTModelItemType;
+import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.omt.psi.model.modelitems.OMTModelItem;
-import com.misset.opp.omt.psi.impl.model.OMTNonEmptyModelItem;
+import com.misset.opp.omt.psi.impl.model.OMTModelItemAbstract;
 import org.jetbrains.annotations.NotNull;
 
-public class OMTComponent extends OMTNonEmptyModelItem implements OMTModelItem {
+import java.util.List;
+
+public class OMTComponent extends OMTModelItemAbstract implements OMTModelItem {
 
     public OMTComponent(@NotNull ASTNode node) {
         super(node);
@@ -17,5 +20,8 @@ public class OMTComponent extends OMTNonEmptyModelItem implements OMTModelItem {
         return OMTModelItemType.Component;
     }
 
-
+    @Override
+    public List<OMTVariable> getDeclaredVariables() {
+        return super.getVariables();
+    }
 }
