@@ -31,7 +31,10 @@ public abstract class OMTMetaType extends YamlMetaType {
 
     @Override
     public @NotNull List<String> computeMissingFields(@NotNull Set<String> existingFields) {
-        return getRequiredFields().stream().filter(s -> !existingFields.contains(s)).collect(Collectors.toList());
+        return getRequiredFields().stream()
+                .filter(s -> !existingFields.contains(s))
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -47,7 +50,9 @@ public abstract class OMTMetaType extends YamlMetaType {
         final YamlMetaType metaType = getFeatures()
                 .get(name)
                 .get();
-        if(metaType == null) { return null; }
+        if (metaType == null) {
+            return null;
+        }
         return new Field(name, metaType);
     }
 

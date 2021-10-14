@@ -19,6 +19,8 @@ public class OMTModelItemType extends OMTMetaTaggedType {
         taggedTypes.put("!Activity", OMTActivityType::new);
         taggedTypes.put("!Component", OMTComponentType::new);
         taggedTypes.put("!Ontology", OMTOntologyType::new);
+        taggedTypes.put("!Procedure", OMTProcedureType::new);
+        taggedTypes.put("!StandaloneQuery", OMTStandaloneQueryType::new);
     }
 
     public OMTModelItemType(@NonNls @NotNull String name) {

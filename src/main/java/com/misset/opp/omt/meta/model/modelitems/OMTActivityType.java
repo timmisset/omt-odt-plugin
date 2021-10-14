@@ -7,7 +7,7 @@ import com.misset.opp.omt.meta.model.OMTPayloadType;
 import com.misset.opp.omt.meta.model.OMTPrefixesType;
 import com.misset.opp.omt.meta.model.OMTQueryWatcherType;
 import com.misset.opp.omt.meta.model.OMTRulesType;
-import com.misset.opp.omt.meta.model.handlers.OMTHandlerType;
+import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerType;
 import com.misset.opp.omt.meta.model.scalars.OMTCommandsType;
 import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedString;
 import com.misset.opp.omt.meta.model.scalars.OMTODTQueryType;
@@ -33,7 +33,7 @@ public class OMTActivityType extends OMTMetaType {
         features.put("onDefaultClose", OMTInterpolatedString::new);
         features.put("params", () -> new YamlArrayType(new OMTParamType()));
         features.put("variables", () -> new YamlArrayType(new OMTVariableType()));
-        features.put("handlers", () -> new YamlArrayType(new OMTHandlerType()));
+        features.put("handlers", () -> new YamlArrayType(new OMTMergeHandlerType()));
         features.put("graphs", OMTGraphSelectionType::new);
         features.put("watchers", () -> new YamlArrayType(new OMTQueryWatcherType()));
         features.put("rules", OMTRulesType::new);
