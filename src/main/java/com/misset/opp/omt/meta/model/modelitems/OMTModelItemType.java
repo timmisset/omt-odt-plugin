@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.misset.opp.omt.meta.OMTMetaTaggedType;
+import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;

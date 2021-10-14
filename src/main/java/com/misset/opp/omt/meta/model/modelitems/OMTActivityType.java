@@ -1,22 +1,21 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.actions.OMTActionsType;
+import com.misset.opp.omt.meta.arrays.OMTActionsArrayType;
+import com.misset.opp.omt.meta.arrays.OMTHandlersArrayType;
+import com.misset.opp.omt.meta.arrays.OMTParamsArrayType;
+import com.misset.opp.omt.meta.arrays.OMTVariablesArrayType;
+import com.misset.opp.omt.meta.arrays.OMTWatchersArrayType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionType;
 import com.misset.opp.omt.meta.model.OMTPayloadType;
 import com.misset.opp.omt.meta.model.OMTPrefixesType;
-import com.misset.opp.omt.meta.model.OMTQueryWatcherType;
 import com.misset.opp.omt.meta.model.OMTRulesType;
-import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerType;
 import com.misset.opp.omt.meta.model.scalars.OMTCommandsType;
 import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedString;
 import com.misset.opp.omt.meta.model.scalars.OMTODTQueryType;
 import com.misset.opp.omt.meta.model.scalars.OMTODTScriptType;
 import com.misset.opp.omt.meta.model.scalars.OMTQueriesType;
 import com.misset.opp.omt.meta.model.scalars.OMTReasonType;
-import com.misset.opp.omt.meta.model.variables.OMTParamType;
-import com.misset.opp.omt.meta.model.variables.OMTVariableType;
-import org.jetbrains.yaml.meta.model.YamlArrayType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;
@@ -31,11 +30,11 @@ public class OMTActivityType extends OMTMetaType {
     static {
         features.put("title", OMTInterpolatedString::new);
         features.put("onDefaultClose", OMTInterpolatedString::new);
-        features.put("params", () -> new YamlArrayType(new OMTParamType()));
-        features.put("variables", () -> new YamlArrayType(new OMTVariableType()));
-        features.put("handlers", () -> new YamlArrayType(new OMTMergeHandlerType()));
+        features.put("params", OMTParamsArrayType::new);
+        features.put("variables", OMTVariablesArrayType::new);
+        features.put("handlers", OMTHandlersArrayType::new);
         features.put("graphs", OMTGraphSelectionType::new);
-        features.put("watchers", () -> new YamlArrayType(new OMTQueryWatcherType()));
+        features.put("watchers", OMTWatchersArrayType::new);
         features.put("rules", OMTRulesType::new);
         features.put("prefixes", OMTPrefixesType::new);
         features.put("queries", OMTQueriesType::new);
@@ -45,7 +44,7 @@ public class OMTActivityType extends OMTMetaType {
         features.put("onCancel", OMTODTScriptType::new);
         features.put("onDone", OMTODTScriptType::new);
         features.put("returns", OMTODTQueryType::new);
-        features.put("actions", OMTActionsType::new);
+        features.put("actions", OMTActionsArrayType::new);
         features.put("reason", OMTReasonType::new);
         features.put("payload", OMTPayloadType::new);
     }

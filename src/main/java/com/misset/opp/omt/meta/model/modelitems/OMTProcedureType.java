@@ -1,14 +1,13 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.misset.opp.omt.meta.OMTMetaType;
+import com.misset.opp.omt.meta.arrays.OMTParamsArrayType;
+import com.misset.opp.omt.meta.arrays.OMTVariablesArrayType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionType;
 import com.misset.opp.omt.meta.model.OMTPrefixesType;
 import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerType;
 import com.misset.opp.omt.meta.model.scalars.OMTODTScriptType;
 import com.misset.opp.omt.meta.model.scalars.OMTReasonType;
-import com.misset.opp.omt.meta.model.variables.OMTParamType;
-import com.misset.opp.omt.meta.model.variables.OMTVariableType;
-import org.jetbrains.yaml.meta.model.YamlArrayType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;
@@ -21,8 +20,8 @@ public class OMTProcedureType extends OMTMetaType {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {
-        features.put("params", () -> new YamlArrayType(new OMTParamType()));
-        features.put("variables", () -> new YamlArrayType(new OMTVariableType()));
+        features.put("params", OMTParamsArrayType::new);
+        features.put("variables", OMTVariablesArrayType::new);
         features.put("graphs", OMTGraphSelectionType::new);
         features.put("prefixes", OMTPrefixesType::new);
         features.put("onRun", OMTODTScriptType::new);
