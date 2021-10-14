@@ -1,59 +1,32 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.misset.opp.omt.meta.TaggedElementContainer;
+import com.misset.opp.omt.meta.OMTMetaTaggedType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.meta.model.Field;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
-import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.function.Supplier;
 
-public class OMTModelItemType extends YamlMetaType implements TaggedElementContainer {
+/**
+ * The OMTModelItem are always typed by a Yaml Tag (!Tag)
+ * This class serves as an intermediary that will defer validations and completions to delegates created based on the tag identifiers
+ */
+public class OMTModelItemType extends OMTMetaTaggedType {
 
-    private static final List<String> TAGS = List.of("!Activity", "!Component", "!Procedure", "!StandaloneQuery");
-
-    private String name;
+    private static final HashMap<String, Supplier<YamlMetaType>> taggedTypes = new HashMap<>();
+    static {
+        taggedTypes.put("!Activity", OMTActivityType::new);
+        taggedTypes.put("!Component", OMTComponentType::new);
+        taggedTypes.put("!Ontology", OMTOntologyType::new);
+    }
 
     public OMTModelItemType(@NonNls @NotNull String name) {
         super(name);
-        this.name = name;
     }
 
     @Override
-    public @Nullable Field findFeatureByName(@NotNull String name) {
-        return null;
-    }
-
-    @Override
-    public @NotNull List<String> computeMissingFields(@NotNull Set<String> existingFields) {
-        return null;
-    }
-
-    @Override
-    public @NotNull List<Field> computeKeyCompletions(@Nullable YAMLMapping existingMapping) {
-        return null;
-    }
-
-    @Override
-    public void buildInsertionSuffixMarkup(@NotNull YamlInsertionMarkup markup,
-                                           Field.@NotNull Relation relation,
-                                           ForcedCompletionPath.@NotNull Iteration iteration) {
-
-    }
-
-    @Override
-    public boolean isValidTag(String tag) {
-        return TAGS.contains(tag);
-    }
-
-    @Override
-    public Field getByTag(String tag) {
-        if("!Activity".equals(tag)) {
-            return new Field(name, new OMTActivityType());
-        }
-        return null;
+    protected HashMap<String, Supplier<YamlMetaType>> getTaggedTypes() {
+        return taggedTypes;
     }
 }

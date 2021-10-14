@@ -8,6 +8,7 @@ import org.jetbrains.yaml.meta.model.Field;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -29,12 +30,12 @@ public class OMTFileType extends YamlMetaType {
 
     @Override
     public @NotNull List<String> computeMissingFields(@NotNull Set<String> existingFields) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public @NotNull List<Field> computeKeyCompletions(@Nullable YAMLMapping existingMapping) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

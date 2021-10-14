@@ -1,6 +1,5 @@
 package com.misset.opp.omt.meta.model;
 
-import com.misset.opp.omt.meta.model.scalars.OMTPrefixType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.Field;

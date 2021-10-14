@@ -1,12 +1,8 @@
 package com.misset.opp.omt.inspection;
 
-import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.InspectionTestCase;
-import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class OMTUnkownKeysInspectionTest extends InspectionTestCase {
 
@@ -23,7 +19,7 @@ class OMTUnkownKeysInspectionTest extends InspectionTestCase {
                 "       titlee: titel\n" +
                 "";
         configureByText(content);
-        assertHasWarning("Key 'titlee' is not expected here");
+        assertHasError("Key 'titlee' is not expected here");
     }
 
     @Test
@@ -33,7 +29,7 @@ class OMTUnkownKeysInspectionTest extends InspectionTestCase {
                 "       title: titel\n" +
                 "";
         configureByText(content);
-        assertNoWarnings();
+        assertNoErrors();
     }
 
 }

@@ -21,16 +21,38 @@
                 -->
         <psi.referenceContributor language="yaml"
                                   implementation="com.misset.opp.omt.psi.references.OMTVariableReferenceContributor"/>
-        <localInspection displayName="UnknownKeyInspection"
-                         groupName="Model"
-                         language="yaml"
-                         implementationClass="com.misset.opp.omt.inspection.OMTUnkownKeysInspection"/>
 
         <!-- OMT Language -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>
         <lang.parserDefinition language="OMT"
                                implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
+
+        <!-- Completions -->
+        <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
+                                order="first" language="yaml"/>
+
+        <!-- Inspections -->
+        <localInspection displayName="UnknownKeyInspection"
+                         groupName="OMT"
+                         language="OMT"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="com.misset.opp.omt.inspection.OMTUnkownKeysInspection"/>
+
+        <localInspection displayName="ValueInspection"
+                         groupName="OMT"
+                         language="OMT"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="com.misset.opp.omt.inspection.OMTValueInspection"/>
+
+        <localInspection displayName="MissingKeyInspection"
+                         groupName="OMT"
+                         language="OMT"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="com.misset.opp.omt.inspection.OMTMissingKeysInspection"/>
 
         <!-- ODT Language -->
         <fileType name="ODT File" implementationClass="com.misset.opp.odt.ODTFileType" fieldName="INSTANCE"

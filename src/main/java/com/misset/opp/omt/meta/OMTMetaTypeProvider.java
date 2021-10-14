@@ -76,13 +76,13 @@ public class OMTMetaTypeProvider extends YamlMetaTypeProvider {
         final MetaTypeProxy metaTypeProxy = getKeyValueMetaType(parentOfType);
         if (typedValue.getTag() != null &&
                 metaTypeProxy != null &&
-                metaTypeProxy.getMetaType() instanceof TaggedElementContainer) {
+                metaTypeProxy.getMetaType() instanceof OMTMetaTaggedType) {
 
             final String tag = typedValue
                     .getTag()
                     .getText();
 
-            final TaggedElementContainer taggedElementContainer = (TaggedElementContainer) metaTypeProxy.getMetaType();
+            final OMTMetaTaggedType taggedElementContainer = (OMTMetaTaggedType) metaTypeProxy.getMetaType();
 
             if (taggedElementContainer.isValidTag(tag)) {
                 Field.Relation relation = Field.Relation.OBJECT_CONTENTS;
