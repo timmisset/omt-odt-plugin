@@ -61,4 +61,5 @@ public abstract class OMTMetaType extends YamlMetaType {
                                            Field.@NotNull Relation relation,
                                            ForcedCompletionPath.@NotNull Iteration iteration) {
     }
+
 }

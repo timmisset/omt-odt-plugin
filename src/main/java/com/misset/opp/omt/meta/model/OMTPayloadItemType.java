@@ -1,39 +1,37 @@
 package com.misset.opp.omt.meta.model;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.meta.model.Field;
+import com.misset.opp.omt.meta.OMTMetaType;
+import com.misset.opp.omt.meta.model.scalars.OMTODTQueryType;
+import com.misset.opp.omt.meta.model.scalars.references.OMTPayloadQueryReferenceType;
+import com.misset.opp.omt.meta.model.scalars.scripts.OMTOnChangeScriptType;
+import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
-import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Set;
+import java.util.function.Supplier;
 
-public class OMTPayloadItemType extends YamlMetaType {
+public class OMTPayloadItemType extends OMTMetaType {
+    private static final Set<String> requiredFeatures = Set.of("value");
+    private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    static {
+        features.put("value", OMTODTQueryType::new);
+        features.put("query", OMTPayloadQueryReferenceType::new);
+        features.put("list", () -> new YamlBooleanType("list"));
+        features.put("onChange", OMTOnChangeScriptType::new);
+    }
 
     public OMTPayloadItemType() {
-        super("PayloadItem");
+        super("OMT PayloadItem");
     }
 
     @Override
-    public @Nullable Field findFeatureByName(@NotNull String name) {
-        return null;
+    protected HashMap<String, Supplier<YamlMetaType>> getFeatures() {
+        return features;
     }
 
     @Override
-    public @NotNull List<String> computeMissingFields(@NotNull Set<String> existingFields) {
-        return null;
-    }
-
-    @Override
-    public @NotNull List<Field> computeKeyCompletions(@Nullable YAMLMapping existingMapping) {
-        return null;
-    }
-
-    @Override
-    public void buildInsertionSuffixMarkup(@NotNull YamlInsertionMarkup markup,
-                                           Field.@NotNull Relation relation,
-                                           ForcedCompletionPath.@NotNull Iteration iteration) {
-
+    protected Set<String> getRequiredFields() {
+        return requiredFeatures;
     }
 }

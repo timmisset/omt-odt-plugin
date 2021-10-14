@@ -10,10 +10,10 @@ import com.misset.opp.omt.meta.model.OMTGraphSelectionType;
 import com.misset.opp.omt.meta.model.OMTPayloadType;
 import com.misset.opp.omt.meta.model.OMTPrefixesType;
 import com.misset.opp.omt.meta.model.OMTRulesType;
-import com.misset.opp.omt.meta.model.scalars.OMTCommandsType;
+import com.misset.opp.omt.meta.model.scalars.scripts.OMTCommandsType;
 import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedString;
-import com.misset.opp.omt.meta.model.scalars.OMTODTScriptType;
-import com.misset.opp.omt.meta.model.scalars.OMTQueriesType;
+import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptType;
+import com.misset.opp.omt.meta.model.scalars.scripts.OMTQueriesType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class OMTComponentType extends OMTMetaType {
         features.put("prefixes", OMTPrefixesType::new);
         features.put("queries", OMTQueriesType::new);
         features.put("commands", OMTCommandsType::new);
-        features.put("onInit", OMTODTScriptType::new);
+        features.put("onInit", OMTScriptType::new);
         features.put("actions", OMTActionsArrayType::new);
         features.put("payload", OMTPayloadType::new);
         features.put("rules", OMTRulesType::new);

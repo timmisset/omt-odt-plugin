@@ -1,5 +1,9 @@
 package com.misset.opp.omt.meta.model.scalars;
 
-public class OMTODTQueryType extends OMTODTScriptType {
+import org.jetbrains.yaml.meta.model.YamlScalarType;
 
+public class OMTODTQueryType extends YamlScalarType {
+    public OMTODTQueryType() {
+        super("OMT Query");
+    }
 }
