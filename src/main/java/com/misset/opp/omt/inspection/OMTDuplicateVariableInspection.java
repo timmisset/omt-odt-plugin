@@ -48,11 +48,7 @@ public class OMTDuplicateVariableInspection extends YamlMetaTypeInspectionBase {
             final YamlMetaType metaType = meta.getMetaType();
             if (metaType instanceof OMTVariableProvider) {
                 final OMTVariableProvider variableProvider = (OMTVariableProvider) metaType;
-                inspectMap(
-                        variableProvider.getVariableMap(
-                                mapping,
-                                problemsHolder)
-                );
+                inspectMap(variableProvider.getVariableMap(mapping));
             }
         }
 

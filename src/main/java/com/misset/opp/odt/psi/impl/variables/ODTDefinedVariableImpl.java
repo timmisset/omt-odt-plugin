@@ -1,18 +1,16 @@
-package com.misset.opp.odt.psi.wrapping.impl;
+package com.misset.opp.odt.psi.impl.variables;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.ODTScript;
-import com.misset.opp.odt.psi.wrapping.ODTVariableWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class ODTDefinedVariableImpl extends ODTBaseVariable implements ODTVariableWrapper {
+public class ODTDefinedVariableImpl extends ODTBaseVariable {
     public ODTDefinedVariableImpl(@NotNull ASTNode node) {
         super(node);
     }
@@ -22,18 +20,18 @@ public class ODTDefinedVariableImpl extends ODTBaseVariable implements ODTVariab
         return true;
     }
 
-    public boolean canBeDefinedVariable(ODTVariableWrapper variableWrapper) {
+    public boolean canBeDefinedVariable(ODTBaseVariable variableWrapper) {
         return sameNameAs(variableWrapper) && isAccessibleTo(variableWrapper);
     }
 
-    private boolean sameNameAs(ODTVariableWrapper variableWrapper) {
+    private boolean sameNameAs(ODTBaseVariable variableWrapper) {
         return Optional.ofNullable(variableWrapper)
                 .map(PsiNamedElement::getName)
                 .map(s -> s.equals(getName()))
                 .orElse(false);
     }
 
-    private boolean isAccessibleTo(ODTVariableWrapper variableWrapper) {
+    private boolean isAccessibleTo(ODTBaseVariable variableWrapper) {
         if(variableWrapper == null || !variableWrapper.isValid() || !isValid()) { return false; }
         final PsiElement commonParent = PsiTreeUtil.findCommonParent(this, variableWrapper);
         if (commonParent instanceof ODTScript) {

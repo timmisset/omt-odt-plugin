@@ -1,11 +1,10 @@
 package com.misset.opp.omt.meta.actions;
 
-import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayType;
 import com.misset.opp.omt.meta.markers.OMTVariableProvider;
-import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedString;
 import com.misset.opp.omt.meta.model.scalars.ODTQueryType;
+import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedString;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptType;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -42,8 +41,7 @@ public class OMTActionType extends OMTMetaType implements OMTVariableProvider {
     }
 
     @Override
-    public HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping mapping,
-                                                                ProblemsHolder holder) {
+    public HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping mapping) {
         HashMap<String, List<YAMLPsiElement>> variableMap = new HashMap<>();
         addSequenceToMap(mapping, "params", variableMap);
 

@@ -1,6 +1,5 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayType;
 import com.misset.opp.omt.meta.markers.OMTVariableProvider;
@@ -13,7 +12,6 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
@@ -40,8 +38,7 @@ public class OMTStandaloneQueryType extends OMTMetaType implements OMTVariablePr
     }
 
     @Override
-    public HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping mapping,
-                                                                ProblemsHolder holder) {
+    public HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping mapping) {
         HashMap<String, List<YAMLPsiElement>> variableMap = new HashMap<>();
         addSequenceToMap(mapping, "params", variableMap);
 

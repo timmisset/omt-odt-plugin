@@ -10,12 +10,21 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTScript;
-import com.misset.opp.odt.psi.wrapping.impl.ODTBaseVariable;
-import com.misset.opp.odt.psi.wrapping.impl.ODTDefinedVariableImpl;
+import com.misset.opp.odt.psi.impl.variables.ODTBaseVariable;
+import com.misset.opp.odt.psi.impl.variables.ODTDefinedVariableImpl;
+import com.misset.opp.omt.meta.markers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLPsiElement;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectMetaParents;
 
 public class ODTVariableReference extends PsiReferenceBase<ODTBaseVariable> implements PsiPolyVariantReference {
     public ODTVariableReference(@NotNull ODTBaseVariable element) {
@@ -47,6 +56,19 @@ public class ODTVariableReference extends PsiReferenceBase<ODTBaseVariable> impl
         final PsiLanguageInjectionHost injectionHost = languageManager.getInjectionHost(myElement);
         if(injectionHost == null) { return ResolveResult.EMPTY_ARRAY; }
 
+        final LinkedHashMap<YAMLMapping, OMTVariableProvider> linkedHashMap = collectMetaParents(
+                injectionHost,
+                YAMLMapping.class,
+                OMTVariableProvider.class,
+                false,
+                Objects::isNull);
+        for(YAMLMapping mapping : linkedHashMap.keySet()) {
+            OMTVariableProvider variableProvider = linkedHashMap.get(mapping);
+            final HashMap<String, List<YAMLPsiElement>> variableMap = variableProvider.getVariableMap(mapping);
+            if(variableMap.containsKey(myElement.getName())) {
+                return PsiElementResolveResult.createResults(variableMap.get(myElement.getName()).get(0));
+            }
+        }
 
         return ResolveResult.EMPTY_ARRAY;
     }

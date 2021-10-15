@@ -1,6 +1,5 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTActionsArrayType;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayType;
@@ -60,8 +59,7 @@ public class OMTActivityType extends OMTMetaType implements OMTVariableProvider 
     }
 
     @Override
-    public HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping mapping,
-                               ProblemsHolder holder) {
+    public HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping mapping) {
         HashMap<String, List<YAMLPsiElement>> variableMap = new HashMap<>();
         addSequenceToMap(mapping, "variables", variableMap);
         addSequenceToMap(mapping, "params", variableMap);

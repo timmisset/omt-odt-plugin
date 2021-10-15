@@ -21,14 +21,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * This class will inject ODT scripts into specific locations in OMT files.
- * Since YAML is a nested language, where most of the document is part of a Value in one of the root elements, only the root elements
- * are provided for injection at the MultiHostInjector
- * <p>
- * Therefore, simply limit the injector to the entire document and process injection for all children that meet the requirements
+ * The ODTMultiHostInjector will inject ODT language on any YamlMetaType that implements ODTInjectable
+ * The OMTMetaTypeProvider contains the entire OMT structure and has specific Scalar types that are recognized to be injectable
  */
 public class ODTMultiHostInjector implements MultiHostInjector {
-    private OMTMetaTypeProvider typeProvider = new OMTMetaTypeProvider();
+    // Use the meta-type provider to determine what kind of scalar we are dealing with
+    private final OMTMetaTypeProvider typeProvider = new OMTMetaTypeProvider();
+
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar,
                                      @NotNull PsiElement context) {
@@ -37,12 +36,14 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         }
         final YAMLDocument document = (YAMLDocument) context;
 
+        // gather all injectable scalars
         final Collection<PsiLanguageInjectionHost> injectionHostList =
                 PsiTreeUtil.findChildrenOfType(document,
                                 PsiLanguageInjectionHost.class)
                         .stream()
                         .filter(this::isODTInjectable)
                         .collect(Collectors.toList());
+        // start injection
         if (!injectionHostList.isEmpty()) {
             registrar.startInjecting(ODTLanguage.INSTANCE);
             injectionHostList.forEach(host ->
@@ -54,7 +55,7 @@ public class ODTMultiHostInjector implements MultiHostInjector {
 
     private TextRange getTextRangeInHost(PsiLanguageInjectionHost host) {
         if (host instanceof YAMLScalarImpl) {
-            // skip any non-value decorator or symbol
+            // skip any non-value decorator or symbol (such as a multiline decorator)
             int startOffset = ((YAMLScalarImpl) host).getContentRanges()
                     .stream()
                     .map(TextRange::getStartOffset)
@@ -67,9 +68,6 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         return TextRange.EMPTY_RANGE;
     }
 
-    /*
-        Use the meta-type provider to determine what kind of scalar we are dealing with
-     */
     private boolean isODTInjectable(PsiLanguageInjectionHost host) {
         if (!(host instanceof YAMLScalar)) {
             return false;

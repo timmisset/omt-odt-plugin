@@ -1,18 +1,17 @@
-package com.misset.opp.odt.psi.wrapping;
+package com.misset.opp.odt.psi;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.psi.wrapping.impl.ODTDefinedVariableImpl;
-import com.misset.opp.odt.psi.wrapping.impl.ODTUsageVariableImpl;
+import com.misset.opp.odt.psi.impl.variables.ODTBaseVariable;
+import com.misset.opp.odt.psi.impl.variables.ODTDefinedVariableImpl;
+import com.misset.opp.odt.psi.impl.variables.ODTUsageVariableImpl;
 import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class ODTWrappingTest extends OMTTestCase {
+class ODTFactoryInterceptorTest extends OMTTestCase {
 
     @BeforeEach
     protected void setUp() throws Exception {
@@ -33,7 +32,7 @@ class ODTWrappingTest extends OMTTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTDefinedVariableImpl);
-            Assertions.assertTrue(((ODTVariableWrapper)elementAtCaret).isDefinedVariable());
+            Assertions.assertTrue(((ODTBaseVariable)elementAtCaret).isDefinedVariable());
         });
     }
 
@@ -46,7 +45,7 @@ class ODTWrappingTest extends OMTTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTUsageVariableImpl);
-            Assertions.assertFalse(((ODTVariableWrapper)elementAtCaret).isDefinedVariable());
+            Assertions.assertFalse(((ODTBaseVariable)elementAtCaret).isDefinedVariable());
         });
     }
 }

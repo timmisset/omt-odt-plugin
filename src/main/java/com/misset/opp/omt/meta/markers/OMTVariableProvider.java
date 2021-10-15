@@ -1,6 +1,5 @@
 package com.misset.opp.omt.meta.markers;
 
-import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -17,7 +16,7 @@ import java.util.Optional;
 import static com.misset.opp.util.Collection.addToGroupedMap;
 
 public interface OMTVariableProvider {
-    HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping yamlMapping, ProblemsHolder holder);
+    HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping yamlMapping);
 
     default String getVariableName(YAMLSequenceItem sequenceItem) {
         return getVariableName(sequenceItem.getValue(), "name");
