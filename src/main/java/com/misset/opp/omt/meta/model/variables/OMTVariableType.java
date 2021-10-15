@@ -1,7 +1,8 @@
 package com.misset.opp.omt.meta.model.variables;
 
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
-import com.misset.opp.omt.meta.model.scalars.OMTODTQueryType;
+import com.misset.opp.omt.meta.model.scalars.OMTQueryType;
+import com.misset.opp.omt.meta.model.scalars.OMTVariableNameType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTOnChangeScriptType;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -17,9 +18,9 @@ public class OMTVariableType extends OMTMetaShorthandType {
     private static final Set<String> requiredFeatures = Set.of("name");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {
-        features.put("name", OMTVariableType::new);
+        features.put("name", OMTVariableNameType::new);
         features.put("readonly", () -> new YamlBooleanType("readonly"));
-        features.put("value", OMTODTQueryType::new);
+        features.put("value", OMTQueryType::new);
         features.put("onChange", OMTOnChangeScriptType::new);
     }
 

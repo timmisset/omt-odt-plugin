@@ -10,6 +10,7 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -47,9 +48,10 @@ public abstract class OMTMetaType extends YamlMetaType {
 
     @Override
     public @Nullable Field findFeatureByName(@NotNull String name) {
-        final YamlMetaType metaType = getFeatures()
-                .get(name)
-                .get();
+        final YamlMetaType metaType = Optional.ofNullable(getFeatures())
+                .map(map -> map.get(name))
+                .map(Supplier::get)
+                .orElse(null);
         if (metaType == null) {
             return null;
         }

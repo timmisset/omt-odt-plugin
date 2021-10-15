@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model.variables;
 
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
-import com.misset.opp.omt.meta.model.scalars.OMTVariableName;
+import com.misset.opp.omt.meta.model.scalars.OMTVariableNameType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptType;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -17,7 +17,7 @@ public class OMTBindingItemType extends OMTMetaShorthandType {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {
-        features.put("bindTo", OMTVariableName::new);
+        features.put("bindTo", OMTVariableNameType::new);
         features.put("input", () -> new YamlBooleanType("input"));
         features.put("output", () -> new YamlBooleanType("output"));
         features.put("onChange", OMTScriptType::new);

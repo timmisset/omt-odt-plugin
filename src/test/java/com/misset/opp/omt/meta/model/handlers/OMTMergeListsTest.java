@@ -34,8 +34,8 @@ class OMTMergeListsTest extends InspectionTestCase {
         String content = insideActivityWithPrefixes(
                 "handlers:\n" +
                         "-  !MergeLists\n" +
-                        "   predicates: /a\n" +
-                        "   subjects: /b\n" +
+                        "   predicates: /a:b\n" +
+                        "   subjects: /a:b\n" +
                         "   when: b\n" +
                         ""
         );

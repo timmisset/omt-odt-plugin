@@ -1,11 +1,13 @@
 package com.misset.opp.testCase;
 
+import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
+import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.omt.psi.OMTFile;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +75,16 @@ public abstract class BasicTestCase extends LightJavaCodeInsightFixtureTestCase 
             fail(String.format("Configured PsiFile has an error element: %n%s%n%n%s", errorMessage, ReadAction.compute(
                     psiFile::getText)));
         }
+        if(psiFile instanceof ODTFileImpl) {
+            // the fixture returns the nested ODT file instead of the containing OMT file
+            return type.cast(getContainingOMTFile((ODTFileImpl) psiFile));
+        }
         return type.cast(psiFile);
     }
+    protected PsiFile getContainingOMTFile(ODTFileImpl file) {
+        final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(file.getProject());
+        return ReadAction.compute(() -> instance.getInjectionHost(file).getContainingFile());
+    }
+
 
 }

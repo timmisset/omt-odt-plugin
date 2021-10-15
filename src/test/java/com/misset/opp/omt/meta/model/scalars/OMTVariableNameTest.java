@@ -5,7 +5,7 @@ import com.misset.opp.testCase.InspectionTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.misset.opp.omt.meta.model.scalars.OMTVariableName.SYNTAX_ERROR;
+import static com.misset.opp.omt.meta.model.scalars.OMTVariableNameType.SYNTAX_ERROR;
 
 class OMTVariableNameTest extends InspectionTestCase {
 

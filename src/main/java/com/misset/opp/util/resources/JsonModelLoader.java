@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.misset.opp.omt.util.OMTModelUtil;
 
 import java.util.Arrays;
 import java.util.List;

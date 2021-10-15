@@ -47,7 +47,7 @@ class OMTMergeValidationTypeTest extends InspectionTestCase {
                 "handlers:\n" +
                         "-  !MergeValidation\n" +
                         "   context: current\n" +
-                        "   query: /a\n" +
+                        "   query: /a:b\n" +
                         ""
         );
         configureByText(content);

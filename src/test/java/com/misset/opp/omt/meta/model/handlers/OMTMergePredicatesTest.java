@@ -25,8 +25,8 @@ class OMTMergePredicatesTest extends InspectionTestCase {
         String content = insideActivityWithPrefixes(
                 "handlers:\n" +
                         "-  !MergePredicates\n" +
-                        "   subjects: /a\n" +
-                        "   predicates: /b\n" +
+                        "   subjects: /a:b\n" +
+                        "   predicates: /a:b\n" +
                         "   from: both\n" +
                         ""
         );
@@ -39,8 +39,8 @@ class OMTMergePredicatesTest extends InspectionTestCase {
         String content = insideActivityWithPrefixes(
                 "handlers:\n" +
                         "-  !MergePredicates\n" +
-                        "   subjects: /a\n" +
-                        "   predicates: /b\n" +
+                        "   subjects: /a:b\n" +
+                        "   predicates: /a:b\n" +
                         "   from: both\n" +
                         "   use: parent\n" +
                         ""

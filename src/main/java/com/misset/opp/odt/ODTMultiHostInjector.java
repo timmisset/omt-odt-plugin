@@ -1,14 +1,15 @@
 package com.misset.opp.odt;
 
-import com.google.gson.JsonObject;
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.omt.util.OMTModelUtil;
+import com.misset.opp.omt.meta.OMTMetaTypeProvider;
+import com.misset.opp.omt.meta.markers.ODTInjectable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLDocument;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
@@ -16,9 +17,8 @@ import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.misset.opp.omt.util.OMTModelUtil.SCRIPT;
 
 /**
  * This class will inject ODT scripts into specific locations in OMT files.
@@ -28,6 +28,7 @@ import static com.misset.opp.omt.util.OMTModelUtil.SCRIPT;
  * Therefore, simply limit the injector to the entire document and process injection for all children that meet the requirements
  */
 public class ODTMultiHostInjector implements MultiHostInjector {
+    private OMTMetaTypeProvider typeProvider = new OMTMetaTypeProvider();
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar,
                                      @NotNull PsiElement context) {
@@ -66,14 +67,18 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         return TextRange.EMPTY_RANGE;
     }
 
+    /*
+        Use the meta-type provider to determine what kind of scalar we are dealing with
+     */
     private boolean isODTInjectable(PsiLanguageInjectionHost host) {
         if (!(host instanceof YAMLScalar)) {
             return false;
         }
         final YAMLScalar scalar = (YAMLScalar) host;
-        final JsonObject json = OMTModelUtil.getJson(scalar);
-        return json.has(SCRIPT) && json.get(SCRIPT)
-                .getAsBoolean();
+        return Optional.ofNullable(typeProvider.getValueMetaType(scalar))
+                .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
+                .map(ODTInjectable.class::isInstance)
+                .orElse(false);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta.model.variables;
 
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.model.scalars.OMTParamTypeType;
+import com.misset.opp.omt.meta.model.scalars.OMTVariableNameType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLValue;
 
@@ -13,7 +14,7 @@ public class OMTParamType extends OMTMetaShorthandType {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {
-        features.put("name", OMTVariableType::new);
+        features.put("name", OMTVariableNameType::new);
         features.put("type", OMTParamTypeType::new);
     }
 

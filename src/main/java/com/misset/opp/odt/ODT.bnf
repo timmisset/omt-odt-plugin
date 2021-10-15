@@ -16,9 +16,9 @@
 // the end of the file (or the entire file) can be a (set of) comment(s)
 ODTFile ::= script
 
-namespacePrefix::=                          PROPERTY COLON
-curieElement ::=                            (namespacePrefix NAMESPACE_MEMBER) | IRI
-curieConstantElement ::=                    (CURIE_CONSTANT_ELEMENT_PREFIX | FORWARD_SLASH) curieElement queryFilter*
+namespacePrefix::=                          NAME COLON
+curieElement ::=                            (namespacePrefix NAME) | IRI
+curieConstantElement ::=                    FORWARD_SLASH curieElement queryFilter*
 
 // ////////////////////////////////////////////////////
 // ODT

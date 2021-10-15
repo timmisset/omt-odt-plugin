@@ -3,7 +3,7 @@ package com.misset.opp.omt.meta.actions;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayType;
 import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedString;
-import com.misset.opp.omt.meta.model.scalars.OMTODTQueryType;
+import com.misset.opp.omt.meta.model.scalars.OMTQueryType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptType;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -21,10 +21,10 @@ public class OMTActionType extends OMTMetaType {
         features.put("promoteSubMenuItemToMainMenu", () -> new YamlBooleanType("promoteSubMenuItemToMainMenu"));
         features.put("icon", YamlStringType::new);
         features.put("params", OMTParamsArrayType::new);
-        features.put("precondition", OMTODTQueryType::new);
+        features.put("precondition", OMTQueryType::new);
         features.put("disabled", () -> new YamlBooleanType("disabled"));
         features.put("busyDisabled", () -> new YamlBooleanType("disabled"));
-        features.put("dynamicActionQuery", OMTODTQueryType::new);
+        features.put("dynamicActionQuery", OMTQueryType::new);
         features.put("onSelect", OMTScriptType::new);
     }
     public OMTActionType() {

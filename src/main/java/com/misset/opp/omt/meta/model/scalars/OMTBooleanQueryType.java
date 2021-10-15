@@ -4,7 +4,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLScalar;
 
-public class OMTODTBooleanQueryType extends OMTODTQueryType {
+public class OMTBooleanQueryType extends OMTQueryType {
 
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,

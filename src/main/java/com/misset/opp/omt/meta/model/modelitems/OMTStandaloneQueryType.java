@@ -4,8 +4,8 @@ import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionType;
 import com.misset.opp.omt.meta.model.OMTPrefixesType;
-import com.misset.opp.omt.meta.model.scalars.OMTODTQueryType;
-import com.misset.opp.omt.meta.model.scalars.OMTVariableName;
+import com.misset.opp.omt.meta.model.scalars.OMTQueryType;
+import com.misset.opp.omt.meta.model.scalars.OMTVariableNameType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;
@@ -18,11 +18,11 @@ public class OMTStandaloneQueryType extends OMTMetaType {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {
-        features.put("base", OMTVariableName::new);
+        features.put("base", OMTVariableNameType::new);
         features.put("params", OMTParamsArrayType::new);
         features.put("graphs", OMTGraphSelectionType::new);
         features.put("prefixes", OMTPrefixesType::new);
-        features.put("query", OMTODTQueryType::new);
+        features.put("query", OMTQueryType::new);
     }
 
     @Override

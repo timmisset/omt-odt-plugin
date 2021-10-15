@@ -4,9 +4,8 @@ import com.intellij.psi.PsiFile;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.YAMLFileType;
-import org.junit.jupiter.api.AfterEach;
+import org.jetbrains.yaml.psi.impl.YAMLFileImpl;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class OMTFileImplTest extends OMTTestCase {
@@ -29,7 +28,7 @@ class OMTFileImplTest extends OMTTestCase {
                 "model:\n" +
                         "   Activiteit: !Activity\n" +
                         "       onStart: |\n" +
-                        "           @LOG('Test');");
+                        "           @LOG('Test');", false, YAMLFileImpl.class);
 
         Assertions.assertEquals(YAMLFileType.YML, psiFile.getFileType());
     }

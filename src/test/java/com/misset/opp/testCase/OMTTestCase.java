@@ -1,15 +1,10 @@
 package com.misset.opp.testCase;
 
 import com.misset.opp.omt.OMTFileType;
-import com.misset.opp.omt.psi.OMTFile;
 
 public class OMTTestCase extends BasicTestCase {
     public OMTTestCase() {
         super(OMTFileType.INSTANCE);
-    }
-
-    public OMTFile getOMTFile() {
-        return (OMTFile) getFile();
     }
 
     /**
