@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model.handlers;
 
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.model.scalars.OMTQueryType;
+import com.misset.opp.omt.meta.model.scalars.ODTQueryType;
 import com.misset.opp.omt.meta.model.scalars.values.OMTHandlersContextType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
@@ -15,7 +15,7 @@ public class OMTMergeValidationType extends OMTMetaType {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {
         features.put("context", OMTHandlersContextType::new);
-        features.put("query", OMTQueryType::new);
+        features.put("query", ODTQueryType::new);
     }
 
 

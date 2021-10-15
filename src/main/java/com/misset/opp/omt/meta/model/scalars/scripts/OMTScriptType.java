@@ -5,7 +5,7 @@ import org.jetbrains.yaml.meta.model.YamlScalarType;
 
 public class OMTScriptType extends YamlScalarType implements ODTInjectable {
     public OMTScriptType() {
-        super("OMT Script");
+        super("ODT Script");
     }
     public OMTScriptType(String typeName) {
         super(typeName);

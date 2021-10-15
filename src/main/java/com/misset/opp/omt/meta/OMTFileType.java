@@ -2,8 +2,8 @@ package com.misset.opp.omt.meta;
 
 import com.misset.opp.omt.meta.model.OMTModelType;
 import com.misset.opp.omt.meta.model.OMTPrefixesType;
-import com.misset.opp.omt.meta.model.scalars.scripts.OMTCommandsType;
-import com.misset.opp.omt.meta.model.scalars.scripts.OMTQueriesType;
+import com.misset.opp.omt.meta.model.scalars.scripts.ODTCommandsType;
+import com.misset.opp.omt.meta.model.scalars.scripts.ODTQueriesType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -25,8 +25,8 @@ public class OMTFileType extends OMTMetaType {
     static {
         features.put("import", OMTImport::new);
         features.put("model", OMTModelType::new);
-        features.put("queries", OMTQueriesType::new);
-        features.put("commands", OMTCommandsType::new);
+        features.put("queries", ODTQueriesType::new);
+        features.put("commands", ODTCommandsType::new);
         features.put("prefixes", OMTPrefixesType::new);
     }
 

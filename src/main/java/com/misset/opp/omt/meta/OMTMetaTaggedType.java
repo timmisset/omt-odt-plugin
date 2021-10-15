@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public abstract class OMTMetaTaggedType extends OMTMetaType {
 
@@ -22,9 +23,13 @@ public abstract class OMTMetaTaggedType extends OMTMetaType {
 
     protected abstract HashMap<String, Supplier<YamlMetaType>> getTaggedTypes();
 
+    public List<String> getAvailableTags() {
+        return getTaggedTypes().keySet().stream().sorted().collect(Collectors.toList());
+    }
+
     @Override
     public @NotNull List<Field> computeKeyCompletions(@Nullable YAMLMapping existingMapping) {
-        if(existingMapping.getTag() == null) { return Collections.emptyList(); }
+        if(existingMapping == null || existingMapping.getTag() == null) { return Collections.emptyList(); }
         final String tag = existingMapping
                 .getTag()
                 .getText();

@@ -12,5 +12,4 @@ public class OMTMissingKeysInspection extends YamlMissingKeysInspectionBase {
     protected @Nullable YamlMetaTypeProvider getMetaTypeProvider(@NotNull ProblemsHolder holder) {
         return new OMTMetaTypeProvider();
     }
-
 }

@@ -6,13 +6,6 @@
     <description>Plugin for the OPP specific languages OMT and ODT</description>
     <depends>com.intellij.modules.java</depends>
     <depends>com.intellij.modules.lang</depends>
-    <depends>com.intellij.java</depends>
-    <depends>org.jetbrains.plugins.yaml</depends>
-
-    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
-         on how to target different products -->
-    <depends>com.intellij.modules.platform</depends>
-
     <extensions defaultExtensionNs="com.intellij">
         <!-- YAML extensions -->
         <!--    The YAML language is considered the language of the elements that are parsed by the YAML Parser, this is because the IElementType for the nodes
@@ -21,16 +14,16 @@
                 -->
         <psi.referenceContributor language="yaml"
                                   implementation="com.misset.opp.omt.psi.references.OMTVariableReferenceContributor"/>
-
+        <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
+                                order="first" language="yaml"/>
         <!-- OMT Language -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>
         <lang.parserDefinition language="OMT"
                                implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
 
-        <!-- Completions -->
-        <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
-                                order="first" language="yaml"/>
+        <!-- Annotations -->
+        <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
 
         <!-- Inspections -->
         <localInspection displayName="UnknownKeyInspection"
@@ -40,20 +33,24 @@
                          level="ERROR"
                          implementationClass="com.misset.opp.omt.inspection.OMTUnkownKeysInspection"/>
 
-        <localInspection displayName="ValueInspection"
+        <localInspection displayName="DuplicateVariableInspection"
                          groupName="OMT"
                          language="OMT"
                          enabledByDefault="true"
                          level="ERROR"
-                         implementationClass="com.misset.opp.omt.inspection.OMTValueInspection"/>
-
+                         implementationClass="com.misset.opp.omt.inspection.OMTDuplicateVariableInspection"/>
         <localInspection displayName="MissingKeyInspection"
                          groupName="OMT"
                          language="OMT"
                          enabledByDefault="true"
                          level="ERROR"
                          implementationClass="com.misset.opp.omt.inspection.OMTMissingKeysInspection"/>
-
+        <localInspection displayName="ValueInspection"
+                         groupName="OMT"
+                         language="OMT"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="com.misset.opp.omt.inspection.OMTValueInspection"/>
         <!-- ODT Language -->
         <fileType name="ODT File" implementationClass="com.misset.opp.odt.ODTFileType" fieldName="INSTANCE"
                   language="ODT" extensions="odt"/>
@@ -62,6 +59,13 @@
                                implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
 
     </extensions>
+    <depends>com.intellij.java</depends>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>org.jetbrains.plugins.yaml</depends>
+
+    <depends>com.intellij.modules.platform</depends>
 
     <actions>
         <!-- Add your actions here -->

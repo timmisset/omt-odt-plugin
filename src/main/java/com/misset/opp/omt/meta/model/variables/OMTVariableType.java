@@ -1,9 +1,9 @@
 package com.misset.opp.omt.meta.model.variables;
 
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
-import com.misset.opp.omt.meta.model.scalars.OMTQueryType;
+import com.misset.opp.omt.meta.model.scalars.ODTQueryType;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameType;
-import com.misset.opp.omt.meta.model.scalars.scripts.OMTOnChangeScriptType;
+import com.misset.opp.omt.meta.model.scalars.scripts.ODTOnChangeScriptType;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLValue;
@@ -20,8 +20,8 @@ public class OMTVariableType extends OMTMetaShorthandType {
     static {
         features.put("name", OMTVariableNameType::new);
         features.put("readonly", () -> new YamlBooleanType("readonly"));
-        features.put("value", OMTQueryType::new);
-        features.put("onChange", OMTOnChangeScriptType::new);
+        features.put("value", ODTQueryType::new);
+        features.put("onChange", ODTOnChangeScriptType::new);
     }
 
     private static final Pattern SHORTHAND = Pattern.compile("^\\s*(\\$\\w+)\\s*(?:=\\s*(.+))?$");
