@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Collection {
+public class CollectionUtil {
 
     /**
      * Method to help build a grouped map where items are appended to a list to keep track of the number

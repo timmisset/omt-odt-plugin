@@ -1,16 +1,16 @@
 package com.misset.opp.omt.inspection;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.markers.OMTVariableProvider;
+import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeInspectionBase;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLMapping;
-import org.jetbrains.yaml.psi.YAMLPsiElement;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,11 +52,11 @@ public class OMTDuplicateVariableInspection extends YamlMetaTypeInspectionBase {
             }
         }
 
-        private void inspectMap(HashMap<String, List<YAMLPsiElement>> variableMap) {
+        private void inspectMap(HashMap<String, List<PsiElement>> variableMap) {
             variableMap.values()
                     .stream()
-                    .filter(yamlPsiElements -> yamlPsiElements.size() > 1)
-                    .forEach(yamlPsiElements -> yamlPsiElements.forEach(psiElement -> problemsHolder.registerProblem(
+                    .filter(psiElements -> psiElements.size() > 1)
+                    .forEach(psiElements -> psiElements.forEach(psiElement -> problemsHolder.registerProblem(
                             psiElement,
                             "Duplication")));
         }

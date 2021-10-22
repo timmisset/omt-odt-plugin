@@ -1,10 +1,10 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
+import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTActionsArrayType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayType;
 import com.misset.opp.omt.meta.arrays.OMTWatchersArrayType;
-import com.misset.opp.omt.meta.markers.OMTVariableProvider;
 import com.misset.opp.omt.meta.model.OMTBindingType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionType;
 import com.misset.opp.omt.meta.model.OMTPayloadType;
@@ -14,16 +14,18 @@ import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedString;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTCommandsType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTQueriesType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptType;
+import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
-import org.jetbrains.yaml.psi.YAMLPsiElement;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.misset.opp.util.Collection.addToGroupedMap;
+import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 
 public class OMTComponentType extends OMTMetaType implements OMTVariableProvider {
     protected OMTComponentType() {
@@ -52,9 +54,9 @@ public class OMTComponentType extends OMTMetaType implements OMTVariableProvider
     }
 
     @Override
-    public HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping mapping) {
-        HashMap<String, List<YAMLPsiElement>> variableMap = new HashMap<>();
-        addSequenceToMap(mapping, "variables", variableMap);
+    public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
+        HashMap<String, List<PsiElement>> variableMap = new HashMap<>();
+        OMTVariableProviderUtil.addSequenceToMap(mapping, "variables", variableMap);
 
         // add the bindings to the map:
         // bindings are not provided as sequence but as a map with a value that can be a shorthand or a destructed notation
@@ -67,7 +69,7 @@ public class OMTComponentType extends OMTMetaType implements OMTVariableProvider
                     .getKeyValues()
                     .stream()
                     .map(YAMLKeyValue::getValue)
-                    .forEach(value -> addToGroupedMap(getVariableName(value, "bindTo"), value, variableMap));
+                    .forEach(value -> addToGroupedMap(OMTVariableProviderUtil.getVariableName(value, "bindTo"), value, variableMap));
         }
 
         return variableMap;

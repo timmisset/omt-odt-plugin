@@ -13,11 +13,8 @@ import com.intellij.psi.tree.TokenSet;
 import com.misset.opp.odt.psi.ODTIgnored;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
-import com.misset.opp.odt.psi.ODTFactoryInterceptor;
 import org.intellij.sdk.language.parser.ODTParser;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
 
 public class ODTParserDefinition implements ParserDefinition {
     public static final IFileElementType ODTFileElementType = new IFileElementType(ODTLanguage.INSTANCE);
@@ -52,8 +49,7 @@ public class ODTParserDefinition implements ParserDefinition {
 
     @Override
     public @NotNull PsiElement createElement(ASTNode node) {
-        return Optional.ofNullable(ODTFactoryInterceptor.createElement(node))
-                .orElse(ODTTypes.Factory.createElement(node));
+        return ODTTypes.Factory.createElement(node);
     }
 
     @Override

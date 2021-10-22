@@ -12,10 +12,9 @@
                 has YAML as language and cannot be modified to be OMT for .omt files
                 Therefore, certain extensions need to be hooked into the yaml language, not the OMT extension of yaml
                 -->
-        <psi.referenceContributor language="yaml"
-                                  implementation="com.misset.opp.omt.psi.references.OMTVariableReferenceContributor"/>
         <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
                                 order="first" language="yaml"/>
+
         <!-- OMT Language -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>
@@ -57,6 +56,7 @@
         <multiHostInjector implementation="com.misset.opp.odt.ODTMultiHostInjector"/>
         <lang.parserDefinition language="ODT"
                                implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
+        <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
 
     </extensions>
     <depends>com.intellij.java</depends>

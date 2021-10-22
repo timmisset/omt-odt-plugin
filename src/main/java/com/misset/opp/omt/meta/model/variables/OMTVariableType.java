@@ -1,5 +1,7 @@
 package com.misset.opp.omt.meta.model.variables;
 
+import com.intellij.openapi.util.TextRange;
+import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.model.scalars.ODTQueryType;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameType;
@@ -13,10 +15,11 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-public class OMTVariableType extends OMTMetaShorthandType {
+public class OMTVariableType extends OMTMetaShorthandType implements ODTInjectable {
 
     private static final Set<String> requiredFeatures = Set.of("name");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+
     static {
         features.put("name", OMTVariableNameType::new);
         features.put("readonly", () -> new YamlBooleanType("readonly"));
@@ -49,5 +52,11 @@ public class OMTVariableType extends OMTMetaShorthandType {
     @Override
     protected String getShorthandSyntaxError(YAMLValue value) {
         return SYNTAX_ERROR;
+    }
+
+    public TextRange getNamedTextRange(YAMLValue value) {
+        int startIndex = 0;
+        int endIndex = value.getText().contains(" ") ? value.getText().indexOf(" ") : value.getTextLength();
+        return TextRange.create(startIndex, endIndex);
     }
 }

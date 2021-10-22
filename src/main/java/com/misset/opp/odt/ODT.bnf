@@ -13,16 +13,12 @@
   tokenTypeClass="com.misset.opp.odt.psi.ODTTokenType"
 }
 
-// the end of the file (or the entire file) can be a (set of) comment(s)
 ODTFile ::= script
 
 namespacePrefix::=                          NAME COLON
 curieElement ::=                            (namespacePrefix NAME) | IRI
 curieConstantElement ::=                    FORWARD_SLASH curieElement queryFilter*
 
-// ////////////////////////////////////////////////////
-// ODT
-// ////////////////////////////////////////////////////
 constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE
 // a variable is declared using VAR and one or more variable names. Optionally an assignment is added
 // the assignment is deconstructed to the entire set of variables that is declared. i.e. VAR $a, $b = [1, 2]. $a == 1, $b == 2
@@ -32,7 +28,10 @@ declareVariable ::=                         DECLARE_VAR (variableAssignment | va
 variableAssignment::=                       variable (COMMA variable)* EQUALS variableValue
 // a variable can be assigned with anything
 variableValue ::=                           query | commandCall
-variable ::=                                VARIABLE_NAME
+variable ::=                                VARIABLE_NAME {
+    extends="com.misset.opp.odt.psi.impl.variables.ODTBaseVariable"
+    implements="com.misset.opp.odt.psi.impl.variables.ODTVariableWrapper"
+    }
 
 // SCRIPT
 // an ODT (script) block is always started by a Yaml scalar node
@@ -52,16 +51,16 @@ commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
 // there is also a collection of BuiltIn operators and commands which are included
 // and finally, all runnable OMT modelitems are available as Commands (Activity, Procedure) or Operator (StandAloneQuery)
 // only the Defined members are part of set of the grammar parser
-defineName ::=                              NAME
-defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*
-defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock
+defineName ::=                              NAME { extends="com.misset.opp.odt.psi.impl.callables.ODTDefineNameNamed" }
+defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callables.ODTDefineStatement"}
+defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock { extends="com.misset.opp.odt.psi.impl.callables.ODTDefineStatement"}
 definePrefix ::=                            PREFIX_DEFINE_START COLON prefix
 defineParam ::=                             PARENTHESES_OPEN (variable (COMMA variable)*)? PARENTHESES_CLOSE
 callName ::=                                NAME | BOOLEAN_OPERATOR
 // MEMBER CALLS
 // A call to either an Operator or a Command. In case of the latter, it's always prefixed with @
-operatorCall ::=                            callName flagSignature? signature?
-commandCall ::=                             AT callName flagSignature? signature?
+operatorCall ::=                            callName flagSignature? signature? { extends="com.misset.opp.odt.psi.impl.calls.ODTOperatorCallImpl" }
+commandCall ::=                             AT callName flagSignature? signature? { extends="com.misset.opp.odt.psi.impl.calls.ODTCommandCallImpl" }
 signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
 signatureArgument ::=                       resolvableValue | commandBlock
 flagSignature ::=                           TAG

@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model;
 
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.markers.ODTInjectable;
+import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.model.scalars.ODTQueryType;
 import com.misset.opp.omt.meta.model.scalars.references.OMTPayloadQueryReferenceType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTOnChangeScriptType;

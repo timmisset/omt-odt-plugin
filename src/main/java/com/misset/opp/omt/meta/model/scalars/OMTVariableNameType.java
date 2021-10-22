@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.scalars;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.omt.meta.ODTInjectable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlScalarType;
 import org.jetbrains.yaml.psi.YAMLScalar;
@@ -8,7 +9,7 @@ import org.jetbrains.yaml.psi.YAMLScalar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OMTVariableNameType extends YamlScalarType {
+public class OMTVariableNameType extends YamlScalarType implements ODTInjectable {
     private static final Pattern SHORTHAND = Pattern.compile("^(\\$\\w+)");
     protected static final String SYNTAX_ERROR = "Invalid syntax for variable name, use: '$name'";
     public OMTVariableNameType() {

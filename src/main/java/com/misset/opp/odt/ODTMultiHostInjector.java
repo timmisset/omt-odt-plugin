@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.markers.ODTInjectable;
+import com.misset.opp.omt.meta.ODTInjectable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLDocument;
@@ -45,11 +45,13 @@ public class ODTMultiHostInjector implements MultiHostInjector {
                         .collect(Collectors.toList());
         // start injection
         if (!injectionHostList.isEmpty()) {
-            registrar.startInjecting(ODTLanguage.INSTANCE);
-            injectionHostList.forEach(host ->
-                    registrar.addPlace(null, null, host, getTextRangeInHost(host))
+
+            injectionHostList.forEach(host -> {
+                        registrar.startInjecting(ODTLanguage.INSTANCE);
+                        registrar.addPlace(null, null, host, getTextRangeInHost(host));
+                        registrar.doneInjecting();
+                    }
             );
-            registrar.doneInjecting();
         }
     }
 

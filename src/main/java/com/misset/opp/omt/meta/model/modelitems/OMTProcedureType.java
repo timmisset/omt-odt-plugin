@@ -1,21 +1,24 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
+import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayType;
-import com.misset.opp.omt.meta.markers.OMTVariableProvider;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionType;
 import com.misset.opp.omt.meta.model.OMTPrefixesType;
 import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerType;
 import com.misset.opp.omt.meta.model.scalars.OMTReasonType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptType;
+import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLMapping;
-import org.jetbrains.yaml.psi.YAMLPsiElement;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
+
+import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
 public class OMTProcedureType extends OMTMetaType implements OMTVariableProvider {
     protected OMTProcedureType() {
@@ -39,8 +42,8 @@ public class OMTProcedureType extends OMTMetaType implements OMTVariableProvider
     }
 
     @Override
-    public HashMap<String, List<YAMLPsiElement>> getVariableMap(YAMLMapping mapping) {
-        HashMap<String, List<YAMLPsiElement>> variableMap = new HashMap<>();
+    public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
+        HashMap<String, List<PsiElement>> variableMap = new HashMap<>();
         addSequenceToMap(mapping, "variables", variableMap);
         addSequenceToMap(mapping, "params", variableMap);
 
