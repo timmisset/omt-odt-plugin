@@ -34,7 +34,7 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
         String title = Optional.ofNullable(document.getName())
                 .orElse(document.getContainingFile()
                         .getName());
-        return new Field(title, new OMTFileType(title));
+        return new Field(title, new OMTFileMetaType(title));
     };
 
     @Override

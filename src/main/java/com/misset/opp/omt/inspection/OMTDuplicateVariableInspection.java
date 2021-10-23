@@ -56,9 +56,13 @@ public class OMTDuplicateVariableInspection extends YamlMetaTypeInspectionBase {
             variableMap.values()
                     .stream()
                     .filter(psiElements -> psiElements.size() > 1)
-                    .forEach(psiElements -> psiElements.forEach(psiElement -> problemsHolder.registerProblem(
-                            psiElement,
-                            "Duplication")));
+                    .forEach(psiElements -> psiElements.forEach(this::registerProblem));
+        }
+        private void registerProblem(PsiElement psiElement) {
+            if(psiElement == null) { return; }
+            problemsHolder.registerProblem(
+                    psiElement,
+                    "Duplication");
         }
     }
 }

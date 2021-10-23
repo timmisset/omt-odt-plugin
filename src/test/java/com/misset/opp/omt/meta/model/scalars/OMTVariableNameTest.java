@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.omt.meta.model.scalars.OMTVariableNameType.SYNTAX_ERROR;
+import static com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType.SYNTAX_ERROR;
 
 class OMTVariableNameTest extends InspectionTestCase {
 

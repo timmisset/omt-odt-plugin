@@ -7,7 +7,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.model.modelitems.OMTModelItemType;
+import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +50,7 @@ public class OMTUnusedInspection extends YamlMetaTypeInspectionBase {
             }
             YamlMetaTypeProvider.MetaTypeProxy meta = myMetaTypeProvider.getKeyValueMetaType(keyValue);
             if (meta != null) {
-                if (meta.getMetaType() instanceof OMTModelItemType) {
+                if (meta.getMetaType() instanceof OMTModelItemMetaType) {
                     visitModelItem(meta, keyValue);
                 }
             }
@@ -58,10 +58,10 @@ public class OMTUnusedInspection extends YamlMetaTypeInspectionBase {
 
         private void visitModelItem(YamlMetaTypeProvider.MetaTypeProxy meta,
                                     @NotNull YAMLKeyValue keyValue) {
-            if (!(meta.getMetaType() instanceof OMTModelItemType)) {
+            if (!(meta.getMetaType() instanceof OMTModelItemMetaType)) {
                 return;
             }
-            final boolean callable = ((OMTModelItemType) meta.getMetaType()).isCallable((YAMLMapping) keyValue.getValue());
+            final boolean callable = ((OMTModelItemMetaType) meta.getMetaType()).isCallable((YAMLMapping) keyValue.getValue());
 
             if (callable && ReferencesSearch.search(keyValue).allowParallelProcessing().findAll().isEmpty()) {
                 myProblemsHolder.registerProblem(

@@ -6,7 +6,7 @@ import org.jetbrains.yaml.meta.model.YamlScalarType;
 import org.jetbrains.yaml.psi.YAMLScalar;
 
 /**
- * The Meta-type for a OMTParamType
+ * The Meta-type for a OMTParamMetaType
  */
 public class OMTParamTypeType extends YamlScalarType {
 

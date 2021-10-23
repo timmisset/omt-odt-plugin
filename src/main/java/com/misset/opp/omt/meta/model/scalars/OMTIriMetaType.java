@@ -2,18 +2,20 @@ package com.misset.opp.omt.meta.model.scalars;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.yaml.meta.model.YamlScalarType;
 import org.jetbrains.yaml.psi.YAMLScalar;
 
-public class ODTBooleanQueryType extends ODTQueryMetaType {
+public class OMTIriMetaType extends YamlScalarType {
+
+    public OMTIriMetaType() {
+        super("OMT Iri");
+    }
 
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,
                                        @NotNull ProblemsHolder holder) {
-        // TODO: validate that the value resolves to a boolean
+        // TODO: validate value for syntax validity
+        super.validateScalarValue(scalarValue, holder);
     }
 
-    @Override
-    public @NotNull String getDisplayName() {
-        return super.getDisplayName() + " (boolean)";
-    }
 }

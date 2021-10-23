@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.references;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTCommandCall;
-import com.misset.opp.odt.psi.ODTDefineCommandStatement;
+import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.junit.jupiter.api.Assertions;
@@ -25,7 +25,7 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
         ReadAction.run(() -> {
             final ODTCommandCall elementByText = myFixture.findElementByText("@commandA", ODTCommandCall.class);
             // is resolved to the defined variable
-            Assertions.assertTrue(elementByText.getReference().resolve() instanceof ODTDefineCommandStatement);
+            Assertions.assertTrue(elementByText.getReference().resolve() instanceof ODTDefineName);
         });
     }
 

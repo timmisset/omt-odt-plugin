@@ -4,8 +4,8 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.model.scalars.OMTVariableNameType;
-import com.misset.opp.omt.meta.model.variables.OMTVariableType;
+import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
+import com.misset.opp.omt.meta.model.variables.OMTVariableMetaType;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
@@ -28,8 +28,8 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
                     injectionHost);
             if(metaTypeProxy == null) { return false; }
             final YamlMetaType metaType = metaTypeProxy.getMetaType();
-            return metaType instanceof OMTVariableNameType ||
-                    metaType instanceof OMTVariableType;
+            return metaType instanceof OMTVariableNameMetaType ||
+                    metaType instanceof OMTVariableMetaType;
         }
         return false;
     }

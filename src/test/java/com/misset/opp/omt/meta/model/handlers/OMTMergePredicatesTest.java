@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
-import static com.misset.opp.omt.meta.model.handlers.OMTMergePredicatesType.USE_IS_ONLY_AVAILABLE;
-import static com.misset.opp.omt.meta.model.handlers.OMTMergePredicatesType.USE_IS_REQUIRED;
+import static com.misset.opp.omt.meta.model.handlers.OMTMergePredicatesMetaType.USE_IS_ONLY_AVAILABLE;
+import static com.misset.opp.omt.meta.model.handlers.OMTMergePredicatesMetaType.USE_IS_REQUIRED;
 
 class OMTMergePredicatesTest extends InspectionTestCase {
 

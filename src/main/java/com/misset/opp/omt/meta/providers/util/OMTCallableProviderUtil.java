@@ -3,10 +3,10 @@ package com.misset.opp.omt.meta.providers.util;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.impl.callables.ODTDefineStatement;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.model.modelitems.OMTActivityType;
-import com.misset.opp.omt.meta.model.modelitems.OMTProcedureType;
-import com.misset.opp.omt.meta.model.modelitems.OMTStandaloneQueryType;
-import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyType;
+import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
+import com.misset.opp.omt.meta.model.modelitems.OMTProcedureMetaType;
+import com.misset.opp.omt.meta.model.modelitems.OMTStandaloneQueryMetaType;
+import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyMetaType;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -43,9 +43,9 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
                             .getValueMetaType(value);
                     if(valueMetaType != null) {
                         final YamlMetaType metaType = valueMetaType.getMetaType();
-                        if(metaType instanceof OMTActivityType || metaType instanceof OMTProcedureType) {
+                        if(metaType instanceof OMTActivityMetaType || metaType instanceof OMTProcedureMetaType) {
                             addToGroupedMap("@" + keyValue.getKeyText(), keyValue, map);
-                        } else if(metaType instanceof OMTStandaloneQueryType || metaType instanceof OMTOntologyType) {
+                        } else if(metaType instanceof OMTStandaloneQueryMetaType || metaType instanceof OMTOntologyMetaType) {
                             addToGroupedMap(keyValue.getKeyText(), keyValue, map);
                         }
                     }
