@@ -33,6 +33,11 @@ public class ODTCallReference extends PsiReferenceBase<ODTBaseCall> implements P
     }
 
     @Override
+    public boolean isReferenceTo(@NotNull PsiElement element) {
+        return super.isReferenceTo(element);
+    }
+
+    @Override
     public @Nullable PsiElement resolve() {
         // An ODT call is made to either an OMT Callable element such as an Activity, Procedure within the host OMT file
         // or directly to a built-in command-call or operator

@@ -9,15 +9,21 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Predicate;
+
 public class ODTFindUsagesProvider implements FindUsagesProvider {
+    public static final Predicate<PsiElement> CHECK_CAN_FIND_USAGES = element -> element instanceof ODTDefineName ||
+            isDeclaredVariable(element);
+
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
-        return psiElement instanceof ODTDefineName ||
-                isDeclaredVariable(psiElement);
+        return CHECK_CAN_FIND_USAGES.test(psiElement);
     }
 
-    private boolean isDeclaredVariable(PsiElement psiElement) {
-        if(!(psiElement instanceof ODTVariable)) { return false; }
+    private static boolean isDeclaredVariable(PsiElement psiElement) {
+        if (!(psiElement instanceof ODTVariable)) {
+            return false;
+        }
         final ODTVariable variable = (ODTVariable) psiElement;
         return variable.isDeclaredVariable();
     }

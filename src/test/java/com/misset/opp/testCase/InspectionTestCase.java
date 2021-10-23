@@ -1,13 +1,25 @@
 package com.misset.opp.testCase;
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.application.ReadAction;
+import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InspectionTestCase extends OMTTestCase {
+public abstract class InspectionTestCase extends OMTTestCase {
+
+    protected abstract Collection<Class<? extends LocalInspectionTool>> getEnabledInspections();
+
+    @Override
+    @BeforeEach
+    protected void setUp() {
+        super.setUp();
+        myFixture.enableInspections(getEnabledInspections());
+    }
 
     protected void assertNoErrors() {
         assertNoHighlighting(HighlightSeverity.ERROR);

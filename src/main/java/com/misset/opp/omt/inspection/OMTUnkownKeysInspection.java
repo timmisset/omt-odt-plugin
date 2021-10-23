@@ -10,7 +10,7 @@ import org.jetbrains.yaml.meta.impl.YamlUnknownKeysInspectionBase;
 public class OMTUnkownKeysInspection extends YamlUnknownKeysInspectionBase {
     @Override
     protected @Nullable YamlMetaTypeProvider getMetaTypeProvider(@NotNull ProblemsHolder holder) {
-        return new OMTMetaTypeProvider();
+        return OMTMetaTypeProvider.getInstance(holder.getProject());
     }
 
 

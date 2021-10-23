@@ -23,7 +23,7 @@ public class OMTMetaTreeUtil {
                                                                                        Class<U> metaTypeOrInterface,
                                                                                        boolean includeMyself,
                                                                                        Predicate<PsiElement> stopCondition) {
-        final OMTMetaTypeProvider omtMetaTypeProvider = new OMTMetaTypeProvider();
+        final OMTMetaTypeProvider omtMetaTypeProvider = OMTMetaTypeProvider.getInstance(element.getProject());
 
         LinkedHashMap<T, U> linkedHashMap = new LinkedHashMap<>();
         PsiTreeUtil.collectParents(element, yamlType, includeMyself, stopCondition)

@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addDefinedStatementsToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
-public class OMTActivityType extends OMTMetaType implements OMTVariableProvider, OMTCallableProvider {
+public class OMTActivityType extends OMTModelItemDelegate implements OMTVariableProvider, OMTCallableProvider {
     protected OMTActivityType() {
         super("OMT Activity");
     }
@@ -80,5 +80,10 @@ public class OMTActivityType extends OMTMetaType implements OMTVariableProvider,
         addDefinedStatementsToMap(yamlMapping, "queries", callableMap);
 
         return callableMap;
+    }
+
+    @Override
+    public boolean isCallable() {
+        return true;
     }
 }

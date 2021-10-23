@@ -1,16 +1,18 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
+import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.OMTMissingKeysInspection;
 import com.misset.opp.testCase.InspectionTestCase;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
+import java.util.Collections;
 
 class OMTOntologyTypeRequiredKeyTest extends InspectionTestCase {
 
-    @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
-        myFixture.enableInspections(OMTMissingKeysInspection.class);
+    @Override
+    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
+        return Collections.singleton(OMTMissingKeysInspection.class);
     }
 
     @Test

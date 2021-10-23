@@ -1,7 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionType;
 import com.misset.opp.omt.meta.model.OMTPrefixesType;
@@ -20,7 +19,7 @@ import java.util.function.Supplier;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 
-public class OMTStandaloneQueryType extends OMTMetaType implements OMTVariableProvider {
+public class OMTStandaloneQueryType extends OMTModelItemDelegate implements OMTVariableProvider {
     protected OMTStandaloneQueryType() {
         super("OMT Component");
     }
@@ -51,5 +50,10 @@ public class OMTStandaloneQueryType extends OMTMetaType implements OMTVariablePr
         }
 
         return variableMap;
+    }
+
+    @Override
+    public boolean isCallable() {
+        return true;
     }
 }

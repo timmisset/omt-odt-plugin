@@ -1,18 +1,20 @@
 package com.misset.opp.omt.meta.model.scalars;
 
+import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.OMTValueInspection;
 import com.misset.opp.testCase.InspectionTestCase;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import static com.misset.opp.omt.meta.model.scalars.OMTVariableNameType.SYNTAX_ERROR;
 
 class OMTVariableNameTest extends InspectionTestCase {
 
-    @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
-        myFixture.enableInspections(OMTValueInspection.class);
+    @Override
+    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
+        return Collections.singleton(OMTValueInspection.class);
     }
 
     @Test

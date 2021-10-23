@@ -1,5 +1,7 @@
 package com.misset.opp.omt.meta;
 
+import com.intellij.openapi.components.Service;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -14,7 +16,18 @@ import org.jetbrains.yaml.psi.YAMLValue;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class OMTMetaTypeProvider extends YamlMetaTypeProvider {
+@Service
+public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
+    /**
+     * Required constructor for @Service implementation
+     */
+    public OMTMetaTypeProvider(Project _project) {
+        super(getRoot::apply, ModificationTracker.NEVER_CHANGED);
+    }
+
+    public static OMTMetaTypeProvider getInstance(@NotNull Project project) {
+        return project.getService(OMTMetaTypeProvider.class);
+    }
 
     // the (functional) interface ModelAccess uses getRoot to retrieve the root field
     private static Function<YAMLDocument, Field> getRoot = (@NotNull YAMLDocument document) -> {
@@ -23,10 +36,6 @@ public class OMTMetaTypeProvider extends YamlMetaTypeProvider {
                         .getName());
         return new Field(title, new OMTFileType(title));
     };
-
-    public OMTMetaTypeProvider() {
-        super(getRoot::apply, ModificationTracker.NEVER_CHANGED);
-    }
 
     @Override
     public @Nullable MetaTypeProxy getMetaTypeProxy(@NotNull PsiElement psi) {

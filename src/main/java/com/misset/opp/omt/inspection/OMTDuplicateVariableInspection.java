@@ -19,7 +19,7 @@ public class OMTDuplicateVariableInspection extends YamlMetaTypeInspectionBase {
 
     @Override
     protected @Nullable YamlMetaTypeProvider getMetaTypeProvider(@NotNull ProblemsHolder holder) {
-        return new OMTMetaTypeProvider();
+        return OMTMetaTypeProvider.getInstance(holder.getProject());
     }
 
     @Override

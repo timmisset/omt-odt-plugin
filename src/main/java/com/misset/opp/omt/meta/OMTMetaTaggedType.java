@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public abstract class OMTMetaTaggedType extends OMTMetaType {
+public abstract class OMTMetaTaggedType<T extends YamlMetaType> extends OMTMetaType {
 
     private String name;
     protected OMTMetaTaggedType(@NotNull String name) {
@@ -21,7 +21,7 @@ public abstract class OMTMetaTaggedType extends OMTMetaType {
         this.name = name;
     }
 
-    protected abstract HashMap<String, Supplier<YamlMetaType>> getTaggedTypes();
+    protected abstract HashMap<String, Supplier<T>> getTaggedTypes();
 
     public List<String> getAvailableTags() {
         return getTaggedTypes().keySet().stream().sorted().collect(Collectors.toList());
@@ -43,7 +43,7 @@ public abstract class OMTMetaTaggedType extends OMTMetaType {
         return getTaggedTypes().containsKey(tag);
     }
 
-    public YamlMetaType getDelegateByTag(String tag) {
+    public T getDelegateByTag(String tag) {
         return getTaggedTypes().getOrDefault(tag, () -> null).get();
     }
 

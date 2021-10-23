@@ -1,21 +1,21 @@
 package com.misset.opp.omt.meta.model.variables;
 
+import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.OMTUnkownKeysInspection;
 import com.misset.opp.omt.inspection.OMTValueInspection;
 import com.misset.opp.testCase.InspectionTestCase;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
+import java.util.List;
 
 import static com.misset.opp.omt.meta.model.variables.OMTParamType.SYNTAX_ERROR;
 
 class OMTParamTypeTest extends InspectionTestCase {
 
-
-    @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
-        myFixture.enableInspections(OMTValueInspection.class);
-        myFixture.enableInspections(OMTUnkownKeysInspection.class);
+    @Override
+    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
+        return List.of(OMTUnkownKeysInspection.class, OMTValueInspection.class);
     }
 
     @Test

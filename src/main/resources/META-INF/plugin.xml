@@ -31,6 +31,12 @@
                          enabledByDefault="true"
                          level="ERROR"
                          implementationClass="com.misset.opp.omt.inspection.OMTUnkownKeysInspection"/>
+        <localInspection displayName="OMTUnusedInspection"
+                         groupName="OMT"
+                         language="OMT"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.misset.opp.omt.inspection.OMTUnusedInspection"/>
 
         <localInspection displayName="DuplicateVariableInspection"
                          groupName="OMT"
@@ -58,6 +64,14 @@
                                implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
         <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
 
+        <!-- Inspections-->
+        <localInspection displayName="UnusedODTInspection"
+                         groupName="ODT"
+                         language="ODT"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.misset.opp.odt.inspection.ODTUnusedInspection"/>
+        />
     </extensions>
     <depends>com.intellij.java</depends>
 

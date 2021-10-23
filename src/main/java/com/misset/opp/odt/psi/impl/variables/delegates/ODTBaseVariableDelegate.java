@@ -24,7 +24,7 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
         final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(element.getProject());
         final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(element.getContainingFile());
         if(injectionHost != null) {
-            final YamlMetaTypeProvider.MetaTypeProxy metaTypeProxy = new OMTMetaTypeProvider().getMetaTypeProxy(
+            final YamlMetaTypeProvider.MetaTypeProxy metaTypeProxy = OMTMetaTypeProvider.getInstance(element.getProject()).getMetaTypeProxy(
                     injectionHost);
             if(metaTypeProxy == null) { return false; }
             final YamlMetaType metaType = metaTypeProxy.getMetaType();

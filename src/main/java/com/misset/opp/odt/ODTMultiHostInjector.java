@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
  * The OMTMetaTypeProvider contains the entire OMT structure and has specific Scalar types that are recognized to be injectable
  */
 public class ODTMultiHostInjector implements MultiHostInjector {
-    // Use the meta-type provider to determine what kind of scalar we are dealing with
-    private final OMTMetaTypeProvider typeProvider = new OMTMetaTypeProvider();
 
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar,
@@ -75,7 +73,7 @@ public class ODTMultiHostInjector implements MultiHostInjector {
             return false;
         }
         final YAMLScalar scalar = (YAMLScalar) host;
-        return Optional.ofNullable(typeProvider.getValueMetaType(scalar))
+        return Optional.ofNullable(OMTMetaTypeProvider.getInstance(host.getProject()).getValueMetaType(scalar))
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
                 .map(ODTInjectable.class::isInstance)
                 .orElse(false);

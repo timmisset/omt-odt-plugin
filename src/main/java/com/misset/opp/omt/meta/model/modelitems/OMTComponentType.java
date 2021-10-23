@@ -1,7 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTActionsArrayType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayType;
 import com.misset.opp.omt.meta.arrays.OMTWatchersArrayType;
@@ -27,7 +26,7 @@ import java.util.function.Supplier;
 
 import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 
-public class OMTComponentType extends OMTMetaType implements OMTVariableProvider {
+public class OMTComponentType extends OMTModelItemDelegate implements OMTVariableProvider {
     protected OMTComponentType() {
         super("OMT Component");
     }
@@ -73,5 +72,10 @@ public class OMTComponentType extends OMTMetaType implements OMTVariableProvider
         }
 
         return variableMap;
+    }
+
+    @Override
+    public boolean isCallable() {
+        return false;
     }
 }

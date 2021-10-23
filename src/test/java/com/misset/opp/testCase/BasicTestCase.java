@@ -17,13 +17,21 @@ import java.util.stream.Collectors;
 public abstract class BasicTestCase extends LightJavaCodeInsightFixtureTestCase {
 
     @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
+    protected void setUp() {
+        try{
+            super.setUp();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterEach
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    protected void tearDown() {
+        try{
+            super.tearDown();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

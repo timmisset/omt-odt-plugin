@@ -11,6 +11,6 @@ public class OMTKeyCompletion extends YamlMetaTypeCompletionProviderBase {
 
     @Override
     protected @Nullable YamlMetaTypeProvider getMetaTypeProvider(@NotNull CompletionParameters params) {
-        return new OMTMetaTypeProvider();
+        return OMTMetaTypeProvider.getInstance(params.getPosition().getProject());
     }
 }

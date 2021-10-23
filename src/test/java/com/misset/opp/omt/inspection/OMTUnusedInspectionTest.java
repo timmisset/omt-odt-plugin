@@ -7,31 +7,32 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-class OMTUnkownKeysInspectionTest extends InspectionTestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+class OMTUnusedInspectionTest extends InspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTUnkownKeysInspection.class);
+        return Collections.singleton(OMTUnusedInspection.class);
     }
 
     @Test
-    void inspectUnknownRootKey() {
+    void testUnusedModelItem() {
         String content = "model:\n" +
-                "   Activiteit: !Activity\n" +
-                "       titlee: titel\n" +
+                "   MyActivity: !Activity\n" +
+                "       title:\n" +
                 "";
         configureByText(content);
-        assertHasError("Key 'titlee' is not expected here");
+        assertHasWarning("MyActivity is never used");
     }
 
     @Test
-    void inspectKnownRootKey() {
+    void testUnusedModelItemNoWarningForComponent() {
         String content = "model:\n" +
-                "   Activiteit: !Activity\n" +
-                "       title: titel\n" +
+                "   MyComponent: !Component\n" +
+                "       title:\n" +
                 "";
         configureByText(content);
-        assertNoErrors();
+        assertNoWarning("MyComponent is never used");
     }
-
 }

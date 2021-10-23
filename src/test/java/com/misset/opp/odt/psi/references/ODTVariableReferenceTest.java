@@ -4,6 +4,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,26 @@ class ODTVariableReferenceTest extends OMTTestCase {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             // is resolved to the OMT variable
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+        });
+    }
+
+    @Test
+    void testODTReferenceToShadowed() {
+        String content = insideActivityWithPrefixes(
+                "variables:\n" +
+                        "- $test\n" + // <-- wrapped in an ODTQueryStep
+                        "onStart: |\n" +
+                        "   VAR $test = 'hello';\n" + //<-- wrapped in ODTVariableAssignment, use for assertion
+                        "   @LOG($<caret>test);\n"
+        );
+        configureByText(content);
+        ReadAction.run(() -> {
+            // the getElementAtCaret method returns the result of resolving the reference of the element at the caret
+            // in this case, it should return OMT variable: $test declared in the variables block
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            // is resolved to the OMT variable
+            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            Assertions.assertTrue(elementAtCaret.getParent() instanceof ODTVariableAssignment);
         });
     }
 }

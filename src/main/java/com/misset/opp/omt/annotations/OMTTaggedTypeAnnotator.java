@@ -24,7 +24,7 @@ public class OMTTaggedTypeAnnotator implements Annotator {
     public void annotate(@NotNull PsiElement element,
                          @NotNull AnnotationHolder holder) {
         if (element instanceof YAMLKeyValue) {
-            final YamlMetaTypeProvider.MetaTypeProxy keyValueMetaType = new OMTMetaTypeProvider().getKeyValueMetaType((YAMLKeyValue) element);
+            final YamlMetaTypeProvider.MetaTypeProxy keyValueMetaType = OMTMetaTypeProvider.getInstance(element.getProject()).getKeyValueMetaType((YAMLKeyValue) element);
             if (keyValueMetaType != null &&
                     keyValueMetaType.getMetaType() instanceof OMTMetaTaggedType) {
                 final OMTMetaTaggedType taggedType = (OMTMetaTaggedType) keyValueMetaType.getMetaType();

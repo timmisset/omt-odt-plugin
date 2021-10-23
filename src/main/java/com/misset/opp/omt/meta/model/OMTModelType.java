@@ -11,6 +11,8 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addModelItemsToMap;
+
 public class OMTModelType extends OMTMetaMapType implements OMTCallableProvider {
 
     public OMTModelType() {
@@ -24,6 +26,8 @@ public class OMTModelType extends OMTMetaMapType implements OMTCallableProvider 
 
     @Override
     public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping) {
-        return new HashMap<>();
+        final HashMap<String, List<PsiElement>> map = new HashMap<>();
+        addModelItemsToMap(yamlMapping, map);
+        return map;
     }
 }

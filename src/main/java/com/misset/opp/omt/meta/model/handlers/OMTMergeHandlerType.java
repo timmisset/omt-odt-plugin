@@ -6,7 +6,7 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-public class OMTMergeHandlerType extends OMTMetaTaggedType {
+public class OMTMergeHandlerType extends OMTMetaTaggedType<YamlMetaType> {
     private static final HashMap<String, Supplier<YamlMetaType>> taggedTypes = new HashMap<>();
     static {
         taggedTypes.put("!MergePredicates", OMTMergePredicatesType::new);

@@ -1,15 +1,17 @@
 package com.misset.opp.omt.inspection;
 
+import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.InspectionTestCase;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
+import java.util.Collections;
 
 class OMTDuplicateVariableInspectionTest extends InspectionTestCase {
 
-    @BeforeEach
-    protected void setUp() throws Exception {
-        super.setUp();
-        myFixture.enableInspections(OMTDuplicateVariableInspection.class);
+    @Override
+    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
+        return Collections.singleton(OMTDuplicateVariableInspection.class);
     }
 
     @Test

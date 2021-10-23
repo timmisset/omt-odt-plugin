@@ -10,6 +10,6 @@ import org.jetbrains.yaml.meta.impl.YamlMissingKeysInspectionBase;
 public class OMTMissingKeysInspection extends YamlMissingKeysInspectionBase {
     @Override
     protected @Nullable YamlMetaTypeProvider getMetaTypeProvider(@NotNull ProblemsHolder holder) {
-        return new OMTMetaTypeProvider();
+        return OMTMetaTypeProvider.getInstance(holder.getProject());
     }
 }
