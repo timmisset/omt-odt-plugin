@@ -1,5 +1,6 @@
 package com.misset.opp.testCase;
 
+import com.intellij.openapi.progress.ProgressManager;
 import com.misset.opp.omt.OMTFileType;
 
 public class OMTTestCase extends BasicTestCase {
@@ -82,5 +83,11 @@ public class OMTTestCase extends BasicTestCase {
         return withPrefixes(String.format("queries: |\n" +
                 "   DEFINE QUERY query => %s\n" +
                 "\n", queryStatement));
+    }
+
+    protected void withProgress(Runnable runnable) {
+        ProgressManager.getInstance().runProcessWithProgressSynchronously(
+                runnable, "Test", false, getProject()
+        );
     }
 }

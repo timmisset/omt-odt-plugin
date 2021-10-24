@@ -5,6 +5,8 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,5 +28,10 @@ public abstract class ODTDefineNameNamed extends ASTWrapperPsiElement implements
     @Override
     public @Nullable @NlsSafe String getName() {
         return getText();
+    }
+
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        return GlobalSearchScope.allScope(getProject());
     }
 }

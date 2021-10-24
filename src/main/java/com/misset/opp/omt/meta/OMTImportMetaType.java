@@ -23,13 +23,13 @@ public class OMTImportMetaType extends OMTMetaMapType {
         return new OMTImportPathMetaType(name);
     }
 
-    public OMTFile resolveToOMTFile(YAMLKeyValue keyValue) {
+    public static OMTFile resolveToOMTFile(YAMLKeyValue keyValue) {
         return Optional.ofNullable(resolveToPath(keyValue))
                 .map(path -> getOMTFile(path, keyValue.getProject()))
                 .orElse(null);
     }
 
-    public String resolveToPath(YAMLKeyValue keyValue) {
+    public static String resolveToPath(YAMLKeyValue keyValue) {
         String path = keyValue.getKeyText();
         if (path.startsWith(MODULE)) {
             // TODO: resolve module from FS
@@ -44,11 +44,11 @@ public class OMTImportMetaType extends OMTMetaMapType {
                     .map(PsiFile::getVirtualFile)
                     .map(VirtualFile::getParent)
                     .map(folder -> folder.findFileByRelativePath(path))
-                    .map(this::getResolvablePath)
+                    .map(OMTImportMetaType::getResolvablePath)
                     .orElse(null);
         }
     }
-    private String getResolvablePath(VirtualFile virtualFile) {
+    private static String getResolvablePath(VirtualFile virtualFile) {
         if(ApplicationManager.getApplication().isUnitTestMode()) {
             return virtualFile.toString();
         }

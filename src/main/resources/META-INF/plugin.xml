@@ -14,7 +14,8 @@
                 -->
         <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
                                 order="first" language="yaml"/>
-
+        <psi.referenceContributor language="yaml"
+                                  implementation="com.misset.opp.omt.OMTReferenceContributor"/>
         <!-- OMT Language -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>
