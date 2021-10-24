@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.misset.opp.omt.meta.arrays.OMTImportPathMetaType;
@@ -43,8 +44,14 @@ public class OMTImportMetaType extends OMTMetaMapType {
                     .map(PsiFile::getVirtualFile)
                     .map(VirtualFile::getParent)
                     .map(folder -> folder.findFileByRelativePath(path))
-                    .map(VirtualFile::toString)
+                    .map(this::getResolvablePath)
                     .orElse(null);
         }
+    }
+    private String getResolvablePath(VirtualFile virtualFile) {
+        if(ApplicationManager.getApplication().isUnitTestMode()) {
+            return virtualFile.toString();
+        }
+        return virtualFile.getPath();
     }
 }

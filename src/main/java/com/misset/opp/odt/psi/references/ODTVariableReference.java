@@ -34,25 +34,25 @@ public class ODTVariableReference extends PsiReferenceBase<ODTVariable> implemen
         if (!myElement.isValid()) {
             return ResolveResult.EMPTY_ARRAY;
         }
-        return Optional.ofNullable(resolveInODT())
-                .orElse(resolveInOMT());
+        return resolveInODT()
+                .or(this::resolveInOMT)
+                .orElse(ResolveResult.EMPTY_ARRAY);
     }
-    private ResolveResult[] resolveInODT() {
+    private Optional<ResolveResult[]> resolveInODT() {
         final ODTScript script = PsiTreeUtil.getTopmostParentOfType(myElement, ODTScript.class);
-        if(script == null) { return ResolveResult.EMPTY_ARRAY; }
+        if(script == null) { return Optional.empty(); }
 
         return PsiTreeUtil.findChildrenOfType(script, ODTVariable.class)
                 .stream()
                 // must have the same name
                 .filter(variable -> variable.isDeclaredVariable() && variable.canBeDeclaredVariable(myElement))
                 .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
-                .map(PsiElementResolveResult::createResults)
-                .orElse(null);
+                .map(PsiElementResolveResult::createResults);
     }
-    private ResolveResult[] resolveInOMT() {
+    private Optional<ResolveResult[]> resolveInOMT() {
         final InjectedLanguageManager languageManager = InjectedLanguageManager.getInstance(myElement.getProject());
         final PsiLanguageInjectionHost injectionHost = languageManager.getInjectionHost(myElement);
-        if(injectionHost == null) { return ResolveResult.EMPTY_ARRAY; }
+        if(injectionHost == null) { return Optional.empty(); }
 
         final LinkedHashMap<YAMLMapping, OMTVariableProvider> linkedHashMap = collectMetaParents(
                 injectionHost,
@@ -64,11 +64,13 @@ public class ODTVariableReference extends PsiReferenceBase<ODTVariable> implemen
             OMTVariableProvider variableProvider = linkedHashMap.get(mapping);
             final HashMap<String, List<PsiElement>> variableMap = variableProvider.getVariableMap(mapping);
             if(variableMap.containsKey(myElement.getName())) {
-                return PsiElementResolveResult.createResults(variableMap.get(myElement.getName()).get(0));
+                final PsiElement element = variableMap.get(myElement.getName()).get(0);
+                if(element == null) { return Optional.empty(); }
+                return Optional.of(PsiElementResolveResult.createResults(element));
             }
         }
 
-        return ResolveResult.EMPTY_ARRAY;
+        return Optional.empty();
     }
 
     @Override
