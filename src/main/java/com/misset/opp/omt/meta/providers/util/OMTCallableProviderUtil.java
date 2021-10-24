@@ -62,6 +62,7 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
             return;
         }
         final OMTFile omtFile = ((OMTImportMetaType) metaType).resolveToOMTFile(keyValue);
+        if(omtFile == null) { return; }
         final HashMap<String, List<PsiElement>> exportingMembersMap = omtFile.getExportingMembersMap();
         if(value instanceof YAMLSequence) {
             final YAMLSequence sequence = (YAMLSequence) value;
