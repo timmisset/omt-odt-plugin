@@ -16,10 +16,10 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
 
     @Override
     public boolean isDeclaredVariable() {
-        return Optional.ofNullable(element.getParent())
+        return isOMTVariableProvider() || Optional.ofNullable(element.getParent())
                 .map(PsiElement::getParent)
                 .map(ODTDeclareVariable.class::isInstance)
-                .orElse(isOMTVariableProvider());
+                .orElse(false);
     }
 
     @Override

@@ -21,6 +21,10 @@ public class OMTProviderUtil {
      * The root element (ODT Script) of the injected ODTFile is searched using the PsiTreeUtil.findChildrenOfType
      */
     protected static <T extends PsiElement> Collection<T> getInjectedContent(YAMLValue value, Class<T> contentClass) {
+        if(value == null || !value.isValid()) {
+            return Collections.emptyList();
+        }
+
         final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(value.getProject());
         final List<Pair<PsiElement, TextRange>> injectedPsiFiles = instance.getInjectedPsiFiles(value);
         return Optional.ofNullable(injectedPsiFiles)

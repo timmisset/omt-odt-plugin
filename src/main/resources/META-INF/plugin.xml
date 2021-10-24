@@ -37,7 +37,12 @@
                          enabledByDefault="true"
                          level="WARNING"
                          implementationClass="com.misset.opp.omt.inspection.OMTUnusedInspection"/>
-
+        <localInspection displayName="OMTUnusedInspection"
+                         groupName="OMT"
+                         language="OMT"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.misset.opp.omt.inspection.OMTUnnecessaryWrappingInspection"/>
         <localInspection displayName="DuplicateVariableInspection"
                          groupName="OMT"
                          language="OMT"

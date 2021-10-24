@@ -1,14 +1,18 @@
 package com.misset.opp.testCase;
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.command.WriteCommandAction;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class InspectionTestCase extends OMTTestCase {
 
@@ -92,4 +96,43 @@ public abstract class InspectionTestCase extends OMTTestCase {
                 )).collect(Collectors.joining("\n"));
     }
 
+    protected @NotNull List<IntentionAction> getAllQuickFixes() {
+        final String fileName = getFile().getName();
+        return
+                Stream.of(
+                                myFixture.getAllQuickFixes(fileName),
+                                myFixture.getAvailableIntentions(fileName))
+                        .flatMap(Collection::stream)
+                        .distinct()
+                        .collect(Collectors.toList());
+    }
+
+    protected IntentionAction getQuickFixIntention(String description) {
+        return getAllQuickFixes()
+                .stream()
+                .filter(intentionAction -> intentionAction.getText().equals(description))
+                .findFirst()
+                .orElse(null);
+    }
+
+    protected List<IntentionAction> getQuickFixIntentions(String description) {
+        return getAllQuickFixes()
+                .stream()
+                .filter(intentionAction -> intentionAction.getText().equals(description))
+                .collect(Collectors.toList());
+    }
+
+    protected void invokeQuickFixIntention(String description) {
+        final IntentionAction quickFixIntention = getQuickFixIntention(description);
+        if (quickFixIntention == null) {
+            fail("Could not find quickfix with description " + description);
+        }
+        invokeQuickFixIntention(quickFixIntention);
+    }
+
+    protected void invokeQuickFixIntention(IntentionAction intentionAction) {
+        WriteCommandAction.runWriteCommandAction(
+                getProject(), () -> intentionAction.invoke(getProject(), getEditor(), getFile())
+        );
+    }
 }
