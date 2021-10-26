@@ -1,7 +1,7 @@
 package com.misset.opp.odt.psi.impl.call;
 
 import com.intellij.openapi.application.ReadAction;
-import com.misset.opp.callable.builtIn.commands.BuiltInCommand;
+import com.misset.opp.callable.builtin.commands.BuiltInCommand;
 import com.misset.opp.callable.local.LocalCommand;
 import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;

@@ -36,7 +36,7 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
             return;
         }
         getInjectedContent(callables.getValue(), ODTDefineStatement.class)
-                .forEach(odtDefineStatement -> addToGroupedMap(odtDefineStatement.getName(), odtDefineStatement.getDefineName(), map));
+                .forEach(odtDefineStatement -> addToGroupedMap(odtDefineStatement.getCallId(), odtDefineStatement.getDefineName(), map));
     }
 
     /**

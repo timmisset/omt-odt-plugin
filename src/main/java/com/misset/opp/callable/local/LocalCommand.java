@@ -1,10 +1,6 @@
 package com.misset.opp.callable.local;
 
 import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.builtIn.commands.LocalVariable;
-
-import java.util.Collections;
-import java.util.List;
 
 public abstract class LocalCommand implements Callable {
 
@@ -34,9 +30,4 @@ public abstract class LocalCommand implements Callable {
      * Returns the callId which is the name prefixed with an '@' to indicate that it must be called as such
      */
     public String getCallId() { return "@" + getName(); }
-
-    @Override
-    public List<LocalVariable> getLocalVariables() {
-        return Collections.emptyList();
-    }
 }

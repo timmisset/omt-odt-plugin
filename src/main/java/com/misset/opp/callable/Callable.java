@@ -1,7 +1,8 @@
 package com.misset.opp.callable;
 
-import com.misset.opp.callable.builtIn.commands.LocalVariable;
+import com.misset.opp.callable.builtin.commands.LocalVariable;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,5 +24,11 @@ public interface Callable {
     boolean isVoid();
     boolean isCommand();
 
-    List<LocalVariable> getLocalVariables();
+    default List<LocalVariable> getLocalVariables() {
+        return Collections.emptyList();
+    }
+
+    default List<String> getFlags() {
+        return Collections.emptyList();
+    }
 }
