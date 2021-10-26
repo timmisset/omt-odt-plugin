@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
+import com.misset.opp.callable.Callable;
 import com.misset.opp.omt.meta.arrays.OMTActionsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
@@ -17,6 +18,8 @@ import com.misset.opp.omt.meta.model.scalars.scripts.ODTCommandsMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTQueriesMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
+import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
+import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -26,10 +29,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.misset.opp.callable.local.LocalCommand.CANCEL;
+import static com.misset.opp.callable.local.LocalCommand.COMMIT;
+import static com.misset.opp.callable.local.LocalCommand.DONE;
+import static com.misset.opp.callable.local.LocalCommand.GET_ERROR_STATE;
+import static com.misset.opp.callable.local.LocalCommand.HAS_ERROR;
+import static com.misset.opp.callable.local.LocalCommand.ROLLBACK;
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addDefinedStatementsToMap;
+import static com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil.addPrefixesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
-public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTCallableProvider {
+public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTCallableProvider, OMTPrefixProvider, OMTLocalCommandProvider {
     protected OMTActivityMetaType() {
         super("OMT Activity");
     }
@@ -64,25 +74,41 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
 
     @Override
     public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
-        HashMap<String, List<PsiElement>> variableMap = new HashMap<>();
-        addSequenceToMap(mapping, "variables", variableMap);
-        addSequenceToMap(mapping, "params", variableMap);
-
-        return variableMap;
+        HashMap<String, List<PsiElement>> map = new HashMap<>();
+        addSequenceToMap(mapping, "variables", map);
+        addSequenceToMap(mapping, "params", map);
+        return map;
     }
 
     @Override
     public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping) {
-        HashMap<String, List<PsiElement>> callableMap = new HashMap<>();
-
-        addDefinedStatementsToMap(yamlMapping, "commands", callableMap);
-        addDefinedStatementsToMap(yamlMapping, "queries", callableMap);
-
-        return callableMap;
+        HashMap<String, List<PsiElement>> map = new HashMap<>();
+        addDefinedStatementsToMap(yamlMapping, "commands", map);
+        addDefinedStatementsToMap(yamlMapping, "queries", map);
+        return map;
     }
 
     @Override
     public boolean isCallable() {
         return true;
+    }
+
+    @Override
+    public @NotNull HashMap<String, List<PsiElement>> getPrefixMap(YAMLMapping yamlMapping) {
+        HashMap<String, List<PsiElement>> map = new HashMap<>();
+        addPrefixesToMap(yamlMapping, "prefixes", map);
+        return map;
+    }
+
+    @Override
+    public HashMap<String, Callable> getLocalCommandsMap() {
+        final HashMap<String, Callable> map = new HashMap<>();
+        map.put(CANCEL.getCallId(), CANCEL);
+        map.put(COMMIT.getCallId(), COMMIT);
+        map.put(DONE.getCallId(), DONE);
+        map.put(GET_ERROR_STATE.getCallId(), GET_ERROR_STATE);
+        map.put(HAS_ERROR.getCallId(), HAS_ERROR);
+        map.put(ROLLBACK.getCallId(), ROLLBACK);
+        return map;
     }
 }

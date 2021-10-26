@@ -29,8 +29,8 @@ variableAssignment::=                       variable (COMMA variable)* EQUALS va
 // a variable can be assigned with anything
 variableValue ::=                           query | commandCall
 variable ::=                                VARIABLE_NAME {
-    extends="com.misset.opp.odt.psi.impl.variables.ODTBaseVariable"
-    implements="com.misset.opp.odt.psi.impl.variables.ODTVariableWrapper"
+    extends="com.misset.opp.odt.psi.impl.variable.ODTBaseVariable"
+    implements="com.misset.opp.odt.psi.impl.variable.ODTVariableWrapper"
     }
 
 // SCRIPT
@@ -51,16 +51,16 @@ commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
 // there is also a collection of BuiltIn operators and commands which are included
 // and finally, all runnable OMT modelitems are available as Commands (Activity, Procedure) or Operator (StandAloneQuery)
 // only the Defined members are part of set of the grammar parser
-defineName ::=                              NAME { extends="com.misset.opp.odt.psi.impl.callables.ODTDefineNameNamed" }
-defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callables.ODTDefineStatement"}
-defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock { extends="com.misset.opp.odt.psi.impl.callables.ODTDefineStatement"}
+defineName ::=                              NAME { extends="com.misset.opp.odt.psi.impl.callable.ODTDefineNameNamed" }
+defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"}
+defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement"}
 definePrefix ::=                            PREFIX_DEFINE_START COLON prefix
 defineParam ::=                             PARENTHESES_OPEN (variable (COMMA variable)*)? PARENTHESES_CLOSE
 callName ::=                                NAME | BOOLEAN_OPERATOR
 // MEMBER CALLS
 // A call to either an Operator or a Command. In case of the latter, it's always prefixed with @
-operatorCall ::=                            callName flagSignature? signature? { extends="com.misset.opp.odt.psi.impl.calls.ODTOperatorCallImpl" }
-commandCall ::=                             AT callName flagSignature? signature? { extends="com.misset.opp.odt.psi.impl.calls.ODTCommandCallImpl" }
+operatorCall ::=                            callName flagSignature? signature? { extends="com.misset.opp.odt.psi.impl.call.ODTOperatorCallImpl" }
+commandCall ::=                             AT callName flagSignature? signature? { extends="com.misset.opp.odt.psi.impl.call.ODTCommandCallImpl" }
 signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
 signatureArgument ::=                       resolvableValue | commandBlock
 flagSignature ::=                           TAG

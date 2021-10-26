@@ -3,6 +3,7 @@ package com.misset.opp.omt.meta;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
+import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
@@ -42,6 +43,15 @@ public class OMTMetaTreeUtil {
                 element,
                 YAMLMapping.class,
                 OMTCallableProvider.class,
+                false,
+                Objects::isNull);
+    }
+
+    public static LinkedHashMap<YAMLMapping, OMTLocalCommandProvider> collectLocalCommandProviders(PsiElement element) {
+        return collectMetaParents(
+                element,
+                YAMLMapping.class,
+                OMTLocalCommandProvider.class,
                 false,
                 Objects::isNull);
     }

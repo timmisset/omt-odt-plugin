@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.psi.impl.callables.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;

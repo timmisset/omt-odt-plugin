@@ -1,16 +1,18 @@
 package com.misset.opp.odt;
 
+import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.ODTInjectable;
+import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLDocument;
+import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
@@ -82,5 +84,17 @@ public class ODTMultiHostInjector implements MultiHostInjector {
     @Override
     public @NotNull List<? extends Class<? extends PsiElement>> elementsToInjectIn() {
         return Collections.singletonList(YAMLDocument.class);
+    }
+
+    /**
+     * Returns the YamlScalar which is the host for the entire ODT file that the provided element is part of
+     */
+    public static YAMLPsiElement getInjectionHost(PsiElement element) {
+        final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(element.getProject());
+        final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(element.getContainingFile());
+        if(!(injectionHost instanceof YAMLPsiElement)) {
+            return null;
+        }
+        return (YAMLPsiElement) injectionHost;
     }
 }
