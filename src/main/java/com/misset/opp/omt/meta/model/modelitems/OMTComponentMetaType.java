@@ -13,6 +13,7 @@ import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTCommandsMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTQueriesMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,7 @@ import java.util.function.Supplier;
 
 import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 
-public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider {
+public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTPrefixProvider {
     protected OMTComponentMetaType() {
         super("OMT Component");
     }

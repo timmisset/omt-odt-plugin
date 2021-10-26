@@ -12,6 +12,22 @@ import org.junit.jupiter.api.Test;
 class ODTCommandCallReferenceTest extends OMTTestCase {
 
     @Test
+    void testODTReferenceCanResolveToDefineCommandInsideScript() {
+        String content = insideActivityWithPrefixes(
+                "onStart: |\n" +
+                        "   DEFINE COMMAND commandA => { @LOG('test'); }\n" +
+                        "   @<caret>commandA();\n" +
+                        ""
+        );
+        configureByText(content);
+        ReadAction.run(() -> {
+            final ODTCommandCall elementByText = myFixture.findElementByText("@commandA", ODTCommandCall.class);
+            // is resolved to the defined variable
+            Assertions.assertTrue(elementByText.getReference().resolve() instanceof ODTDefineName);
+        });
+    }
+
+    @Test
     void testODTReferenceCanResolveToDefineCommandInsideActivity() {
         String content = insideActivityWithPrefixes(
                 "commands: |\n" +
@@ -37,15 +53,14 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
                 "   MyOtherActivity: !Activity\n" +
                 "       onStart: |\n" +
                 "           @<caret>MyActivity();\n" +
-                ""
-        ;
+                "";
         configureByText(content);
         ReadAction.run(() -> {
             final ODTCommandCall elementByText = myFixture.findElementByText("@MyActivity", ODTCommandCall.class);
             // is resolved to the defined variable
             final PsiElement resolve = elementByText.getReference().resolve();
             Assertions.assertTrue(resolve instanceof YAMLKeyValue);
-            Assertions.assertEquals("MyActivity", ((YAMLKeyValue)resolve).getKeyText());
+            Assertions.assertEquals("MyActivity", ((YAMLKeyValue) resolve).getKeyText());
         });
     }
 }

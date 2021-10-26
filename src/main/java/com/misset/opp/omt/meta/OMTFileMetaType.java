@@ -6,6 +6,7 @@ import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTCommandsMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTQueriesMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
+import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -23,7 +24,7 @@ import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.add
  * The OMTFileMetaType is the root for all OMT features
  * Any .omt file that is analysed can contain these features
  */
-public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider {
+public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider, OMTPrefixProvider {
     public OMTFileMetaType(@NonNls @NotNull String typeName) {
         super(typeName);
     }
@@ -59,4 +60,5 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider 
         }
         return map;
     }
+
 }

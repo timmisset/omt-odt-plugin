@@ -6,6 +6,7 @@ import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.scalars.ODTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
+import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -19,7 +20,7 @@ import java.util.function.Supplier;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 
-public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider {
+public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTPrefixProvider {
     protected OMTStandaloneQueryMetaType() {
         super("OMT Component");
     }

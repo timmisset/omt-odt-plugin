@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.model.modelitems.ontology;
 
 import com.misset.opp.omt.meta.arrays.OMTOntologyClassesArrayMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemDelegateMetaType;
-import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
+import com.misset.opp.omt.meta.model.scalars.OMTOntologyPrefixMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class OMTOntologyMetaType extends OMTModelItemDelegateMetaType {
     private static final Set<String> requiredFields = Set.of("prefix", "classes");
 
     static {
-        features.put("prefix", OMTInterpolatedStringMetaType::new);
+        features.put("prefix", OMTOntologyPrefixMetaType::new);
         features.put("classes", OMTOntologyClassesArrayMetaType::new);
     }
 

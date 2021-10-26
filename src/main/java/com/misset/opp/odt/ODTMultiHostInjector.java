@@ -5,22 +5,31 @@ import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLDocument;
+import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+
+import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectMetaParents;
 
 /**
  * The ODTMultiHostInjector will inject ODT language on any YamlMetaType that implements ODTInjectable
@@ -92,9 +101,43 @@ public class ODTMultiHostInjector implements MultiHostInjector {
     public static YAMLPsiElement getInjectionHost(PsiElement element) {
         final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(element.getProject());
         final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(element.getContainingFile());
-        if(!(injectionHost instanceof YAMLPsiElement)) {
+        if (!(injectionHost instanceof YAMLPsiElement)) {
             return null;
         }
         return (YAMLPsiElement) injectionHost;
+    }
+
+    /**
+     * Resolves referencing ODT elements in OMT containers
+     */
+    public static <T> Optional<ResolveResult[]> resolveInOMT(PsiElement odtElement,
+                                                             Class<T> providerClass,
+                                                             String key,
+                                                             BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
+        final InjectedLanguageManager languageManager = InjectedLanguageManager.getInstance(odtElement.getProject());
+        final PsiLanguageInjectionHost injectionHost = languageManager.getInjectionHost(odtElement);
+        if (injectionHost == null) {
+            return Optional.empty();
+        }
+
+        final LinkedHashMap<YAMLMapping, T> linkedHashMap = collectMetaParents(
+                injectionHost,
+                YAMLMapping.class,
+                providerClass,
+                false,
+                Objects::isNull);
+        for (YAMLMapping mapping : linkedHashMap.keySet()) {
+            T provider = linkedHashMap.get(mapping);
+            final HashMap<String, List<PsiElement>> prefixMap = mapFunction.apply(provider, mapping);
+            if (prefixMap.containsKey(key)) {
+                final PsiElement element = prefixMap.get(key).get(0);
+                if (element == null) {
+                    return Optional.empty();
+                }
+                return Optional.of(PsiElementResolveResult.createResults(element));
+            }
+        }
+
+        return Optional.empty();
     }
 }

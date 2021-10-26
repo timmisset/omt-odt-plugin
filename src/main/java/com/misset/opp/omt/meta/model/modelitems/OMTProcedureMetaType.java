@@ -8,6 +8,7 @@ import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTReasonMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -17,9 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil.addPrefixesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
-public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider {
+public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTPrefixProvider {
     protected OMTProcedureMetaType() {
         super("OMT Component");
     }
@@ -52,5 +54,12 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
     @Override
     public boolean isCallable() {
         return true;
+    }
+
+    @Override
+    public @NotNull HashMap<String, List<PsiElement>> getPrefixMap(YAMLMapping yamlMapping) {
+        HashMap<String, List<PsiElement>> map = new HashMap<>();
+        addPrefixesToMap(yamlMapping, "prefixes", map);
+        return map;
     }
 }

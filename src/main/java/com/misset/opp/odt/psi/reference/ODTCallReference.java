@@ -2,23 +2,21 @@ package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
+import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.psi.YAMLMapping;
-import org.jetbrains.yaml.psi.YAMLPsiElement;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Optional;
 
-import static com.misset.opp.odt.ODTMultiHostInjector.getInjectionHost;
-import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectCallableProviders;
+import static com.misset.opp.odt.ODTMultiHostInjector.resolveInOMT;
 
 public class ODTCallReference extends PsiReferenceBase<ODTBaseCall> implements PsiPolyVariantReference {
     public ODTCallReference(@NotNull ODTBaseCall element,
@@ -28,16 +26,6 @@ public class ODTCallReference extends PsiReferenceBase<ODTBaseCall> implements P
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        return new ResolveResult[0];
-    }
-
-    @Override
-    public boolean isReferenceTo(@NotNull PsiElement element) {
-        return super.isReferenceTo(element);
-    }
-
-    @Override
-    public @Nullable PsiElement resolve() {
         // An ODT call is made to either an OMT Callable element such as an Activity, Procedure within the host OMT file
         // or directly to a built-in command-call or operator
 
@@ -47,21 +35,32 @@ public class ODTCallReference extends PsiReferenceBase<ODTBaseCall> implements P
         // - host -> OMTFile.model
         // - host -> OMTFile.queries || OMTFile.commands
         // - host -> OMTFile.import
-
-        return Optional.ofNullable(getInjectionHost(myElement))
-                .map(this::resolveFromOMT)
-                .orElse(null);
+        return resolveInODT()
+                .or(() -> resolveInOMT(myElement, OMTCallableProvider.class, myElement.getCallId(), OMTCallableProvider::getCallableMap))
+                .orElse(ResolveResult.EMPTY_ARRAY);
     }
 
-    private PsiElement resolveFromOMT(YAMLPsiElement injectionHost) {
-        final LinkedHashMap<YAMLMapping, OMTCallableProvider> linkedHashMap = collectCallableProviders(injectionHost);
-        for(YAMLMapping mapping : linkedHashMap.keySet()) {
-            OMTCallableProvider callableProvider = linkedHashMap.get(mapping);
-            final HashMap<String, List<PsiElement>> callableMap = callableProvider.getCallableMap(mapping);
-            if(callableMap.containsKey(myElement.getCallId())) {
-                return callableMap.get(myElement.getCallId()).get(0);
-            }
-        }
-        return null;
+    @Override
+    public boolean isReferenceTo(@NotNull PsiElement element) {
+        return super.isReferenceTo(element);
+    }
+
+    @Override
+    public @Nullable PsiElement resolve() {
+        final ResolveResult[] resolveResults = multiResolve(false);
+        return resolveResults.length == 0 ? null : resolveResults[0].getElement();
+    }
+
+    private Optional<ResolveResult[]> resolveInODT() {
+        final ODTScript script = PsiTreeUtil.getTopmostParentOfType(myElement, ODTScript.class);
+        if(script == null) { return Optional.empty(); }
+
+        return PsiTreeUtil.findChildrenOfType(script, ODTDefineStatement.class)
+                .stream()
+                // must have the same name
+                .filter(odtDefineStatement -> odtDefineStatement.getCallId().equals(myElement.getCallId()))
+                .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
+                .map(ODTDefineStatement::getDefineName)
+                .map(PsiElementResolveResult::createResults);
     }
 }

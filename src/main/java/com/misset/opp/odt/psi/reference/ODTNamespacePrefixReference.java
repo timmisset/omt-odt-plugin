@@ -7,9 +7,11 @@ import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.psi.ODTDefinePrefix;
+import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTScript;
-import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.odt.psi.impl.ODTNamespacePrefixImpl;
+import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,9 +19,9 @@ import java.util.Optional;
 
 import static com.misset.opp.odt.ODTMultiHostInjector.resolveInOMT;
 
-public class ODTVariableReference extends PsiReferenceBase<ODTVariable> implements PsiPolyVariantReference {
-    public ODTVariableReference(@NotNull ODTVariable element) {
-        super(element, TextRange.allOf(element.getText()));
+public class ODTNamespacePrefixReference extends PsiReferenceBase<ODTNamespacePrefix> implements PsiPolyVariantReference {
+    public ODTNamespacePrefixReference(@NotNull ODTNamespacePrefixImpl element) {
+        super(element, TextRange.allOf(element.getName()));
     }
 
     @Override
@@ -27,18 +29,26 @@ public class ODTVariableReference extends PsiReferenceBase<ODTVariable> implemen
         if (!myElement.isValid()) {
             return ResolveResult.EMPTY_ARRAY;
         }
+        // resolve in current ODT file
+        // then resolve in OMT using the PrefixProviders
         return resolveInODT()
-                .or(() -> resolveInOMT(myElement, OMTVariableProvider.class, myElement.getName(), OMTVariableProvider::getVariableMap))
+                .or(() -> resolveInOMT(myElement, OMTPrefixProvider.class, myElement.getName(), OMTPrefixProvider::getPrefixMap))
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
+
     private Optional<ResolveResult[]> resolveInODT() {
         final ODTScript script = PsiTreeUtil.getTopmostParentOfType(myElement, ODTScript.class);
-        if(script == null) { return Optional.empty(); }
+        if (script == null) {
+            return Optional.empty();
+        }
 
-        return PsiTreeUtil.findChildrenOfType(script, ODTVariable.class)
+        return PsiTreeUtil.findChildrenOfType(script, ODTDefinePrefix.class)
                 .stream()
                 // must have the same name
-                .filter(variable -> variable.isDeclaredVariable() && variable.canBeDeclaredVariable(myElement))
+                .filter(prefix -> Optional.ofNullable(getElement().getName())
+                        .map(s -> s.equals(prefix.getNamespacePrefix().getName()))
+                        .orElse(false))
+                .map(ODTDefinePrefix::getNamespacePrefix)
                 .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
                 .map(PsiElementResolveResult::createResults);
     }

@@ -36,7 +36,6 @@ import static com.misset.opp.callable.local.LocalCommand.GET_ERROR_STATE;
 import static com.misset.opp.callable.local.LocalCommand.HAS_ERROR;
 import static com.misset.opp.callable.local.LocalCommand.ROLLBACK;
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addDefinedStatementsToMap;
-import static com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil.addPrefixesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
 public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTCallableProvider, OMTPrefixProvider, OMTLocalCommandProvider {
@@ -91,13 +90,6 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
     @Override
     public boolean isCallable() {
         return true;
-    }
-
-    @Override
-    public @NotNull HashMap<String, List<PsiElement>> getPrefixMap(YAMLMapping yamlMapping) {
-        HashMap<String, List<PsiElement>> map = new HashMap<>();
-        addPrefixesToMap(yamlMapping, "prefixes", map);
-        return map;
     }
 
     @Override

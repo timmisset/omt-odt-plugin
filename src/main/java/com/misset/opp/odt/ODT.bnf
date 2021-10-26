@@ -15,7 +15,10 @@
 
 ODTFile ::= script
 
-namespacePrefix::=                          NAME COLON
+namespacePrefix::=                          NAME COLON {
+    extends="com.misset.opp.odt.psi.impl.prefix.ODTBaseNamespacePrefix"
+    implements="com.intellij.psi.PsiNamedElement"
+}
 curieElement ::=                            (namespacePrefix NAME) | IRI
 curieConstantElement ::=                    FORWARD_SLASH curieElement queryFilter*
 
@@ -54,7 +57,7 @@ commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
 defineName ::=                              NAME { extends="com.misset.opp.odt.psi.impl.callable.ODTDefineNameNamed" }
 defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"}
 defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement"}
-definePrefix ::=                            PREFIX_DEFINE_START COLON prefix
+definePrefix ::=                            PREFIX_DEFINE_START namespacePrefix IRI
 defineParam ::=                             PARENTHESES_OPEN (variable (COMMA variable)*)? PARENTHESES_CLOSE
 callName ::=                                NAME | BOOLEAN_OPERATOR
 // MEMBER CALLS
