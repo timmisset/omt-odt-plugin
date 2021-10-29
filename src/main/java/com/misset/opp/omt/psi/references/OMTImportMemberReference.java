@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
@@ -18,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-public class OMTImportMemberReference extends PsiReferenceBase<YAMLPlainTextImpl> implements PsiPolyVariantReference {
+public class OMTImportMemberReference extends PsiReferenceBase.Poly<YAMLPlainTextImpl> implements PsiPolyVariantReference {
 
     public OMTImportMemberReference(@NotNull YAMLPlainTextImpl element) {
-        super(element, TextRange.allOf(element.getText()));
+        super(element, TextRange.allOf(element.getText()), false);
     }
 
     @Override
@@ -38,12 +37,6 @@ public class OMTImportMemberReference extends PsiReferenceBase<YAMLPlainTextImpl
                     .map(PsiElementResolveResult::createResults)
                     .orElse(ResolveResult.EMPTY_ARRAY);
         }
-        return new ResolveResult[0];
-    }
-
-    @Override
-    public @Nullable PsiElement resolve() {
-        final ResolveResult[] resolveResults = multiResolve(false);
-        return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+        return ResolveResult.EMPTY_ARRAY;
     }
 }
