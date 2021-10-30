@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.LocalTimeCounter;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
+import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,6 +40,10 @@ public final class ODTElementGenerator {
 
     public ODTBaseCall createCall(String name) {
         return fromFile("@" + name, ODTBaseCall.class);
+    }
+
+    public ODTVariable createVariable(String name) {
+        return fromFile(name, ODTVariable.class);
     }
 
 }

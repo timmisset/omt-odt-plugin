@@ -1,10 +1,12 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
+import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -79,6 +81,44 @@ class ODTVariableReferenceTest extends OMTTestCase {
             // is resolved to the OMT variable
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
             Assertions.assertTrue(elementAtCaret.getParent() instanceof ODTVariableAssignment);
+        });
+    }
+
+    @Test
+    void testRefactorRename() {
+        String content = insideActivityWithPrefixes(
+                "variables:\n" +
+                        "- $test\n" +
+                        "payload:\n" +
+                        "   test: $<caret>test\n"
+        );
+        final OMTFile omtFile = configureByText(content);
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> {
+            myFixture.renameElementAtCaret("$newName");
+            Assertions.assertEquals(insideActivityWithPrefixes(
+                    "variables:\n" +
+                    "- $newName\n" +
+                    "payload:\n" +
+                    "   test: $newName\n"), omtFile.getText());
+        });
+    }
+
+    @Test
+    void testRefactorRenameAddsRequiredPrefix() {
+        String content = insideActivityWithPrefixes(
+                "variables:\n" +
+                        "- $test\n" +
+                        "payload:\n" +
+                        "   test: $<caret>test\n"
+        );
+        final OMTFile omtFile = configureByText(content);
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> {
+            myFixture.renameElementAtCaret("newName");
+            Assertions.assertEquals(insideActivityWithPrefixes(
+                    "variables:\n" +
+                            "- $newName\n" +
+                            "payload:\n" +
+                            "   test: $newName\n"), omtFile.getText());
         });
     }
 }

@@ -9,6 +9,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTDeclaredVariableDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsedVariableDelegate;
@@ -64,7 +65,11 @@ public abstract class ODTBaseVariable extends ASTWrapperPsiElement implements OD
 
     @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
-        return this;
+        if(!name.startsWith("$")) {
+            name = "$" + name;
+        }
+        final ODTVariable variable = ODTElementGenerator.getInstance(getProject()).createVariable(name);
+        return variable != null ? replace(variable) : this;
     }
 
     @Override
