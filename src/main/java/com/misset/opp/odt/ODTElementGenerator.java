@@ -2,7 +2,6 @@ package com.misset.opp.odt;
 
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -46,8 +45,4 @@ public final class ODTElementGenerator {
     public ODTVariable createVariable(String name) {
         return fromFile(name, ODTVariable.class);
     }
-    public PsiComment createJavadocs(String comment) {
-        return fromFile(comment, PsiComment.class);
-    }
-
 }

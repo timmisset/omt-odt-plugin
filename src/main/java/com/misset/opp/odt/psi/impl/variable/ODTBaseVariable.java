@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 import static com.misset.opp.odt.psi.ODTTypes.DECLARE_VARIABLE;
+import static com.misset.opp.odt.psi.ODTTypes.DEFINE_PARAM;
 import static com.misset.opp.odt.psi.ODTTypes.VARIABLE_ASSIGNMENT;
 import static com.misset.opp.odt.psi.ODTTypes.VARIABLE_VALUE;
 import static com.misset.opp.util.ASTNodeUtil.getParentType;
@@ -31,7 +32,7 @@ import static com.misset.opp.util.ASTNodeUtil.getParentType;
  * Overlapping logic is confined in this base class
  */
 public abstract class ODTBaseVariable extends ASTWrapperPsiElement implements ODTVariable {
-    private static final TokenSet ALL_VARIABLE_CONTAINERS = TokenSet.create(VARIABLE_ASSIGNMENT, VARIABLE_VALUE, DECLARE_VARIABLE);
+    private static final TokenSet ALL_VARIABLE_CONTAINERS = TokenSet.create(VARIABLE_ASSIGNMENT, VARIABLE_VALUE, DECLARE_VARIABLE, DEFINE_PARAM);
     private final ODTVariableDelegate delegate;
 
     public ODTBaseVariable(@NotNull ASTNode node) {
@@ -51,6 +52,8 @@ public abstract class ODTBaseVariable extends ASTWrapperPsiElement implements OD
             return new ODTDeclaredVariableDelegate(this);
         } else if(parentType == VARIABLE_ASSIGNMENT) {
             return new ODTVariableAssignmentDelegate(this);
+        } else if(parentType == DEFINE_PARAM) {
+            return new ODTDeclaredVariableDelegate(this);
         } else {
             return new ODTUsedVariableDelegate(this);
         }

@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.variables;
 
+import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.model.scalars.OMTParamTypeType;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-public class OMTParamMetaType extends OMTMetaShorthandType {
+public class OMTParamMetaType extends OMTMetaShorthandType implements ODTInjectable {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {

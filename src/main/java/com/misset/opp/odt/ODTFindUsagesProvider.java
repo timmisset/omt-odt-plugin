@@ -2,7 +2,10 @@ package com.misset.opp.odt;
 
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.odt.psi.ODTDefineCommandStatement;
 import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.odt.psi.ODTDefineParam;
+import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.ODTVariable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
@@ -35,17 +38,27 @@ public class ODTFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public @Nls @NotNull String getType(@NotNull PsiElement element) {
+        if(element instanceof ODTVariable) {
+            if(element.getParent() instanceof ODTDefineParam) {
+                return "parameter";
+            }
+            return "variable";
+        } else if(element instanceof ODTDefineQueryStatement) {
+            return "query";
+        } else if(element instanceof ODTDefineCommandStatement) {
+            return "command";
+        }
         return "null";
     }
 
     @Override
     public @Nls @NotNull String getDescriptiveName(@NotNull PsiElement element) {
-        return "null";
+        return element.getText();
     }
 
     @Override
     public @Nls @NotNull String getNodeText(@NotNull PsiElement element,
                                             boolean useFullName) {
-        return "null";
+        return element.getText();
     }
 }

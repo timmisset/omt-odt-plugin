@@ -8,8 +8,6 @@ import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
@@ -50,12 +48,5 @@ public class ODTParameterAnnotationReference extends PsiReferenceBase.Poly<PsiCo
             }
         }
         return new ResolveResult[0];
-    }
-
-    @Override
-    public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
-        final PsiComment javadocs = ODTElementGenerator.getInstance(myElement.getProject())
-                .createJavadocs(textRange.replace(myElement.getText(), newElementName));
-        return javadocs != null ? myElement.replace(javadocs) : myElement;
     }
 }

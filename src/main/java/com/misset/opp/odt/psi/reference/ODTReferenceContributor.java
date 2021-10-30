@@ -21,7 +21,7 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class ODTReferenceContributor extends PsiReferenceContributor {
     private static final Pattern PARAM_ANNOTATION = Pattern.compile(
-            "@param\\s(\\$[A-z]*)\\s(\\(([A-z0-9]*)(:)?([A-z0-9]*)\\))?");
+            "@param\\s(\\$[A-z0-9]*)\\s(\\(([A-z0-9]*)(:)?([A-z0-9]*)\\))?");
 
     @Override
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {

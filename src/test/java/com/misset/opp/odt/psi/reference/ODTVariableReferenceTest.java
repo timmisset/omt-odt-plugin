@@ -30,6 +30,19 @@ class ODTVariableReferenceTest extends OMTTestCase {
     }
 
     @Test
+    void testODTReferenceDefineParam() {
+        String content = "DEFINE QUERY query($param) => $pa<caret>ram;";
+        myFixture.configureByText("test.odt", content);
+
+        ReadAction.run(() -> {
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            // is resolved to the declared variable
+            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            Assertions.assertTrue(((ODTVariable) elementAtCaret).isDeclaredVariable());
+        });
+    }
+
+    @Test
     void testODTReferenceCannotResolve() {
         String content = insideProcedureRunWithPrefixes(
                 "VAR $variableA = 'test';\n" +

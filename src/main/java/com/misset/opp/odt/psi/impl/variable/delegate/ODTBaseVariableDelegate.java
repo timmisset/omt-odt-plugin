@@ -5,13 +5,16 @@ import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
+import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTVariableMetaType;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
+import org.jetbrains.yaml.psi.YAMLValue;
 
 public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
 
     protected final ODTVariable element;
+
     public ODTBaseVariableDelegate(ODTVariable element) {
         this.element = element;
     }
@@ -23,13 +26,16 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
     public boolean isOMTVariableProvider() {
         final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(element.getProject());
         final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(element.getContainingFile());
-        if(injectionHost != null) {
-            final YamlMetaTypeProvider.MetaTypeProxy metaTypeProxy = OMTMetaTypeProvider.getInstance(element.getProject()).getMetaTypeProxy(
-                    injectionHost);
-            if(metaTypeProxy == null) { return false; }
+        if (injectionHost instanceof YAMLValue) {
+            final YamlMetaTypeProvider.MetaTypeProxy metaTypeProxy =
+                    OMTMetaTypeProvider.getInstance(element.getProject()).getValueMetaType((YAMLValue) injectionHost);
+            if (metaTypeProxy == null) {
+                return false;
+            }
             final YamlMetaType metaType = metaTypeProxy.getMetaType();
             return metaType instanceof OMTVariableNameMetaType ||
-                    metaType instanceof OMTVariableMetaType;
+                    metaType instanceof OMTVariableMetaType ||
+                    metaType instanceof OMTParamMetaType;
         }
         return false;
     }
