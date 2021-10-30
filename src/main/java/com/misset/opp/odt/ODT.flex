@@ -46,13 +46,12 @@ DECIMAL=                        {INTEGER}\.[0-9]+
 BOOLEAN=                        "true"|"false"|"TRUE"|"FALSE"|"True"|"False"
 NULL=                           "null"
 
-NAME=                           {ALPHA}({ALPHA}|{DIGIT}|{UNDERSCORE})*
 TYPED_VALUE=                    {STRING}"^^"({IRI}|{CURIE})
 VARIABLENAME=                   "$"{SYMBOL}
 
 // ignored
 END_OF_LINE_COMMENT=            ("#" | "\/\/")[^\r\n]*
-JAVADOCS=                        \/\*\*\s*\n([^\*]|(\*[^\/]))+\*\*\/
+JAVADOCS=                        \/\*\*\s*\n([^\*]|(\*[^\/]))+\*\/
 MULTILINECOMMENT=                \/\*\s*\n([^\*]|(\*[^\/]))+\*\/
 
 // YYINITIAL state can only have a limited selection of tokens that can trigger indentation
@@ -131,20 +130,6 @@ RESERVED_NAME=                  "IF"
     "*"                                                             { return ODTTypes.ASTERIX; }
     "?"                                                             { return ODTTypes.QUESTION_MARK; }
     ";"                                                             { return ODTTypes.SEMICOLON; }
-
-    // Javadocs in the Scalar are not indented but are anchored directly as leading block to the next Psi element
-    {JAVADOCS}                                                      {
-                                                                        return ODTIgnored.JAVADOCS; // can be an indent/dedent token or JAVADOCS_START
-                                                                    }
-    {MULTILINECOMMENT}                                              {
-                                                                        return ODTIgnored.MULTILINE; // can be an indent/dedent token or JAVADOCS_START
-                                                                    }
-    {END_OF_LINE_COMMENT}                                           {
-                                                                        return ODTIgnored.END_OF_LINE_COMMENT;
-                                                                    }
-    { WHITE_SPACE }+                                                {
-                                                                        return TokenType.WHITE_SPACE;
-      }
 }
 <FORCED_NAME> {
     {SYMBOL}                                                        {
@@ -154,6 +139,7 @@ RESERVED_NAME=                  "IF"
 
 <PREFIX> {
     {CURIE_PREFIX}               { yypushback(1); return ODTTypes.SYMBOL; }
+    ":"                          { return ODTTypes.COLON; }
     {IRI}                        { yybegin(YYINITIAL); return ODTTypes.IRI; }
     "<"[^>]*">"                  { return TokenType.BAD_CHARACTER; }
     { WHITE_SPACE }+             { return TokenType.WHITE_SPACE; }
@@ -172,5 +158,18 @@ RESERVED_NAME=                  "IF"
     ")"                          { yybegin(DEFINE); return ODTTypes.PARENTHESES_CLOSE; }
     { WHITE_SPACE }+             { return TokenType.WHITE_SPACE; }
 }
+{JAVADOCS}                                                      {
+                                                                    return ODTIgnored.JAVADOCS; // can be an indent/dedent token or JAVADOCS_START
+                                                                }
+{MULTILINECOMMENT}                                              {
+                                                                    return ODTIgnored.MULTILINE; // can be an indent/dedent token or JAVADOCS_START
+                                                                }
+{END_OF_LINE_COMMENT}                                           {
+                                                                    return ODTIgnored.END_OF_LINE_COMMENT;
+                                                                }
+{ WHITE_SPACE }+                                                {
+                                                                    return TokenType.WHITE_SPACE;
+                                                                }
+
 // Not all states have an escape. When the SCALAR hits a bad character it should result in a syntax error
 [^]                                                                  { return TokenType.BAD_CHARACTER; }

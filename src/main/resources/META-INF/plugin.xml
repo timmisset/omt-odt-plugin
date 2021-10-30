@@ -69,7 +69,7 @@
         <lang.parserDefinition language="ODT"
                                implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
         <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
-
+        <psi.referenceContributor language="ODT" implementation="com.misset.opp.odt.psi.reference.ODTReferenceContributor"/>
         <!-- Inspections-->
         <localInspection displayName="UnusedODTInspection"
                          groupName="ODT"

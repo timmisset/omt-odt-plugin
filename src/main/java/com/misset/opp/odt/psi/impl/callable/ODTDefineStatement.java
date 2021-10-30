@@ -4,6 +4,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.odt.psi.ODTDefineParam;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements Callable {
@@ -36,4 +37,6 @@ public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements
     public String getName() {
         return getDefineName().getText();
     }
+
+    public abstract ODTDefineParam getDefineParam();
 }
