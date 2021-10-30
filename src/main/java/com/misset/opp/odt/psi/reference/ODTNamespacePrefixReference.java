@@ -7,21 +7,20 @@ import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTDefinePrefix;
-import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTScript;
-import com.misset.opp.odt.psi.impl.ODTNamespacePrefixImpl;
+import com.misset.opp.odt.psi.impl.prefix.ODTBaseNamespacePrefix;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 import static com.misset.opp.odt.ODTMultiHostInjector.resolveInOMT;
 
-public class ODTNamespacePrefixReference extends PsiReferenceBase<ODTNamespacePrefix> implements PsiPolyVariantReference {
-    public ODTNamespacePrefixReference(@NotNull ODTNamespacePrefixImpl element) {
-        super(element, TextRange.allOf(element.getName()));
+public class ODTNamespacePrefixReference extends PsiReferenceBase.Poly<ODTBaseNamespacePrefix> implements PsiPolyVariantReference {
+    public ODTNamespacePrefixReference(@NotNull ODTBaseNamespacePrefix element) {
+        super(element, TextRange.allOf(element.getName()), false);
     }
 
     @Override
@@ -44,18 +43,17 @@ public class ODTNamespacePrefixReference extends PsiReferenceBase<ODTNamespacePr
 
         return PsiTreeUtil.findChildrenOfType(script, ODTDefinePrefix.class)
                 .stream()
-                // must have the same name
-                .filter(prefix -> Optional.ofNullable(getElement().getName())
-                        .map(s -> s.equals(prefix.getNamespacePrefix().getName()))
-                        .orElse(false))
                 .map(ODTDefinePrefix::getNamespacePrefix)
+                // must have the same name
+                .filter(namespacePrefix -> Optional.ofNullable(getElement().getName())
+                        .map(s -> s.equals(namespacePrefix.getName()))
+                        .orElse(false))
                 .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
                 .map(PsiElementResolveResult::createResults);
     }
 
     @Override
-    public @Nullable PsiElement resolve() {
-        final ResolveResult[] resolveResults = multiResolve(false);
-        return resolveResults.length == 0 ? null : resolveResults[0].getElement();
+    public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
+        return myElement.setName(newElementName);
     }
 }

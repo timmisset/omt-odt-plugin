@@ -1,7 +1,6 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
@@ -11,15 +10,14 @@ import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 import static com.misset.opp.odt.ODTMultiHostInjector.resolveInOMT;
 
-public class ODTVariableReference extends PsiReferenceBase<ODTVariable> implements PsiPolyVariantReference {
+public class ODTVariableReference extends PsiReferenceBase.Poly<ODTVariable> implements PsiPolyVariantReference {
     public ODTVariableReference(@NotNull ODTVariable element) {
-        super(element, TextRange.allOf(element.getText()));
+        super(element, TextRange.allOf(element.getText()), false);
     }
 
     @Override
@@ -41,11 +39,5 @@ public class ODTVariableReference extends PsiReferenceBase<ODTVariable> implemen
                 .filter(variable -> variable.isDeclaredVariable() && variable.canBeDeclaredVariable(myElement))
                 .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
                 .map(PsiElementResolveResult::createResults);
-    }
-
-    @Override
-    public @Nullable PsiElement resolve() {
-        final ResolveResult[] resolveResults = multiResolve(false);
-        return resolveResults.length == 0 ? null : resolveResults[0].getElement();
     }
 }
