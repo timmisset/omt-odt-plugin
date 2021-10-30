@@ -1,11 +1,13 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
@@ -49,5 +51,10 @@ public class ODTCallReference extends PsiReferenceBase.Poly<ODTBaseCall> impleme
                 .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
                 .map(ODTDefineStatement::getDefineName)
                 .map(PsiElementResolveResult::createResults);
+    }
+
+    @Override
+    public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
+        return myElement.setName(newElementName);
     }
 }

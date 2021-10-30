@@ -2,12 +2,15 @@ package com.misset.opp.odt.psi.impl.call;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.builtin.commands.BuiltinCommands;
 import com.misset.opp.callable.builtin.operators.BuiltinOperators;
+import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.ODTMultiHostInjector;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.ODTDefineName;
@@ -82,5 +85,12 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements PsiNam
     private Optional<Callable> getBuiltin() {
         return Optional.ofNullable(BuiltinCommands.builtinCommands.get(getCallId()))
                 .or(() -> Optional.ofNullable(BuiltinOperators.builtinOperators.get(getCallId())));
+    }
+
+    @Override
+    public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
+        final ODTCallName callName = ODTElementGenerator.getInstance(getProject()).createCall(name).getCallName();
+        if(callName != null) { return getCallName().replace(callName); }
+        return this;
     }
 }

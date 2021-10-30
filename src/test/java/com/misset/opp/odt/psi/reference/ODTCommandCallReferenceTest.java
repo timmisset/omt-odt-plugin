@@ -1,9 +1,11 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.junit.jupiter.api.Assertions;
@@ -61,6 +63,27 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
             final PsiElement resolve = elementByText.getReference().resolve();
             Assertions.assertTrue(resolve instanceof YAMLKeyValue);
             Assertions.assertEquals("MyActivity", ((YAMLKeyValue) resolve).getKeyText());
+        });
+    }
+
+    @Test
+    void testRefactorRenameCall() {
+        String content = "model:\n" +
+                "   MyActivity: !Activity\n" +
+                "       title: MijnActiviteit\n" +
+                "   MyOtherActivity: !Activity\n" +
+                "       onStart: |\n" +
+                "           @<caret>MyActivity();\n" +
+                "";
+        final OMTFile omtFile = configureByText(content);
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> {
+            myFixture.renameElementAtCaret("MyNewActivityName");
+            Assertions.assertEquals("model:\n" +
+                    "   MyNewActivityName: !Activity\n" +
+                    "       title: MijnActiviteit\n" +
+                    "   MyOtherActivity: !Activity\n" +
+                    "       onStart: |\n" +
+                    "           @MyNewActivityName();\n", omtFile.getText());
         });
     }
 }

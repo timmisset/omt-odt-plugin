@@ -2,11 +2,13 @@ package com.misset.opp.odt;
 
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.LocalTimeCounter;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
+import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
 import org.jetbrains.annotations.NotNull;
 
 @Service
@@ -26,10 +28,17 @@ public final class ODTElementGenerator {
         return (ODTFile) PsiFileFactory.getInstance(project)
                 .createFileFromText("temp." + ODTFileType.INSTANCE.getDefaultExtension(), ODTFileType.INSTANCE, text, LocalTimeCounter.currentTime(), true);
     }
+    public <T extends PsiElement> T fromFile(String text, Class<T> classToReturn) {
+        final ODTFile dummyOMTFileWithText = createDummyOMTFileWithText(text);
+        return PsiTreeUtil.findChildOfType(dummyOMTFileWithText, classToReturn);
+    }
 
     public ODTNamespacePrefix createNamespacePrefix(String prefix) {
-        final ODTFile dummyOMTFileWithText = createDummyOMTFileWithText(prefix + ":dummy");
-        return PsiTreeUtil.findChildOfType(dummyOMTFileWithText, ODTNamespacePrefix.class);
+        return fromFile(prefix + ":dummy", ODTNamespacePrefix.class);
+    }
+
+    public ODTBaseCall createCall(String name) {
+        return fromFile("@" + name, ODTBaseCall.class);
     }
 
 }
