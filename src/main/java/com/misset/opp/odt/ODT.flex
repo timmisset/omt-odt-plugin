@@ -18,25 +18,37 @@ import com.intellij.psi.TokenType;
 %eof{  return;
 %eof}
 
+// ODT Grammatica scanner
+
+/*
+    SYMBOL bevat niet de volledige unicode basic-latin set omdat veel karakters speciale betekenis hebben
+    in de ODT grammatica.
+*/
+
 WHITE_SPACE=                    [\n\ \f\t\ ]
 ALPHA=                          [A-Za-z]
 UNDERSCORE=                     [_]
 DIGIT=                          [0-9]
+LATIN_EXT_A=                    [\u0100-\u017F] // Zie: http://en.wikipedia.org/wiki/Latin_script_in_Unicode
+SYMBOL=                         ({ALPHA}|{DIGIT}|{LATIN_EXT_A}|[_@\-])+
+
+SCHEME=                         {ALPHA}({ALPHA}|{DIGIT}|[+.-])*
+IRI=                            "<"{SCHEME}":"({SYMBOL}|[?&#/+*.-])+">"
+SCHEMALESS_IRI=                 "<"({SYMBOL}|[?&#/+*.-])+">"
+BNODE=                          "<"{UNDERSCORE}":"({SYMBOL}|[?&#/+*.-])+">"
+
+CURIE_PREFIX=                   ({ALPHA}({ALPHA}|{DIGIT})*)?":"
+CURIE=                          {CURIE_PREFIX}{SYMBOL}
+
 STRING=                         (\"[^\"\\]*(\\.[^\"\\]*)*\")|(\'[^\'\\]*(\\.[^\'\\]*)*\')
 INTEGER=                        \-?([1-9][0-9]+|[0-9])
 DECIMAL=                        {INTEGER}\.[0-9]+
 BOOLEAN=                        "true"|"false"|"TRUE"|"FALSE"|"True"|"False"
 NULL=                           "null"
 
-LATIN_EXT_A=                    [\u0100-\u017F] // Zie: http://en.wikipedia.org/wiki/Latin_script_in_Unicode
-SYMBOL=                         ({ALPHA}|{DIGIT}|{LATIN_EXT_A}|[_@\-])+
-SCHEME=                         {ALPHA}({ALPHA}|{DIGIT}|[+.-])*
-IRI=                            "<"{SCHEME}":"({SYMBOL}|[?&#/+*.-])+">"
-INCOMPLETE_IRI=                 "<"{SCHEME}":"({SYMBOL}|[?&#/+*.-])+
 NAME=                           {ALPHA}({ALPHA}|{DIGIT}|{UNDERSCORE})*
-CURIE=                          ({NAME})?":"{SYMBOL}
 TYPED_VALUE=                    {STRING}"^^"({IRI}|{CURIE})
-VARIABLENAME=                   "$"{NAME} | "$_"
+VARIABLENAME=                   "$"{SYMBOL}
 
 // ignored
 END_OF_LINE_COMMENT=            ("#" | "\/\/")[^\r\n]*
@@ -47,23 +59,23 @@ MULTILINECOMMENT=                \/\*\s*\n([^\*]|(\*[^\/]))+\*\/
 RESERVED_NAME=                  "IF"
 
 %state FORCED_NAME
+%state PREFIX
+%state DEFINE
+%state DEFINE_PARAMS
 
 %%
 <YYINITIAL> {
-    // Firstly, we need to check if the SCALAR state is still applicable
-    // Only the indentation of the INITIAL state is recorded, so when the indentation in the SCALAR state is
-    // <= than the last recorded indentation we can exit the scalar
+    "PREFIX"                                                  { yybegin(PREFIX); return ODTTypes.PREFIX_DEFINE_START; }
+    "DEFINE"                                                  { yybegin(DEFINE); return ODTTypes.DEFINE_START; }
+
     {BOOLEAN}                                                 { return ODTTypes.BOOLEAN; }
     {NULL}                                                    { return ODTTypes.NULL; }
 
-    "DEFINE"                                                        { return ODTTypes.DEFINE_START; }
-    "QUERY"                                                         { return ODTTypes.DEFINE_QUERY; }
-    "COMMAND"                                                       { return ODTTypes.DEFINE_COMMAND; }
-    "VAR"                                                           { return ODTTypes.DECLARE_VAR; }
-    "PREFIX"                                                        { return ODTTypes.PREFIX_DEFINE_START; }
-    {VARIABLENAME}                                                  { return ODTTypes.VARIABLE_NAME; }
 
-    "!"+{NAME}                                                      { return ODTTypes.TAG; }
+    "VAR"                                                     { return ODTTypes.DECLARE_VAR; }
+    {VARIABLENAME}                                            { return ODTTypes.VARIABLE_NAME; }
+
+    "!"+{SYMBOL}                                              { return ODTTypes.TAG; }
 
     // the lambda is used for assigning the actual query/command block to it's constructor
     // and to assign a path to case condition
@@ -73,7 +85,7 @@ RESERVED_NAME=                  "IF"
     // ODT operators
     // certain operators are used for assertions and should be recognized. They can be used within querysteps (grammar part)
     // when making filters or other boolean assertions
-    "AND(" | "OR(" | "NOT("                                         { yypushback(1); return ODTTypes.NAME; }
+    "AND(" | "OR(" | "NOT("                                         { yypushback(1); return ODTTypes.SYMBOL; }
     "AND" | "OR"                                                    { return ODTTypes.BOOLEAN_OPERATOR; }
     "NOT"                                                           { return ODTTypes.NOT_OPERATOR; }
     ">=" | "<=" | "==" | ">" | "<"                                  { return ODTTypes.CONDITIONAL_OPERATOR; }
@@ -90,13 +102,12 @@ RESERVED_NAME=                  "IF"
     "RETURN"                                                        { return ODTTypes.RETURN_OPERATOR; }
 
     {IRI}                                                           { return ODTTypes.IRI; }
-    {INCOMPLETE_IRI}                                                { return TokenType.BAD_CHARACTER; }
+    {SCHEMALESS_IRI}                                                { return ODTTypes.SCHEMALESS_IRI; }
     {STRING}                                                        { return ODTTypes.STRING; }
     {INTEGER}                                                       { return ODTTypes.INTEGER; }
     {DECIMAL}                                                       { return ODTTypes.DECIMAL; }
     {TYPED_VALUE}                                                   { return ODTTypes.TYPED_VALUE; }
-    "<"{NAME}">"                                                    { return ODTTypes.OWLPROPERTY; }
-    {NAME}                                                          { return ODTTypes.NAME; }
+    {SYMBOL}                                                        { return ODTTypes.SYMBOL; }
     "|"                                                             { return ODTTypes.PIPE; }
     "@"                                                             { return ODTTypes.AT; }
     ":"                                                             { return ODTTypes.COLON; }
@@ -136,10 +147,30 @@ RESERVED_NAME=                  "IF"
       }
 }
 <FORCED_NAME> {
-    {NAME}                                                          {
+    {SYMBOL}                                                        {
           yybegin(YYINITIAL);
-          return ODTTypes.NAME; }
+          return ODTTypes.SYMBOL; }
 }
 
+<PREFIX> {
+    {CURIE_PREFIX}               { yypushback(1); return ODTTypes.SYMBOL; }
+    {IRI}                        { yybegin(YYINITIAL); return ODTTypes.IRI; }
+    "<"[^>]*">"                  { return TokenType.BAD_CHARACTER; }
+    { WHITE_SPACE }+             { return TokenType.WHITE_SPACE; }
+}
+<DEFINE> {
+    "QUERY"                      { return ODTTypes.DEFINE_QUERY; }
+    "COMMAND"                    { return ODTTypes.DEFINE_COMMAND; }
+    {SYMBOL}                     { return ODTTypes.SYMBOL; }
+    "=>"                         { yybegin(YYINITIAL); return ODTTypes.LAMBDA; }
+    "("                          { yybegin(DEFINE_PARAMS); return ODTTypes.PARENTHESES_OPEN; }
+    { WHITE_SPACE }+             { return TokenType.WHITE_SPACE; }
+}
+<DEFINE_PARAMS> {
+    {VARIABLENAME}               { return ODTTypes.VARIABLE_NAME; }
+    ","                          { return ODTTypes.COMMA; }
+    ")"                          { yybegin(DEFINE); return ODTTypes.PARENTHESES_CLOSE; }
+    { WHITE_SPACE }+             { return TokenType.WHITE_SPACE; }
+}
 // Not all states have an escape. When the SCALAR hits a bad character it should result in a syntax error
 [^]                                                                  { return TokenType.BAD_CHARACTER; }

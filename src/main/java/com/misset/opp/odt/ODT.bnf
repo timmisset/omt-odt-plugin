@@ -15,11 +15,11 @@
 
 ODTFile ::= script
 
-namespacePrefix::=                          NAME COLON {
+namespacePrefix::=                          SYMBOL COLON {
     extends="com.misset.opp.odt.psi.impl.prefix.ODTBaseNamespacePrefix"
     implements="com.intellij.psi.PsiNamedElement"
 }
-curieElement ::=                            (namespacePrefix NAME) | IRI
+curieElement ::=                            (namespacePrefix SYMBOL) | IRI
 curieConstantElement ::=                    FORWARD_SLASH curieElement queryFilter*
 
 constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE
@@ -54,12 +54,12 @@ commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
 // there is also a collection of BuiltIn operators and commands which are included
 // and finally, all runnable OMT modelitems are available as Commands (Activity, Procedure) or Operator (StandAloneQuery)
 // only the Defined members are part of set of the grammar parser
-defineName ::=                              NAME { extends="com.misset.opp.odt.psi.impl.callable.ODTDefineNameNamed" }
+defineName ::=                              SYMBOL { extends="com.misset.opp.odt.psi.impl.callable.ODTDefineNameNamed" }
 defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"}
 defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement"}
 definePrefix ::=                            PREFIX_DEFINE_START namespacePrefix IRI
 defineParam ::=                             PARENTHESES_OPEN (variable (COMMA variable)*)? PARENTHESES_CLOSE
-callName ::=                                NAME | BOOLEAN_OPERATOR
+callName ::=                                SYMBOL | BOOLEAN_OPERATOR
 // MEMBER CALLS
 // A call to either an Operator or a Command. In case of the latter, it's always prefixed with @
 operatorCall ::=                            callName flagSignature? signature? { extends="com.misset.opp.odt.psi.impl.call.ODTOperatorCallImpl" }
@@ -109,7 +109,7 @@ equationStatement ::=                       query CONDITIONAL_OPERATOR query { e
 negatedStep ::=                             NOT_OPERATOR (equationStatement | queryPath | queryArray)  { extends=query }
 
 queryStep ::=
-        (queryReverseStep | constantValue | variable | curieElement | operatorCall | IRI | DOT | OWLPROPERTY |
+        (queryReverseStep | constantValue | variable | curieElement | operatorCall | IRI | DOT | SCHEMALESS_IRI |
          chooseBlock | negatedStep | NOT_OPERATOR | subQuery | queryFilter)
 
                                             stepDecorator? queryFilter*
