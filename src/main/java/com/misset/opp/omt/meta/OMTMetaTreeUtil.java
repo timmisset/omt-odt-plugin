@@ -1,6 +1,8 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
@@ -8,8 +10,12 @@ import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class OMTMetaTreeUtil {
@@ -54,6 +60,35 @@ public class OMTMetaTreeUtil {
                 OMTLocalCommandProvider.class,
                 false,
                 Objects::isNull);
+    }
+
+    /**
+     * Walks the OMT PsiTree upwards collecting elements by their meta-type
+     */
+    public static <T> Optional<ResolveResult[]> resolveProvider(PsiElement currentElement,
+                                                                Class<T> providerClass,
+                                                                String key,
+                                                                BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
+        final LinkedHashMap<YAMLMapping, T> linkedHashMap = collectMetaParents(
+                currentElement,
+                YAMLMapping.class,
+                providerClass,
+                false,
+                Objects::isNull);
+
+        for (YAMLMapping mapping : linkedHashMap.keySet()) {
+            T provider = linkedHashMap.get(mapping);
+            final HashMap<String, List<PsiElement>> prefixMap = mapFunction.apply(provider, mapping);
+            if (prefixMap.containsKey(key)) {
+                final PsiElement element = prefixMap.get(key).get(0);
+                if (element == null) {
+                    return Optional.empty();
+                }
+                return Optional.of(PsiElementResolveResult.createResults(element));
+            }
+        }
+
+        return Optional.empty();
     }
 
 }

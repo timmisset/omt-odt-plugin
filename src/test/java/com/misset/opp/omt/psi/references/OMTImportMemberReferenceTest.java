@@ -1,8 +1,10 @@
 package com.misset.opp.omt.psi.references;
 
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.usageView.UsageInfo;
 import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 import org.junit.jupiter.api.Assertions;
@@ -62,5 +64,23 @@ class OMTImportMemberReferenceTest extends OMTTestCase {
             Assertions.assertEquals(1, usages.size());
             Assertions.assertTrue(usages.stream().findFirst().get().getReference() instanceof OMTImportMemberReference);
         }));
+    }
+
+    @Test
+    void testRenameCall() {
+        final OMTFile importingFile = configureByText("" +
+                "import:\n" +
+                "   ./importedFile.omt:\n" +
+                "   - command\n" +
+                "");
+        configureByText("importedFile.omt", "" +
+                "commands:\n" +
+                "   DEFINE COMMAND comm<caret>and => { }");
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> {
+            myFixture.renameElementAtCaret("commandNewName");
+            Assertions.assertEquals("import:\n" +
+                    "   ./importedFile.omt:\n" +
+                    "   - commandNewName\n", importingFile.getText());
+        });
     }
 }

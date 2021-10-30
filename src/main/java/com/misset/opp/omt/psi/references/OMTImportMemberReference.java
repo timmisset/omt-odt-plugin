@@ -1,10 +1,7 @@
 package com.misset.opp.omt.psi.references;
 
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.OMTImportMetaType;
@@ -17,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-public class OMTImportMemberReference extends PsiReferenceBase.Poly<YAMLPlainTextImpl> implements PsiPolyVariantReference {
+public class OMTImportMemberReference extends OMTPlainTextReference {
 
     public OMTImportMemberReference(@NotNull YAMLPlainTextImpl element) {
-        super(element, TextRange.allOf(element.getText()), false);
+        super(element);
     }
 
     @Override
