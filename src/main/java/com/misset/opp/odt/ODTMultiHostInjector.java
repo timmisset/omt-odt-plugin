@@ -11,6 +11,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
+import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLDocument;
@@ -25,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +35,8 @@ import java.util.stream.Collectors;
  * The OMTMetaTypeProvider contains the entire OMT structure and has specific Scalar types that are recognized to be injectable
  */
 public class ODTMultiHostInjector implements MultiHostInjector {
+
+    private final Pattern INTERPOLATION = Pattern.compile("\\$\\{([^}]+)}");
 
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar,
@@ -42,22 +47,52 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         final YAMLDocument document = (YAMLDocument) context;
 
         // gather all injectable scalars
-        final Collection<PsiLanguageInjectionHost> injectionHostList =
+        final Collection<YAMLScalar> injectionHostList =
                 PsiTreeUtil.findChildrenOfType(document,
                                 PsiLanguageInjectionHost.class)
                         .stream()
                         .filter(this::isODTInjectable)
+                        .map(YAMLScalar.class::cast)
                         .collect(Collectors.toList());
         // start injection
         if (!injectionHostList.isEmpty()) {
-
             injectionHostList.forEach(host -> {
-                        registrar.startInjecting(ODTLanguage.INSTANCE);
-                        registrar.addPlace(null, null, host, getTextRangeInHost(host));
-                        registrar.doneInjecting();
-                    }
-            );
+                if (isInterpolatedString(host)) {
+                    registerInterpolatedString(registrar, host);
+                } else {
+                    registerBlock(registrar, host);
+                }
+            });
         }
+    }
+
+    private boolean isInterpolatedString(YAMLScalar scalar) {
+        return Optional.ofNullable(OMTMetaTypeProvider.getInstance(scalar.getProject()).getValueMetaType(scalar))
+                .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
+                .map(OMTInterpolatedStringMetaType.class::isInstance)
+                .orElse(false);
+    }
+
+    private void registerBlock(@NotNull MultiHostRegistrar registrar,
+                               YAMLScalar scalar) {
+        registrar.startInjecting(ODTLanguage.INSTANCE);
+        registrar.addPlace(null, null, scalar, getTextRangeInHost(scalar));
+        registrar.doneInjecting();
+    }
+
+    private void registerInterpolatedString(@NotNull MultiHostRegistrar registrar,
+                                            YAMLScalar scalar) {
+        final Matcher matcher = INTERPOLATION.matcher(scalar.getText());
+        boolean b = matcher.find();
+        if(!b) { return; }
+
+        registrar.startInjecting(ODTLanguage.INSTANCE);
+        while(b) {
+            TextRange textRange = TextRange.create(matcher.start(1), matcher.end(1));
+            registrar.addPlace(null, null, scalar, textRange);
+            b = matcher.find();
+        }
+        registrar.doneInjecting();
     }
 
     private TextRange getTextRangeInHost(PsiLanguageInjectionHost host) {

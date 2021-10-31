@@ -2,10 +2,12 @@ package com.misset.opp.odt.psi.impl.call;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.util.CachedValue;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.builtin.commands.BuiltinCommands;
@@ -18,6 +20,7 @@ import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.psi.impl.OMTCallable;
+import com.misset.opp.util.CachingUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
@@ -33,6 +36,8 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements PsiNam
         super(node);
     }
 
+    private static final Key<CachedValue<Callable>> CALLABLE = new Key("CALLABLE");
+
     @Override
     public PsiReference getReference() {
         return new ODTCallReference(this, getCallName().getTextRangeInParent());
@@ -46,12 +51,13 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements PsiNam
     public abstract String getCallId();
 
     public Callable getCallable() {
-        return Optional.ofNullable(getReference())
-                .map(PsiReference::resolve)
-                .map(this::getCallable)
-                .or(this::getLocalCommand)
-                .or(this::getBuiltin)
-                .orElse(null);
+        return CachingUtil.getCachedOrCalcute(this, CALLABLE, () ->
+                Optional.ofNullable(getReference())
+                        .map(PsiReference::resolve)
+                        .map(this::getCallable)
+                        .or(this::getLocalCommand)
+                        .or(this::getBuiltin)
+                        .orElse(null));
     }
 
     @Override
@@ -60,28 +66,33 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements PsiNam
     }
 
     private Callable getCallable(PsiElement element) {
-        if(element instanceof YAMLMapping) { // resolves to OMT !Activity, !Procedure etc
+        if (element instanceof YAMLMapping) { // resolves to OMT !Activity, !Procedure etc
             return new OMTCallable((YAMLMapping) element);
-        } else if(element instanceof ODTDefineName) {
-            return (ODTDefineStatement)element.getParent();
+        } else if (element instanceof ODTDefineName) {
+            return (ODTDefineStatement) element.getParent();
         } else {
             return null;
         }
     }
+
     private Optional<Callable> getLocalCommand() {
         final YAMLPsiElement injectionHost = ODTMultiHostInjector.getInjectionHost(this);
-        if(injectionHost == null) { return Optional.empty(); }
+        if (injectionHost == null) {
+            return Optional.empty();
+        }
 
-        final LinkedHashMap<YAMLMapping, OMTLocalCommandProvider> linkedHashMap = collectLocalCommandProviders(injectionHost);
-        for(YAMLMapping mapping : linkedHashMap.keySet()) {
+        final LinkedHashMap<YAMLMapping, OMTLocalCommandProvider> linkedHashMap = collectLocalCommandProviders(
+                injectionHost);
+        for (YAMLMapping mapping : linkedHashMap.keySet()) {
             OMTLocalCommandProvider callableProvider = linkedHashMap.get(mapping);
             final HashMap<String, Callable> callableMap = callableProvider.getLocalCommandsMap();
-            if(callableMap.containsKey(getCallId())) {
+            if (callableMap.containsKey(getCallId())) {
                 return Optional.of(callableMap.get(getCallId()));
             }
         }
         return Optional.empty();
     }
+
     private Optional<Callable> getBuiltin() {
         return Optional.ofNullable(BuiltinCommands.builtinCommands.get(getCallId()))
                 .or(() -> Optional.ofNullable(BuiltinOperators.builtinOperators.get(getCallId())));
@@ -90,7 +101,9 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements PsiNam
     @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
         final ODTCallName callName = ODTElementGenerator.getInstance(getProject()).createCall(name).getCallName();
-        if(callName != null) { return getCallName().replace(callName); }
+        if (callName != null) {
+            return getCallName().replace(callName);
+        }
         return this;
     }
 }

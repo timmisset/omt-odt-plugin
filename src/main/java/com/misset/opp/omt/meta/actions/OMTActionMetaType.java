@@ -3,13 +3,13 @@ package com.misset.opp.omt.meta.actions;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
+import com.misset.opp.omt.meta.model.scalars.ODTBooleanQueryType;
 import com.misset.opp.omt.meta.model.scalars.ODTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.meta.model.YamlStringType;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -24,12 +24,12 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
         features.put("id", YamlStringType::new);
         features.put("title", OMTInterpolatedStringMetaType::new);
         features.put("description", OMTInterpolatedStringMetaType::new);
-        features.put("promoteSubMenuItemToMainMenu", () -> new YamlBooleanType("promoteSubMenuItemToMainMenu"));
+        features.put("promoteSubMenuItemToMainMenu", ODTBooleanQueryType::new);
         features.put("icon", YamlStringType::new);
         features.put("params", OMTParamsArrayMetaType::new);
         features.put("precondition", ODTQueryMetaType::new);
-        features.put("disabled", () -> new YamlBooleanType("disabled"));
-        features.put("busyDisabled", () -> new YamlBooleanType("disabled"));
+        features.put("disabled", ODTBooleanQueryType::new);
+        features.put("busyDisabled", ODTBooleanQueryType::new);
         features.put("dynamicActionQuery", ODTQueryMetaType::new);
         features.put("onSelect", OMTScriptMetaType::new);
     }
@@ -39,7 +39,7 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
 
     @Override
     protected HashMap<String, Supplier<YamlMetaType>> getFeatures() {
-        return null;
+        return features;
     }
 
     @Override

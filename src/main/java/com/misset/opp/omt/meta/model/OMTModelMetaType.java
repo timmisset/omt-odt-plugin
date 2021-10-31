@@ -16,7 +16,7 @@ import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.add
 public class OMTModelMetaType extends OMTMetaMapType implements OMTCallableProvider {
 
     public OMTModelMetaType() {
-        super("ModelItem");
+        super("Model");
     }
 
     @Override

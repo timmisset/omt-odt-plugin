@@ -1,6 +1,5 @@
 package com.misset.opp.omt.meta.model.variables;
 
-import com.intellij.openapi.util.TextRange;
 import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.model.scalars.ODTQueryMetaType;
@@ -22,7 +21,7 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements ODTInje
 
     static {
         features.put("name", OMTVariableNameMetaType::new);
-        features.put("readonly", () -> new YamlBooleanType("readonly"));
+        features.put("readonly", YamlBooleanType::getSharedInstance);
         features.put("value", ODTQueryMetaType::new);
         features.put("onChange", ODTOnChangeScriptMetaType::new);
     }
@@ -52,11 +51,5 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements ODTInje
     @Override
     protected String getShorthandSyntaxError(YAMLValue value) {
         return SYNTAX_ERROR;
-    }
-
-    public TextRange getNamedTextRange(YAMLValue value) {
-        int startIndex = 0;
-        int endIndex = value.getText().contains(" ") ? value.getText().indexOf(" ") : value.getTextLength();
-        return TextRange.create(startIndex, endIndex);
     }
 }

@@ -2,11 +2,11 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.Callable;
-import com.misset.opp.omt.meta.arrays.OMTActionsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTWatchersArrayMetaType;
+import com.misset.opp.omt.meta.model.OMTActionsMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
 import com.misset.opp.omt.meta.model.OMTPayloadMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
@@ -61,7 +61,7 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
         features.put("onCancel", OMTScriptMetaType::new);
         features.put("onDone", OMTScriptMetaType::new);
         features.put("returns", ODTQueryMetaType::new);
-        features.put("actions", OMTActionsArrayMetaType::new);
+        features.put("actions", OMTActionsMetaType::new);
         features.put("reason", OMTReasonMetaType::new);
         features.put("payload", OMTPayloadMetaType::new);
     }

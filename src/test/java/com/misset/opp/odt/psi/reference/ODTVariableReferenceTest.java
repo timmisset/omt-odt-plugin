@@ -4,6 +4,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.omt.psi.OMTFile;
@@ -78,6 +79,22 @@ class ODTVariableReferenceTest extends OMTTestCase {
     }
 
     @Test
+    void testODTAssignmentValueReferenceToOMT() {
+        String content = insideActivityWithPrefixes(
+                "params:\n" +
+                        "- $te<caret>st\n" +
+                        "variables:\n" +
+                        "- $another = $test\n"
+        );
+        configureByText(content);
+        withProgress(() -> ReadAction.run(() ->
+                Assertions.assertEquals(1, ReferencesSearch.search(myFixture.getElementAtCaret())
+                        .findAll()
+                        .size())));
+
+    }
+
+    @Test
     void testODTReferenceToShadowed() {
         String content = insideActivityWithPrefixes(
                 "variables:\n" +
@@ -110,9 +127,9 @@ class ODTVariableReferenceTest extends OMTTestCase {
             myFixture.renameElementAtCaret("$newName");
             Assertions.assertEquals(insideActivityWithPrefixes(
                     "variables:\n" +
-                    "- $newName\n" +
-                    "payload:\n" +
-                    "   test: $newName\n"), omtFile.getText());
+                            "- $newName\n" +
+                            "payload:\n" +
+                            "   test: $newName\n"), omtFile.getText());
         });
     }
 

@@ -1,9 +1,9 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.omt.meta.arrays.OMTActionsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTWatchersArrayMetaType;
+import com.misset.opp.omt.meta.model.OMTActionsMetaType;
 import com.misset.opp.omt.meta.model.OMTBindingMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
 import com.misset.opp.omt.meta.model.OMTPayloadMetaType;
@@ -43,7 +43,7 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
         features.put("queries", ODTQueriesMetaType::new);
         features.put("commands", ODTCommandsMetaType::new);
         features.put("onInit", OMTScriptMetaType::new);
-        features.put("actions", OMTActionsArrayMetaType::new);
+        features.put("actions", OMTActionsMetaType::new);
         features.put("payload", OMTPayloadMetaType::new);
         features.put("rules", OMTRulesMetaType::new);
     }

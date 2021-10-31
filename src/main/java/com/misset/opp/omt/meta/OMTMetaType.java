@@ -40,7 +40,9 @@ public abstract class OMTMetaType extends YamlMetaType {
 
     @Override
     public @NotNull List<Field> computeKeyCompletions(@Nullable YAMLMapping existingMapping) {
-        return getFeatures().keySet()
+        final HashMap<String, Supplier<YamlMetaType>> features = getFeatures();
+        if(features == null) { return Collections.emptyList(); }
+        return features.keySet()
                 .stream()
                 .map(this::findFeatureByName)
                 .collect(Collectors.toList());

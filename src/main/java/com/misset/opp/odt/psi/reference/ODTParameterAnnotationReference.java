@@ -40,13 +40,14 @@ public class ODTParameterAnnotationReference extends PsiReferenceBase.Poly<PsiCo
                 final List<ODTVariable> odtVariables = Optional.ofNullable(defineStatement.getDefineParam())
                         .map(ODTDefineParam::getVariableList)
                         .orElse(Collections.emptyList());
-                return PsiElementResolveResult
-                        .createResults(odtVariables
-                                .stream()
-                                .filter(variable -> name.equals(variable.getName()))
-                                .findFirst().orElse(null));
+                return odtVariables
+                        .stream()
+                        .filter(variable -> name.equals(variable.getName()))
+                        .findFirst()
+                        .map(PsiElementResolveResult::createResults)
+                        .orElse(ResolveResult.EMPTY_ARRAY);
             }
         }
-        return new ResolveResult[0];
+        return ResolveResult.EMPTY_ARRAY;
     }
 }
