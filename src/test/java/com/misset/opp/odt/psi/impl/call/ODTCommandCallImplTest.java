@@ -15,10 +15,7 @@ class ODTCommandCallImplTest extends OMTTestCase {
                 "   @<caret>COMMIT();\n" +
                 "");
         configureByText(content);
-        ReadAction.run(() -> {
-            final ODTCommandCallImpl commit = myFixture.findElementByText("@COMMIT", ODTCommandCallImpl.class);
-            Assertions.assertTrue(commit.getCallable() instanceof LocalCommand);
-        });
+        ReadAction.run(() -> Assertions.assertTrue(getCallByName("@COMMIT").getCallable() instanceof LocalCommand));
     }
 
     @Test
@@ -27,10 +24,7 @@ class ODTCommandCallImplTest extends OMTTestCase {
                 "   @<caret>LOG('hello world');\n" +
                 "");
         configureByText(content);
-        ReadAction.run(() -> {
-            final ODTCommandCallImpl commit = myFixture.findElementByText("@LOG", ODTCommandCallImpl.class);
-            Assertions.assertTrue(commit.getCallable() instanceof BuiltInCommand);
-        });
+        ReadAction.run(() -> Assertions.assertTrue(getCallByName("@LOG").getCallable() instanceof BuiltInCommand));
     }
 
 }

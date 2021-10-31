@@ -25,4 +25,9 @@ class ODTLexerDefineTest extends ODTLexerTestCase {
         noBadCharacter("DEFINE COMMAND command => { RETURN 'hello world'; }");
     }
 
+    @Test
+    void testDefinePrefix() {
+        noBadCharacter("PREFIX abc: <http://abc.com>");
+        noBadCharacter("PREFIX : <http://abc.com>");
+    }
 }

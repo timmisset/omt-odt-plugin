@@ -138,8 +138,8 @@ RESERVED_NAME=                  "IF"
 }
 
 <PREFIX> {
-    {CURIE_PREFIX}               { yypushback(1); return ODTTypes.SYMBOL; }
     ":"                          { return ODTTypes.COLON; }
+    {CURIE_PREFIX}               { yypushback(1); return ODTTypes.SYMBOL; }
     {IRI}                        { yybegin(YYINITIAL); return ODTTypes.IRI; }
     "<"[^>]*">"                  { return TokenType.BAD_CHARACTER; }
     { WHITE_SPACE }+             { return TokenType.WHITE_SPACE; }

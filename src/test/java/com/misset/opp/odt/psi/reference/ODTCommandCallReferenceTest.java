@@ -3,8 +3,8 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -22,11 +22,8 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
                         ""
         );
         configureByText(content);
-        ReadAction.run(() -> {
-            final ODTCommandCall elementByText = myFixture.findElementByText("@commandA", ODTCommandCall.class);
-            // is resolved to the defined variable
-            Assertions.assertTrue(elementByText.getReference().resolve() instanceof ODTDefineName);
-        });
+        // is resolved to the defined variable
+        ReadAction.run(() -> Assertions.assertTrue(getCallByName("@commandA").getReference().resolve() instanceof ODTDefineName));
     }
 
     @Test
@@ -40,11 +37,8 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
                         ""
         );
         configureByText(content);
-        ReadAction.run(() -> {
-            final ODTCommandCall elementByText = myFixture.findElementByText("@commandA", ODTCommandCall.class);
-            // is resolved to the defined variable
-            Assertions.assertTrue(elementByText.getReference().resolve() instanceof ODTDefineName);
-        });
+        // is resolved to the defined variable
+        ReadAction.run(() -> Assertions.assertTrue(getCallByName("@commandA").getReference().resolve() instanceof ODTDefineName));
     }
 
     @Test
@@ -58,7 +52,7 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
                 "";
         configureByText(content);
         ReadAction.run(() -> {
-            final ODTCommandCall elementByText = myFixture.findElementByText("@MyActivity", ODTCommandCall.class);
+            final ODTBaseCall elementByText = getCallByName("@MyActivity");
             // is resolved to the defined variable
             final PsiElement resolve = elementByText.getReference().resolve();
             Assertions.assertTrue(resolve instanceof YAMLKeyValue);
