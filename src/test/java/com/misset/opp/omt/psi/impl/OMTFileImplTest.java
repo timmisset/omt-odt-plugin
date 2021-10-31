@@ -59,11 +59,21 @@ class OMTFileImplTest extends OMTTestCase {
 
         String importingFile = "import:\n" +
                 "   ./importedFile.omt:\n" +
-                "   - MyActivity\n";
+                "   - MyActivity\n" +
+                "" +
+                "queries: |\n" +
+                "   /**\n" +
+                "     * bla bla bla\n" +
+                "     */\n" +
+                "   DEFINE QUERY query => 'hello world';\n" +
+                "";
         final OMTFile omtFile = configureByText(importingFile);
         final HashMap<String, List<PsiElement>> exportingMembersMap = omtFile.getExportingMembersMap();
         Assertions.assertTrue(exportingMembersMap.containsKey("@MyActivity"));
+        Assertions.assertTrue(exportingMembersMap.containsKey("query"));
         Assertions.assertNotNull(exportingMembersMap.get("@MyActivity"));
+
+
     }
 
 }

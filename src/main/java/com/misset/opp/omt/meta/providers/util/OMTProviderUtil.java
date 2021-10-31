@@ -30,7 +30,6 @@ public class OMTProviderUtil {
         return Optional.ofNullable(injectedPsiFiles)
                 .map(pairs -> pairs.get(0))
                 .map(pair -> pair.getFirst())
-                .map(PsiElement::getFirstChild)
                 .map(element ->
                                 contentClass.isAssignableFrom(element.getClass()) ? Collections.singletonList(contentClass.cast(element)) :
                         PsiTreeUtil.findChildrenOfType(element, contentClass))
