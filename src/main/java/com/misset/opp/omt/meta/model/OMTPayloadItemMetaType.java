@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model;
 
-import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.ODTInjectable;
+import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.model.scalars.ODTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.references.OMTPayloadQueryReferenceMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTOnChangeScriptMetaType;
@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class OMTPayloadItemMetaType extends OMTMetaType implements ODTInjectable {
+@ODTInjectable
+public class OMTPayloadItemMetaType extends OMTMetaType {
     private static final Set<String> requiredFeatures = Set.of("value");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {

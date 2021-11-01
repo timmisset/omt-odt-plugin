@@ -14,7 +14,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-public class OMTVariableMetaType extends OMTMetaShorthandType implements ODTInjectable {
+@ODTInjectable
+public class OMTVariableMetaType extends OMTMetaShorthandType {
 
     private static final Set<String> requiredFeatures = Set.of("name");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();

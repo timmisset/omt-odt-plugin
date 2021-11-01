@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-public class OMTBindingItemMetaType extends OMTMetaShorthandType implements ODTInjectable {
+@ODTInjectable
+public class OMTBindingItemMetaType extends OMTMetaShorthandType {
     private static final Pattern SHORTHAND = Pattern.compile("^\\s*(\\$\\w+)\\s*(?:\\(\\s*(sync|input|output)\\s*\\))?$");
     protected static final String SYNTAX_ERROR = "Invalid syntax for parameter shorthand, use: '$name (sync|input|output)' OR $name'";
 

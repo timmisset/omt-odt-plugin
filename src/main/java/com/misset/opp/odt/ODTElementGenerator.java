@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 @Service
 public final class ODTElementGenerator {
 
-    private Project project;
+    private final Project project;
     public ODTElementGenerator(Project project) {
         this.project = project;
     }

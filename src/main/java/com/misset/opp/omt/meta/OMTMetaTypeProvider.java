@@ -26,10 +26,7 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
 
     private static final ModificationTracker YAML_MODIFICATION_TRACKER = ModificationTracker.EVER_CHANGED;
 
-    /**
-     * Required constructor for @Service implementation
-     */
-    public OMTMetaTypeProvider(Project _project) {
+    public OMTMetaTypeProvider() {
         super(getRoot::apply, YAML_MODIFICATION_TRACKER);
     }
 

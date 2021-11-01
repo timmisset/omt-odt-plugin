@@ -118,7 +118,7 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         final YAMLScalar scalar = (YAMLScalar) host;
         return Optional.ofNullable(OMTMetaTypeProvider.getInstance(host.getProject()).getValueMetaType(scalar))
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
-                .map(ODTInjectable.class::isInstance)
+                .map(metaType -> metaType.getClass().isAnnotationPresent(ODTInjectable.class))
                 .orElse(false);
     }
 
