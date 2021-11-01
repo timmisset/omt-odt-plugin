@@ -7,8 +7,6 @@ import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 
 import java.util.Optional;
-
-import static com.misset.opp.util.CachingUtil.getCachedOrCalcute;
 public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
 
     public ODTVariableAssignmentDelegate(ODTVariable element) {
@@ -17,13 +15,11 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
 
     @Override
     public boolean isDeclaredVariable() {
-        return getCachedOrCalcute(element, IS_DECLARED_VARIABLE, () -> {
-            if(isAssignmentPart()) { return false; }
-            return isOMTVariableProvider() || Optional.ofNullable(element.getParent())
-                    .map(PsiElement::getParent)
-                    .map(ODTDeclareVariable.class::isInstance)
-                    .orElse(Boolean.FALSE);
-        });
+        if(isAssignmentPart()) { return false; }
+        return isOMTVariableProvider() || Optional.ofNullable(element.getParent())
+                .map(PsiElement::getParent)
+                .map(ODTDeclareVariable.class::isInstance)
+                .orElse(Boolean.FALSE);
     }
 
     @Override

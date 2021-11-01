@@ -4,8 +4,6 @@ import com.intellij.psi.PsiReference;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 
-import static com.misset.opp.util.CachingUtil.getCachedOrCalcute;
-
 public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
 
     public ODTUsedVariableDelegate(ODTVariable element) {
@@ -14,7 +12,7 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
 
     @Override
     public boolean isDeclaredVariable() {
-        return getCachedOrCalcute(element, IS_DECLARED_VARIABLE, () -> !isAssignmentPart() && isOMTVariableProvider());
+        return !isAssignmentPart() && isOMTVariableProvider();
     }
 
     @Override

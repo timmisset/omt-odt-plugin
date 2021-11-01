@@ -4,6 +4,7 @@
 package com.misset.opp.omt.inspection;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
@@ -11,7 +12,6 @@ import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.meta.impl.YamlMetaTypeInspectionBase;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -19,11 +19,16 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import static com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBOL;
 
 @ApiStatus.Internal
-public class OMTUnusedInspection extends YamlMetaTypeInspectionBase {
+public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
 
     @Override
     protected @Nullable YamlMetaTypeProvider getMetaTypeProvider(@NotNull ProblemsHolder holder) {
         return OMTMetaTypeProvider.getInstance(holder.getProject());
+    }
+
+    @Override
+    Logger getLogger() {
+        return Logger.getInstance(OMTUnusedInspection.class);
     }
 
     @Override
@@ -63,7 +68,7 @@ public class OMTUnusedInspection extends YamlMetaTypeInspectionBase {
             }
             final boolean callable = ((OMTModelItemMetaType) meta.getMetaType()).isCallable((YAMLMapping) keyValue.getValue());
 
-            if (callable && ReferencesSearch.search(keyValue).allowParallelProcessing().findAll().isEmpty()) {
+            if (callable && ReferencesSearch.search(keyValue, keyValue.getUseScope()).findFirst() == null) {
                 myProblemsHolder.registerProblem(
                         keyValue.getKey(),
                         keyValue.getKeyText() + " is never used",

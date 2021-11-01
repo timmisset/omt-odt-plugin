@@ -76,6 +76,7 @@
                          language="ODT"
                          enabledByDefault="true"
                          level="WARNING"
+
                          implementationClass="com.misset.opp.odt.inspection.ODTUnusedInspection"/>
         />
     </extensions>

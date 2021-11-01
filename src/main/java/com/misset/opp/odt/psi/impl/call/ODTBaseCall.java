@@ -3,11 +3,14 @@ package com.misset.opp.odt.psi.impl.call;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.builtin.commands.BuiltinCommands;
@@ -20,7 +23,6 @@ import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.psi.impl.OMTCallable;
-import com.misset.opp.util.CachingUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
@@ -51,13 +53,15 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements PsiNam
     public abstract String getCallId();
 
     public Callable getCallable() {
-        return CachingUtil.getCachedOrCalcute(this, CALLABLE, () ->
-                Optional.ofNullable(getReference())
-                        .map(PsiReference::resolve)
-                        .map(this::getCallable)
-                        .or(this::getLocalCommand)
-                        .or(this::getBuiltin)
-                        .orElse(null));
+        return CachedValuesManager.getCachedValue(this, CALLABLE, () -> {
+            final Callable callable = Optional.ofNullable(getReference())
+                    .map(PsiReference::resolve)
+                    .map(this::getCallable)
+                    .or(this::getLocalCommand)
+                    .or(this::getBuiltin)
+                    .orElse(null);
+            return new CachedValueProvider.Result<>(callable, callable instanceof PsiElement ? callable : ModificationTracker.NEVER_CHANGED);
+        });
     }
 
     @Override

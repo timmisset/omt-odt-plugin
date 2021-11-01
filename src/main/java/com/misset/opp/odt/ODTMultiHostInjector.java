@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
@@ -130,12 +131,12 @@ public class ODTMultiHostInjector implements MultiHostInjector {
      * Returns the YamlScalar which is the host for the entire ODT file that the provided element is part of
      */
     public static YAMLPsiElement getInjectionHost(PsiElement element) {
-        final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(element.getProject());
-        final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(element.getContainingFile());
-        if (!(injectionHost instanceof YAMLPsiElement)) {
-            return null;
-        }
-        return (YAMLPsiElement) injectionHost;
+        return Optional.ofNullable(element)
+                .map(PsiElement::getContainingFile)
+                .filter(ODTFile.class::isInstance)
+                .map(ODTFile.class::cast)
+                .map(ODTFile::getHost)
+                .orElse(null);
     }
 
     /**

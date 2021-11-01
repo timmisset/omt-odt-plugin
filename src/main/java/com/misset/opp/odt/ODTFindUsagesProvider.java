@@ -15,7 +15,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 public class ODTFindUsagesProvider implements FindUsagesProvider {
-    public static final Predicate<PsiElement> CHECK_CAN_FIND_USAGES = element -> element instanceof ODTDefineName ||
+    public static final Predicate<PsiElement> CHECK_CAN_FIND_USAGES = element ->
+            element instanceof ODTDefineName ||
             isDeclaredVariable(element);
 
     @Override
@@ -27,8 +28,7 @@ public class ODTFindUsagesProvider implements FindUsagesProvider {
         if (!(psiElement instanceof ODTVariable)) {
             return false;
         }
-        final ODTVariable variable = (ODTVariable) psiElement;
-        return variable.isDeclaredVariable();
+        return ((ODTVariable) psiElement).isDeclaredVariable();
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.util.IntentionFamilyName;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
@@ -29,6 +30,12 @@ public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase 
     private static final Pattern WRAPPED_IMPORT = Pattern.compile("['\"]\\.[^'\"]+['\"]");
     protected static final String UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT = "Unnecessary wrapping of import statement";
     protected static final String UNWRAP_LOCAL_QUICKFIX_FAMILY_NAME = "Unwrap";
+
+
+    @Override
+    Logger getLogger() {
+        return Logger.getInstance(OMTUnnecessaryWrappingInspection.class);
+    }
 
     @Override
     @Nullable

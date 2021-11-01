@@ -3,13 +3,22 @@ package com.misset.opp.odt.psi.impl.variable;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.ODTMultiHostInjector;
 import com.misset.opp.odt.psi.ODTDeclareVariable;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTVariable;
@@ -31,6 +40,8 @@ import java.util.Optional;
  */
 public abstract class ODTBaseVariable extends ASTWrapperPsiElement implements ODTVariable {
     private final ODTVariableDelegate delegate;
+    private static final Key<CachedValue<SearchScope>> USAGE_SEARCH_SCOPE = new Key<>("USAGE_SEARCH_SCOPE");
+    protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
 
     public ODTBaseVariable(@NotNull ASTNode node) {
         super(node);
@@ -64,7 +75,9 @@ public abstract class ODTBaseVariable extends ASTWrapperPsiElement implements OD
     }
 
     public boolean isDeclaredVariable() {
-        return delegate.isDeclaredVariable();
+        return CachedValuesManager.getCachedValue(this,
+                IS_DECLARED_VARIABLE,
+                () -> new CachedValueProvider.Result<>(delegate.isDeclaredVariable(), ModificationTracker.NEVER_CHANGED));
     }
 
     public boolean canBeDeclaredVariable(ODTVariable variable) {
@@ -95,5 +108,15 @@ public abstract class ODTBaseVariable extends ASTWrapperPsiElement implements OD
     @Override
     public PsiReference getReference() {
         return delegate.getReference();
+    }
+
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        return CachedValuesManager.getCachedValue(this, USAGE_SEARCH_SCOPE, () -> {
+            PsiFile file = Optional.ofNullable(ODTMultiHostInjector.getInjectionHost(this))
+                    .map(PsiElement::getContainingFile)
+                    .orElse(getContainingFile());
+            return new CachedValueProvider.Result<>(GlobalSearchScope.fileScope(file), ModificationTracker.NEVER_CHANGED);
+        });
     }
 }

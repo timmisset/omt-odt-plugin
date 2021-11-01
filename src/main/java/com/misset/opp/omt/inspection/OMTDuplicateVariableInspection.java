@@ -1,13 +1,13 @@
 package com.misset.opp.omt.inspection;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.meta.impl.YamlMetaTypeInspectionBase;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -15,7 +15,7 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import java.util.HashMap;
 import java.util.List;
 
-public class OMTDuplicateVariableInspection extends YamlMetaTypeInspectionBase {
+public class OMTDuplicateVariableInspection extends OMTMetaTypeInspectionBase {
 
     @Override
     protected @Nullable YamlMetaTypeProvider getMetaTypeProvider(@NotNull ProblemsHolder holder) {
@@ -23,10 +23,16 @@ public class OMTDuplicateVariableInspection extends YamlMetaTypeInspectionBase {
     }
 
     @Override
+    Logger getLogger() {
+        return Logger.getInstance(OMTDuplicateVariableInspection.class);
+    }
+
+    @Override
     protected @NotNull PsiElementVisitor doBuildVisitor(@NotNull ProblemsHolder holder,
                                                         @NotNull YamlMetaTypeProvider metaTypeProvider) {
         return new StructureChecker(holder, metaTypeProvider);
     }
+
 
     protected class StructureChecker extends SimpleYamlPsiVisitor {
         private final YamlMetaTypeProvider yamlMetaTypeProvider;

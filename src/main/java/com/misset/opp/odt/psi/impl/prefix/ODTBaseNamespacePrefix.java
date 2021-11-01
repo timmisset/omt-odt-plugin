@@ -33,4 +33,6 @@ public abstract class ODTBaseNamespacePrefix extends ASTWrapperPsiElement implem
         if(getParent() instanceof ODTDefinePrefix) { return null; }
         return new ODTNamespacePrefixReference(this);
     }
+
+
 }
