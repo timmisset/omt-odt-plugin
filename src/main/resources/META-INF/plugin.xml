@@ -70,7 +70,11 @@
                                implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
         <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
         <psi.referenceContributor language="ODT" implementation="com.misset.opp.odt.psi.reference.ODTReferenceContributor"/>
-        <!-- Inspections-->
+        <lang.syntaxHighlighter language="ODT" implementationClass="com.misset.opp.odt.syntax.ODTSyntaxHighlighter"/>
+        <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
+        <!-- Annotations -->
+        <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
+        <!-- Inspections -->
         <localInspection displayName="UnusedODTInspection"
                          groupName="ODT"
                          language="ODT"
