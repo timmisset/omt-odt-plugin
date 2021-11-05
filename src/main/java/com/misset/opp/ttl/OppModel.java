@@ -101,6 +101,17 @@ public class OppModel {
         XSD_NUMBER_INSTANCE = model.createIndividual(XSD_NUMBER);
     }
 
+    public OntResource parsePrimitive(String description) {
+        if("string".equals(description)) {
+            return XSD_STRING_INSTANCE;
+        } else if("boolean".equals(description)) {
+            return XSD_NUMBER_INSTANCE;
+        } else if("number".equals(description)) {
+            return XSD_NUMBER_INSTANCE;
+        }
+        return OWL_THING; // unknown
+    }
+
     private void loadSimpleModel() {
         listClasses().forEach(this::loadSimpleModelClass);
     }
@@ -294,9 +305,8 @@ public class OppModel {
     public OntResource createResource(String uri) {
         return model.createOntResource(uri);
     }
-
-    public Individual createIndividual(Resource resource) {
-        return model.createIndividual(resource.getURI() + "_1", getClass(resource));
+    public OntResource getResource(Resource resource) {
+        return model.getOntResource(resource);
     }
 
     public OntClass getClass(Resource resource) {

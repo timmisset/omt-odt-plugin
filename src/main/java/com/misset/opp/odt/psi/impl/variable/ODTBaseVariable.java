@@ -28,9 +28,11 @@ import com.misset.opp.odt.psi.impl.variable.delegate.ODTDeclaredVariableDelegate
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsedVariableDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableAssignmentDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * The behavior of variables is quite specific depending on them being a declaration, usage or (re)assignment
@@ -108,6 +110,15 @@ public abstract class ODTBaseVariable extends ASTWrapperPsiElement implements OD
     @Override
     public PsiReference getReference() {
         return delegate.getReference();
+    }
+
+    @Override
+    public Set<OntResource> getType() {
+        return delegate.getType();
+    }
+
+    public boolean isOMTVariableProvider() {
+        return delegate.isOMTVariableProvider();
     }
 
     @Override

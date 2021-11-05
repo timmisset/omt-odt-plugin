@@ -17,15 +17,9 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
     @Override
     public String getFullyQualifiedUri() {
         final ODTNamespacePrefixImpl namespacePrefix = (ODTNamespacePrefixImpl) getNamespacePrefix();
-        final String fullyQualified;
-        if (namespacePrefix != null) {
-            fullyQualified = namespacePrefix.getFullyQualified(
-                    Optional.ofNullable(PsiTreeUtil.nextVisibleLeaf(namespacePrefix))
-                            .map(PsiElement::getText)
-                            .orElse(""));
-        } else {
-            fullyQualified = getText().substring(1, getTextLength() - 1);
-        }
-        return fullyQualified;
+        return namespacePrefix.getFullyQualifiedUri(
+                Optional.ofNullable(PsiTreeUtil.nextVisibleLeaf(namespacePrefix))
+                        .map(PsiElement::getText)
+                        .orElse(""));
     }
 }

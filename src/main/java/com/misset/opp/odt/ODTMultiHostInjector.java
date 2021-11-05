@@ -18,6 +18,7 @@ import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLDocument;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
+import org.jetbrains.yaml.psi.YAMLQuotedText;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
@@ -77,18 +78,31 @@ public class ODTMultiHostInjector implements MultiHostInjector {
     private void registerBlock(@NotNull MultiHostRegistrar registrar,
                                YAMLScalar scalar) {
         registrar.startInjecting(ODTLanguage.INSTANCE);
-        registrar.addPlace(null, null, scalar, getTextRangeInHost(scalar));
+        registrar.addPlace(getPrefix(scalar), getSuffix(scalar), scalar, getTextRangeInHost(scalar));
         registrar.doneInjecting();
     }
 
+    private String getPrefix(YAMLScalar scalar) {
+        /*
+            The Quotes are forced, the injection will otherwise trim them, even when the full TextRange is suggested
+         */
+        if(scalar instanceof YAMLQuotedText) { return scalar.getText().substring(0, 1); }
+        return null;
+    }
+    private String getSuffix(YAMLScalar scalar) {
+        if(scalar instanceof YAMLQuotedText) { return scalar.getText().substring(scalar.getTextLength() - 1); }
+        return null;
+    }
     private void registerInterpolatedString(@NotNull MultiHostRegistrar registrar,
                                             YAMLScalar scalar) {
         final Matcher matcher = INTERPOLATION.matcher(scalar.getText());
         boolean b = matcher.find();
-        if(!b) { return; }
+        if (!b) {
+            return;
+        }
 
         registrar.startInjecting(ODTLanguage.INSTANCE);
-        while(b) {
+        while (b) {
             TextRange textRange = TextRange.create(matcher.start(1), matcher.end(1));
             registrar.addPlace(null, null, scalar, textRange);
             b = matcher.find();

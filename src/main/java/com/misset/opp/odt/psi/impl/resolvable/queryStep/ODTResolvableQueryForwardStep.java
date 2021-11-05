@@ -12,7 +12,7 @@ import java.util.Set;
  * Forward model traversion
  * Requires a fully qualified URI as predicate to traverse from the previous step (subject) into the next (object)
  */
-public abstract class ODTResolvableQueryForwardStep extends ODTResolvableTraverseStep {
+public abstract class ODTResolvableQueryForwardStep extends ODTResolvableUriStep {
 
     public ODTResolvableQueryForwardStep(@NotNull ASTNode node) {
         super(node);

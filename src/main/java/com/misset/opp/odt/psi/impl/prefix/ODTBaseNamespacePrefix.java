@@ -38,9 +38,9 @@ public abstract class ODTBaseNamespacePrefix extends ASTWrapperPsiElement implem
     }
 
     /**
-     * Returns a fully qualified iri by resolving the prefix to a namespace and appending the localname
+     * Returns a fully qualified URI by resolving the prefix to a namespace and appending the localname
      */
-    public String getFullyQualified(String localName) {
+    public String getFullyQualifiedUri(String localName) {
         return Optional.ofNullable(getReference())
                 .map(PsiReference::resolve)
                 .filter(YAMLKeyValue.class::isInstance)

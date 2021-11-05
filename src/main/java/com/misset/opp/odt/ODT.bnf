@@ -149,6 +149,7 @@ queryStep ::=
  }
 variableStep ::= variable {
     extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableVariableStep"
 }
 iriStep ::= IRI {
     extends=queryStep
@@ -156,7 +157,7 @@ iriStep ::= IRI {
 }
 identifierStep ::= DOT { extends=queryStep }
 schemalessIriStep ::= SCHEMALESS_IRI { extends=queryStep }
-curieElement ::=                            (namespacePrefix SYMBOL) | IRI {
+curieElement ::=                            namespacePrefix SYMBOL {
     extends=queryStep
     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableCurieElementStep"
 }

@@ -10,7 +10,7 @@ public abstract class ODTResolvableIriStep extends ODTResolvableQueryForwardStep
     }
 
     @Override
-    String getFullyQualifiedUri() {
+    public String getFullyQualifiedUri() {
         final String text = getText();
         return text.substring(1, text.length()-1);
     }

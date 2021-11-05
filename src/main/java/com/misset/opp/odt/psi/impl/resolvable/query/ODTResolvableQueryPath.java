@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.odt.psi.ODTQueryOperation;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTQueryPath;
 import com.misset.opp.odt.psi.ODTTypes;
@@ -24,18 +25,16 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
 
     @Override
     public Set<OntResource> resolve() {
-        /*
-            Resolve by resolving the last query step of the path
-         */
+        return Optional.ofNullable(getLastOperation())
+                .map(ODTResolvable::resolve)
+                .orElse(Collections.emptySet());
+    }
+
+    private ODTResolvableQueryOperationStep getLastOperation() {
+        if(getQueryOperationStepList().isEmpty()) { return null; }
         final ArrayList<ODTQueryOperationStep> operations = new ArrayList<>(getQueryOperationStepList());
         Collections.reverse(operations);
-
-        return operations
-                .stream()
-                .map(ODTResolvableQueryOperationStep.class::cast)
-                .map(ODTResolvable::resolve)
-                .findFirst()
-                .orElse(Collections.emptySet());
+        return (ODTResolvableQueryOperationStep) operations.get(0);
     }
 
     public boolean startsWithDelimiter() {
@@ -49,8 +48,11 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
     @Override
     public Set<OntResource> filter(Set<OntResource> resources) {
         // todo: not supported yet
-        // possibility: $input[rdf:type / EQUALS(/ont:ClassA)]
-        return resources;
+        // possibility: $input[NOT rdf:type == /ont:ClassA]
+        return Optional.ofNullable(getLastOperation())
+                .map(ODTQueryOperation::getQueryStep)
+                .map(odtQueryStep -> odtQueryStep.filter(resources))
+                .orElse(Collections.emptySet());
     }
 
     public List<ODTResolvableQueryOperationStep> getResolvableQueryOperationStepList() {

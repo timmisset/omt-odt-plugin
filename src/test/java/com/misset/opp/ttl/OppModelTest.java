@@ -22,7 +22,7 @@ class OppModelTest extends OntologyTestCase {
     protected void setUp() {
         setOntologyModel();
         CLASS_A = createClass("ClassA");
-        CLASS_A_INDIVIDUAL = createIndividual("ClassA");
+        CLASS_A_INDIVIDUAL = CLASS_A.createIndividual();
     }
 
     @Override

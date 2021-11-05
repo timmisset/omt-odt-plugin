@@ -21,8 +21,14 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
         final IElementType elementType = getNode().getFirstChildNode().getElementType();
 
         final OntResource result;
-        if(elementType == ODTTypes.BOOLEAN) {
+        if (elementType == ODTTypes.BOOLEAN) {
             result = oppModel.XSD_BOOLEAN_INSTANCE;
+        } else if (elementType == ODTTypes.STRING) {
+            result = oppModel.XSD_STRING_INSTANCE;
+        } else if (elementType == ODTTypes.INTEGER) {
+            result = oppModel.XSD_NUMBER_INSTANCE;
+        } else if (elementType == ODTTypes.DECIMAL) {
+            result = oppModel.XSD_NUMBER_INSTANCE;
         } else {
             result = oppModel.OWL_THING;
         }

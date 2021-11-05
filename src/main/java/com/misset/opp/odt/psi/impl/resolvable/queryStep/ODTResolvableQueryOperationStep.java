@@ -27,7 +27,6 @@ public abstract class ODTResolvableQueryOperationStep extends ASTWrapperPsiEleme
     }
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED_VALUE = new Key<>("RESOLVED_VALUE");
 
-
     @Override
     public ODTResolvableQueryPath getParent() {
         return (ODTResolvableQueryPath) super.getParent();
@@ -47,8 +46,10 @@ public abstract class ODTResolvableQueryOperationStep extends ASTWrapperPsiEleme
             // for example:
             // /ont:ClassA / ^rdf:type[rdf:type == /ont:ClassA]
             // the rdf:type in the filter should return the outcome of the ^rdf:type
-            return PsiTreeUtil.getParentOfType(this,
-                    ODTResolvableQueryOperationStep.class).resolveWithoutFilter();
+            return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTQueryFilter.class))
+                    .map(container -> PsiTreeUtil.getParentOfType(container, ODTResolvableQueryOperationStep.class))
+                    .map(ODTResolvableQueryOperationStep::resolveWithoutFilter)
+                    .orElse(Collections.emptySet());
         } else {
             final List<ODTResolvableQueryOperationStep> queryOperationList = getParent().getResolvableQueryOperationStepList();
             int index = queryOperationList.indexOf(this);
@@ -66,7 +67,7 @@ public abstract class ODTResolvableQueryOperationStep extends ASTWrapperPsiEleme
      * the possible resources in the final result.
      * Only works checks types filters and includes negation
      */
-    protected Set<OntResource> filter(Set<OntResource> resources) {
+    public Set<OntResource> filter(Set<OntResource> resources) {
         final List<ODTQueryFilter> queryFilterList = getQueryFilterList();
         if(queryFilterList.isEmpty()) { return resources; }
         for(ODTQueryFilter filter : queryFilterList) {
@@ -77,7 +78,7 @@ public abstract class ODTResolvableQueryOperationStep extends ASTWrapperPsiEleme
     private Set<OntResource> filter(Set<OntResource> resources, ODTQueryFilter filter) {
         final ODTQuery query = filter.getQuery();
         if(query instanceof ODTResolvableQuery) {
-            return ((ODTResolvableQuery)query).filter(resources);
+            return query.filter(resources);
         }
         return resources;
     }

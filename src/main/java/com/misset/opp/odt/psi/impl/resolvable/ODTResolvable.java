@@ -9,4 +9,8 @@ public interface ODTResolvable extends PsiElement {
 
     Set<OntResource> resolve();
 
+    default Set<OntResource> filter(Set<OntResource> resources) {
+        return resources;
+    }
+
 }

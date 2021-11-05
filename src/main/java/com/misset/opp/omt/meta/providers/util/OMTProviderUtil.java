@@ -20,7 +20,7 @@ public class OMTProviderUtil {
      * is in implementation of ODTInjectable.
      * The root element (ODT Script) of the injected ODTFile is searched using the PsiTreeUtil.findChildrenOfType
      */
-    protected static <T extends PsiElement> Collection<T> getInjectedContent(YAMLValue value, Class<T> contentClass) {
+    public static <T extends PsiElement> Collection<T> getInjectedContent(YAMLValue value, Class<T> contentClass) {
         if(value == null || !value.isValid()) {
             return Collections.emptyList();
         }

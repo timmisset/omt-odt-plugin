@@ -59,9 +59,6 @@ public class OntologyTestCase extends OMTTestCase {
     protected OntClass createClass(String name) {
         return oppModel.getClass(createResource(name));
     }
-    protected Individual createIndividual(String className) {
-        return oppModel.createIndividual(createResource(className));
-    }
     protected OntResource createXsdResource(String localName) {
         return createResource("http://www.w3.org/2001/XMLSchema#", localName);
     }

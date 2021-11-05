@@ -34,10 +34,6 @@ public abstract class ODTResolvableQueryStep extends ASTWrapperPsiElement implem
         return PsiTreeUtil.getParentOfType(this, ODTResolvableQueryOperationStep.class);
     }
 
-    protected boolean isFirstStepInPath() {
-        return getResolvableParent().isFirstStepInPath();
-    }
-
     protected boolean isRootStep() {
         return getResolvableParent().isRootStep();
     }
