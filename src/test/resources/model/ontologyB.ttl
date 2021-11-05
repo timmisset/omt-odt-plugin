@@ -1,0 +1,30 @@
+@prefix ont: <http://ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://ontology/ontologyB>
+  a owl:Ontology ;
+  owl:imports <http://ontology/ontologyD> ;
+  owl:versionInfo "Created manually" ;
+.
+ont:ClassB
+    a owl:Class ;
+    a sh:NodeShape ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path ont:stringPredicate ;
+        sh:datatype xsd:string ;
+    ] ;
+.
+ont:ClassBSub
+    a owl:Class ;
+    a sh:NodeShape ;
+    rdfs:subClassOf ont:ClassB ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path ont:numberPredicate ;
+        sh:datatype xsd:number ;
+      ] ;
+.

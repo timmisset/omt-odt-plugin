@@ -13,14 +13,18 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.omt.OMTFileType;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 /**
  * Named version of th ODTDefineName to allow FindUsage and renaming
  */
-public abstract class ODTDefineNameNamed extends ASTWrapperPsiElement implements PsiNamedElement {
+public abstract class ODTDefineNameNamed extends ASTWrapperPsiElement implements PsiNamedElement, ODTResolvable {
 
     private static final Key<CachedValue<SearchScope>> USAGE_SEARCH_SCOPE = new Key<>("USAGE_SEARCH_SCOPE");
 
@@ -47,4 +51,8 @@ public abstract class ODTDefineNameNamed extends ASTWrapperPsiElement implements
                 ), ModificationTracker.NEVER_CHANGED));
     }
 
+    @Override
+    public Set<OntResource> resolve() {
+        return ((ODTDefineStatement)getParent()).resolve();
+    }
 }

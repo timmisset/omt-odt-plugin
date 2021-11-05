@@ -18,7 +18,7 @@ public class OMTTestCase extends BasicTestCase {
      */
     protected String withPrefixes(String content) {
         return String.format("prefixes:\n" +
-                "    ont:       <http://ontologie#>\n" +
+                "    ont:       <http://ontology#>\n" +
                 "    rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                 "    rdfs:      <http://www.w3.org/2000/01/rdf-schema#>\n" +
                 "    owl:       <http://www.w3.org/2002/07/owl#>\n" +

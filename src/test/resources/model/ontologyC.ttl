@@ -1,0 +1,20 @@
+@prefix ont: <http://ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# This ontology is not imported and should not be included in the OPPModelTest
+<http://ontology/ontologyC>
+  a owl:Ontology ;
+  owl:versionInfo "Created manually" ;
+.
+ont:ClassC
+  a owl:Class ;
+  a sh:NodeShape ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ont:stringPredicate ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+    ] ;
+.

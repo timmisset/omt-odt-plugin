@@ -1,0 +1,23 @@
+@prefix ont: <http://ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://ontology/ontologyA>
+  a owl:Ontology ;
+  owl:versionInfo "Created manually" ;
+.
+ont:ClassA
+  a owl:Class ;
+  a sh:NodeShape ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ont:booleanPredicate ;
+      sh:datatype xsd:boolean ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ont:classPredicate ;
+      sh:class ont:ClassBSub ;
+    ] ;
+.

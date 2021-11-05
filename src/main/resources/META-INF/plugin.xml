@@ -83,6 +83,9 @@
 
                          implementationClass="com.misset.opp.odt.inspection.ODTUnusedInspection"/>
         />
+
+        <!-- TTL Language-->
+        <postStartupActivity implementation="com.misset.opp.ttl.LoadOntologyStartupActivity"/>
     </extensions>
     <depends>com.intellij.java</depends>
 

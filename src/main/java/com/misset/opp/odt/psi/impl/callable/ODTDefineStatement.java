@@ -5,13 +5,15 @@ import com.intellij.lang.ASTNode;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements Callable {
+public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements Callable, ODTResolvable {
     public ODTDefineStatement(@NotNull ASTNode node) {
         super(node);
     }
 
+    @NotNull
     abstract public ODTDefineName getDefineName();
 
     @Override

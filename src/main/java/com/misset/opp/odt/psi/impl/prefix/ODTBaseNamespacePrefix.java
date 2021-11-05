@@ -11,6 +11,9 @@ import com.misset.opp.odt.psi.ODTDefinePrefix;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.reference.ODTNamespacePrefixReference;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.yaml.psi.YAMLKeyValue;
+
+import java.util.Optional;
 
 public abstract class ODTBaseNamespacePrefix extends ASTWrapperPsiElement implements ODTNamespacePrefix {
     public ODTBaseNamespacePrefix(@NotNull ASTNode node) {
@@ -34,5 +37,18 @@ public abstract class ODTBaseNamespacePrefix extends ASTWrapperPsiElement implem
         return new ODTNamespacePrefixReference(this);
     }
 
+    /**
+     * Returns a fully qualified iri by resolving the prefix to a namespace and appending the localname
+     */
+    public String getFullyQualified(String localName) {
+        return Optional.ofNullable(getReference())
+                .map(PsiReference::resolve)
+                .filter(YAMLKeyValue.class::isInstance)
+                .map(YAMLKeyValue.class::cast)
+                .map(YAMLKeyValue::getValueText)
+                .filter(s -> s.length() > 2)
+                .map(s -> s.substring(1, s.length() -1) + localName)
+                .orElse(null);
+    }
 
 }

@@ -19,10 +19,8 @@ namespacePrefix::=                          SYMBOL COLON {
     extends="com.misset.opp.odt.psi.impl.prefix.ODTBaseNamespacePrefix"
     implements="com.intellij.psi.PsiNamedElement"
 }
-curieElement ::=                            (namespacePrefix SYMBOL) | IRI
-curieConstantElement ::=                    FORWARD_SLASH curieElement queryFilter*
 
-constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE
+constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE { extends=queryStep }
 // a variable is declared using VAR and one or more variable names. Optionally an assignment is added
 // the assignment is deconstructed to the entire set of variables that is declared. i.e. VAR $a, $b = [1, 2]. $a == 1, $b == 2
 // or can be VAR $a = 1, $b = 2 etc.
@@ -54,7 +52,10 @@ commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
 // there is also a collection of BuiltIn operators and commands which are included
 // and finally, all runnable OMT modelitems are available as Commands (Activity, Procedure) or Operator (StandAloneQuery)
 // only the Defined members are part of set of the grammar parser
-defineName ::=                              SYMBOL { extends="com.misset.opp.odt.psi.impl.callable.ODTDefineNameNamed" }
+defineName ::=                              SYMBOL {
+    extends="com.misset.opp.odt.psi.impl.callable.ODTDefineNameNamed"
+    implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
+}
 defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"}
 defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement"}
 definePrefix ::=                            PREFIX_DEFINE_START namespacePrefix IRI
@@ -62,8 +63,13 @@ defineParam ::=                             PARENTHESES_OPEN (variable (COMMA va
 callName ::=                                SYMBOL | BOOLEAN_OPERATOR
 // MEMBER CALLS
 // A call to either an Operator or a Command. In case of the latter, it's always prefixed with @
-operatorCall ::=                            callName flagSignature? signature? { extends="com.misset.opp.odt.psi.impl.call.ODTOperatorCallImpl" }
-commandCall ::=                             AT callName flagSignature? signature? { extends="com.misset.opp.odt.psi.impl.call.ODTCommandCallImpl" }
+operatorCall ::=                            callName flagSignature? signature? {
+    extends= queryStep
+    mixin="com.misset.opp.odt.psi.impl.call.ODTOperatorCallImpl"
+}
+commandCall ::=                             AT callName flagSignature? signature? {
+    extends="com.misset.opp.odt.psi.impl.call.ODTCommandCallImpl"
+}
 signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
 signatureArgument ::=                       resolvableValue | commandBlock
 flagSignature ::=                           TAG
@@ -75,7 +81,9 @@ returnStatement ::=                         RETURN_OPERATOR resolvableValue?
 chooseBlock ::=                             CHOOSE_OPERATOR 
                                                 whenPath*
                                                 otherwisePath?
-                                                endPath?
+                                                endPath? {
+                                                    extends=queryStep
+                                                }
 whenPath ::=                                WHEN_OPERATOR booleanStatement? LAMBDA? query?
 otherwisePath ::=                           OTHERWISE_OPERATOR LAMBDA? query?
 endPath ::=                                 END_OPERATOR 
@@ -86,34 +94,69 @@ endPath ::=                                 END_OPERATOR
 //
 // with regular bnf -> psi generation, the query would encapsulate the queryPath, ... items
 // by using the extension mechanism, it only becomes their superclass
-query     ::=                               queryPath | queryArray | booleanStatement | equationStatement
+query     ::=                               queryPath | queryArray | booleanStatement | equationStatement {
+    extends="com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery"
+    implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
+}
 // The queryPath is the base, eventually all queries will descent into a queryPath even for single steps
 // For example, a queryArray can consist of 'a' | 'b' in which both 'a' and 'b' are encapsulated
 // into a queryPath and subsequently a queryStep
 // The queryPath is constructed using the Forward slash as delimiter a contains as many steps as possible
-queryPath ::=                               (curieConstantElement | queryStep) ((FORWARD_SLASH | DUMMY_SLASH) queryStep?)* { extends=query }
+queryPath ::=                               FORWARD_SLASH? queryOperation (FORWARD_SLASH queryOperation)* {
+    extends=query
+    mixin="com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath"
+}
 // The queryArray uses the PIPE symbol to split the array where both can be resolved separately
-queryArray ::=                              query (PIPE query)+ { extends=query }
+queryArray ::=                              query (PIPE query)+ {
+    extends=query
+    mixin="com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryArray"
+}
 // A booleanStatement works the same as the queryArray but using a BOOLEAN_OPERATOR
 // When resolving, it should be checked that all parts of the query are resolved to boolean types
-booleanStatement ::=                        query (BOOLEAN_OPERATOR query)+ { extends=query }
+booleanStatement ::=                        query (BOOLEAN_OPERATOR query)+ {
+    extends=query
+    mixin="com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableBooleanStatement"
+}
 // The equationStatement uses a conditional operator (like ==, >=, <=) to split the statement
 // it only allows a left-hand and right-hand query, both should be resolved to boolean type
-equationStatement ::=                       query CONDITIONAL_OPERATOR query { extends=query }
+equationStatement ::=                       query CONDITIONAL_OPERATOR query {
+    extends=query
+    mixin="com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableEquationStatement"
+}
 // The negated statement detects the usage of the NOT operator
 // This can be used as '.. / NOT IN (...)' OR '.. / NOT'. In the former the negation is based on the subsequent
 // query whereas the latter it's based on the preceding query
 //
 // A negated stap should not encapsulate a booleanStatement
 // x == 0 AND NOT y == 1 should resolve in a booleanStatement where the latter contains the negation
-negatedStep ::=                             NOT_OPERATOR (equationStatement | queryPath | queryArray)  { extends=query }
+negatedStep ::=                             NOT_OPERATOR (equationStatement | queryPath | queryArray)?  {
+    extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableNegatedStep"
+}
 
+queryOperation ::= (queryStep stepDecorator? queryFilter*) | queryFilter {
+    extends="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperation"
+}
 queryStep ::=
-        (queryReverseStep | constantValue | variable | curieElement | operatorCall | IRI | DOT | SCHEMALESS_IRI |
-         chooseBlock | negatedStep | NOT_OPERATOR | subQuery | queryFilter)
-
-                                            stepDecorator? queryFilter*
-queryReverseStep ::=                        CARET curieElement? stepDecorator? queryFilter* { extends=queryStep }
+        queryReverseStep | constantValue | variableStep | curieElement | operatorCall | iriStep | identifierStep | schemalessIriStep |
+         chooseBlock | negatedStep | subQuery {
+     extends="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep"
+     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
+ }
+variableStep ::=    variable {
+    extends=queryStep
+}
+iriStep ::= IRI { extends=queryStep }
+identifierStep ::= DOT { extends=queryStep }
+schemalessIriStep ::= SCHEMALESS_IRI { extends=queryStep }
+curieElement ::=                            (namespacePrefix SYMBOL) | IRI {
+    extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableCurieElementStep"
+}
+queryReverseStep ::=                        CARET queryStep {
+    extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryReverseStep"
+}
 // Decorators for the query steps, can be added to individual steps or subqueries
 // QUESTION_MARK ?  == 0 or 1
 // PLUS +           == 1 or more

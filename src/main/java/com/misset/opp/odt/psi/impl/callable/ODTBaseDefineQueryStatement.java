@@ -1,15 +1,16 @@
 package com.misset.opp.odt.psi.impl.callable;
 
 import com.intellij.lang.ASTNode;
-import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.odt.psi.ODTDefineQueryStatement;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement {
+import java.util.Set;
+
+public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement implements ODTDefineQueryStatement {
     public ODTBaseDefineQueryStatement(@NotNull ASTNode node) {
         super(node);
     }
-
-    abstract public ODTDefineName getDefineName();
 
     @Override
     public boolean isVoid() {
@@ -22,4 +23,10 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement {
     }
 
     public String getCallId() { return getName(); }
+
+
+    @Override
+    public Set<OntResource> resolve() {
+        return getQuery().resolve();
+    }
 }
