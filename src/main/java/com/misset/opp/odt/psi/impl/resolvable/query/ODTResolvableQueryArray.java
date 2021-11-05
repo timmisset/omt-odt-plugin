@@ -23,4 +23,12 @@ public abstract class ODTResolvableQueryArray extends ODTResolvableQuery impleme
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public Set<OntResource> filter(Set<OntResource> resources) {
+        /*
+            A query array is not a boolean statement so it shouldn't be used in filters
+         */
+        return resources;
+    }
 }

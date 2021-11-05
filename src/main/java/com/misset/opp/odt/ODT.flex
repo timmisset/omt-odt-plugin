@@ -117,7 +117,6 @@ RESERVED_NAME=                  "IF"
     "}"                                                             { return ODTTypes.CURLY_CLOSED; }
     "/"                                                             { return ODTTypes.FORWARD_SLASH; }
     "^"                                                             { return ODTTypes.CARET; }
-    "[]"                                                            { return ODTTypes.EMPTY_ARRAY; }
     "["                                                             { return ODTTypes.BRACKET_OPEN; }
     "]"                                                             { return ODTTypes.BRACKET_CLOSED; }
     "+"                                                             { return ODTTypes.PLUS; }

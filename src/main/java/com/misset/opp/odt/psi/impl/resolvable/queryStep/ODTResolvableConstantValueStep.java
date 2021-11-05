@@ -16,7 +16,7 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
     }
 
     @Override
-    protected Set<OntResource> calculate() {
+    public Set<OntResource> resolve() {
         final OppModel oppModel = OppModel.INSTANCE;
         final IElementType elementType = getNode().getFirstChildNode().getElementType();
 

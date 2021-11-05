@@ -2,10 +2,6 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Key;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
@@ -13,29 +9,20 @@ import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 public abstract class ODTResolvableQueryStep extends ASTWrapperPsiElement implements ODTQueryStep, ODTResolvable {
-    private static final Key<CachedValue<Set<OntResource>>> RESOLVED_VALUE = new Key<>("RESOLVED_VALUE");
     public ODTResolvableQueryStep(@NotNull ASTNode node) {
         super(node);
-    }
-
-    /**
-     * Generic method to resolve the calculated value from the cache or calculate it
-     * Should only be overridden if the ODTQueryStep implementation should cache the value due to some external
-     * dependency outside the default scope of this element
-     */
-    @Override
-    public Set<OntResource> resolve() {
-        return CachedValuesManager.getCachedValue(this, RESOLVED_VALUE, () -> new CachedValueProvider.Result<>(calculate(), getContainingFile()));
     }
 
     /**
      * Method to calculate the ResourceSet for this QueryStep
      * Should be overridden by every implementation of ODTQueryStep
      */
-    protected Set<OntResource> calculate() {
+    @Override
+    public Set<OntResource> resolve() {
         return Collections.emptySet();
     }
 
@@ -43,8 +30,8 @@ public abstract class ODTResolvableQueryStep extends ASTWrapperPsiElement implem
      * Returns the resolve QueryOperation container of this step
      * If steps are further encapsulated, this method should be overridden to return the QueryOperation
      */
-    public ODTResolvableQueryOperation getResolvableParent() {
-        return PsiTreeUtil.getParentOfType(this, ODTResolvableQueryOperation.class);
+    public ODTResolvableQueryOperationStep getResolvableParent() {
+        return PsiTreeUtil.getParentOfType(this, ODTResolvableQueryOperationStep.class);
     }
 
     protected boolean isFirstStepInPath() {
@@ -56,6 +43,8 @@ public abstract class ODTResolvableQueryStep extends ASTWrapperPsiElement implem
     }
 
     protected Set<OntResource> resolvePreviousStep() {
-        return getResolvableParent().getPreviousOperation().resolve();
+        return Optional.of(getResolvableParent())
+                .map(ODTResolvableQueryOperationStep::resolvePreviousStep)
+                .orElse(Collections.emptySet());
     }
 }

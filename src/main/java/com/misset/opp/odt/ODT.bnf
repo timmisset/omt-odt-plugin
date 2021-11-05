@@ -1,5 +1,6 @@
 {
   parserClass="org.intellij.sdk.language.parser.ODTParser"
+  parserUtilClass="org.intellij.sdk.language.parser.ODTParserUtil"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
@@ -105,7 +106,7 @@ query     ::=                               queryPath | queryArray | booleanStat
 // For example, a queryArray can consist of 'a' | 'b' in which both 'a' and 'b' are encapsulated
 // into a queryPath and subsequently a queryStep
 // The queryPath is constructed using the Forward slash as delimiter a contains as many steps as possible
-queryPath ::=                               FORWARD_SLASH? queryOperation (FORWARD_SLASH queryOperation)* {
+queryPath ::=                               FORWARD_SLASH? queryOperationStep (FORWARD_SLASH queryOperationStep)* {
     extends=query
     mixin="com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath"
 }
@@ -137,8 +138,8 @@ negatedStep ::=                             NOT_OPERATOR (equationStatement | qu
     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableNegatedStep"
 }
 
-queryOperation ::= (queryStep stepDecorator? queryFilter*) | queryFilter {
-    extends="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperation"
+queryOperationStep ::= (queryStep stepDecorator? queryFilter*) | queryFilter {
+    extends="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep"
 }
 queryStep ::=
         queryReverseStep | constantValue | variableStep | curieElement | operatorCall | iriStep | identifierStep | schemalessIriStep |
@@ -146,10 +147,13 @@ queryStep ::=
      extends="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep"
      implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
  }
-variableStep ::=    variable {
+variableStep ::= variable {
     extends=queryStep
 }
-iriStep ::= IRI { extends=queryStep }
+iriStep ::= IRI {
+    extends=queryStep
+     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableIriStep"
+}
 identifierStep ::= DOT { extends=queryStep }
 schemalessIriStep ::= SCHEMALESS_IRI { extends=queryStep }
 curieElement ::=                            (namespacePrefix SYMBOL) | IRI {
@@ -166,11 +170,14 @@ queryReverseStep ::=                        CARET queryStep {
 // ASTERIX          == 0 or more
 stepDecorator ::=                           ASTERIX | PLUS | QUESTION_MARK
 // a query filter is contained by brackets [] and should resolve to boolean
-queryFilter ::=                             BRACKET_OPEN query (COMMA query)? BRACKET_CLOSED | EMPTY_ARRAY
+queryFilter ::=                             BRACKET_OPEN query? BRACKET_CLOSED
 
 // the subQuery encapsulated a query by PARENTHESES, it can be resolved as-is, for example in an equation
 // or be cast to a traverse-like behavior using the ASTERIX and PLUS appendixes
-subQuery ::=                                PARENTHESES_OPEN query PARENTHESES_CLOSE { extends=queryStep }
+subQuery ::=                                PARENTHESES_OPEN query PARENTHESES_CLOSE {
+    extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableSubQueryStep"
+}
 
 // the assignment statement is used to assign a value to a left-hand target, like a variable or a resolved resource iri
 // addTo and removeFrom are similar which will add/remove the item to/from the collection

@@ -69,6 +69,9 @@ public class OntologyTestCase extends OMTTestCase {
         return oppModel.createResource(namespace + localName);
     }
 
+    protected OntResource resolveQueryStatementToSingleResult(String query) {
+        return resolveQueryStatement(query).stream().findFirst().orElse(null);
+    }
     protected Set<OntResource> resolveQueryStatement(String query) {
         // adding <caret> is required to make sure the fixture focus is on the injected ODT fragment
         // otherwise the findElementByText will return null
