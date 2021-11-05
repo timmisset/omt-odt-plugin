@@ -14,16 +14,24 @@ class ODTResolvableQueryPathTest extends OntologyTestCase {
     void testRootPathResolves() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA");
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> resource.equals(createResource("ClassA")) && resource instanceof OntClass)
+                resource -> resource.equals(createClass("ClassA")) && resource instanceof OntClass)
         );
     }
 
     @Test
-    void testRootPathResolvesReverse() {
+    void testRootPathResolvesTypeReverse() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type");
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> isIndividualOfClass(resource, createResource("ClassA"))
+                resource -> isIndividualOfClass(resource, createClass("ClassA"))
         ));
+    }
+
+    @Test
+    void testRootPathResolvesTypeForward() {
+        final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / rdf:type");
+        Assertions.assertTrue(resources.stream().anyMatch(
+                resource -> createClass("ClassA").equals(resource))
+        );
     }
 
     @Test

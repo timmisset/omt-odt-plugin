@@ -24,10 +24,6 @@ import java.util.stream.Collectors;
  * <p>
  * When a query resolves a step using the rdf:type, the outcome will be OntClass
  * When a query resolves a step using the ^rdf:type, the outcome will be Individual
- * <p>
- * Only individuals are actually processed for data, meaning that any traversion that is performed on a class
- * must be a valid class predicate such as subClassOf.
- * When parameter types are provided for methods, the class type describes the type of individuals that will be passed into the method argument.
  */
 public class OppModel {
     private static final String XSD = "http://www.w3.org/2001/XMLSchema#";
@@ -205,13 +201,13 @@ public class OppModel {
             // the returned subjects should also be the instances of the classes that point to
             // the ontClass of the Individual
             return listSubjectsForIndividual(predicate, object.asIndividual());
+        } else if(object.isClass()) {
+            return listSubjectsForClass(predicate, object.asClass());
         }
-        return model.listSubjectsWithProperty(predicate, object)
-                .mapWith(model::getOntResource)
-                .toSet();
+        return Collections.emptySet();
     }
-    private Set<OntResource> listSubjectsForIndividual(Property predicate, Individual individual) {
-        return model.listSubjectsWithProperty(predicate, individual.getOntClass())
+    private Set<OntResource> listSubjectsForIndividual(Property predicate, Individual object) {
+        return model.listSubjectsWithProperty(predicate, object.getOntClass())
                 .mapWith(model::getOntResource)
                 .filterKeep(OntResource::isClass)
                 .mapWith(OntResource::asClass)
@@ -220,6 +216,15 @@ public class OppModel {
                 .stream()
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+    private Set<OntResource> listSubjectsForClass(Property predicate, OntClass object) {
+        if(predicate.equals(RDF_TYPE)) {
+            // called /^rdf:type on a class, return all instances:
+            return object.listInstances().mapWith(model::getOntResource).toSet();
+        }
+        return model.listSubjectsWithProperty(predicate, object)
+                .mapWith(model::getOntResource)
+                .toSet();
     }
 
     public Set<OntResource> listObjects(Set<OntResource> classSubjects,
@@ -243,7 +248,9 @@ public class OppModel {
     private Set<OntResource> listObjectsForIndividual(Individual subject, Property predicate) {
         if(predicate.equals(RDF_TYPE)) {
             // when rdf:type is called on the individual, the actual class is requested
-            return subject.listRDFTypes(true).mapWith(model::getOntResource).toSet();
+            // although this can be resolved via listProperties(predicate), this would also return any of the superclasses
+            // and which would lead to [someInstance] / rdf:type / ^rdf:type always returning all classes
+            return Set.of(subject.getOntClass());
         } else {
             // otherwise, the graph is traversed by class properties but using instances of those classes
             return subject
