@@ -31,14 +31,20 @@ import java.util.stream.Collectors;
  */
 public class OppModel {
     private static final String XSD = "http://www.w3.org/2001/XMLSchema#";
+    private static final String SHACL = "http://www.w3.org/ns/shacl#";
+    private static final String RDFS = "http://www.w3.org/2000/01/rdf-schema#";
+    private static final String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    private static final String OWL = "http://www.w3.org/2002/07/owl#";
 
     protected Property SHACL_PATH, SHACL_CLASS, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
     protected Property RDFS_SUBCLASS_OF;
     protected Property RDF_TYPE;
     private List<Property> classModelProperties;
 
-    protected OntResource OWL_CLASS, OWL_THING;
+    protected OntResource OWL_CLASS;
+    public OntResource OWL_THING;
     public OntResource XSD_BOOLEAN, XSD_STRING, XSD_NUMBER;
+    public OntResource XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE;
 
     public static OppModel INSTANCE;
     private final OntModel shaclModel;
@@ -74,26 +80,29 @@ public class OppModel {
     }
 
     private void setProperties() {
-        SHACL_PATH = model.createProperty("http://www.w3.org/ns/shacl#path");
-        SHACL_CLASS = model.createProperty("http://www.w3.org/ns/shacl#class");
-        SHACL_DATATYPE = model.createProperty("http://www.w3.org/ns/shacl#datatype");
-        SHACL_PROPERTY = model.createProperty("http://www.w3.org/ns/shacl#property");
-        SHACL_PROPERYSHAPE = model.createProperty("http://www.w3.org/ns/shacl#PropertyShape");
+        SHACL_PATH = model.createProperty(SHACL + "path");
+        SHACL_CLASS = model.createProperty(SHACL + "class");
+        SHACL_DATATYPE = model.createProperty(SHACL + "datatype");
+        SHACL_PROPERTY = model.createProperty(SHACL + "property");
+        SHACL_PROPERYSHAPE = model.createProperty(SHACL + "PropertyShape");
 
-        RDFS_SUBCLASS_OF = model.createProperty("http://www.w3.org/2000/01/rdf-schema#subClassOf");
+        RDFS_SUBCLASS_OF = model.createProperty(RDFS + "subClassOf");
 
-        RDF_TYPE = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+        RDF_TYPE = model.createProperty(RDF + "type");
 
-        OWL_CLASS = model.createClass("http://www.w3.org/2002/07/owl#Class");
-        OWL_THING = model.createClass("http://www.w3.org/2002/07/owl#Thing");
+        OWL_CLASS = model.createClass(OWL + "Class");
+        OWL_THING = model.createClass(OWL + "Thing");
 
         classModelProperties = List.of(RDFS_SUBCLASS_OF, RDF_TYPE);
     }
 
     private void setPrimitives() {
         XSD_BOOLEAN = model.createOntResource(XSD + "boolean");
+        XSD_BOOLEAN_INSTANCE = model.createIndividual(XSD_BOOLEAN);
         XSD_STRING = model.createOntResource(XSD + "string");
+        XSD_STRING_INSTANCE = model.createIndividual(XSD_STRING);
         XSD_NUMBER = model.createOntResource(XSD + "number");
+        XSD_NUMBER_INSTANCE = model.createIndividual(XSD_NUMBER);
     }
 
     private void loadSimpleModel() {
@@ -154,7 +163,8 @@ public class OppModel {
         if(subject.isIndividual()) {
             return listPredicateObjectsForIndividual(subject.asIndividual());
         }
-        final OntClass ontClass = toClass(subject);
+        if(!subject.isClass()) { return Collections.emptySet(); }
+        OntClass ontClass = subject.asClass();
         final HashSet<Statement> hashSet = new HashSet<>(ontClass.listProperties().toSet());
         ontClass.listSuperClasses().forEach(
                 superClass -> hashSet.addAll(superClass.listProperties().toSet())
@@ -191,16 +201,25 @@ public class OppModel {
 
     public Set<OntResource> listSubjects(Property predicate,
                                          OntResource object) {
+        if(object instanceof Individual) {
+            // the returned subjects should also be the instances of the classes that point to
+            // the ontClass of the Individual
+            return listSubjectsForIndividual(predicate, object.asIndividual());
+        }
         return model.listSubjectsWithProperty(predicate, object)
                 .mapWith(model::getOntResource)
                 .toSet();
     }
-
-    private OntClass toClass(OntResource resource) {
-        if (resource.isIndividual()) {
-            return resource.asIndividual().getOntClass();
-        }
-        return model.createClass(resource.getURI());
+    private Set<OntResource> listSubjectsForIndividual(Property predicate, Individual individual) {
+        return model.listSubjectsWithProperty(predicate, individual.getOntClass())
+                .mapWith(model::getOntResource)
+                .filterKeep(OntResource::isClass)
+                .mapWith(OntResource::asClass)
+                .mapWith(ontClass -> ontClass.listInstances().toSet())
+                .toSet()
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 
     public Set<OntResource> listObjects(Set<OntResource> classSubjects,
@@ -270,11 +289,14 @@ public class OppModel {
     }
 
     public Individual createIndividual(Resource resource) {
-        return model.createIndividual(resource.getURI() + "_1", createClass(resource));
+        return model.createIndividual(resource.getURI() + "_1", getClass(resource));
     }
 
-    public OntClass createClass(Resource resource) {
-        return model.createClass(resource.getURI());
+    public OntClass getClass(Resource resource) {
+        return model.getOntClass(resource.getURI());
+    }
+    public OntClass getClass(String uri) {
+        return model.createClass(uri);
     }
 
     public Property createProperty(Resource resource) {

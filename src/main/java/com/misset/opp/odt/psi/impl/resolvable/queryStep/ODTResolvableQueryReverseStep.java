@@ -5,7 +5,6 @@ import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
-import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -20,9 +19,10 @@ public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQuerySt
     public Set<OntResource> calculate() {
         final ODTQueryStep queryStep = getQueryStep();
         if(queryStep instanceof ODTResolvableCurieElementStep) {
+            final OppModel oppModel = OppModel.INSTANCE;
             // a reverse path indicator can only be applied to a curie step
-            final Property predicate = ((ODTResolvableCurieElementStep) queryStep).getFullyQualified();
-            return OppModel.INSTANCE.listSubjects(predicate, resolvePreviousStep());
+            final String fullyQualified = ((ODTResolvableCurieElementStep) queryStep).getFullyQualified();
+            return oppModel.listSubjects(oppModel.createProperty(fullyQualified), resolvePreviousStep());
         }
         return Collections.emptySet();
     }

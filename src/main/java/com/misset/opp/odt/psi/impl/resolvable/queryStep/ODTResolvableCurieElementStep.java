@@ -20,16 +20,18 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQuerySt
 
     @Override
     public Set<OntResource> calculate() {
+        final OppModel model = OppModel.INSTANCE;
         if (isRootStep()) {
             // when the path start with a root curie, resolve the curie and return it:
-            return Set.of(OppModel.INSTANCE.createClass(getFullyQualified()));
+            return Set.of(model.getClass(getFullyQualified()));
         } else {
             // resolve the previous step and use the current curie to traverse the model
-            return OppModel.INSTANCE.listObjects(resolvePreviousStep(), getFullyQualified());
+            final Property property = model.createProperty(getFullyQualified());
+            return model.listObjects(resolvePreviousStep(), property);
         }
     }
 
-    public Property getFullyQualified() {
+    public String getFullyQualified() {
         final ODTNamespacePrefixImpl namespacePrefix = (ODTNamespacePrefixImpl) getNamespacePrefix();
         final String fullyQualified;
         if (namespacePrefix != null) {
@@ -40,6 +42,6 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQuerySt
         } else {
             fullyQualified = getText().substring(1, getTextLength() - 1);
         }
-        return OppModel.INSTANCE.createProperty(fullyQualified);
+        return fullyQualified;
     }
 }

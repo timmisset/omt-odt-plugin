@@ -57,7 +57,7 @@ public class OntologyTestCase extends OMTTestCase {
         return oppModel.createProperty(createResource("http://ontology#", localName));
     }
     protected OntClass createClass(String name) {
-        return oppModel.createClass(createResource(name));
+        return oppModel.getClass(createResource(name));
     }
     protected Individual createIndividual(String className) {
         return oppModel.createIndividual(createResource(className));

@@ -15,6 +15,6 @@ public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery i
 
     @Override
     public Set<OntResource> resolve() {
-        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN);
+        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
 }

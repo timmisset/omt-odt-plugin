@@ -15,6 +15,6 @@ public abstract class ODTResolvableNegatedStep extends ODTResolvableQueryStep im
 
     @Override
     public Set<OntResource> calculate() {
-        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN);
+        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
 }

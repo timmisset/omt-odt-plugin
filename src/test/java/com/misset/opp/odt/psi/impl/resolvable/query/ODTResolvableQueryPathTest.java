@@ -29,25 +29,38 @@ class ODTResolvableQueryPathTest extends OntologyTestCase {
     @Test
     void testCurieStepResolves() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / ont:booleanPredicate");
-        Assertions.assertTrue(resources.contains(createXsdResource("boolean")));
+        Assertions.assertTrue(resources.contains(oppModel.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test
-    void testCurieStepResolvesReversed() {
+    void testCurieStepResolvesReversedToInstance() {
+        final Set<OntResource> resources = resolveQueryStatement("true / ^ont:booleanPredicate");
+        Assertions.assertFalse(resources.isEmpty());
+        Assertions.assertTrue(
+                resources.stream().allMatch(OntResource::isIndividual)
+        );
+    }
+
+    @Test
+    void testCurieStepResolvesReversedToClass() {
+        // when the query points to a property itself, not an instance value, model data is returned
         final Set<OntResource> resources = resolveQueryStatement("/xsd:boolean / ^ont:booleanPredicate");
-        Assertions.assertTrue(resources.contains(createXsdResource("boolean")));
+        Assertions.assertFalse(resources.isEmpty());
+        Assertions.assertTrue(
+                resources.stream().allMatch(OntResource::isClass)
+        );
     }
 
     @Test
     void testNegatedStep() {
         final Set<OntResource> resources = resolveQueryStatement("NOT IN(/ont:ClassA)");
-        Assertions.assertTrue(resources.contains(createXsdResource("boolean")));
+        Assertions.assertTrue(resources.contains(oppModel.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test
     void testNegatedStepTerminal() {
         final Set<OntResource> resources = resolveQueryStatement("IN(/ont:ClassA) / NOT");
-        Assertions.assertTrue(resources.contains(createXsdResource("boolean")));
+        Assertions.assertTrue(resources.contains(oppModel.XSD_BOOLEAN_INSTANCE));
     }
 
 }

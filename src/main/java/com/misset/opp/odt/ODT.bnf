@@ -20,7 +20,10 @@ namespacePrefix::=                          SYMBOL COLON {
     implements="com.intellij.psi.PsiNamedElement"
 }
 
-constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE { extends=queryStep }
+constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE {
+    extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableConstantValueStep"
+}
 // a variable is declared using VAR and one or more variable names. Optionally an assignment is added
 // the assignment is deconstructed to the entire set of variables that is declared. i.e. VAR $a, $b = [1, 2]. $a == 1, $b == 2
 // or can be VAR $a = 1, $b = 2 etc.
