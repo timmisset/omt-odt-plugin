@@ -6,6 +6,7 @@ import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -20,13 +21,16 @@ public abstract class ODTResolvableQueryForwardStep extends ODTResolvableUriStep
 
     @Override
     public Set<OntResource> resolve() {
+        final String fullyQualifiedUri = getFullyQualifiedUri();
+        if(fullyQualifiedUri == null) { return Collections.emptySet(); }
+
         final OppModel model = OppModel.INSTANCE;
         if (isRootStep()) {
             // when the path start with a root curie, resolve the curie and return it:
-            return Set.of(model.getClass(getFullyQualifiedUri()));
+            return Set.of(model.getClass(fullyQualifiedUri));
         } else {
             // resolve the previous step and use the current curie to traverse the model
-            final Property property = model.createProperty(getFullyQualifiedUri());
+            final Property property = model.createProperty(fullyQualifiedUri);
             return model.listObjects(resolvePreviousStep(), property);
         }
     }

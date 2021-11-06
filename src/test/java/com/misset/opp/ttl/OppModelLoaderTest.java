@@ -16,7 +16,6 @@ class OppModelLoaderTest {
     void testLoadModel() {
         final OntModel ontModel = getOntologyModel();
         final List<Resource> resources = ontModel.listSubjects().toList();
-        Assertions.assertEquals(2, ontModel.listSubModels().toList().size());
         Assertions.assertTrue(resources.contains(ontModel.createResource("http://ontology#ClassA")));
         Assertions.assertTrue(resources.contains(ontModel.createResource("http://ontology#ClassB")));
         Assertions.assertFalse(resources.contains(ontModel.createResource("http://ontology#ClassC")));
@@ -28,7 +27,7 @@ class OppModelLoaderTest {
         final OntModel ontModel = new OppModelLoader()
                 .read(getRootPath("model-with-recursion", "root.ttl"))
                 .getShaclModel();
-        Assertions.assertEquals(0, ontModel.listSubModels().toList().size());
+        Assertions.assertEquals(1, ontModel.listSubModels().toList().size());
     }
 
     private OntModel getOntologyModel() {

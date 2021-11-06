@@ -155,8 +155,14 @@ iriStep ::= IRI {
     extends=queryStep
      mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableIriStep"
 }
-identifierStep ::= DOT { extends=queryStep }
-schemalessIriStep ::= SCHEMALESS_IRI { extends=queryStep }
+identifierStep ::= DOT {
+    extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableIdentifierStep"
+}
+schemalessIriStep ::= SCHEMALESS_IRI {
+    extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableSchemalessIriStep"
+}
 curieElement ::=                            namespacePrefix SYMBOL {
     extends=queryStep
     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableCurieElementStep"

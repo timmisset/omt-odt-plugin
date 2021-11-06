@@ -122,7 +122,7 @@ class OppModelTest extends OntologyTestCase {
     void testListObjectsPredicate() {
         final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), createProperty("booleanPredicate"));
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> resource.equals(createXsdResource("boolean"))
+                resource -> resource.equals(oppModel.XSD_BOOLEAN_INSTANCE)
         ));
     }
 
