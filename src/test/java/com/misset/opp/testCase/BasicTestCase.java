@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.stream.Collectors;
 
-public abstract class BasicTestCase extends LightJavaCodeInsightFixtureTestCase {
+public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsightFixtureTestCase {
 
     @BeforeEach
     protected void setUp() {
@@ -50,27 +50,27 @@ public abstract class BasicTestCase extends LightJavaCodeInsightFixtureTestCase 
         return String.format("test-%s.%s", files++, extension);
     }
 
-
-    protected OMTFile configureByText(String content) {
+    protected T configureByText(String content) {
         return configureByText(getFileName(), content, false);
     }
 
-    protected OMTFile configureByText(String fileName, String content) {
+    protected T configureByText(String fileName, String content) {
         return configureByText(fileName, content, false);
     }
 
-    protected OMTFile configureByText(String content, boolean acceptErrorElements) {
+    protected T configureByText(String content, boolean acceptErrorElements) {
         return configureByText(getFileName(), content, acceptErrorElements);
     }
-    protected OMTFile configureByText(String fileName,
+
+    protected abstract T castToFile(PsiFile file);
+
+    protected OMTFile getContainingOMTFile(ODTFileImpl file) {
+        final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(file.getProject());
+        return (OMTFile) ReadAction.compute(() -> instance.getInjectionHost(file).getContainingFile());
+    }
+    protected T configureByText(String fileName,
                                                     String content,
                                                     boolean acceptErrorElements) {
-        return configureByText(fileName, content, acceptErrorElements, OMTFile.class);
-    }
-    protected <T extends PsiFile> T configureByText(String fileName,
-                                                    String content,
-                                                    boolean acceptErrorElements,
-                                                    Class<T> type) {
         if (myFixture == null) {
             fail("Fixture is not defined, call super.setUp()");
         }
@@ -83,16 +83,9 @@ public abstract class BasicTestCase extends LightJavaCodeInsightFixtureTestCase 
             fail(String.format("Configured PsiFile has an error element: %n%s%n%n%s", errorMessage, ReadAction.compute(
                     psiFile::getText)));
         }
-        if(psiFile instanceof ODTFileImpl) {
-            // the fixture returns the nested ODT file instead of the containing OMT file
-            return type.cast(getContainingOMTFile((ODTFileImpl) psiFile));
-        }
-        return type.cast(psiFile);
+        return castToFile(psiFile);
     }
-    protected PsiFile getContainingOMTFile(ODTFileImpl file) {
-        final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(file.getProject());
-        return ReadAction.compute(() -> instance.getInjectionHost(file).getContainingFile());
-    }
+
 
 
 }

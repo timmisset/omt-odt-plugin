@@ -1,11 +1,14 @@
 package com.misset.opp.testCase;
 
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.psi.PsiFile;
 import com.misset.opp.odt.psi.ODTCallName;
+import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
 import com.misset.opp.omt.OMTFileType;
+import com.misset.opp.omt.psi.OMTFile;
 
-public class OMTTestCase extends BasicTestCase {
+public class OMTTestCase extends BasicTestCase<OMTFile> {
     public OMTTestCase() {
         super(OMTFileType.INSTANCE);
     }
@@ -95,11 +98,20 @@ public class OMTTestCase extends BasicTestCase {
 
     protected ODTBaseCall getCallByName(String callName) {
         final ODTCallName elementByText = myFixture.findElementByText(callName, ODTCallName.class);
-        if(elementByText != null) {
+        if (elementByText != null) {
             return (ODTBaseCall) elementByText.getParent();
         }
         fail("Could not find call by name: " + callName + ", make sure the caret is located within an ODT script and includes " +
                 "the @ if it's a Command callname");
         return null;
+    }
+
+    @Override
+    protected OMTFile castToFile(PsiFile file) {
+        if (file instanceof ODTFileImpl) {
+            // the fixture returns the nested ODT file instead of the containing OMT file
+            return getContainingOMTFile((ODTFileImpl) file);
+        }
+        return (OMTFile) file;
     }
 }

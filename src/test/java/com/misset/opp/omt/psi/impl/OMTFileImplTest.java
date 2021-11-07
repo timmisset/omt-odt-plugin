@@ -5,8 +5,6 @@ import com.intellij.psi.PsiFile;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
-import org.jetbrains.yaml.YAMLFileType;
-import org.jetbrains.yaml.psi.impl.YAMLFileImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,11 +20,6 @@ class OMTFileImplTest extends OMTTestCase {
         Assertions.assertEquals(OMTFileType.INSTANCE, psiFile.getFileType());
     }
 
-    @Test
-    void getFileTypeYAML() {
-        final PsiFile psiFile = configureByText("test.yml", "model:\n", false, YAMLFileImpl.class);
-        Assertions.assertEquals(YAMLFileType.YML, psiFile.getFileType());
-    }
 
     @Test
     void testGetExportingMembersMapReturnsAllExportableMembers() {
