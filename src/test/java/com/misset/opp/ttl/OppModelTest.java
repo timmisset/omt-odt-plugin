@@ -127,7 +127,7 @@ class OppModelTest extends OntologyTestCase {
     }
 
     @Test
-    void testListObjectsInstanceToInstace() {
+    void testListObjectsInstanceToInstance() {
         final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), createProperty("classPredicate"));
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof Individual && ((Individual)resource).hasOntClass(createClass("ClassBSub"))

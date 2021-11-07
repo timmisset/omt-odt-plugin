@@ -3,3 +3,5 @@
 /build/
 /.idea/
 /.gradle/
+/src/test/resources/full-opp-model/
+/src/test/resources/tmp/

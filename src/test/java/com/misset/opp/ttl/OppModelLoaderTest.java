@@ -30,6 +30,16 @@ class OppModelLoaderTest {
         Assertions.assertEquals(1, ontModel.listSubModels().toList().size());
     }
 
+    @Test
+    // @Ignore("Add a full ontology to the test folder before enabling this test, not included in the repo")
+    void testLoadFullOntology() {
+        Assertions.assertDoesNotThrow(() -> {
+            new OppModelLoader()
+                    .read(getRootPath("full-opp-model", "root.ttl"))
+                    .getShaclModel();
+        });
+    }
+
     private OntModel getOntologyModel() {
         return new OppModelLoader().read(getRootPath()).getShaclModel();
     }

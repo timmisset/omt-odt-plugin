@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  * When a query resolves a step using the ^rdf:type, the outcome will be Individual
  */
 public class OppModel {
-    private static final String XSD = "http://www.w3.org/2001/XMLSchema#";
+    public static final String XSD = "http://www.w3.org/2001/XMLSchema#";
     private static final String SHACL = "http://www.w3.org/ns/shacl#";
     private static final String RDFS = "http://www.w3.org/2000/01/rdf-schema#";
     private static final String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -42,8 +43,11 @@ public class OppModel {
     public OntResource XSD_BOOLEAN, XSD_STRING, XSD_NUMBER;
     public OntResource XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE;
 
-    public static OppModel INSTANCE;
+    // create a default empty model to begin with until the DumbService is smart (finished indexing)
+    // and the ontology can be loaded using the FileIndex
+    public static OppModel INSTANCE = new OppModel(ModelFactory.createOntologyModel());
     private final OntModel shaclModel;
+
     /**
      * The simple model contains a simple representation of the SHACL based model that is initially loaded
      */
@@ -93,11 +97,11 @@ public class OppModel {
     }
 
     private void setPrimitives() {
-        XSD_BOOLEAN = model.createOntResource(XSD + "boolean");
+        XSD_BOOLEAN = model.createClass(XSD + "boolean");
         XSD_BOOLEAN_INSTANCE = model.createIndividual(XSD_BOOLEAN);
-        XSD_STRING = model.createOntResource(XSD + "string");
+        XSD_STRING = model.createClass(XSD + "string");
         XSD_STRING_INSTANCE = model.createIndividual(XSD_STRING);
-        XSD_NUMBER = model.createOntResource(XSD + "number");
+        XSD_NUMBER = model.createClass(XSD + "number");
         XSD_NUMBER_INSTANCE = model.createIndividual(XSD_NUMBER);
     }
 
@@ -136,7 +140,7 @@ public class OppModel {
                 .filterKeep(resource -> resource.getProperty(RDF_TYPE).getObject().equals(SHACL_PROPERYSHAPE))
                 .forEach((shaclPropertyShape) -> getSimpleResourceStatement(simpleModelClass, shaclPropertyShape));
 
-        simpleModelClass.createIndividual();
+        simpleModelClass.createIndividual(simpleModelClass.getURI() + "_INSTANCE");
     }
 
     private void getSimpleResourceStatement(OntClass subject,
@@ -208,7 +212,7 @@ public class OppModel {
 
     public Set<OntResource> listSubjects(Property predicate,
                                          OntResource object) {
-        if(object instanceof Individual) {
+        if(object.isIndividual()) {
             // the returned subjects should also be the instances of the classes that point to
             // the ontClass of the Individual
             return listSubjectsForIndividual(predicate, object.asIndividual());
@@ -217,26 +221,8 @@ public class OppModel {
         }
         return Collections.emptySet();
     }
-    private Set<OntResource> listSubjectsForIndividual(Property predicate, Individual object) {
-        return model.listSubjectsWithProperty(predicate, object.getOntClass())
-                .mapWith(model::getOntResource)
-                .filterKeep(OntResource::isClass)
-                .mapWith(OntResource::asClass)
-                .mapWith(ontClass -> ontClass.listInstances().toSet())
-                .toSet()
-                .stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
-    }
-    private Set<OntResource> listSubjectsForClass(Property predicate, OntClass object) {
-        if(predicate.equals(RDF_TYPE)) {
-            // called /^rdf:type on a class, return all instances:
-            return object.listInstances().mapWith(model::getOntResource).toSet();
-        }
-        return model.listSubjectsWithProperty(predicate, object)
-                .mapWith(model::getOntResource)
-                .toSet();
-    }
+
+
 
     public Set<OntResource> listObjects(Set<OntResource> classSubjects,
                                         Property predicate) {
@@ -249,12 +235,9 @@ public class OppModel {
     public Set<OntResource> listObjects(OntResource subject,
                                         Property predicate) {
         if (subject.isIndividual()) {
-            return listObjectsForIndividual((Individual) subject, predicate);
+            return listObjectsForIndividual(subject.asIndividual(), predicate);
         }
-        return subject.listProperties(predicate)
-                .mapWith(Statement::getObject)
-                .mapWith(rdfNode -> model.getOntResource(rdfNode.asResource()))
-                .toSet();
+        return listObjectsForClass(subject.asClass(), predicate);
     }
     private Set<OntResource> listObjectsForIndividual(Individual subject, Property predicate) {
         if(predicate.equals(RDF_TYPE)) {
@@ -263,9 +246,9 @@ public class OppModel {
             // and which would lead to [someInstance] / rdf:type / ^rdf:type always returning all classes
             return Set.of(subject.getOntClass());
         } else {
-            // otherwise, the graph is traversed by class properties but using instances of those classes
+            // an instance has all the properties of it's direct class and all superclasses
             return subject
-                    .listOntClasses(true)
+                    .listOntClasses(false)
                     .mapWith(ontClass -> ontClass.listProperties(predicate).toList())
                     .filterDrop(List::isEmpty)
                     .toList() // collected all statements for all (super)classes of this instance
@@ -280,11 +263,28 @@ public class OppModel {
                     .collect(Collectors.toSet());
         }
     }
+    private Set<OntResource> listObjectsForClass(OntClass subject,
+                                                 Property predicate) {
+        // listing properties on the Class doesn't automatically include the properties
+        // on the super-class. This might be an issue with the rdf reasoning (todo)
+        final Set<OntResource> objects = subject.listSuperClasses()
+                .mapWith(ontClass -> listObjectsForClass(ontClass, predicate))
+                .toSet()
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+
+        objects.addAll(subject.listProperties(predicate)
+                .mapWith(Statement::getObject)
+                .mapWith(rdfNode -> model.getOntResource(rdfNode.asResource()))
+                .toSet());
+        return objects;
+    }
+
     private Set<OntResource> toIndividual(OntResource resource) {
         if(resource.isClass()) {
             return resource.asClass().listInstances().mapWith(OntResource.class::cast).toSet();
         }
-        // if the resource is not a class it is most likely a data-type, which we can return as-is
         return Collections.singleton(resource);
     }
 
@@ -302,9 +302,6 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
-    public OntResource createResource(String uri) {
-        return model.createOntResource(uri);
-    }
     public OntResource getResource(Resource resource) {
         return model.getOntResource(resource);
     }
@@ -313,14 +310,45 @@ public class OppModel {
         return model.getOntClass(resource.getURI());
     }
     public OntClass getClass(String uri) {
-        return model.createClass(uri);
+        return model.getOntClass(uri);
+    }
+    public Property getProperty(Resource resource) {
+        return model.getProperty(resource.getURI());
+    }
+    public Property getProperty(String uri) {
+        return model.getProperty(uri);
     }
 
-    public Property createProperty(Resource resource) {
-        return model.createProperty(resource.getURI());
+    private Set<Resource> listSubjectsWithProperty(Property property, RDFNode node) {
+        return model.listSubjectsWithProperty(property, node).toSet();
     }
 
-    public Property createProperty(String uri) {
-        return model.createProperty(uri);
+    private Set<OntResource> listSubjectsForClass(Property predicate, OntClass object) {
+        if(predicate.equals(RDF_TYPE)) {
+            // called /^rdf:type on a class, return all instances:
+            final Set<? extends OntResource> ontResources = object.listInstances(true).toSet();
+            return ontResources
+                    .stream()
+                    .map(model::getOntResource)
+                    .collect(Collectors.toSet());
+        }
+        return listSubjectsWithProperty(predicate, object)
+                .stream()
+                .map(model::getOntResource)
+                .collect(Collectors.toSet());
     }
+
+    private Set<OntResource> listSubjectsForIndividual(Property predicate, Individual object) {
+        return listSubjectsWithProperty(predicate, object.getOntClass())
+                .stream()
+                .map(model::getOntResource)
+                .filter(Objects::nonNull)
+                .map(OntClass.class::cast)
+                .map(ontClass -> ontClass.listInstances().toSet())
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+    }
+
+
+
 }

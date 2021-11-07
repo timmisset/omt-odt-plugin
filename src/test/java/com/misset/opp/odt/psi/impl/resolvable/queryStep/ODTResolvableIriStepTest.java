@@ -11,13 +11,13 @@ class ODTResolvableIriStepTest extends OntologyTestCase {
 
     @Test
     void testResolveIri() {
-        final OntResource ontResource = resolveQueryStatementToSingleResult("/<http://ontologie#ClassA>");
+        final OntResource ontResource = resolveQueryStatementToSingleResult("/<http://ontology#ClassA>");
         Assertions.assertTrue(ontResource.isClass());
     }
 
     @Test
     void testResolveIriNoLeadingSlash() {
-        final Set<OntResource> resources = resolveQueryStatement("<http://ontologie#ClassA>");
+        final Set<OntResource> resources = resolveQueryStatement("<http://ontology#ClassA>");
         Assertions.assertTrue(resources.isEmpty());
     }
 

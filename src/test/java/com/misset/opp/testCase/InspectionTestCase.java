@@ -79,7 +79,7 @@ public abstract class InspectionTestCase extends OMTTestCase {
         assertTrue(
                 allHighlightingAsMessage(),
                 highlighting.stream().anyMatch(
-                        highlightInfo -> highlightInfo.getDescription().startsWith(message)
+                        highlightInfo -> highlightInfo.getDescription() != null && highlightInfo.getDescription().startsWith(message)
                 ));
     }
 

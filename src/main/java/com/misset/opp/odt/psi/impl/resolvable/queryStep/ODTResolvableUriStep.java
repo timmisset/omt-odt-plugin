@@ -1,6 +1,10 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
+import com.misset.opp.ttl.OppModel;
+import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -14,5 +18,37 @@ public abstract class ODTResolvableUriStep extends ODTResolvableQueryStep {
     public ODTResolvableUriStep(@NotNull ASTNode node) {
         super(node);
     }
+
     public abstract String getFullyQualifiedUri();
+
+    @Override
+    public void inspect(ProblemsHolder holder) {
+        inspectIri(holder);
+        if(!isPartOfReverseStep()) {
+            inspectResolved(holder);
+        }
+    }
+
+    private void inspectIri(ProblemsHolder holder) {
+        final String fullyQualifiedUri = getFullyQualifiedUri();
+        if (fullyQualifiedUri != null) {
+            final Resource resource = OppModel.INSTANCE.getModel().getResource(fullyQualifiedUri);
+            if (!OppModel.INSTANCE.getModel().containsResource(resource)) {
+                // unknown Iri
+                holder.registerProblem(
+                        this,
+                        "Could not find resource <" + fullyQualifiedUri + "> in the Opp Model"
+                );
+            }
+        }
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+        if (!isPartOfReverseStep()) {
+            annotateResolved(holder);
+        }
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.ttl.OppModel;
@@ -29,8 +30,13 @@ public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQuerySt
             final OppModel oppModel = OppModel.INSTANCE;
             // a reverse path indicator can only be applied to a curie step
             final String fullyQualified = ((ODTResolvableUriStep) queryStep).getFullyQualifiedUri();
-            return oppModel.listSubjects(oppModel.createProperty(fullyQualified), resolvePreviousStep());
+            return oppModel.listSubjects(oppModel.getProperty(fullyQualified), resolvePreviousStep());
         }
         return Collections.emptySet();
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+        annotateResolved(holder);
     }
 }

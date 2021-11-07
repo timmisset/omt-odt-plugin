@@ -2,6 +2,8 @@ package com.misset.opp.ttl;
 
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.io.FileUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.ontology.OntModel;
@@ -35,19 +37,34 @@ public final class OppModelLoader {
     Logger logger = Logger.getInstance(OppModelLoader.class);
 
     private static OntModel model;
+    private ProgressIndicator indicator = ProgressManager.getGlobalProgressIndicator();
 
     public OppModelLoader() { }
     public OppModel read(File file) {
+        return read(file, indicator);
+    }
+    public OppModel read(File file, ProgressIndicator indicator) {
+        this.indicator = indicator;
         model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         init(file);
         return new OppModel(model);
     }
+    private void setIndicatorText(String text) {
+        if(indicator == null) { return; }
+        indicator.setText(text);
+    }
+    private void setIndicatorText2(String text) {
+        if(indicator == null) { return; }
+        indicator.setText2(text);
+    }
     private void init(File rootFile) {
         if(!rootFile.exists()) { return; }
+        setIndicatorText("Reading ontology file");
         // load all other ontology files in the subfolders (recursively)
         FileUtils.listFiles(rootFile.getParentFile(), new String[] { "ttl" }, true)
                 .stream()
                 .filter(file -> !FileUtil.filesEqual(file, rootFile))
+                .peek(file -> setIndicatorText2(file.getName()))
                 .map(this::readFile)
                 .filter(Objects::nonNull)
                 .map(this::getSubmodel)
@@ -57,8 +74,6 @@ public final class OppModelLoader {
     }
     private void processImports(OntModel model) {
         final Resource ontologyResource = getOntologyResource(model);
-        if(processed.contains(ontologyResource)) { return; }
-
         // add first to prevent recursion
         processed.add(ontologyResource);
         final Property imports = model.createProperty("http://www.w3.org/2002/07/owl#imports");
@@ -70,6 +85,7 @@ public final class OppModelLoader {
         Optional.ofNullable(statement.getObject())
                 .map(RDFNode::asResource)
                 .map(ontologies::get)
+                .filter(subModel -> !processed.contains(getOntologyResource(subModel)))
                 .ifPresent(subModel -> {
                     model.addSubModel(subModel);
                     processImports(subModel);

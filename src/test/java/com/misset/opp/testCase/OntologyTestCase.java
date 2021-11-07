@@ -41,11 +41,18 @@ public class OntologyTestCase extends OMTTestCase {
         oppModel = new OppModelLoader().read(getRootPath());
     }
 
+    /**
+     * When the ontology is required in a test that is not inheriting from OntologyTestCase
+     * this method can be used to load the ontology and return the OppModel
+     */
+    public static OppModel getOntologyModel() {
+        return new OppModelLoader().read(getRootPath());
+    }
 
-    private File getRootPath() {
+    private static File getRootPath() {
         return getRootPath("model", "root.ttl");
     }
-    private File getRootPath(String folder, String file) {
+    private static File getRootPath(String folder, String file) {
         Path resourceDirectory = Paths.get("src","test","resources", folder, file);
         return resourceDirectory.toFile();
     }
@@ -54,7 +61,7 @@ public class OntologyTestCase extends OMTTestCase {
         return createResource("http://ontology#", localName);
     }
     protected Property createProperty(String localName) {
-        return oppModel.createProperty(createResource("http://ontology#", localName));
+        return oppModel.getProperty(createResource("http://ontology#", localName));
     }
     protected OntClass createClass(String name) {
         return oppModel.getClass(createResource(name));
@@ -63,7 +70,7 @@ public class OntologyTestCase extends OMTTestCase {
         return createResource("http://www.w3.org/2001/XMLSchema#", localName);
     }
     protected OntResource createResource(String namespace, String localName) {
-        return oppModel.createResource(namespace + localName);
+        return oppModel.getModel().createOntResource(namespace + localName);
     }
 
     protected OntResource resolveQueryStatementToSingleResult(String query) {

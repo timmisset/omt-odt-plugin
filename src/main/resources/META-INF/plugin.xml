@@ -69,23 +69,31 @@
         <lang.parserDefinition language="ODT"
                                implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
         <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
-        <psi.referenceContributor language="ODT" implementation="com.misset.opp.odt.psi.reference.ODTReferenceContributor"/>
+        <psi.referenceContributor language="ODT"
+                                  implementation="com.misset.opp.odt.psi.reference.ODTReferenceContributor"/>
         <lang.syntaxHighlighter language="ODT" implementationClass="com.misset.opp.odt.syntax.ODTSyntaxHighlighter"/>
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <!-- Inspections -->
-        <localInspection displayName="UnusedODTInspection"
+        <localInspection displayName="ODTUnusedInspection"
                          groupName="ODT"
                          language="ODT"
                          enabledByDefault="true"
                          level="WARNING"
-
                          implementationClass="com.misset.opp.odt.inspection.ODTUnusedInspection"/>
-        />
+        <localInspection
+                displayName="ODTRDFTraverseInspection"
+                groupName="ODT"
+                language="ODT"
+                enabledByDefault="true"
+                level="WARNING"
+                implementationClass="com.misset.opp.odt.inspection.ODTRDFInspection"/>
 
         <!-- TTL Language-->
         <postStartupActivity implementation="com.misset.opp.ttl.LoadOntologyStartupActivity"/>
+
+        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTAnnotator"/>
     </extensions>
     <depends>com.intellij.java</depends>
 

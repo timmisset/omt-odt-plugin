@@ -84,8 +84,7 @@ public class OMTTestCase extends BasicTestCase {
 
     protected String insideQueryWithPrefixesNoSemicolonEnding(String queryStatement) {
         return withPrefixes(String.format("queries: |\n" +
-                "   DEFINE QUERY query => %s\n" +
-                "\n", queryStatement));
+                "   DEFINE QUERY query => %s", queryStatement));
     }
 
     protected void withProgress(Runnable runnable) {
