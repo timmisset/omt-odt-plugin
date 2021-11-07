@@ -71,6 +71,7 @@ public final class OppModelLoader {
                 .forEach(subModel -> ontologies.put(getOntologyResource(subModel), subModel));
         model.read(readFile(rootFile), null, "TTL");
         processImports(model);
+        processData();
     }
     private void processImports(OntModel model) {
         final Resource ontologyResource = getOntologyResource(model);
@@ -80,6 +81,13 @@ public final class OppModelLoader {
         model.getOntResource(ontologyResource)
                 .listProperties(imports)
                 .forEach(statement -> bindImports(model, statement));
+    }
+    private void processData() {
+        // todo: replace with configuration
+        final Resource modelResource = model.getResource("http://ontologie.politie.nl/referentiedata");
+        // the data files are loaded seperately from the model, they are not part of the ontology import tree
+        final OntModel data = ontologies.get(modelResource);
+        model.addSubModel(data);
     }
     private void bindImports(OntModel model, Statement statement) {
         Optional.ofNullable(statement.getObject())

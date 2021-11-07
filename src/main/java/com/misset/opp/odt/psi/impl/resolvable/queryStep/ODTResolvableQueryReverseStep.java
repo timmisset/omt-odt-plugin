@@ -26,10 +26,10 @@ public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQuerySt
         // only when the reverse caret is followed by a valid traversion can path be travelled
         // - a curie => ont:somePredicate)
         // - an iri  => <http://ontology/somePredicate>
-        if(queryStep instanceof ODTResolvableUriStep) {
+        if(queryStep instanceof ODTResolvableQualifiedUriStep) {
             final OppModel oppModel = OppModel.INSTANCE;
             // a reverse path indicator can only be applied to a curie step
-            final String fullyQualified = ((ODTResolvableUriStep) queryStep).getFullyQualifiedUri();
+            final String fullyQualified = ((ODTResolvableQualifiedUriStep) queryStep).getFullyQualifiedUri();
             return oppModel.listSubjects(oppModel.getProperty(fullyQualified), resolvePreviousStep());
         }
         return Collections.emptySet();

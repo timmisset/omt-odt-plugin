@@ -353,6 +353,9 @@ public class OppModel {
     public OntResource getResource(Resource resource) {
         return model.getOntResource(resource);
     }
+    public OntResource getResource(String uri) {
+        return model.getOntResource(uri);
+    }
     public Individual getIndividual(String uri) {
         return model.getIndividual(uri);
     }

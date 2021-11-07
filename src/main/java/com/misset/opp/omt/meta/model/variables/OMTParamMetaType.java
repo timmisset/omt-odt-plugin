@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta.model.variables;
 
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableUriStep;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.OMTTypeResolver;
@@ -80,8 +80,8 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTTypeRes
     private static Set<OntResource> getType(YAMLValue yamlValue,
                                             String value) {
         final OppModel oppModel = OppModel.INSTANCE;
-        final Collection<ODTResolvableUriStep> resolvableUriSteps = OMTProviderUtil.getInjectedContent(yamlValue,
-                ODTResolvableUriStep.class);
+        final Collection<ODTResolvableQualifiedUriStep> resolvableUriSteps = OMTProviderUtil.getInjectedContent(yamlValue,
+                ODTResolvableQualifiedUriStep.class);
         if (resolvableUriSteps.isEmpty()) {
             // no curie, probably a primitive, try to parse:
             return Set.of(oppModel.parsePrimitive(value));
