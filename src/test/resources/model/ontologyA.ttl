@@ -21,3 +21,7 @@ ont:ClassA
       sh:class ont:ClassBSub ;
     ] ;
 .
+ont:ClassA_InstanceA
+  a ont:ClassA ;
+  ont:booleanPredicate "true"^^xsd:boolean ;
+.

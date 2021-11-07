@@ -1,5 +1,7 @@
 package com.misset.opp.ttl;
 
+import com.intellij.openapi.diagnostic.Logger;
+import org.apache.jena.ontology.ConversionException;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
@@ -48,6 +50,8 @@ public class OppModel {
     public static OppModel INSTANCE = new OppModel(ModelFactory.createOntologyModel());
     private final OntModel shaclModel;
 
+    Logger logger = Logger.getInstance(OppModel.class);
+
     /**
      * The simple model contains a simple representation of the SHACL based model that is initially loaded
      */
@@ -64,10 +68,18 @@ public class OppModel {
         INSTANCE = this;
     }
 
-    private Set<OntClass> listClasses() {
+    private Set<OntClass> listShaclClasses() {
         return shaclModel
                 .listSubjectsWithProperty(RDF_TYPE, OWL_CLASS)
                 .mapWith(resource -> shaclModel.createClass(resource.getURI()))
+                .toSet();
+    }
+    private Set<Individual> listShaclIndividuals() {
+        return shaclModel
+                .listStatements()
+                .filterKeep(resource -> resource.getPredicate().equals(RDF_TYPE) && model.getOntClass(resource.getObject().asResource().getURI()) != null)
+                .mapWith(statement -> shaclModel.getIndividual(statement.getSubject().getURI()))
+                .filterKeep(OntResource::isIndividual)
                 .toSet();
     }
 
@@ -117,7 +129,8 @@ public class OppModel {
     }
 
     private void loadSimpleModel() {
-        listClasses().forEach(this::loadSimpleModelClass);
+        listShaclClasses().forEach(this::loadSimpleModelClass);
+        listShaclIndividuals().forEach(this::loadSimpleModelIndividual);
     }
 
     private void loadSimpleModelClass(OntClass ontClass) {
@@ -141,6 +154,19 @@ public class OppModel {
                 .forEach((shaclPropertyShape) -> getSimpleResourceStatement(simpleModelClass, shaclPropertyShape));
 
         simpleModelClass.createIndividual(simpleModelClass.getURI() + "_INSTANCE");
+    }
+    private void loadSimpleModelIndividual(Individual individual) {
+        try{
+            if(model.getOntProperty(individual.getURI()) == null) {
+                model.createIndividual(individual.getURI(), individual.getOntClass());
+                model.add(individual.listProperties());
+            }
+        } catch (ConversionException conversionException) {
+            // do nothing, there might be an input issue in the ontology or some other reason
+            // why the provided individual cannot be recreated as an individual in the simple model
+            // in any case, this should just be a warning
+            logger.warn("Could not create an individual for: " + individual.getURI());
+        }
     }
 
     private void getSimpleResourceStatement(OntClass subject,
@@ -168,6 +194,26 @@ public class OppModel {
     }
 
     /**
+     * Returns a set of Resources that are compatible with the provided resource
+     * if the provided resource is an Individual, the comparison will be made on the Individual::ontClass()
+     *
+     * If ClassB has a super-class ClassA and a sub-class ClassC then
+     * any instance of ClassB and C are acceptable types since ClassC at least has all properties of ClassB but
+     * ClassA does not.
+     * @param resource
+     * @return
+     */
+    public Set<OntResource> listAcceptableTypes(OntResource resource) {
+        final OntClass ontClass;
+        if(resource.isClass()) { ontClass = resource.asClass(); }
+        else if(resource.isIndividual()) { ontClass = resource.asIndividual().getOntClass(); }
+        else {
+            return Collections.emptySet();
+        }
+        return ontClass.listInstances(false).mapWith(OntResource.class::cast).toSet();
+    }
+
+    /**
      * Returns the list with all predicate-objects for the provided subject
      */
     public Set<Statement> listPredicateObjects(OntResource subject) {
@@ -186,7 +232,9 @@ public class OppModel {
         /*
             When traversing the model on an individual, all properties of the (super)class of the instance
             are available. The rdf:type is the exception, an instance should not contain the rdf:type property
-            of it's class since that would assert that the instance is an owl:class.
+            of it's class since that result in the instance being all superclass types also. While this is
+            semantically correct, it's not how the rdf:type call in the ODT should work.
+            In ODT the rdf:type works like getting the direct type.
          */
         final Set<Statement> statements = listPredicateObjectsForClass(individual.getOntClass())
                 .stream()
@@ -305,6 +353,9 @@ public class OppModel {
     public OntResource getResource(Resource resource) {
         return model.getOntResource(resource);
     }
+    public Individual getIndividual(String uri) {
+        return model.getIndividual(uri);
+    }
 
     public OntClass getClass(Resource resource) {
         return model.getOntClass(resource.getURI());
@@ -348,6 +399,8 @@ public class OppModel {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
+
+
 
 
 

@@ -5,6 +5,7 @@ import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +19,7 @@ import java.util.Set;
 class OppModelTest extends OntologyTestCase {
     private OntClass CLASS_A;
     private Individual CLASS_A_INDIVIDUAL;
+
     @BeforeEach
     protected void setUp() {
         setOntologyModel();
@@ -120,7 +122,8 @@ class OppModelTest extends OntologyTestCase {
 
     @Test
     void testListObjectsPredicate() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), createProperty("booleanPredicate"));
+        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
+                createProperty("booleanPredicate"));
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> resource.equals(oppModel.XSD_BOOLEAN_INSTANCE)
         ));
@@ -128,9 +131,11 @@ class OppModelTest extends OntologyTestCase {
 
     @Test
     void testListObjectsInstanceToInstance() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), createProperty("classPredicate"));
+        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
+                createProperty("classPredicate"));
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> resource instanceof Individual && ((Individual)resource).hasOntClass(createClass("ClassBSub"))
+                resource -> resource instanceof Individual && ((Individual) resource).hasOntClass(createClass(
+                        "ClassBSub"))
         ));
     }
 
@@ -148,5 +153,22 @@ class OppModelTest extends OntologyTestCase {
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> resource.equals(oppModel.OWL_CLASS))
         );
+    }
+
+    @Test
+    void testListAcceptableTypes() {
+        Assertions.assertTrue(oppModel.listAcceptableTypes(CLASS_A)
+                .stream()
+                .anyMatch(resource -> resource.equals(oppModel.getIndividual("http://ontology#ClassA_InstanceA"))));
+    }
+
+    @Test
+    void testInstanceValues() {
+        final Individual individual = oppModel.getIndividual("http://ontology#ClassA_InstanceA");
+        final RDFNode booleanPredicate = individual.listPropertyValues(
+                oppModel.getProperty(createProperty("booleanPredicate"))
+        ).next();
+        Assertions.assertTrue(booleanPredicate.isLiteral());
+        Assertions.assertTrue(booleanPredicate.asLiteral().getBoolean());
     }
 }
