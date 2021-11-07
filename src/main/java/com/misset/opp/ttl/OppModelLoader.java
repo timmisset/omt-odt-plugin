@@ -87,7 +87,7 @@ public final class OppModelLoader {
         final Resource modelResource = model.getResource("http://ontologie.politie.nl/referentiedata");
         // the data files are loaded seperately from the model, they are not part of the ontology import tree
         final OntModel data = ontologies.get(modelResource);
-        model.addSubModel(data);
+        if(data != null) { model.addSubModel(data); }
     }
     private void bindImports(OntModel model, Statement statement) {
         Optional.ofNullable(statement.getObject())
