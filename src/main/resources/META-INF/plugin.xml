@@ -73,6 +73,7 @@
                                   implementation="com.misset.opp.odt.psi.reference.ODTReferenceContributor"/>
         <lang.syntaxHighlighter language="ODT" implementationClass="com.misset.opp.odt.syntax.ODTSyntaxHighlighter"/>
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
+        <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <!-- Inspections -->

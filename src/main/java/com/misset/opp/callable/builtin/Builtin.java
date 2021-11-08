@@ -6,8 +6,7 @@ public abstract class Builtin implements Callable {
 
     @Override
     public String getDescription(String context) {
-        // todo: load from the markdown
-        return "";
+        return BuiltinDocumentationService.getDocumentation(this);
     }
 
     @Override

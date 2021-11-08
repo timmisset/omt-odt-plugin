@@ -1,7 +1,6 @@
 package com.misset.opp.ttl;
 
 import com.intellij.openapi.diagnostic.Logger;
-import kotlin.jvm.Synchronized;
 import org.apache.jena.ontology.ConversionException;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -201,8 +200,6 @@ public class OppModel {
      * If ClassB has a super-class ClassA and a sub-class ClassC then
      * any instance of ClassB and C are acceptable types since ClassC at least has all properties of ClassB but
      * ClassA does not.
-     * @param resource
-     * @return
      */
     public Set<OntResource> listAcceptableTypes(OntResource resource) {
         final OntClass ontClass;
@@ -252,7 +249,6 @@ public class OppModel {
         return hashSet;
     }
 
-    @Synchronized
     public Set<OntResource> listSubjects(Property predicate, Set<OntResource> objects) {
         return objects.stream()
                 .map(classObject -> listSubjects(predicate, classObject))
@@ -260,7 +256,6 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
-    @Synchronized
     public Set<OntResource> listSubjects(Property predicate,
                                          OntResource object) {
         if(object.isIndividual()) {
@@ -273,7 +268,6 @@ public class OppModel {
         return Collections.emptySet();
     }
 
-    @Synchronized
     public Set<OntResource> listObjects(Set<OntResource> classSubjects,
                                         Property predicate) {
         return classSubjects.stream()
@@ -282,7 +276,6 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
-    @Synchronized
     public Set<OntResource> listObjects(OntResource subject,
                                         Property predicate) {
         if (subject.isIndividual()) {
@@ -350,7 +343,6 @@ public class OppModel {
         return Collections.singleton(resource);
     }
 
-    @Synchronized
     public Set<Resource> listPredicates(List<OntResource> classSubjects) {
         return classSubjects.stream()
                 .map(this::listPredicates)
@@ -358,7 +350,6 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
-    @Synchronized
     public Set<Property> listPredicates(OntResource classSubject) {
         return listPredicateObjects(classSubject)
                 .stream()

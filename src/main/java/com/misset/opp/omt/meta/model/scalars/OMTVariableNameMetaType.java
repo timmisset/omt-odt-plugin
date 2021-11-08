@@ -9,8 +9,7 @@ import org.jetbrains.yaml.psi.YAMLScalar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@ODTInjectable
-public class OMTVariableNameMetaType extends YamlScalarType {
+public class OMTVariableNameMetaType extends YamlScalarType implements ODTInjectable {
     private static final Pattern SHORTHAND = Pattern.compile("^(\\$\\w+)");
     protected static final String SYNTAX_ERROR = "Invalid syntax for variable name, use: '$name'";
     public OMTVariableNameMetaType() {

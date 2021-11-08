@@ -8,6 +8,7 @@ import com.misset.opp.omt.meta.model.scalars.ODTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -47,7 +48,7 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
         final YAMLKeyValue base = mapping.getKeyValueByKey("base");
         if(base != null) {
             // base should adhere to the OMTVariableNameMetaType otherwise it will throw an error on the syntax check
-            addToGroupedMap(base.getValueText(), base, variableMap);
+            addToGroupedMap(base.getValueText(), OMTVariableProviderUtil.getVariable(base.getValue()), variableMap);
         }
 
         return variableMap;

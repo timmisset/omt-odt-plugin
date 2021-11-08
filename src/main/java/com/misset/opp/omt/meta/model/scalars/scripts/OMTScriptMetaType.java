@@ -3,8 +3,7 @@ package com.misset.opp.omt.meta.model.scalars.scripts;
 import com.misset.opp.omt.meta.ODTInjectable;
 import org.jetbrains.yaml.meta.model.YamlScalarType;
 
-@ODTInjectable
-public class OMTScriptMetaType extends YamlScalarType {
+public class OMTScriptMetaType extends YamlScalarType implements ODTInjectable {
     boolean isExportable = false;
 
     public OMTScriptMetaType() {

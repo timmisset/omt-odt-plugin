@@ -2,15 +2,18 @@ package com.misset.opp.odt.psi.impl.call;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationBuilder;
+import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.builtin.commands.BuiltinCommands;
@@ -23,17 +26,20 @@ import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.psi.impl.OMTCallable;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectLocalCommandProviders;
 
-public abstract class ODTBaseCall extends ASTWrapperPsiElement implements PsiNamedElement {
+public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCall {
     public ODTBaseCall(@NotNull ASTNode node) {
         super(node);
     }
@@ -60,7 +66,8 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements PsiNam
                     .or(this::getLocalCommand)
                     .or(this::getBuiltin)
                     .orElse(null);
-            return new CachedValueProvider.Result<>(callable, callable instanceof PsiElement ? callable : ModificationTracker.NEVER_CHANGED);
+            return new CachedValueProvider.Result<>(callable,
+                    callable instanceof PsiElement ? PsiModificationTracker.MODIFICATION_COUNT : ModificationTracker.NEVER_CHANGED);
         });
     }
 
@@ -109,5 +116,19 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements PsiNam
             return getCallName().replace(callName);
         }
         return this;
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+        Optional.ofNullable(getCallable())
+                .map(callable -> callable.getDescription(null))
+                .map(message -> holder.newAnnotation(HighlightSeverity.INFORMATION, "").tooltip(message))
+                .map(annotationBuilder -> annotationBuilder.range(getCallName()))
+                .ifPresent(AnnotationBuilder::create);
+    }
+
+    @Override
+    public Set<OntResource> resolve() {
+        return Collections.emptySet();
     }
 }

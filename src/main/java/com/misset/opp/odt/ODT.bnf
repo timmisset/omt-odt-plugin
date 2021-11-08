@@ -68,11 +68,13 @@ callName ::=                                SYMBOL | BOOLEAN_OPERATOR
 // MEMBER CALLS
 // A call to either an Operator or a Command. In case of the latter, it's always prefixed with @
 operatorCall ::=                            callName flagSignature? signature? {
-    extends= queryStep
+    extends=queryStep
+    implements="com.misset.opp.odt.psi.impl.call.ODTCall"
     mixin="com.misset.opp.odt.psi.impl.call.ODTOperatorCallImpl"
 }
 commandCall ::=                             AT callName flagSignature? signature? {
     extends="com.misset.opp.odt.psi.impl.call.ODTCommandCallImpl"
+    implements="com.misset.opp.odt.psi.impl.call.ODTCall"
 }
 signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
 signatureArgument ::=                       resolvableValue | commandBlock

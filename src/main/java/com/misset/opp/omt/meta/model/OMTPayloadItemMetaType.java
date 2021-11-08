@@ -12,8 +12,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Supplier;
 
-@ODTInjectable
-public class OMTPayloadItemMetaType extends OMTMetaType {
+public class OMTPayloadItemMetaType extends OMTMetaType implements ODTInjectable {
     private static final Set<String> requiredFeatures = Set.of("value");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {

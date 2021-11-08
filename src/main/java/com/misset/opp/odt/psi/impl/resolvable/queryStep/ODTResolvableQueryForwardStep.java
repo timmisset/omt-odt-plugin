@@ -27,7 +27,8 @@ public abstract class ODTResolvableQueryForwardStep extends ODTResolvableQualifi
         final OppModel model = OppModel.INSTANCE;
         if (isRootStep()) {
             // when the path start with a root curie, resolve the curie and return it:
-            return Set.of(model.getResource(fullyQualifiedUri));
+            final OntResource resource = model.getResource(fullyQualifiedUri);
+            return resource != null ? Set.of(resource) : Collections.emptySet();
         } else {
             // resolve the previous step and use the current curie to traverse the model
             final Property property = model.getProperty(fullyQualifiedUri);

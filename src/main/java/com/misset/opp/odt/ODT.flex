@@ -30,7 +30,7 @@ ALPHA=                          [A-Za-z]
 UNDERSCORE=                     [_]
 DIGIT=                          [0-9]
 LATIN_EXT_A=                    [\u0100-\u017F] // Zie: http://en.wikipedia.org/wiki/Latin_script_in_Unicode
-SYMBOL=                         ({ALPHA}|{DIGIT}|{LATIN_EXT_A}|[_@\-])+
+SYMBOL=                         {ALPHA}({ALPHA}|{DIGIT}|{LATIN_EXT_A}|[_@\-])+
 
 SCHEME=                         {ALPHA}({ALPHA}|{DIGIT}|[+.-])*
 IRI=                            "<"{SCHEME}":"({SYMBOL}|[?&#/+*.-])+">"

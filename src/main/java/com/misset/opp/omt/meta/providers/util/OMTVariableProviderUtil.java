@@ -60,7 +60,7 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
             return getVariable(yamlValue);
         }
     }
-    private static ODTVariable getVariable(YAMLValue value) {
+    public static ODTVariable getVariable(YAMLValue value) {
         return getInjectedContent(value, ODTVariable.class).stream().findFirst().orElse(null);
     }
 

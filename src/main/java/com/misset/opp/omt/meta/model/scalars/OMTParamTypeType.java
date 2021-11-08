@@ -9,8 +9,7 @@ import org.jetbrains.yaml.psi.YAMLScalar;
 /**
  * The Meta-type for a OMTParamMetaType
  */
-@ODTInjectable
-public class OMTParamTypeType extends YamlScalarType {
+public class OMTParamTypeType extends YamlScalarType implements ODTInjectable {
 
     public OMTParamTypeType() {
         super("OMTParamTypeType");

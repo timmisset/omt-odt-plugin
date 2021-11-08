@@ -1,13 +1,21 @@
 package com.misset.opp.omt.meta;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.intellij.openapi.util.TextRange;
+import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface ODTInjectable {
+import java.util.List;
+
+public interface ODTInjectable {
+
+    default List<TextRange> getTextRanges(YAMLScalarImpl host) {
+        int startOffset = host.getContentRanges()
+                .stream()
+                .map(TextRange::getStartOffset)
+                .sorted()
+                .findFirst()
+                .orElse(0);
+        int endOffset = host.getTextLength();
+        return List.of(TextRange.create(startOffset, endOffset));
+    }
+
 }

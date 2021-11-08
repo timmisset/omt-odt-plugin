@@ -3,6 +3,7 @@ package com.misset.opp.odt;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
@@ -12,7 +13,6 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLDocument;
@@ -22,24 +22,19 @@ import org.jetbrains.yaml.psi.YAMLQuotedText;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * The ODTMultiHostInjector will inject ODT language on any YamlMetaType that implements ODTInjectable
  * The OMTMetaTypeProvider contains the entire OMT structure and has specific Scalar types that are recognized to be injectable
  */
 public class ODTMultiHostInjector implements MultiHostInjector {
-
-    private final Pattern INTERPOLATION = Pattern.compile("\\$\\{([^}]+)}");
-
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar,
                                      @NotNull PsiElement context) {
@@ -48,37 +43,26 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         }
         final YAMLDocument document = (YAMLDocument) context;
 
-        // gather all injectable scalars
-        final Collection<YAMLScalar> injectionHostList =
-                PsiTreeUtil.findChildrenOfType(document,
-                                PsiLanguageInjectionHost.class)
-                        .stream()
-                        .filter(this::isODTInjectable)
-                        .map(YAMLScalar.class::cast)
-                        .collect(Collectors.toList());
-        // start injection
-        if (!injectionHostList.isEmpty()) {
-            injectionHostList.forEach(host -> {
-                if (isInterpolatedString(host)) {
-                    registerInterpolatedString(registrar, host);
-                } else {
-                    registerBlock(registrar, host);
-                }
-            });
+        PsiTreeUtil.findChildrenOfType(document,
+                        PsiLanguageInjectionHost.class)
+                .stream()
+                .map(this::getODTInjectable)
+                .filter(Objects::nonNull)
+                .forEach(pair -> inject(registrar, pair.getFirst(), pair.getSecond()));
+    }
+
+    private void inject(MultiHostRegistrar registrar,
+                        ODTInjectable injectable,
+                        YAMLScalarImpl host) {
+        final List<TextRange> textRanges = injectable.getTextRanges(host);
+        if (textRanges.isEmpty()) {
+            return;
         }
-    }
 
-    private boolean isInterpolatedString(YAMLScalar scalar) {
-        return Optional.ofNullable(OMTMetaTypeProvider.getInstance(scalar.getProject()).getValueMetaType(scalar))
-                .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
-                .map(OMTInterpolatedStringMetaType.class::isInstance)
-                .orElse(false);
-    }
-
-    private void registerBlock(@NotNull MultiHostRegistrar registrar,
-                               YAMLScalar scalar) {
         registrar.startInjecting(ODTLanguage.INSTANCE);
-        registrar.addPlace(getPrefix(scalar), getSuffix(scalar), scalar, getTextRangeInHost(scalar));
+        for (TextRange textRange : textRanges) {
+            registrar.addPlace(getPrefix(host), getSuffix(host), host, textRange);
+        }
         registrar.doneInjecting();
     }
 
@@ -86,54 +70,30 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         /*
             The Quotes are forced, the injection will otherwise trim them, even when the full TextRange is suggested
          */
-        if(scalar instanceof YAMLQuotedText) { return scalar.getText().substring(0, 1); }
+        if (scalar instanceof YAMLQuotedText) {
+            return scalar.getText().substring(0, 1);
+        }
         return null;
     }
+
     private String getSuffix(YAMLScalar scalar) {
-        if(scalar instanceof YAMLQuotedText) { return scalar.getText().substring(scalar.getTextLength() - 1); }
+        if (scalar instanceof YAMLQuotedText) {
+            return scalar.getText().substring(scalar.getTextLength() - 1);
+        }
         return null;
     }
-    private void registerInterpolatedString(@NotNull MultiHostRegistrar registrar,
-                                            YAMLScalar scalar) {
-        final Matcher matcher = INTERPOLATION.matcher(scalar.getText());
-        boolean b = matcher.find();
-        if (!b) {
-            return;
-        }
 
-        registrar.startInjecting(ODTLanguage.INSTANCE);
-        while (b) {
-            TextRange textRange = TextRange.create(matcher.start(1), matcher.end(1));
-            registrar.addPlace(null, null, scalar, textRange);
-            b = matcher.find();
+    private Pair<ODTInjectable, YAMLScalarImpl> getODTInjectable(PsiLanguageInjectionHost host) {
+        if (!(host instanceof YAMLScalarImpl)) {
+            return null;
         }
-        registrar.doneInjecting();
-    }
-
-    private TextRange getTextRangeInHost(PsiLanguageInjectionHost host) {
-        if (host instanceof YAMLScalarImpl) {
-            // skip any non-value decorator or symbol (such as a multiline decorator)
-            int startOffset = ((YAMLScalarImpl) host).getContentRanges()
-                    .stream()
-                    .map(TextRange::getStartOffset)
-                    .sorted()
-                    .findFirst()
-                    .orElse(0);
-            int endOffset = host.getTextLength();
-            return TextRange.create(startOffset, endOffset);
-        }
-        return TextRange.EMPTY_RANGE;
-    }
-
-    private boolean isODTInjectable(PsiLanguageInjectionHost host) {
-        if (!(host instanceof YAMLScalar)) {
-            return false;
-        }
-        final YAMLScalar scalar = (YAMLScalar) host;
+        final YAMLScalarImpl scalar = (YAMLScalarImpl) host;
         return Optional.ofNullable(OMTMetaTypeProvider.getInstance(host.getProject()).getValueMetaType(scalar))
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
-                .map(metaType -> metaType.getClass().isAnnotationPresent(ODTInjectable.class))
-                .orElse(false);
+                .filter(metaType -> metaType instanceof ODTInjectable)
+                .map(ODTInjectable.class::cast)
+                .map(metaType -> new Pair<>(metaType, scalar))
+                .orElse(null);
     }
 
     @Override
@@ -167,5 +127,17 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         }
 
         return OMTMetaTreeUtil.resolveProvider(injectionHost, providerClass, key, mapFunction);
+    }
+
+    public static <T extends YAMLPsiElement, U> Optional<Pair<T, U>> getClosestProvider(PsiElement element,
+                                                                                        Class<T> yamlClass,
+                                                                                        Class<U> metaTypeOrInterface) {
+        return Optional.ofNullable(ODTMultiHostInjector.getInjectionHost(element))
+                .map(host -> OMTMetaTreeUtil.collectMetaParents(
+                        host, yamlClass, metaTypeOrInterface, false, Objects::isNull
+                ))
+                .map(LinkedHashMap::entrySet)
+                .flatMap(ts -> ts.stream().findFirst())
+                .map(tuEntry -> new Pair<>(tuEntry.getKey(), tuEntry.getValue()));
     }
 }

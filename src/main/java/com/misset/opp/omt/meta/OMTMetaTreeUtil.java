@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -42,15 +41,6 @@ public class OMTMetaTreeUtil {
                     }
                 });
         return linkedHashMap;
-    }
-
-    public static LinkedHashMap<YAMLMapping, OMTCallableProvider> collectCallableProviders(PsiElement element) {
-        return collectMetaParents(
-                element,
-                YAMLMapping.class,
-                OMTCallableProvider.class,
-                false,
-                Objects::isNull);
     }
 
     public static LinkedHashMap<YAMLMapping, OMTLocalCommandProvider> collectLocalCommandProviders(PsiElement element) {
