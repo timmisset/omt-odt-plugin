@@ -1,6 +1,7 @@
 package com.misset.opp.ttl;
 
 import com.intellij.openapi.diagnostic.Logger;
+import kotlin.jvm.Synchronized;
 import org.apache.jena.ontology.ConversionException;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -251,6 +252,7 @@ public class OppModel {
         return hashSet;
     }
 
+    @Synchronized
     public Set<OntResource> listSubjects(Property predicate, Set<OntResource> objects) {
         return objects.stream()
                 .map(classObject -> listSubjects(predicate, classObject))
@@ -258,6 +260,7 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
+    @Synchronized
     public Set<OntResource> listSubjects(Property predicate,
                                          OntResource object) {
         if(object.isIndividual()) {
@@ -270,8 +273,7 @@ public class OppModel {
         return Collections.emptySet();
     }
 
-
-
+    @Synchronized
     public Set<OntResource> listObjects(Set<OntResource> classSubjects,
                                         Property predicate) {
         return classSubjects.stream()
@@ -280,6 +282,7 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
+    @Synchronized
     public Set<OntResource> listObjects(OntResource subject,
                                         Property predicate) {
         if (subject.isIndividual()) {
@@ -287,6 +290,7 @@ public class OppModel {
         }
         return listObjectsForClass(subject.asClass(), predicate);
     }
+
     private Set<OntResource> listObjectsForIndividual(Individual subject, Property predicate) {
         if(predicate.equals(RDF_TYPE)) {
             // when rdf:type is called on the individual, the actual class is requested
@@ -295,12 +299,10 @@ public class OppModel {
             return Set.of(subject.getOntClass());
         } else {
             // an instance has all the properties of it's direct class and all superclasses
-            return subject
-                    .listOntClasses(false)
-                    .mapWith(ontClass -> ontClass.listProperties(predicate).toList())
-                    .filterDrop(List::isEmpty)
-                    .toList() // collected all statements for all (super)classes of this instance
+            return listOntClasses(subject)
                     .stream()
+                    .map(ontClass -> ontClass.listProperties(predicate).toList())
+                    .filter(statements -> !statements.isEmpty())
                     .flatMap(Collection::stream)
                     .map(Statement::getObject)
                     .map(RDFNode::asResource)
@@ -310,6 +312,18 @@ public class OppModel {
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
         }
+    }
+    /*
+        For some reason, listing the OntClasses via the individual non-direct listOntClasses
+        doesn't always provide the entire list of superclasses. The difference might be the
+        reasoner using the rdf:type instead of directly accessing known superclasses of the Class
+     */
+    private Set<OntClass> listOntClasses(Individual individual) {
+        final OntClass ontClass = individual.getOntClass(true);
+        final HashSet<OntClass> classes = new HashSet<>();
+        classes.add(ontClass);
+        classes.addAll(ontClass.listSuperClasses().toSet());
+        return classes;
     }
     private Set<OntResource> listObjectsForClass(OntClass subject,
                                                  Property predicate) {
@@ -336,6 +350,7 @@ public class OppModel {
         return Collections.singleton(resource);
     }
 
+    @Synchronized
     public Set<Resource> listPredicates(List<OntResource> classSubjects) {
         return classSubjects.stream()
                 .map(this::listPredicates)
@@ -343,6 +358,7 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
+    @Synchronized
     public Set<Property> listPredicates(OntResource classSubject) {
         return listPredicateObjects(classSubject)
                 .stream()

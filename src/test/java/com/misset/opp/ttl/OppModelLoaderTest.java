@@ -2,6 +2,7 @@ package com.misset.opp.ttl;
 
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Resource;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,7 @@ class OppModelLoaderTest {
     }
 
     @Test
-    // @Ignore("Add a full ontology to the test folder before enabling this test, not included in the repo")
+    @Ignore("Add a full ontology to the test folder before enabling this test, not included in the repo")
     void testLoadFullOntology() {
         Assertions.assertDoesNotThrow(() -> {
             new OppModelLoader()
