@@ -5,10 +5,20 @@ import org.jetbrains.yaml.meta.model.YamlScalarType;
 
 @ODTInjectable
 public class OMTScriptMetaType extends YamlScalarType {
+    boolean isExportable = false;
+
     public OMTScriptMetaType() {
         super("ODT Script");
     }
     public OMTScriptMetaType(String typeName) {
         super(typeName);
+    }
+    public OMTScriptMetaType(String typeName, boolean isExportable) {
+        super(typeName);
+        this.isExportable = isExportable;
+    }
+
+    public boolean isExportable() {
+        return isExportable;
     }
 }

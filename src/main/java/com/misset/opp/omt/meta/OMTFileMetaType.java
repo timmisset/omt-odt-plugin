@@ -34,8 +34,8 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
     static {
         features.put("import", OMTImportMetaType::new);
         features.put("model", OMTModelMetaType::new);
-        features.put("queries", ODTQueriesMetaType::new);
-        features.put("commands", ODTCommandsMetaType::new);
+        features.put("queries", () -> new ODTQueriesMetaType(true));
+        features.put("commands", () -> new ODTCommandsMetaType(true));
         features.put("prefixes", OMTPrefixesMetaType::new);
     }
 

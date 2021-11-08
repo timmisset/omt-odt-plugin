@@ -57,7 +57,7 @@ public abstract class ODTResolvableQueryStep extends ASTWrapperPsiElement
 
     @Override
     public void annotate(AnnotationHolder holder) {
-
+        annotateResolved(holder);
     }
     @Override
     public void inspect(ProblemsHolder holder) {
@@ -66,6 +66,9 @@ public abstract class ODTResolvableQueryStep extends ASTWrapperPsiElement
 
     protected void annotateResolved(AnnotationHolder holder) {
         final Set<OntResource> resources = getResolvableParent().resolve();
+        if (resources == null) {
+            return;
+        }
         if (!resources.isEmpty()) {
             holder.newAnnotation(HighlightSeverity.INFORMATION, "")
                     .tooltip(

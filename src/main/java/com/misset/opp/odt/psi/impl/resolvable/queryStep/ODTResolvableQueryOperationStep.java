@@ -6,6 +6,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
@@ -42,6 +43,10 @@ public abstract class ODTResolvableQueryOperationStep extends ASTWrapperPsiEleme
 
     public Set<OntResource> resolvePreviousStep() {
         if(isFirstStepInPath()) {
+            final Set<OntResource> fromSet = getParent().getFromSet();
+            if(fromSet != null) {
+                return fromSet;
+            }
             // check if inside container, in which case, resolve to the step preceding the container
             // for example:
             // /ont:ClassA / ^rdf:type[rdf:type == /ont:ClassA]
@@ -82,6 +87,9 @@ public abstract class ODTResolvableQueryOperationStep extends ASTWrapperPsiEleme
         }
         return resources;
     }
+    private boolean isPartOfFilter() {
+        return PsiTreeUtil.getParentOfType(this, ODTQueryFilter.class) != null;
+    }
 
     /**
      * Generic method to resolve the calculated value from the cache or calculate it
@@ -91,9 +99,16 @@ public abstract class ODTResolvableQueryOperationStep extends ASTWrapperPsiEleme
     @Override
     public Set<OntResource> resolve() {
         if(getQueryStep() != null) {
-            return CachedValuesManager.getCachedValue(this,
-                    RESOLVED_VALUE,
-                    () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()), getContainingFile()));
+            if(isPartOfFilter()) {
+                // Filters are evaluated more often to determine which of the input resources
+                // survive the filter. Therefore, caching the outcome of one would mean they
+                // all either pass or fail.
+                return filter(getQueryStep().resolve());
+            } else {
+                return CachedValuesManager.getCachedValue(this,
+                        RESOLVED_VALUE,
+                        () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()), PsiModificationTracker.MODIFICATION_COUNT));
+            }
         } else {
             return Collections.emptySet();
         }

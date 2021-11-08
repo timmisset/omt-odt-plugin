@@ -12,35 +12,41 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.Field;
-import org.jetbrains.yaml.psi.YAMLDocument;
+import org.jetbrains.yaml.meta.model.ModelAccess;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 @Service
 public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
     private static final Key<CachedValue<MetaTypeProxy>> VALUE_META_TYPE = new Key<>("VALUE_META_TYPE");
     private static final Key<CachedValue<MetaTypeProxy>> KEY_VALUE_META_TYPE = new Key<>("KEY_VALUE_META_TYPE");
 
-    private static final ModificationTracker YAML_MODIFICATION_TRACKER = ModificationTracker.EVER_CHANGED;
-
-    public OMTMetaTypeProvider() {
-        super(getRoot::apply, YAML_MODIFICATION_TRACKER);
-    }
-
-    public static OMTMetaTypeProvider getInstance(@NotNull Project project) {
-        return project.getService(OMTMetaTypeProvider.class);
-    }
-
-    // the (functional) interface ModelAccess uses getRoot to retrieve the root field
-    private static final Function<YAMLDocument, Field> getRoot = (@NotNull YAMLDocument document) -> {
+    /**
+        The YamlMetaTypeProvider already provides the containing Yaml file as modification dependency.
+        This means that whenever anything in the file is changed, the meta cache is cleared anyway. No need
+        to provide anything more. Simple provide a NEVER_CHANGED tracker to indicate that nothing else needs
+        to be tracked.
+        @see YamlMetaTypeProvider#getValueMetaType(org.jetbrains.yaml.psi.YAMLValue)
+     */
+    private static final ModificationTracker YAML_MODIFICATION_TRACKER = ModificationTracker.NEVER_CHANGED;
+    private static final ModelAccess modelAccess = document -> {
+        // todo:
+        // add different behavior when a module.omt file is provided
         String title = Optional.ofNullable(document.getName())
                 .orElse(document.getContainingFile()
                         .getName());
         return new Field(title, new OMTFileMetaType(title));
     };
+
+    public OMTMetaTypeProvider() {
+        super(modelAccess, YAML_MODIFICATION_TRACKER);
+    }
+
+    public static OMTMetaTypeProvider getInstance(@NotNull Project project) {
+        return project.getService(OMTMetaTypeProvider.class);
+    }
 
     @Override
     public @Nullable MetaTypeProxy getKeyValueMetaType(@NotNull YAMLKeyValue keyValue) {
@@ -59,6 +65,11 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
         });
     }
 
+    /**
+     * The OMTMetaTypeProvider enriches the default YamlMetaTypeProvider by including support for
+     * !Tag identifiers in the YamlValues.
+     * Use the OMTMetaTaggedType to provide a list of acceptable tags and related meta-types
+     */
     @Override
     public @Nullable MetaTypeProxy getValueMetaType(@NotNull YAMLValue typedValue) {
         return CachedValuesManager.getCachedValue(typedValue, VALUE_META_TYPE, () -> {

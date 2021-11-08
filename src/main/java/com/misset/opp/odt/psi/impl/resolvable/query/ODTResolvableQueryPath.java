@@ -30,6 +30,22 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
                 .orElse(Collections.emptySet());
     }
 
+    private Set<OntResource> fromSet;
+
+    /**
+     * Resolves the query with a given input, the provided set is evaluated once,
+     * after which the fromSet reset
+     */
+    public Set<OntResource> resolveFromSet(Set<OntResource> fromSet) {
+        this.fromSet = fromSet;
+        final Set<OntResource> resolve = resolve();
+        this.fromSet = null;
+        return resolve;
+    }
+    public Set<OntResource> getFromSet() {
+        return fromSet;
+    }
+
     private ODTResolvableQueryOperationStep getLastOperation() {
         if(getQueryOperationStepList().isEmpty()) { return null; }
         final ArrayList<ODTQueryOperationStep> operations = new ArrayList<>(getQueryOperationStepList());
@@ -52,7 +68,7 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
         return Optional.ofNullable(getLastOperation())
                 .map(ODTQueryOperation::getQueryStep)
                 .map(odtQueryStep -> odtQueryStep.filter(resources))
-                .orElse(Collections.emptySet());
+                .orElse(resources); // by default, return the input
     }
 
     public List<ODTResolvableQueryOperationStep> getResolvableQueryOperationStepList() {

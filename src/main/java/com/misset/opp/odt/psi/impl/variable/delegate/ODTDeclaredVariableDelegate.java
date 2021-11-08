@@ -4,6 +4,7 @@ import com.intellij.psi.PsiReference;
 import com.misset.opp.odt.psi.ODTVariable;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -27,6 +28,6 @@ public class ODTDeclaredVariableDelegate extends ODTBaseVariableDelegate {
 
     @Override
     public Set<OntResource> getType() {
-        return null;
+        return Collections.emptySet();
     }
 }

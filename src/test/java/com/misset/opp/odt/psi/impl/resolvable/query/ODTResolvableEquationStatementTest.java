@@ -33,4 +33,18 @@ class ODTResolvableEquationStatementTest extends OntologyTestCase {
         Assertions.assertTrue(resources.stream().anyMatch(resource -> resource.asIndividual().hasOntClass(createClass("ClassB"))));
     }
 
+    @Test
+    void testFilterByValue() {
+        final OntResource resource = resolveQueryStatementToSingleResult(
+                "/ont:ClassA / ^rdf:type[ont:booleanPredicate == true]");
+        Assertions.assertTrue(resource.isIndividual());
+        Assertions.assertTrue(resource.asIndividual().hasOntClass(createClass("ClassA")));
+    }
+
+    @Test
+    void testFilterByValueIncompatibleTypesReturnsEmptySet() {
+        final Set<OntResource> resources = resolveQueryStatement(
+                "/ont:ClassA / ^rdf:type[ont:booleanPredicate == 'true']");
+        Assertions.assertEquals(0, resources.size());
+    }
 }
