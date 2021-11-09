@@ -71,9 +71,11 @@
         <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
         <psi.referenceContributor language="ODT"
                                   implementation="com.misset.opp.odt.psi.reference.ODTReferenceContributor"/>
+        <psi.referenceContributor language="ODT"
+                                  implementation="com.misset.opp.odt.psi.reference.ODTAnotherReferenceContributor"/>
         <lang.syntaxHighlighter language="ODT" implementationClass="com.misset.opp.odt.syntax.ODTSyntaxHighlighter"/>
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
-        <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>
+<!--        <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>-->
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <!-- Inspections -->
@@ -95,6 +97,7 @@
         <postStartupActivity implementation="com.misset.opp.ttl.LoadOntologyStartupActivity"/>
 
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTAnnotator"/>
+        <lang.documentationProvider language="ODT" implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
     </extensions>
     <depends>com.intellij.java</depends>
 

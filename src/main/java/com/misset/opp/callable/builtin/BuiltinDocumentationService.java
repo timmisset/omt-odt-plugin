@@ -70,9 +70,6 @@ public final class BuiltinDocumentationService {
     }
 
     public void loadDocuments() {
-        if (DumbService.isDumb(project)) {
-            return;
-        }
         DumbService.getInstance(project).runWhenSmart(() -> {
             final Task.Backgroundable task = getTask();
 

@@ -4,7 +4,9 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTFile;
@@ -18,7 +20,7 @@ import java.util.Set;
 /**
  * Named version of th ODTDefineName to allow FindUsage and renaming
  */
-public abstract class ODTDefineNameNamed extends ASTWrapperPsiElement implements PsiNamedElement, ODTResolvable {
+public abstract class ODTDefineNameNamed extends ASTWrapperPsiElement implements PsiNamedElement, ODTResolvable, PsiJavaDocumentedElement {
     public ODTDefineNameNamed(@NotNull ASTNode node) {
         super(node);
     }
@@ -26,6 +28,11 @@ public abstract class ODTDefineNameNamed extends ASTWrapperPsiElement implements
     @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
         return this;
+    }
+
+    @Override
+    public ODTDefineStatement getParent() {
+        return (ODTDefineStatement) super.getParent();
     }
 
     @Override
@@ -40,7 +47,12 @@ public abstract class ODTDefineNameNamed extends ASTWrapperPsiElement implements
     }
 
     @Override
+    public @Nullable PsiDocComment getDocComment() {
+        return getParent().getDocComment();
+    }
+
+    @Override
     public Set<OntResource> resolve() {
-        return ((ODTDefineStatement)getParent()).resolve();
+        return getParent().resolve();
     }
 }

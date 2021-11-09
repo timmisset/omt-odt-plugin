@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
-public class ODTReferenceContributor extends PsiReferenceContributor {
+public class ODTAnotherReferenceContributor extends PsiReferenceContributor {
     @Override
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(psiElement(), new PsiReferenceProvider() {

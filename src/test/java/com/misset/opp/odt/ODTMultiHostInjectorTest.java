@@ -13,7 +13,7 @@ class ODTMultiHostInjectorTest extends OMTTestCase {
                 "onStart: |\n" +
                         "   @<caret>LOG('test');"
         ));
-        ReadAction.run(() -> Assertions.assertNotNull(getCallByName("@LOG")));
+        ReadAction.run(() -> Assertions.assertNotNull(getCallByName("LOG")));
 
     }
 }

@@ -2,13 +2,19 @@ package com.misset.opp.odt.psi.impl.callable;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiJavaDocumentedElement;
+import com.intellij.psi.javadoc.PsiDocComment;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Callable;
+import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements Callable, ODTResolvable {
+public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements Callable, ODTResolvable, PsiJavaDocumentedElement {
     public ODTDefineStatement(@NotNull ASTNode node) {
         super(node);
     }
@@ -17,8 +23,17 @@ public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements
     abstract public ODTDefineName getDefineName();
 
     @Override
-    public String getDescription(String context) {
+    public @Nullable PsiDocComment getDocComment() {
+        final PsiElement docEnd = PsiTreeUtil.prevVisibleLeaf(this);
+        if(docEnd != null && docEnd.getParent() instanceof PsiDocComment) {
+            return (PsiDocComment) docEnd.getParent();
+        }
         return null;
+    }
+
+    @Override
+    public String getDescription(String context) {
+        return ODTDocumentationUtil.getJavaDocComment(this);
     }
 
     @Override

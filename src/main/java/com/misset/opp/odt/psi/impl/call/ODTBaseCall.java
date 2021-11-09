@@ -2,9 +2,6 @@ package com.misset.opp.odt.psi.impl.call;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationBuilder;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.NlsSafe;
@@ -119,12 +116,10 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
     }
 
     @Override
-    public void annotate(AnnotationHolder holder) {
-        Optional.ofNullable(getCallable())
+    public String getDocumentation() {
+        return Optional.ofNullable(getCallable())
                 .map(callable -> callable.getDescription(null))
-                .map(message -> holder.newAnnotation(HighlightSeverity.INFORMATION, "").tooltip(message))
-                .map(annotationBuilder -> annotationBuilder.range(getCallName()))
-                .ifPresent(AnnotationBuilder::create);
+                .orElse(null);
     }
 
     @Override

@@ -15,6 +15,12 @@ import java.util.List;
 public interface Callable {
 
     String getName();
+
+    /**
+     * Returns the description for this callable item
+     * The context might provide some additional information about the location of the call that can be included in the
+     * output string. The returned string should be HTML based.
+     */
     String getDescription(String context);
     String getCallId();
 

@@ -6,6 +6,7 @@ import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.ODTIgnored;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.impl.source.tree.JavaDocElementType;
 
 %%
 
@@ -30,9 +31,9 @@ ALPHA=                          [A-Za-z]
 UNDERSCORE=                     [_]
 DIGIT=                          [0-9]
 LATIN_EXT_A=                    [\u0100-\u017F] // Zie: http://en.wikipedia.org/wiki/Latin_script_in_Unicode
-SYMBOL=                         {ALPHA}({ALPHA}|{DIGIT}|{LATIN_EXT_A}|[_@\-])+
+SYMBOL=                         ({ALPHA}|{DIGIT})({ALPHA}|{DIGIT}|{LATIN_EXT_A}|[_@\-])*
 
-SCHEME=                         {ALPHA}({ALPHA}|{DIGIT}|[+.-])*
+SCHEME=                         ({ALPHA}|{DIGIT})({ALPHA}|{DIGIT}|[+.-])*
 IRI=                            "<"{SCHEME}":"({SYMBOL}|[?&#/+*.-])+">"
 SCHEMALESS_IRI=                 "<"({SYMBOL}|[?&#/+*.-])+">"
 BNODE=                          "<"{UNDERSCORE}":"({SYMBOL}|[?&#/+*.-])+">"
@@ -157,7 +158,7 @@ RESERVED_NAME=                  "IF"
     { WHITE_SPACE }+             { return TokenType.WHITE_SPACE; }
 }
 {JAVADOCS}                                                      {
-                                                                    return ODTIgnored.JAVADOCS; // can be an indent/dedent token or JAVADOCS_START
+                                                                    return JavaDocElementType.DOC_COMMENT; // can be an indent/dedent token or JAVADOCS_START
                                                                 }
 {MULTILINECOMMENT}                                              {
                                                                     return ODTIgnored.MULTILINE; // can be an indent/dedent token or JAVADOCS_START

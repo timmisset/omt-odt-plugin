@@ -23,7 +23,7 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
         );
         configureByText(content);
         // is resolved to the defined variable
-        ReadAction.run(() -> Assertions.assertTrue(getCallByName("@commandA").getReference().resolve() instanceof ODTDefineName));
+        ReadAction.run(() -> Assertions.assertTrue(getCallByName("commandA").getReference().resolve() instanceof ODTDefineName));
     }
 
     @Test
@@ -38,7 +38,7 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
         );
         configureByText(content);
         // is resolved to the defined variable
-        ReadAction.run(() -> Assertions.assertTrue(getCallByName("@commandA").getReference().resolve() instanceof ODTDefineName));
+        ReadAction.run(() -> Assertions.assertTrue(getCallByName("commandA").getReference().resolve() instanceof ODTDefineName));
     }
 
     @Test
@@ -52,7 +52,7 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
                 "";
         configureByText(content);
         ReadAction.run(() -> {
-            final ODTBaseCall elementByText = getCallByName("@MyActivity");
+            final ODTBaseCall elementByText = getCallByName("MyActivity");
             // is resolved to the defined variable
             final PsiElement resolve = elementByText.getReference().resolve();
             Assertions.assertTrue(resolve instanceof YAMLKeyValue);

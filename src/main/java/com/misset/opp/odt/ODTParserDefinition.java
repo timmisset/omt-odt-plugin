@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class ODTParserDefinition implements ParserDefinition {
     public static final IFileElementType ODTFileElementType = new IFileElementType(ODTLanguage.INSTANCE);
     private static final TokenSet COMMENTS = TokenSet.create(
-            ODTIgnored.END_OF_LINE_COMMENT, ODTIgnored.JAVADOCS, ODTIgnored.MULTILINE
+            ODTIgnored.END_OF_LINE_COMMENT, ODTIgnored.MULTILINE
     );
 
     @Override
