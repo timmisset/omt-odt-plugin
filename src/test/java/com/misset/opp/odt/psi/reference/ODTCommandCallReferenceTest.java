@@ -2,9 +2,7 @@ package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTDefineName;
-import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -18,12 +16,12 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
         String content = insideActivityWithPrefixes(
                 "onStart: |\n" +
                         "   DEFINE COMMAND commandA => { @LOG('test'); }\n" +
-                        "   @<caret>commandA();\n" +
+                        "   @co<caret>mmandA();\n" +
                         ""
         );
         configureByText(content);
-        // is resolved to the defined variable
-        ReadAction.run(() -> Assertions.assertTrue(getCallByName("commandA").getReference().resolve() instanceof ODTDefineName));
+        // is resolved to the DEFINE statement
+        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof ODTDefineName));
     }
 
     @Test
@@ -38,7 +36,7 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
         );
         configureByText(content);
         // is resolved to the defined variable
-        ReadAction.run(() -> Assertions.assertTrue(getCallByName("commandA").getReference().resolve() instanceof ODTDefineName));
+        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof ODTDefineName));
     }
 
     @Test
@@ -51,13 +49,7 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
                 "           @<caret>MyActivity();\n" +
                 "";
         configureByText(content);
-        ReadAction.run(() -> {
-            final ODTBaseCall elementByText = getCallByName("MyActivity");
-            // is resolved to the defined variable
-            final PsiElement resolve = elementByText.getReference().resolve();
-            Assertions.assertTrue(resolve instanceof YAMLKeyValue);
-            Assertions.assertEquals("MyActivity", ((YAMLKeyValue) resolve).getKeyText());
-        });
+        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof YAMLKeyValue));
     }
 
     @Test
