@@ -3,7 +3,6 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
@@ -17,6 +16,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.misset.opp.odt.documentation.ODTDocumentationUtil.getDocOwner;
+
 public class ODTParameterAnnotationReference extends PsiReferenceBase.Poly<PsiDocTag> implements PsiPolyVariantReference {
     public ODTParameterAnnotationReference(PsiDocTag psiDogTag, TextRange textRange) {
         super(psiDogTag, textRange, false);
@@ -24,20 +25,23 @@ public class ODTParameterAnnotationReference extends PsiReferenceBase.Poly<PsiDo
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        final PsiJavaDocumentedElement owner = myElement.getContainingComment().getOwner();
-        String variableName = Optional.ofNullable(myElement.getValueElement()).map(PsiElement::getText).orElse("");
+        final PsiElement owner = getDocOwner(myElement);
         if(owner instanceof ODTDefineStatement) {
-            ODTDefineStatement defineStatement = (ODTDefineStatement) owner;
-            final List<ODTVariable> odtVariables = Optional.ofNullable(defineStatement.getDefineParam())
-                    .map(ODTDefineParam::getVariableList)
-                    .orElse(Collections.emptyList());
-            return odtVariables
-                    .stream()
-                    .filter(variable -> variableName.equals(variable.getName()))
-                    .findFirst()
-                    .map(PsiElementResolveResult::createResults)
-                    .orElse(ResolveResult.EMPTY_ARRAY);
+            return resolveDefineParam((ODTDefineStatement) owner);
         }
         return ResolveResult.EMPTY_ARRAY;
+    }
+
+    private ResolveResult @NotNull [] resolveDefineParam(ODTDefineStatement defineStatement) {
+        String variableName = Optional.ofNullable(myElement.getValueElement()).map(PsiElement::getText).orElse("");
+        final List<ODTVariable> odtVariables = Optional.ofNullable(defineStatement.getDefineParam())
+                .map(ODTDefineParam::getVariableList)
+                .orElse(Collections.emptyList());
+        return odtVariables
+                .stream()
+                .filter(variable -> variableName.equals(variable.getName()))
+                .findFirst()
+                .map(PsiElementResolveResult::createResults)
+                .orElse(ResolveResult.EMPTY_ARRAY);
     }
 }

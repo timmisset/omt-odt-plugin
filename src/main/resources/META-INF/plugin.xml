@@ -69,13 +69,9 @@
         <lang.parserDefinition language="ODT"
                                implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
         <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
-        <psi.referenceContributor language="ODT"
-                                  implementation="com.misset.opp.odt.psi.reference.ODTReferenceContributor"/>
-        <psi.referenceContributor language="ODT"
-                                  implementation="com.misset.opp.odt.psi.reference.ODTAnotherReferenceContributor"/>
         <lang.syntaxHighlighter language="ODT" implementationClass="com.misset.opp.odt.syntax.ODTSyntaxHighlighter"/>
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
-<!--        <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>-->
+        <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <!-- Inspections -->
@@ -93,8 +89,12 @@
                 level="WARNING"
                 implementationClass="com.misset.opp.odt.inspection.ODTRDFInspection"/>
 
-        <!-- TTL Language-->
+        <!-- TTL Language -->
         <postStartupActivity implementation="com.misset.opp.ttl.LoadOntologyStartupActivity"/>
+
+        <!-- JAVA -->
+        <psi.referenceContributor language="JAVA"
+                                  implementation="com.misset.opp.odt.psi.reference.ODTJavaDocReferenceContributor"/>
 
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTAnnotator"/>
         <lang.documentationProvider language="ODT" implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
