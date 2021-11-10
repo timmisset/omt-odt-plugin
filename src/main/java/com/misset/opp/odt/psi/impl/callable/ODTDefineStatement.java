@@ -10,11 +10,10 @@ import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements Callable, ODTResolvable, PsiJavaDocumentedElement {
+public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements Callable, PsiJavaDocumentedElement {
     public ODTDefineStatement(@NotNull ASTNode node) {
         super(node);
     }

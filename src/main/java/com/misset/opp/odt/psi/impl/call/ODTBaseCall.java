@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Optional;
@@ -124,6 +123,6 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
 
     @Override
     public Set<OntResource> resolve() {
-        return Collections.emptySet();
+        return getCallable().resolve();
     }
 }

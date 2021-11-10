@@ -1,6 +1,7 @@
 package com.misset.opp.testCase;
 
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.OppModelLoader;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Set;
 
 public class OntologyTestCase extends OMTTestCase {
@@ -82,6 +84,18 @@ public class OntologyTestCase extends OMTTestCase {
         String content = insideQueryWithPrefixes("<caret>" + query);
         configureByText(content);
         return ReadAction.compute(() -> myFixture.findElementByText("query", ODTDefineName.class).resolve());
+    }
+    protected Set<OntResource> resolveQueryAtCaret(String content) {
+        configureByText(content);
+        return ReadAction.compute(() -> {
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            if (elementAtCaret instanceof ODTDefineName) {
+                return ((ODTDefineName) elementAtCaret).resolve();
+            } else {
+                Assertions.fail("Could not resolve query");
+            }
+            return Collections.emptySet();
+        });
     }
     protected boolean isIndividualOfClass(Resource resource, Resource classResource) {
         if(resource instanceof Individual) {

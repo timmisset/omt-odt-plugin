@@ -1,9 +1,13 @@
 package com.misset.opp.callable;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.builtin.commands.LocalVariable;
+import com.misset.opp.odt.psi.impl.call.ODTCall;
+import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A callable implementation can be a callable Psi element such as an OMT modelItem but
@@ -12,7 +16,7 @@ import java.util.List;
  * An ODTCall.getCallable() will resolve to an implementation of Callable and is able to
  * determine call validity
  */
-public interface Callable {
+public interface Callable extends Resolvable {
 
     String getName();
 
@@ -37,4 +41,11 @@ public interface Callable {
     default List<String> getFlags() {
         return Collections.emptyList();
     }
+
+    default Set<OntResource> resolve() { return Collections.emptySet(); }
+
+    /**
+     * Validate the call, check the number of arguments, types etc
+     */
+    default void validate(ODTCall call, ProblemsHolder holder) { return; }
 }
