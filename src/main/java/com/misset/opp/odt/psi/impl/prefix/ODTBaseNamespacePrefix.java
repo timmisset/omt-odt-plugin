@@ -45,9 +45,7 @@ public abstract class ODTBaseNamespacePrefix extends ASTWrapperPsiElement implem
                 .map(PsiReference::resolve)
                 .filter(YAMLKeyValue.class::isInstance)
                 .map(YAMLKeyValue.class::cast)
-                .map(YAMLKeyValue::getValueText)
-                .filter(s -> s.length() > 2)
-                .map(s -> s.substring(1, s.length() -1) + localName)
+                .map(keyValue -> PrefixUtil.getFullyQualifiedUri(keyValue, localName))
                 .orElse(null);
     }
 

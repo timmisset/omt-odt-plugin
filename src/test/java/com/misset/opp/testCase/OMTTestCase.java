@@ -80,14 +80,14 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
      * @param queryStatement only the queryStatement without the define and semicolon
      * @return
      */
-    protected String insideQueryWithPrefixes(String queryStatement) {
+    protected String insideQueryWithPrefixes(String queryStatement, String ... params) {
         return insideQueryWithPrefixesNoSemicolonEnding(queryStatement) + ";";
 
     }
 
-    protected String insideQueryWithPrefixesNoSemicolonEnding(String queryStatement) {
+    protected String insideQueryWithPrefixesNoSemicolonEnding(String queryStatement, String ... params) {
         return withPrefixes(String.format("queries: |\n" +
-                "   DEFINE QUERY query => %s", queryStatement));
+                "   DEFINE QUERY query(%s) => %s", String.join(", ", params), queryStatement));
     }
 
     protected void withProgress(Runnable runnable) {

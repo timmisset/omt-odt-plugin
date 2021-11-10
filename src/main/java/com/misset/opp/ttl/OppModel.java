@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -125,7 +126,7 @@ public class OppModel {
         } else if("number".equals(description)) {
             return XSD_NUMBER_INSTANCE;
         }
-        return OWL_THING; // unknown
+        return null; // unknown
     }
 
     private void loadSimpleModel() {
@@ -365,6 +366,15 @@ public class OppModel {
     }
     public Individual getIndividual(String uri) {
         return model.getIndividual(uri);
+    }
+    public Set<Individual> getClassIndividuals(String classUri) {
+        return Optional.ofNullable(getClass(classUri))
+                .map(ontClass -> ontClass.listInstances(true).toList())
+                .stream()
+                .flatMap(Collection::stream)
+                .filter(OntResource::isIndividual)
+                .map(Individual.class::cast)
+                .collect(Collectors.toSet());
     }
 
     public OntClass getClass(Resource resource) {

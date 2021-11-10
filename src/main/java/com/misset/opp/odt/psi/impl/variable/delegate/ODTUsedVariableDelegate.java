@@ -47,7 +47,7 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
             // part of the OMT structure
             return getType((YAMLValue) ODTMultiHostInjector.getInjectionHost(declared));
         } else {
-            return Collections.emptySet();
+            return declared.getType();
         }
     }
     private Set<OntResource> getType(YAMLValue yamlValue) {

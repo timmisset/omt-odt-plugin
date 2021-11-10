@@ -9,6 +9,7 @@ import com.intellij.psi.PsiReferenceRegistrar;
 import com.intellij.psi.impl.source.javadoc.PsiDocTagImpl;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.odt.psi.ODTFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
             public PsiReference @NotNull [] getReferencesByElement(@NotNull PsiElement element,
                                                                    @NotNull ProcessingContext context) {
                 final PsiDocTag docTag = (PsiDocTag) element;
+                if(!(element.getContainingFile() instanceof ODTFile)) { return PsiReference.EMPTY_ARRAY; }
+
                 List<PsiReference> referenceList = new ArrayList<>();
                 if (docTag.getName().equals("param") && docTag.getValueElement() != null) {
                     Optional.ofNullable(getParamReference(docTag)).ifPresent(referenceList::add);
@@ -55,8 +58,8 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
             }
 
             private PsiReference getTypeReference(PsiDocTag docTag) {
-                final PsiElement dataElement = docTag.getDataElements()[1];
-                if (dataElement != null) {
+                if (docTag.getDataElements().length == 2) {
+                    final PsiElement dataElement = docTag.getDataElements()[1];
                     // @param $param (ont:Class)
                     // the dataElement == (ont:Class)
                     // Use the RegEx to determine the from-to range within the dataElement to cutOut: ont
