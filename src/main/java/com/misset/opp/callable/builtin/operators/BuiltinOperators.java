@@ -11,7 +11,7 @@ public class BuiltinOperators {
         builtinOperators.put(operator.getCallId(), operator);
     }
     static {
-        addOperator(AddOperator.INSTANCE);
+        addOperator(AndOperator.INSTANCE);
         addOperator(CastOperator.INSTANCE);
         addOperator(CatchOperator.INSTANCE);
         addOperator(CeilOperator.INSTANCE);
@@ -33,7 +33,7 @@ public class BuiltinOperators {
         addOperator(FindSubjectsOperator.INSTANCE);
         addOperator(FirstOperator.INSTANCE);
         addOperator(FloorOperator.INSTANCE);
-        addOperator(FormatDateOperator.INSTANCE);
+        addOperator(DateFormatOperator.INSTANCE);
         addOperator(FormatOperator.INSTANCE);
         addOperator(GraphOperator.INSTANCE);
         addOperator(GreaterThanEqualsOperator.INSTANCE);

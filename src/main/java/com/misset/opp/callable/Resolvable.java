@@ -10,5 +10,5 @@ import java.util.Set;
 public interface Resolvable {
 
     Set<OntResource> resolve();
-
+    
 }

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class ODTResolvableNegatedStep extends ODTResolvableQueryStep implements ODTNegatedStep {
+public abstract class ODTResolvableNegatedStep extends ODTResolvableQueryStepBase implements ODTNegatedStep {
     public ODTResolvableNegatedStep(@NotNull ASTNode node) {
         super(node);
     }

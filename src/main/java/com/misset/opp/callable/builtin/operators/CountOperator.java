@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class CountOperator extends BuiltInOperator {
+public class CountOperator extends BuiltInIntegerOperator {
     private CountOperator() { }
     public static final CountOperator INSTANCE = new CountOperator();
 
@@ -18,4 +18,5 @@ public class CountOperator extends BuiltInOperator {
     public int maxNumberOfArguments() {
         return 1;
     }
+
 }

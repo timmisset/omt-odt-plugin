@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class GreaterThanOperator extends BuiltInOperator {
+public class GreaterThanOperator extends BuiltInBooleanOperator {
     private GreaterThanOperator() { }
     public static final GreaterThanOperator INSTANCE = new GreaterThanOperator();
 

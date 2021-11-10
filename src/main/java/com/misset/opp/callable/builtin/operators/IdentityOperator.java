@@ -1,5 +1,9 @@
 package com.misset.opp.callable.builtin.operators;
 
+import org.apache.jena.ontology.OntResource;
+
+import java.util.Set;
+
 public class IdentityOperator extends BuiltInOperator {
     private IdentityOperator() { }
     public static final IdentityOperator INSTANCE = new IdentityOperator();
@@ -14,4 +18,8 @@ public class IdentityOperator extends BuiltInOperator {
         return 0;
     }
 
+    @Override
+    protected Set<OntResource> resolveFrom(Set<OntResource> resources) {
+        return resources;
+    }
 }

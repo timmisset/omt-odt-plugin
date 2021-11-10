@@ -1,5 +1,8 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.OntResource;
+
 public class CurrentDateOperator extends BuiltInOperator {
     private CurrentDateOperator() { }
     public static final CurrentDateOperator INSTANCE = new CurrentDateOperator();
@@ -14,4 +17,8 @@ public class CurrentDateOperator extends BuiltInOperator {
         return 0;
     }
 
+    @Override
+    public OntResource resolveSingle() {
+        return OppModel.INSTANCE.XSD_DATE_INSTANCE;
+    }
 }

@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class ReplaceOperator extends BuiltInOperator {
+public class ReplaceOperator extends BuiltInStringOperator {
     private ReplaceOperator() { }
     public static final ReplaceOperator INSTANCE = new ReplaceOperator();
 

@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class SubstringOperator extends BuiltInOperator {
+public class SubstringOperator extends BuiltInStringOperator {
     private SubstringOperator() { }
     public static final SubstringOperator INSTANCE = new SubstringOperator();
 

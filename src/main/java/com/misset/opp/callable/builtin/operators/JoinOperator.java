@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class JoinOperator extends BuiltInOperator {
+public class JoinOperator extends BuiltInStringOperator {
     private JoinOperator() { }
     public static final JoinOperator INSTANCE = new JoinOperator();
 
@@ -18,4 +18,5 @@ public class JoinOperator extends BuiltInOperator {
     public int maxNumberOfArguments() {
         return 1;
     }
+
 }

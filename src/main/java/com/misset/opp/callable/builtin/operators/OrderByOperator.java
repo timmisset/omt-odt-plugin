@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class OrderByOperator extends BuiltInOperator {
+public class OrderByOperator extends BuiltInCollectionOperator {
     private OrderByOperator() { }
     public static final OrderByOperator INSTANCE = new OrderByOperator();
 

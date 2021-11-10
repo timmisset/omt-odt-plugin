@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class CeilOperator extends BuiltInOperator {
+public class CeilOperator extends BuiltInIntegerOperator {
     private CeilOperator() { }
     public static final CeilOperator INSTANCE = new CeilOperator();
 

@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class MinusOperator extends BuiltInOperator {
+public class MinusOperator extends BuiltinMathOperator {
     private MinusOperator() { }
     public static final MinusOperator INSTANCE = new MinusOperator();
 
@@ -18,4 +18,6 @@ public class MinusOperator extends BuiltInOperator {
     public int minNumberOfArguments() {
         return 1;
     }
+
+
 }

@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class MinOperator extends BuiltInOperator {
+public class MinOperator extends BuiltInCollectionOperator {
     private MinOperator() { }
     public static final MinOperator INSTANCE = new MinOperator();
 

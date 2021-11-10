@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class PlusOperator extends BuiltInOperator {
+public class PlusOperator extends BuiltinMathOperator {
     private PlusOperator() { }
     public static final PlusOperator INSTANCE = new PlusOperator();
 

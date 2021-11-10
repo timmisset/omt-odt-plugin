@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class SplitOperator extends BuiltInOperator {
+public class SplitOperator extends BuiltInStringOperator {
     private SplitOperator() { }
     public static final SplitOperator INSTANCE = new SplitOperator();
 

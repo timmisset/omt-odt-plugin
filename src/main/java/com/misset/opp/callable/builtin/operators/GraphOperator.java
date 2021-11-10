@@ -1,5 +1,8 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.OntResource;
+
 public class GraphOperator extends BuiltInOperator {
     private GraphOperator() { }
     public static final GraphOperator INSTANCE = new GraphOperator();
@@ -14,4 +17,8 @@ public class GraphOperator extends BuiltInOperator {
         return 0;
     }
 
+    @Override
+    public OntResource resolveSingle() {
+        return OppModel.INSTANCE.NAMED_GRAPH;
+    }
 }

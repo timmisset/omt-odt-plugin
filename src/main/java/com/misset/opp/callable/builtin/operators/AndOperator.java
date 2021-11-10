@@ -1,12 +1,12 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class AddOperator extends BuiltInOperator {
-    private AddOperator() { }
-    public static final AddOperator INSTANCE = new AddOperator();
+public class AndOperator extends BuiltInBooleanOperator {
+    private AndOperator() { }
+    public static final AndOperator INSTANCE = new AndOperator();
 
     @Override
     public String getName() {
-        return "ADD";
+        return "AND";
     }
 
     @Override

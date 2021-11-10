@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class IndexOfOperator extends BuiltInOperator {
+public class IndexOfOperator extends BuiltInIntegerOperator {
     private IndexOfOperator() { }
     public static final IndexOfOperator INSTANCE = new IndexOfOperator();
 
@@ -8,4 +8,5 @@ public class IndexOfOperator extends BuiltInOperator {
     public String getName() {
         return "INDEX_OF";
     }
+
 }

@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class ConcatOperator extends BuiltInOperator {
+public class ConcatOperator extends BuiltInStringOperator {
     private ConcatOperator() { }
     public static final ConcatOperator INSTANCE = new ConcatOperator();
 
@@ -13,4 +13,5 @@ public class ConcatOperator extends BuiltInOperator {
     public int maxNumberOfArguments() {
         return -1;
     }
+
 }

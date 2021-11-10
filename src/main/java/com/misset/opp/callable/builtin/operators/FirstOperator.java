@@ -1,5 +1,9 @@
 package com.misset.opp.callable.builtin.operators;
 
+import org.apache.jena.ontology.OntResource;
+
+import java.util.Set;
+
 public class FirstOperator extends BuiltInOperator {
     private FirstOperator() { }
     public static final FirstOperator INSTANCE = new FirstOperator();
@@ -17,5 +21,10 @@ public class FirstOperator extends BuiltInOperator {
     @Override
     public int minNumberOfArguments() {
         return 0;
+    }
+
+    @Override
+    protected Set<OntResource> resolveFrom(Set<OntResource> resources) {
+        return resources;
     }
 }

@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class LengthOperator extends BuiltInOperator {
+public class LengthOperator extends BuiltInIntegerOperator {
     private LengthOperator() { }
     public static final LengthOperator INSTANCE = new LengthOperator();
 

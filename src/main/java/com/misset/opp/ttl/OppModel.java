@@ -35,16 +35,20 @@ public class OppModel {
     private static final String RDFS = "http://www.w3.org/2000/01/rdf-schema#";
     private static final String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     private static final String OWL = "http://www.w3.org/2002/07/owl#";
+    private static final String OPP = "http://ontologie.politie.nl/def/politie#";
 
     protected Property SHACL_PATH, SHACL_CLASS, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
     protected Property RDFS_SUBCLASS_OF;
     protected Property RDF_TYPE;
     private List<Property> classModelProperties;
 
-    protected OntResource OWL_CLASS;
-    public OntResource OWL_THING;
-    public OntResource XSD_BOOLEAN, XSD_STRING, XSD_NUMBER;
-    public OntResource XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE;
+    protected OntClass OWL_CLASS;
+    protected OntClass OWL_THING_CLASS;
+    public Individual OWL_THING;
+    public OntClass OPP_CLASS;
+    public Individual JSON_OBJECT, JSON, IRI, ERROR, NAMED_GRAPH;
+    public OntResource XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
+    public OntResource XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
 
     // create a default empty model to begin with until the DumbService is smart (finished indexing)
     // and the ontology can be loaded using the FileIndex
@@ -75,10 +79,12 @@ public class OppModel {
                 .mapWith(resource -> shaclModel.createClass(resource.getURI()))
                 .toSet();
     }
+
     private Set<Individual> listShaclIndividuals() {
         return shaclModel
                 .listStatements()
-                .filterKeep(resource -> resource.getPredicate().equals(RDF_TYPE) && model.getOntClass(resource.getObject().asResource().getURI()) != null)
+                .filterKeep(resource -> resource.getPredicate()
+                        .equals(RDF_TYPE) && model.getOntClass(resource.getObject().asResource().getURI()) != null)
                 .mapWith(statement -> shaclModel.getIndividual(statement.getSubject().getURI()))
                 .filterKeep(OntResource::isIndividual)
                 .toSet();
@@ -104,7 +110,13 @@ public class OppModel {
         RDF_TYPE = model.createProperty(RDF + "type");
 
         OWL_CLASS = model.createClass(OWL + "Class");
-        OWL_THING = model.createClass(OWL + "Thing");
+        OWL_THING_CLASS = model.createClass(OWL + "Thing");
+        OWL_THING = OWL_THING_CLASS.createIndividual(OWL + "Thing_INSTANCE");
+
+        OPP_CLASS = model.createClass(OPP + "Class");
+        JSON_OBJECT = OPP_CLASS.createIndividual(OPP + "JSON_OBJECT");
+        ERROR = OPP_CLASS.createIndividual(OPP + "ERROR");
+        NAMED_GRAPH = OWL_THING_CLASS.createIndividual(OPP + "#NamedGraph");
 
         classModelProperties = List.of(RDFS_SUBCLASS_OF, RDF_TYPE);
     }
@@ -116,14 +128,22 @@ public class OppModel {
         XSD_STRING_INSTANCE = model.createIndividual(XSD_STRING);
         XSD_NUMBER = model.createClass(XSD + "number");
         XSD_NUMBER_INSTANCE = model.createIndividual(XSD_NUMBER);
+        XSD_INTEGER = model.createClass(XSD + "integer");
+        XSD_INTEGER_INSTANCE = model.createIndividual(XSD_INTEGER);
+        XSD_DECIMAL = model.createClass(XSD + "decimal");
+        XSD_DECIMAL_INSTANCE = model.createIndividual(XSD_DECIMAL);
+        XSD_DATE = model.createClass(XSD + "date");
+        XSD_DATE_INSTANCE = model.createIndividual(XSD_DATE);
+        XSD_DATETIME = model.createClass(XSD + "datetime");
+        XSD_DATETIME_INSTANCE = model.createIndividual(XSD_DATETIME);
     }
 
     public OntResource parsePrimitive(String description) {
-        if("string".equals(description)) {
+        if ("string".equals(description)) {
             return XSD_STRING_INSTANCE;
-        } else if("boolean".equals(description)) {
+        } else if ("boolean".equals(description)) {
             return XSD_NUMBER_INSTANCE;
-        } else if("number".equals(description)) {
+        } else if ("number".equals(description)) {
             return XSD_NUMBER_INSTANCE;
         }
         return null; // unknown
@@ -156,9 +176,10 @@ public class OppModel {
 
         simpleModelClass.createIndividual(simpleModelClass.getURI() + "_INSTANCE");
     }
+
     private void loadSimpleModelIndividual(Individual individual) {
-        try{
-            if(model.getOntProperty(individual.getURI()) == null) {
+        try {
+            if (model.getOntProperty(individual.getURI()) == null) {
                 model.createIndividual(individual.getURI(), individual.getOntClass());
                 model.add(individual.listProperties());
             }
@@ -197,16 +218,18 @@ public class OppModel {
     /**
      * Returns a set of Resources that are compatible with the provided resource
      * if the provided resource is an Individual, the comparison will be made on the Individual::ontClass()
-     *
+     * <p>
      * If ClassB has a super-class ClassA and a sub-class ClassC then
      * any instance of ClassB and C are acceptable types since ClassC at least has all properties of ClassB but
      * ClassA does not.
      */
     public Set<OntResource> listAcceptableTypes(OntResource resource) {
         final OntClass ontClass;
-        if(resource.isClass()) { ontClass = resource.asClass(); }
-        else if(resource.isIndividual()) { ontClass = resource.asIndividual().getOntClass(); }
-        else {
+        if (resource.isClass()) {
+            ontClass = resource.asClass();
+        } else if (resource.isIndividual()) {
+            ontClass = resource.asIndividual().getOntClass();
+        } else {
             return Collections.emptySet();
         }
         return ontClass.listInstances(false).mapWith(OntResource.class::cast).toSet();
@@ -216,10 +239,12 @@ public class OppModel {
      * Returns the list with all predicate-objects for the provided subject
      */
     public Set<Statement> listPredicateObjects(OntResource subject) {
-        if(subject.isIndividual()) {
+        if (subject.isIndividual()) {
             return listPredicateObjectsForIndividual(subject.asIndividual());
         }
-        if(!subject.isClass()) { return Collections.emptySet(); }
+        if (!subject.isClass()) {
+            return Collections.emptySet();
+        }
         OntClass ontClass = subject.asClass();
         final HashSet<Statement> hashSet = new HashSet<>(ontClass.listProperties().toSet());
         ontClass.listSuperClasses().forEach(
@@ -227,6 +252,7 @@ public class OppModel {
         );
         return hashSet;
     }
+
     private Set<Statement> listPredicateObjectsForIndividual(Individual individual) {
         /*
             When traversing the model on an individual, all properties of the (super)class of the instance
@@ -242,6 +268,7 @@ public class OppModel {
         statements.addAll(individual.listProperties().toSet());
         return statements;
     }
+
     private Set<Statement> listPredicateObjectsForClass(OntClass ontClass) {
         final HashSet<Statement> hashSet = new HashSet<>(ontClass.listProperties().toSet());
         ontClass.listSuperClasses().forEach(
@@ -250,7 +277,8 @@ public class OppModel {
         return hashSet;
     }
 
-    public Set<OntResource> listSubjects(Property predicate, Set<OntResource> objects) {
+    public Set<OntResource> listSubjects(Property predicate,
+                                         Set<OntResource> objects) {
         return objects.stream()
                 .map(classObject -> listSubjects(predicate, classObject))
                 .flatMap(Collection::stream)
@@ -259,14 +287,65 @@ public class OppModel {
 
     public Set<OntResource> listSubjects(Property predicate,
                                          OntResource object) {
-        if(object.isIndividual()) {
+        if (object.isIndividual()) {
             // the returned subjects should also be the instances of the classes that point to
             // the ontClass of the Individual
             return listSubjectsForIndividual(predicate, object.asIndividual());
-        } else if(object.isClass()) {
+        } else if (object.isClass()) {
             return listSubjectsForClass(predicate, object.asClass());
         }
         return Collections.emptySet();
+    }
+
+    public Set<OntResource> filterSubjects(Set<OntResource> subjects,
+                                           Set<OntResource> predicates) {
+        return subjects.stream()
+                .filter(subject -> hasAnyPredicate(subject, predicates))
+                .collect(Collectors.toSet());
+    }
+    public Set<OntResource> filterSubjects(Set<OntResource> subjects,
+                                           Set<OntResource> predicates,
+                                           Set<OntResource> objects) {
+        return subjects.stream()
+                .filter(subject -> hasAnyPredicateObject(subject, predicates, objects))
+                .collect(Collectors.toSet());
+    }
+
+
+    private OntClass toClass(OntResource resource) {
+        if (resource.isIndividual()) {
+            return resource.asIndividual().getOntClass();
+        }
+        return resource.asClass();
+    }
+
+    private boolean hasAnyPredicate(OntResource subject,
+                                    Set<OntResource> predicates) {
+        return predicates.stream()
+                .map(Resource::getURI)
+                .map(model::getOntProperty)
+                .anyMatch(predicate -> hasPredicate(subject, predicate));
+    }
+
+    private boolean hasAnyPredicateObject(OntResource subject,
+                                          Set<OntResource> predicates,
+                                          Set<OntResource> objects) {
+        return predicates.stream()
+                .map(Resource::getURI)
+                .map(model::getOntProperty)
+                .anyMatch(predicate -> hasPredicateObjects(subject, predicate, objects));
+    }
+
+    private boolean hasPredicate(OntResource subject,
+                                 Property predicate) {
+        return toClass(subject).listProperties(predicate).hasNext();
+    }
+
+    private boolean hasPredicateObjects(OntResource subject,
+                                           Property predicate,
+                                           Set<OntResource> objects) {
+        return toClass(subject).listProperties(predicate)
+                .filterKeep(statement -> objects.stream().anyMatch(statement.getObject()::equals)).hasNext();
     }
 
     public Set<OntResource> listObjects(Set<OntResource> classSubjects,
@@ -285,8 +364,9 @@ public class OppModel {
         return listObjectsForClass(subject.asClass(), predicate);
     }
 
-    private Set<OntResource> listObjectsForIndividual(Individual subject, Property predicate) {
-        if(predicate.equals(RDF_TYPE)) {
+    private Set<OntResource> listObjectsForIndividual(Individual subject,
+                                                      Property predicate) {
+        if (predicate.equals(RDF_TYPE)) {
             // when rdf:type is called on the individual, the actual class is requested
             // although this can be resolved via listProperties(predicate), this would also return any of the superclasses
             // and which would lead to [someInstance] / rdf:type / ^rdf:type always returning all classes
@@ -307,6 +387,7 @@ public class OppModel {
                     .collect(Collectors.toSet());
         }
     }
+
     /*
         For some reason, listing the OntClasses via the individual non-direct listOntClasses
         doesn't always provide the entire list of superclasses. The difference might be the
@@ -319,6 +400,7 @@ public class OppModel {
         classes.addAll(ontClass.listSuperClasses().toSet());
         return classes;
     }
+
     private Set<OntResource> listObjectsForClass(OntClass subject,
                                                  Property predicate) {
         // listing properties on the Class doesn't automatically include the properties
@@ -338,7 +420,7 @@ public class OppModel {
     }
 
     private Set<OntResource> toIndividual(OntResource resource) {
-        if(resource.isClass()) {
+        if (resource.isClass()) {
             return resource.asClass().listInstances().mapWith(OntResource.class::cast).toSet();
         }
         return Collections.singleton(resource);
@@ -361,12 +443,15 @@ public class OppModel {
     public OntResource getResource(Resource resource) {
         return model.getOntResource(resource);
     }
+
     public OntResource getResource(String uri) {
         return model.getOntResource(uri);
     }
+
     public Individual getIndividual(String uri) {
         return model.getIndividual(uri);
     }
+
     public Set<Individual> getClassIndividuals(String classUri) {
         return Optional.ofNullable(getClass(classUri))
                 .map(ontClass -> ontClass.listInstances(true).toList())
@@ -377,25 +462,42 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
+    public Set<OntResource> toIndividuals(Set<OntResource> resources) {
+        return resources.stream().map(
+                        resource -> resource.isIndividual() ? Set.of(resource) : OppModel.INSTANCE.getClassIndividuals(resource.getURI())
+                ).flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+    }
+    public Set<OntResource> toClasses(Set<OntResource> resources) {
+        return resources.stream().map(
+                resource -> resource.isIndividual() ? resource.asIndividual().getOntClass(true) : resource
+        ).collect(Collectors.toSet());
+    }
+
     public OntClass getClass(Resource resource) {
         return model.getOntClass(resource.getURI());
     }
+
     public OntClass getClass(String uri) {
         return model.getOntClass(uri);
     }
+
     public Property getProperty(Resource resource) {
         return model.getProperty(resource.getURI());
     }
+
     public Property getProperty(String uri) {
         return model.getProperty(uri);
     }
 
-    private Set<Resource> listSubjectsWithProperty(Property property, RDFNode node) {
+    private Set<Resource> listSubjectsWithProperty(Property property,
+                                                   RDFNode node) {
         return model.listSubjectsWithProperty(property, node).toSet();
     }
 
-    private Set<OntResource> listSubjectsForClass(Property predicate, OntClass object) {
-        if(predicate.equals(RDF_TYPE)) {
+    private Set<OntResource> listSubjectsForClass(Property predicate,
+                                                  OntClass object) {
+        if (predicate.equals(RDF_TYPE)) {
             // called /^rdf:type on a class, return all instances:
             final Set<? extends OntResource> ontResources = object.listInstances(true).toSet();
             return ontResources
@@ -409,7 +511,8 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
-    private Set<OntResource> listSubjectsForIndividual(Property predicate, Individual object) {
+    private Set<OntResource> listSubjectsForIndividual(Property predicate,
+                                                       Individual object) {
         return listSubjectsWithProperty(predicate, object.getOntClass())
                 .stream()
                 .map(model::getOntResource)
@@ -419,9 +522,5 @@ public class OppModel {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
-
-
-
-
 
 }

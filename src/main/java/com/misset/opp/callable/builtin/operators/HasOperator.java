@@ -2,7 +2,7 @@ package com.misset.opp.callable.builtin.operators;
 
 import java.util.List;
 
-public class HasOperator extends BuiltInOperator {
+public class HasOperator extends BuiltInBooleanOperator {
     private HasOperator() { }
     public static final HasOperator INSTANCE = new HasOperator();
 
@@ -20,4 +20,5 @@ public class HasOperator extends BuiltInOperator {
     public List<String> getFlags() {
         return IGNORE_CASE_FLAG;
     }
+
 }

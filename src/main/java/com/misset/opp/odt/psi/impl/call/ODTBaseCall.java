@@ -13,23 +13,29 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.callable.Callable;
+import com.misset.opp.callable.Resolvable;
 import com.misset.opp.callable.builtin.commands.BuiltinCommands;
 import com.misset.opp.callable.builtin.operators.BuiltinOperators;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.ODTMultiHostInjector;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.odt.psi.ODTSignature;
+import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.psi.impl.OMTCallable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,6 +53,7 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
         return new ODTCallReference(this, getCallName().getTextRangeInParent());
     }
 
+    @NotNull
     public abstract ODTCallName getCallName();
 
     /**
@@ -123,6 +130,30 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
 
     @Override
     public Set<OntResource> resolve() {
-        return getCallable().resolve();
+        return getCallable().resolve(resolvePreviousStep(), this);
+    }
+
+    @Override
+    public @NotNull List<ODTSignatureArgument> getSignatureArguments() {
+        return  Optional.ofNullable(getSignature())
+                .map(ODTSignature::getSignatureArgumentList)
+                .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public @Nullable ODTSignatureArgument getSignatureArgument(int index) {
+        final List<ODTSignatureArgument> signatureArguments = getSignatureArguments();
+        if(signatureArguments.size() >= index) {
+            return signatureArguments.get(index);
+        }
+        return null;
+    }
+
+    @Override
+    public @NotNull Set<OntResource> resolveSignatureArgument(int index) {
+        return Optional.ofNullable(getSignatureArgument(index))
+                .map(ODTSignatureArgument::getResolvableValue)
+                .map(Resolvable::resolve)
+                .orElse(Collections.emptySet());
     }
 }

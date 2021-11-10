@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class FormatOperator extends BuiltInOperator {
+public class FormatOperator extends BuiltInStringOperator {
     private FormatOperator() { }
     public static final FormatOperator INSTANCE = new FormatOperator();
 
@@ -13,5 +13,4 @@ public class FormatOperator extends BuiltInOperator {
     public int maxNumberOfArguments() {
         return -1;
     }
-
 }

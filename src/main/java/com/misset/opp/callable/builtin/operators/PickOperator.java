@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class PickOperator extends BuiltInOperator {
+public class PickOperator extends BuiltInCollectionOperator {
     private PickOperator() { }
     public static final PickOperator INSTANCE = new PickOperator();
 

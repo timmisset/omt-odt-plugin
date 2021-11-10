@@ -1,5 +1,10 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.misset.opp.odt.psi.impl.call.ODTCall;
+import org.apache.jena.ontology.OntResource;
+
+import java.util.Set;
+
 public class MapOperator extends BuiltInOperator {
     private MapOperator() { }
     public static final MapOperator INSTANCE = new MapOperator();
@@ -9,4 +14,9 @@ public class MapOperator extends BuiltInOperator {
         return "MAP";
     }
 
+    @Override
+    protected Set<OntResource> resolveFrom(Set<OntResource> resources,
+                                           ODTCall call) {
+        return call.resolveSignatureArgument(0);
+    }
 }

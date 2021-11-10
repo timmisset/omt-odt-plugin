@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class NotOperator extends BuiltInOperator {
+public class NotOperator extends BuiltInBooleanOperator {
     private NotOperator() { }
     public static final NotOperator INSTANCE = new NotOperator();
 

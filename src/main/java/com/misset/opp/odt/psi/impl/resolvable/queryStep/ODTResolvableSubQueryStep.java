@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public abstract class ODTResolvableSubQueryStep extends ODTResolvableQueryStep implements ODTSubQuery {
+public abstract class ODTResolvableSubQueryStep extends ODTResolvableQueryStepBase implements ODTSubQuery {
     public ODTResolvableSubQueryStep(@NotNull ASTNode node) {
         super(node);
     }

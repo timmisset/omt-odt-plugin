@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class EmptyOperator extends BuiltInOperator {
+public class EmptyOperator extends BuiltInBooleanOperator {
     private EmptyOperator() { }
     public static final EmptyOperator INSTANCE = new EmptyOperator();
 

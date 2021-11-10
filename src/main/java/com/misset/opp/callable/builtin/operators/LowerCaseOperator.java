@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class LowerCaseOperator extends BuiltInOperator {
+public class LowerCaseOperator extends BuiltInStringOperator {
     private LowerCaseOperator() { }
     public static final LowerCaseOperator INSTANCE = new LowerCaseOperator();
 

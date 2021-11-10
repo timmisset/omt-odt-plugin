@@ -1,8 +1,11 @@
 package com.misset.opp.callable.builtin.operators;
 
-import java.util.List;
+import org.apache.jena.ontology.OntResource;
 
-public class DistinctOperator extends BuiltInOperator {
+import java.util.List;
+import java.util.Set;
+
+public class DistinctOperator extends BuiltInCollectionOperator {
     private DistinctOperator() { }
     public static final DistinctOperator INSTANCE = new DistinctOperator();
 
@@ -25,4 +28,5 @@ public class DistinctOperator extends BuiltInOperator {
     public List<String> getFlags() {
         return IGNORE_CASE_FLAG;
     }
+
 }

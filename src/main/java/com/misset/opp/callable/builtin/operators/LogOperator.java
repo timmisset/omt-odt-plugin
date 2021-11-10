@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class LogOperator extends BuiltInOperator {
+public class LogOperator extends BuiltInCollectionOperator {
     private LogOperator() { }
     public static final LogOperator INSTANCE = new LogOperator();
 
@@ -18,4 +18,5 @@ public class LogOperator extends BuiltInOperator {
     public int maxNumberOfArguments() {
         return 1;
     }
+
 }

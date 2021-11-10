@@ -15,7 +15,7 @@ import java.util.Set;
  * A backward traverse, or reverse, step in the query. The previous position is considered the object
  * and the model returns all subjects that point to this object with the specified predicate (the current position)
  */
-public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQueryStep implements ODTQueryReverseStep {
+public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQueryStepBase implements ODTQueryReverseStep {
     public ODTResolvableQueryReverseStep(@NotNull ASTNode node) {
         super(node);
     }

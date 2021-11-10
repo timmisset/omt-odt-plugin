@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class TrimOperator extends BuiltInOperator {
+public class TrimOperator extends BuiltInStringOperator {
     private TrimOperator() { }
     public static final TrimOperator INSTANCE = new TrimOperator();
 

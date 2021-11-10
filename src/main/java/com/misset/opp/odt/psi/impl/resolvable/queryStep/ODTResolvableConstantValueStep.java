@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryStep implements ODTConstantValue {
+public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryStepBase implements ODTConstantValue {
     public ODTResolvableConstantValueStep(@NotNull ASTNode node) {
         super(node);
     }

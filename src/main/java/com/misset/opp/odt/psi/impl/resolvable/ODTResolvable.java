@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.Resolvable;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -15,5 +16,7 @@ public interface ODTResolvable extends Resolvable, PsiElement {
     default Set<OntResource> filter(Set<OntResource> resources) {
         return resources;
     }
+
+    default Set<OntResource> resolvePreviousStep() { return Collections.emptySet(); }
 
 }

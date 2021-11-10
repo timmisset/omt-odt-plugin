@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class SomeOperator extends BuiltInOperator {
+public class SomeOperator extends BuiltInBooleanOperator {
     private SomeOperator() { }
     public static final SomeOperator INSTANCE = new SomeOperator();
 

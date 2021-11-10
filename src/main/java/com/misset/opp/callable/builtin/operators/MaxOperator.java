@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class MaxOperator extends BuiltInOperator {
+public class MaxOperator extends BuiltInCollectionOperator {
     private MaxOperator() { }
     public static final MaxOperator INSTANCE = new MaxOperator();
 

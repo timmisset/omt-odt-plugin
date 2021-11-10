@@ -79,7 +79,10 @@ commandCall ::=                             AT callName flagSignature? signature
 signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
 signatureArgument ::=                       resolvableValue | commandBlock
 flagSignature ::=                           TAG
-resolvableValue ::=                         query | commandCall
+resolvableValue ::=                         query | commandCall {
+    implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
+    extends="com.misset.opp.odt.psi.impl.resolvable.ODTResolvableValueBase"
+}
 logicalBlock ::=                            ifBlock commandBlock? (ELSE_OPERATOR ifBlock commandBlock?)* elseBlock?
 ifBlock ::=                                 IF_OPERATOR (query | (PARENTHESES_OPEN query PARENTHESES_CLOSE))
 elseBlock ::=                               ELSE_OPERATOR commandBlock
@@ -146,8 +149,8 @@ queryOperationStep ::= (queryStep stepDecorator? queryFilter*) | queryFilter {
 queryStep ::=
         queryReverseStep | constantValue | variableStep | curieElement | operatorCall | iriStep | identifierStep | schemalessIriStep |
          chooseBlock | negatedStep | subQuery {
-     extends="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep"
-     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
+     extends="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStepBase"
+     implements="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep"
  }
 variableStep ::= variable {
     extends=queryStep

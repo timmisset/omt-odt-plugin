@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class TimesOperator extends BuiltInOperator {
+public class TimesOperator extends BuiltinMathOperator {
     private TimesOperator() { }
     public static final TimesOperator INSTANCE = new TimesOperator();
 

@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-public class ReverseOperator extends BuiltInOperator {
+public class ReverseOperator extends BuiltInCollectionOperator {
     private ReverseOperator() { }
     public static final ReverseOperator INSTANCE = new ReverseOperator();
 

@@ -2,13 +2,13 @@ package com.misset.opp.callable.builtin.operators;
 
 import java.util.List;
 
-public class InOperator extends BuiltInOperator {
+public class InOperator extends BuiltInBooleanOperator {
     private InOperator() { }
     public static final InOperator INSTANCE = new InOperator();
 
     @Override
     public String getName() {
-        return "IF_EMPTY";
+        return "IN";
     }
 
     @Override
@@ -20,4 +20,5 @@ public class InOperator extends BuiltInOperator {
     public List<String> getFlags() {
         return IGNORE_CASE_FLAG;
     }
+
 }

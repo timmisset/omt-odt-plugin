@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * When resolved, it will attempt to traverse the model from the input (subject) to the output (object)
  * using the fully qualified URI as predicate.
  */
-public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQueryStep {
+public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQueryStepBase {
 
     public ODTResolvableQualifiedUriStep(@NotNull ASTNode node) {
         super(node);

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public abstract class ODTResolvableVariableStep extends ODTResolvableQueryStep implements ODTVariableStep {
+public abstract class ODTResolvableVariableStep extends ODTResolvableQueryStepBase implements ODTVariableStep {
     public ODTResolvableVariableStep(@NotNull ASTNode node) {
         super(node);
     }
