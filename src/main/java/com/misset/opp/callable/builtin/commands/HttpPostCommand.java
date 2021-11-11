@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.commands;
 
-public class HttpPostCommand extends BuiltInCommand {
+public class HttpPostCommand extends BuiltInHttpCommand {
     private HttpPostCommand() { }
     public static final HttpPostCommand INSTANCE = new HttpPostCommand();
 

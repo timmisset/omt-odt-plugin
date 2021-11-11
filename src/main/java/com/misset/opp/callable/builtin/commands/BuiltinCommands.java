@@ -25,6 +25,7 @@ public class BuiltinCommands {
         addCommand(IfCommand.INSTANCE);
         addCommand(LogCommand.INSTANCE);
         addCommand(MapCommand.INSTANCE);
+        addCommand(MoveToGraphCommand.INSTANCE);
         addCommand(NewCommand.INSTANCE);
         addCommand(NewGraphCommand.INSTANCE);
         addCommand(NewTransientGraphCommand.INSTANCE);

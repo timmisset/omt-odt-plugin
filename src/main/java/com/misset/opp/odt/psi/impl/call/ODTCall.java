@@ -34,6 +34,10 @@ public interface ODTCall extends PsiNamedElement, ODTResolvable, ODTDocumented {
     @Nullable
     ODTSignatureArgument getSignatureArgument(int index);
 
+    /**
+     * Returns the resolved OntResource set at the given index
+     * Does not throw out-of-bounds exception but always returns an empty set when index is not present
+     */
     @NotNull
     Set<OntResource> resolveSignatureArgument(int index);
 }

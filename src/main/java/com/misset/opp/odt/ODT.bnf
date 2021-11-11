@@ -77,7 +77,10 @@ commandCall ::=                             AT callName flagSignature? signature
     implements="com.misset.opp.odt.psi.impl.call.ODTCall"
 }
 signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
-signatureArgument ::=                       resolvableValue | commandBlock
+signatureArgument ::=                       resolvableValue | commandBlock {
+    implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
+    extends="com.misset.opp.odt.psi.impl.call.ODTSignatureArgumentBase"
+}
 flagSignature ::=                           TAG
 resolvableValue ::=                         query | commandCall {
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"

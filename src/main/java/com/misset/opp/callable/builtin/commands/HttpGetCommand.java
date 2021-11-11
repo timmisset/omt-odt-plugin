@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.commands;
 
-public class HttpGetCommand extends BuiltInCommand {
+public class HttpGetCommand extends BuiltInHttpCommand {
     private HttpGetCommand() { }
     public static final HttpGetCommand INSTANCE = new HttpGetCommand();
 
@@ -23,4 +23,5 @@ public class HttpGetCommand extends BuiltInCommand {
     public int maxNumberOfArguments() {
         return 3;
     }
+
 }

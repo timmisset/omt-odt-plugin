@@ -1,7 +1,12 @@
 package com.misset.opp.callable.builtin.commands;
 
+import com.misset.opp.odt.psi.impl.call.ODTCall;
+import org.apache.jena.ontology.OntResource;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class ForEachCommand extends BuiltInCommand {
     private ForEachCommand() { }
@@ -26,5 +31,10 @@ public class ForEachCommand extends BuiltInCommand {
     @Override
     public List<LocalVariable> getLocalVariables() {
         return variables;
+    }
+
+    @Override
+    protected Set<OntResource> resolveFrom(ODTCall call) {
+        return Collections.emptySet();
     }
 }

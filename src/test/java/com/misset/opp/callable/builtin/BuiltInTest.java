@@ -47,13 +47,18 @@ public abstract class BuiltInTest extends OntologyTestCase {
         doReturn(signatureArguments).when(call).getSignatureArguments();
 
         // mock the argument resolving
-        doAnswer(invocation -> arguments[(int) invocation.getArgument(0)])
+        doAnswer(invocation -> getArgumentsAtIndex(arguments, invocation.getArgument(0)))
                 .when(call).resolveSignatureArgument(anyInt());
 
         return call;
     }
+    private Set<OntResource> getArgumentsAtIndex(Set<OntResource>[] resources, int index) {
+        //
+        if(resources.length <= index) { return Collections.emptySet(); }
+        return resources[index];
+    }
 
-    protected final ODTCall getCall(ODTSignatureArgument ... arguments) {
+    protected final ODTCall getCall(ODTSignatureArgument... arguments) {
         final ODTCall call = mock(ODTCall.class);
 
         doReturn(List.of(arguments)).when(call).getSignatureArguments();
@@ -62,11 +67,13 @@ public abstract class BuiltInTest extends OntologyTestCase {
                 .when(call).getSignatureArgument(anyInt());
         return call;
     }
+
     private ODTSignatureArgument getSignatureArguments(Set<OntResource> resources) {
         final ODTSignatureArgument argument = mock(ODTSignatureArgument.class);
         final ODTResolvableValue resolvableValue = mock(ODTResolvableValue.class);
         doReturn(resources).when(resolvableValue).resolve();
         doReturn(resolvableValue).when(argument).getResolvableValue();
+        doReturn(resources).when(argument).resolve();
         return argument;
     }
 
@@ -94,6 +101,42 @@ public abstract class BuiltInTest extends OntologyTestCase {
         final Set<OntResource> resources = builtin.resolve(inputResources, call);
         assertEquals(expectedResources.size(), resources.size());
         assertTrue(resources.containsAll(expectedResources));
+    }
+
+    protected final void assertCombinesInput(Builtin builtin) {
+        assertResolved(builtin,
+                Collections.emptySet(),
+                Set.of(oppModel.XSD_BOOLEAN_INSTANCE,
+                        oppModel.XSD_STRING_INSTANCE),
+                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
+                Set.of(oppModel.XSD_STRING_INSTANCE));
+    }
+
+    protected final void assertReturnsFirstArgument(Builtin builtin) {
+        assertResolved(builtin,
+                Collections.emptySet(),
+                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
+                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
+                Set.of(oppModel.XSD_STRING_INSTANCE));
+    }
+
+    /**
+     * Checks if the call returns a specific type regardless of the call arguments or input
+     */
+    protected final void assertReturns(Builtin builtin, OntResource resource) {
+        assertResolved(builtin,
+                Collections.emptySet(),
+                Set.of(resource),
+                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
+                Set.of(oppModel.XSD_STRING_INSTANCE));
+    }
+
+    protected final void assertReturnsVoid(Builtin builtin) {
+        assertResolved(builtin,
+                Collections.emptySet(),
+                Collections.emptySet(),
+                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
+                Set.of(oppModel.XSD_STRING_INSTANCE));
     }
 
     protected abstract void testResolve();

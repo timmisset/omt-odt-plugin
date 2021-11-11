@@ -42,7 +42,10 @@ public interface Callable extends Resolvable {
         return Collections.emptyList();
     }
 
+    default Set<OntResource> getSecondReturnArgument() { return Collections.emptySet(); }
+
     default Set<OntResource> resolve() { return Collections.emptySet(); }
+
 
     /**
      * Resolve the output based on the input

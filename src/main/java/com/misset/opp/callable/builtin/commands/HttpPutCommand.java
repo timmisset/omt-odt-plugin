@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.commands;
 
-public class HttpPutCommand extends BuiltInCommand {
+public class HttpPutCommand extends BuiltInHttpCommand {
     private HttpPutCommand() { }
     public static final HttpPutCommand INSTANCE = new HttpPutCommand();
 
