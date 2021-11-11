@@ -112,15 +112,6 @@ class OppModelTest extends OntologyTestCase {
     }
 
     @Test
-    void testListSubjectsClassPredicateOwl() {
-        final Set<OntResource> resources = oppModel.listSubjects(oppModel.RDFS_SUBCLASS_OF, Set.of(oppModel.OWL_THING));
-        Assertions.assertFalse(resources.isEmpty());
-        Assertions.assertTrue(
-                resources.stream().allMatch(resource -> resource instanceof OntClass)
-        );
-    }
-
-    @Test
     void testListObjectsPredicate() {
         final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
                 createProperty("booleanPredicate"));

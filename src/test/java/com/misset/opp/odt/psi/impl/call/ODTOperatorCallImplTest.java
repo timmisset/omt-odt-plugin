@@ -23,7 +23,7 @@ class ODTOperatorCallImplTest extends OntologyTestCase {
 
     @Test
     void testResolveOperatorCall() {
-        String content = insideActivityWithPrefixes("queries:\n" +
+        String content = insideActivityWithPrefixes("queries: |\n" +
                 "   DEFINE QUERY query => 'string value';\n" +
                 "   DEFINE QUERY <caret>callingQuery => query;\n");
         assertContainsElements(resolveQueryAtCaret(content),

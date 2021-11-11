@@ -48,13 +48,13 @@ public interface Callable extends Resolvable {
      * Resolve the output based on the input
      * For example, a specific operator that returns the same type as it receives
      */
-    default Set<OntResource> resolve(Set<OntResource> resources) { return Collections.emptySet(); }
+    default Set<OntResource> resolve(Set<OntResource> resources) { return resolve(); }
 
     /**
      * Resolve the output based on the input and the call arguments
      * For example, a specific operator that returns the same type as it receives
      */
-    default Set<OntResource> resolve(Set<OntResource> resources, ODTCall call) { return Collections.emptySet(); }
+    default Set<OntResource> resolve(Set<OntResource> resources, ODTCall call) { return resolve(resources); }
 
     /**
      * Validate the call, check the number of arguments, types etc

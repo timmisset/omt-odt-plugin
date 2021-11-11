@@ -29,9 +29,4 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
     public Set<OntResource> resolve() {
         return getQuery().resolve();
     }
-
-    @Override
-    public Set<OntResource> resolve(Set<OntResource> resources) {
-        return resolve();
-    }
 }
