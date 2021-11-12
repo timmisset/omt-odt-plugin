@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-import com.misset.opp.odt.psi.impl.call.ODTCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 

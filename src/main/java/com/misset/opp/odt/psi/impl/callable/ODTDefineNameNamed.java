@@ -1,7 +1,9 @@
 package com.misset.opp.odt.psi.impl.callable;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaDocumentedElement;
@@ -52,7 +54,17 @@ public abstract class ODTDefineNameNamed extends ASTWrapperPsiElement implements
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         return getParent().resolve();
+    }
+
+    @Override
+    public void inspect(ProblemsHolder holder) {
+
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+
     }
 }

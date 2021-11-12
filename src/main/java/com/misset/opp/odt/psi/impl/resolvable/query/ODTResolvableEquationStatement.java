@@ -19,7 +19,7 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
 

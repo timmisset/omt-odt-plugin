@@ -21,10 +21,15 @@ namespacePrefix::=                          SYMBOL COLON {
     implements="com.intellij.psi.PsiNamedElement"
 }
 
-constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE {
+constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE | interpolatedString {
     extends=queryStep
     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableConstantValueStep"
 }
+interpolatedString ::=                      INTERPOLATED_STRING_START interpolatedStringContent* INTERPOLATED_STRING_END {
+    extends=constantValue
+}
+interpolatedStringContent ::=               STRING | interpolation
+interpolation ::=                           INTERPOLATION_START script? INTERPOLATION_END
 // a variable is declared using VAR and one or more variable names. Optionally an assignment is added
 // the assignment is deconstructed to the entire set of variables that is declared. i.e. VAR $a, $b = [1, 2]. $a == 1, $b == 2
 // or can be VAR $a = 1, $b = 2 etc.
@@ -69,17 +74,17 @@ callName ::=                                SYMBOL | BOOLEAN_OPERATOR
 // A call to either an Operator or a Command. In case of the latter, it's always prefixed with @
 operatorCall ::=                            callName flagSignature? signature? {
     extends=queryStep
-    implements="com.misset.opp.odt.psi.impl.call.ODTCall"
-    mixin="com.misset.opp.odt.psi.impl.call.ODTOperatorCallImpl"
+    implements="com.misset.opp.odt.psi.impl.resolvable.call.ODTCall"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.call.ODTOperatorCallImpl"
 }
 commandCall ::=                             AT callName flagSignature? signature? {
-    extends="com.misset.opp.odt.psi.impl.call.ODTCommandCallImpl"
-    implements="com.misset.opp.odt.psi.impl.call.ODTCall"
+    extends="com.misset.opp.odt.psi.impl.resolvable.call.ODTCommandCallImpl"
+    implements="com.misset.opp.odt.psi.impl.resolvable.call.ODTCall"
 }
 signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
 signatureArgument ::=                       resolvableValue | commandBlock {
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
-    extends="com.misset.opp.odt.psi.impl.call.ODTSignatureArgumentBase"
+    extends="com.misset.opp.odt.psi.impl.resolvable.call.ODTSignatureArgumentBase"
 }
 flagSignature ::=                           TAG
 resolvableValue ::=                         query | commandCall {
@@ -95,9 +100,19 @@ chooseBlock ::=                             CHOOSE_OPERATOR
                                                 otherwisePath?
                                                 endPath? {
                                                     extends=queryStep
+                                                    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableChooseBlockStep"
+                                                    implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
                                                 }
-whenPath ::=                                WHEN_OPERATOR booleanStatement? LAMBDA? query?
-otherwisePath ::=                           OTHERWISE_OPERATOR LAMBDA? query?
+whenPath ::=                                WHEN_OPERATOR booleanStatement? LAMBDA? query? {
+    extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableWhenPathStep"
+    implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
+}
+otherwisePath ::=                           OTHERWISE_OPERATOR LAMBDA? query? {
+    extends=queryStep
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableOtherwisePathStep"
+    implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
+}
 endPath ::=                                 END_OPERATOR 
 // QUERIES
 // A query is the superclass of different variants of a query.
@@ -161,7 +176,7 @@ variableStep ::= variable {
 }
 iriStep ::= IRI {
     extends=queryStep
-     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableIriStep"
+     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableIriStep"
 }
 identifierStep ::= DOT {
     extends=queryStep
@@ -169,15 +184,15 @@ identifierStep ::= DOT {
 }
 schemalessIriStep ::= SCHEMALESS_IRI {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableSchemalessIriStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableSchemalessIriStep"
 }
 curieElement ::=                            namespacePrefix SYMBOL {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableCurieElementStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableCurieElementStep"
 }
 queryReverseStep ::=                        CARET queryStep {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryReverseStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableQueryReverseStep"
 }
 // Decorators for the query steps, can be added to individual steps or subqueries
 // QUESTION_MARK ?  == 0 or 1

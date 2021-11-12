@@ -24,7 +24,7 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         return Optional.ofNullable(getLastOperation())
                 .map(ODTResolvable::resolve)
                 .orElse(Collections.emptySet());

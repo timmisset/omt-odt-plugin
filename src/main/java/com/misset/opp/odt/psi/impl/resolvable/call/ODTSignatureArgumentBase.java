@@ -1,7 +1,9 @@
-package com.misset.opp.odt.psi.impl.call;
+package com.misset.opp.odt.psi.impl.resolvable.call;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.misset.opp.callable.Resolvable;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import org.apache.jena.ontology.OntResource;
@@ -17,7 +19,7 @@ public abstract class ODTSignatureArgumentBase extends ASTWrapperPsiElement impl
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         return Optional.ofNullable(getResolvableValue())
                 .map(Resolvable::resolve)
                 .or(this::resolveCommandBlock)
@@ -27,5 +29,15 @@ public abstract class ODTSignatureArgumentBase extends ASTWrapperPsiElement impl
     private Optional<Set<OntResource>> resolveCommandBlock() {
         // todo: try to resolve the command block
         return Optional.of(Collections.emptySet());
+    }
+
+    @Override
+    public void inspect(ProblemsHolder holder) {
+        /* Inspection is performed on the content of the Signature argument */
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+        /* Annotation is performed on the content of the Signature argument */
     }
 }

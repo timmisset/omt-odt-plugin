@@ -1,0 +1,39 @@
+package com.misset.opp.odt.psi.impl.resolvable.queryStep.choose;
+
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.misset.opp.callable.Resolvable;
+import com.misset.opp.odt.psi.ODTQuery;
+import com.misset.opp.odt.psi.ODTWhenPath;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStepBase;
+import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+public abstract class ODTResolvableWhenPathStep extends ODTResolvableQueryStepBase implements ODTWhenPath {
+    public ODTResolvableWhenPathStep(@NotNull ASTNode node) {
+        super(node);
+    }
+
+    @Override
+    public @NotNull Set<OntResource> resolve() {
+        final List<ODTQuery> queryList = getQueryList();
+        if(queryList.isEmpty()) { return Collections.emptySet(); }
+        if(queryList.size() == 1) { return resolveQuery(0); }
+        return resolveQuery(1);
+    }
+    private Set<OntResource> resolveQuery(int index) {
+        return Optional.ofNullable(getQueryList().get(index))
+                .map(Resolvable::resolve)
+                .orElse(Collections.emptySet());
+    }
+
+    @Override
+    protected PsiElement getAnnotationRange() {
+        return getFirstChild();
+    }
+}

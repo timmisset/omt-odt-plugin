@@ -29,7 +29,7 @@ public abstract class ODTBaseDefineCommandStatement extends ODTDefineStatement i
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         return Collections.emptySet();
     }
 }

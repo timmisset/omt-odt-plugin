@@ -1,9 +1,10 @@
 package com.misset.opp.callable.builtin;
 
 import com.misset.opp.callable.Callable;
-import com.misset.opp.odt.psi.impl.call.ODTCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -37,7 +38,7 @@ public abstract class Builtin implements Callable {
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         return Optional.ofNullable(resolveSingle())
                 .map(Set::of)
                 .orElse(Collections.emptySet());

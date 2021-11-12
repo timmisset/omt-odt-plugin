@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.impl.ODTNamespacePrefixImpl;
-import com.misset.opp.ttl.OppModel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -24,6 +23,11 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
                 Optional.ofNullable(PsiTreeUtil.nextVisibleLeaf(namespacePrefix))
                         .map(PsiElement::getText)
                         .orElse(null));
+    }
+
+    @Override
+    protected PsiElement getAnnotationRange() {
+        return getLastChild();
     }
 
     @Override

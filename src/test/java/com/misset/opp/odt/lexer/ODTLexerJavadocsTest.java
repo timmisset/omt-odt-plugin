@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class ODTLexerJavadocsTest extends ODTLexerTestCase {
 
     @Test
-    void testQueryWithSchemalessIri() {
+    void testJavaDoc() {
         final String content =
                 "/**\n" +
                 " * Some text \n" +

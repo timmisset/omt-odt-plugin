@@ -16,7 +16,7 @@ public abstract class ODTResolvableQueryArray extends ODTResolvableQuery impleme
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         return getQueryList()
                 .stream()
                 .map(ODTResolvable::resolve)

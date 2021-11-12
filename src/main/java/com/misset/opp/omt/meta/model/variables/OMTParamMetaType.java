@@ -8,6 +8,7 @@ import com.misset.opp.omt.meta.model.scalars.OMTParamTypeType;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -87,7 +88,9 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTTypeRes
         } else {
             // curie is available, resolve to type:
             final String fullyQualifiedUri = resolvableUriSteps.stream().findFirst().get().getFullyQualifiedUri();
-            return oppModel.getClass(fullyQualifiedUri)
+            final OntClass aClass = oppModel.getClass(fullyQualifiedUri);
+            if(aClass == null) { return Collections.emptySet(); }
+            return aClass
                     .listInstances()
                     .mapWith(oppModel::getResource).toSet();
         }

@@ -46,7 +46,7 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
     @Override
     public void annotate(AnnotationHolder holder) {
         if (!isPartOfReverseStep()) {
-            annotateResolved(holder);
+            super.annotate(holder);
         }
     }
 

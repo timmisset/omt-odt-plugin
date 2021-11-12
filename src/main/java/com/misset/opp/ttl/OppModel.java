@@ -1,6 +1,7 @@
 package com.misset.opp.ttl;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.ModificationTracker;
 import org.apache.jena.ontology.ConversionException;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -12,6 +13,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -46,9 +48,17 @@ public class OppModel {
     protected OntClass OWL_THING_CLASS;
     public Individual OWL_THING;
     public OntClass OPP_CLASS;
-    public Individual JSON_OBJECT, JSON, IRI, ERROR, NAMED_GRAPH;
+    public Individual JSON_OBJECT, ERROR, NAMED_GRAPH;
     public OntResource XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
     public OntResource XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
+
+    /*
+        The modification count whenever the model is loaded
+        Any RDF resolving cached values should subscribe to this modification tracker to drop their
+        results when something is changed in the model
+     */
+    private static long ontologyModelModificationCount = 0;
+    public static ModificationTracker ONTOLOGY_MODEL_MODIFICATION = () -> ontologyModelModificationCount;
 
     // create a default empty model to begin with until the DumbService is smart (finished indexing)
     // and the ontology can be loaded using the FileIndex
@@ -175,6 +185,7 @@ public class OppModel {
                 .forEach((shaclPropertyShape) -> getSimpleResourceStatement(simpleModelClass, shaclPropertyShape));
 
         simpleModelClass.createIndividual(simpleModelClass.getURI() + "_INSTANCE");
+        ontologyModelModificationCount++;
     }
 
     private void loadSimpleModelIndividual(Individual individual) {
@@ -189,6 +200,7 @@ public class OppModel {
             // in any case, this should just be a warning
             logger.warn("Could not create an individual for: " + individual.getURI());
         }
+        ontologyModelModificationCount++;
     }
 
     private void getSimpleResourceStatement(OntClass subject,
@@ -448,8 +460,9 @@ public class OppModel {
         return model.getOntResource(uri);
     }
 
-    public Individual getIndividual(String uri) {
-        return model.getIndividual(uri);
+    @Nullable
+    public Individual getIndividual(@Nullable String uri) {
+        return uri == null ? null : model.getIndividual(uri);
     }
 
     public Set<Individual> getClassIndividuals(String classUri) {
@@ -478,16 +491,18 @@ public class OppModel {
         return model.getOntClass(resource.getURI());
     }
 
-    public OntClass getClass(String uri) {
-        return model.getOntClass(uri);
+    @Nullable
+    public OntClass getClass(@Nullable String uri) {
+        return uri == null ? null : model.getOntClass(uri);
     }
 
     public Property getProperty(Resource resource) {
         return model.getProperty(resource.getURI());
     }
 
-    public Property getProperty(String uri) {
-        return model.getProperty(uri);
+    @Nullable
+    public Property getProperty(@Nullable String uri) {
+        return uri == null ? null : model.getProperty(uri);
     }
 
     private Set<Resource> listSubjectsWithProperty(Property property,

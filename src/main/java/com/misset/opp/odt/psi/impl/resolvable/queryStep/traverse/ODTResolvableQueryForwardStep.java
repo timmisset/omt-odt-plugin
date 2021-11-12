@@ -1,6 +1,7 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
 
 import com.intellij.lang.ASTNode;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -20,7 +21,7 @@ public abstract class ODTResolvableQueryForwardStep extends ODTResolvableQualifi
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         final String fullyQualifiedUri = getFullyQualifiedUri();
         if(fullyQualifiedUri == null) { return Collections.emptySet(); }
 

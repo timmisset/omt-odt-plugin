@@ -74,6 +74,10 @@
         <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
+        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>
+
+        <lang.documentationProvider language="ODT" implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
+
         <!-- Inspections -->
         <localInspection displayName="ODTUnusedInspection"
                          groupName="ODT"
@@ -87,7 +91,9 @@
                 language="ODT"
                 enabledByDefault="true"
                 level="WARNING"
-                implementationClass="com.misset.opp.odt.inspection.ODTRDFInspection"/>
+                implementationClass="com.misset.opp.odt.inspection.ODTResolvableInspection"/>
+
+        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.CodeAnnotatorUnresolvable"/>
 
         <!-- TTL Language -->
         <postStartupActivity implementation="com.misset.opp.ttl.LoadOntologyStartupActivity"/>
@@ -96,8 +102,6 @@
         <psi.referenceContributor language="JAVA"
                                   implementation="com.misset.opp.odt.psi.reference.ODTJavaDocReferenceContributor"/>
 
-        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTAnnotator"/>
-        <lang.documentationProvider language="ODT" implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
     </extensions>
     <depends>com.intellij.java</depends>
 

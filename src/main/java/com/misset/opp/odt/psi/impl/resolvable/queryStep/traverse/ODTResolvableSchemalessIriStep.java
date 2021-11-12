@@ -1,7 +1,7 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
 
 import com.intellij.lang.ASTNode;
-import com.misset.opp.odt.psi.ODTConstantValue;
+import com.misset.opp.odt.psi.ODTSchemalessIriStep;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * /ont:ClassA / ^rdf:type / <somePredicate>
  * The subject is resolved to instances of http://ontology/classA and the predicate to http://ontology/somePredicate
  */
-public abstract class ODTResolvableSchemalessIriStep extends ODTResolvableQueryForwardStep implements ODTConstantValue {
+public abstract class ODTResolvableSchemalessIriStep extends ODTResolvableQueryForwardStep implements ODTSchemalessIriStep {
     public ODTResolvableSchemalessIriStep(@NotNull ASTNode node) {
         super(node);
     }

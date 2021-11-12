@@ -1,5 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.Resolvable;
 import org.apache.jena.ontology.OntResource;
@@ -18,5 +20,9 @@ public interface ODTResolvable extends Resolvable, PsiElement {
     }
 
     default Set<OntResource> resolvePreviousStep() { return Collections.emptySet(); }
+
+    void inspect(ProblemsHolder holder);
+
+    void annotate(AnnotationHolder holder);
 
 }

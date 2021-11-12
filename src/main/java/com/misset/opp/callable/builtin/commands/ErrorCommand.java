@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.commands;
 
-import com.misset.opp.odt.psi.impl.call.ODTCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;

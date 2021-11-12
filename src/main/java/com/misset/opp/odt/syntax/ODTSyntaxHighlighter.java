@@ -4,6 +4,7 @@ import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
+import com.intellij.psi.impl.source.tree.JavaDocElementType;
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.ODTLexerAdapter;
 import com.misset.opp.odt.psi.ODTIgnored;
@@ -25,6 +26,10 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 public class ODTSyntaxHighlighter implements SyntaxHighlighter {
     public static final TextAttributesKey BaseCallAttributesKey = createTextAttributesKey("Function call", DefaultLanguageHighlighterColors.FUNCTION_CALL);
     public static final TextAttributesKey DefineAttributesKey = createTextAttributesKey("Define statement name", DefaultLanguageHighlighterColors.INSTANCE_METHOD);
+    public static final TextAttributesKey OntologyClassAttributesKey = createTextAttributesKey("Ontology Class (pol:Dossier)", DefaultLanguageHighlighterColors.CLASS_NAME);
+    public static final TextAttributesKey OntologyInstanceAttributesKey = createTextAttributesKey("Ontology Instance (instance of pol:Dossier)", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
+    public static final TextAttributesKey OntologyTypeAttributesKey = createTextAttributesKey("Ontology Type (xsd:string)", DefaultLanguageHighlighterColors.CLASS_NAME);
+    public static final TextAttributesKey OntologyValueAttributesKey = createTextAttributesKey("Ontology Value ('a string')", DefaultLanguageHighlighterColors.CONSTANT);
 
     private static final HashMap<IElementType, TextAttributesKey> highlightingMap = new HashMap<>();
     static {
@@ -32,7 +37,7 @@ public class ODTSyntaxHighlighter implements SyntaxHighlighter {
         addToMap(ODTTypes.STRING, "String", DefaultLanguageHighlighterColors.STRING);
         addToMap(ODTTypes.SEMICOLON, "Semicolon", DefaultLanguageHighlighterColors.SEMICOLON);
         addToMap(ODTIgnored.MULTILINE, "Comment (block)", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
-        addToMap(ODTIgnored.JAVADOCS, "Comment (doc)", DefaultLanguageHighlighterColors.DOC_COMMENT);
+        addToMap(JavaDocElementType.DOC_COMMENT, "Comment (doc)", DefaultLanguageHighlighterColors.DOC_COMMENT);
         addToMap(ODTIgnored.END_OF_LINE_COMMENT, "Comment (line)", DefaultLanguageHighlighterColors.LINE_COMMENT);
     }
 
@@ -48,6 +53,10 @@ public class ODTSyntaxHighlighter implements SyntaxHighlighter {
         final ArrayList<TextAttributesKey> textAttributesKeys = new ArrayList<>(highlightingMap.values());
         textAttributesKeys.add(BaseCallAttributesKey);
         textAttributesKeys.add(DefineAttributesKey);
+        textAttributesKeys.add(OntologyClassAttributesKey);
+        textAttributesKeys.add(OntologyTypeAttributesKey);
+        textAttributesKeys.add(OntologyInstanceAttributesKey);
+        textAttributesKeys.add(OntologyValueAttributesKey);
         return textAttributesKeys;
     }
 

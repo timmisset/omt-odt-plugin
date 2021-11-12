@@ -10,6 +10,7 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.OMTLanguage;
 import com.misset.opp.omt.meta.OMTFileMetaType;
@@ -40,11 +41,8 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     }
 
     private YAMLMapping getRootMapping() {
-        return Optional.ofNullable(getFirstChild())
-                .filter(YAMLDocument.class::isInstance)
-                .map(PsiElement::getFirstChild)
-                .filter(YAMLMapping.class::isInstance)
-                .map(YAMLMapping.class::cast)
+        return Optional.ofNullable(PsiTreeUtil.findChildOfType(this, YAMLDocument.class))
+                .map(yamlDocument -> PsiTreeUtil.findChildOfType(yamlDocument, YAMLMapping.class))
                 .orElse(null);
     }
 

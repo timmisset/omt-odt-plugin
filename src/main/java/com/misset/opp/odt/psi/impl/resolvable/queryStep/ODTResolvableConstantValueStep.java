@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTTypes;
@@ -16,7 +17,7 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         final OppModel oppModel = OppModel.INSTANCE;
         final IElementType elementType = getNode().getFirstChildNode().getElementType();
 
@@ -29,6 +30,8 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
             result = oppModel.XSD_NUMBER_INSTANCE;
         } else if (elementType == ODTTypes.DECIMAL) {
             result = oppModel.XSD_NUMBER_INSTANCE;
+        } else if (elementType == ODTTypes.INTERPOLATED_STRING) {
+            result = oppModel.XSD_STRING_INSTANCE;
         } else {
             result = oppModel.OWL_THING;
         }
@@ -36,5 +39,20 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
         // a constant value, like a string, boolean, number etc is considered
         // an instance of the specified data-type
         return Set.of(result);
+    }
+
+    @Override
+    protected boolean applyTextAttributes() {
+        return false;
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+        if(getNode().getFirstChildNode().getElementType() == ODTTypes.INTERPOLATED_STRING) {
+            // don't annotate the interpolated string, it probably contains child elements
+            // that should be annotated instead
+            return;
+        }
+        super.annotate(holder);
     }
 }

@@ -13,7 +13,7 @@ public abstract class ODTResolvableSubQueryStep extends ODTResolvableQueryStepBa
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         return getQuery().resolve();
     }
 }

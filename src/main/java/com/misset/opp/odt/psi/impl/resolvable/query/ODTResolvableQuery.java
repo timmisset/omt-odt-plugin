@@ -1,7 +1,9 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import org.apache.jena.ontology.OntResource;
@@ -16,5 +18,15 @@ public abstract class ODTResolvableQuery extends ASTWrapperPsiElement implements
 
     public Set<OntResource> resolveFromSet(Set<OntResource> fromSet) {
         return resolve();
+    }
+
+    @Override
+    public void inspect(ProblemsHolder holder) {
+        /* Inspection is performed on the individual steps, not the entire query */
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+        /* Annotation is performed on the individual steps, not the entire query */
     }
 }

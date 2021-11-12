@@ -6,6 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,15 +15,19 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
- * Due to the nature of the LocalInspectionTool running on many threads,
- * we need to avoid CCMEs by not using the Ontology with any operations that might affect
- * the RDF nodes collection (such as: OntResource::asClass, asIndividual etc);
+ * Inspection of all elements that implement the ODTResolvable interface
  */
-public class ODTRDFInspection extends LocalInspectionTool {
+public class ODTResolvableInspection extends LocalInspectionTool {
     @Override
     public @Nullable
     @Nls String getStaticDescription() {
-        return "Inspect RDF statements";
+        return "Inspect ODT Resolvable elements<br>" +
+                "Resolvable elements are parts of the ODT language that can be resolved to a set of RDF resource types.<br>" +
+                "<br>" +
+                "Examples of these steps are:<br>" +
+                "- Curie (ont:Class)<br>" +
+                "- Calls to Operators / Queries<br>" +
+                "- Runnables such as Procedures, Activities etc";
     }
 
     @Override
@@ -33,8 +38,8 @@ public class ODTRDFInspection extends LocalInspectionTool {
 
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (element instanceof ODTInspectedElement) {
-                    ((ODTInspectedElement) element).inspect(holder);
+                if (element instanceof ODTResolvable) {
+                    ((ODTResolvable) element).inspect(holder);
                 }
             }
         };
@@ -51,7 +56,7 @@ public class ODTRDFInspection extends LocalInspectionTool {
     @Override
     public void inspectionFinished(@NotNull LocalInspectionToolSession session,
                                    @NotNull ProblemsHolder problemsHolder) {
-        Logger.getInstance(ODTRDFInspection.class)
+        Logger.getInstance(ODTResolvableInspection.class)
                 .warn("Inspection took: " + Duration.between(dateTime, LocalDateTime.now()).toMillis() + " ms");
     }
 }

@@ -2,8 +2,9 @@ package com.misset.opp.callable;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.builtin.commands.LocalVariable;
-import com.misset.opp.odt.psi.impl.call.ODTCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +45,7 @@ public interface Callable extends Resolvable {
 
     default Set<OntResource> getSecondReturnArgument() { return Collections.emptySet(); }
 
-    default Set<OntResource> resolve() { return Collections.emptySet(); }
+    default @NotNull Set<OntResource> resolve() { return Collections.emptySet(); }
 
 
     /**

@@ -42,6 +42,7 @@ CURIE_PREFIX=                   ({ALPHA}({ALPHA}|{DIGIT})*)?":"
 CURIE=                          {CURIE_PREFIX}{SYMBOL}
 
 STRING=                         (\"[^\"\\]*(\\.[^\"\\]*)*\")|(\'[^\'\\]*(\\.[^\'\\]*)*\')
+INTERPOLATED_STRING=            (\`[^\`\\]*(\\.[^\`\\]*)*\`)
 INTEGER=                        \-?([1-9][0-9]+|[0-9])
 DECIMAL=                        {INTEGER}\.[0-9]+
 BOOLEAN=                        "true"|"false"|"TRUE"|"FALSE"|"True"|"False"
@@ -62,6 +63,19 @@ RESERVED_NAME=                  "IF"
 %state PREFIX
 %state DEFINE
 %state DEFINE_PARAMS
+%state INTERPOLATION
+
+%{
+    boolean inInterpolation = false;
+    void enterInterpolation() {
+        inInterpolation = true;
+        yybegin(INTERPOLATION);
+    }
+    void leaveInterpolation() {
+        inInterpolation = false;
+        yybegin(YYINITIAL);
+    }
+%}
 
 %%
 <YYINITIAL> {
@@ -104,6 +118,11 @@ RESERVED_NAME=                  "IF"
     {IRI}                                                           { return ODTTypes.IRI; }
     {SCHEMALESS_IRI}                                                { return ODTTypes.SCHEMALESS_IRI; }
     {STRING}                                                        { return ODTTypes.STRING; }
+    {INTERPOLATED_STRING}                                           {
+          yypushback(yylength() - 1); // pushback all but the opening backtick
+          enterInterpolation();
+          return ODTTypes.INTERPOLATED_STRING_START;
+                                                                    }
     {INTEGER}                                                       { return ODTTypes.INTEGER; }
     {DECIMAL}                                                       { return ODTTypes.DECIMAL; }
     {TYPED_VALUE}                                                   { return ODTTypes.TYPED_VALUE; }
@@ -115,7 +134,9 @@ RESERVED_NAME=                  "IF"
     ","                                                             { return ODTTypes.COMMA; }
     ";"                                                             { return ODTTypes.SEMICOLON; }
     "{"                                                             { return ODTTypes.CURLY_OPEN; }
-    "}"                                                             { return ODTTypes.CURLY_CLOSED; }
+    "}"                                                             {
+          if(inInterpolation) { enterInterpolation(); return ODTTypes.INTERPOLATION_END; }
+          return ODTTypes.CURLY_CLOSED; }
     "/"                                                             { return ODTTypes.FORWARD_SLASH; }
     "^"                                                             { return ODTTypes.CARET; }
     "["                                                             { return ODTTypes.BRACKET_OPEN; }
@@ -156,6 +177,11 @@ RESERVED_NAME=                  "IF"
     ","                          { return ODTTypes.COMMA; }
     ")"                          { yybegin(DEFINE); return ODTTypes.PARENTHESES_CLOSE; }
     { WHITE_SPACE }+             { return TokenType.WHITE_SPACE; }
+}
+<INTERPOLATION> {
+    "${"                         { yybegin(YYINITIAL); return ODTTypes.INTERPOLATION_START; }
+    "`"                          { leaveInterpolation(); return ODTTypes.INTERPOLATED_STRING_END; }
+    [^\$\`]+                       { return ODTTypes.STRING; }
 }
 {JAVADOCS}                                                      {
                                                                     return JavaDocElementType.DOC_COMMENT; // can be an indent/dedent token or JAVADOCS_START

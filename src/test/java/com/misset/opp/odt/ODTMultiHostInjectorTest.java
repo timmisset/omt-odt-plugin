@@ -16,4 +16,5 @@ class ODTMultiHostInjectorTest extends OMTTestCase {
         ReadAction.run(() -> Assertions.assertNotNull(getCallByName("LOG")));
 
     }
+
 }

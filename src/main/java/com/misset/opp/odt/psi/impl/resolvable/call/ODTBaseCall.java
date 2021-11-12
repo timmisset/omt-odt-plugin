@@ -1,7 +1,9 @@
-package com.misset.opp.odt.psi.impl.call;
+package com.misset.opp.odt.psi.impl.resolvable.call;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.NlsSafe;
@@ -23,6 +25,7 @@ import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.psi.impl.OMTCallable;
@@ -41,7 +44,7 @@ import java.util.Set;
 
 import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectLocalCommandProviders;
 
-public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCall {
+public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCall, ODTResolvable {
     public ODTBaseCall(@NotNull ASTNode node) {
         super(node);
     }
@@ -70,7 +73,9 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
                     .or(this::getBuiltin)
                     .orElse(null);
             return new CachedValueProvider.Result<>(callable,
-                    callable instanceof PsiElement ? PsiModificationTracker.MODIFICATION_COUNT : ModificationTracker.NEVER_CHANGED);
+                    callable instanceof PsiElement || callable == null ?
+                            PsiModificationTracker.MODIFICATION_COUNT :
+                            ModificationTracker.NEVER_CHANGED);
         });
     }
 
@@ -115,10 +120,7 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
     @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
         final ODTCallName callName = ODTElementGenerator.getInstance(getProject()).createCall(name).getCallName();
-        if (callName != null) {
-            return getCallName().replace(callName);
-        }
-        return this;
+        return getCallName().replace(callName);
     }
 
     @Override
@@ -129,8 +131,10 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
     }
 
     @Override
-    public Set<OntResource> resolve() {
-        return getCallable().resolve(resolvePreviousStep(), this);
+    public @NotNull Set<OntResource> resolve() {
+        return Optional.ofNullable(getCallable())
+                .map(callable -> callable.resolve(resolvePreviousStep(), this))
+                .orElse(Collections.emptySet());
     }
 
     @Override
@@ -142,11 +146,10 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
 
     @Override
     public @Nullable ODTSignatureArgument getSignatureArgument(int index) {
-        final List<ODTSignatureArgument> signatureArguments = getSignatureArguments();
-        if(signatureArguments.size() >= index) {
-            return signatureArguments.get(index);
-        }
-        return null;
+        return Optional.of(getSignatureArguments())
+                .filter(list -> list.size() > index)
+                .map(list -> list.get(index))
+                .orElse(null);
     }
 
     @Override
@@ -155,5 +158,15 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
                 .map(ODTSignatureArgument::getResolvableValue)
                 .map(Resolvable::resolve)
                 .orElse(Collections.emptySet());
+    }
+
+    @Override
+    public void inspect(ProblemsHolder holder) {
+
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+
     }
 }

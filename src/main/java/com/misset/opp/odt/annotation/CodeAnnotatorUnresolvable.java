@@ -6,9 +6,10 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -43,7 +44,8 @@ public class CodeAnnotatorUnresolvable implements Annotator {
 
     private void inspectCall(@NotNull AnnotationHolder holder,
                              @NotNull ODTBaseCall call) {
-        if(call.getCallable() == null) {
+        final Callable callable = call.getCallable();
+        if(callable == null) {
             holder.newAnnotation(HighlightSeverity.ERROR, String.format("%s is not declared", call.getName()) )
                     .range(call.getCallName())
                     .create();

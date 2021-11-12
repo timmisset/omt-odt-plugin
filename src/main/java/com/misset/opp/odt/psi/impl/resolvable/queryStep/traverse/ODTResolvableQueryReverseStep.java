@@ -1,11 +1,14 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTQueryStep;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStepBase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -21,7 +24,7 @@ public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQuerySt
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         final ODTQueryStep queryStep = getQueryStep();
         // only when the reverse caret is followed by a valid traversion can path be travelled
         // - a curie => ont:somePredicate)
@@ -30,13 +33,18 @@ public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQuerySt
             final OppModel oppModel = OppModel.INSTANCE;
             // a reverse path indicator can only be applied to a curie step
             final String fullyQualified = ((ODTResolvableQualifiedUriStep) queryStep).getFullyQualifiedUri();
-            return oppModel.listSubjects(oppModel.getProperty(fullyQualified), resolvePreviousStep());
+            final Property property = oppModel.getProperty(fullyQualified);
+            if(property == null) { return Collections.emptySet(); }
+            return oppModel.listSubjects(property, resolvePreviousStep());
         }
         return Collections.emptySet();
     }
 
     @Override
-    public void annotate(AnnotationHolder holder) {
-        annotateResolved(holder);
+    protected PsiElement getAnnotationRange() {
+        if(getQueryStep() instanceof ODTResolvableCurieElementStep) {
+            return ((ODTResolvableCurieElementStep) getQueryStep()).getAnnotationRange();
+        }
+        return super.getAnnotationRange();
     }
 }

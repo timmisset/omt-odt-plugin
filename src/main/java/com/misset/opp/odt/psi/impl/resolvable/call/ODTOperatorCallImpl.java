@@ -1,10 +1,11 @@
-package com.misset.opp.odt.psi.impl.call;
+package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.callable.Resolvable;
 import com.misset.opp.odt.psi.ODTOperatorCall;
-import com.misset.opp.odt.psi.ODTQueryStep;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep;
+import com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,8 +33,13 @@ public abstract class ODTOperatorCallImpl extends ODTBaseCall implements ODTOper
 
     @Override
     public Set<OntResource> resolvePreviousStep() {
-        return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTQueryStep.class))
-                .map(Resolvable::resolve)
+        return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTResolvableQueryStep.class))
+                .map(ODTResolvableQueryStep::resolvePreviousStep)
                 .orElse(Collections.emptySet());
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+        ODTResolvableUtil.annotateResolved(resolve(), holder, getCallName(), true);
     }
 }

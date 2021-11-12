@@ -12,15 +12,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.BaseCallAttributesKey;
+import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.DefineAttributesKey;
+import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.OntologyClassAttributesKey;
+import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.OntologyInstanceAttributesKey;
+import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.OntologyTypeAttributesKey;
+import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.OntologyValueAttributesKey;
 
 public class ODTColorSettingsPage implements ColorSettingsPage {
-    private static final HashMap<String, TextAttributesKey> enforcedAttributes = new HashMap<>();
+    private static final List<TextAttributesKey> enforcedAttributes = new ArrayList<>();
+
     static {
-        enforcedAttributes.put("call", ODTSyntaxHighlighter.BaseCallAttributesKey);
-        enforcedAttributes.put("defineName", ODTSyntaxHighlighter.DefineAttributesKey);
+        enforcedAttributes.add(BaseCallAttributesKey);
+        enforcedAttributes.add(DefineAttributesKey);
+        enforcedAttributes.add(OntologyClassAttributesKey);
+        enforcedAttributes.add(OntologyTypeAttributesKey);
+        enforcedAttributes.add(OntologyInstanceAttributesKey);
+        enforcedAttributes.add(OntologyValueAttributesKey);
     }
+
     @Override
     public @Nullable Icon getIcon() {
         return OMTFileType.ICON;
@@ -33,19 +48,26 @@ public class ODTColorSettingsPage implements ColorSettingsPage {
 
     @Override
     public @NonNls @NotNull String getDemoText() {
-        return "DEFINE QUERY <defineName>query</defineName>($param) => $param / ont:property / <call>call</call>;\n";
+        return
+                "DEFINE QUERY <" + DefineAttributesKey.getExternalName() + ">query</\" + DefineAttributesKey.getExternalName() + \">" +
+                        "($param) => $param / ont:property / <" + BaseCallAttributesKey.getExternalName() + ">call</" + BaseCallAttributesKey.getExternalName() + ">;\n" +
+                        "/ont:<" + OntologyClassAttributesKey.getExternalName() + ">Class</" + OntologyClassAttributesKey.getExternalName() + ">" +
+                        " / ^rdf:<" + OntologyInstanceAttributesKey.getExternalName() + ">type</" + OntologyInstanceAttributesKey.getExternalName() + ">" +
+                        " / ont:<" + OntologyValueAttributesKey.getExternalName() + ">stringPredicate</" + OntologyValueAttributesKey.getExternalName() + ">\n";
     }
 
     @Override
     public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-        return enforcedAttributes;
+        return enforcedAttributes.stream()
+                .collect(Collectors.toMap(TextAttributesKey::getExternalName, textAttributesKey -> textAttributesKey));
     }
 
     @Override
     public AttributesDescriptor @NotNull [] getAttributeDescriptors() {
         return ODTSyntaxHighlighter.getAttributes()
                 .stream()
-                .map(textAttributesKey -> new AttributesDescriptor(textAttributesKey.getExternalName(), textAttributesKey))
+                .map(textAttributesKey -> new AttributesDescriptor(textAttributesKey.getExternalName(),
+                        textAttributesKey))
                 .toArray(AttributesDescriptor[]::new);
     }
 

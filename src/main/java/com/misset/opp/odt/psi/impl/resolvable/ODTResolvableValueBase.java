@@ -1,7 +1,9 @@
 package com.misset.opp.odt.psi.impl.resolvable;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -15,9 +17,19 @@ public abstract class ODTResolvableValueBase extends ASTWrapperPsiElement implem
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         if(getQuery() != null) { return getQuery().resolve(); }
         if(getCommandCall() != null) { return getCommandCall().resolve(); }
         return Collections.emptySet();
+    }
+
+    @Override
+    public void inspect(ProblemsHolder holder) {
+
+    }
+
+    @Override
+    public void annotate(AnnotationHolder holder) {
+
     }
 }

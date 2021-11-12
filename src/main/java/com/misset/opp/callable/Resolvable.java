@@ -1,6 +1,7 @@
 package com.misset.opp.callable;
 
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import java.util.Set;
  */
 public interface Resolvable {
 
+    @NotNull
     Set<OntResource> resolve();
     
 }

@@ -9,7 +9,7 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTScript;
-import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import org.jetbrains.annotations.NotNull;

@@ -2,7 +2,7 @@ package com.misset.opp.callable.builtin;
 
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.impl.call.ODTCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.testCase.OntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;

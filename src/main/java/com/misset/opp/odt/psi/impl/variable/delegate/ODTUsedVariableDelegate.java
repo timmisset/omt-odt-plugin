@@ -39,7 +39,7 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
                 .filter(ODTVariable.class::isInstance)
                 .map(ODTVariable.class::cast)
                 .map(this::getType)
-                .orElse(null);
+                .orElse(Collections.emptySet());
     }
 
     private Set<OntResource> getType(ODTVariable declared) {

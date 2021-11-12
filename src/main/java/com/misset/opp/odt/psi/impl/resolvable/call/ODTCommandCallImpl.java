@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.call;
+package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.lang.ASTNode;
 import com.misset.opp.odt.psi.ODTCommandCall;

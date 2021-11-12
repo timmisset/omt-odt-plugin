@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
-import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
 

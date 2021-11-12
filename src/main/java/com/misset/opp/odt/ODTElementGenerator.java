@@ -9,7 +9,7 @@ import com.intellij.util.LocalTimeCounter;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.impl.call.ODTBaseCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
 import org.jetbrains.annotations.NotNull;
 
 @Service

@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
 
 import com.intellij.lang.ASTNode;
 import com.misset.opp.odt.psi.ODTIriStep;
