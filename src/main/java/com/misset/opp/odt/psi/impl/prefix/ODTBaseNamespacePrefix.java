@@ -43,9 +43,9 @@ public abstract class ODTBaseNamespacePrefix extends ASTWrapperPsiElement implem
     public String getFullyQualifiedUri(String localName) {
         return Optional.ofNullable(getReference())
                 .map(PsiReference::resolve)
-                .filter(YAMLKeyValue.class::isInstance)
-                .map(YAMLKeyValue.class::cast)
-                .map(keyValue -> PrefixUtil.getFullyQualifiedUri(keyValue, localName))
+                .map(element -> element instanceof YAMLKeyValue ?
+                        PrefixUtil.getFullyQualifiedUri((YAMLKeyValue) element, localName) :
+                        PrefixUtil.getFullyQualifiedUri((ODTDefinePrefix) element.getParent(), localName))
                 .orElse(null);
     }
 

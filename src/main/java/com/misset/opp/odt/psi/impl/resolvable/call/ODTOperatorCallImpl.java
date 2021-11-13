@@ -40,6 +40,6 @@ public abstract class ODTOperatorCallImpl extends ODTBaseCall implements ODTOper
 
     @Override
     public void annotate(AnnotationHolder holder) {
-        ODTResolvableUtil.annotateResolved(resolve(), holder, getCallName(), true);
+        ODTResolvableUtil.annotateResolved(resolve(), holder, getCallName(), false);
     }
 }

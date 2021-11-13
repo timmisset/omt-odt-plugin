@@ -21,7 +21,7 @@
                   language="OMT" extensions="omt"/>
         <lang.parserDefinition language="OMT"
                                implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
-
+        <postStartupActivity implementation="com.misset.opp.omt.IndexPrefixesStartupActivity"/>
         <!-- Annotations -->
         <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
 
@@ -72,6 +72,8 @@
         <lang.syntaxHighlighter language="ODT" implementationClass="com.misset.opp.odt.syntax.ODTSyntaxHighlighter"/>
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
         <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>
+        <lang.formatter language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTFormattingModelBuilder"/>
+
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>
@@ -101,7 +103,6 @@
         <!-- JAVA -->
         <psi.referenceContributor language="JAVA"
                                   implementation="com.misset.opp.odt.psi.reference.ODTJavaDocReferenceContributor"/>
-
     </extensions>
     <depends>com.intellij.java</depends>
 

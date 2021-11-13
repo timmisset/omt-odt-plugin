@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.LocalTimeCounter;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
+import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +37,10 @@ public final class ODTElementGenerator {
 
     public ODTNamespacePrefix createNamespacePrefix(String prefix) {
         return fromFile(prefix + ":dummy", ODTNamespacePrefix.class);
+    }
+
+    public ODTScriptLine createDefinePrefix(String prefix, String namespace) {
+        return fromFile("PREFIX " + prefix + ": <" + namespace + ">", ODTScriptLine.class);
     }
 
     public ODTBaseCall createCall(String name) {

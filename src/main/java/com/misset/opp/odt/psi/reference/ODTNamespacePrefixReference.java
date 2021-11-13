@@ -45,7 +45,7 @@ public class ODTNamespacePrefixReference extends PsiReferenceBase.Poly<ODTBaseNa
                 .stream()
                 .map(ODTDefinePrefix::getNamespacePrefix)
                 // must have the same name
-                .filter(namespacePrefix -> Optional.ofNullable(getElement().getName())
+                .filter(namespacePrefix -> Optional.of(getElement().getName())
                         .map(s -> s.equals(namespacePrefix.getName()))
                         .orElse(false))
                 .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)

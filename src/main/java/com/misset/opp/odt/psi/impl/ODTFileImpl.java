@@ -4,17 +4,16 @@ import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.impl.PsiModificationTrackerImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.misset.opp.odt.ODTFileType;
 import com.misset.opp.odt.ODTLanguage;
 import com.misset.opp.odt.psi.ODTFile;
@@ -53,9 +52,9 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
             final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(getProject());
             final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(this);
             if (!(injectionHost instanceof YAMLPsiElement)) {
-                return new CachedValueProvider.Result<>(null, ModificationTracker.NEVER_CHANGED);
+                return new CachedValueProvider.Result<>(null, PsiModificationTracker.MODIFICATION_COUNT);
             }
-            return new CachedValueProvider.Result<>((YAMLPsiElement) injectionHost, ModificationTracker.NEVER_CHANGED);
+            return new CachedValueProvider.Result<>((YAMLPsiElement) injectionHost, PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 
@@ -66,7 +65,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                     .filter(OMTFile.class::isInstance)
                     .map(OMTFile.class::cast)
                     .orElse(null);
-            return new CachedValueProvider.Result<>(omtFile, ModificationTracker.NEVER_CHANGED);
+            return new CachedValueProvider.Result<>(omtFile, PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 
@@ -110,7 +109,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                     .map(OMTScriptMetaType.class::cast)
                     .map(OMTScriptMetaType::isExportable)
                     .orElse(false);
-            return new CachedValueProvider.Result<>(isExportable, ModificationTracker.NEVER_CHANGED);
+            return new CachedValueProvider.Result<>(isExportable, PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 

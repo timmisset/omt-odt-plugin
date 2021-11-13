@@ -28,6 +28,7 @@ public class ODTResolvableUtil {
         AnnotationBuilder builder = holder.newAnnotation(HighlightSeverity.INFORMATION, "")
                 .tooltip(
                         resources.stream()
+                                .filter(resource -> resource.getURI() != null)
                                 .sorted(Comparator.comparing(Resource::getURI))
                                 .map(ODTResolvableUtil::describeUri)
                                 .filter(Objects::nonNull)
