@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
@@ -23,7 +23,7 @@ public class CastOperator extends BuiltInOperator {
      * It uses the xsd ontology or specifically to an IRI (OWL_THING) or JSON_OBJECT
      */
     public Set<OntResource> resolveFrom(Set<OntResource> resources,
-                                    ODTCall call) {
-       return OppModel.INSTANCE.toIndividuals(call.resolveSignatureArgument(0));
+                                        Call call) {
+        return OppModel.INSTANCE.toIndividuals(call.resolveSignatureArgument(0));
     }
 }

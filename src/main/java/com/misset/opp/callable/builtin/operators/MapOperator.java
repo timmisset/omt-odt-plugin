@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
@@ -16,7 +16,7 @@ public class MapOperator extends BuiltInOperator {
 
     @Override
     protected Set<OntResource> resolveFrom(Set<OntResource> resources,
-                                           ODTCall call) {
+                                           Call call) {
         return call.resolveSignatureArgument(0);
     }
 }

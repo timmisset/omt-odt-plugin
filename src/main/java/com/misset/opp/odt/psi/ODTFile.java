@@ -11,6 +11,7 @@ import org.jetbrains.yaml.psi.YAMLPsiElement;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -65,4 +66,11 @@ public interface ODTFile extends PsiFile {
     <T> Optional<ResolveResult[]> resolveInOMT(Class<T> providerClass,
                                                String key,
                                                BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction);
+
+    /**
+     * Returns the prefix::namespaces that are available at the point of this Injected ODT fragment.
+     * It does not provide the prefix declarations that are declared in the ODT file itself since those depend on the position
+     * of the element that wants to use it
+     */
+    Map<String, String> getAvailableNamespaces();
 }

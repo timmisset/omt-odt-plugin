@@ -1,19 +1,15 @@
 package com.misset.opp.callable.builtin;
 
-import com.misset.opp.odt.psi.ODTResolvableValue;
-import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
@@ -38,13 +34,11 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
     }
 
     @SafeVarargs
-    protected final ODTCall getCall(Set<OntResource>... arguments) {
-        final ODTCall call = mock(ODTCall.class);
+    protected final Call getCall(Set<OntResource>... arguments) {
+        final Call call = mock(Call.class);
 
-        final List<ODTSignatureArgument> signatureArguments = Arrays.stream(arguments)
-                .map(this::getSignatureArguments)
-                .collect(Collectors.toList());
-        doReturn(signatureArguments).when(call).getSignatureArguments();
+        doReturn(List.of(arguments)).when(call).resolveSignatureArguments();
+        doReturn(arguments.length).when(call).numberOfArguments();
 
         // mock the argument resolving
         doAnswer(invocation -> getArgumentsAtIndex(arguments, invocation.getArgument(0)))
@@ -56,25 +50,6 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
         //
         if(resources.length <= index) { return Collections.emptySet(); }
         return resources[index];
-    }
-
-    protected final ODTCall getCall(ODTSignatureArgument... arguments) {
-        final ODTCall call = mock(ODTCall.class);
-
-        doReturn(List.of(arguments)).when(call).getSignatureArguments();
-        // mock the argument resolving
-        doAnswer(invocation -> arguments[(int) invocation.getArgument(0)])
-                .when(call).getSignatureArgument(anyInt());
-        return call;
-    }
-
-    private ODTSignatureArgument getSignatureArguments(Set<OntResource> resources) {
-        final ODTSignatureArgument argument = mock(ODTSignatureArgument.class);
-        final ODTResolvableValue resolvableValue = mock(ODTResolvableValue.class);
-        doReturn(resources).when(resolvableValue).resolve();
-        doReturn(resolvableValue).when(argument).getResolvableValue();
-        doReturn(resources).when(argument).resolve();
-        return argument;
     }
 
     @SafeVarargs
@@ -97,7 +72,7 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
                                         Set<OntResource> inputResources,
                                         Set<OntResource> expectedResources,
                                         Set<OntResource>... callArguments) {
-        final ODTCall call = getCall(callArguments);
+        final Call call = getCall(callArguments);
         final Set<OntResource> resources = builtin.resolve(inputResources, call);
         assertEquals(expectedResources.size(), resources.size());
         assertTrue(resources.containsAll(expectedResources));

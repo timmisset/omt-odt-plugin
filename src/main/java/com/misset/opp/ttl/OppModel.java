@@ -438,7 +438,7 @@ public class OppModel {
         return Collections.singleton(resource);
     }
 
-    public Set<Resource> listPredicates(Set<OntResource> classSubjects) {
+    public Set<Property> listPredicates(Set<OntResource> classSubjects) {
         return classSubjects.stream()
                 .map(this::listPredicates)
                 .flatMap(Collection::stream)
@@ -450,6 +450,30 @@ public class OppModel {
                 .stream()
                 .map(Statement::getPredicate)
                 .collect(Collectors.toSet());
+    }
+
+    public Set<Property> listReversePredicates(Set<OntResource> classSubjects) {
+        return classSubjects.stream()
+                .map(this::listReversePredicates)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * List any predicate that can point to this subject
+     */
+    public Set<Property> listReversePredicates(OntResource classSubject) {
+        final OntClass subjectAsObject = toClass(classSubject);
+        final Set<Property> properties = model.listStatements().toList()
+                .stream()
+                .filter(statement -> statement.getObject().equals(subjectAsObject))
+                .map(Statement::getPredicate)
+                .filter(property -> !classModelProperties.contains(property))
+                .collect(Collectors.toCollection(HashSet::new));
+        if (classSubject.isClass()) {
+            properties.addAll(classModelProperties);
+        }
+        return properties;
     }
 
     public OntResource getResource(Resource resource) {

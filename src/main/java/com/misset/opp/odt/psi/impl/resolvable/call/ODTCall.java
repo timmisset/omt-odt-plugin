@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.psi.PsiNamedElement;
+import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTCallName;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public interface ODTCall extends PsiNamedElement, ODTResolvable, ODTDocumented {
+public interface ODTCall extends Call, PsiNamedElement, ODTResolvable, ODTDocumented {
     @Nullable
     Callable getCallable();
 

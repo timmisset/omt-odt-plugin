@@ -19,7 +19,7 @@ class MergeOperatorTest extends BuiltInTest {
 
     @Test
     protected void testResolveTwoOrMoreArguments() {
-        // combine input + argument
+        // combine arguments
         assertResolved(MergeOperator.INSTANCE,
                 Set.of(oppModel.XSD_STRING_INSTANCE),
                 Set.of(oppModel.XSD_BOOLEAN_INSTANCE, oppModel.XSD_DATE_INSTANCE),

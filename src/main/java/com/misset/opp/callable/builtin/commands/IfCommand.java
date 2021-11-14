@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.commands;
 
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
@@ -26,7 +26,7 @@ public class IfCommand extends BuiltInCommand {
     }
 
     @Override
-    protected Set<OntResource> resolveFrom(ODTCall call) {
+    protected Set<OntResource> resolveFrom(Call call) {
         final HashSet<OntResource> resources = new HashSet<>();
         resources.addAll(call.resolveSignatureArgument(1));
         resources.addAll(call.resolveSignatureArgument(2));

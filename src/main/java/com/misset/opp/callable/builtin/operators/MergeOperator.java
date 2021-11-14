@@ -1,11 +1,9 @@
 package com.misset.opp.callable.builtin.operators;
 
-import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class MergeOperator extends BuiltInOperator {
@@ -24,16 +22,16 @@ public class MergeOperator extends BuiltInOperator {
 
     @Override
     protected Set<OntResource> resolveFrom(Set<OntResource> resources,
-                                           ODTCall call) {
-        final List<ODTSignatureArgument> signatureArguments = call.getSignatureArguments();
+                                           Call call) {
+        final int numberOfArguments = call.numberOfArguments();
         final HashSet<OntResource> output = new HashSet<>();
-        if(signatureArguments.size() == 1) {
+        if (numberOfArguments == 1) {
             // combines the input + argument:
-             output.addAll(resources);
-             output.addAll(call.resolveSignatureArgument(0));
-        } else if(signatureArguments.size() > 1) {
+            output.addAll(resources);
+            output.addAll(call.resolveSignatureArgument(0));
+        } else if (numberOfArguments > 1) {
             // combines the arguments only
-            for(int i = 0; i < signatureArguments.size(); i++) {
+            for (int i = 0; i < numberOfArguments; i++) {
                 output.addAll(call.resolveSignatureArgument(i));
             }
         }

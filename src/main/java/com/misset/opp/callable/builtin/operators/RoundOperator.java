@@ -1,11 +1,9 @@
 package com.misset.opp.callable.builtin.operators;
 
-import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
-import java.util.List;
 import java.util.Set;
 
 public class RoundOperator extends BuiltInOperator {
@@ -29,12 +27,12 @@ public class RoundOperator extends BuiltInOperator {
 
     @Override
     protected Set<OntResource> resolveFrom(Set<OntResource> resources,
-                                           ODTCall call) {
-        final List<ODTSignatureArgument> signatureArguments = call.getSignatureArguments();
-        if(signatureArguments.isEmpty()) {
+                                           Call call) {
+        final int numberOfArguments = call.numberOfArguments();
+        if (numberOfArguments == 0) {
             return Set.of(OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
         } else {
-            if(signatureArguments.get(0).getText().equals("0")) {
+            if ("0".equals(call.getSignatureValue(0))) {
                 return Set.of(OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
             }
             return Set.of(OppModel.INSTANCE.XSD_DECIMAL_INSTANCE);

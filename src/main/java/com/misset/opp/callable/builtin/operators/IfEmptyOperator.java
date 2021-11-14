@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.operators;
 
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
@@ -21,7 +21,7 @@ public class IfEmptyOperator extends BuiltInOperator {
      */
     @Override
     public Set<OntResource> resolveFrom(Set<OntResource> resources,
-                                        ODTCall call) {
+                                        Call call) {
         final HashSet<OntResource> ontResources = new HashSet<>(resources);
         ontResources.addAll(call.resolveSignatureArgument(0));
         return ontResources;

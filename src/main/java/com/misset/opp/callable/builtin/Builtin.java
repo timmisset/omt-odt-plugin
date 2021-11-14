@@ -1,7 +1,7 @@
 package com.misset.opp.callable.builtin;
 
+import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -47,13 +47,18 @@ public abstract class Builtin implements Callable {
     protected Set<OntResource> resolveFrom(Set<OntResource> resources) {
         return resolve();
     }
-    protected Set<OntResource> resolveFrom(Set<OntResource> resources, ODTCall call) {
+
+    protected Set<OntResource> resolveFrom(Set<OntResource> resources,
+                                           Call call) {
         return resolveFrom(resources);
     }
+
     public final Set<OntResource> resolveError(Set<OntResource> resources) {
         return resources;
     }
-    public Set<OntResource> resolveError(Set<OntResource> resources, ODTCall call) {
+
+    public Set<OntResource> resolveError(Set<OntResource> resources,
+                                         Call call) {
         return resources;
     }
 
@@ -71,8 +76,8 @@ public abstract class Builtin implements Callable {
 
     @Override
     public final Set<OntResource> resolve(Set<OntResource> resources,
-                                    ODTCall call) {
-        if(hasError(resources)) {
+                                          Call call) {
+        if (hasError(resources)) {
             return resolveError(resources, call);
         }
         return resolveFrom(resources, call);

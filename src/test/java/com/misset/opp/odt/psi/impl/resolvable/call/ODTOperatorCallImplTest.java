@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.callable.builtin.operators.BuiltInOperator;
+import com.misset.opp.omt.psi.impl.OMTCallable;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.junit.jupiter.api.Assertions;
@@ -16,9 +17,27 @@ class ODTOperatorCallImplTest extends OMTOntologyTestCase {
                 "");
         configureByText(content);
         ReadAction.run(() -> {
-            final ODTOperatorCallImpl commit = myFixture.findElementByText("CURRENT_DATETIME",
+            final ODTOperatorCallImpl operatorCall = myFixture.findElementByText("CURRENT_DATETIME",
                     ODTOperatorCallImpl.class);
-            Assertions.assertTrue(commit.getCallable() instanceof BuiltInOperator);
+            Assertions.assertTrue(operatorCall.getCallable() instanceof BuiltInOperator);
+        });
+    }
+
+    @Test
+    void testGetCallableStandaloneQuery() {
+        String content = "model: \n" +
+                "   StandaloneQuery: !StandaloneQuery\n" +
+                "       query:\n" +
+                "           'hello'\n" +
+                "\n" +
+                "   Procedure: !Procedure\n" +
+                "       onRun:\n" +
+                "           @LOG(<caret>StandaloneQuery);";
+        configureByText(content);
+        ReadAction.run(() -> {
+            final ODTOperatorCallImpl operatorCall = myFixture.findElementByText("StandaloneQuery",
+                    ODTOperatorCallImpl.class);
+            Assertions.assertTrue(operatorCall.getCallable() instanceof OMTCallable);
         });
     }
 

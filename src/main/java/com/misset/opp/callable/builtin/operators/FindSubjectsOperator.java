@@ -1,12 +1,10 @@
 package com.misset.opp.callable.builtin.operators;
 
-import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,12 +30,12 @@ public class FindSubjectsOperator extends BuiltInOperator {
 
     @Override
     protected Set<OntResource> resolveFrom(Set<OntResource> resources,
-                                           ODTCall call) {
-        final List<ODTSignatureArgument> signatureArguments = call.getSignatureArguments();
-        if (signatureArguments.size() == 1) {
+                                           Call call) {
+        final int numberOfArguments = call.numberOfArguments();
+        if (numberOfArguments == 1) {
             // only a predicate:
             return OppModel.INSTANCE.filterSubjects(resources, call.resolveSignatureArgument(0));
-        } else if (signatureArguments.size() >= 2) {
+        } else if (numberOfArguments >= 2) {
             // predicate + object OR predicate + object + graphname (ignored)
             return OppModel.INSTANCE.filterSubjects(resources,
                     call.resolveSignatureArgument(0),

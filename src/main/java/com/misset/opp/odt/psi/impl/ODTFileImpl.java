@@ -23,6 +23,7 @@ import com.misset.opp.omt.OMTLanguage;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -44,6 +46,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     private static final Key<CachedValue<OMTFile>> HOST_FILE = new Key<>("HOST_FILE");
     private static final Key<CachedValue<GlobalSearchScope>> EXPORTING_MEMBER_SCOPE = new Key<>("EXPORTING_MEMBER_SCOPE");
     private static final Key<CachedValue<Boolean>> IS_EXPORTABLE = new Key<>("IS_EXPORTABLE");
+    private static final Key<CachedValue<Map<String, String>>> NAMESPACES = new Key<>("NAMESPACES");
 
     public ODTFileImpl(@NotNull FileViewProvider provider) {
         super(provider, ODTLanguage.INSTANCE);
@@ -144,6 +147,20 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                                                       BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
         final LinkedHashMap<YAMLMapping, T> providers = getProviders(providerClass);
         return OMTMetaTreeUtil.resolveProvider(providers, key, mapFunction);
+    }
+
+    @Override
+    public Map<String, String> getAvailableNamespaces() {
+        return CachedValuesManager.getCachedValue(this, NAMESPACES, () -> {
+            final Map<String, String> namespaces = getProviders(OMTPrefixProvider.class).entrySet().stream()
+                    .map(entry -> entry.getValue().getNamespaces(entry.getKey()))
+                    .flatMap(map -> map.entrySet().stream())
+                    .collect(Collectors.toMap(Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (s, s2) -> s));// preserve the closest to the element, basically shadowing the parent declaration if applicable
+
+            return new CachedValueProvider.Result<>(namespaces, getHostFile());
+        });
     }
 
 }

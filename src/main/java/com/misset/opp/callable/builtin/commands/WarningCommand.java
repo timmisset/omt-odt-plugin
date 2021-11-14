@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.commands;
 
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
@@ -20,7 +20,7 @@ public class WarningCommand extends BuiltInCommand {
     }
 
     @Override
-    protected Set<OntResource> resolveFrom(ODTCall call) {
+    protected Set<OntResource> resolveFrom(Call call) {
         return combineArgumentResources(call);
     }
 }

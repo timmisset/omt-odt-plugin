@@ -1,6 +1,6 @@
 package com.misset.opp.callable.builtin.commands;
 
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.callable.Call;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
@@ -26,7 +26,7 @@ public class NewCommand extends BuiltInCommand {
     }
 
     @Override
-    protected Set<OntResource> resolveFrom(ODTCall call) {
+    protected Set<OntResource> resolveFrom(Call call) {
         // create an instance from the class
         return OppModel.INSTANCE.toIndividuals(call.resolveSignatureArgument(0));
     }

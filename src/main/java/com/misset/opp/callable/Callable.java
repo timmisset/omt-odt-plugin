@@ -2,7 +2,6 @@ package com.misset.opp.callable;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.builtin.commands.LocalVariable;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,11 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A callable implementation can be a callable Psi element such as an OMT modelItem but
- * can also be an ODT Defined Statement, a local command or a built-in command.
- *
- * An ODTCall.getCallable() will resolve to an implementation of Callable and is able to
- * determine call validity
+ * Any callable class / psiElement that can evaluate a call with OntResource input/output
  */
 public interface Callable extends Resolvable {
 
@@ -58,10 +53,16 @@ public interface Callable extends Resolvable {
      * Resolve the output based on the input and the call arguments
      * For example, a specific operator that returns the same type as it receives
      */
-    default Set<OntResource> resolve(Set<OntResource> resources, ODTCall call) { return resolve(resources); }
+    default Set<OntResource> resolve(Set<OntResource> resources,
+                                     Call call) {
+        return resolve(resources);
+    }
 
     /**
      * Validate the call, check the number of arguments, types etc
      */
-    default void validate(ODTCall call, ProblemsHolder holder) { return; }
+    default void validate(Call call,
+                          ProblemsHolder holder) {
+        return;
+    }
 }

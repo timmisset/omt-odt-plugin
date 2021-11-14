@@ -32,6 +32,7 @@ import com.misset.opp.omt.psi.impl.OMTCallable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
@@ -41,6 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectLocalCommandProviders;
 
@@ -85,8 +87,13 @@ public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODT
     }
 
     private Callable getCallable(PsiElement element) {
-        if (element instanceof YAMLMapping) { // resolves to OMT !Activity, !Procedure etc
-            return new OMTCallable((YAMLMapping) element);
+        if (element instanceof YAMLKeyValue) { // resolves to OMT !Activity, !Procedure etc
+            return Optional.of((YAMLKeyValue) element)
+                    .map(YAMLKeyValue::getValue)
+                    .filter(YAMLMapping.class::isInstance)
+                    .map(YAMLMapping.class::cast)
+                    .map(OMTCallable::new)
+                    .orElse(null);
         } else if (element instanceof ODTDefineName) {
             return (ODTDefineStatement) element.getParent();
         } else {
@@ -139,7 +146,7 @@ public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODT
 
     @Override
     public @NotNull List<ODTSignatureArgument> getSignatureArguments() {
-        return  Optional.ofNullable(getSignature())
+        return Optional.ofNullable(getSignature())
                 .map(ODTSignature::getSignatureArgumentList)
                 .orElse(Collections.emptyList());
     }
@@ -168,5 +175,33 @@ public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODT
     @Override
     public void annotate(AnnotationHolder holder) {
 
+    }
+
+    @Override
+    public @Nullable String getFlag() {
+        return Optional.ofNullable(getFlagSignature()).map(PsiElement::getText).orElse(null);
+    }
+
+    @Override
+    public int numberOfArguments() {
+        return getSignatureArguments().size();
+    }
+
+    @Override
+    public List<Set<OntResource>> resolveSignatureArguments() {
+        return null;
+    }
+
+    @Override
+    @Nullable
+    public String getSignatureValue(int index) {
+        final List<String> signatureValues = getSignatureValues();
+
+        return signatureValues.size() > index ? signatureValues.get(index) : null;
+    }
+
+    @Override
+    public List<String> getSignatureValues() {
+        return getSignatureArguments().stream().map(PsiElement::getText).collect(Collectors.toList());
     }
 }

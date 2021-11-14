@@ -6,7 +6,6 @@ import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -71,7 +70,7 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void listPredicatesMultipleClasses() {
-        final Set<Resource> predicates = oppModel.listPredicates(
+        final Set<Property> predicates = oppModel.listPredicates(
                 Set.of(CLASS_A, createClass("ClassB")));
         Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
         Assertions.assertTrue(predicates.contains(createProperty("stringPredicate")));
