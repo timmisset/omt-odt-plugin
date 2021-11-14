@@ -1,11 +1,11 @@
 package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.misset.opp.callable.Resolvable;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
+import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class ODTSignatureArgumentBase extends ASTWrapperPsiElement implements ODTSignatureArgument {
+public abstract class ODTSignatureArgumentBase extends ODTASTWrapperPsiElement implements ODTSignatureArgument {
     public ODTSignatureArgumentBase(@NotNull ASTNode node) {
         super(node);
     }

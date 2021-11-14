@@ -1,10 +1,10 @@
 package com.misset.opp.odt.psi.impl.variable.delegate;
 
-import com.misset.opp.testCase.OntologyTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.junit.jupiter.api.Test;
 
-class ODTDefineInputParamDelegateTest extends OntologyTestCase {
+class ODTDefineInputParamDelegateTest extends OMTOntologyTestCase {
 
     @Test
     void testInputParameterWithPrimitive() {

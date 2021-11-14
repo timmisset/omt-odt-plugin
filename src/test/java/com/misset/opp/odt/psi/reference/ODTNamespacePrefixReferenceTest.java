@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.ODTMultiHostInjector;
+import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTDefinePrefix;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -78,13 +78,13 @@ class ODTNamespacePrefixReferenceTest extends OMTTestCase {
             myFixture.renameElementAtCaret("abcd");
 
             Assertions.assertEquals("prefixes:\n" +
-                    "   abcd: <http://abc.com>\n" +
-                    "\n" +
-                    "model:\n" +
-                    "   MyActivity: !Activity\n" +
-                    "       onStart: |\n" +
-                    "           @LOG(/abcd:test);\n",
-                    ODTMultiHostInjector.getInjectionHost(myFixture.getFile()).getContainingFile().getText());
+                            "   abcd: <http://abc.com>\n" +
+                            "\n" +
+                            "model:\n" +
+                            "   MyActivity: !Activity\n" +
+                            "       onStart: |\n" +
+                            "           @LOG(/abcd:test);\n",
+                    ODTInjectionUtil.getInjectionHost(myFixture.getFile()).getContainingFile().getText());
         });
     }
 }

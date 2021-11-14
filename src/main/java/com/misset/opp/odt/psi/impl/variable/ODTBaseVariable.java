@@ -1,12 +1,10 @@
 package com.misset.opp.odt.psi.impl.variable;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.NlsSafe;
-import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
@@ -19,13 +17,13 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
-import com.misset.opp.odt.ODTMultiHostInjector;
 import com.misset.opp.odt.psi.ODTDeclareVariable;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.ODTVariableValue;
+import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTDeclaredVariableDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTDefineInputParamDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsedVariableDelegate;
@@ -34,7 +32,6 @@ import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.Optional;
 import java.util.Set;
@@ -45,7 +42,7 @@ import java.util.Set;
  * to their implementation.
  * Overlapping logic is confined in this base class
  */
-public abstract class ODTBaseVariable extends ASTWrapperPsiElement implements ODTVariable {
+public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements ODTVariable {
     private final ODTVariableDelegate delegate;
     private static final Key<CachedValue<SearchScope>> USAGE_SEARCH_SCOPE = new Key<>("USAGE_SEARCH_SCOPE");
     protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
@@ -144,15 +141,9 @@ public abstract class ODTBaseVariable extends ASTWrapperPsiElement implements OD
         return new LocalSearchScope(useScope != null ? useScope : getContainingFile());
     }
     private SearchScope getOMTUseScope() {
-        final Optional<Pair<YAMLMapping, OMTVariableProvider>> closestProvider = ODTMultiHostInjector.getClosestProvider(
-                this,
-                YAMLMapping.class,
-                OMTVariableProvider.class);
-        if(closestProvider.isPresent()) {
-            final YAMLMapping first = closestProvider.get().getFirst();
-            return new LocalSearchScope(first);
-        } else {
-            return GlobalSearchScope.fileScope(getContainingFile());
-        }
+        return Optional.ofNullable(getContainingFile().getClosestProvider(OMTVariableProvider.class))
+                .map(LocalSearchScope::new)
+                .map(SearchScope.class::cast)
+                .orElse(GlobalSearchScope.fileScope(getContainingFile()));
     }
 }

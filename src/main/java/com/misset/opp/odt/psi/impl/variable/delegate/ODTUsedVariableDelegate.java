@@ -1,7 +1,7 @@
 package com.misset.opp.odt.psi.impl.variable.delegate;
 
 import com.intellij.psi.PsiReference;
-import com.misset.opp.odt.ODTMultiHostInjector;
+import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
@@ -45,7 +45,7 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
     private Set<OntResource> getType(ODTVariable declared) {
         if(declared.isOMTVariableProvider()) {
             // part of the OMT structure
-            return getType((YAMLValue) ODTMultiHostInjector.getInjectionHost(declared));
+            return getType((YAMLValue) ODTInjectionUtil.getInjectionHost(declared));
         } else {
             return declared.getType();
         }

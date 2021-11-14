@@ -53,19 +53,12 @@ public class OMTMetaTreeUtil {
     }
 
     /**
-     * Walks the OMT PsiTree upwards collecting elements by their meta-type
+     * Resolve the provider based on an already available map of providers
+     * Use this with a cached resultset of providers
      */
-    public static <T> Optional<ResolveResult[]> resolveProvider(PsiElement currentElement,
-                                                                Class<T> providerClass,
+    public static <T> Optional<ResolveResult[]> resolveProvider(LinkedHashMap<YAMLMapping, T> linkedHashMap,
                                                                 String key,
                                                                 BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
-        final LinkedHashMap<YAMLMapping, T> linkedHashMap = collectMetaParents(
-                currentElement,
-                YAMLMapping.class,
-                providerClass,
-                false,
-                Objects::isNull);
-
         for (YAMLMapping mapping : linkedHashMap.keySet()) {
             T provider = linkedHashMap.get(mapping);
             final HashMap<String, List<PsiElement>> prefixMap = mapFunction.apply(provider, mapping);
@@ -79,6 +72,23 @@ public class OMTMetaTreeUtil {
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * Walks the OMT PsiTree upwards collecting elements by their meta-type
+     */
+    public static <T> Optional<ResolveResult[]> resolveProvider(PsiElement currentElement,
+                                                                Class<T> providerClass,
+                                                                String key,
+                                                                BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
+
+        final LinkedHashMap<YAMLMapping, T> linkedHashMap = collectMetaParents(
+                currentElement,
+                YAMLMapping.class,
+                providerClass,
+                false,
+                Objects::isNull);
+        return resolveProvider(linkedHashMap, key, mapFunction);
     }
 
 }

@@ -2,7 +2,8 @@
   parserClass="org.intellij.sdk.language.parser.ODTParser"
   parserUtilClass="org.intellij.sdk.language.parser.ODTParserUtil"
 
-  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  extends="com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement"
+  implements="com.misset.opp.odt.psi.ODTPsiElement"
 
   psiClassPrefix="ODT"
   psiImplClassSuffix="Impl"

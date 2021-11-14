@@ -74,11 +74,16 @@
         <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>
         <lang.formatter language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTFormattingModelBuilder"/>
 
+        <!-- Completions -->
+        <completion.contributor language="ODT"
+                                implementationClass="com.misset.opp.odt.completion.ODTTraverseCompletion"/>
+
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>
 
-        <lang.documentationProvider language="ODT" implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
+        <lang.documentationProvider language="ODT"
+                                    implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
 
         <!-- Inspections -->
         <localInspection displayName="ODTUnusedInspection"

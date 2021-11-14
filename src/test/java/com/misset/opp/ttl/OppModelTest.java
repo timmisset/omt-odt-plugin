@@ -1,6 +1,6 @@
 package com.misset.opp.ttl;
 
-import com.misset.opp.testCase.OntologyTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -13,10 +13,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Set;
 
-class OppModelTest extends OntologyTestCase {
+class OppModelTest extends OMTOntologyTestCase {
     private OntClass CLASS_A;
     private Individual CLASS_A_INDIVIDUAL;
 
@@ -73,7 +72,7 @@ class OppModelTest extends OntologyTestCase {
     @Test
     void listPredicatesMultipleClasses() {
         final Set<Resource> predicates = oppModel.listPredicates(
-                List.of(CLASS_A, createClass("ClassB")));
+                Set.of(CLASS_A, createClass("ClassB")));
         Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
         Assertions.assertTrue(predicates.contains(createProperty("stringPredicate")));
         Assertions.assertTrue(predicates.contains(oppModel.RDF_TYPE));

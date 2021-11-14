@@ -2,12 +2,12 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.callable.builtin.operators.BuiltInOperator;
-import com.misset.opp.testCase.OntologyTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ODTOperatorCallImplTest extends OntologyTestCase {
+class ODTOperatorCallImplTest extends OMTOntologyTestCase {
 
     @Test
     void testGetCallableBuiltinOperator() {
@@ -16,7 +16,8 @@ class ODTOperatorCallImplTest extends OntologyTestCase {
                 "");
         configureByText(content);
         ReadAction.run(() -> {
-            final ODTOperatorCallImpl commit = myFixture.findElementByText("CURRENT_DATETIME", ODTOperatorCallImpl.class);
+            final ODTOperatorCallImpl commit = myFixture.findElementByText("CURRENT_DATETIME",
+                    ODTOperatorCallImpl.class);
             Assertions.assertTrue(commit.getCallable() instanceof BuiltInOperator);
         });
     }

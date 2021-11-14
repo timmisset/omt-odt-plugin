@@ -1,7 +1,6 @@
 package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.Key;
@@ -19,11 +18,12 @@ import com.misset.opp.callable.Resolvable;
 import com.misset.opp.callable.builtin.commands.BuiltinCommands;
 import com.misset.opp.callable.builtin.operators.BuiltinOperators;
 import com.misset.opp.odt.ODTElementGenerator;
-import com.misset.opp.odt.ODTMultiHostInjector;
+import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
+import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
@@ -44,7 +44,7 @@ import java.util.Set;
 
 import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectLocalCommandProviders;
 
-public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCall, ODTResolvable {
+public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODTCall, ODTResolvable {
     public ODTBaseCall(@NotNull ASTNode node) {
         super(node);
     }
@@ -95,7 +95,7 @@ public abstract class ODTBaseCall extends ASTWrapperPsiElement implements ODTCal
     }
 
     private Optional<Callable> getLocalCommand() {
-        final YAMLPsiElement injectionHost = ODTMultiHostInjector.getInjectionHost(this);
+        final YAMLPsiElement injectionHost = ODTInjectionUtil.getInjectionHost(this);
         if (injectionHost == null) {
             return Optional.empty();
         }

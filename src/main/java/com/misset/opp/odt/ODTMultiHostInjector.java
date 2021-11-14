@@ -1,34 +1,25 @@
 package com.misset.opp.odt;
 
-import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.omt.meta.ODTInjectable;
-import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLDocument;
-import org.jetbrains.yaml.psi.YAMLMapping;
-import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.jetbrains.yaml.psi.YAMLQuotedText;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 /**
  * The ODTMultiHostInjector will inject ODT language on any YamlMetaType that implements ODTInjectable
@@ -101,43 +92,4 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         return Collections.singletonList(YAMLDocument.class);
     }
 
-    /**
-     * Returns the YamlScalar which is the host for the entire ODT file that the provided element is part of
-     */
-    public static YAMLPsiElement getInjectionHost(PsiElement element) {
-        return Optional.ofNullable(element)
-                .map(PsiElement::getContainingFile)
-                .filter(ODTFile.class::isInstance)
-                .map(ODTFile.class::cast)
-                .map(ODTFile::getHost)
-                .orElse(null);
-    }
-
-    /**
-     * Resolves referencing ODT elements in OMT containers
-     */
-    public static <T> Optional<ResolveResult[]> resolveInOMT(PsiElement odtElement,
-                                                             Class<T> providerClass,
-                                                             String key,
-                                                             BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
-        final InjectedLanguageManager languageManager = InjectedLanguageManager.getInstance(odtElement.getProject());
-        final PsiLanguageInjectionHost injectionHost = languageManager.getInjectionHost(odtElement);
-        if (injectionHost == null) {
-            return Optional.empty();
-        }
-
-        return OMTMetaTreeUtil.resolveProvider(injectionHost, providerClass, key, mapFunction);
-    }
-
-    public static <T extends YAMLPsiElement, U> Optional<Pair<T, U>> getClosestProvider(PsiElement element,
-                                                                                        Class<T> yamlClass,
-                                                                                        Class<U> metaTypeOrInterface) {
-        return Optional.ofNullable(ODTMultiHostInjector.getInjectionHost(element))
-                .map(host -> OMTMetaTreeUtil.collectMetaParents(
-                        host, yamlClass, metaTypeOrInterface, false, Objects::isNull
-                ))
-                .map(LinkedHashMap::entrySet)
-                .flatMap(ts -> ts.stream().findFirst())
-                .map(tuEntry -> new Pair<>(tuEntry.getKey(), tuEntry.getValue()));
-    }
 }

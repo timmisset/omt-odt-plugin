@@ -40,6 +40,6 @@ class OMTMergeListsTest extends InspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertNoErrors();
+        assertNoError("Missing required key(s):");
     }
 }

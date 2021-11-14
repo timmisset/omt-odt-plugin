@@ -15,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-import static com.misset.opp.odt.ODTMultiHostInjector.resolveInOMT;
-
 public class ODTVariableReference extends PsiReferenceBase.Poly<ODTVariable> implements PsiPolyVariantReference {
     public ODTVariableReference(@NotNull ODTVariable element) {
         super(element, TextRange.allOf(element.getText()), false);
@@ -28,7 +26,10 @@ public class ODTVariableReference extends PsiReferenceBase.Poly<ODTVariable> imp
             return ResolveResult.EMPTY_ARRAY;
         }
         return resolveInODT()
-                .or(() -> resolveInOMT(myElement, OMTVariableProvider.class, myElement.getName(), OMTVariableProvider::getVariableMap))
+                .or(() -> myElement.getContainingFile()
+                        .resolveInOMT(OMTVariableProvider.class,
+                                myElement.getName(),
+                                OMTVariableProvider::getVariableMap))
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
     private Optional<ResolveResult[]> resolveInODT() {

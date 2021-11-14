@@ -1,11 +1,11 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
-import com.misset.opp.testCase.OntologyTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ODTResolvableSchemalessIriStepTest extends OntologyTestCase {
+class ODTResolvableSchemalessIriStepTest extends OMTOntologyTestCase {
     @Test
     void testSchemalessIriInstance() {
         final OntResource resource = resolveQueryStatementToSingleResult("/ont:ClassA / ^rdf:type / <booleanPredicate>");

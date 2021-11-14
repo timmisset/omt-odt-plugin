@@ -60,7 +60,7 @@ class OMTParamMetaTypeTest extends InspectionTestCase {
                 "           type: SomeType\n" +
                 "";
         configureByText(content);
-        assertNoErrors();
+        assertNoError("Key"); // no errors that indicate a missing key
     }
 
     @Test

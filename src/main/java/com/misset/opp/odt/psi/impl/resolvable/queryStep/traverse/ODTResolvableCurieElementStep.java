@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.ODTMultiHostInjector;
+import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.inspection.quikfix.ODTRegisterPrefixLocalQuickFix;
 import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.impl.ODTNamespacePrefixImpl;
@@ -37,7 +37,7 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
 
     @Override
     public void inspect(ProblemsHolder holder) {
-        boolean injectedInOMT = ODTMultiHostInjector.getInjectionHost(holder.getFile()) != null;
+        boolean injectedInOMT = ODTInjectionUtil.getInjectionHost(holder.getFile()) != null;
         if(getFullyQualifiedUri() == null) {
             final PsiElement prefix = getNamespacePrefix().getFirstChild();
             holder.registerProblem(prefix,

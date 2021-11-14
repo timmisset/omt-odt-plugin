@@ -9,14 +9,12 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTScript;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-
-import static com.misset.opp.odt.ODTMultiHostInjector.resolveInOMT;
 
 public class ODTCallReference extends PsiReferenceBase.Poly<ODTBaseCall> implements PsiPolyVariantReference {
     public ODTCallReference(@NotNull ODTBaseCall element,
@@ -36,7 +34,10 @@ public class ODTCallReference extends PsiReferenceBase.Poly<ODTBaseCall> impleme
         // - host -> OMTFile.queries || OMTFile.commands
         // - host -> OMTFile.import
         return resolveInODT()
-                .or(() -> resolveInOMT(myElement, OMTCallableProvider.class, myElement.getCallId(), OMTCallableProvider::getCallableMap))
+                .or(() -> myElement.getContainingFile()
+                        .resolveInOMT(OMTCallableProvider.class,
+                                myElement.getCallId(),
+                                OMTCallableProvider::getCallableMap))
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 

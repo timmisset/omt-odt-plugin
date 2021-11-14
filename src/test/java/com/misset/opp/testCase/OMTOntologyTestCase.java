@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Set;
 
-public class OntologyTestCase extends OMTTestCase {
+public class OMTOntologyTestCase extends OMTTestCase {
 
     protected OppModel oppModel;
 
@@ -44,7 +44,7 @@ public class OntologyTestCase extends OMTTestCase {
     }
 
     /**
-     * When the ontology is required in a test that is not inheriting from OntologyTestCase
+     * When the ontology is required in a test that is not inheriting from OMTOntologyTestCase
      * this method can be used to load the ontology and return the OppModel
      */
     public static OppModel getOntologyModel() {

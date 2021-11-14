@@ -16,8 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-import static com.misset.opp.odt.ODTMultiHostInjector.resolveInOMT;
-
 public class ODTNamespacePrefixReference extends PsiReferenceBase.Poly<ODTBaseNamespacePrefix> implements PsiPolyVariantReference {
     public ODTNamespacePrefixReference(@NotNull ODTBaseNamespacePrefix element) {
         super(element, TextRange.allOf(element.getName()), false);
@@ -31,7 +29,8 @@ public class ODTNamespacePrefixReference extends PsiReferenceBase.Poly<ODTBaseNa
         // resolve in current ODT file
         // then resolve in OMT using the PrefixProviders
         return resolveInODT()
-                .or(() -> resolveInOMT(myElement, OMTPrefixProvider.class, myElement.getName(), OMTPrefixProvider::getPrefixMap))
+                .or(() -> myElement.getContainingFile()
+                        .resolveInOMT(OMTPrefixProvider.class, myElement.getName(), OMTPrefixProvider::getPrefixMap))
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 

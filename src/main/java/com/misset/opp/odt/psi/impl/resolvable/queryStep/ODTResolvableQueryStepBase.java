@@ -1,12 +1,12 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQueryStep;
+import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableQueryReverseStep;
 import com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil;
@@ -17,13 +17,11 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class ODTResolvableQueryStepBase extends ASTWrapperPsiElement
+public abstract class ODTResolvableQueryStepBase extends ODTASTWrapperPsiElement
         implements ODTQueryStep, ODTResolvable {
     public ODTResolvableQueryStepBase(@NotNull ASTNode node) {
         super(node);
     }
-
-
 
     /**
      * Method to calculate the ResourceSet for this QueryStep

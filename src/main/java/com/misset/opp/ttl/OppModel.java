@@ -438,7 +438,7 @@ public class OppModel {
         return Collections.singleton(resource);
     }
 
-    public Set<Resource> listPredicates(List<OntResource> classSubjects) {
+    public Set<Resource> listPredicates(Set<OntResource> classSubjects) {
         return classSubjects.stream()
                 .map(this::listPredicates)
                 .flatMap(Collection::stream)

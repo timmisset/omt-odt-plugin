@@ -1,6 +1,6 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
-import com.misset.opp.testCase.OntologyTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class ODTResolvableQueryPathTest extends OntologyTestCase {
+class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
 
     @Test
     void testRootPathResolves() {

@@ -1,13 +1,13 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
-import com.misset.opp.testCase.OntologyTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class ODTResolvableIriStepTest extends OntologyTestCase {
+class ODTResolvableIriStepTest extends OMTOntologyTestCase {
 
     @Test
     void testResolveIri() {

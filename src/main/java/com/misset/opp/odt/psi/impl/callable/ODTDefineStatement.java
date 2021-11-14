@@ -1,6 +1,5 @@
 package com.misset.opp.odt.psi.impl.callable;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaDocumentedElement;
@@ -10,10 +9,11 @@ import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
+import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ODTDefineStatement extends ASTWrapperPsiElement implements Callable, PsiJavaDocumentedElement {
+public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement implements Callable, PsiJavaDocumentedElement {
     public ODTDefineStatement(@NotNull ASTNode node) {
         super(node);
     }

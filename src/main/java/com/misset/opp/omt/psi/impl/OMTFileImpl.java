@@ -41,9 +41,9 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     }
 
     private YAMLMapping getRootMapping() {
-        return Optional.ofNullable(PsiTreeUtil.findChildOfType(this, YAMLDocument.class))
+        return ReadAction.compute(() -> Optional.ofNullable(PsiTreeUtil.findChildOfType(this, YAMLDocument.class))
                 .map(yamlDocument -> PsiTreeUtil.findChildOfType(yamlDocument, YAMLMapping.class))
-                .orElse(null);
+                .orElse(null));
     }
 
     /**

@@ -5,23 +5,25 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
-import com.misset.opp.odt.ODTMultiHostInjector;
+import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTTypeAnnotationReference extends PsiReferenceBase.Poly<PsiElement> implements PsiPolyVariantReference {
     final TextRange textRange;
-    public ODTTypeAnnotationReference(PsiElement psiElement, TextRange textRange) {
+
+    public ODTTypeAnnotationReference(PsiElement psiElement,
+                                      TextRange textRange) {
         super(psiElement, textRange, false);
         this.textRange = textRange;
     }
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        return ODTMultiHostInjector.resolveInOMT(myElement,
-                OMTPrefixProvider.class,
-                textRange.substring(myElement.getText()),
-                OMTPrefixProvider::getPrefixMap)
+        final ODTFile containingFile = (ODTFile) myElement.getContainingFile();
+        return containingFile.resolveInOMT(OMTPrefixProvider.class,
+                        textRange.substring(myElement.getText()),
+                        OMTPrefixProvider::getPrefixMap)
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 }

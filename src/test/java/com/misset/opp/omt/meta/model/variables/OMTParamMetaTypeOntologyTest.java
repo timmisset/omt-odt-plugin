@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.psi.ODTDefineName;
-import com.misset.opp.testCase.OntologyTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class OMTParamMetaTypeOntologyTest extends OntologyTestCase {
+class OMTParamMetaTypeOntologyTest extends OMTOntologyTestCase {
 
     @Test
     void testResolveParameterTypeHasNoType() {

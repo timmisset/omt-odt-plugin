@@ -1,7 +1,6 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.Key;
@@ -15,6 +14,7 @@ import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.ODTQueryOperation;
 import com.misset.opp.odt.psi.ODTSignature;
+import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
@@ -32,7 +32,7 @@ import java.util.Set;
  * The ODTQueryOperation is the container of a ODTQueryStep and one or more filters
  * It is the class that should be used to resolve the query step since it contains the filter
  */
-public abstract class ODTResolvableQueryOperationStep extends ASTWrapperPsiElement implements ODTQueryOperation, ODTResolvable {
+public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiElement implements ODTQueryOperation, ODTResolvable {
     public ODTResolvableQueryOperationStep(@NotNull ASTNode node) {
         super(node);
     }

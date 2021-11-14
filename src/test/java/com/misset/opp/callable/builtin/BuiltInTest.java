@@ -3,7 +3,7 @@ package com.misset.opp.callable.builtin;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
-import com.misset.opp.testCase.OntologyTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public abstract class BuiltInTest extends OntologyTestCase {
+public abstract class BuiltInTest extends OMTOntologyTestCase {
 
     protected OppModel oppModel;
 

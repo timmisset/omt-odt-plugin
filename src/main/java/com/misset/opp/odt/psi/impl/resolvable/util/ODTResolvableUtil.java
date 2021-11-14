@@ -28,8 +28,7 @@ public class ODTResolvableUtil {
         AnnotationBuilder builder = holder.newAnnotation(HighlightSeverity.INFORMATION, "")
                 .tooltip(
                         resources.stream()
-                                .filter(resource -> resource.getURI() != null)
-                                .sorted(Comparator.comparing(Resource::getURI))
+                                .sorted(Comparator.comparing(Resource::toString))
                                 .map(ODTResolvableUtil::describeUri)
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.joining("<br>")))
@@ -45,7 +44,7 @@ public class ODTResolvableUtil {
     }
 
     private static TextAttributesKey getOntologyTextAttributesKey(Set<OntResource> resources) {
-        if (resources.stream().anyMatch(ODTResolvableUtil::isValue)) {
+        if (resources.stream().allMatch(ODTResolvableUtil::isValue)) {
             return ODTSyntaxHighlighter.OntologyValueAttributesKey;
         }
         if (resources.stream().allMatch(OntResource::isIndividual)) {
