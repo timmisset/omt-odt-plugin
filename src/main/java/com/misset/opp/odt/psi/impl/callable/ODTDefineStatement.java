@@ -5,13 +5,19 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
+import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement implements Callable, PsiJavaDocumentedElement {
     public ODTDefineStatement(@NotNull ASTNode node) {
@@ -55,4 +61,13 @@ public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement impleme
     }
 
     public abstract ODTDefineParam getDefineParam();
+
+    protected void decorateCall(Call call) {
+        final List<ODTVariable> variables = Optional.ofNullable(getDefineParam())
+                .map(ODTDefineParam::getVariableList)
+                .orElse(Collections.emptyList());
+        for (int i = 0; i < variables.size(); i++) {
+            call.setParamType(variables.get(i).getName(), call.resolveSignatureArgument(i));
+        }
+    }
 }

@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLValue;
 
 import static com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBOL;
 
@@ -63,10 +64,11 @@ public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
 
         private void visitModelItem(YamlMetaTypeProvider.MetaTypeProxy meta,
                                     @NotNull YAMLKeyValue keyValue) {
-            if (!(meta.getMetaType() instanceof OMTModelItemMetaType)) {
+            final YAMLValue value = keyValue.getValue();
+            if (!(meta.getMetaType() instanceof OMTModelItemMetaType) || !(value instanceof YAMLMapping)) {
                 return;
             }
-            final boolean callable = ((OMTModelItemMetaType) meta.getMetaType()).isCallable((YAMLMapping) keyValue.getValue());
+            final boolean callable = ((OMTModelItemMetaType) meta.getMetaType()).isCallable((YAMLMapping) value);
 
             if (callable && ReferencesSearch.search(keyValue, keyValue.getUseScope()).findFirst() == null) {
                 myProblemsHolder.registerProblem(

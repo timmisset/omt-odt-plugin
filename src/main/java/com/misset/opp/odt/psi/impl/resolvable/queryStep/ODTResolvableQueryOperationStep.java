@@ -10,6 +10,7 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.ODTQueryOperation;
@@ -22,6 +23,7 @@ import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +55,11 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     }
 
     public Set<OntResource> resolvePreviousStep() {
+        return resolvePreviousStep(Collections.emptySet(), null);
+    }
+
+    public Set<OntResource> resolvePreviousStep(Set<OntResource> resources,
+                                                @Nullable Call call) {
         if (isFirstStepInPath()) {
             // the fromSet is to support filtering overrides
             // each OntResource going into the filter is evaluated with the filter to determine if it survives
@@ -65,7 +72,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
             // /ont:ClassA / ^rdf:type[rdf:type == /ont:ClassA]
             // the rdf:type in the filter should return the outcome of the ^rdf:type
             return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTQueryFilter.class, ODTSignature.class))
-                    .map(this::resolvePreviousStep)
+                    .map(container -> resolvePreviousStep(container, resources, call))
                     .orElse(Collections.emptySet());
         } else {
             final List<ODTResolvableQueryOperationStep> queryOperationList = getParent().getResolvableQueryOperationStepList();
@@ -81,7 +88,9 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
      * - Signature: return the previous step, if non it will repeat the unwrapping until finally it returns an EmptySet
      * or a valid Set could be returned
      */
-    private Set<OntResource> resolvePreviousStep(PsiElement container) {
+    private Set<OntResource> resolvePreviousStep(PsiElement container,
+                                                 Set<OntResource> resources,
+                                                 @Nullable Call call) {
         final ODTResolvableQueryOperationStep queryOperationStep = PsiTreeUtil.getParentOfType(container,
                 ODTResolvableQueryOperationStep.class);
         if (queryOperationStep == null) {
@@ -97,7 +106,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
              */
         }
         // else, repeat the process of either unwrapping from a container or resolving the previous step in the same path
-        return queryOperationStep.resolvePreviousStep();
+        return queryOperationStep.resolvePreviousStep(resources, call);
     }
 
     public Set<OntResource> resolveWithoutFilter() {
@@ -157,6 +166,14 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
         } else {
             return Collections.emptySet();
         }
+    }
+
+    @Override
+    public Set<OntResource> resolve(Set<OntResource> resources,
+                                    Call call) {
+        return Optional.ofNullable(getQueryStep())
+                .map(queryStep -> queryStep.resolve(resources, call))
+                .orElse(Collections.emptySet());
     }
 
     @Override

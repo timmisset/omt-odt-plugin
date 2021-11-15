@@ -37,7 +37,7 @@ public class OMTModelItemMetaType extends OMTMetaTaggedType<OMTModelItemDelegate
     }
 
     public boolean isCallable(YAMLMapping mapping) {
-        return Optional.of(mapping)
+        return Optional.ofNullable(mapping)
                 .map(YAMLValue::getTag)
                 .map(PsiElement::getText)
                 .map(this::getDelegateByTag)

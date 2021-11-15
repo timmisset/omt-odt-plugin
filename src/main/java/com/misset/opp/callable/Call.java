@@ -28,4 +28,8 @@ public interface Call {
 
     int numberOfArguments();
 
+    Set<OntResource> getParamType(String paramName);
+
+    void setParamType(String paramName,
+                      Set<OntResource> type);
 }

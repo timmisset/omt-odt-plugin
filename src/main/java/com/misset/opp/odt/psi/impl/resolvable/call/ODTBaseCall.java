@@ -52,6 +52,7 @@ public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODT
     }
 
     private static final Key<CachedValue<Callable>> CALLABLE = new Key("CALLABLE");
+    private final HashMap<String, Set<OntResource>> parameters = new HashMap<>();
 
     @Override
     public PsiReference getReference() {
@@ -203,5 +204,16 @@ public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODT
     @Override
     public List<String> getSignatureValues() {
         return getSignatureArguments().stream().map(PsiElement::getText).collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<OntResource> getParamType(String paramName) {
+        return parameters.getOrDefault(paramName, Collections.emptySet());
+    }
+
+    @Override
+    public void setParamType(String paramName,
+                             Set<OntResource> type) {
+        parameters.put(paramName, type);
     }
 }

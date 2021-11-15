@@ -49,4 +49,13 @@ class ODTOperatorCallImplTest extends OMTOntologyTestCase {
         assertContainsElements(resolveQueryAtCaret(content),
                 OppModel.INSTANCE.XSD_STRING_INSTANCE);
     }
+
+    @Test
+    void testResolveOperatorCallWithContext() {
+        String content = insideActivityWithPrefixes("queries: |\n" +
+                "   DEFINE QUERY query($param) => $param;\n" +
+                "   DEFINE QUERY <caret>callingQuery => query('test');\n");
+        assertContainsElements(resolveQueryAtCaret(content),
+                OppModel.INSTANCE.XSD_STRING_INSTANCE);
+    }
 }

@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTQueryOperation;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTQueryPath;
@@ -27,6 +28,14 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
     public @NotNull Set<OntResource> resolve() {
         return Optional.ofNullable(getLastOperation())
                 .map(ODTResolvable::resolve)
+                .orElse(Collections.emptySet());
+    }
+
+    @Override
+    public Set<OntResource> resolve(Set<OntResource> resources,
+                                    Call call) {
+        return Optional.ofNullable(getLastOperation())
+                .map(lastStep -> lastStep.resolve(resources, call))
                 .orElse(Collections.emptySet());
     }
 

@@ -1,0 +1,72 @@
+# ODT RESOLVABLE
+
+Resolvable ODT elements are
+
+- Queries
+- Query steps
+- Calls to other queries or commands
+
+The purpose of resolving the elements is to infer Ontology types that can be present at the current position. For
+example:
+
+```
+    DEFINE QUERY query => /ont:ClassA / ^rdf:type / ont:somePredicate
+```
+
+The DEFINE QUERY statement, it's containing query and each individual step implements the ODTResolvable interface and
+thus can be analysed to determine a type.
+
+## QueryStep
+
+To determine the available resources at /ont:ClassA, the ODTResolvableCurieElement step recognises that it is the root
+of the curie and resolves to the fully qualified IRI <http://ontology#ClassA>.
+
+The next step ^rdf:type is not the first step. It uses the resolvePreviousStep() to obtain the input for its step, which
+is <http://ontology#ClassA>. This is obtained from the cache of the previous step if its already resolved, or otherwise
+it will be resolved at that moment. Then it will use the OppModel helper class to traverse the path, in reverse order in
+this case. It asks the OppModel, give me anything that points to <http://ontology#ClassA> using the predicate rdf:type.
+This will be all instances of <http://ontology#ClassA> present in the model.
+
+### OPP MODEL
+
+When loading the model, for every class a single dummy instance/individual is also created so the traversion can
+distinct if its working with the class or an instance of that class. If the class contains a property
+called <<http://ontology#title> with type xsd:string, resolving the path on the class will resolve to xsd:string whereas
+calling it on the individual will result to a value of type xsd:string.
+
+## Query
+
+A query of class ODTResolvableQueryPath can be resolved using the above mechanism also by calling resolve on the last
+step in its path. The steps will themselves be able to take it back step by step either using caching or resolving as
+they go.
+
+## Calls
+
+When a queryStep contains an operator call, the call mechanism is able to obtain its 'callable' instance. This can be a
+BuiltIn operator, a DEFINE QUERY statement or a StandaloneQuery (OMT). The process of resolving such a callable then
+becomes context-based since we know what the callable will be called with.
+
+When calling a query the call is passed along the mechanism of step resolving described above and is used to get more
+specific results. For example:
+
+```
+    DEFINE QUERY queryA($param) => $param;
+    DEFINE QUERY queryB() => queryA('hello');
+```
+
+When resolving the $param response in queryA directly it will not be able to determine any type, since there is no
+annotation available to determine what that type is. Therefore, the mouse-hover information will not show any type
+information. When the query call in queryB is resolved, it will do so by resolving queryA with the call information. The
+DEFINE statement will decorate the call so that the call knows its first argument-type (xsd:string) is used for $param.
+When the ODTResolvableVariableStep now tries to resolve $param, it will check if the call knows what it is and use that
+type. Because of this mechanism, the call to queryA will actually be resolvable and show it returns a string.
+
+This means that if a call to queryA is called with different types, these calls would resolve to different types.
+
+## Caching
+
+The above mechanism is quite expensive for live evaluation which is why caching is a must. The context-less mechanism
+can be cached quite easily since it will always return the same types. The context-based are specific to the call
+context which is why caching is only done for the call itself. This does mean that when this call step is then
+re-evaluated it will use the cache.
+

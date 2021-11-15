@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.variables;
 
+import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
@@ -10,11 +11,13 @@ import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.jetbrains.yaml.psi.YAMLValue;
+import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -77,10 +80,26 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTTypeRes
                 .orElse(Collections.emptySet());
     }
 
+    @Nullable
+    public String getVariableName(YAMLValue value) {
+        if (value instanceof YAMLMapping) {
+            return Optional.ofNullable(((YAMLMapping) value).getKeyValueByKey("name"))
+                    .map(YAMLKeyValue::getValue)
+                    .map(PsiElement::getText)
+                    .orElse(null);
+        } else if (value instanceof YAMLPlainTextImpl) {
+            final Matcher matcher = SHORTHAND.matcher(value.getText());
+            final boolean b = matcher.find();
+            return b ? matcher.group(1) : null;
+        }
+        return null;
+    }
+
     private static Set<OntResource> getType(YAMLValue yamlValue,
                                             String value) {
         final OppModel oppModel = OppModel.INSTANCE;
-        final Collection<ODTResolvableQualifiedUriStep> resolvableUriSteps = OMTProviderUtil.getInjectedContent(yamlValue,
+        final Collection<ODTResolvableQualifiedUriStep> resolvableUriSteps = OMTProviderUtil.getInjectedContent(
+                yamlValue,
                 ODTResolvableQualifiedUriStep.class);
         if (resolvableUriSteps.isEmpty()) {
             // no curie, probably a primitive, try to parse:

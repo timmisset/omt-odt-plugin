@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
@@ -27,12 +28,20 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
         return false;
     }
 
-    public String getCallId() { return getName(); }
-
+    public String getCallId() {
+        return getName();
+    }
 
     @Override
     public @NotNull Set<OntResource> resolve() {
         return getQuery().resolve();
+    }
+
+    @Override
+    public Set<OntResource> resolve(Set<OntResource> resources,
+                                    Call call) {
+        decorateCall(call);
+        return getQuery().resolve(resources, call);
     }
 
     @Override
@@ -44,7 +53,7 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
     public void annotate(AnnotationHolder holder) {
         // inspect SEMICOLON endings
         // these are optional in the lexer to be more lenient when writing the query statement
-        if(getLastChild().getNode().getElementType() != ODTTypes.SEMICOLON) {
+        if (getLastChild().getNode().getElementType() != ODTTypes.SEMICOLON) {
             holder.newAnnotation(HighlightSeverity.ERROR, "Missing semicolon").create();
         }
     }
