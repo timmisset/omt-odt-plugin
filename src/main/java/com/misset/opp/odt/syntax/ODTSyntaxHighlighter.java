@@ -21,24 +21,36 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 /**
  * SyntaxHighlighter works on the lexer output, this means that only the leaf AST nodes are queried.
  * Highlighting which cannot be resolved on that level must be added using the ODTHighlightingAnnotator
+ *
  * @see com.misset.opp.odt.annotation.ODTHighlightingAnnotator
  */
 public class ODTSyntaxHighlighter implements SyntaxHighlighter {
-    public static final TextAttributesKey BaseCallAttributesKey = createTextAttributesKey("Function call", DefaultLanguageHighlighterColors.FUNCTION_CALL);
-    public static final TextAttributesKey DefineAttributesKey = createTextAttributesKey("Define statement name", DefaultLanguageHighlighterColors.INSTANCE_METHOD);
-    public static final TextAttributesKey OntologyClassAttributesKey = createTextAttributesKey("Ontology Class (pol:Dossier)", DefaultLanguageHighlighterColors.CLASS_NAME);
-    public static final TextAttributesKey OntologyInstanceAttributesKey = createTextAttributesKey("Ontology Instance (instance of pol:Dossier)", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
-    public static final TextAttributesKey OntologyTypeAttributesKey = createTextAttributesKey("Ontology Type (xsd:string)", DefaultLanguageHighlighterColors.CLASS_NAME);
-    public static final TextAttributesKey OntologyValueAttributesKey = createTextAttributesKey("Ontology Value ('a string')", DefaultLanguageHighlighterColors.CONSTANT);
+    public static final TextAttributesKey BaseCallAttributesKey = createTextAttributesKey("ODT_Function call",
+            DefaultLanguageHighlighterColors.FUNCTION_CALL);
+    public static final TextAttributesKey DefineAttributesKey = createTextAttributesKey("ODT_Define statement name",
+            DefaultLanguageHighlighterColors.INSTANCE_METHOD);
+    public static final TextAttributesKey OntologyClassAttributesKey = createTextAttributesKey(
+            "ODT_Ontology Class (pol:Dossier)",
+            DefaultLanguageHighlighterColors.CLASS_NAME);
+    public static final TextAttributesKey OntologyInstanceAttributesKey = createTextAttributesKey(
+            "ODT_Ontology Instance (instance of pol:Dossier)",
+            DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
+    public static final TextAttributesKey OntologyTypeAttributesKey = createTextAttributesKey(
+            "ODT_Ontology Type (xsd:string)",
+            DefaultLanguageHighlighterColors.CLASS_NAME);
+    public static final TextAttributesKey OntologyValueAttributesKey = createTextAttributesKey(
+            "ODT_Ontology Value ('a string')",
+            DefaultLanguageHighlighterColors.CONSTANT);
 
     private static final HashMap<IElementType, TextAttributesKey> highlightingMap = new HashMap<>();
+
     static {
-        addToMap(ODTTypes.VARIABLE_NAME, "Variable", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
-        addToMap(ODTTypes.STRING, "String", DefaultLanguageHighlighterColors.STRING);
-        addToMap(ODTTypes.SEMICOLON, "Semicolon", DefaultLanguageHighlighterColors.SEMICOLON);
-        addToMap(ODTIgnored.MULTILINE, "Comment (block)", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
-        addToMap(JavaDocElementType.DOC_COMMENT, "Comment (doc)", DefaultLanguageHighlighterColors.DOC_COMMENT);
-        addToMap(ODTIgnored.END_OF_LINE_COMMENT, "Comment (line)", DefaultLanguageHighlighterColors.LINE_COMMENT);
+        addToMap(ODTTypes.VARIABLE_NAME, "ODT_Variable", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
+        addToMap(ODTTypes.STRING, "ODT_String", DefaultLanguageHighlighterColors.STRING);
+        addToMap(ODTTypes.SEMICOLON, "ODT_Semicolon", DefaultLanguageHighlighterColors.SEMICOLON);
+        addToMap(ODTIgnored.MULTILINE, "ODT_Comment (block)", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+        addToMap(JavaDocElementType.DOC_COMMENT, "ODT_Comment (doc)", DefaultLanguageHighlighterColors.DOC_COMMENT);
+        addToMap(ODTIgnored.END_OF_LINE_COMMENT, "ODT_Comment (line)", DefaultLanguageHighlighterColors.LINE_COMMENT);
     }
 
     private static void addToMap(IElementType type, String name, TextAttributesKey fallback) {

@@ -9,6 +9,9 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Supports storing the application settings in a persistent way.
  * The {@link State} and {@link Storage} annotations define the name of the data and the file name where
@@ -22,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 public final class SettingsState implements PersistentStateComponent<SettingsState> {
 
     public String ontologyModelRootPath = "";
+    public Map<String, String> mappingPaths = new HashMap<>();
+    private boolean useDefaultSettings = false;
 
     public static SettingsState getInstance(Project project) {
         return project.getService(SettingsState.class);
@@ -40,7 +45,11 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
 
     @Override
     public void noStateLoaded() {
+        useDefaultSettings = true;
+    }
 
+    public boolean useDefaultSettings() {
+        return useDefaultSettings;
     }
 
     @Override

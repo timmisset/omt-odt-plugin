@@ -66,9 +66,16 @@ public class ODTColorSettingsPage implements ColorSettingsPage {
     public AttributesDescriptor @NotNull [] getAttributeDescriptors() {
         return ODTSyntaxHighlighter.getAttributes()
                 .stream()
-                .map(textAttributesKey -> new AttributesDescriptor(textAttributesKey.getExternalName(),
+                .map(textAttributesKey -> new AttributesDescriptor(getPresentableName(textAttributesKey.getExternalName()),
                         textAttributesKey))
                 .toArray(AttributesDescriptor[]::new);
+    }
+
+    private String getPresentableName(String externalName) {
+        if (externalName.startsWith("ODT_")) {
+            return externalName.substring(4);
+        }
+        return externalName;
     }
 
     @Override
