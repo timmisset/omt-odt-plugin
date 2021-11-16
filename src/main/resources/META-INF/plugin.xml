@@ -7,6 +7,12 @@
     <depends>com.intellij.modules.java</depends>
     <depends>com.intellij.modules.lang</depends>
     <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable
+                id="com.misset.opp.omt.settings.PluginConfigurable"
+                instance="com.misset.opp.settings.PluginConfigurable"
+                parentId="language"
+                displayName="OMT / ODT Settings"/>
+
         <!-- YAML extensions -->
         <!--    The YAML language is considered the language of the elements that are parsed by the YAML Parser, this is because the IElementType for the nodes
                 has YAML as language and cannot be modified to be OMT for .omt files
@@ -104,6 +110,7 @@
 
         <!-- TTL Language -->
         <postStartupActivity implementation="com.misset.opp.ttl.LoadOntologyStartupActivity"/>
+        <notificationGroup id="Update Ontology" displayType="BALLOON"/>
 
         <!-- JAVA -->
         <psi.referenceContributor language="JAVA"

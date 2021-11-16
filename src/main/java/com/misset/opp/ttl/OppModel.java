@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +39,7 @@ public class OppModel {
     private static final String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     private static final String OWL = "http://www.w3.org/2002/07/owl#";
     private static final String OPP = "http://ontologie.politie.nl/def/politie#";
+    private static final String PLATFORM = "http://ontologie.politie.nl/def/platform#";
 
     protected Property SHACL_PATH, SHACL_CLASS, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
     protected Property RDFS_SUBCLASS_OF;
@@ -48,9 +50,10 @@ public class OppModel {
     protected OntClass OWL_THING_CLASS;
     public Individual OWL_THING;
     public OntClass OPP_CLASS;
-    public Individual JSON_OBJECT, ERROR, NAMED_GRAPH;
+    public OntClass GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
+    public Individual JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH;
     public OntResource XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
-    public OntResource XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
+    public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
 
     /*
         The modification count whenever the model is loaded
@@ -78,8 +81,11 @@ public class OppModel {
         // the RDFS_INF inferencing provides the support for sub/superclass logic
         model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
         setProperties();
+        ontologyModelModificationCount++;
         setPrimitives();
+        ontologyModelModificationCount++;
         loadSimpleModel();
+        ontologyModelModificationCount++;
         INSTANCE = this;
     }
 
@@ -126,7 +132,12 @@ public class OppModel {
         OPP_CLASS = model.createClass(OPP + "Class");
         JSON_OBJECT = OPP_CLASS.createIndividual(OPP + "JSON_OBJECT");
         ERROR = OPP_CLASS.createIndividual(OPP + "ERROR");
-        NAMED_GRAPH = OWL_THING_CLASS.createIndividual(OPP + "#NamedGraph");
+
+        GRAPH_CLASS = model.createClass(PLATFORM + "Graph");
+        NAMED_GRAPH_CLASS = model.createClass(PLATFORM + "NamedGraph");
+        TRANSIENT_GRAPH_CLASS = model.createClass("http://ontologie.politie.nl/internal/transient#TransientNamedGraph");
+        NAMED_GRAPH = NAMED_GRAPH_CLASS.createIndividual(NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
+        TRANSIENT_GRAPH = TRANSIENT_GRAPH_CLASS.createIndividual(TRANSIENT_GRAPH_CLASS.getURI() + "_INSTANCE");
 
         classModelProperties = List.of(RDFS_SUBCLASS_OF, RDF_TYPE);
     }
@@ -148,11 +159,11 @@ public class OppModel {
         XSD_DATETIME_INSTANCE = model.createIndividual(XSD_DATETIME);
     }
 
-    public OntResource parsePrimitive(String description) {
+    public Individual parsePrimitive(String description) {
         if ("string".equals(description)) {
             return XSD_STRING_INSTANCE;
         } else if ("boolean".equals(description)) {
-            return XSD_NUMBER_INSTANCE;
+            return XSD_BOOLEAN_INSTANCE;
         } else if ("number".equals(description)) {
             return XSD_NUMBER_INSTANCE;
         }
@@ -167,6 +178,7 @@ public class OppModel {
     private void loadSimpleModelClass(OntClass ontClass) {
         // create a simple class instance and inherit the superclass(es)
         final OntClass simpleModelClass = model.createClass(ontClass.getURI());
+        ontologyModelModificationCount++;
         // create one individual per class, this is used as a mock when traversing the paths
         // and discriminate between classes and instances of the class being visited.
         final List<Statement> superClasses = ontClass.listProperties(RDFS_SUBCLASS_OF).toList();
@@ -176,6 +188,7 @@ public class OppModel {
         } else {
             superClasses.forEach(statement -> simpleModelClass.addSuperClass(statement.getObject().asResource()));
         }
+        ontologyModelModificationCount++;
 
         // translate the SHACL PATH properties into simple predicate-object statements for this class
         ontClass.listProperties(SHACL_PROPERTY)
@@ -291,6 +304,14 @@ public class OppModel {
 
     public Set<OntResource> listSubjects(Property predicate,
                                          Set<OntResource> objects) {
+        if (objects.contains(OWL_THING)) {
+            /*
+                 This is the equivalent of using an Object class.
+                 Anything can be an Object so there is no way to resolve
+                 to anything in particular
+             */
+            return Set.of(OWL_THING);
+        }
         return objects.stream()
                 .map(classObject -> listSubjects(predicate, classObject))
                 .flatMap(Collection::stream)
@@ -315,6 +336,7 @@ public class OppModel {
                 .filter(subject -> hasAnyPredicate(subject, predicates))
                 .collect(Collectors.toSet());
     }
+
     public Set<OntResource> filterSubjects(Set<OntResource> subjects,
                                            Set<OntResource> predicates,
                                            Set<OntResource> objects) {
@@ -322,7 +344,6 @@ public class OppModel {
                 .filter(subject -> hasAnyPredicateObject(subject, predicates, objects))
                 .collect(Collectors.toSet());
     }
-
 
     private OntClass toClass(OntResource resource) {
         if (resource.isIndividual()) {
@@ -354,14 +375,22 @@ public class OppModel {
     }
 
     private boolean hasPredicateObjects(OntResource subject,
-                                           Property predicate,
-                                           Set<OntResource> objects) {
+                                        Property predicate,
+                                        Set<OntResource> objects) {
         return toClass(subject).listProperties(predicate)
                 .filterKeep(statement -> objects.stream().anyMatch(statement.getObject()::equals)).hasNext();
     }
 
     public Set<OntResource> listObjects(Set<OntResource> classSubjects,
                                         Property predicate) {
+        if (classSubjects.contains(OWL_THING)) {
+            /*
+                 This is the equivalent of using an Object class.
+                 Anything can be an Object so there is no way to resolve
+                 to anything in particular
+             */
+            return Set.of(OWL_THING);
+        }
         return classSubjects.stream()
                 .map(subject -> listObjects(subject, predicate))
                 .flatMap(Collection::stream)
@@ -505,6 +534,7 @@ public class OppModel {
                 ).flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
+
     public Set<OntResource> toClasses(Set<OntResource> resources) {
         return resources.stream().map(
                 resource -> resource.isIndividual() ? resource.asIndividual().getOntClass(true) : resource
@@ -556,10 +586,39 @@ public class OppModel {
                 .stream()
                 .map(model::getOntResource)
                 .filter(Objects::nonNull)
-                .map(OntClass.class::cast)
+                .filter(OntResource::isClass)
+                .map(OntResource::asClass)
                 .map(ontClass -> ontClass.listInstances().toSet())
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+
+    private final Pattern DATA_GRAPHS = Pattern.compile("http://data\\.politie\\.nl/19000000000000_\\S+");
+
+    /**
+     * Method to retrieve an existing Resource from the Ontology
+     * If the resource doesn't exist but it can be matched to a known Iri (by RegEx pattern), it will be added
+     * as an instance of the specified class.
+     * For example, used to register known data graphs
+     *
+     * @param uri
+     * @return
+     */
+    @Nullable
+    public OntResource getOntResource(String uri) {
+        final OntResource resource = model.getOntResource(uri);
+        if (resource != null) {
+            return resource;
+        }
+
+        // try via known Iris:
+        // todo: make this a configurable section
+        final boolean b = DATA_GRAPHS.matcher(uri).find();
+        if (b) {
+            ontologyModelModificationCount++;
+            return NAMED_GRAPH_CLASS.createIndividual(uri);
+        }
+        return null;
     }
 
 }

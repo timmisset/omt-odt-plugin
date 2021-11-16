@@ -1,20 +1,17 @@
 package com.misset.opp.odt;
 
-import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.ResolveResult;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
-import org.jetbrains.yaml.psi.YAMLMapping;
+import com.misset.opp.omt.meta.OMTMetaTypeProvider;
+import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
+import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
+import org.jetbrains.yaml.psi.YAMLValue;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 public class ODTInjectionUtil {
 
@@ -30,20 +27,14 @@ public class ODTInjectionUtil {
                 .orElse(null);
     }
 
-    /**
-     * Resolves referencing ODT elements in OMT containers
-     */
-    public static <T> Optional<ResolveResult[]> resolveInOMT(PsiElement odtElement,
-                                                             Class<T> providerClass,
-                                                             String key,
-                                                             BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
-        final InjectedLanguageManager languageManager = InjectedLanguageManager.getInstance(odtElement.getProject());
-        final PsiLanguageInjectionHost injectionHost = languageManager.getInjectionHost(odtElement);
-        if (injectionHost == null) {
-            return Optional.empty();
-        }
-
-        return OMTMetaTreeUtil.resolveProvider(injectionHost, providerClass, key, mapFunction);
+    public static YamlMetaType getInjectionMetaType(PsiElement element) {
+        return Optional.ofNullable(getInjectionHost(element))
+                .filter(YAMLValue.class::isInstance)
+                .map(YAMLValue.class::cast)
+                .map(yamlPsiElement -> OMTMetaTypeProvider.getInstance(element.getProject())
+                        .getValueMetaType(yamlPsiElement))
+                .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
+                .orElse(null);
     }
 
     public static <T extends YAMLPsiElement, U> LinkedHashMap<T, U> getProviders(PsiElement element,

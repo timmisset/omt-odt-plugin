@@ -103,7 +103,10 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTTypeRes
                 ODTResolvableQualifiedUriStep.class);
         if (resolvableUriSteps.isEmpty()) {
             // no curie, probably a primitive, try to parse:
-            return Optional.ofNullable(oppModel.parsePrimitive(value)).map(Set::of).orElse(Collections.emptySet());
+            return Optional.ofNullable(oppModel.parsePrimitive(value))
+                    .map(OntResource.class::cast)
+                    .map(Set::of)
+                    .orElse(Collections.emptySet());
         } else {
             // curie is available, resolve to type:
             final String fullyQualifiedUri = resolvableUriSteps.stream().findFirst().get().getFullyQualifiedUri();

@@ -47,6 +47,7 @@ INTEGER=                        \-?([1-9][0-9]+|[0-9])
 DECIMAL=                        {INTEGER}\.[0-9]+
 BOOLEAN=                        "true"|"false"|"TRUE"|"FALSE"|"True"|"False"
 NULL=                           "null"
+PRIMITIVE=                      "string"|"number"|"integer"|"decimal"|"date"|"dateTime"|"time"|"boolean"
 
 TYPED_VALUE=                    {STRING}"^^"({IRI}|{CURIE})
 VARIABLENAME=                   "$"{SYMBOL}
@@ -126,6 +127,7 @@ RESERVED_NAME=                  "IF"
     {INTEGER}                                                       { return ODTTypes.INTEGER; }
     {DECIMAL}                                                       { return ODTTypes.DECIMAL; }
     {TYPED_VALUE}                                                   { return ODTTypes.TYPED_VALUE; }
+    {PRIMITIVE}                                                     { return ODTTypes.PRIMITIVE; }
     {SYMBOL}                                                        { return ODTTypes.SYMBOL; }
     "|"                                                             { return ODTTypes.PIPE; }
     "@"                                                             { return ODTTypes.AT; }

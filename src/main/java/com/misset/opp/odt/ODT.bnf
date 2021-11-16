@@ -22,7 +22,7 @@ namespacePrefix::=                          SYMBOL COLON {
     implements="com.intellij.psi.PsiNamedElement"
 }
 
-constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE | interpolatedString {
+constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE | PRIMITIVE | interpolatedString {
     extends=queryStep
     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableConstantValueStep"
 }
@@ -187,7 +187,7 @@ schemalessIriStep ::= SCHEMALESS_IRI {
     extends=queryStep
     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableSchemalessIriStep"
 }
-curieElement ::=                            namespacePrefix SYMBOL {
+curieElement ::=                            namespacePrefix (SYMBOL | PRIMITIVE) {
     extends=queryStep
     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableCurieElementStep"
 }

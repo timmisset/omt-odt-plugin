@@ -17,6 +17,10 @@ public abstract class Builtin implements Callable {
         return BuiltinDocumentationService.getDocumentation(this);
     }
 
+    public String getMarkdownFilename() {
+        return getClass().getSimpleName();
+    }
+
     @Override
     public int maxNumberOfArguments() {
         // by default, the max number of arguments equals the min

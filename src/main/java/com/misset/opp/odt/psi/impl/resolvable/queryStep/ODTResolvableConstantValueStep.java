@@ -6,9 +6,11 @@ import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.Set;
 
 public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryStepBase implements ODTConstantValue {
@@ -32,13 +34,16 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
             result = oppModel.XSD_NUMBER_INSTANCE;
         } else if (elementType == ODTTypes.INTERPOLATED_STRING) {
             result = oppModel.XSD_STRING_INSTANCE;
+        } else if (elementType == ODTTypes.PRIMITIVE) {
+            final Individual individual = oppModel.parsePrimitive(getText());
+            result = individual != null ? individual.getOntClass() : null;
         } else {
             result = oppModel.OWL_THING;
         }
 
         // a constant value, like a string, boolean, number etc is considered
         // an instance of the specified data-type
-        return Set.of(result);
+        return result == null ? Collections.emptySet() : Set.of(result);
     }
 
     @Override

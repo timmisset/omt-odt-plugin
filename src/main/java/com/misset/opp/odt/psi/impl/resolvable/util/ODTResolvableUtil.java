@@ -81,7 +81,7 @@ public class ODTResolvableUtil {
             return resource.getURI() + " (CLASS)";
         } else if (resource instanceof Individual) {
             final Individual individual = (Individual) resource;
-            if (resource.getURI() == null) {
+            if (isXSDType(individual.getOntClass())) {
                 return individual.getOntClass().getURI() + " (VALUE)";
             }
             return individual.getOntClass().getURI() + " (INSTANCE)";

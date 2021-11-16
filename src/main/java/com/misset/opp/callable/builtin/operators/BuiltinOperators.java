@@ -41,6 +41,7 @@ public class BuiltinOperators {
         addOperator(HasOperator.INSTANCE);
         addOperator(IdentityOperator.INSTANCE);
         addOperator(IfEmptyOperator.INSTANCE);
+        addOperator(IIfOperator.INSTANCE);
         addOperator(IndexOfOperator.INSTANCE);
         addOperator(InOperator.INSTANCE);
         addOperator(IriOperator.INSTANCE);

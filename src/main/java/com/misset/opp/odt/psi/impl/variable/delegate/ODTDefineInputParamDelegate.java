@@ -39,7 +39,9 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
     @Override
     public Set<OntResource> getType() {
         return CachedValuesManager.getCachedValue(element, ONT_TYPE, () ->
-                new CachedValueProvider.Result<>(calculateType(), element.getContainingFile()));
+                new CachedValueProvider.Result<>(calculateType(),
+                        element.getContainingFile(),
+                        OppModel.ONTOLOGY_MODEL_MODIFICATION));
     }
 
     private Set<OntResource> calculateType() {
@@ -76,6 +78,7 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
                 // (string)
                 final String value = StringUtils.unEnclose(dataElement.getText());
                 return Optional.ofNullable(OppModel.INSTANCE.parsePrimitive(value))
+                        .map(OntResource.class::cast)
                         .map(Set::of)
                         .orElse(Collections.emptySet());
             }

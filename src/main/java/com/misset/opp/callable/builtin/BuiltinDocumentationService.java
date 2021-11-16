@@ -35,8 +35,8 @@ public final class BuiltinDocumentationService {
     }
 
     public static String getDocumentation(Builtin builtin) {
-        return documents.getOrDefault(builtin.getClass().getSimpleName(),
-                "Documentation not loaded yet, probably indexing");
+        return documents.getOrDefault(builtin.getMarkdownFilename(),
+                "Could not find Markdown file with name: " + builtin.getMarkdownFilename() + ".md");
     }
 
     public Task.Backgroundable getTask() {
