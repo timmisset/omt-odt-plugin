@@ -1,12 +1,14 @@
 package com.misset.opp.callable.builtin.commands;
 
-public class HttpPutCommand extends BuiltInHttpCommand {
-    private HttpPutCommand() { }
-    public static final HttpPutCommand INSTANCE = new HttpPutCommand();
+public class HttpCallCommandGet extends BuiltInHttpCommand {
+    private HttpCallCommandGet() {
+    }
+
+    public static final HttpCallCommandGet INSTANCE = new HttpCallCommandGet();
 
     @Override
     public String getName() {
-        return "HTTP_PUT";
+        return "HTTP_GET";
     }
 
     @Override
@@ -16,11 +18,12 @@ public class HttpPutCommand extends BuiltInHttpCommand {
 
     @Override
     public int minNumberOfArguments() {
-        return 2;
+        return 1;
     }
 
     @Override
     public int maxNumberOfArguments() {
-        return 4;
+        return 3;
     }
+
 }

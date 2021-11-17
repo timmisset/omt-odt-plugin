@@ -8,17 +8,17 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class HttpPutCommandTest extends BuiltInTest {
+class HttpCallCommandPutTest extends BuiltInTest {
 
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(HttpPutCommand.INSTANCE, oppModel.JSON_OBJECT);
+        assertReturns(HttpCallCommandPut.INSTANCE, oppModel.JSON_OBJECT);
     }
 
     @Test
     protected void testReturnsSecondArgument() {
-        final Set<OntResource> secondReturnArgument = HttpPutCommand.INSTANCE.getSecondReturnArgument();
+        final Set<OntResource> secondReturnArgument = HttpCallCommandPut.INSTANCE.getSecondReturnArgument();
         Assertions.assertEquals(1, secondReturnArgument.size());
         Assertions.assertTrue(secondReturnArgument.contains(OppModel.INSTANCE.XSD_INTEGER_INSTANCE));
     }

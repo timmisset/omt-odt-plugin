@@ -12,7 +12,11 @@ public abstract class ODTResolvableIriStep extends ODTResolvableQueryForwardStep
     @Override
     public String getFullyQualifiedUri() {
         final String text = getText();
-        return text.substring(1, text.length()-1);
+        if (text.startsWith("<json:")) {
+            // we cannot evaluate a json-schema
+            return null;
+        }
+        return text.substring(1, text.length() - 1);
     }
 
     @Override

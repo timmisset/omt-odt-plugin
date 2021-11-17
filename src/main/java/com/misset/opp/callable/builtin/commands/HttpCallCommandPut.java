@@ -1,12 +1,14 @@
 package com.misset.opp.callable.builtin.commands;
 
-public class HttpPostCommand extends BuiltInHttpCommand {
-    private HttpPostCommand() { }
-    public static final HttpPostCommand INSTANCE = new HttpPostCommand();
+public class HttpCallCommandPut extends BuiltInHttpCommand {
+    private HttpCallCommandPut() {
+    }
+
+    public static final HttpCallCommandPut INSTANCE = new HttpCallCommandPut();
 
     @Override
     public String getName() {
-        return "HTTP_POST";
+        return "HTTP_PUT";
     }
 
     @Override

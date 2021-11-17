@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems.ontology;
 
+import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTTypeIdentifierMetaType;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
@@ -10,14 +11,14 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class OMTOntologyPropertyItemMetaType extends OMTMetaType {
+public class OMTOntologyPropertyItemMetaType extends OMTMetaType implements ODTInjectable {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     private static final Set<String> requiredFields = Set.of("type");
 
     static {
         features.put("type", OMTTypeIdentifierMetaType::new);
-        features.put("required", () -> new YamlBooleanType("required"));
-        features.put("multiple", () -> new YamlBooleanType("multiple"));
+        features.put("required", YamlBooleanType::getSharedInstance);
+        features.put("multiple", YamlBooleanType::getSharedInstance);
         features.put("maxCardinality", () -> new YamlIntegerType(false));
     }
 

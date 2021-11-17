@@ -19,10 +19,12 @@ public class BuiltinCommands {
         addCommand(ForEachCommand.INSTANCE);
         addCommand(ForkJoinCommand.INSTANCE);
         addCommand(GuidCommand.INSTANCE);
-        addCommand(HttpGetCommand.INSTANCE);
-        addCommand(HttpPostCommand.INSTANCE);
-        addCommand(HttpPutCommand.INSTANCE);
+        addCommand(HttpCallCommandGet.INSTANCE);
+        addCommand(HttpCallCommandPost.INSTANCE);
+        addCommand(HttpCallCommandPut.INSTANCE);
         addCommand(IfCommand.INSTANCE);
+        addCommand(JsonParseCommand.INSTANCE);
+        addCommand(LoadOntologyCommand.INSTANCE);
         addCommand(LogCommand.INSTANCE);
         addCommand(MapCommand.INSTANCE);
         addCommand(MoveToGraphCommand.INSTANCE);

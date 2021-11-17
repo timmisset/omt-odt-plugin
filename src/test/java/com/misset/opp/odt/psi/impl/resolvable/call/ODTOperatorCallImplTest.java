@@ -58,4 +58,16 @@ class ODTOperatorCallImplTest extends OMTOntologyTestCase {
         assertContainsElements(resolveQueryAtCaret(content),
                 OppModel.INSTANCE.XSD_STRING_INSTANCE);
     }
+
+    @Test
+    void testResolveOperatorCallWithInput() {
+        Assertions.assertEquals(OppModel.INSTANCE.XSD_STRING_INSTANCE,
+                resolveQueryStatementToSingleResult("'test' / FIRST"));
+    }
+
+    @Test
+    void testResolveOperatorCallWithCallContent() {
+        Assertions.assertEquals(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE,
+                resolveQueryStatementToSingleResult("'test' / MAP(true)"));
+    }
 }
