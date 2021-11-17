@@ -1,10 +1,14 @@
 package com.misset.opp.odt.psi.impl.variable.delegate;
 
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Variable;
 import com.misset.opp.callable.global.GlobalVariable;
+import com.misset.opp.callable.local.LocalVariableTypeProvider;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.OMTTypeResolver;
@@ -81,7 +85,12 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
     }
 
     private Optional<Set<OntResource>> getTypeFromCallContext() {
-        return Optional.empty();
+        return PsiTreeUtil.collectParents(element, ODTCall.class, false, Objects::isNull)
+                .stream()
+                .map(call -> new Pair<>(call, call.getCallable()))
+                .filter(pair -> pair.second instanceof LocalVariableTypeProvider)
+                .map(pair -> ((LocalVariableTypeProvider) pair.second).getType(element.getName(), pair.first))
+                .findFirst();
     }
 
     private Set<OntResource> getType(ODTVariable declared) {

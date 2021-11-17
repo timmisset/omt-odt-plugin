@@ -1,7 +1,6 @@
 package com.misset.opp.callable;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.callable.local.LocalVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,10 +28,6 @@ public interface Callable extends Resolvable {
 
     boolean isVoid();
     boolean isCommand();
-
-    default List<LocalVariable> getLocalVariables() {
-        return Collections.emptyList();
-    }
 
     default List<String> getFlags() {
         return Collections.emptyList();

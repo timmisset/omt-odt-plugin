@@ -2,7 +2,6 @@ package com.misset.opp.omt.psi.impl;
 
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.local.LocalVariable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.OMTProcedureMetaType;
@@ -15,7 +14,6 @@ import org.jetbrains.yaml.psi.YAMLSequence;
 import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -85,11 +83,6 @@ public class OMTCallable implements Callable {
                 metaType -> metaType instanceof OMTActivityMetaType ||
                         metaType instanceof OMTProcedureMetaType,
                 false);
-    }
-
-    @Override
-    public List<LocalVariable> getLocalVariables() {
-        return Collections.emptyList();
     }
 
     @Override

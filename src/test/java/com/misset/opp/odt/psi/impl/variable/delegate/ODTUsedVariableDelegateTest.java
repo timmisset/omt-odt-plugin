@@ -43,6 +43,28 @@ class ODTUsedVariableDelegateTest extends OMTOntologyTestCase {
     }
 
     @Test
+    void testGetTypeFromLocalVariableFromCallableValue() {
+        String content = insideProcedureRunWithPrefixes("@FOREACH('test', $<caret>value);");
+        configureByText(content);
+        ReadAction.run(() -> {
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
+        });
+    }
+
+    @Test
+    void testGetTypeFromLocalVariableFromCallableIndex() {
+        String content = insideProcedureRunWithPrefixes("@FOREACH('test', $<caret>index);");
+        configureByText(content);
+        ReadAction.run(() -> {
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
+        });
+    }
+
+    @Test
     void testGetTypeFromGlobalVariableMedewerkerGraph() {
         assertEquals(OppModel.INSTANCE.MEDEWERKER_GRAPH, resolveQueryStatementToSingleResult("$medewerkerGraph"));
     }
