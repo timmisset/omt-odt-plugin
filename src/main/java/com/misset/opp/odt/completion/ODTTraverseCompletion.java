@@ -59,6 +59,15 @@ public class ODTTraverseCompletion extends CompletionContributor {
 
             }
         });
+
+        extend(CompletionType.BASIC, psiElement(), new CompletionProvider<>() {
+            @Override
+            protected void addCompletions(@NotNull CompletionParameters parameters,
+                                          @NotNull ProcessingContext context,
+                                          @NotNull CompletionResultSet result) {
+                System.out.println(parameters.getPosition());
+            }
+        });
     }
 
     private void addModelTraverseLookupElements(Set<Property> predicates,

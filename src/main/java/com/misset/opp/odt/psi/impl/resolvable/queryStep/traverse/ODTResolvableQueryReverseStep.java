@@ -1,5 +1,6 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
@@ -34,15 +35,32 @@ public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQuerySt
             // a reverse path indicator can only be applied to a curie step
             final String fullyQualified = ((ODTResolvableQualifiedUriStep) queryStep).getFullyQualifiedUri();
             final Property property = oppModel.getProperty(fullyQualified);
-            if(property == null) { return Collections.emptySet(); }
+            if (property == null) {
+                return Collections.emptySet();
+            }
             return oppModel.listSubjects(property, resolvePreviousStep());
         }
         return Collections.emptySet();
     }
 
     @Override
+    public void inspect(ProblemsHolder holder) {
+        if (getQueryStep() instanceof ODTResolvableQueryForwardStep) {
+            inspectResolved(holder, "REVERSE");
+        }
+    }
+
+    @Override
+    protected String getFullyQualifiedUri() {
+        final ODTQueryStep queryStep = getQueryStep();
+        return queryStep instanceof ODTResolvableQualifiedUriStep ?
+                ((ODTResolvableQualifiedUriStep) queryStep).getFullyQualifiedUri() :
+                null;
+    }
+
+    @Override
     protected PsiElement getAnnotationRange() {
-        if(getQueryStep() instanceof ODTResolvableCurieElementStep) {
+        if (getQueryStep() instanceof ODTResolvableCurieElementStep) {
             return ((ODTResolvableCurieElementStep) getQueryStep()).getAnnotationRange();
         }
         return super.getAnnotationRange();

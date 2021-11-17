@@ -61,18 +61,20 @@ public abstract class ODTResolvableQueryStepBase extends ODTASTWrapperPsiElement
 
     @Override
     public void inspect(ProblemsHolder holder) {
-        inspectResolved(holder);
+        inspectResolved(holder, "FORWARD");
     }
 
-    protected void inspectResolved(ProblemsHolder holder) {
+    protected void inspectResolved(ProblemsHolder holder,
+                                   String direction) {
         if (resolve().isEmpty() && !resolvePreviousStep().isEmpty()) {
             final String fullyQualifiedUri = getFullyQualifiedUri();
             if (fullyQualifiedUri != null) {
-                String direction = isPartOfReverseStep() ? "REVERSE" : "FORWARD";
-                holder.registerProblem(this, "Could not traverse " + direction + " using predicate: " + fullyQualifiedUri);
+                holder.registerProblem(this,
+                        "Could not traverse " + direction + " using predicate: " + fullyQualifiedUri);
             }
         }
     }
+
     protected String getFullyQualifiedUri() {
         return null;
     }

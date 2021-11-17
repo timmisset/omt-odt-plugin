@@ -3,7 +3,6 @@ package com.misset.opp.odt.psi.impl.variable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -14,6 +13,7 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
@@ -81,7 +81,8 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
     public boolean isDeclaredVariable() {
         return CachedValuesManager.getCachedValue(this,
                 IS_DECLARED_VARIABLE,
-                () -> new CachedValueProvider.Result<>(delegate.isDeclaredVariable(), ModificationTracker.NEVER_CHANGED));
+                () -> new CachedValueProvider.Result<>(delegate.isDeclaredVariable(),
+                        PsiModificationTracker.MODIFICATION_COUNT));
     }
 
     public boolean canBeDeclaredVariable(ODTVariable variable) {

@@ -68,7 +68,9 @@ defineName ::=                              SYMBOL {
 }
 defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"}
 defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement"}
-definePrefix ::=                            PREFIX_DEFINE_START namespacePrefix IRI
+definePrefix ::=                            PREFIX_DEFINE_START namespacePrefix IRI {
+    extends="com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix"
+}
 defineParam ::=                             PARENTHESES_OPEN (variable (COMMA variable)*)? PARENTHESES_CLOSE
 callName ::=                                SYMBOL | BOOLEAN_OPERATOR
 // MEMBER CALLS

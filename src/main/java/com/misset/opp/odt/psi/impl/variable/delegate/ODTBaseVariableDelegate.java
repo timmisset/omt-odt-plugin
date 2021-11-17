@@ -2,12 +2,12 @@ package com.misset.opp.odt.psi.impl.variable.delegate;
 
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.ODTScript;
@@ -43,14 +43,14 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
                         OMTMetaTypeProvider.getInstance(element.getProject())
                                 .getValueMetaType((YAMLValue) injectionHost);
                 if (metaTypeProxy == null) {
-                    return new CachedValueProvider.Result<>(false, ModificationTracker.NEVER_CHANGED);
+                    return new CachedValueProvider.Result<>(false, PsiModificationTracker.MODIFICATION_COUNT);
                 }
                 final YamlMetaType metaType = metaTypeProxy.getMetaType();
                 return new CachedValueProvider.Result<>(metaType instanceof OMTVariableNameMetaType ||
                         metaType instanceof OMTVariableMetaType ||
-                        metaType instanceof OMTParamMetaType, ModificationTracker.NEVER_CHANGED);
+                        metaType instanceof OMTParamMetaType, PsiModificationTracker.MODIFICATION_COUNT);
             }
-            return new CachedValueProvider.Result<>(false, ModificationTracker.NEVER_CHANGED);
+            return new CachedValueProvider.Result<>(false, PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 

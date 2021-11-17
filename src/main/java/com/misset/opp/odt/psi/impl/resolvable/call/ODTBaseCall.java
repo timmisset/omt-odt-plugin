@@ -4,7 +4,6 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -76,10 +75,7 @@ public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODT
                     .or(this::getLocalCommand)
                     .or(this::getBuiltin)
                     .orElse(null);
-            return new CachedValueProvider.Result<>(callable,
-                    callable instanceof PsiElement || callable == null ?
-                            PsiModificationTracker.MODIFICATION_COUNT :
-                            ModificationTracker.NEVER_CHANGED);
+            return new CachedValueProvider.Result<>(callable, PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 

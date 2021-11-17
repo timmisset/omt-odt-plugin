@@ -15,10 +15,12 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTFileType;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.ODTLanguage;
 import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix;
 import com.misset.opp.omt.OMTLanguage;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
@@ -64,7 +66,8 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
             if (!(injectionHost instanceof YAMLPsiElement)) {
                 return new CachedValueProvider.Result<>(null, PsiModificationTracker.MODIFICATION_COUNT);
             }
-            return new CachedValueProvider.Result<>((YAMLPsiElement) injectionHost, PsiModificationTracker.MODIFICATION_COUNT);
+            return new CachedValueProvider.Result<>((YAMLPsiElement) injectionHost,
+                    PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 
@@ -87,13 +90,13 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         {
             final OMTFile hostFile = getHostFile();
             final GlobalSearchScope scope;
-            if(hostFile == null) {
+            if (hostFile == null) {
                 scope = GlobalSearchScope.fileScope(this);
                 return new CachedValueProvider.Result<>(scope, this);
             } else {
                 List<OMTFile> files = new ArrayList<>();
                 files.add(hostFile);
-                if(isExportable()) {
+                if (isExportable()) {
                     files.addAll(hostFile.getImportedBy());
                 }
 
@@ -101,7 +104,8 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                         files.stream().map(PsiFile::getVirtualFile).collect(
                                 Collectors.toSet()));
 
-                return new CachedValueProvider.Result<>(scope, OMTLanguage.getLanguageModificationTracker(getProject()));
+                return new CachedValueProvider.Result<>(scope,
+                        OMTLanguage.getLanguageModificationTracker(getProject()));
             }
         });
     }
@@ -157,14 +161,25 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     @Override
     public Map<String, String> getAvailableNamespaces() {
         return CachedValuesManager.getCachedValue(this, NAMESPACES, () -> {
-            final Map<String, String> namespaces = getProviders(OMTPrefixProvider.class).entrySet().stream()
-                    .map(entry -> entry.getValue().getNamespaces(entry.getKey()))
-                    .flatMap(map -> map.entrySet().stream())
-                    .collect(Collectors.toMap(Map.Entry::getKey,
-                            Map.Entry::getValue,
-                            (s, s2) -> s));// preserve the closest to the element, basically shadowing the parent declaration if applicable
-
-            return new CachedValueProvider.Result<>(namespaces, getHostFile());
+            final OMTFile hostFile = getHostFile();
+            if (hostFile != null) {
+                // in OMT files
+                final Map<String, String> namespaces = getProviders(OMTPrefixProvider.class).entrySet().stream()
+                        .map(entry -> entry.getValue().getNamespaces(entry.getKey()))
+                        .flatMap(map -> map.entrySet().stream())
+                        .collect(Collectors.toMap(Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (s, s2) -> s));// preserve the closest to the element, basically shadowing the parent declaration if applicable
+                return new CachedValueProvider.Result<>(namespaces, hostFile);
+            } else {
+                // in ODT files
+                final Map<String, String> namespaces =
+                        PsiTreeUtil.findChildrenOfType(this, ODTBaseDefinePrefix.class)
+                                .stream()
+                                .collect(Collectors.toMap(ODTBaseDefinePrefix::getNamespace,
+                                        ODTBaseDefinePrefix::getPrefix, (o, o2) -> o));
+                return new CachedValueProvider.Result<>(namespaces, getContainingFile());
+            }
         });
     }
 

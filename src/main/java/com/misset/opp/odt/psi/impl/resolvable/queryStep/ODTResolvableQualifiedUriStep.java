@@ -25,7 +25,7 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
     public void inspect(ProblemsHolder holder) {
         inspectIri(holder);
         if(!isPartOfReverseStep()) {
-            inspectResolved(holder);
+            inspectResolved(holder, "FORWARD");
         }
     }
 

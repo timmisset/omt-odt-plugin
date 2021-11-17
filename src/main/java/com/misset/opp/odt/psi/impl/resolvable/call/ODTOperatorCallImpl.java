@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTOperatorCall;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -33,8 +33,8 @@ public abstract class ODTOperatorCallImpl extends ODTBaseCall implements ODTOper
 
     @Override
     public Set<OntResource> resolvePreviousStep() {
-        return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTResolvableQueryStep.class))
-                .map(ODTResolvableQueryStep::resolvePreviousStep)
+        return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTResolvableQueryOperationStep.class))
+                .map(ODTResolvableQueryOperationStep::resolvePreviousStep)
                 .orElse(Collections.emptySet());
     }
 
