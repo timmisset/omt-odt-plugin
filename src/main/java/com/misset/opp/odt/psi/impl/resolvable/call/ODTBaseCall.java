@@ -17,6 +17,7 @@ import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.Resolvable;
 import com.misset.opp.callable.builtin.commands.BuiltinCommands;
 import com.misset.opp.callable.builtin.operators.BuiltinOperators;
+import com.misset.opp.callable.local.LocalCommand;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTCallName;
@@ -112,7 +113,7 @@ public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODT
                 injectionHost);
         for (YAMLMapping mapping : linkedHashMap.keySet()) {
             OMTLocalCommandProvider callableProvider = linkedHashMap.get(mapping);
-            final HashMap<String, Callable> callableMap = callableProvider.getLocalCommandsMap();
+            final HashMap<String, LocalCommand> callableMap = callableProvider.getLocalCommandsMap();
             if (callableMap.containsKey(getCallId())) {
                 return Optional.of(callableMap.get(getCallId()));
             }

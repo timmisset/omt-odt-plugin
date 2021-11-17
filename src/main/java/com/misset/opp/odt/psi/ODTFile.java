@@ -59,6 +59,9 @@ public interface ODTFile extends PsiFile {
      */
     <T> LinkedHashMap<YAMLMapping, T> getProviders(Class<T> metaTypeOrInterface);
 
+    <T extends YAMLPsiElement, U> LinkedHashMap<T, U> getProviders(Class<T> yamlClass,
+                                                                   Class<U> metaTypeOrInterface);
+
     /**
      * Resolve the reference present in the ODT language to an OMT element
      * For example, a Call to a ModelItem (YamlMapping)

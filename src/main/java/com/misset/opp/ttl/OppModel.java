@@ -1,7 +1,12 @@
 package com.misset.opp.ttl;
 
+import com.intellij.notification.NotificationGroupManager;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
+import com.misset.opp.omt.OMTFileType;
+import com.misset.opp.settings.SettingsState;
 import org.apache.jena.ontology.ConversionException;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -19,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -51,7 +57,7 @@ public class OppModel {
     public Individual OWL_THING;
     public OntClass OPP_CLASS;
     public OntClass GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
-    public Individual JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH;
+    public Individual JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH;
     public OntResource XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
     public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
 
@@ -137,6 +143,7 @@ public class OppModel {
         NAMED_GRAPH_CLASS = model.createClass(PLATFORM + "NamedGraph");
         TRANSIENT_GRAPH_CLASS = model.createClass("http://ontologie.politie.nl/internal/transient#TransientNamedGraph");
         NAMED_GRAPH = NAMED_GRAPH_CLASS.createIndividual(NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
+        MEDEWERKER_GRAPH = NAMED_GRAPH_CLASS.createIndividual(NAMED_GRAPH_CLASS.getURI() + "_MEDEWERKERGRAPH");
         TRANSIENT_GRAPH = TRANSIENT_GRAPH_CLASS.createIndividual(TRANSIENT_GRAPH_CLASS.getURI() + "_INSTANCE");
 
         classModelProperties = List.of(RDFS_SUBCLASS_OF, RDF_TYPE);
@@ -600,25 +607,34 @@ public class OppModel {
      * If the resource doesn't exist but it can be matched to a known Iri (by RegEx pattern), it will be added
      * as an instance of the specified class.
      * For example, used to register known data graphs
-     *
-     * @param uri
-     * @return
      */
     @Nullable
-    public OntResource getOntResource(String uri) {
+    public OntResource getOntResource(String uri,
+                                      Project project) {
         final OntResource resource = model.getOntResource(uri);
         if (resource != null) {
             return resource;
         }
 
         // try via known Iris:
-        // todo: make this a configurable section
-        final boolean b = DATA_GRAPHS.matcher(uri).find();
-        if (b) {
-            ontologyModelModificationCount++;
-            return NAMED_GRAPH_CLASS.createIndividual(uri);
-        }
-        return null;
+        final Map<String, String> modelInstanceMapping = SettingsState.getInstance(project).modelInstanceMapping;
+        return modelInstanceMapping.keySet()
+                .stream()
+                .filter(regEx -> Pattern.compile(regEx).matcher(uri).matches())
+                .map(modelInstanceMapping::get)
+                .map(model::getOntClass)
+                .filter(Objects::nonNull)
+                .map(ontClass -> ontClass.createIndividual(uri))
+                .peek(individual -> {
+                    NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
+                            .createNotification(
+                                    "Added " + individual.getURI() + " as " + individual.getOntClass(true),
+                                    NotificationType.INFORMATION)
+                            .setIcon(OMTFileType.INSTANCE.getIcon())
+                            .notify(project);
+                })
+                .findFirst()
+                .orElse(null);
     }
 
 }

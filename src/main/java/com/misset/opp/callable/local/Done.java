@@ -1,6 +1,7 @@
 package com.misset.opp.callable.local;
 
 public class Done extends LocalCommand {
+    public static Done INSTANCE = new Done();
     protected Done() {}
 
     @Override

@@ -1,6 +1,7 @@
 package com.misset.opp.callable.local;
 
 public class Cancel extends LocalCommand {
+    public static Cancel INSTANCE = new Cancel();
     protected Cancel() {}
 
     @Override

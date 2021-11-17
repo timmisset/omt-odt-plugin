@@ -1,6 +1,7 @@
 package com.misset.opp.callable.local;
 
 public class GetErrorState extends LocalCommand {
+    public static GetErrorState INSTANCE = new GetErrorState();
     protected GetErrorState() {}
 
     @Override

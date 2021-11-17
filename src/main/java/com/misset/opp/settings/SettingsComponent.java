@@ -7,6 +7,7 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
+import com.misset.opp.settings.components.ModelInstanceMapperTable;
 import com.misset.opp.settings.components.PathMapperTable;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,7 @@ public class SettingsComponent {
     private final JPanel myMainPanel;
     private final TextFieldWithBrowseButton ontologyModelRootPath = getFileLocationSetting("root.ttl");
     private final PathMapperTable pathMapperTable = new PathMapperTable();
+    private final ModelInstanceMapperTable modelInstanceMapperTable = new ModelInstanceMapperTable();
 
     public SettingsComponent() {
         myMainPanel = FormBuilder.createFormBuilder()
@@ -31,6 +33,10 @@ public class SettingsComponent {
                 .addComponent(new JBLabel(
                         "The owl:imports in the root.ttl and all importing files will determine how the final ontology is loaded"))
                 .addComponent(ontologyModelRootPath)
+                .addComponent(new JBLabel("Known instances:"))
+                .addComponent(new JBLabel(
+                        "Add Regular expressions to register known IRIs as instances of specific model classes"))
+                .addComponent(modelInstanceMapperTable.getComponent())
                 .addComponent(new JXTitledSeparator("Mapping"))
                 .addComponent(new JBLabel(
                         "Add mapped imports to specific locations in the project. Make sure to also add these in the tsconfig.json file"))
@@ -84,6 +90,26 @@ public class SettingsComponent {
                 .sorted(Comparator.comparing(PathMapperTable.Item::getName))
                 .collect(Collectors.toList());
         pathMapperTable.setValues(values);
+    }
+
+    @NotNull
+    public Map<String, String> getModelInstanceMapper() {
+        return modelInstanceMapperTable.getTableView()
+                .getItems()
+                .stream()
+                .collect(Collectors.toMap(
+                        ModelInstanceMapperTable.Item::getRegEx,
+                        ModelInstanceMapperTable.Item::getOntologyClass
+                ));
+    }
+
+    public void setModelInstanceMapper(Map<String, String> entries) {
+        final List<ModelInstanceMapperTable.Item> values = entries.entrySet().stream().map(
+                        entry -> new ModelInstanceMapperTable.Item(entry.getKey(), entry.getValue())
+                )
+                .sorted(Comparator.comparing(ModelInstanceMapperTable.Item::getRegEx))
+                .collect(Collectors.toList());
+        modelInstanceMapperTable.setValues(values);
     }
 
 }

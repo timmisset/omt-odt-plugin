@@ -1,6 +1,7 @@
 package com.misset.opp.callable.local;
 
 public class Rollback extends LocalCommand {
+    public static Rollback INSTANCE = new Rollback();
     protected Rollback() {}
 
     @Override

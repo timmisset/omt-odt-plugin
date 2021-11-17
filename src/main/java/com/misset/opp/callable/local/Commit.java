@@ -1,6 +1,7 @@
 package com.misset.opp.callable.local;
 
 public class Commit extends LocalCommand {
+    public static Commit INSTANCE = new Commit();
     protected Commit() {}
 
     @Override

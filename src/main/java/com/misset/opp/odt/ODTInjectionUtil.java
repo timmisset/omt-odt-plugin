@@ -42,7 +42,7 @@ public class ODTInjectionUtil {
                                                                                  Class<U> metaTypeOrInterface) {
         return Optional.ofNullable(getInjectionHost(element))
                 .map(host -> OMTMetaTreeUtil.collectMetaParents(
-                        host, yamlClass, metaTypeOrInterface, false, Objects::isNull
+                        host, yamlClass, metaTypeOrInterface, true, Objects::isNull
                 ))
                 .orElse(new LinkedHashMap<>());
     }

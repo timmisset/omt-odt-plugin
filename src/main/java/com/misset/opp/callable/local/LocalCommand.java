@@ -3,14 +3,6 @@ package com.misset.opp.callable.local;
 import com.misset.opp.callable.Callable;
 
 public abstract class LocalCommand implements Callable {
-
-    public static final LocalCommand CANCEL = new Cancel();
-    public static final LocalCommand COMMIT = new Commit();
-    public static final LocalCommand DONE = new Done();
-    public static final LocalCommand GET_ERROR_STATE = new GetErrorState();
-    public static final LocalCommand HAS_ERROR = new HasError();
-    public static final LocalCommand ROLLBACK = new Rollback();
-
     @Override
     public int minNumberOfArguments() {
         return 0;

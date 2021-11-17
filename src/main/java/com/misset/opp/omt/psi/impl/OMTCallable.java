@@ -2,7 +2,7 @@ package com.misset.opp.omt.psi.impl;
 
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.builtin.commands.LocalVariable;
+import com.misset.opp.callable.local.LocalVariable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.OMTProcedureMetaType;

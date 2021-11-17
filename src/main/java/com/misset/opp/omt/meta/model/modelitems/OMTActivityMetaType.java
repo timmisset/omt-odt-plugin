@@ -1,7 +1,13 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.callable.Callable;
+import com.misset.opp.callable.local.Cancel;
+import com.misset.opp.callable.local.Commit;
+import com.misset.opp.callable.local.Done;
+import com.misset.opp.callable.local.GetErrorState;
+import com.misset.opp.callable.local.HasError;
+import com.misset.opp.callable.local.LocalCommand;
+import com.misset.opp.callable.local.Rollback;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
@@ -29,12 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.misset.opp.callable.local.LocalCommand.CANCEL;
-import static com.misset.opp.callable.local.LocalCommand.COMMIT;
-import static com.misset.opp.callable.local.LocalCommand.DONE;
-import static com.misset.opp.callable.local.LocalCommand.GET_ERROR_STATE;
-import static com.misset.opp.callable.local.LocalCommand.HAS_ERROR;
-import static com.misset.opp.callable.local.LocalCommand.ROLLBACK;
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addDefinedStatementsToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
@@ -93,14 +93,14 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
     }
 
     @Override
-    public HashMap<String, Callable> getLocalCommandsMap() {
-        final HashMap<String, Callable> map = new HashMap<>();
-        map.put(CANCEL.getCallId(), CANCEL);
-        map.put(COMMIT.getCallId(), COMMIT);
-        map.put(DONE.getCallId(), DONE);
-        map.put(GET_ERROR_STATE.getCallId(), GET_ERROR_STATE);
-        map.put(HAS_ERROR.getCallId(), HAS_ERROR);
-        map.put(ROLLBACK.getCallId(), ROLLBACK);
+    public HashMap<String, LocalCommand> getLocalCommandsMap() {
+        final HashMap<String, LocalCommand> map = new HashMap<>();
+        map.put(Cancel.INSTANCE.getCallId(), Cancel.INSTANCE);
+        map.put(Commit.INSTANCE.getCallId(), Commit.INSTANCE);
+        map.put(Done.INSTANCE.getCallId(), Done.INSTANCE);
+        map.put(GetErrorState.INSTANCE.getCallId(), GetErrorState.INSTANCE);
+        map.put(HasError.INSTANCE.getCallId(), HasError.INSTANCE);
+        map.put(Rollback.INSTANCE.getCallId(), Rollback.INSTANCE);
         return map;
     }
 }

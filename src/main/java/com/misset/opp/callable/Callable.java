@@ -1,7 +1,7 @@
 package com.misset.opp.callable;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.callable.builtin.commands.LocalVariable;
+import com.misset.opp.callable.local.LocalVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 

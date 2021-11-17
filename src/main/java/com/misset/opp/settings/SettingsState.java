@@ -26,6 +26,7 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
 
     public String ontologyModelRootPath = "";
     public Map<String, String> mappingPaths = new HashMap<>();
+    public Map<String, String> modelInstanceMapping = new HashMap<>();
     private boolean useDefaultSettings = false;
 
     public static SettingsState getInstance(Project project) {

@@ -1,6 +1,7 @@
 package com.misset.opp.callable.local;
 
 public class HasError extends LocalCommand {
+    public static HasError INSTANCE = new HasError();
     protected HasError() {}
 
     @Override

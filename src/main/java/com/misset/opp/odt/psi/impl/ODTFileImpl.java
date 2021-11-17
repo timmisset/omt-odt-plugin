@@ -129,16 +129,21 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     }
 
     public <T> LinkedHashMap<YAMLMapping, T> getProviders(Class<T> metaTypeOrInterface) {
+        return getProviders(YAMLMapping.class, metaTypeOrInterface);
+    }
+
+    public <T extends YAMLPsiElement, U> LinkedHashMap<T, U> getProviders(Class<T> yamlType,
+                                                                          Class<U> metaTypeOrInterface) {
         /*
             It's important to set the modification tracker to MODIFICATION_COUNT
             This will make sure there is no PSI information retained which could cause memory leaks
          */
-        Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> metaKey = new Key<>("META_" + metaTypeOrInterface.getSimpleName());
+        Key<CachedValue<LinkedHashMap<T, U>>> metaKey = new Key<>("META_" + metaTypeOrInterface.getSimpleName());
         return CachedValuesManager.getCachedValue(this,
                 metaKey,
                 () -> new CachedValueProvider.Result<>(ODTInjectionUtil.getProviders(
                         this,
-                        YAMLMapping.class,
+                        yamlType,
                         metaTypeOrInterface), PsiModificationTracker.MODIFICATION_COUNT));
     }
 

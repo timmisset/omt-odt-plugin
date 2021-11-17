@@ -7,9 +7,9 @@ import com.intellij.util.ui.ListTableModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PathMapperTable extends ListTableWithButtons<PathMapperTable.Item> {
+public class ModelInstanceMapperTable extends ListTableWithButtons<ModelInstanceMapperTable.Item> {
 
-    public PathMapperTable() {
+    public ModelInstanceMapperTable() {
         JBTable table = getTableView();
         table.getEmptyText().clear();
         table.setStriped(false);
@@ -17,7 +17,7 @@ public class PathMapperTable extends ListTableWithButtons<PathMapperTable.Item> 
 
     @Override
     protected ListTableModel createListModel() {
-        return new ListTableModel<Item>(NAME, PATH);
+        return new ListTableModel<Item>(CLASS, REGEX);
     }
 
     @Override
@@ -27,12 +27,12 @@ public class PathMapperTable extends ListTableWithButtons<PathMapperTable.Item> 
 
     @Override
     protected boolean isEmpty(Item element) {
-        return element.name == null || element.name.isEmpty();
+        return element.regex == null || element.ontologyClass.isEmpty();
     }
 
     @Override
     protected Item cloneElement(Item variable) {
-        return new Item(variable.name, variable.path);
+        return new Item(variable.regex, variable.ontologyClass);
     }
 
     @Override
@@ -40,10 +40,10 @@ public class PathMapperTable extends ListTableWithButtons<PathMapperTable.Item> 
         return true;
     }
 
-    private static final ColumnInfo<Item, String> NAME = new ColumnInfo<>("Name") {
+    private static final ColumnInfo<Item, String> REGEX = new ColumnInfo<>("RegEx") {
         @Override
         public @Nullable String valueOf(Item item) {
-            return item.name;
+            return item.regex;
         }
 
         @Override
@@ -54,14 +54,14 @@ public class PathMapperTable extends ListTableWithButtons<PathMapperTable.Item> 
         @Override
         public void setValue(Item item,
                              String value) {
-            item.name = value;
+            item.regex = value;
         }
     };
 
-    private static final ColumnInfo<Item, String> PATH = new ColumnInfo<>("Path") {
+    private static final ColumnInfo<Item, String> CLASS = new ColumnInfo<>("Ontology Class") {
         @Override
         public @Nullable String valueOf(Item item) {
-            return item.path;
+            return item.ontologyClass;
         }
 
         @Override
@@ -72,26 +72,26 @@ public class PathMapperTable extends ListTableWithButtons<PathMapperTable.Item> 
         @Override
         public void setValue(Item item,
                              String value) {
-            item.path = value;
+            item.ontologyClass = value;
         }
     };
 
     public static class Item {
-        String name;
-        String path;
+        String regex;
+        String ontologyClass;
 
-        public Item(@NotNull String name,
-                    @NotNull String path) {
-            this.name = name;
-            this.path = path;
+        public Item(@NotNull String regex,
+                    @NotNull String ontologyClass) {
+            this.regex = regex;
+            this.ontologyClass = ontologyClass;
         }
 
-        public String getName() {
-            return name;
+        public String getRegEx() {
+            return regex;
         }
 
-        public String getPath() {
-            return path;
+        public String getOntologyClass() {
+            return ontologyClass;
         }
     }
 

@@ -57,11 +57,21 @@ public class PluginConfigurable implements Configurable {
         // some generic mappings
         final HashMap<String, String> pathMapping = new HashMap<>();
         pathMapping.put("@client", "frontend/libs");
-        pathMapping.put("@registratie", "frontend/libs/registratie-domain");
-        pathMapping.put("@activiteiten", "frontend/libs/activiteiten-domain");
+        pathMapping.put("@activiteit", "frontend/libs/activiteit-domain");
+        pathMapping.put("@forensische-opsporing", "frontend/libs/forensische-opsporing-domain");
         pathMapping.put("@generiek", "frontend/libs/generiek-domain");
+        pathMapping.put("@handeling", "frontend/libs/handeling-domain");
+        pathMapping.put("@mpg", "frontend/libs/mpg-domain");
+        pathMapping.put("@registratie", "frontend/libs/registratie-domain");
+        pathMapping.put("@shared", "frontend/libs/shared-domain");
         pathMapping.put("@signalering", "frontend/libs/signalering-domain");
+        pathMapping.put("@werkopdracht", "frontend/libs/werkopdracht-domain");
         state.mappingPaths = pathMapping;
+
+        final HashMap<String, String> modelInstanceMapping = new HashMap<>();
+        modelInstanceMapping.put("http://data\\.politie\\.nl/19000000000000_\\S+",
+                "http://ontologie.politie.nl/def/platform#NamedGraph");
+        state.modelInstanceMapping = modelInstanceMapping;
     }
 
     @Override
@@ -94,6 +104,7 @@ public class PluginConfigurable implements Configurable {
         SettingsState settingsState = getState();
         saveOntologyState(settingsState);
         saveMappingState(settingsState);
+        saveModelInstanceMappingState(settingsState);
     }
 
     private void saveOntologyState(SettingsState settingsState) {
@@ -114,11 +125,23 @@ public class PluginConfigurable implements Configurable {
         settingsState.mappingPaths = mapping;
     }
 
+    private void saveModelInstanceMappingState(SettingsState settingsState) {
+        final HashMap<String, String> mapping = new HashMap<>();
+        for (Map.Entry<String, String> entry : settingsComponent.getModelInstanceMapper().entrySet()) {
+            if (!entry.getKey().isBlank() && !entry.getValue().isBlank()) {
+                mapping.put(entry.getKey(), entry.getValue());
+            }
+        }
+        settingsComponent.setModelInstanceMapper(mapping);
+        settingsState.modelInstanceMapping = mapping;
+    }
+
     @Override
     public void reset() {
         SettingsState settingsState = getState();
         settingsComponent.setOntologyModelRootPath(settingsState.ontologyModelRootPath);
         settingsComponent.setPathMapper(settingsState.mappingPaths);
+        settingsComponent.setModelInstanceMapper(settingsState.modelInstanceMapping);
     }
 
     @Override
