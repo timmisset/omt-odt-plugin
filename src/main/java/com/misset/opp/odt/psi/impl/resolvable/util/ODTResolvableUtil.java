@@ -83,6 +83,9 @@ public class ODTResolvableUtil {
             final Individual individual = (Individual) resource;
             if (isXSDType(individual.getOntClass())) {
                 return individual.getOntClass().getURI() + " (VALUE)";
+            } else if (individual.getOntClass().equals(OppModel.INSTANCE.OPP_CLASS)) {
+                // Specific OPP_CLASS instances that describe non-ontology values such as JSON_OBJECT, ERROR etc
+                return individual.getURI();
             }
             return individual.getOntClass().getURI() + " (INSTANCE)";
         } else {

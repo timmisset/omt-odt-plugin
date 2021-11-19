@@ -36,6 +36,7 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -46,8 +47,8 @@ import java.util.stream.Collectors;
 
 import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectLocalCommandProviders;
 
-public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODTCall, ODTResolvable {
-    public ODTBaseCall(@NotNull ASTNode node) {
+public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implements ODTCall, ODTResolvable {
+    public ODTResolvableCall(@NotNull ASTNode node) {
         super(node);
     }
 
@@ -124,7 +125,7 @@ public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODT
 
     @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
-        final ODTCallName callName = ODTElementGenerator.getInstance(getProject()).createCall(name).getCallName();
+        final ODTCallName callName = ODTElementGenerator.getInstance(getProject()).createCallName(name);
         return getCallName().replace(callName);
     }
 
@@ -143,14 +144,17 @@ public abstract class ODTBaseCall extends ODTASTWrapperPsiElement implements ODT
     }
 
     @Override
-    public @NotNull List<ODTSignatureArgument> getSignatureArguments() {
+    public @NotNull List<ODTResolvableSignatureArgument> getSignatureArguments() {
         return Optional.ofNullable(getSignature())
                 .map(ODTSignature::getSignatureArgumentList)
-                .orElse(Collections.emptyList());
+                .stream()
+                .flatMap(Collection::stream)
+                .map(ODTResolvableSignatureArgument.class::cast)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public @Nullable ODTSignatureArgument getSignatureArgument(int index) {
+    public @Nullable ODTResolvableSignatureArgument getSignatureArgument(int index) {
         return Optional.of(getSignatureArguments())
                 .filter(list -> list.size() > index)
                 .map(list -> list.get(index))

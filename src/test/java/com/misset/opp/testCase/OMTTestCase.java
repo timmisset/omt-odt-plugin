@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
 
@@ -96,10 +96,10 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
         );
     }
 
-    protected ODTBaseCall getCallByName(String callName) {
+    protected ODTResolvableCall getCallByName(String callName) {
         final ODTCallName elementByText = myFixture.findElementByText(callName, ODTCallName.class);
         if (elementByText != null) {
-            return (ODTBaseCall) elementByText.getParent();
+            return (ODTResolvableCall) elementByText.getParent();
         }
         fail("Could not find call by name: " + callName + ", make sure the caret is located within an ODT script and includes " +
                 "the @ if it's a Command callname");

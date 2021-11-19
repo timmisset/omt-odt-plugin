@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class ODTCallReference extends PsiReferenceBase.Poly<ODTBaseCall> implements PsiPolyVariantReference {
-    public ODTCallReference(@NotNull ODTBaseCall element,
+public class ODTCallReference extends PsiReferenceBase.Poly<ODTResolvableCall> implements PsiPolyVariantReference {
+    public ODTCallReference(@NotNull ODTResolvableCall element,
                             TextRange rangeInElement) {
         super(element, rangeInElement, false);
     }

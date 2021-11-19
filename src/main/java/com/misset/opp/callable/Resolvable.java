@@ -1,5 +1,6 @@
 package com.misset.opp.callable;
 
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +45,14 @@ public interface Resolvable {
     default Set<OntResource> resolve(Set<OntResource> resources,
                                      Call call) {
         return resolve(resources);
+    }
+
+    /**
+     * Returns true if resolve contains a single value which is XSD_BOOLEAN_INSTANCE
+     */
+    default boolean isBoolean() {
+        final Set<OntResource> resolved = resolve();
+        return resolved.size() == 1 && resolved.contains(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
 
 }

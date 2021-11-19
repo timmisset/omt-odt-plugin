@@ -6,12 +6,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.LocalTimeCounter;
+import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCall;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public final class ODTElementGenerator {
@@ -39,12 +45,31 @@ public final class ODTElementGenerator {
         return fromFile(prefix + ":dummy", ODTNamespacePrefix.class);
     }
 
-    public ODTScriptLine createDefinePrefix(String prefix, String namespace) {
+    public ODTScriptLine createDefinePrefix(String prefix,
+                                            String namespace) {
         return fromFile("PREFIX " + prefix + ": <" + namespace + ">", ODTScriptLine.class);
     }
 
-    public ODTBaseCall createCall(String name) {
-        return fromFile("@" + name, ODTBaseCall.class);
+    public ODTCallName createCallName(String name) {
+        return fromFile("@" + name, ODTCallName.class);
+    }
+
+    public ODTCall createCall(String name,
+                              @Nullable String flag,
+                              String... arguments) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(name);
+        if (flag != null) {
+            stringBuilder.append("!").append(flag);
+        }
+        final String argumentContent = Arrays.stream(arguments)
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .collect(Collectors.joining(", "));
+        if (!argumentContent.isBlank()) {
+            stringBuilder.append("(").append(argumentContent).append(")");
+        }
+        return fromFile(stringBuilder.toString(), ODTCall.class);
     }
 
     public ODTVariable createVariable(String name) {

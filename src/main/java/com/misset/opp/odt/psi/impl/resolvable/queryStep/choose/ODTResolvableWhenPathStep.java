@@ -22,14 +22,33 @@ public abstract class ODTResolvableWhenPathStep extends ODTResolvableQueryStepBa
     @Override
     public @NotNull Set<OntResource> resolve() {
         final List<ODTQuery> queryList = getQueryList();
-        if(queryList.isEmpty()) { return Collections.emptySet(); }
-        if(queryList.size() == 1) { return resolveQuery(0); }
+        if (queryList.isEmpty()) {
+            return Collections.emptySet();
+        }
+        if (queryList.size() == 1) {
+            return resolveQuery(0);
+        }
         return resolveQuery(1);
     }
+
     private Set<OntResource> resolveQuery(int index) {
         return Optional.ofNullable(getQueryList().get(index))
                 .map(Resolvable::resolve)
                 .orElse(Collections.emptySet());
+    }
+
+    public ODTQuery getCondition() {
+        if (getQueryList().isEmpty()) {
+            return null;
+        }
+        return getQueryList().get(0);
+    }
+
+    public ODTQuery getThen() {
+        if (getQueryList().size() != 2) {
+            return null;
+        }
+        return getQueryList().get(1);
     }
 
     @Override

@@ -15,13 +15,13 @@ import java.util.Set;
 
 /**
  * The OperatorCall is considered both a Call and a QueryStep
- * The ODTBaseCall provides all required Call abstract methods and ODTOperatorCall interface
+ * The ODTResolvableCall provides all required Call abstract methods and ODTOperatorCall interface
  * extends the ODTQueryStep interface to enforce the implementation of QueryStep behavior
  *
  * @see com/misset/opp/odt/ODT.bnf
  * The class both extends the QueryStep interface and mixin the abstract class
  */
-public abstract class ODTOperatorCallImpl extends ODTBaseCall implements ODTOperatorCall {
+public abstract class ODTOperatorCallImpl extends ODTResolvableCall implements ODTOperatorCall {
     public ODTOperatorCallImpl(@NotNull ASTNode node) {
         super(node);
     }

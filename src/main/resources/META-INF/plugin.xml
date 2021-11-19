@@ -22,7 +22,7 @@
                                 order="first" language="yaml"/>
         <psi.referenceContributor language="yaml"
                                   implementation="com.misset.opp.omt.OMTReferenceContributor"/>
-        <!-- OMT Language -->
+        <!-- OMT -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>
         <lang.parserDefinition language="OMT"
@@ -32,43 +32,27 @@
         <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
 
         <!-- Inspections -->
-        <localInspection displayName="UnknownKeyInspection"
-                         groupName="OMT"
-                         language="OMT"
-                         enabledByDefault="true"
-                         level="ERROR"
+        <localInspection displayName="UnknownKeyInspection" groupName="OMT" language="OMT"
+                         enabledByDefault="true" level="ERROR"
                          implementationClass="com.misset.opp.omt.inspection.OMTUnkownKeysInspection"/>
-        <localInspection displayName="OMTUnusedInspection"
-                         groupName="OMT"
-                         language="OMT"
-                         enabledByDefault="true"
-                         level="WARNING"
+        <localInspection displayName="OMTUnusedInspection" groupName="OMT" language="OMT"
+                         enabledByDefault="true" level="WARNING"
                          implementationClass="com.misset.opp.omt.inspection.OMTUnusedInspection"/>
-        <localInspection displayName="OMTUnusedInspection"
-                         groupName="OMT"
-                         language="OMT"
-                         enabledByDefault="true"
-                         level="WARNING"
+        <localInspection displayName="OMTUnusedInspection" groupName="OMT" language="OMT"
+                         enabledByDefault="true" level="WARNING"
                          implementationClass="com.misset.opp.omt.inspection.OMTUnnecessaryWrappingInspection"/>
-        <localInspection displayName="DuplicateVariableInspection"
-                         groupName="OMT"
-                         language="OMT"
-                         enabledByDefault="true"
-                         level="ERROR"
+        <localInspection displayName="DuplicateVariableInspection" groupName="OMT" language="OMT"
+                         enabledByDefault="true" level="ERROR"
                          implementationClass="com.misset.opp.omt.inspection.OMTDuplicateVariableInspection"/>
-        <localInspection displayName="MissingKeyInspection"
-                         groupName="OMT"
-                         language="OMT"
-                         enabledByDefault="true"
-                         level="ERROR"
+        <localInspection displayName="MissingKeyInspection" groupName="OMT" language="OMT"
+                         enabledByDefault="true" level="ERROR"
                          implementationClass="com.misset.opp.omt.inspection.OMTMissingKeysInspection"/>
-        <localInspection displayName="ValueInspection"
-                         groupName="OMT"
-                         language="OMT"
-                         enabledByDefault="true"
-                         level="ERROR"
+        <localInspection displayName="ValueInspection" groupName="OMT" language="OMT"
+                         enabledByDefault="true" level="ERROR"
                          implementationClass="com.misset.opp.omt.inspection.OMTValueInspection"/>
-        <!-- ODT Language -->
+
+
+        <!-- ODT -->
         <fileType name="ODT File" implementationClass="com.misset.opp.odt.ODTFileType" fieldName="INSTANCE"
                   language="ODT" extensions="odt"/>
         <multiHostInjector implementation="com.misset.opp.odt.ODTMultiHostInjector"/>
@@ -87,34 +71,53 @@
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>
+        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.CodeAnnotatorUnresolvable"/>
 
         <lang.documentationProvider language="ODT"
                                     implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
 
         <!-- Inspections -->
-        <localInspection displayName="ODTUnusedInspection"
-                         groupName="ODT"
-                         language="ODT"
-                         enabledByDefault="true"
-                         level="WARNING"
+        <localInspection displayName="Unused" groupName="Redundancy" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTUnusedInspection"/>
-        <localInspection
-                displayName="ODTRDFTraverseInspection"
-                groupName="ODT"
-                language="ODT"
-                enabledByDefault="true"
-                level="WARNING"
-                implementationClass="com.misset.opp.odt.inspection.ODTResolvableInspection"/>
+        <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.ODTResolvableInspection"/>
+        <localInspection displayName="Boolean value" groupName="Type validation" language="ODT"
+                         enabledByDefault="true" level="ERROR" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionBoolean"/>
+        <localInspection displayName="Unreachable code" groupName="Redundancy" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionUnreachable"/>
+        <localInspection displayName="Duplicated DEFINE statements" groupName="Redundancy" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication"/>
 
-        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.CodeAnnotatorUnresolvable"/>
+        <!-- Builtin command inspections -->
+        <localInspection shortName="CommandInspectionForEach" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect builtin command: FOREACH" groupPath="ODT"
+                         groupName="Builtin" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.commands.ODTCommandInspectionForEach"/>
 
-        <!-- TTL Language -->
+        <!-- Builtin operator inspections -->
+        <localInspection shortName="OperatorInspectionChoose" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect builtin operator: CHOOSE" groupPath="ODT"
+                         groupName="Builtin" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.operators.ODTOperatorInspectionChoose"/>
+        <localInspection shortName="OperatorInspectionIIf" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect builtin operator: IIF" groupPath="ODT"
+                         groupName="Builtin" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.operators.ODTOperatorInspectionIIf"/>
+
+        <!-- TTL -->
         <postStartupActivity implementation="com.misset.opp.ttl.LoadOntologyStartupActivity"/>
         <notificationGroup id="Update Ontology" displayType="BALLOON"/>
 
         <!-- JAVA -->
         <psi.referenceContributor language="JAVA"
                                   implementation="com.misset.opp.odt.psi.reference.ODTJavaDocReferenceContributor"/>
+
+
     </extensions>
     <depends>com.intellij.java</depends>
 

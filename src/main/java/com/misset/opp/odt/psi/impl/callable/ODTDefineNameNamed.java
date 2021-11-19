@@ -44,7 +44,7 @@ public abstract class ODTDefineNameNamed extends ODTASTWrapperPsiElement impleme
 
     @Override
     public @NotNull SearchScope getUseScope() {
-        final ODTFile containingFile = (ODTFile) getContainingFile();
+        final ODTFile containingFile = getContainingFile();
         return containingFile.getExportingMemberUseScope();
     }
 

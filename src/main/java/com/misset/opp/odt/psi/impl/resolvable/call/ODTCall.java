@@ -7,7 +7,6 @@ import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.ODTFlagSignature;
 import com.misset.opp.odt.psi.ODTSignature;
-import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -30,10 +29,10 @@ public interface ODTCall extends Call, PsiNamedElement, ODTResolvable, ODTDocume
     ODTSignature getSignature();
 
     @NotNull
-    List<ODTSignatureArgument> getSignatureArguments();
+    List<ODTResolvableSignatureArgument> getSignatureArguments();
 
     @Nullable
-    ODTSignatureArgument getSignatureArgument(int index);
+    ODTResolvableSignatureArgument getSignatureArgument(int index);
 
     /**
      * Returns the resolved OntResource set at the given index

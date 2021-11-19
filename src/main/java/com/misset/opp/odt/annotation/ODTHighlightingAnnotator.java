@@ -10,6 +10,11 @@ import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.syntax.ODTSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Highlighting for the resolved types is set by the
+ *
+ * @see com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil
+ */
 public class ODTHighlightingAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull PsiElement element,
@@ -20,6 +25,7 @@ public class ODTHighlightingAnnotator implements Annotator {
             setHighlightingAnnotation(holder, ODTSyntaxHighlighter.DefineAttributesKey);
         }
     }
+
     private void setHighlightingAnnotation(AnnotationHolder holder, TextAttributesKey textAttributesKey) {
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .textAttributes(textAttributesKey)

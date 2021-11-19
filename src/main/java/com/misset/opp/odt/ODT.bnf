@@ -87,7 +87,7 @@ commandCall ::=                             AT callName flagSignature? signature
 signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
 signatureArgument ::=                       resolvableValue | commandBlock {
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
-    extends="com.misset.opp.odt.psi.impl.resolvable.call.ODTSignatureArgumentBase"
+    extends="com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgument"
 }
 flagSignature ::=                           TAG
 resolvableValue ::=                         query | commandCall {
@@ -106,7 +106,7 @@ chooseBlock ::=                             CHOOSE_OPERATOR
                                                     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableChooseBlockStep"
                                                     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
                                                 }
-whenPath ::=                                WHEN_OPERATOR booleanStatement? LAMBDA? query? {
+whenPath ::=                                WHEN_OPERATOR query? LAMBDA? query? {
     extends=queryStep
     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableWhenPathStep"
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
