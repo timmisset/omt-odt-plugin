@@ -67,7 +67,11 @@ public class OMTMetaTreeUtil {
                 if (element == null) {
                     return Optional.empty();
                 }
-                return Optional.of(PsiElementResolveResult.createResults(element));
+                ResolveResult[] results = prefixMap.get(key).stream()
+                        .filter(Objects::nonNull)
+                        .map(PsiElementResolveResult::new)
+                        .toArray(ResolveResult[]::new);
+                return Optional.of(results);
             }
         }
 

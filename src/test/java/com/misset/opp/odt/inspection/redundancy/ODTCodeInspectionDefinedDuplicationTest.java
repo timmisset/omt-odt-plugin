@@ -14,7 +14,7 @@ class ODTCodeInspectionDefinedDuplicationTest extends InspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTCodeInspectionDefinedDuplication.class);
+        return Collections.singleton(com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication.class);
     }
 
     @Test

@@ -75,7 +75,7 @@ class ODTOperatorInspectionChooseTest extends InspectionTestCase {
                 "CHOOSE WHEN $condition => 'a' END"));
 
         invokeQuickFixIntention(REPLACE_QUICKFIX_TITLE);
-        Assertions.assertTrue(getFile().getText().contains("@IIF($condition, 'a')"));
+        Assertions.assertTrue(getFile().getText().contains("IIF($condition, 'a')"));
         Assertions.assertFalse(getFile().getText().contains("CHOOSE"));
     }
 

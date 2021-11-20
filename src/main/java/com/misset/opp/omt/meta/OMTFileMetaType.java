@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addDefinedStatementsToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addImportStatementsToMap;
+import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addModelItemsToMap;
 
 /**
  * The OMTFileMetaType is the root for all OMT features
@@ -54,8 +55,13 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
         addDefinedStatementsToMap(yamlMapping, "queries", map);
         addDefinedStatementsToMap(yamlMapping, "commands", map);
 
+        final YAMLKeyValue model = yamlMapping.getKeyValueByKey("model");
+        if (model != null && model.getValue() instanceof YAMLMapping) {
+            addModelItemsToMap((YAMLMapping) model.getValue(), map);
+        }
+
         final YAMLKeyValue imports = yamlMapping.getKeyValueByKey("import");
-        if(imports != null && imports.getValue() instanceof YAMLMapping) {
+        if (imports != null && imports.getValue() instanceof YAMLMapping) {
             addImportStatementsToMap((YAMLMapping) imports.getValue(), map);
         }
         return map;
