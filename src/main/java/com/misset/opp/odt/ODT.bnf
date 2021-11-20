@@ -1,6 +1,5 @@
 {
   parserClass="org.intellij.sdk.language.parser.ODTParser"
-  parserUtilClass="org.intellij.sdk.language.parser.ODTParserUtil"
 
   extends="com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement"
   implements="com.misset.opp.odt.psi.ODTPsiElement"
@@ -63,7 +62,7 @@ commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
 // and finally, all runnable OMT modelitems are available as Commands (Activity, Procedure) or Operator (StandAloneQuery)
 // only the Defined members are part of set of the grammar parser
 defineName ::=                              SYMBOL {
-    extends="com.misset.opp.odt.psi.impl.callable.ODTDefineNameNamed"
+    extends="com.misset.opp.odt.psi.impl.callable.ODTResolvableDefineName"
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
 }
 defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"}

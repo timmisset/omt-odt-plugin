@@ -13,7 +13,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
-import com.misset.opp.odt.psi.ODTQueryOperation;
+import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
@@ -34,7 +34,7 @@ import java.util.Set;
  * The ODTQueryOperation is the container of a ODTQueryStep and one or more filters
  * It is the class that should be used to resolve the query step since it contains the filter
  */
-public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiElement implements ODTQueryOperation, ODTResolvable {
+public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiElement implements ODTQueryOperationStep, ODTResolvable {
     public ODTResolvableQueryOperationStep(@NotNull ASTNode node) {
         super(node);
     }

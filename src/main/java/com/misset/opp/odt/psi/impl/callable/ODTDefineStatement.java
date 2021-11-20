@@ -70,11 +70,4 @@ public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement impleme
             call.setParamType(variables.get(i).getName(), call.resolveSignatureArgument(i));
         }
     }
-
-    public boolean hasSameIdentifier(@Nullable ODTDefineStatement defineStatement) {
-        if (defineStatement == null) {
-            return false;
-        }
-        return defineStatement.getCallId().equals(getCallId());
-    }
 }

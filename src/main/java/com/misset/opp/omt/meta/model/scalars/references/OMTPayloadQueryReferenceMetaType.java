@@ -7,6 +7,7 @@ import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTQueryPath;
 import com.misset.opp.omt.meta.ODTInjectable;
+import com.misset.opp.omt.meta.model.ODTSimpleInjectable;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlStringType;
@@ -14,6 +15,7 @@ import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.Optional;
 
+@ODTSimpleInjectable
 public class OMTPayloadQueryReferenceMetaType extends YamlStringType implements ODTInjectable {
 
     @Override

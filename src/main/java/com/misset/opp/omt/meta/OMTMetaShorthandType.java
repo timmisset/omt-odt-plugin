@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.omt.meta.model.ODTSimpleInjectable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
  * MetaMap that provides an entry/item for any name that is entered as key
  * it has no opinion about the validity of keys
  */
+@ODTSimpleInjectable
 public abstract class OMTMetaShorthandType extends OMTMetaType {
 
     protected OMTMetaShorthandType(@NotNull String name) {

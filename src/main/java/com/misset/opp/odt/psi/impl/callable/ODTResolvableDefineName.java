@@ -22,8 +22,8 @@ import java.util.Set;
 /**
  * Named version of th ODTDefineName to allow FindUsage and renaming
  */
-public abstract class ODTDefineNameNamed extends ODTASTWrapperPsiElement implements PsiNamedElement, ODTResolvable, PsiJavaDocumentedElement {
-    public ODTDefineNameNamed(@NotNull ASTNode node) {
+public abstract class ODTResolvableDefineName extends ODTASTWrapperPsiElement implements PsiNamedElement, ODTResolvable, PsiJavaDocumentedElement {
+    public ODTResolvableDefineName(@NotNull ASTNode node) {
         super(node);
     }
 
@@ -46,6 +46,17 @@ public abstract class ODTDefineNameNamed extends ODTASTWrapperPsiElement impleme
     public @NotNull SearchScope getUseScope() {
         final ODTFile containingFile = getContainingFile();
         return containingFile.getExportingMemberUseScope();
+    }
+
+    public String getCallId() {
+        return getParent().getCallId();
+    }
+
+    public boolean hasSameIdentifier(@Nullable ODTResolvableDefineName defineName) {
+        if (defineName == null) {
+            return false;
+        }
+        return defineName.getCallId().equals(getCallId());
     }
 
     @Override

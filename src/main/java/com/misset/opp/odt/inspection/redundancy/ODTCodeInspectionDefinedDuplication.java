@@ -9,11 +9,14 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.callable.ODTResolvableDefineName;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class ODTCodeInspectionDefinedDuplication extends LocalInspectionTool {
 
@@ -32,25 +35,29 @@ public class ODTCodeInspectionDefinedDuplication extends LocalInspectionTool {
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (element instanceof ODTDefineStatement) {
-                    final ODTDefineStatement statement = (ODTDefineStatement) element;
+                if (element instanceof ODTResolvableDefineName) {
+                    final ODTResolvableDefineName name = (ODTResolvableDefineName) element;
                     final PsiFile file = holder.getFile();
                     // within this ODT File
-                    if (PsiTreeUtil.findChildrenOfType(file, ODTDefineStatement.class).stream()
-                            .filter(defineStatement -> defineStatement != statement)
-                            .anyMatch(statement::hasSameIdentifier)) {
-                        holder.registerProblem(statement, WARNING_MESSAGE_DUPLICATION, ProblemHighlightType.WARNING);
+                    if (PsiTreeUtil.findChildrenOfType(file, ODTResolvableDefineName.class).stream()
+                            .filter(defineName -> defineName != name)
+                            .anyMatch(name::hasSameIdentifier)) {
+                        holder.registerProblem(name, WARNING_MESSAGE_DUPLICATION, ProblemHighlightType.WARNING);
                     }
 
                     if (file instanceof ODTFile) {
                         final ResolveResult[] resolveResults = ((ODTFile) file).resolveInOMT(
                                         OMTCallableProvider.class,
-                                        statement.getCallId(),
+                                        name.getCallId(),
                                         OMTCallableProvider::getCallableMap)
                                 .orElse(ResolveResult.EMPTY_ARRAY);
                         // Either declared in the OMT file or imported:
                         if (resolveResults.length > 0) {
-                            holder.registerProblem(statement, WARNING_MESSAGE_SHADOW, ProblemHighlightType.WARNING);
+                            if (Stream.of(resolveResults).map(ResolveResult::getElement)
+                                    .filter(Objects::nonNull)
+                                    .anyMatch(match -> match != element)) {
+                                holder.registerProblem(name, WARNING_MESSAGE_SHADOW, ProblemHighlightType.WARNING);
+                            }
                         }
                     }
                 }

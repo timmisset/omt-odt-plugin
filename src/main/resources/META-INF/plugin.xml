@@ -38,7 +38,7 @@
         <localInspection displayName="OMTUnusedInspection" groupName="OMT" language="OMT"
                          enabledByDefault="true" level="WARNING"
                          implementationClass="com.misset.opp.omt.inspection.OMTUnusedInspection"/>
-        <localInspection displayName="OMTUnusedInspection" groupName="OMT" language="OMT"
+        <localInspection displayName="OMTUnnecessaryWrappingInspection" groupName="OMT" language="OMT"
                          enabledByDefault="true" level="WARNING"
                          implementationClass="com.misset.opp.omt.inspection.OMTUnnecessaryWrappingInspection"/>
         <localInspection displayName="DuplicateVariableInspection" groupName="OMT" language="OMT"
@@ -63,7 +63,6 @@
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
         <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>
         <lang.formatter language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTFormattingModelBuilder"/>
-
         <!-- Completions -->
         <completion.contributor language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.ODTTraverseCompletion"/>
@@ -72,6 +71,7 @@
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.CodeAnnotatorUnresolvable"/>
+        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTSemicolonAnnotator"/>
 
         <lang.documentationProvider language="ODT"
                                     implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
@@ -88,10 +88,19 @@
                          implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionBoolean"/>
         <localInspection displayName="Unreachable code" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionUnreachable"/>
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionUnreachable"/>
+        <localInspection displayName="Unnecessary wrapping" groupName="Redundancy" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.ODTStyleInspectionUnnecessaryWrappingSubquery"/>
+
+        <!-- Redudancy -->
         <localInspection displayName="Duplicated DEFINE statements" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication"/>
+
+        <localInspection displayName="Unnecessary Identifier operator" groupName="Redundancy" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryIdentifierOperator"/>
 
         <!-- Builtin command inspections -->
         <localInspection shortName="CommandInspectionForEach" hasStaticDescription="true"
@@ -117,6 +126,8 @@
         <psi.referenceContributor language="JAVA"
                                   implementation="com.misset.opp.odt.psi.reference.ODTJavaDocReferenceContributor"/>
 
+        <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
+                                 implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
 
     </extensions>
     <depends>com.intellij.java</depends>

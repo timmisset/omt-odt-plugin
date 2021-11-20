@@ -77,7 +77,7 @@ public class ODTOperatorInspectionChoose extends LocalInspectionTool {
             return null;
         }
         return ODTElementGenerator.getInstance(chooseBlock.getProject())
-                .createCall("@IIF", null,
+                .createCall("IIF", null,
                         Optional.ofNullable(whenPath.getCondition()).map(PsiElement::getText).orElse(null),
                         Optional.ofNullable(whenPath.getThen()).map(PsiElement::getText).orElse(null),
                         Optional.ofNullable(chooseBlock.getOtherwisePath())

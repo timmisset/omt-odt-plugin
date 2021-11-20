@@ -3,7 +3,6 @@ package com.misset.opp.odt.psi.impl.resolvable.query;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.Call;
-import com.misset.opp.odt.psi.ODTQueryOperation;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTQueryPath;
 import com.misset.opp.odt.psi.ODTTypes;
@@ -75,7 +74,7 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
         // todo: not supported yet
         // possibility: $input[NOT rdf:type == /ont:ClassA]
         return Optional.ofNullable(getLastOperation())
-                .map(ODTQueryOperation::getQueryStep)
+                .map(ODTQueryOperationStep::getQueryStep)
                 .map(odtQueryStep -> odtQueryStep.filter(resources))
                 .orElse(resources); // by default, return the input
     }

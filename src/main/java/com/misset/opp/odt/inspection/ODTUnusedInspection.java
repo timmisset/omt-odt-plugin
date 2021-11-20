@@ -32,11 +32,15 @@ public class ODTUnusedInspection extends LocalInspectionTool {
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if(!CHECK_CAN_FIND_USAGES.test(element)) { return; }
-                if(!(element instanceof PsiNamedElement)) { return; }
+                if (!CHECK_CAN_FIND_USAGES.test(element)) {
+                    return;
+                }
+                if (!(element instanceof PsiNamedElement)) {
+                    return;
+                }
                 final PsiNamedElement namedElement = (PsiNamedElement) element;
-                if(ReferencesSearch.search(element, element.getUseScope())
-                        .allowParallelProcessing().findFirst() == null && !isException(element)) {
+                if (!isException(element) && ReferencesSearch.search(element, element.getUseScope())
+                        .allowParallelProcessing().findFirst() == null) {
                     holder.registerProblem(
                             namedElement,
                             namedElement.getName() + " is never used",

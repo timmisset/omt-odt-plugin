@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
+@ODTSimpleInjectable
 public class OMTPayloadItemMetaType extends OMTLocalVariableTypeProviderMetaType implements ODTInjectable, OMTLocalVariableTypeProvider {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
