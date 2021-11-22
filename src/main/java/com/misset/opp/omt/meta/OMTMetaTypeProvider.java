@@ -4,11 +4,13 @@ import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.omt.indexing.YAMLStructureIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -24,6 +26,7 @@ import java.util.Optional;
 public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
     private static final Key<CachedValue<MetaTypeProxy>> VALUE_META_TYPE = new Key<>("VALUE_META_TYPE");
     private static final Key<CachedValue<MetaTypeProxy>> KEY_VALUE_META_TYPE = new Key<>("KEY_VALUE_META_TYPE");
+    private static final Key<CachedValue<MetaTypeProxy>> META_TYPE_PROXY = new Key<>("META_TYPE_PROXY");
 
     /**
      * The YamlMetaTypeProvider already provides the containing Yaml file as modification dependency.
@@ -34,8 +37,6 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
      */
     private static final ModificationTracker YAML_MODIFICATION_TRACKER = ModificationTracker.NEVER_CHANGED;
     private static final ModelAccess modelAccess = document -> {
-        // todo:
-        // add different behavior when a module.omt file is provided
         String title = Optional.ofNullable(document.getContainingFile())
                 .map(PsiFileSystemItem::getName)
                 .orElse("an-omt-file");
@@ -53,19 +54,18 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
 
     @Override
     public @Nullable MetaTypeProxy getKeyValueMetaType(@NotNull YAMLKeyValue keyValue) {
-        return CachedValuesManager.getCachedValue(keyValue, KEY_VALUE_META_TYPE, () -> {
-            if (Optional.of(keyValue)
-                    .map(YAMLKeyValue::getValue)
-                    .map(YAMLValue::getTag)
-                    .isEmpty()) {
-                return new CachedValueProvider.Result<>(super.getKeyValueMetaType(keyValue),
-                        keyValue.getContainingFile(),
-                        YAML_MODIFICATION_TRACKER);
-            }
-            return new CachedValueProvider.Result<>(getTaggedKeyValueMetaType(keyValue),
-                    keyValue.getContainingFile(),
-                    YAML_MODIFICATION_TRACKER);
-        });
+        return YAMLStructureIndex.getMetaTypeProxyByFullName(keyValue, () ->
+                CachedValuesManager.getCachedValue(keyValue, KEY_VALUE_META_TYPE, () -> {
+                    if (Optional.of(keyValue)
+                            .map(YAMLKeyValue::getValue)
+                            .map(YAMLValue::getTag)
+                            .isEmpty()) {
+                        return new CachedValueProvider.Result<>(super.getKeyValueMetaType(keyValue),
+                                keyValue.getContainingFile());
+                    }
+                    return new CachedValueProvider.Result<>(getTaggedKeyValueMetaType(keyValue),
+                            keyValue.getContainingFile());
+                }));
     }
 
     /**
@@ -80,12 +80,10 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
                     .map(YAMLValue::getTag)
                     .isEmpty()) {
                 return new CachedValueProvider.Result<>(super.getValueMetaType(typedValue),
-                        typedValue.getContainingFile(),
-                        YAML_MODIFICATION_TRACKER);
+                        typedValue.getContainingFile());
             }
             return new CachedValueProvider.Result<>(getTaggedValueMetaType(typedValue),
-                    typedValue.getContainingFile(),
-                    YAML_MODIFICATION_TRACKER);
+                    typedValue.getContainingFile());
         });
     }
 
@@ -122,6 +120,12 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
             }
         }
         return null;
+    }
+
+    @Nullable
+    public MetaTypeProxy getMetaTypeProxy(@NotNull PsiElement element) {
+        return CachedValuesManager.getCachedValue(element, META_TYPE_PROXY, () ->
+                new CachedValueProvider.Result<>(super.getMetaTypeProxy(element), element.getContainingFile()));
     }
 
     private MetaTypeProxy getTaggedKeyValueMetaType(@NotNull YAMLKeyValue keyValue) {
