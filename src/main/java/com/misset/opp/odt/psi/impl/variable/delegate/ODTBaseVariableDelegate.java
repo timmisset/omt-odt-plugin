@@ -9,11 +9,11 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.ODTVariableValue;
+import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
@@ -62,27 +62,28 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
 
     @Override
     public boolean canBeDeclaredVariable(ODTVariable variable) {
-        return element.isDeclaredVariable() && element.sameNameAs(variable) && isAccessibleTo(variable);
+        return element != variable &&
+                element.sameNameAs(variable) &&
+                element.isDeclaredVariable() &&
+                validateCommonParent(variable);
     }
 
-    private boolean isAccessibleTo(ODTVariable variableWrapper) {
-        if (variableWrapper == null || !variableWrapper.isValid() || !element.isValid()) {
-            return false;
+    private boolean validateCommonParent(ODTVariable usage) {
+        final PsiElement commonParent = PsiTreeUtil.findCommonParent(element, usage);
+        // DEFINE COMMAND command($variable) => { $variable } <-- same common parent as ODTDefineStatement OK
+        // DEFINE COMMAND command => { VAR $variable; @LOG($variable); } <-- common parent will be script, so not OK (yet)
+        if (commonParent instanceof ODTDefineStatement) {
+            return true;
         }
-        final PsiElement commonParent = PsiTreeUtil.findCommonParent(element, variableWrapper);
+
         if (commonParent instanceof ODTScript) {
-            // a script block is the common parent, this means the variable is accessible only if this script is also
-            // the first Script parent of the declared variable, i.e.
-            // VAR $x
-            // IF ... { $x } <-- $x has access to VAR $x
-            //
-            // {
-            //    { VAR $x; }
-            //    $x <-- $x has no access to VAR $x
-            // }
-            return PsiTreeUtil.getParentOfType(element, ODTScript.class) == commonParent &&
-                    element.getTextOffset() < variableWrapper.getTextOffset();
+            // only when the declared variable is in the root of the common parent:
+            // VAR $variable
+            // IF true { @LOG($variable); } <-- passed
+
+            // IF true { VAR $variable; } ELSE { @LOG($variable); } <-- failed
+            return PsiTreeUtil.getParentOfType(element, ODTDefineStatement.class, ODTScript.class) == commonParent;
         }
-        return commonParent instanceof ODTDefineQueryStatement;
+        return false;
     }
 }
