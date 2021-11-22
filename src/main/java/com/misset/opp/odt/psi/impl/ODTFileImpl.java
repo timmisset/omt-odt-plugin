@@ -64,9 +64,12 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
             final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(getProject());
             final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(this);
             if (!(injectionHost instanceof YAMLPsiElement)) {
-                return new CachedValueProvider.Result<>(null, PsiModificationTracker.MODIFICATION_COUNT);
+                return new CachedValueProvider.Result<>(null,
+                        getContainingFile(),
+                        PsiModificationTracker.MODIFICATION_COUNT);
             }
             return new CachedValueProvider.Result<>((YAMLPsiElement) injectionHost,
+                    getContainingFile(),
                     PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
@@ -78,7 +81,9 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                     .filter(OMTFile.class::isInstance)
                     .map(OMTFile.class::cast)
                     .orElse(null);
-            return new CachedValueProvider.Result<>(omtFile, PsiModificationTracker.MODIFICATION_COUNT);
+            return new CachedValueProvider.Result<>(omtFile,
+                    getContainingFile(),
+                    PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 
@@ -123,7 +128,9 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                     .map(OMTScriptMetaType.class::cast)
                     .map(OMTScriptMetaType::isExportable)
                     .orElse(false);
-            return new CachedValueProvider.Result<>(isExportable, PsiModificationTracker.MODIFICATION_COUNT);
+            return new CachedValueProvider.Result<>(isExportable,
+                    getContainingFile(),
+                    PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 
@@ -148,7 +155,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                 () -> new CachedValueProvider.Result<>(ODTInjectionUtil.getProviders(
                         this,
                         yamlType,
-                        metaTypeOrInterface), PsiModificationTracker.MODIFICATION_COUNT));
+                        metaTypeOrInterface), getContainingFile(), PsiModificationTracker.MODIFICATION_COUNT));
     }
 
     public <T> Optional<ResolveResult[]> resolveInOMT(Class<T> providerClass,

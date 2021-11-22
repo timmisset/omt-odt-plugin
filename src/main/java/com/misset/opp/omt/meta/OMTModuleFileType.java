@@ -1,8 +1,8 @@
 package com.misset.opp.omt.meta;
 
-import com.misset.opp.omt.meta.arrays.OMTActionsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTProceduresArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTServicesArrayMetaType;
+import com.misset.opp.omt.meta.model.OMTActionsMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import org.jetbrains.annotations.NonNls;
@@ -29,8 +29,8 @@ public class OMTModuleFileType extends OMTFileMetaType {
         features.put("moduleName", YamlStringType::new);
         features.put("graphs", OMTGraphSelectionMetaType::new);
         features.put("onSessionStart", OMTScriptMetaType::new);
-        features.put("menu", OMTScriptMetaType::new);
-        features.put("actions", OMTActionsArrayMetaType::new);
+        features.put("menu", OMTActionsMetaType::new);
+        features.put("actions", OMTActionsMetaType::new);
         features.put("services", OMTServicesArrayMetaType::new);
         features.put("procedures", OMTProceduresArrayMetaType::new);
     }

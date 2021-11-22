@@ -84,6 +84,7 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
         return CachedValuesManager.getCachedValue(this,
                 IS_DECLARED_VARIABLE,
                 () -> new CachedValueProvider.Result<>(delegate.isDeclaredVariable(),
+                        getContainingFile(),
                         PsiModificationTracker.MODIFICATION_COUNT));
     }
 
@@ -123,6 +124,7 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
             final Set<OntResource> type = delegate.getType();
             return new CachedValueProvider.Result<>(type,
                     getContainingFile(),
+                    PsiModificationTracker.MODIFICATION_COUNT,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }
@@ -135,7 +137,9 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
     public @NotNull SearchScope getUseScope() {
         return CachedValuesManager.getCachedValue(this, USAGE_SEARCH_SCOPE, () -> {
             final SearchScope searchScope = isOMTVariableProvider() ? getOMTUseScope() : getODTUseScope();
-            return new CachedValueProvider.Result<>(searchScope, getContainingFile());
+            return new CachedValueProvider.Result<>(searchScope,
+                    getContainingFile(),
+                    PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 

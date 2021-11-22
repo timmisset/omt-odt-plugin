@@ -4,6 +4,7 @@ import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
+import com.intellij.psi.PsiFileSystemItem;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.Field;
 import org.jetbrains.yaml.meta.model.ModelAccess;
+import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLValue;
 
@@ -34,10 +36,11 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
     private static final ModelAccess modelAccess = document -> {
         // todo:
         // add different behavior when a module.omt file is provided
-        String title = Optional.ofNullable(document.getName())
-                .orElse(document.getContainingFile()
-                        .getName());
-        return new Field(title, new OMTFileMetaType(title));
+        String title = Optional.ofNullable(document.getContainingFile())
+                .map(PsiFileSystemItem::getName)
+                .orElse("an-omt-file");
+        YamlMetaType root = title.endsWith("module.omt") ? new OMTModuleFileType(title) : new OMTFileMetaType(title);
+        return new Field(title, root);
     };
 
     public OMTMetaTypeProvider() {

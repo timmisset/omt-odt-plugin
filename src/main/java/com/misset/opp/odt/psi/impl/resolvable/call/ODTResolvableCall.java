@@ -77,7 +77,9 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
                     .or(this::getLocalCommand)
                     .or(this::getBuiltin)
                     .orElse(null);
-            return new CachedValueProvider.Result<>(callable, PsiModificationTracker.MODIFICATION_COUNT);
+            return new CachedValueProvider.Result<>(callable,
+                    getContainingFile(),
+                    PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 
@@ -144,6 +146,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
                     .map(callable -> callable.resolve(resolvePreviousStep(), this))
                     .orElse(Collections.emptySet());
             return new CachedValueProvider.Result<>(resources,
+                    getContainingFile(),
                     PsiModificationTracker.MODIFICATION_COUNT,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });

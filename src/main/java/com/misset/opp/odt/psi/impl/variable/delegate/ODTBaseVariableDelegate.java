@@ -50,7 +50,9 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
                         metaType instanceof OMTVariableMetaType ||
                         metaType instanceof OMTParamMetaType, PsiModificationTracker.MODIFICATION_COUNT);
             }
-            return new CachedValueProvider.Result<>(false, PsiModificationTracker.MODIFICATION_COUNT);
+            return new CachedValueProvider.Result<>(false,
+                    element.getContainingFile(),
+                    PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
 
