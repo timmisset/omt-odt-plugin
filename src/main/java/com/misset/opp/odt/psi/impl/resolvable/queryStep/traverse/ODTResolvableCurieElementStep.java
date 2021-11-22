@@ -22,7 +22,7 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
     }
 
     @Override
-    public String getFullyQualifiedUri() {
+    public String calculateFullyQualifiedUri() {
         final ODTNamespacePrefixImpl namespacePrefix = (ODTNamespacePrefixImpl) getNamespacePrefix();
         return namespacePrefix.getFullyQualifiedUri(
                 Optional.ofNullable(PsiTreeUtil.nextVisibleLeaf(namespacePrefix))
@@ -37,9 +37,9 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
 
     @Override
     public void inspect(ProblemsHolder holder) {
-        boolean injectedInOMT = ODTInjectionUtil.getInjectionHost(holder.getFile()) != null;
         if(getFullyQualifiedUri() == null) {
             final PsiElement prefix = getNamespacePrefix().getFirstChild();
+            boolean injectedInOMT = ODTInjectionUtil.getInjectionHost(holder.getFile()) != null;
             holder.registerProblem(prefix,
                     "Could not resolve prefix",
                     ProblemHighlightType.ERROR,

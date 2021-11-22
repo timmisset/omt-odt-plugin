@@ -17,7 +17,7 @@ public abstract class ODTResolvableSchemalessIriStep extends ODTResolvableQueryF
     }
 
     @Override
-    public String getFullyQualifiedUri() {
+    public String calculateFullyQualifiedUri() {
         // we require the preceding step to resolve the current IRI
         String localName = getText();
         return resolvePreviousStep().stream()

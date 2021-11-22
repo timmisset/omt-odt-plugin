@@ -144,7 +144,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
                     .map(callable -> callable.resolve(resolvePreviousStep(), this))
                     .orElse(Collections.emptySet());
             return new CachedValueProvider.Result<>(resources,
-                    getContainingFile(),
+                    PsiModificationTracker.MODIFICATION_COUNT,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }

@@ -3,6 +3,11 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.openapi.util.Key;
+import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
@@ -15,16 +20,25 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQueryStepBase {
 
+    private static final Key<CachedValue<String>> FULLY_QUALIFIED_URI = new Key<>("FULLY_QUALIFIED_URI");
+
     public ODTResolvableQualifiedUriStep(@NotNull ASTNode node) {
         super(node);
     }
 
-    public abstract String getFullyQualifiedUri();
+    public abstract String calculateFullyQualifiedUri();
+
+    public String getFullyQualifiedUri() {
+        return CachedValuesManager.getCachedValue(this,
+                FULLY_QUALIFIED_URI,
+                () -> new CachedValueProvider.Result<>(calculateFullyQualifiedUri(),
+                        PsiModificationTracker.MODIFICATION_COUNT));
+    }
 
     @Override
     public void inspect(ProblemsHolder holder) {
         inspectIri(holder);
-        if(!isPartOfReverseStep()) {
+        if (!isPartOfReverseStep()) {
             inspectResolved(holder, "FORWARD");
         }
     }

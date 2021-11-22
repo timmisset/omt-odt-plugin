@@ -457,7 +457,11 @@ public class OppModel {
             if (subject.isIndividual()) {
                 resources = listObjectsForIndividual(subject.asIndividual(), predicate);
             } else {
-                resources = listObjectsForClass(subject.asClass(), predicate);
+                if (!subject.isClass()) {
+                    resources = Collections.emptySet(); // no a valid class
+                } else {
+                    resources = listObjectsForClass(subject.asClass(), predicate);
+                }
             }
             final HashMap<Property, Set<OntResource>> bySubject = listObjectsCache.getOrDefault(subject,
                     new HashMap<>());
