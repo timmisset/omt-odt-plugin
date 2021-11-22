@@ -33,9 +33,13 @@ interpolation ::=                           INTERPOLATION_START script? INTERPOL
 // a variable is declared using VAR and one or more variable names. Optionally an assignment is added
 // the assignment is deconstructed to the entire set of variables that is declared. i.e. VAR $a, $b = [1, 2]. $a == 1, $b == 2
 // or can be VAR $a = 1, $b = 2 etc.
-declareVariable ::=                         DECLARE_VAR (variableAssignment | variable) (COMMA (variableAssignment | variable))*
+declareVariable ::=                         DECLARE_VAR (variableAssignment | variable) (COMMA (variableAssignment | variable))* {
+    extends=scriptContent
+}
 // a variable assignment is $var = 1234
-variableAssignment::=                       variable (COMMA variable)* EQUALS variableValue
+variableAssignment::=                       variable (COMMA variable)* EQUALS variableValue {
+                                                                                                extends=scriptContent
+                                                                                            }
 // a variable can be assigned with anything
 variableValue ::=                           query | commandCall
 variable ::=                                VARIABLE_NAME {
@@ -52,9 +56,10 @@ script ::=                                  scriptLine+
 scriptLine ::=                              ((scriptContent SEMICOLON*) | commandBlock | logicalBlock | defineQueryStatement | defineCommandStatement)
 // the contents of a script, contained by a scriptLine or Scalar
 scriptContent ::=                           declareVariable | variableAssignment | definePrefix | commandCall | assignmentStatement |
-                                            addToCollection | removeFromCollection | returnStatement | query
+                                            addToCollection | removeFromCollection | returnStatement | queryStatement
 
 commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
+queryStatement ::=                          query { extends=scriptContent }
 
 // DEFINED MEMBERS
 // ODT Members are Operator and Commands, both can be created by a DEFINE statement
@@ -68,7 +73,8 @@ defineName ::=                              SYMBOL {
 defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"}
 defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement"}
 definePrefix ::=                            PREFIX_DEFINE_START namespacePrefix IRI {
-    extends="com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix"
+    extends=scriptContent
+    mixin="com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix"
 }
 defineParam ::=                             PARENTHESES_OPEN (variable (COMMA variable)*)? PARENTHESES_CLOSE
 callName ::=                                SYMBOL | BOOLEAN_OPERATOR
@@ -80,7 +86,8 @@ operatorCall ::=                            callName flagSignature? signature? {
     mixin="com.misset.opp.odt.psi.impl.resolvable.call.ODTOperatorCallImpl"
 }
 commandCall ::=                             AT callName flagSignature? signature? {
-    extends="com.misset.opp.odt.psi.impl.resolvable.call.ODTCommandCallImpl"
+    extends=scriptContent
+    mixin="com.misset.opp.odt.psi.impl.resolvable.call.ODTCommandCallImpl"
     implements="com.misset.opp.odt.psi.impl.resolvable.call.ODTCall"
 }
 signature ::=                               PARENTHESES_OPEN (signatureArgument (COMMA signatureArgument)*)? PARENTHESES_CLOSE
@@ -96,7 +103,7 @@ resolvableValue ::=                         query | commandCall {
 logicalBlock ::=                            ifBlock commandBlock? (ELSE_OPERATOR ifBlock commandBlock?)* elseBlock?
 ifBlock ::=                                 IF_OPERATOR (query | (PARENTHESES_OPEN query PARENTHESES_CLOSE))
 elseBlock ::=                               ELSE_OPERATOR commandBlock
-returnStatement ::=                         RETURN_OPERATOR resolvableValue?
+returnStatement ::=                         RETURN_OPERATOR resolvableValue? { extends=scriptContent }
 chooseBlock ::=                             CHOOSE_OPERATOR 
                                                 whenPath*
                                                 otherwisePath?
@@ -214,6 +221,6 @@ subQuery ::=                                PARENTHESES_OPEN query PARENTHESES_C
 // the assignment statement is used to assign a value to a left-hand target, like a variable or a resolved resource iri
 // addTo and removeFrom are similar which will add/remove the item to/from the collection
 // these are not used defined query statement but in command blocks
-assignmentStatement ::=                     query EQUALS resolvableValue
-addToCollection ::=                         query ADD resolvableValue
-removeFromCollection ::=                    query REMOVE resolvableValue
+assignmentStatement ::=                     query EQUALS resolvableValue { extends=scriptContent }
+addToCollection ::=                         query ADD resolvableValue { extends=scriptContent }
+removeFromCollection ::=                    query REMOVE resolvableValue { extends=scriptContent }

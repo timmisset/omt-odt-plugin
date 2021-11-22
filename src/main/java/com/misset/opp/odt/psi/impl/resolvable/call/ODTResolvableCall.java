@@ -13,7 +13,6 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.Resolvable;
 import com.misset.opp.callable.builtin.commands.BuiltinCommands;
 import com.misset.opp.callable.builtin.operators.BuiltinOperators;
 import com.misset.opp.callable.local.LocalCommand;
@@ -29,6 +28,7 @@ import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.psi.impl.OMTCallable;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +53,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     }
 
     private static final Key<CachedValue<Callable>> CALLABLE = new Key("CALLABLE");
+    private static final Key<CachedValue<Set<OntResource>>> RESOLVED = new Key("RESOLVED");
     private final HashMap<String, Set<OntResource>> parameters = new HashMap<>();
 
     @Override
@@ -138,9 +139,14 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Optional.ofNullable(getCallable())
-                .map(callable -> callable.resolve(resolvePreviousStep(), this))
-                .orElse(Collections.emptySet());
+        return CachedValuesManager.getCachedValue(this, RESOLVED, () -> {
+            final Set<OntResource> resources = Optional.ofNullable(getCallable())
+                    .map(callable -> callable.resolve(resolvePreviousStep(), this))
+                    .orElse(Collections.emptySet());
+            return new CachedValueProvider.Result<>(resources,
+                    getContainingFile(),
+                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
+        });
     }
 
     @Override
@@ -164,8 +170,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     @Override
     public @NotNull Set<OntResource> resolveSignatureArgument(int index) {
         return Optional.ofNullable(getSignatureArgument(index))
-                .map(ODTSignatureArgument::getResolvableValue)
-                .map(Resolvable::resolve)
+                .map(ODTSignatureArgument::resolve)
                 .orElse(Collections.emptySet());
     }
 

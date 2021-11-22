@@ -30,6 +30,7 @@ import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsedVariableDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableAssignmentDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,6 +47,7 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
     private final ODTVariableDelegate delegate;
     private static final Key<CachedValue<SearchScope>> USAGE_SEARCH_SCOPE = new Key<>("USAGE_SEARCH_SCOPE");
     protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
+    protected static final Key<CachedValue<Set<OntResource>>> VARIABLE_TYPE = new Key<>("VARIABLE_TYPE");
 
     public ODTBaseVariable(@NotNull ASTNode node) {
         super(node);
@@ -117,7 +119,12 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
 
     @Override
     public Set<OntResource> getType() {
-        return delegate.getType();
+        return CachedValuesManager.getCachedValue(this, VARIABLE_TYPE, () -> {
+            final Set<OntResource> type = delegate.getType();
+            return new CachedValueProvider.Result<>(type,
+                    getContainingFile(),
+                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
+        });
     }
 
     public boolean isOMTVariableProvider() {

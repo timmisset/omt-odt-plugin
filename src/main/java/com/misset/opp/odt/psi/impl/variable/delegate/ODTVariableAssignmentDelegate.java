@@ -37,24 +37,26 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
     @Override
     public Set<OntResource> getType() {
         // (VAR) $variableA, $variableB = @SOME_COMMAND();
-        if (isDeclaredVariable()) {
-            final ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(element,
-                    ODTVariableAssignment.class);
-            final List<ODTVariable> variableList = variableAssignment.getVariableList();
-            final int i = variableList.indexOf(element);
-            final ODTVariableValue variableValue = variableAssignment.getVariableValue();
-            if (i == 0) {
-                if (variableValue.getQuery() != null) {
-                    return variableValue.getQuery().resolve();
-                } else if (variableValue.getCommandCall() != null) {
-                    return variableValue.getCommandCall().resolve();
-                }
-            } else if (i == 1) {
-                return Optional.ofNullable(variableValue.getCommandCall())
-                        .map(ODTCall::getCallable)
-                        .map(Callable::getSecondReturnArgument)
-                        .orElse(Collections.emptySet());
+        final ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(element,
+                ODTVariableAssignment.class);
+        if (variableAssignment == null) {
+            return Collections.emptySet();
+        }
+
+        final List<ODTVariable> variableList = variableAssignment.getVariableList();
+        final int i = variableList.indexOf(element);
+        final ODTVariableValue variableValue = variableAssignment.getVariableValue();
+        if (i == 0) {
+            if (variableValue.getQuery() != null) {
+                return variableValue.getQuery().resolve();
+            } else if (variableValue.getCommandCall() != null) {
+                return variableValue.getCommandCall().resolve();
             }
+        } else if (i == 1) {
+            return Optional.ofNullable(variableValue.getCommandCall())
+                    .map(ODTCall::getCallable)
+                    .map(Callable::getSecondReturnArgument)
+                    .orElse(Collections.emptySet());
         }
         return Collections.emptySet();
     }

@@ -25,6 +25,11 @@ public class ODTSemicolonAnnotator implements Annotator {
             final boolean hasSemicolonEnding = nextVisibleLeaf != null && nextVisibleLeaf.getNode()
                     .getElementType() == ODTTypes.SEMICOLON;
             final YamlMetaType injectionMetaType = ODTInjectionUtil.getInjectionMetaType(element);
+
+            if (injectionMetaType == null) {
+                return;
+            }
+
             if (!injectionMetaType.getClass().isAnnotationPresent(ODTSimpleInjectable.class) && !hasSemicolonEnding) {
                 // should have a semicolon on every scriptline:
                 holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_REQUIRED).create();

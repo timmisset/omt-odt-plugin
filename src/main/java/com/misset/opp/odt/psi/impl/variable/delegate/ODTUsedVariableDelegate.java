@@ -1,27 +1,37 @@
 package com.misset.opp.odt.psi.impl.variable.delegate;
 
 import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Variable;
 import com.misset.opp.callable.global.GlobalVariable;
 import com.misset.opp.callable.local.LocalVariableTypeProvider;
 import com.misset.opp.odt.ODTInjectionUtil;
+import com.misset.opp.odt.psi.ODTScript;
+import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.OMTTypeResolver;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
 
@@ -35,6 +45,7 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
     }
 
     @Override
+    @Nullable
     public PsiReference getReference() {
         if (isDeclaredVariable()) {
             return null;
@@ -50,14 +61,91 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
      */
     @Override
     public Set<OntResource> getType() {
-        return getTypeFromReference()
-                .or(this::getTypeFromOMTLocalVariable)
+        return getTypeFromOMTLocalVariable()
                 .or(this::getTypeFromGlobalVariable)
                 .or(this::getTypeFromCallContext)
-                .orElse(Collections.emptySet());
+                .orElse(getTypeFromContext());
     }
 
-    private Optional<Set<OntResource>> getTypeFromReference() {
+    private Set<OntResource> getTypeFromContext() {
+        // combine the type assignments up to this point
+        // and potentially set by the declaration (OMT or ODT)
+        final HashSet<OntResource> resources = new HashSet<>();
+        resources.addAll(getTypeFromAssignment().orElse(Collections.emptySet()));
+        resources.addAll(getTypeFromDeclaration().orElse(Collections.emptySet()));
+        return resources;
+    }
+
+    private Optional<Set<OntResource>> getTypeFromAssignment() {
+        // find the closest variable assignment to determine earlier instances or assignments
+        // of this variable to determine the type
+        // the 'other' variable must resolve to the same declared variable as this instance
+        final PsiElement resolve = Optional.ofNullable(getReference()).map(PsiReference::resolve).orElse(null);
+        if (resolve == null) {
+            return Optional.empty();
+        }
+
+        final List<ODTVariable> variablesFromAssignments = getVariablesFromAssignments(PsiTreeUtil.getParentOfType(
+                element,
+                ODTScriptLine.class), resolve);
+        if (variablesFromAssignments.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(variablesFromAssignments.stream()
+                .map(ODTVariableDelegate::getType)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet()));
+    }
+
+    private List<ODTVariable> getVariablesFromAssignments(@Nullable ODTScriptLine scriptLine,
+                                                          PsiElement target) {
+        List<ODTVariable> assignmentVariables = new ArrayList<>();
+        if (scriptLine == null) {
+            return Collections.emptyList();
+        }
+        ODTScript script = (ODTScript) scriptLine.getParent();
+        while (scriptLine != null) {
+            assignmentVariables.addAll(PsiTreeUtil.findChildrenOfType(scriptLine, ODTVariableAssignment.class)
+                    .stream()
+                    .map(assignment -> getVariableFromAssignment(assignment, target))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList()));
+            scriptLine = PsiTreeUtil.getPrevSiblingOfType(scriptLine, ODTScriptLine.class);
+        }
+        // check if there are parent containers that might include additional assignments to be included
+        // $variable = 'a'; <-- only string at this point
+        // IF true {
+        //    $variable = 1;
+        //    @LOG($variable); <-- can be both string and number at this point
+        // } ELSE {
+        //    @LOG($variable); <-- only string at this point
+        // }
+        // @LOG($variable); <-- and again both string at number at this point
+        final ODTScriptLine parentScriptline = PsiTreeUtil.getParentOfType(script, ODTScriptLine.class);
+        final ODTScriptLine precedingScriptline = Optional.ofNullable(parentScriptline)
+                .map(parent -> PsiTreeUtil.getPrevSiblingOfType(parent, ODTScriptLine.class))
+                .orElse(null);
+        assignmentVariables.addAll(getVariablesFromAssignments(precedingScriptline, target));
+        return assignmentVariables;
+    }
+
+    private ODTVariable getVariableFromAssignment(ODTVariableAssignment variableAssignment,
+                                                  PsiElement target) {
+        return variableAssignment.getVariableList().stream()
+                .filter(variable -> hasSameTarget(variable, target))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean hasSameTarget(ODTVariable variable,
+                                  PsiElement target) {
+        return Optional.ofNullable(variable.getReference())
+                .map(PsiReference::resolve)
+                .map(target::equals)
+                .orElse(false);
+    }
+
+    private Optional<Set<OntResource>> getTypeFromDeclaration() {
         return Optional.ofNullable(getReference())
                 .map(PsiReference::resolve)
                 .filter(ODTVariable.class::isInstance)

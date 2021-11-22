@@ -161,7 +161,9 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
                 return CachedValuesManager.getCachedValue(this,
                         RESOLVED_VALUE,
                         () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()),
-                                PsiModificationTracker.MODIFICATION_COUNT, this, OppModel.ONTOLOGY_MODEL_MODIFICATION));
+                                PsiModificationTracker.MODIFICATION_COUNT,
+                                this,
+                                OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
             }
         } else {
             return Collections.emptySet();

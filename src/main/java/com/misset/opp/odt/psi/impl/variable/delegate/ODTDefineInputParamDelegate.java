@@ -41,7 +41,7 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
         return CachedValuesManager.getCachedValue(element, ONT_TYPE, () ->
                 new CachedValueProvider.Result<>(calculateType(),
                         element.getContainingFile(),
-                        OppModel.ONTOLOGY_MODEL_MODIFICATION));
+                        OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
     }
 
     private Set<OntResource> calculateType() {

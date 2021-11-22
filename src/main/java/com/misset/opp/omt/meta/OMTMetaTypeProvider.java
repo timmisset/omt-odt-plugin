@@ -26,12 +26,11 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
     /**
      * The YamlMetaTypeProvider already provides the containing Yaml file as modification dependency.
      * This means that whenever anything in the file is changed, the meta cache is cleared anyway. No need
-     * to provide anything more. Simple provide a EVER_CHANGED tracker to indicate that nothing else needs
-     * to be tracked.
+     * to provide anything more.
      *
      * @see YamlMetaTypeProvider#getValueMetaType(org.jetbrains.yaml.psi.YAMLValue)
      */
-    private static final ModificationTracker YAML_MODIFICATION_TRACKER = ModificationTracker.EVER_CHANGED;
+    private static final ModificationTracker YAML_MODIFICATION_TRACKER = ModificationTracker.NEVER_CHANGED;
     private static final ModelAccess modelAccess = document -> {
         // todo:
         // add different behavior when a module.omt file is provided

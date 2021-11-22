@@ -21,13 +21,7 @@ class ODTVariableReferenceTest extends OMTTestCase {
                         "@LOG($<caret>variable)"
         );
         configureByText(content);
-        ReadAction.run(() -> {
-            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            // is resolved to the declared variable
-            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            final ODTVariable variable = (ODTVariable) elementAtCaret;
-            Assertions.assertTrue(variable.isDeclaredVariable());
-        });
+        assertResolvableReference();
     }
 
     @Test
@@ -35,12 +29,7 @@ class ODTVariableReferenceTest extends OMTTestCase {
         String content = "DEFINE QUERY query($param) => $pa<caret>ram;";
         myFixture.configureByText("test.odt", content);
 
-        ReadAction.run(() -> {
-            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            // is resolved to the declared variable
-            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            Assertions.assertTrue(((ODTVariable) elementAtCaret).isDeclaredVariable());
-        });
+        assertResolvableReference();
     }
 
     @Test
@@ -50,14 +39,36 @@ class ODTVariableReferenceTest extends OMTTestCase {
                         "@LOG($<caret>variableB)"
         );
         configureByText(content);
-        ReadAction.run(() -> {
-            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            // is not resolved to the declared variable, returns the $variableB usage variable as named element
-            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            final PsiReference reference = elementAtCaret.getReference();
-            Assertions.assertNotNull(reference);
-            Assertions.assertNull(reference.resolve());
-        });
+        assertNoResolvableReference();
+    }
+
+    @Test
+    void testODTReferenceCannotResolveFromDifferentDEFINE() {
+        String content = insideProcedureRunWithPrefixes(
+                "DEFINE COMMAND command($variable) => { @LOG($variable); }\n" +
+                        "DEFINE COMMAND anotherCommand => { @LOG($<caret>variable); }"
+        );
+        configureByText(content);
+        assertNoResolvableReference();
+    }
+
+    @Test
+    void testODTReferenceCanResolveFromParentBlockContainer() {
+        String content = insideProcedureRunWithPrefixes(
+                "VAR $variable = 12;\n" +
+                        "IF true { @LOG($<caret>variable); }"
+        );
+        configureByText(content);
+        assertResolvableReference();
+    }
+
+    @Test
+    void testODTReferenceCannotResolveFromDifferentBlockContainer() {
+        String content = insideProcedureRunWithPrefixes(
+                "IF true { VAR $variable = 12; } ELSE { @LOG($<caret>variable); }"
+        );
+        configureByText(content);
+        assertNoResolvableReference();
     }
 
     @Test
@@ -151,4 +162,26 @@ class ODTVariableReferenceTest extends OMTTestCase {
                             "   test: $newName\n"), omtFile.getText());
         });
     }
+
+    private void assertNoResolvableReference() {
+        ReadAction.run(() -> {
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            // is not resolved to the declared variable, returns the $variableB usage variable as named element
+            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            final PsiReference reference = elementAtCaret.getReference();
+            Assertions.assertNotNull(reference);
+            Assertions.assertNull(reference.resolve());
+        });
+    }
+
+    private void assertResolvableReference() {
+        ReadAction.run(() -> {
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            // is resolved to the declared variable
+            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            final ODTVariable variable = (ODTVariable) elementAtCaret;
+            Assertions.assertTrue(variable.isDeclaredVariable());
+        });
+    }
+
 }

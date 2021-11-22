@@ -10,13 +10,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTBooleanStatement;
 import com.misset.opp.odt.psi.ODTNegatedStep;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryArray;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
+import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTSubQuery;
 import com.misset.opp.odt.psi.impl.ODTSubQueryImpl;
+import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,13 +87,17 @@ public class ODTStyleInspectionUnnecessaryWrappingSubquery extends LocalInspecti
         if (isDecorated(subQuery)) {
             return true;
         }
+        if (ODTInjectionUtil.getInjectionMetaType(subQuery) instanceof OMTParamMetaType) {
+            // the typing in parameter type
+            return true;
+        }
         final ODTQuery query = subQuery.getQuery();
         // (true AND false) OR (false AND true) <-- ODTBooleanStatements should be wrapped
         // (1 | 2) / ont:someThing <-- ODTQueryArrays should be wrapped
         // NOT (some / query / path / traversion) <-- should also be wrapped
         return query instanceof ODTBooleanStatement ||
                 query instanceof ODTQueryArray ||
-                subQuery.getParent() instanceof ODTNegatedStep;
+                PsiTreeUtil.getParentOfType(subQuery, ODTQueryStep.class, true) instanceof ODTNegatedStep;
     }
 
     private boolean isDecorated(ODTSubQuery subQuery) {

@@ -4,7 +4,7 @@ import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.ModificationTracker;
+import com.intellij.openapi.util.SimpleModificationTracker;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.settings.SettingsState;
 import org.apache.jena.ontology.ConversionException;
@@ -18,10 +18,13 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.util.iterator.ExtendedIterator;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +59,7 @@ public class OppModel {
     protected OntClass OWL_THING_CLASS;
     public Individual OWL_THING;
     public OntClass OPP_CLASS;
-    public OntClass GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
+    public OntClass GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
     public Individual JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH;
     public OntResource XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
     public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
@@ -66,13 +69,17 @@ public class OppModel {
         Any RDF resolving cached values should subscribe to this modification tracker to drop their
         results when something is changed in the model
      */
-    private static long ontologyModelModificationCount = 0;
-    public static ModificationTracker ONTOLOGY_MODEL_MODIFICATION = () -> ontologyModelModificationCount;
+    public static SimpleModificationTracker ONTOLOGY_MODEL_MODIFICATION_TRACKER = new SimpleModificationTracker();
 
     // create a default empty model to begin with until the DumbService is smart (finished indexing)
     // and the ontology can be loaded using the FileIndex
     public static OppModel INSTANCE = new OppModel(ModelFactory.createOntologyModel());
     private final OntModel shaclModel;
+
+    // some caching to improve performance, flushed when the model is updated
+    HashMap<OntResource, HashMap<Property, Set<OntResource>>> listSubjectsCache = new HashMap<>();
+    HashMap<OntResource, HashMap<Property, Set<OntResource>>> listObjectsCache = new HashMap<>();
+    HashMap<OntResource, Set<Property>> listPredicatesCache = new HashMap<>();
 
     Logger logger = Logger.getInstance(OppModel.class);
 
@@ -87,12 +94,19 @@ public class OppModel {
         // the RDFS_INF inferencing provides the support for sub/superclass logic
         model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
         setProperties();
-        ontologyModelModificationCount++;
+        incrementModificationCount();
         setPrimitives();
-        ontologyModelModificationCount++;
+        incrementModificationCount();
         loadSimpleModel();
-        ontologyModelModificationCount++;
+        incrementModificationCount();
         INSTANCE = this;
+    }
+
+    private void incrementModificationCount() {
+        ONTOLOGY_MODEL_MODIFICATION_TRACKER.incModificationCount();
+        listSubjectsCache.clear();
+        listObjectsCache.clear();
+        listPredicatesCache.clear();
     }
 
     private Set<OntClass> listShaclClasses() {
@@ -105,10 +119,19 @@ public class OppModel {
     private Set<Individual> listShaclIndividuals() {
         return shaclModel
                 .listStatements()
-                .filterKeep(resource -> resource.getPredicate()
-                        .equals(RDF_TYPE) && model.getOntClass(resource.getObject().asResource().getURI()) != null)
+                .filterKeep(statement -> statement.getPredicate()
+                        .equals(RDF_TYPE) && model.getOntClass(statement.getObject().asResource().getURI()) != null)
                 .mapWith(statement -> shaclModel.getIndividual(statement.getSubject().getURI()))
                 .filterKeep(OntResource::isIndividual)
+                .toSet();
+    }
+
+    private Set<Resource> listGraphshapes() {
+        return shaclModel
+                .listStatements()
+                .filterKeep(statement -> statement.getPredicate().equals(RDF_TYPE) && statement.getObject()
+                        .equals(GRAPH_SHAPE))
+                .mapWith(Statement::getSubject)
                 .toSet();
     }
 
@@ -141,6 +164,7 @@ public class OppModel {
 
         GRAPH_CLASS = model.createClass(PLATFORM + "Graph");
         NAMED_GRAPH_CLASS = model.createClass(PLATFORM + "NamedGraph");
+        GRAPH_SHAPE = model.createClass(PLATFORM + "GraphShape");
         TRANSIENT_GRAPH_CLASS = model.createClass("http://ontologie.politie.nl/internal/transient#TransientNamedGraph");
         NAMED_GRAPH = NAMED_GRAPH_CLASS.createIndividual(NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
         MEDEWERKER_GRAPH = NAMED_GRAPH_CLASS.createIndividual(NAMED_GRAPH_CLASS.getURI() + "_MEDEWERKERGRAPH");
@@ -180,12 +204,13 @@ public class OppModel {
     private void loadSimpleModel() {
         listShaclClasses().forEach(this::loadSimpleModelClass);
         listShaclIndividuals().forEach(this::loadSimpleModelIndividual);
+        listGraphshapes().forEach(this::loadGraphShapes);
     }
 
     private void loadSimpleModelClass(OntClass ontClass) {
         // create a simple class instance and inherit the superclass(es)
         final OntClass simpleModelClass = model.createClass(ontClass.getURI());
-        ontologyModelModificationCount++;
+        incrementModificationCount();
         // create one individual per class, this is used as a mock when traversing the paths
         // and discriminate between classes and instances of the class being visited.
         final List<Statement> superClasses = ontClass.listProperties(RDFS_SUBCLASS_OF).toList();
@@ -195,7 +220,7 @@ public class OppModel {
         } else {
             superClasses.forEach(statement -> simpleModelClass.addSuperClass(statement.getObject().asResource()));
         }
-        ontologyModelModificationCount++;
+        incrementModificationCount();
 
         // translate the SHACL PATH properties into simple predicate-object statements for this class
         ontClass.listProperties(SHACL_PROPERTY)
@@ -205,12 +230,12 @@ public class OppModel {
                 .forEach((shaclPropertyShape) -> getSimpleResourceStatement(simpleModelClass, shaclPropertyShape));
 
         simpleModelClass.createIndividual(simpleModelClass.getURI() + "_INSTANCE");
-        ontologyModelModificationCount++;
+        incrementModificationCount();
     }
 
     private void loadSimpleModelIndividual(Individual individual) {
         try {
-            if (model.getOntProperty(individual.getURI()) == null) {
+            if (model.getOntResource(individual.getURI()) == null) {
                 model.createIndividual(individual.getURI(), individual.getOntClass());
                 model.add(individual.listProperties());
             }
@@ -220,7 +245,15 @@ public class OppModel {
             // in any case, this should just be a warning
             logger.warn("Could not create an individual for: " + individual.getURI());
         }
-        ontologyModelModificationCount++;
+        incrementModificationCount();
+    }
+
+    private void loadGraphShapes(Resource resource) {
+        if (model.getOntResource(resource.getURI()) == null) {
+            model.createIndividual(resource.getURI(), GRAPH_SHAPE);
+            model.add(resource.listProperties());
+            incrementModificationCount();
+        }
     }
 
     private void getSimpleResourceStatement(OntClass subject,
@@ -327,14 +360,26 @@ public class OppModel {
 
     public Set<OntResource> listSubjects(Property predicate,
                                          OntResource object) {
-        if (object.isIndividual()) {
-            // the returned subjects should also be the instances of the classes that point to
-            // the ontClass of the Individual
-            return listSubjectsForIndividual(predicate, object.asIndividual());
-        } else if (object.isClass()) {
-            return listSubjectsForClass(predicate, object.asClass());
+
+        final Set<OntResource> cachedResources = listSubjectsCache.getOrDefault(object, new HashMap<>()).get(predicate);
+        if (cachedResources == null) {
+            final Set<OntResource> resources;
+            if (object.isIndividual()) {
+                // the returned subjects should also be the instances of the classes that point to
+                // the ontClass of the Individual
+                resources = listSubjectsForIndividual(predicate, object.asIndividual());
+            } else if (object.isClass()) {
+                resources = listSubjectsForClass(predicate, object.asClass());
+            } else {
+                resources = Collections.emptySet();
+            }
+            final HashMap<Property, Set<OntResource>> byObject = listSubjectsCache.getOrDefault(object,
+                    new HashMap<>());
+            byObject.put(predicate, resources);
+            listSubjectsCache.put(object, byObject);
+            return resources;
         }
-        return Collections.emptySet();
+        return cachedResources;
     }
 
     public Set<OntResource> filterSubjects(Set<OntResource> subjects,
@@ -406,10 +451,21 @@ public class OppModel {
 
     public Set<OntResource> listObjects(OntResource subject,
                                         Property predicate) {
-        if (subject.isIndividual()) {
-            return listObjectsForIndividual(subject.asIndividual(), predicate);
+        final Set<OntResource> cachedResources = listObjectsCache.getOrDefault(subject, new HashMap<>()).get(predicate);
+        if (cachedResources == null) {
+            final Set<OntResource> resources;
+            if (subject.isIndividual()) {
+                resources = listObjectsForIndividual(subject.asIndividual(), predicate);
+            } else {
+                resources = listObjectsForClass(subject.asClass(), predicate);
+            }
+            final HashMap<Property, Set<OntResource>> bySubject = listObjectsCache.getOrDefault(subject,
+                    new HashMap<>());
+            bySubject.put(predicate, resources);
+            listObjectsCache.put(subject, bySubject);
+            return resources;
         }
-        return listObjectsForClass(subject.asClass(), predicate);
+        return cachedResources;
     }
 
     private Set<OntResource> listObjectsForIndividual(Individual subject,
@@ -482,10 +538,16 @@ public class OppModel {
     }
 
     public Set<Property> listPredicates(OntResource classSubject) {
-        return listPredicateObjects(classSubject)
-                .stream()
-                .map(Statement::getPredicate)
-                .collect(Collectors.toSet());
+        final Set<Property> cachedResources = listPredicatesCache.get(classSubject);
+        if (cachedResources == null) {
+            final Set<Property> predicates = listPredicateObjects(classSubject)
+                    .stream()
+                    .map(Statement::getPredicate)
+                    .collect(Collectors.toSet());
+            listPredicatesCache.put(classSubject, predicates);
+            return predicates;
+        }
+        return cachedResources;
     }
 
     public Set<Property> listReversePredicates(Set<OntResource> classSubjects) {
@@ -567,8 +629,19 @@ public class OppModel {
     }
 
     private Set<Resource> listSubjectsWithProperty(Property property,
-                                                   RDFNode node) {
-        return model.listSubjectsWithProperty(property, node).toSet();
+                                                   OntClass ontClass) {
+        // Include the superclasses
+        // for example, if ClassB has ClassA as superclass and ClassA has propertyA. Then ClassC can point
+        // to an instance of ClassB with propertyA also.
+        List<OntClass> allClasses = new ArrayList<>(ontClass.listSuperClasses().toList());
+        allClasses.add(ontClass);
+
+        return allClasses
+                .stream()
+                .map(_ontClass -> model.listSubjectsWithProperty(property, _ontClass))
+                .map(ExtendedIterator::toSet)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 
     private Set<OntResource> listSubjectsForClass(Property predicate,
