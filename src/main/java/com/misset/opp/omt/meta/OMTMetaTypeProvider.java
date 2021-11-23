@@ -10,7 +10,6 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.omt.indexing.YAMLStructureIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -54,18 +53,17 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
 
     @Override
     public @Nullable MetaTypeProxy getKeyValueMetaType(@NotNull YAMLKeyValue keyValue) {
-        return YAMLStructureIndex.getMetaTypeProxyByFullName(keyValue, () ->
-                CachedValuesManager.getCachedValue(keyValue, KEY_VALUE_META_TYPE, () -> {
-                    if (Optional.of(keyValue)
-                            .map(YAMLKeyValue::getValue)
-                            .map(YAMLValue::getTag)
-                            .isEmpty()) {
-                        return new CachedValueProvider.Result<>(super.getKeyValueMetaType(keyValue),
-                                keyValue.getContainingFile());
-                    }
-                    return new CachedValueProvider.Result<>(getTaggedKeyValueMetaType(keyValue),
-                            keyValue.getContainingFile());
-                }));
+        return CachedValuesManager.getCachedValue(keyValue, KEY_VALUE_META_TYPE, () -> {
+            if (Optional.of(keyValue)
+                    .map(YAMLKeyValue::getValue)
+                    .map(YAMLValue::getTag)
+                    .isEmpty()) {
+                return new CachedValueProvider.Result<>(super.getKeyValueMetaType(keyValue),
+                        keyValue.getContainingFile());
+            }
+            return new CachedValueProvider.Result<>(getTaggedKeyValueMetaType(keyValue),
+                    keyValue.getContainingFile());
+        });
     }
 
     /**
@@ -123,9 +121,22 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
     }
 
     @Nullable
+    @Override
     public MetaTypeProxy getMetaTypeProxy(@NotNull PsiElement element) {
         return CachedValuesManager.getCachedValue(element, META_TYPE_PROXY, () ->
                 new CachedValueProvider.Result<>(super.getMetaTypeProxy(element), element.getContainingFile()));
+    }
+
+    @Nullable
+    @Override
+    public YAMLValue getMetaOwner(@NotNull PsiElement psi) {
+        /*
+            The original method in YamlMetaTypeProvider doesn't make sense.
+            Traversing up the file is much more costly and will tell us nothing more than
+            simply trying to obtain the YAMLValue directly, it will return null if the psi is not
+            part of the YAML structure (which would probably never happen anyway)
+         */
+        return PsiTreeUtil.getParentOfType(psi, YAMLValue.class, false);
     }
 
     private MetaTypeProxy getTaggedKeyValueMetaType(@NotNull YAMLKeyValue keyValue) {

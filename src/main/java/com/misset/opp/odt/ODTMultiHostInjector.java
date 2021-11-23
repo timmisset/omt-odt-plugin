@@ -16,6 +16,8 @@ import org.jetbrains.yaml.psi.YAMLQuotedText;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -34,12 +36,17 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         }
         final YAMLDocument document = (YAMLDocument) context;
 
+        System.out.println("called injection on: " + context.getContainingFile().getName());
+        final ZonedDateTime start = ZonedDateTime.now();
+
         PsiTreeUtil.findChildrenOfType(document,
                         PsiLanguageInjectionHost.class)
                 .stream()
                 .map(this::getODTInjectable)
                 .filter(Objects::nonNull)
                 .forEach(pair -> inject(registrar, pair.getFirst(), pair.getSecond()));
+        final ZonedDateTime end = ZonedDateTime.now();
+        System.out.println("Injection analysis took: " + Duration.between(start, end).toMillis() + " ms");
     }
 
     private void inject(MultiHostRegistrar registrar,
