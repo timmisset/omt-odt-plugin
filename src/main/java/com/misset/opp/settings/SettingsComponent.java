@@ -22,6 +22,7 @@ public class SettingsComponent {
 
     private final JPanel myMainPanel;
     private final TextFieldWithBrowseButton ontologyModelRootPath = getFileLocationSetting("root.ttl");
+    private final TextFieldWithBrowseButton reasonsRoot = getFolderLocationSetting();
     private final PathMapperTable pathMapperTable = new PathMapperTable();
     private final ModelInstanceMapperTable modelInstanceMapperTable = new ModelInstanceMapperTable();
 
@@ -43,6 +44,8 @@ public class SettingsComponent {
                 .addComponent(pathMapperTable.getComponent())
                 .addComponent(new JBLabel(
                         "The paths are evaluated on longest-first. The sorting by name in this table is for your convenience."))
+                .addComponent(new JXTitledSeparator("Reasons"))
+                .addComponent(reasonsRoot)
                 .getPanel();
     }
 
@@ -51,6 +54,14 @@ public class SettingsComponent {
         textFieldWithBrowseButton.setEditable(true);
         textFieldWithBrowseButton.addBrowseFolderListener(
                 new TextBrowseFolderListener(getFileDescriptorByFilename(name)));
+        return textFieldWithBrowseButton;
+    }
+
+    private TextFieldWithBrowseButton getFolderLocationSetting() {
+        TextFieldWithBrowseButton textFieldWithBrowseButton = new TextFieldWithBrowseButton();
+        textFieldWithBrowseButton.setEditable(true);
+        textFieldWithBrowseButton.addBrowseFolderListener(
+                new TextBrowseFolderListener(new FileChooserDescriptor(false, true, false, false, false, false)));
         return textFieldWithBrowseButton;
     }
 
@@ -70,6 +81,15 @@ public class SettingsComponent {
 
     public void setOntologyModelRootPath(@NotNull String newText) {
         ontologyModelRootPath.setText(newText);
+    }
+
+    @NotNull
+    public String getReasonsRoot() {
+        return reasonsRoot.getText();
+    }
+
+    public void setReasonsRoot(@NotNull String newText) {
+        reasonsRoot.setText(newText);
     }
 
     @NotNull

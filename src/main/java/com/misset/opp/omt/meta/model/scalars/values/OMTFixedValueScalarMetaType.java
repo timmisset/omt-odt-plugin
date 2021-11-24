@@ -10,6 +10,7 @@ import org.jetbrains.yaml.meta.model.CompletionContext;
 import org.jetbrains.yaml.meta.model.YamlScalarType;
 import org.jetbrains.yaml.psi.YAMLScalar;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +21,10 @@ public abstract class OMTFixedValueScalarMetaType extends YamlScalarType {
     }
 
     abstract Set<String> getAcceptableValues();
+
+    protected HashMap<String, String> getDescribedValues() {
+        return null;
+    }
 
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,
@@ -34,9 +39,17 @@ public abstract class OMTFixedValueScalarMetaType extends YamlScalarType {
     @Override
     public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar,
                                                                   @Nullable CompletionContext completionContext) {
-        return getAcceptableValues().stream()
-                .map(LookupElementBuilder::create)
-                .collect(Collectors.toList());
+        if (getDescribedValues() != null) {
+            return getDescribedValues().entrySet().stream()
+                    .map(entry -> LookupElementBuilder.create(entry.getKey())
+                            .withTailText(entry.getValue()))
+                    .collect(Collectors.toList());
+        } else {
+            return getAcceptableValues().stream()
+                    .map(LookupElementBuilder::create)
+                    .collect(Collectors.toList());
+        }
+
     }
 
     @Override

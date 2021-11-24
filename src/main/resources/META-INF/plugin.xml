@@ -28,6 +28,7 @@
         <lang.parserDefinition language="OMT"
                                implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
         <postStartupActivity implementation="com.misset.opp.omt.IndexPrefixesStartupActivity"/>
+        <postStartupActivity implementation="com.misset.opp.omt.LoadReasonsStartupActivity"/>
         <!-- Annotations -->
         <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
 
@@ -128,6 +129,7 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
+
 
     </extensions>
     <depends>com.intellij.java</depends>

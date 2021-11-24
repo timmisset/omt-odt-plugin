@@ -25,6 +25,7 @@ import java.util.Map;
 public final class SettingsState implements PersistentStateComponent<SettingsState> {
 
     public String ontologyModelRootPath = "";
+    public String reasonsFolder = "";
     public Map<String, String> mappingPaths = new HashMap<>();
     public Map<String, String> modelInstanceMapping = new HashMap<>();
     private boolean useDefaultSettings = false;

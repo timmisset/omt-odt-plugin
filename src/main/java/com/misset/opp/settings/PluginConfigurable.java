@@ -3,6 +3,7 @@ package com.misset.opp.settings;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsContexts;
+import com.misset.opp.omt.LoadReasonsStartupActivity;
 import com.misset.opp.ttl.LoadOntologyStartupActivity;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,6 +55,9 @@ public class PluginConfigurable implements Configurable {
         // default path to the model
         state.ontologyModelRootPath = project.getBasePath() + "/model/ttl/root.ttl";
 
+        // default path to the reasons folder
+        state.reasonsFolder = project.getBasePath() + "/reasons";
+
         // some generic mappings
         final HashMap<String, String> pathMapping = new HashMap<>();
         pathMapping.put("@client", "frontend/libs");
@@ -84,6 +88,8 @@ public class PluginConfigurable implements Configurable {
         SettingsState settingsState = getState();
         boolean modified = !settingsComponent.getOntologyModelRootPath().equals(settingsState.ontologyModelRootPath);
         modified |= isMappingPathsModified(settingsState);
+        modified |= isModelInstanceMappingModified(settingsState);
+        modified |= !settingsComponent.getReasonsRoot().equals(settingsState.reasonsFolder);
         return modified;
     }
 
@@ -99,10 +105,23 @@ public class PluginConfigurable implements Configurable {
                                 .equals(entry.getValue()));
     }
 
+    private boolean isModelInstanceMappingModified(SettingsState settingsState) {
+        final Map<String, String> modelInstanceMapping = settingsState.modelInstanceMapping;
+        if (settingsComponent.getModelInstanceMapper().size() != modelInstanceMapping.size()) {
+            return true;
+        }
+        return settingsComponent.getModelInstanceMapper().entrySet()
+                .stream()
+                .anyMatch(entry ->
+                        !modelInstanceMapping.containsKey(entry.getKey()) || !modelInstanceMapping.get(entry.getKey())
+                                .equals(entry.getValue()));
+    }
+
     @Override
     public void apply() {
         SettingsState settingsState = getState();
         saveOntologyState(settingsState);
+        saveReasonsState(settingsState);
         saveMappingState(settingsState);
         saveModelInstanceMappingState(settingsState);
     }
@@ -112,6 +131,13 @@ public class PluginConfigurable implements Configurable {
             LoadOntologyStartupActivity.loadOntology(project);
         }
         settingsState.ontologyModelRootPath = settingsComponent.getOntologyModelRootPath();
+    }
+
+    private void saveReasonsState(SettingsState settingsState) {
+        if (!settingsState.reasonsFolder.equals(settingsComponent.getReasonsRoot())) {
+            LoadReasonsStartupActivity.loadReasons(project);
+        }
+        settingsState.reasonsFolder = settingsComponent.getReasonsRoot();
     }
 
     private void saveMappingState(SettingsState settingsState) {
@@ -140,6 +166,7 @@ public class PluginConfigurable implements Configurable {
     public void reset() {
         SettingsState settingsState = getState();
         settingsComponent.setOntologyModelRootPath(settingsState.ontologyModelRootPath);
+        settingsComponent.setReasonsRoot(settingsState.reasonsFolder);
         settingsComponent.setPathMapper(settingsState.mappingPaths);
         settingsComponent.setModelInstanceMapper(settingsState.modelInstanceMapping);
     }
