@@ -35,6 +35,10 @@ public class OMTCompletions extends CompletionContributor {
         completionParametersHashMap.put(parameters.getPosition(), parameters);
     }
 
+    public static PsiElement getPlaceholderToken() {
+        return completionParametersHashMap.keySet().stream().findFirst().orElse(null);
+    }
+
     public static void removeCompletionParameters(CompletionParameters parameters) {
         completionParametersHashMap.remove(parameters.getPosition());
     }

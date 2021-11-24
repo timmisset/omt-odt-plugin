@@ -1,5 +1,6 @@
 package com.misset.opp.omt.inspection;
 
+import com.intellij.codeInspection.LocalInspectionToolSession;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
@@ -33,6 +34,12 @@ public class OMTDuplicateVariableInspection extends OMTMetaTypeInspectionBase {
         return new StructureChecker(holder, metaTypeProvider);
     }
 
+    @Override
+    public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
+                                                   boolean isOnTheFly,
+                                                   @NotNull LocalInspectionToolSession session) {
+        return super.buildVisitor(holder, isOnTheFly, session);
+    }
 
     protected class StructureChecker extends SimpleYamlPsiVisitor {
         private final YamlMetaTypeProvider yamlMetaTypeProvider;

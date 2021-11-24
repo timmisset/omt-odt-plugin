@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model;
 
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.model.scalars.ODTQueryMetaType;
+import com.misset.opp.omt.meta.model.scalars.queries.ODTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTOnChangeScriptMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 

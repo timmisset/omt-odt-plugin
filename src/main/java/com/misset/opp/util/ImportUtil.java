@@ -28,7 +28,6 @@ public class ImportUtil {
         return virtualFile;
     }
     public static OMTFile getOMTFile(String path, Project project) {
-        System.out.println("Checking out imported file: " + path);
         final VirtualFile file = getFile(path);
         if(file == null) { return null; }
         PsiFile psiFile = PsiManager.getInstance(project).findFile(file);

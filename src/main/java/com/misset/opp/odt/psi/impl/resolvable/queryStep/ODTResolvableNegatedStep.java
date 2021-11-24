@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTNegatedStep;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -31,5 +32,11 @@ public abstract class ODTResolvableNegatedStep extends ODTResolvableQueryStepBas
             resources.removeAll(filter);
         }
         return resources;
+    }
+
+    @Override
+    protected PsiElement getAnnotationRange() {
+        // only annotate the NOT part, not the entire negated part
+        return getFirstChild();
     }
 }

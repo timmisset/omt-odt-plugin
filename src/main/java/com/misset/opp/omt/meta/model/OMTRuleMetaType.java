@@ -1,8 +1,8 @@
 package com.misset.opp.omt.meta.model;
 
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.model.scalars.ODTBooleanQueryType;
-import com.misset.opp.omt.meta.model.scalars.ODTQueryMetaType;
+import com.misset.opp.omt.meta.model.scalars.queries.ODTBooleanQueryType;
+import com.misset.opp.omt.meta.model.scalars.queries.ODTQueryMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;

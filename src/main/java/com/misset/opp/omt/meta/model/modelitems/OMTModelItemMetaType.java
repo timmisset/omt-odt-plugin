@@ -44,4 +44,5 @@ public class OMTModelItemMetaType extends OMTMetaTaggedType<OMTModelItemDelegate
                 .map(OMTModelItemDelegateMetaType::isCallable)
                 .orElse(false);
     }
+
 }

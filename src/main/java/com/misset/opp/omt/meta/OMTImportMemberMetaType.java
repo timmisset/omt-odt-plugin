@@ -7,10 +7,8 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.completion.OMTCompletions;
-import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.CompletionContext;
 import org.jetbrains.yaml.meta.model.YamlStringType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -18,7 +16,6 @@ import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -48,16 +45,7 @@ public class OMTImportMemberMetaType extends YamlStringType {
         if (keyValue == null) {
             return Collections.emptySet();
         }
-
-        final OMTMetaTypeProvider metaTypeProvider = OMTMetaTypeProvider.getInstance(element.getProject());
-        return Optional.ofNullable(metaTypeProvider.getMetaTypeProxy(keyValue))
-                .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
-                .filter(metaType -> metaType instanceof OMTImportMetaType)
-                .map(OMTImportMetaType.class::cast)
-                .map(importMetaType -> importMetaType.resolveToOMTFile(keyValue))
-                .map(OMTFile::getExportingMembersMap)
-                .map(HashMap::keySet)
-                .orElse(Collections.emptySet());
+        return OMTImportMetaType.getExportedMembersFromOMTFile(keyValue).keySet();
     }
 
     @Override

@@ -86,6 +86,8 @@ public class ODTResolvableUtil {
             } else if (individual.getOntClass().equals(OppModel.INSTANCE.OPP_CLASS)) {
                 // Specific OPP_CLASS instances that describe non-ontology values such as JSON_OBJECT, ERROR etc
                 return individual.getURI();
+            } else if (individual.getNameSpace() != null && !individual.getNameSpace().endsWith("_INSTANCE")) {
+                return individual.getURI();
             }
             return individual.getOntClass().getURI() + " (INSTANCE)";
         } else {

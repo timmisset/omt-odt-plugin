@@ -4,7 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.meta.ODTInjectable;
 import com.misset.opp.omt.meta.OMTLocalVariableTypeProviderMetaType;
-import com.misset.opp.omt.meta.model.scalars.ODTQueryMetaType;
+import com.misset.opp.omt.meta.model.scalars.queries.ODTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.references.OMTPayloadQueryReferenceMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.ODTOnChangeScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;

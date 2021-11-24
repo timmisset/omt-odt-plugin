@@ -8,7 +8,6 @@ import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTProcedureMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTStandaloneQueryMetaType;
 import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyMetaType;
-import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -54,16 +53,8 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
     private static void addImportStatementsToMap(YAMLKeyValue keyValue,
                                                  HashMap<String, List<PsiElement>> map) {
         final YAMLValue value = keyValue.getValue();
-        OMTMetaTypeProvider metaTypeProvider = OMTMetaTypeProvider.getInstance(keyValue.getProject());
-        final YamlMetaTypeProvider.MetaTypeProxy keyValueMetaType = metaTypeProvider.getMetaTypeProxy(keyValue);
-        if(keyValueMetaType == null) { return; }
-        final YamlMetaType metaType = keyValueMetaType.getMetaType();
-        if(!(metaType instanceof OMTImportMetaType)) {
-            return;
-        }
-        final OMTFile omtFile = ((OMTImportMetaType) metaType).resolveToOMTFile(keyValue);
-        if(omtFile == null) { return; }
-        final HashMap<String, List<PsiElement>> exportingMembersMap = omtFile.getExportingMembersMap();
+        final HashMap<String, List<PsiElement>> exportingMembersMap = OMTImportMetaType.getExportedMembersFromOMTFile(
+                keyValue);
         if(value instanceof YAMLSequence) {
             final YAMLSequence sequence = (YAMLSequence) value;
             sequence.getItems().stream()

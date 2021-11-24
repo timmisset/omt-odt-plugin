@@ -3,6 +3,7 @@ package com.misset.opp.omt.psi.impl;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -13,6 +14,7 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.OMTLanguage;
+import com.misset.opp.omt.indexing.ExportedMembersIndex;
 import com.misset.opp.omt.meta.OMTFileMetaType;
 import com.misset.opp.omt.meta.model.OMTModelMetaType;
 import com.misset.opp.omt.psi.OMTFile;
@@ -81,5 +83,13 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
             }
             return map;
         });
+    }
+
+    @Override
+    public void clearCaches() {
+        super.clearCaches();
+        Optional.ofNullable(getVirtualFile())
+                .map(VirtualFile::getPath)
+                .ifPresent(ExportedMembersIndex::removeFromIndex);
     }
 }

@@ -3,7 +3,9 @@ package com.misset.opp.omt.meta;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.misset.opp.omt.indexing.ExportedMembersIndex;
 import com.misset.opp.omt.meta.arrays.OMTImportPathMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.settings.SettingsState;
@@ -12,12 +14,15 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import static com.misset.opp.util.ImportUtil.getOMTFile;
 
 public class OMTImportMetaType extends OMTMetaMapType {
     private static final String MODULE = "module:";
+
     protected OMTImportMetaType() {
         super("OMT Import");
     }
@@ -25,6 +30,12 @@ public class OMTImportMetaType extends OMTMetaMapType {
     @Override
     protected YamlMetaType getMapEntryType(String name) {
         return new OMTImportPathMetaType(name);
+    }
+
+    public static HashMap<String, List<PsiElement>> getExportedMembersFromOMTFile(YAMLKeyValue keyValue) {
+        return Optional.ofNullable(resolveToPath(keyValue))
+                .map(path -> ExportedMembersIndex.getExportedMembers(path, keyValue.getProject()))
+                .orElse(new HashMap<>());
     }
 
     public static OMTFile resolveToOMTFile(YAMLKeyValue keyValue) {
