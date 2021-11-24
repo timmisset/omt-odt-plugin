@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -9,8 +10,10 @@ import com.misset.opp.omt.indexing.ExportedMembersIndex;
 import com.misset.opp.omt.meta.arrays.OMTImportPathMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.settings.SettingsState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
+import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -75,10 +78,22 @@ public class OMTImportMetaType extends OMTMetaMapType {
                     .orElse(null);
         }
     }
+
     private static String getResolvablePath(VirtualFile virtualFile) {
-        if(ApplicationManager.getApplication().isUnitTestMode()) {
+        if (ApplicationManager.getApplication().isUnitTestMode()) {
             return virtualFile.toString();
         }
         return virtualFile.getPath();
+    }
+
+    @Override
+    public void validateKey(@NotNull YAMLKeyValue keyValue,
+                            @NotNull ProblemsHolder problemsHolder) {
+        // the map with ImportPaths is not validated by the default validator
+        if (keyValue.getValue() instanceof YAMLMapping) {
+            final OMTImportPathMetaType omtImportPathMetaType = new OMTImportPathMetaType("ImportPath");
+            ((YAMLMapping) keyValue.getValue()).getKeyValues()
+                    .forEach(_keyValue -> omtImportPathMetaType.validateKey(_keyValue, problemsHolder));
+        }
     }
 }
