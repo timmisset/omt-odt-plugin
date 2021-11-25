@@ -18,9 +18,9 @@ import com.misset.opp.omt.meta.model.OMTPayloadMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.OMTRulesMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTQueryMetaType;
-import com.misset.opp.omt.meta.model.scalars.scripts.ODTCommandsMetaType;
-import com.misset.opp.omt.meta.model.scalars.scripts.ODTQueriesMetaType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTQueryMetaType;
+import com.misset.opp.omt.meta.model.scalars.scripts.OMTCommandsMetaType;
+import com.misset.opp.omt.meta.model.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.model.scalars.values.OMTReasonMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addDefinedStatementsToMap;
+import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addInjectedCallablesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
 public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTCallableProvider, OMTPrefixProvider, OMTLocalCommandProvider {
@@ -54,13 +54,13 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
         features.put("watchers", OMTWatchersArrayMetaType::new);
         features.put("rules", OMTRulesMetaType::new);
         features.put("prefixes", OMTPrefixesMetaType::new);
-        features.put("queries", ODTQueriesMetaType::new);
-        features.put("commands", ODTCommandsMetaType::new);
+        features.put("queries", OMTQueriesMetaType::new);
+        features.put("commands", OMTCommandsMetaType::new);
         features.put("onStart", OMTScriptMetaType::new);
         features.put("onCommit", OMTScriptMetaType::new);
         features.put("onCancel", OMTScriptMetaType::new);
         features.put("onDone", OMTScriptMetaType::new);
-        features.put("returns", ODTQueryMetaType::new);
+        features.put("returns", OMTQueryMetaType::new);
         features.put("actions", OMTActionsMetaType::new);
         features.put("reason", OMTReasonMetaType::new);
         features.put("payload", OMTPayloadMetaType::new);
@@ -82,8 +82,8 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
     @Override
     public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping) {
         HashMap<String, List<PsiElement>> map = new HashMap<>();
-        addDefinedStatementsToMap(yamlMapping, "commands", map);
-        addDefinedStatementsToMap(yamlMapping, "queries", map);
+        addInjectedCallablesToMap(yamlMapping, "commands", map);
+        addInjectedCallablesToMap(yamlMapping, "queries", map);
         return map;
     }
 

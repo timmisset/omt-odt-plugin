@@ -5,9 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Identify the ODTInjectable as being a simple Injectable which should not have semicolon ending and multiple lines
+ * Identify the OMTInjectable as being a simple Injectable which should not have semicolon ending and multiple lines
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ODTSimpleInjectable {
+public @interface SimpleInjectable {
 }

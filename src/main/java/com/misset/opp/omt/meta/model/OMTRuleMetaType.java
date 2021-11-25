@@ -1,8 +1,8 @@
 package com.misset.opp.omt.meta.model;
 
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTBooleanQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTQueryMetaType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTBooleanQueryType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTQueryMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;
@@ -13,8 +13,8 @@ public class OMTRuleMetaType extends OMTMetaType {
     private static final Set<String> requiredFeatures = Set.of("query");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {
-        features.put("query", ODTQueryMetaType::new);
-        features.put("strict", ODTBooleanQueryType::new);
+        features.put("query", OMTQueryMetaType::new);
+        features.put("strict", OMTBooleanQueryType::new);
     }
 
     public OMTRuleMetaType() {

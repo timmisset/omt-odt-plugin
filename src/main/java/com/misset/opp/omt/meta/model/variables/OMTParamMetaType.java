@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
-import com.misset.opp.omt.meta.ODTInjectable;
+import com.misset.opp.omt.meta.OMTInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.OMTTypeResolver;
 import com.misset.opp.omt.meta.model.scalars.OMTParamTypeType;
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OMTParamMetaType extends OMTMetaShorthandType implements OMTTypeResolver, ODTInjectable {
+public class OMTParamMetaType extends OMTMetaShorthandType implements OMTTypeResolver, OMTInjectable {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 

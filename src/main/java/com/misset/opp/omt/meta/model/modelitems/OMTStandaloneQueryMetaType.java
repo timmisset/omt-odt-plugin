@@ -2,13 +2,13 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.Call;
-import com.misset.opp.callable.PsiResolvable;
-import com.misset.opp.omt.meta.OMTCallable;
+import com.misset.opp.callable.psi.PsiResolvable;
+import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTQueryMetaType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
@@ -36,7 +36,7 @@ import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType implements
         OMTVariableProvider,
         OMTPrefixProvider,
-        OMTCallable {
+        OMTMetaCallable {
     protected OMTStandaloneQueryMetaType() {
         super("OMT Component");
     }
@@ -48,7 +48,7 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
         features.put("params", OMTParamsArrayMetaType::new);
         features.put("graphs", OMTGraphSelectionMetaType::new);
         features.put("prefixes", OMTPrefixesMetaType::new);
-        features.put("query", ODTQueryMetaType::new);
+        features.put("query", OMTQueryMetaType::new);
     }
 
     @Override
@@ -104,5 +104,10 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
                 .map(psiResolvable -> psiResolvable.resolve(resources, call))
                 .findFirst()
                 .orElse(Collections.emptySet());
+    }
+
+    @Override
+    public boolean isVoid() {
+        return false;
     }
 }

@@ -1,12 +1,17 @@
 package com.misset.opp.omt.meta;
 
+import com.misset.opp.callable.psi.PsiResolvable;
+import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.Field;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLValue;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +46,9 @@ public abstract class OMTMetaType extends YamlMetaType {
     @Override
     public @NotNull List<Field> computeKeyCompletions(@Nullable YAMLMapping existingMapping) {
         final HashMap<String, Supplier<YamlMetaType>> features = getFeatures();
-        if(features == null) { return Collections.emptyList(); }
+        if (features == null) {
+            return Collections.emptyList();
+        }
         return features.keySet()
                 .stream()
                 .map(this::findFeatureByName)
@@ -68,5 +75,17 @@ public abstract class OMTMetaType extends YamlMetaType {
 
     public boolean isExportable() {
         return false;
+    }
+
+    public Set<OntResource> resolveValue(YAMLValue value) {
+        final Collection<PsiResolvable> injectedContent = OMTProviderUtil.getInjectedContent(value,
+                PsiResolvable.class);
+        if (injectedContent.isEmpty()) {
+            return Collections.emptySet();
+        } else {
+            return injectedContent.stream().findFirst()
+                    .map(PsiResolvable::resolve)
+                    .orElse(Collections.emptySet());
+        }
     }
 }

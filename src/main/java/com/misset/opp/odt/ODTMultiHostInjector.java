@@ -7,7 +7,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.omt.meta.ODTInjectable;
+import com.misset.opp.omt.meta.OMTInjectable;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -16,15 +16,13 @@ import org.jetbrains.yaml.psi.YAMLQuotedText;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
-import java.time.Duration;
-import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 /**
- * The ODTMultiHostInjector will inject ODT language on any YamlMetaType that implements ODTInjectable
+ * The ODTMultiHostInjector will inject ODT language on any YamlMetaType that implements OMTInjectable
  * The OMTMetaTypeProvider contains the entire OMT structure and has specific Scalar types that are recognized to be injectable
  */
 public class ODTMultiHostInjector implements MultiHostInjector {
@@ -36,21 +34,16 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         }
         final YAMLDocument document = (YAMLDocument) context;
 
-        System.out.println("called injection on: " + context.getContainingFile().getName());
-        final ZonedDateTime start = ZonedDateTime.now();
-
         PsiTreeUtil.findChildrenOfType(document,
                         PsiLanguageInjectionHost.class)
                 .stream()
                 .map(this::getODTInjectable)
                 .filter(Objects::nonNull)
                 .forEach(pair -> inject(registrar, pair.getFirst(), pair.getSecond()));
-        final ZonedDateTime end = ZonedDateTime.now();
-        System.out.println("Injection analysis took: " + Duration.between(start, end).toMillis() + " ms");
     }
 
     private void inject(MultiHostRegistrar registrar,
-                        ODTInjectable injectable,
+                        OMTInjectable injectable,
                         YAMLScalarImpl host) {
         final List<TextRange> textRanges = injectable.getTextRanges(host);
         if (textRanges.isEmpty()) {
@@ -81,15 +74,15 @@ public class ODTMultiHostInjector implements MultiHostInjector {
         return null;
     }
 
-    private Pair<ODTInjectable, YAMLScalarImpl> getODTInjectable(PsiLanguageInjectionHost host) {
+    private Pair<OMTInjectable, YAMLScalarImpl> getODTInjectable(PsiLanguageInjectionHost host) {
         if (!(host instanceof YAMLScalarImpl)) {
             return null;
         }
         final YAMLScalarImpl scalar = (YAMLScalarImpl) host;
         return Optional.ofNullable(OMTMetaTypeProvider.getInstance(host.getProject()).getValueMetaType(scalar))
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
-                .filter(metaType -> metaType instanceof ODTInjectable)
-                .map(ODTInjectable.class::cast)
+                .filter(metaType -> metaType instanceof OMTInjectable)
+                .map(OMTInjectable.class::cast)
                 .map(metaType -> new Pair<>(metaType, scalar))
                 .orElse(null);
     }

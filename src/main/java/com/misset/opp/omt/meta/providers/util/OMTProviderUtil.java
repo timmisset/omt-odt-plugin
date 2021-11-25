@@ -15,10 +15,10 @@ import java.util.Optional;
 public class OMTProviderUtil {
 
     /**
-     * Returns the injected ODT elements from the YAMLValue.
+     * Returns the injected elements from the YAMLValue.
      * It's assumed the YAMLValue is an implementation of PsiLanguageInjectionHost and the corresponding MetaType provider
-     * is in implementation of ODTInjectable.
-     * The root element (ODT Script) of the injected ODTFile is searched using the PsiTreeUtil.findChildrenOfType
+     * is in implementation of OMTInjectable.
+     * The root element (Script) of the injected File is searched using the PsiTreeUtil.findChildrenOfType
      */
     public static <T extends PsiElement> Collection<T> getInjectedContent(YAMLValue value, Class<T> contentClass) {
         if(value == null || !value.isValid()) {

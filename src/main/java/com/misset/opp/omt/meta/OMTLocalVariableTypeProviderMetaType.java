@@ -1,8 +1,8 @@
 package com.misset.opp.omt.meta;
 
 import com.misset.opp.callable.Call;
-import com.misset.opp.callable.PsiResolvable;
 import com.misset.opp.callable.Resolvable;
+import com.misset.opp.callable.psi.PsiResolvable;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import org.apache.jena.ontology.OntResource;

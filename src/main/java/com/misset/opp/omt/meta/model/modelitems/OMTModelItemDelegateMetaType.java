@@ -10,4 +10,5 @@ public abstract class OMTModelItemDelegateMetaType extends OMTMetaType {
     }
 
     public abstract boolean isCallable();
+
 }

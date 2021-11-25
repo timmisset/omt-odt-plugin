@@ -13,7 +13,7 @@ import com.misset.opp.odt.psi.ODTLogicalBlock;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
-import com.misset.opp.omt.psi.impl.OMTCallable;
+import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +78,7 @@ public class ODTCommandInspectionForEach extends LocalInspectionTool {
 
     private boolean illegalNestedCall(@NotNull ODTCall call) {
         // cannot call a procedure, activity etc. anything that is part of the OMT structure
-        return call.getCallable() instanceof OMTCallable;
+        return call.getCallable() instanceof OMTCallableImpl;
     }
 
     private boolean isEncapsulatedByLogicalBlockOrCall(@NotNull PsiElement variable,

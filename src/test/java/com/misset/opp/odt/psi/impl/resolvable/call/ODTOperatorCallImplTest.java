@@ -2,7 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.callable.builtin.operators.BuiltInOperator;
-import com.misset.opp.omt.psi.impl.OMTCallable;
+import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.junit.jupiter.api.Assertions;
@@ -37,7 +37,7 @@ class ODTOperatorCallImplTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final ODTOperatorCallImpl operatorCall = myFixture.findElementByText("StandaloneQuery",
                     ODTOperatorCallImpl.class);
-            Assertions.assertTrue(operatorCall.getCallable() instanceof OMTCallable);
+            Assertions.assertTrue(operatorCall.getCallable() instanceof OMTCallableImpl);
         });
     }
 

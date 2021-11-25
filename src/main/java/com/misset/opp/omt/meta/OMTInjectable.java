@@ -5,7 +5,7 @@ import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
 import java.util.List;
 
-public interface ODTInjectable {
+public interface OMTInjectable {
 
     default List<TextRange> getTextRanges(YAMLScalarImpl host) {
         int startOffset = host.getContentRanges()

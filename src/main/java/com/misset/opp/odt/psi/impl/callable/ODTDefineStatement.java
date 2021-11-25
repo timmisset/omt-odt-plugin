@@ -6,7 +6,7 @@ import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Call;
-import com.misset.opp.callable.Callable;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement implements Callable, PsiJavaDocumentedElement {
+public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement implements PsiCallable, PsiJavaDocumentedElement {
     public ODTDefineStatement(@NotNull ASTNode node) {
         super(node);
     }
@@ -69,5 +69,10 @@ public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement impleme
         for (int i = 0; i < variables.size(); i++) {
             call.setParamType(variables.get(i).getName(), call.resolveSignatureArgument(i));
         }
+    }
+
+    @Override
+    public PsiElement getCallTarget() {
+        return getDefineName();
     }
 }

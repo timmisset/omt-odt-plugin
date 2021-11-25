@@ -2,11 +2,11 @@ package com.misset.opp.omt.meta.model;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.omt.meta.ODTInjectable;
+import com.misset.opp.omt.meta.OMTInjectable;
 import com.misset.opp.omt.meta.OMTLocalVariableTypeProviderMetaType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTQueryMetaType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.references.OMTPayloadQueryReferenceMetaType;
-import com.misset.opp.omt.meta.model.scalars.scripts.ODTOnChangeScriptMetaType;
+import com.misset.opp.omt.meta.model.scalars.scripts.OMTOnChangeScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
@@ -22,15 +22,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-@ODTSimpleInjectable
-public class OMTPayloadItemMetaType extends OMTLocalVariableTypeProviderMetaType implements ODTInjectable, OMTLocalVariableTypeProvider {
+@SimpleInjectable
+public class OMTPayloadItemMetaType extends OMTLocalVariableTypeProviderMetaType implements OMTInjectable, OMTLocalVariableTypeProvider {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("value", ODTQueryMetaType::new);
+        features.put("value", OMTQueryMetaType::new);
         features.put("query", OMTPayloadQueryReferenceMetaType::new);
         features.put("list", YamlBooleanType::getSharedInstance);
-        features.put("onChange", ODTOnChangeScriptMetaType::new);
+        features.put("onChange", OMTOnChangeScriptMetaType::new);
     }
 
     public OMTPayloadItemMetaType() {

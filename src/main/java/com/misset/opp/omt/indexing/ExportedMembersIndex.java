@@ -25,6 +25,10 @@ public class ExportedMembersIndex {
         exportedMembers.remove(path);
     }
 
+    public static void clear() {
+        exportedMembers.clear();
+    }
+
     private static HashMap<String, List<PsiElement>> calculateExportedMembers(String path,
                                                                               Project project) {
 

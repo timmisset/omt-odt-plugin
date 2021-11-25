@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
@@ -27,15 +27,15 @@ import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
  */
 public class OMTCallableProviderUtil extends OMTProviderUtil {
 
-    public static void addDefinedStatementsToMap(YAMLMapping mapping,
+    public static void addInjectedCallablesToMap(YAMLMapping mapping,
                                                  String key,
                                                  HashMap<String, List<PsiElement>> map) {
         final YAMLKeyValue callables = mapping.getKeyValueByKey(key);
         if (callables == null || callables.getValue() == null) {
             return;
         }
-        getInjectedContent(callables.getValue(), ODTDefineStatement.class)
-                .forEach(odtDefineStatement -> addToGroupedMap(odtDefineStatement.getCallId(), odtDefineStatement.getDefineName(), map));
+        getInjectedContent(callables.getValue(), PsiCallable.class)
+                .forEach(callable -> addToGroupedMap(callable.getCallId(), callable.getCallTarget(), map));
     }
 
     /**

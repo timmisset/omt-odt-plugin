@@ -27,7 +27,7 @@ import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
-import com.misset.opp.omt.psi.impl.OMTCallable;
+import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -91,10 +91,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     private Callable getCallable(PsiElement element) {
         if (element instanceof YAMLKeyValue) { // resolves to OMT !Activity, !Procedure etc
             return Optional.of((YAMLKeyValue) element)
-                    .map(YAMLKeyValue::getValue)
-                    .filter(YAMLMapping.class::isInstance)
-                    .map(YAMLMapping.class::cast)
-                    .map(OMTCallable::new)
+                    .map(OMTCallableImpl::new)
                     .orElse(null);
         } else if (element instanceof ODTDefineName) {
             return (ODTDefineStatement) element.getParent();

@@ -3,8 +3,8 @@ package com.misset.opp.omt.meta;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.model.OMTModelMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
-import com.misset.opp.omt.meta.model.scalars.scripts.ODTCommandsMetaType;
-import com.misset.opp.omt.meta.model.scalars.scripts.ODTQueriesMetaType;
+import com.misset.opp.omt.meta.model.scalars.scripts.OMTCommandsMetaType;
+import com.misset.opp.omt.meta.model.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import org.jetbrains.annotations.NonNls;
@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addDefinedStatementsToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addImportStatementsToMap;
+import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addInjectedCallablesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addModelItemsToMap;
 
 /**
@@ -35,8 +35,8 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
     static {
         features.put("import", OMTImportMetaType::new);
         features.put("model", OMTModelMetaType::new);
-        features.put("queries", () -> new ODTQueriesMetaType(true));
-        features.put("commands", () -> new ODTCommandsMetaType(true));
+        features.put("queries", () -> new OMTQueriesMetaType(true));
+        features.put("commands", () -> new OMTCommandsMetaType(true));
         features.put("prefixes", OMTPrefixesMetaType::new);
     }
 
@@ -52,8 +52,8 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
          */
         final HashMap<String, List<PsiElement>> map = new HashMap<>();
         // first add the queries and commands, in case of shadowing the same name for imports, the defined statements are used
-        addDefinedStatementsToMap(yamlMapping, "queries", map);
-        addDefinedStatementsToMap(yamlMapping, "commands", map);
+        addInjectedCallablesToMap(yamlMapping, "queries", map);
+        addInjectedCallablesToMap(yamlMapping, "commands", map);
 
         final YAMLKeyValue model = yamlMapping.getKeyValueByKey("model");
         if (model != null && model.getValue() instanceof YAMLMapping) {

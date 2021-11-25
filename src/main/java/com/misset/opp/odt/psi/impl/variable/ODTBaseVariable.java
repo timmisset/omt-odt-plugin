@@ -54,6 +54,11 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
         this.delegate = getDelegate();
     }
 
+    @Override
+    public String getDescription() {
+        return getName();
+    }
+
     private ODTVariableDelegate getDelegate() {
         return ReadAction.compute(() -> {
             /*

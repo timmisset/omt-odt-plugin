@@ -105,6 +105,7 @@ public class OMTImportPathMetaType extends YamlArrayType {
         // validate that the key can be resolved to file:
         // resolve to the virtual file instead of the Psi to prevent the file from being loaded without cause
         final boolean resolvable = Optional.ofNullable(OMTImportMetaType.resolveToPath(keyValue))
+                .filter(s -> !s.startsWith("temp:///")) // <-- unittests use a fictitious path that is not valid for Path
                 .map(Path::of)
                 .map(VirtualFileManager.getInstance()::findFileByNioPath)
                 .map(VirtualFile::exists)

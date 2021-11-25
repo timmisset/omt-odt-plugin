@@ -181,6 +181,9 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
                 .findFirst();
     }
 
+    // todo: move this whole part to the declared variable delegate
+    // try to make the variables that are part of OMT language (params: variables:)
+    // a real part of the OMT language once more and resolve to a PsiVariable intermediary
     private Set<OntResource> getType(ODTVariable declared) {
         if (declared.isOMTVariableProvider()) {
             // part of the OMT structure

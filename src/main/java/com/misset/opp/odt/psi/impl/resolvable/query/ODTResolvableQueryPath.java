@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTQueryPath;
@@ -80,6 +81,18 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
     }
 
     public List<ODTResolvableQueryOperationStep> getResolvableQueryOperationStepList() {
-        return getQueryOperationStepList().stream().map(ODTResolvableQueryOperationStep.class::cast).collect(Collectors.toList());
+        return getQueryOperationStepList().stream()
+                .map(ODTResolvableQueryOperationStep.class::cast)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isReference() {
+        return getResolvableQueryOperationStepList().size() == 1 &&
+                Optional.ofNullable(getLastOperation())
+                        .map(ODTQueryOperationStep::getQueryStep)
+                        .map(PsiElement::getReference)
+                        .map(PsiReference::resolve)
+                        .isPresent();
     }
 }

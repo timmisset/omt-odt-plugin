@@ -13,7 +13,7 @@ public class OMTRuleMetaType extends YamlScalarType {
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,
                                        @NotNull ProblemsHolder holder) {
-        // TODO: validate that a rule should point to a valid ODT query returning a boolean
+        // TODO: validate that a rule should point to a valid query returning a boolean
         super.validateScalarValue(scalarValue, holder);
     }
 

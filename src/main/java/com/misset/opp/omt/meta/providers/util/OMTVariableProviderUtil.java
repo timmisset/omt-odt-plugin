@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.callable.psi.PsiVariable;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLSequence;
@@ -44,24 +44,32 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
             addSequenceToMap((YAMLSequence) variables.getValue(), map);
         }
     }
-    public static void addSequenceToMap(YAMLSequence sequence, HashMap<String, List<PsiElement>> map) {
+
+    public static void addSequenceToMap(YAMLSequence sequence,
+                                        HashMap<String, List<PsiElement>> map) {
         sequence.getItems()
-                .forEach(sequenceItem -> addToGroupedMap(getVariableName(sequenceItem), getReferenceTarget(sequenceItem), map));
+                .forEach(sequenceItem -> addToGroupedMap(getVariableName(sequenceItem),
+                        getReferenceTarget(sequenceItem),
+                        map));
     }
-    public static ODTVariable getReferenceTarget(YAMLSequenceItem sequenceItem) {
+
+    public static PsiVariable getReferenceTarget(YAMLSequenceItem sequenceItem) {
         final YAMLValue yamlValue = sequenceItem.getValue();
-        if(yamlValue instanceof YAMLMapping) {
+        if (yamlValue instanceof YAMLMapping) {
             // destructed notation, return the "name":
             final YAMLMapping yamlMapping = (YAMLMapping) yamlValue;
             final YAMLKeyValue name = yamlMapping.getKeyValueByKey("name");
-            if(name == null) { return null; }
+            if (name == null) {
+                return null;
+            }
             return getVariable(name.getValue());
         } else {
             return getVariable(yamlValue);
         }
     }
-    public static ODTVariable getVariable(YAMLValue value) {
-        return getInjectedContent(value, ODTVariable.class).stream().findFirst().orElse(null);
+
+    public static PsiVariable getVariable(YAMLValue value) {
+        return getInjectedContent(value, PsiVariable.class).stream().findFirst().orElse(null);
     }
 
 }

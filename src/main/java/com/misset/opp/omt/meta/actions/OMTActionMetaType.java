@@ -4,8 +4,8 @@ import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTBooleanQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTQueryMetaType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTBooleanQueryType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
@@ -24,13 +24,13 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
         features.put("id", YamlStringType::new);
         features.put("title", OMTInterpolatedStringMetaType::new);
         features.put("description", OMTInterpolatedStringMetaType::new);
-        features.put("promoteSubMenuItemToMainMenu", ODTBooleanQueryType::new);
+        features.put("promoteSubMenuItemToMainMenu", OMTBooleanQueryType::new);
         features.put("icon", YamlStringType::new);
         features.put("params", OMTParamsArrayMetaType::new);
-        features.put("precondition", ODTQueryMetaType::new);
-        features.put("disabled", ODTBooleanQueryType::new);
-        features.put("busyDisabled", ODTBooleanQueryType::new);
-        features.put("dynamicActionQuery", ODTQueryMetaType::new);
+        features.put("precondition", OMTQueryMetaType::new);
+        features.put("disabled", OMTBooleanQueryType::new);
+        features.put("busyDisabled", OMTBooleanQueryType::new);
+        features.put("dynamicActionQuery", OMTQueryMetaType::new);
         features.put("onSelect", OMTScriptMetaType::new);
     }
     public OMTActionMetaType() {

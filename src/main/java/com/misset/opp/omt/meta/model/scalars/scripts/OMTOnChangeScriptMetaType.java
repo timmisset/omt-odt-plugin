@@ -4,9 +4,9 @@ import com.misset.opp.omt.meta.OMTLocalVariableProviderMetaType;
 
 import java.util.List;
 
-public class ODTOnChangeScriptMetaType extends OMTLocalVariableProviderMetaType {
-    public ODTOnChangeScriptMetaType() {
-        super("ODT Script (When the value changes)");
+public class OMTOnChangeScriptMetaType extends OMTLocalVariableProviderMetaType {
+    public OMTOnChangeScriptMetaType() {
+        super("Script, triggers when the value changes");
     }
 
     @Override

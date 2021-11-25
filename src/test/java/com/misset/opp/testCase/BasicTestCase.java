@@ -8,6 +8,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
+import com.misset.opp.omt.indexing.ExportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,7 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
     protected void tearDown() {
         try{
             super.tearDown();
+            ExportedMembersIndex.clear();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

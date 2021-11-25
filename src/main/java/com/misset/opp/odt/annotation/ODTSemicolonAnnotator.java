@@ -8,7 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTScriptContent;
 import com.misset.opp.odt.psi.ODTTypes;
-import com.misset.opp.omt.meta.model.ODTSimpleInjectable;
+import com.misset.opp.omt.meta.model.SimpleInjectable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
@@ -30,11 +30,11 @@ public class ODTSemicolonAnnotator implements Annotator {
                 return;
             }
 
-            if (!injectionMetaType.getClass().isAnnotationPresent(ODTSimpleInjectable.class) && !hasSemicolonEnding) {
+            if (!injectionMetaType.getClass().isAnnotationPresent(SimpleInjectable.class) && !hasSemicolonEnding) {
                 // should have a semicolon on every scriptline:
                 holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_REQUIRED).create();
             } else if (injectionMetaType.getClass()
-                    .isAnnotationPresent(ODTSimpleInjectable.class) && hasSemicolonEnding) {
+                    .isAnnotationPresent(SimpleInjectable.class) && hasSemicolonEnding) {
                 // should not have a semicolon ending:
                 holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
             }

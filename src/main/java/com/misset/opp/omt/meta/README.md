@@ -11,7 +11,7 @@ The value (YamlMapping) for model is resolved to an OMTModelItem, which in turn 
 tag !Activity to determine which kind of OMTModelItem is used. Using a delegate structure
 the OMTActivity is then provided which contains a field title, with an OMTMetaType InterpolatedString
 
-The MetaTypes are used all over the OMT part of the plugin to introduce specific validations,
-determine where to inject ODT language and more.
+The MetaTypes are used all over the OMT part of the plugin to introduce specific validations, determine where to inject
+languages and more.
 
 > The MetaProvider is extended from the Yaml MetaTypeProvider included in the YamlPlugin of IntelliJ

@@ -1,9 +1,9 @@
 package com.misset.opp.omt.meta.model.handlers;
 
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTBooleanQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTPredicateQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTSubjectQueryType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTBooleanQueryType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTPredicateQueryType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTSubjectQueryType;
 import com.misset.opp.omt.meta.model.scalars.values.OMTHandlersFromMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
@@ -16,9 +16,9 @@ public class OMTMergeListsMetaType extends OMTMetaType {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {
-        features.put("subjects", ODTSubjectQueryType::new);
-        features.put("predicates", ODTPredicateQueryType::new);
-        features.put("when", ODTBooleanQueryType::new);
+        features.put("subjects", OMTSubjectQueryType::new);
+        features.put("predicates", OMTPredicateQueryType::new);
+        features.put("when", OMTBooleanQueryType::new);
         features.put("from", OMTHandlersFromMetaType::new);
     }
 

@@ -2,9 +2,9 @@ package com.misset.opp.omt.meta.model.handlers;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTBooleanQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTPredicateQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.ODTSubjectQueryType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTBooleanQueryType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTPredicateQueryType;
+import com.misset.opp.omt.meta.model.scalars.queries.OMTSubjectQueryType;
 import com.misset.opp.omt.meta.model.scalars.values.OMTHandlersFromMetaType;
 import com.misset.opp.omt.meta.model.scalars.values.OMTHandlersMetaType;
 import com.misset.opp.omt.meta.model.scalars.values.OMTHandlersUseMetaType;
@@ -26,9 +26,9 @@ public class OMTMergePredicatesMetaType extends OMTMetaType {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     static {
-        features.put("subjects", ODTSubjectQueryType::new);
-        features.put("predicates", ODTPredicateQueryType::new);
-        features.put("when", ODTBooleanQueryType::new);
+        features.put("subjects", OMTSubjectQueryType::new);
+        features.put("predicates", OMTPredicateQueryType::new);
+        features.put("when", OMTBooleanQueryType::new);
         features.put("from", OMTHandlersFromMetaType::new);
         features.put("use", OMTHandlersUseMetaType::new);
         features.put("type", OMTHandlersMetaType::new);
