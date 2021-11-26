@@ -88,7 +88,9 @@ public class OMTImportPathMetaType extends YamlArrayType {
                     final YAMLSequence newSequence = generator.createEmptySequence();
                     items.forEach(sequenceItem -> {
                         newSequence.add(sequenceItem);
-                        newSequence.add(parserFacade.createWhiteSpaceFromText("\n"));
+                        if (newSequence.getItems().size() < items.size()) {
+                            newSequence.add(parserFacade.createWhiteSpaceFromText("\n"));
+                        }
                     });
                     yamlSequence.replace(newSequence);
                 }

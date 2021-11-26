@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection;
+package com.misset.opp.odt.inspection.type;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;

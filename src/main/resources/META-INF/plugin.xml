@@ -84,15 +84,19 @@
         <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTResolvableInspection"/>
-        <localInspection displayName="Boolean value" groupName="Type validation" language="ODT"
-                         enabledByDefault="true" level="ERROR" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionBoolean"/>
         <localInspection displayName="Unreachable code" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionUnreachable"/>
         <localInspection displayName="Unnecessary wrapping" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTStyleInspectionUnnecessaryWrappingSubquery"/>
+        <!-- Types -->
+        <localInspection displayName="Boolean value" groupName="Type validation" language="ODT"
+                         enabledByDefault="true" level="ERROR" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.type.ODTCodeInspectionBoolean"/>
+        <localInspection displayName="Collections and Assignments" groupName="Type validation" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.type.ODTCodeInspectionCollectionStatement"/>
 
         <!-- Redudancy -->
         <localInspection displayName="Duplicated DEFINE statements" groupName="Redundancy" language="ODT"
@@ -129,7 +133,6 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
-
 
     </extensions>
     <depends>com.intellij.java</depends>

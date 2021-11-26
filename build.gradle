@@ -63,7 +63,11 @@ patchPluginXml {
 
     changeNotes = """
         <strong>5.0</strong><br/>
-        Rewrote the plugin to be fully extensible from the existing YAML plugin</br>
+        Completely re-written OMT / ODT plugin</br>
+        It is now fully backed by the native IntelliJ Yaml plugin for all OMT related actions</br>
+        All ODT fragments are injected as code snippets. This makes it a bit slower but much more stable</br>
+        </br>
+        
       """
 }
 tasks {

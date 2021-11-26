@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection;
+package com.misset.opp.odt.inspection.type;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.InspectionTestCase;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.ODTCodeInspectionBoolean.ERROR_MESSAGE;
+import static com.misset.opp.odt.inspection.type.ODTCodeInspectionBoolean.ERROR_MESSAGE;
 
 class ODTCodeInspectionBooleanTest extends InspectionTestCase {
 

@@ -55,8 +55,8 @@ script ::=                                  scriptLine+
 // a scriptline is contained by the addition of the semicolon at the end
 scriptLine ::=                              ((scriptContent SEMICOLON*) | commandBlock | logicalBlock | defineQueryStatement | defineCommandStatement)
 // the contents of a script, contained by a scriptLine or Scalar
-scriptContent ::=                           declareVariable | variableAssignment | definePrefix | commandCall | assignmentStatement |
-                                            addToCollection | removeFromCollection | returnStatement | queryStatement
+scriptContent ::=                           declareVariable | variableAssignment | definePrefix | commandCall |
+                                            collectionStatement | returnStatement | queryStatement
 
 commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
 queryStatement ::=                          query { extends=scriptContent }
@@ -209,7 +209,8 @@ queryReverseStep ::=                        CARET queryStep {
 // ASTERIX          == 0 or more
 stepDecorator ::=                           ASTERIX | PLUS | QUESTION_MARK
 // a query filter is contained by brackets [] and should resolve to boolean
-queryFilter ::=                             BRACKET_OPEN query? BRACKET_CLOSED
+queryFilter ::=                             BRACKET_OPEN (rangeSelection | query) BRACKET_CLOSED
+rangeSelection ::=                          INTEGER (COMMA INTEGER)?
 
 // the subQuery encapsulated a query by PARENTHESES, it can be resolved as-is, for example in an equation
 // or be cast to a traverse-like behavior using the ASTERIX and PLUS appendixes
@@ -221,6 +222,9 @@ subQuery ::=                                PARENTHESES_OPEN query PARENTHESES_C
 // the assignment statement is used to assign a value to a left-hand target, like a variable or a resolved resource iri
 // addTo and removeFrom are similar which will add/remove the item to/from the collection
 // these are not used defined query statement but in command blocks
-assignmentStatement ::=                     query EQUALS resolvableValue { extends=scriptContent }
-addToCollection ::=                         query ADD resolvableValue { extends=scriptContent }
-removeFromCollection ::=                    query REMOVE resolvableValue { extends=scriptContent }
+collectionStatement ::=                     assignmentStatement | addToCollection | removeFromCollection {
+ extends=scriptContent
+ implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvableCollectionStatement" }
+assignmentStatement ::=                     query EQUALS resolvableValue { extends=collectionStatement }
+addToCollection ::=                         query ADD resolvableValue { extends=collectionStatement }
+removeFromCollection ::=                    query REMOVE resolvableValue { extends=collectionStatement }

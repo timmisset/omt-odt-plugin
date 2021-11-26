@@ -6,8 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.syntax.ODTSyntaxHighlighter;
-import com.misset.opp.ttl.OppModel;
-import org.apache.jena.ontology.Individual;
+import com.misset.opp.ttl.ResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 
@@ -29,7 +28,7 @@ public class ODTResolvableUtil {
                 .tooltip(
                         resources.stream()
                                 .sorted(Comparator.comparing(Resource::toString))
-                                .map(ODTResolvableUtil::describeUri)
+                                .map(ResourceUtil::describeUri)
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.joining("<br>")))
                 .range(range);
@@ -44,55 +43,19 @@ public class ODTResolvableUtil {
     }
 
     private static TextAttributesKey getOntologyTextAttributesKey(Set<OntResource> resources) {
-        if (resources.stream().allMatch(ODTResolvableUtil::isValue)) {
+        if (resources.stream().allMatch(ResourceUtil::isValue)) {
             return ODTSyntaxHighlighter.OntologyValueAttributesKey;
         }
         if (resources.stream().allMatch(OntResource::isIndividual)) {
             return ODTSyntaxHighlighter.OntologyInstanceAttributesKey;
         }
-        if (resources.stream().allMatch(ODTResolvableUtil::isType)) {
+        if (resources.stream().allMatch(ResourceUtil::isType)) {
             return ODTSyntaxHighlighter.OntologyTypeAttributesKey;
         }
-        if (resources.stream().allMatch(ODTResolvableUtil::isClass)) {
+        if (resources.stream().allMatch(ResourceUtil::isClass)) {
             return ODTSyntaxHighlighter.OntologyClassAttributesKey;
         }
         return null;
-    }
-
-    private static boolean isType(OntResource resource) {
-        return resource.isClass() &&  isXSDType(resource);
-    }
-    private static boolean isValue(OntResource resource) {
-        return resource instanceof Individual && isXSDType(((Individual) resource).getOntClass());
-    }
-    private static boolean isXSDType(OntResource resource) {
-        return resource.getNameSpace().equals(OppModel.XSD);
-    }
-
-    private static boolean isClass(OntResource resource) {
-        return !isType(resource) && resource.isClass();
-    }
-
-    public static String describeUri(OntResource resource) {
-        if (resource.isClass()) {
-            if (resource.getNameSpace().equals(OppModel.XSD)) {
-                return resource.getURI() + " (TYPE)";
-            }
-            return resource.getURI() + " (CLASS)";
-        } else if (resource instanceof Individual) {
-            final Individual individual = (Individual) resource;
-            if (isXSDType(individual.getOntClass())) {
-                return individual.getOntClass().getURI() + " (VALUE)";
-            } else if (individual.getOntClass().equals(OppModel.INSTANCE.OPP_CLASS)) {
-                // Specific OPP_CLASS instances that describe non-ontology values such as JSON_OBJECT, ERROR etc
-                return individual.getURI();
-            } else if (individual.getNameSpace() != null && !individual.getNameSpace().endsWith("_INSTANCE")) {
-                return individual.getURI();
-            }
-            return individual.getOntClass().getURI() + " (INSTANCE)";
-        } else {
-            return resource.getURI();
-        }
     }
 
 }

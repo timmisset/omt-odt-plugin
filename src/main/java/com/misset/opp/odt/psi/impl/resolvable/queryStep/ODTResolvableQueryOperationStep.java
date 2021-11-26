@@ -133,6 +133,9 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
 
     private Set<OntResource> filter(Set<OntResource> resources,
                                     ODTQueryFilter filter) {
+        if (filter.getRangeSelection() != null) {
+            return resources;
+        }
         final ODTQuery query = filter.getQuery();
         if (query instanceof ODTResolvableQuery) {
             return query.filter(resources);

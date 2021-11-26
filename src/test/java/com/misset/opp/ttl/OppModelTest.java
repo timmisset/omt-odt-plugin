@@ -145,13 +145,6 @@ class OppModelTest extends OMTOntologyTestCase {
     }
 
     @Test
-    void testListAcceptableTypes() {
-        Assertions.assertTrue(oppModel.listAcceptableTypes(CLASS_A)
-                .stream()
-                .anyMatch(resource -> resource.equals(oppModel.getIndividual("http://ontology#ClassA_InstanceA"))));
-    }
-
-    @Test
     void testInstanceValues() {
         final Individual individual = oppModel.getIndividual("http://ontology#ClassA_InstanceA");
         final RDFNode booleanPredicate = individual.listPropertyValues(
@@ -159,5 +152,40 @@ class OppModelTest extends OMTOntologyTestCase {
         ).next();
         Assertions.assertTrue(booleanPredicate.isLiteral());
         Assertions.assertTrue(booleanPredicate.asLiteral().getBoolean());
+    }
+
+    @Test
+    void testAreCompatible() {
+        Assertions.assertTrue(areCompatible("http://ontology#ClassA_InstanceA", "http://ontology#ClassA_InstanceA"));
+        Assertions.assertTrue(areCompatible("http://ontology#ClassA", "http://ontology#ClassA"));
+        Assertions.assertFalse(areCompatible("http://ontology#ClassA_InstanceA", "http://ontology#ClassA"));
+
+        Assertions.assertTrue(areCompatible("http://ontology#ClassB", "http://ontology#ClassBSub"));
+        Assertions.assertFalse(areCompatible("http://ontology#ClassBSub", "http://ontology#ClassB"));
+
+        Assertions.assertTrue(areCompatible("http://www.w3.org/2001/XMLSchema#number",
+                "http://www.w3.org/2001/XMLSchema#decimal"));
+        Assertions.assertTrue(areCompatible("http://www.w3.org/2001/XMLSchema#number",
+                "http://www.w3.org/2001/XMLSchema#integer"));
+        Assertions.assertTrue(areCompatible("http://www.w3.org/2001/XMLSchema#number",
+                "http://www.w3.org/2001/XMLSchema#number"));
+        Assertions.assertTrue(areCompatible("http://www.w3.org/2001/XMLSchema#integer",
+                "http://www.w3.org/2001/XMLSchema#integer"));
+        Assertions.assertTrue(areCompatible("http://www.w3.org/2001/XMLSchema#decimal",
+                "http://www.w3.org/2001/XMLSchema#decimal"));
+        Assertions.assertTrue(areCompatible("http://www.w3.org/2001/XMLSchema#decimal",
+                "http://www.w3.org/2001/XMLSchema#integer"));
+        Assertions.assertFalse(areCompatible("http://www.w3.org/2001/XMLSchema#integer",
+                "http://www.w3.org/2001/XMLSchema#decimal"));
+
+        Assertions.assertTrue(areCompatible("http://www.w3.org/2001/XMLSchema#dateTime",
+                "http://www.w3.org/2001/XMLSchema#date"));
+        Assertions.assertFalse(areCompatible("http://www.w3.org/2001/XMLSchema#date",
+                "http://www.w3.org/2001/XMLSchema#dateTime"));
+    }
+
+    private boolean areCompatible(String resourceA,
+                                  String resourceB) {
+        return oppModel.areCompatible(oppModel.getResource(resourceA), oppModel.getResource(resourceB));
     }
 }

@@ -61,7 +61,7 @@ public class OppModel {
     public OntClass OPP_CLASS;
     public OntClass GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
     public Individual JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH;
-    public OntResource XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
+    public OntClass XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
     public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
 
     /*
@@ -94,9 +94,7 @@ public class OppModel {
         // the RDFS_INF inferencing provides the support for sub/superclass logic
         model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
         setProperties();
-        incrementModificationCount();
         setPrimitives();
-        incrementModificationCount();
         loadSimpleModel();
         incrementModificationCount();
         INSTANCE = this;
@@ -135,7 +133,7 @@ public class OppModel {
                 .toSet();
     }
 
-    public OntModel getShaclModel() {
+    protected OntModel getShaclModel() {
         return shaclModel;
     }
 
@@ -180,14 +178,21 @@ public class OppModel {
         XSD_STRING_INSTANCE = model.createIndividual(XSD_STRING);
         XSD_NUMBER = model.createClass(XSD + "number");
         XSD_NUMBER_INSTANCE = model.createIndividual(XSD_NUMBER);
-        XSD_INTEGER = model.createClass(XSD + "integer");
-        XSD_INTEGER_INSTANCE = model.createIndividual(XSD_INTEGER);
         XSD_DECIMAL = model.createClass(XSD + "decimal");
+        XSD_DECIMAL.addSuperClass(XSD_NUMBER);
         XSD_DECIMAL_INSTANCE = model.createIndividual(XSD_DECIMAL);
-        XSD_DATE = model.createClass(XSD + "date");
-        XSD_DATE_INSTANCE = model.createIndividual(XSD_DATE);
-        XSD_DATETIME = model.createClass(XSD + "datetime");
+        XSD_INTEGER = model.createClass(XSD + "integer");
+        // by making XSD_INTEGER a subclass of XSD_DECIMAL, it will allow type checking
+        // to accept an integer at a decimal position, but not the other way around
+        XSD_INTEGER.addSuperClass(XSD_DECIMAL);
+        XSD_INTEGER_INSTANCE = model.createIndividual(XSD_INTEGER);
+        XSD_DATETIME = model.createClass(XSD + "dateTime");
         XSD_DATETIME_INSTANCE = model.createIndividual(XSD_DATETIME);
+        XSD_DATE = model.createClass(XSD + "date");
+        // by making XSD_DATE a subclass of XSD_DATETIME, it will allow type checking
+        // to accept a date at a datetime position, but not the other way around
+        XSD_DATE.addSuperClass(XSD_DATETIME);
+        XSD_DATE_INSTANCE = model.createIndividual(XSD_DATE);
     }
 
     public Individual parsePrimitive(String description) {
@@ -210,7 +215,6 @@ public class OppModel {
     private void loadSimpleModelClass(OntClass ontClass) {
         // create a simple class instance and inherit the superclass(es)
         final OntClass simpleModelClass = model.createClass(ontClass.getURI());
-        incrementModificationCount();
         // create one individual per class, this is used as a mock when traversing the paths
         // and discriminate between classes and instances of the class being visited.
         final List<Statement> superClasses = ontClass.listProperties(RDFS_SUBCLASS_OF).toList();
@@ -220,7 +224,6 @@ public class OppModel {
         } else {
             superClasses.forEach(statement -> simpleModelClass.addSuperClass(statement.getObject().asResource()));
         }
-        incrementModificationCount();
 
         // translate the SHACL PATH properties into simple predicate-object statements for this class
         ontClass.listProperties(SHACL_PROPERTY)
@@ -230,7 +233,6 @@ public class OppModel {
                 .forEach((shaclPropertyShape) -> getSimpleResourceStatement(simpleModelClass, shaclPropertyShape));
 
         simpleModelClass.createIndividual(simpleModelClass.getURI() + "_INSTANCE");
-        incrementModificationCount();
     }
 
     private void loadSimpleModelIndividual(Individual individual) {
@@ -245,14 +247,12 @@ public class OppModel {
             // in any case, this should just be a warning
             logger.warn("Could not create an individual for: " + individual.getURI());
         }
-        incrementModificationCount();
     }
 
     private void loadGraphShapes(Resource resource) {
         if (model.getOntResource(resource.getURI()) == null) {
             model.createIndividual(resource.getURI(), GRAPH_SHAPE);
             model.add(resource.listProperties());
-            incrementModificationCount();
         }
     }
 
@@ -278,26 +278,6 @@ public class OppModel {
             return;
         }
         subject.addProperty(predicate, object);
-    }
-
-    /**
-     * Returns a set of Resources that are compatible with the provided resource
-     * if the provided resource is an Individual, the comparison will be made on the Individual::ontClass()
-     * <p>
-     * If ClassB has a super-class ClassA and a sub-class ClassC then
-     * any instance of ClassB and C are acceptable types since ClassC at least has all properties of ClassB but
-     * ClassA does not.
-     */
-    public Set<OntResource> listAcceptableTypes(OntResource resource) {
-        final OntClass ontClass;
-        if (resource.isClass()) {
-            ontClass = resource.asClass();
-        } else if (resource.isIndividual()) {
-            ontClass = resource.asIndividual().getOntClass();
-        } else {
-            return Collections.emptySet();
-        }
-        return ontClass.listInstances(false).mapWith(OntResource.class::cast).toSet();
     }
 
     /**
@@ -677,8 +657,6 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
-    private final Pattern DATA_GRAPHS = Pattern.compile("http://data\\.politie\\.nl/19000000000000_\\S+");
-
     /**
      * Method to retrieve an existing Resource from the Ontology
      * If the resource doesn't exist but it can be matched to a known Iri (by RegEx pattern), it will be added
@@ -714,4 +692,50 @@ public class OppModel {
                 .orElse(null);
     }
 
+    public boolean areCompatible(Set<OntResource> resourcesA,
+                                 Set<OntResource> resourcesB) {
+        return resourcesB.stream()
+                .allMatch(resourceB -> areCompatible(resourcesA, resourceB));
+    }
+
+    private boolean areCompatible(Set<OntResource> resourcesA,
+                                  OntResource resourceB) {
+        return resourcesA.stream()
+                .anyMatch(resourceA -> areCompatible(resourceA, resourceB));
+    }
+
+    /**
+     * Validate that 2 resources are compatible by the criteria that
+     * resourceB is compatible to resourceA when resourceB is resourceA or any of the subclasses of resourceA.
+     */
+    public boolean areCompatible(OntResource resourceA,
+                                 OntResource resourceB) {
+        if (resourceA == resourceB) {
+            return true;
+        }
+        if (resourceA.isIndividual()) {
+            // compare individuals by their classes
+            if (!resourceB.isIndividual()) {
+                return false;
+            } else {
+                // for 2 individuals, check if classA is part of the classes for B
+                return resourceB.asIndividual().listOntClasses(false)
+                        .toList()
+                        .contains(resourceA.asIndividual().getOntClass());
+            }
+        }
+        if (resourceA.isProperty() || resourceB.isProperty()) {
+            // properties are only compatible when equal
+            return resourceA.equals(resourceB);
+        }
+        if (resourceA.isClass()) {
+            if (!resourceB.isClass()) {
+                return false;
+            } else {
+                return resourceB.equals(resourceA) ||
+                        resourceB.asClass().listSuperClasses().toList().contains(resourceA.asClass());
+            }
+        }
+        return false;
+    }
 }
