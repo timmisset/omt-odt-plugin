@@ -1,6 +1,7 @@
 package com.misset.opp.callable.builtin.commands;
 
 import com.misset.opp.callable.builtin.BuiltInTest;
+import com.misset.opp.ttl.validation.TTLValidationUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -16,5 +17,15 @@ class JsonParseCommandTest extends BuiltInTest {
                 Set.of(oppModel.JSON_OBJECT),
                 Set.of(oppModel.XSD_STRING),
                 Set.of(oppModel.NAMED_GRAPH));
+    }
+
+    @Test
+    void testArgumentTypes() {
+        testArgument(JsonParseCommand.INSTANCE, 0, oppModel.JSON_OBJECT, TTLValidationUtil.ERROR_MESSAGE_JSON);
+        testArgument(JsonParseCommand.INSTANCE, 1, oppModel.XSD_STRING, TTLValidationUtil.ERROR_MESSAGE_CLASSNAME);
+        testArgument(JsonParseCommand.INSTANCE,
+                2,
+                oppModel.MEDEWERKER_GRAPH,
+                TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 }

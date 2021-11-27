@@ -1,6 +1,8 @@
 package com.misset.opp.callable.builtin.commands;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.Call;
+import com.misset.opp.callable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
@@ -31,5 +33,11 @@ public class IfCommand extends BuiltInCommand {
         resources.addAll(call.resolveSignatureArgument(1));
         resources.addAll(call.resolveSignatureArgument(2));
         return resources;
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call,
+                                      ProblemsHolder holder) {
+        validateBooleanArgument(0, call, holder);
     }
 }

@@ -75,6 +75,9 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
         mapping.getKeyValues().forEach(
                 keyValue -> {
                     final YAMLValue value = keyValue.getValue();
+                    if (value == null) {
+                        return;
+                    }
                     final YamlMetaTypeProvider.MetaTypeProxy valueMetaType = OMTMetaTypeProvider.getInstance(value.getProject())
                             .getValueMetaType(value);
                     if(valueMetaType != null) {

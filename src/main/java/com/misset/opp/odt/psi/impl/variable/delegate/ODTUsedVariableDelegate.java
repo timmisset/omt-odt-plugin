@@ -101,9 +101,13 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
                                                           PsiElement target) {
         List<ODTVariable> assignmentVariables = new ArrayList<>();
         if (scriptLine == null) {
-            return Collections.emptyList();
+            return assignmentVariables;
         }
-        ODTScript script = (ODTScript) scriptLine.getParent();
+        ODTScript script = PsiTreeUtil.getParentOfType(scriptLine, ODTScript.class);
+        if (script == null) {
+            return assignmentVariables;
+        }
+
         while (scriptLine != null) {
             assignmentVariables.addAll(PsiTreeUtil.findChildrenOfType(scriptLine, ODTVariableAssignment.class)
                     .stream()

@@ -26,7 +26,7 @@ class AddToCommandTest extends BuiltInTest {
     void testValidateShowsWarningWhenDifferentTypes() {
         final PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
         AddToCommand.INSTANCE.validate(call, holder);
-        verify(holder).registerProblem(eq(callSignatureArgument),
+        verify(holder).registerProblem(eq(signature),
                 startsWith("Incompatible types"),
                 eq(ProblemHighlightType.WARNING));
     }
@@ -35,7 +35,7 @@ class AddToCommandTest extends BuiltInTest {
     void testValidateShowsNoWarningWhenCompatibleTypes() {
         final PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_STRING_INSTANCE));
         AddToCommand.INSTANCE.validate(call, holder);
-        verify(holder, never()).registerProblem(eq(callSignatureArgument),
+        verify(holder, never()).registerProblem(eq(signature),
                 startsWith("Incompatible types"),
                 eq(ProblemHighlightType.WARNING));
     }
@@ -47,7 +47,7 @@ class AddToCommandTest extends BuiltInTest {
                 oppModel.getProperty("http://ontology#classPredicate")))
                 .when(call).getSignatureLeadingInformation(0);
         AddToCommand.INSTANCE.validate(call, holder);
-        verify(holder).registerProblem(eq(callSignatureArgument),
+        verify(holder).registerProblem(eq(signature),
                 startsWith("Suspicious assignment"),
                 eq(ProblemHighlightType.WARNING));
     }

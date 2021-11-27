@@ -1,7 +1,9 @@
 
 package com.misset.opp.callable.builtin.commands;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.Call;
+import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
@@ -51,5 +53,13 @@ public class JsonParseCommand extends BuiltInCommand {
                 .map(individual -> Set.of((OntResource) individual))
                 .findFirst()
                 .orElse(Collections.emptySet());
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call,
+                                      ProblemsHolder holder) {
+        validateJSONArgument(0, call, holder);
+        validateClassNameArgument(1, call, holder);
+        validateNamedGraphArgument(2, call, holder);
     }
 }

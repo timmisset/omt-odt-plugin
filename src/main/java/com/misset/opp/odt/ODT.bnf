@@ -53,12 +53,13 @@ variable ::=                                VARIABLE_NAME {
 // literal indentifier, the "|" in Yaml. In which case it should be followed by an empty line and and 
 script ::=                                  scriptLine+
 // a scriptline is contained by the addition of the semicolon at the end
-scriptLine ::=                              ((scriptContent SEMICOLON*) | commandBlock | logicalBlock | defineQueryStatement | defineCommandStatement)
+scriptLine ::=                              commandBlock | logicalBlock | defineCommandStatement | scriptLineWithSemicolon
+scriptLineWithSemicolon ::=                 (scriptContent | defineQueryStatement) SEMICOLON* { extends=scriptLine }
 // the contents of a script, contained by a scriptLine or Scalar
 scriptContent ::=                           declareVariable | variableAssignment | definePrefix | commandCall |
-                                            collectionStatement | returnStatement | queryStatement
+                                            collectionStatement | returnStatement | queryStatement { extends=scriptLine}
 
-commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
+commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED { extends=scriptLine }
 queryStatement ::=                          query { extends=scriptContent }
 
 // DEFINED MEMBERS
@@ -70,8 +71,14 @@ defineName ::=                              SYMBOL {
     extends="com.misset.opp.odt.psi.impl.callable.ODTResolvableDefineName"
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
 }
-defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"}
-defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock { extends="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement"}
+defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query SEMICOLON*  {
+    extends=scriptLine
+    mixin="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"
+}
+defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock {
+    extends=scriptLine
+    mixin="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement"
+}
 definePrefix ::=                            PREFIX_DEFINE_START namespacePrefix IRI {
     extends=scriptContent
     mixin="com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix"
@@ -100,7 +107,7 @@ resolvableValue ::=                         query | commandCall {
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
     extends="com.misset.opp.odt.psi.impl.resolvable.ODTResolvableValueBase"
 }
-logicalBlock ::=                            ifBlock commandBlock? (ELSE_OPERATOR ifBlock commandBlock?)* elseBlock?
+logicalBlock ::=                            ifBlock commandBlock? (ELSE_OPERATOR ifBlock commandBlock?)* elseBlock? { extends=scriptLine}
 ifBlock ::=                                 IF_OPERATOR (query | (PARENTHESES_OPEN query PARENTHESES_CLOSE))
 elseBlock ::=                               ELSE_OPERATOR commandBlock
 returnStatement ::=                         RETURN_OPERATOR resolvableValue? { extends=scriptContent }

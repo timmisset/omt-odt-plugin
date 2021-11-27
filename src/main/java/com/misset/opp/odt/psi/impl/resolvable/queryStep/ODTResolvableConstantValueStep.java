@@ -34,6 +34,8 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
             result = oppModel.XSD_NUMBER_INSTANCE;
         } else if (elementType == ODTTypes.INTERPOLATED_STRING) {
             result = oppModel.XSD_STRING_INSTANCE;
+        } else if (elementType == ODTTypes.NULL) {
+            result = null; // returns an emptySet which is the ODT equivalent of null
         } else if (elementType == ODTTypes.PRIMITIVE) {
             final Individual individual = oppModel.parsePrimitive(getText());
             result = individual != null ? individual.getOntClass() : null;

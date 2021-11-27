@@ -118,6 +118,10 @@
                          language="ODT" displayName="Inspect builtin command: FOREACH" groupPath="ODT"
                          groupName="Builtin" enabledByDefault="true"
                          implementationClass="com.misset.opp.odt.inspection.calls.commands.ODTCommandInspectionForEach"/>
+        <localInspection shortName="BuiltinLoadOntology" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect builtin command: LOAD_ONTOLOGY" groupPath="ODT"
+                         groupName="Builtin" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.calls.commands.ODTCommandInspectionLoadOntology"/>
 
         <!-- Calls / Builtin operator inspections -->
         <localInspection shortName="BuiltinChoose" hasStaticDescription="true"

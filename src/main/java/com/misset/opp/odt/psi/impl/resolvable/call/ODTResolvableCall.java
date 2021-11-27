@@ -28,7 +28,6 @@ import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
@@ -181,18 +180,6 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     }
 
     @Override
-    public @NotNull Set<OntResource> resolveSignatureArgument(Set<OntResource> subject,
-                                                              int index) {
-        return Optional.ofNullable(getSignatureArgument(index))
-                .map(ODTSignatureArgument::getResolvableValue)
-                .map(ODTResolvableValue::getQuery)
-                .filter(ODTResolvableQuery.class::isInstance)
-                .map(ODTResolvableQuery.class::cast)
-                .map(query -> query.resolveFromSet(subject))
-                .orElse(Collections.emptySet());
-    }
-
-    @Override
     public void inspect(ProblemsHolder holder) {
 
     }
@@ -244,6 +231,11 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     @Override
     public PsiElement getCallSignatureElement() {
         return getSignature();
+    }
+
+    @Override
+    public PsiElement getCallSignatureArgumentElement(int index) {
+        return getSignatureArgument(index);
     }
 
     @Override

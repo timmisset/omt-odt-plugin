@@ -16,6 +16,8 @@ public interface PsiCall extends Call, PsiElement {
 
     PsiElement getCallSignatureElement();
 
+    PsiElement getCallSignatureArgumentElement(int index);
+
     /**
      * Returns the information leading up to the resolved value
      * For example:

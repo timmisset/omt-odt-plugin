@@ -19,7 +19,7 @@ public class NewTransientGraphCommand extends BuiltInCommand {
 
     @Override
     public int minNumberOfArguments() {
-        return 1;
+        return 0;
     }
 
     @Override

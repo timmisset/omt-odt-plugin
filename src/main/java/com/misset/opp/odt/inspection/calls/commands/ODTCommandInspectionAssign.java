@@ -71,7 +71,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
                     return;
                 }
 
-                final List<OntResource> predicates = call.resolveSignatureArgument(subject, i)
+                final List<OntResource> predicates = call.resolveSignatureArgument(i)
                         .stream()
                         .filter(OntResource::isProperty)
                         .collect(Collectors.toList());

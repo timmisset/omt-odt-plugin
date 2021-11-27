@@ -32,9 +32,8 @@ public class AddToCommand extends BuiltInCommand {
     }
 
     @Override
-    public void validate(PsiCall call,
-                         ProblemsHolder holder) {
-        super.validate(call, holder);
+    public void specificValidation(PsiCall call,
+                                   ProblemsHolder holder) {
         // validate type compatibility
         TTLValidationUtil.validateCompatibleTypes(call.resolveSignatureArgument(0),
                 call.resolveSignatureArgument(1),

@@ -54,7 +54,8 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
                 .orElse(null);
     }
 
-    private String getType() {
+    @Override
+    public String getType() {
         return Optional.ofNullable(mapping.getParent())
                 .filter(YAMLKeyValue.class::isInstance)
                 .map(YAMLKeyValue.class::cast)

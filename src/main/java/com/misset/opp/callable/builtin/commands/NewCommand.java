@@ -1,6 +1,8 @@
 package com.misset.opp.callable.builtin.commands;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.Call;
+import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
@@ -29,5 +31,12 @@ public class NewCommand extends BuiltInCommand {
     protected Set<OntResource> resolveFrom(Call call) {
         // create an instance from the class
         return OppModel.INSTANCE.toIndividuals(call.resolveSignatureArgument(0));
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call,
+                                      ProblemsHolder holder) {
+        validateClassNameArgument(0, call, holder);
+        validateNamedGraphArgument(1, call, holder);
     }
 }

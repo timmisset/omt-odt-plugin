@@ -1,6 +1,8 @@
 package com.misset.opp.callable.builtin.commands;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.Call;
+import com.misset.opp.callable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -18,5 +20,11 @@ public class DestroyCommand extends BuiltInCommand {
     @Override
     protected Set<OntResource> resolveFrom(Call call) {
         return Collections.emptySet();
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call,
+                                      ProblemsHolder holder) {
+        validateInstancesArgument(0, call, holder);
     }
 }

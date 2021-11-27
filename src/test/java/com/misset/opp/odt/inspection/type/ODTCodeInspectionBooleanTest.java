@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.type.ODTCodeInspectionBoolean.ERROR_MESSAGE;
+import static com.misset.opp.ttl.validation.TTLValidationUtil.ERROR_MESSAGE_BOOLEAN;
 
 class ODTCodeInspectionBooleanTest extends InspectionTestCase {
 
@@ -19,31 +19,31 @@ class ODTCodeInspectionBooleanTest extends InspectionTestCase {
     @Test
     void testHasErrorInIfBlock() {
         configureByText(insideProcedureRunWithPrefixes("IF 12 { @LOG('hi') }"));
-        assertHasError(ERROR_MESSAGE);
+        assertHasError(ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testHasNoErrorInIfBlock() {
         configureByText(insideProcedureRunWithPrefixes("IF true { @LOG('hi') }"));
-        assertNoError(ERROR_MESSAGE);
+        assertNoError(ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testHasErrorInBooleanStatement() {
         configureByText(insideProcedureRunWithPrefixes("12 AND true"));
-        assertHasError(ERROR_MESSAGE);
+        assertHasError(ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testHasNoErrorInBooleanStatement() {
         configureByText(insideProcedureRunWithPrefixes("false AND true"));
-        assertNoError(ERROR_MESSAGE);
+        assertNoError(ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testHasNoErrorInBooleanStatementWithEquation() {
         configureByText(insideProcedureRunWithPrefixes("false AND 1 == 1"));
-        assertNoError(ERROR_MESSAGE);
+        assertNoError(ERROR_MESSAGE_BOOLEAN);
     }
 
 }

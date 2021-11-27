@@ -1,5 +1,7 @@
 package com.misset.opp.callable.builtin.commands;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
@@ -25,5 +27,11 @@ public class NewGraphCommand extends BuiltInCommand {
     @Override
     public OntResource resolveSingle() {
         return OppModel.INSTANCE.NAMED_GRAPH;
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call,
+                                      ProblemsHolder holder) {
+        validateGraphShapeArgument(0, call, holder);
     }
 }

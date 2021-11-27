@@ -39,9 +39,8 @@ public class AssignCommand extends BuiltInCommand {
      * Any further inspection requires information much more extensive than the generic PsiCall can provide.
      */
     @Override
-    public void validate(PsiCall call,
-                         ProblemsHolder holder) {
-        super.validate(call, holder);
+    public void specificValidation(PsiCall call,
+                                   ProblemsHolder holder) {
         if (call.numberOfArguments() % 2 == 0) {
             holder.registerProblem(call, "Expects an uneven number of arguments", ProblemHighlightType.ERROR);
         }
