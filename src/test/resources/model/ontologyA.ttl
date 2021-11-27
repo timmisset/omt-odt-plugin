@@ -19,6 +19,8 @@ ont:ClassA
       a sh:PropertyShape ;
       sh:path ont:classPredicate ;
       sh:class ont:ClassBSub ;
+      sh:minCount 1;
+      sh:maxCount 1;
     ] ;
 .
 ont:ClassA_InstanceA

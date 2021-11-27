@@ -15,8 +15,9 @@ public class OMTGraphQueryType extends OMTQueryMetaType {
                                        @NotNull ProblemsHolder holder) {
         final Set<OntResource> resolve = resolve(scalarValue);
         if (resolve.isEmpty() || resolve.stream()
-                .allMatch(resource -> resource.isIndividual() && resource.asIndividual().getOntClass(true).equals(
-                        OppModel.INSTANCE.NAMED_GRAPH_CLASS))) {
+                .allMatch(resource -> resource != null &&
+                        resource.isIndividual() &&
+                        resource.asIndividual().getOntClass(true).equals(OppModel.INSTANCE.NAMED_GRAPH_CLASS))) {
             return;
         }
         holder.registerProblem(scalarValue, "Expected a query that resolves to a graph");

@@ -55,4 +55,12 @@ public interface Resolvable {
         return resolved.size() == 1 && resolved.contains(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
 
+    /**
+     * Returns true if, and only if, it is absolutely certain that the Resolvable will contain multiple values
+     * For example, an Array query
+     */
+    default boolean isMultiple() {
+        return false;
+    }
+
 }

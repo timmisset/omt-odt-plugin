@@ -31,4 +31,9 @@ public abstract class ODTResolvableQueryArray extends ODTResolvableQuery impleme
          */
         return resources;
     }
+
+    @Override
+    public boolean isMultiple() {
+        return true;
+    }
 }

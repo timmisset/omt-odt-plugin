@@ -1,9 +1,11 @@
 package com.misset.opp.odt.psi;
 
+import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.CachedValueProvider;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
@@ -76,4 +78,11 @@ public interface ODTFile extends PsiFile {
      * of the element that wants to use it
      */
     Map<String, String> getAvailableNamespaces();
+
+    /**
+     * Returns the value wrapped in a cached value with modification trackers based on this file being a file on itself or as
+     * injected file in OMT
+     */
+    <T> CachedValueProvider.Result<T> getCachedValue(T result,
+                                                     ModificationTracker... additionalTrackers);
 }

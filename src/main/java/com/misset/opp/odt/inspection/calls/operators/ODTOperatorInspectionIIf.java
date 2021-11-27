@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection.operators;
+package com.misset.opp.odt.inspection.calls.operators;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -12,6 +12,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.callable.Resolvable;
 import com.misset.opp.callable.builtin.operators.IIfOperator;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.jetbrains.annotations.Nls;
@@ -36,7 +37,7 @@ public class ODTOperatorInspectionIIf extends LocalInspectionTool {
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
-        return new PsiElementVisitor() {
+        return new ModelAwarePsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTCall) {

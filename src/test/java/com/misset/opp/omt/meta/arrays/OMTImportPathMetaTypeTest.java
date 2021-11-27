@@ -59,8 +59,7 @@ class OMTImportPathMetaTypeTest extends InspectionTestCase {
         Assertions.assertEquals("import:\n" +
                 "   ./a-file.omt:\n" +
                 "   - memberA\n" +
-                "   - memberB\n" +
-                "\n", getFile().getText());
+                "   - memberB\n", getFile().getText());
     }
 
 }

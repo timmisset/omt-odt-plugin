@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.CachedValue;
@@ -20,16 +21,21 @@ import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.odt.psi.ODTQuery;
+import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -175,6 +181,18 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     }
 
     @Override
+    public @NotNull Set<OntResource> resolveSignatureArgument(Set<OntResource> subject,
+                                                              int index) {
+        return Optional.ofNullable(getSignatureArgument(index))
+                .map(ODTSignatureArgument::getResolvableValue)
+                .map(ODTResolvableValue::getQuery)
+                .filter(ODTResolvableQuery.class::isInstance)
+                .map(ODTResolvableQuery.class::cast)
+                .map(query -> query.resolveFromSet(subject))
+                .orElse(Collections.emptySet());
+    }
+
+    @Override
     public void inspect(ProblemsHolder holder) {
 
     }
@@ -221,5 +239,26 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     public void setParamType(String paramName,
                              Set<OntResource> type) {
         parameters.put(paramName, type);
+    }
+
+    @Override
+    public PsiElement getCallSignatureElement() {
+        return getSignature();
+    }
+
+    @Override
+    public @Nullable Pair<Set<OntResource>, Property> getSignatureLeadingInformation(int signatureArgument) {
+        final ODTQuery query = Optional.ofNullable(getSignatureArgument(signatureArgument))
+                .map(ODTSignatureArgument::getResolvableValue)
+                .map(ODTResolvableValue::getQuery)
+                .stream().findFirst().orElse(null);
+        if (query == null) {
+            return null;
+        }
+
+        if (query instanceof ODTResolvableQueryPath) {
+            return ((ODTResolvableQueryPath) query).resolveToSubjectPredicate();
+        }
+        return null;
     }
 }

@@ -1,6 +1,9 @@
 package com.misset.opp.callable.builtin;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.Call;
+import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -19,6 +22,8 @@ import static org.mockito.Mockito.mock;
 public abstract class BuiltInTest extends OMTOntologyTestCase {
 
     protected OppModel oppModel;
+    protected ProblemsHolder holder = mock(ProblemsHolder.class);
+    protected PsiElement callSignatureArgument = mock(PsiElement.class);
 
     @BeforeEach
     @Override
@@ -34,11 +39,12 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
     }
 
     @SafeVarargs
-    protected final Call getCall(Set<OntResource>... arguments) {
-        final Call call = mock(Call.class);
+    protected final PsiCall getCall(Set<OntResource>... arguments) {
+        final PsiCall call = mock(PsiCall.class);
 
         doReturn(List.of(arguments)).when(call).resolveSignatureArguments();
         doReturn(arguments.length).when(call).numberOfArguments();
+        doReturn(callSignatureArgument).when(call).getCallSignatureElement();
 
         // mock the argument resolving
         doAnswer(invocation -> getArgumentsAtIndex(arguments, invocation.getArgument(0)))

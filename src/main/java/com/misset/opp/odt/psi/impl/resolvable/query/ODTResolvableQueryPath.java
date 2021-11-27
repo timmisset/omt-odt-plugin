@@ -1,15 +1,21 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTQueryPath;
+import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -56,10 +62,52 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
     }
 
     private ODTResolvableQueryOperationStep getLastOperation() {
-        if(getQueryOperationStepList().isEmpty()) { return null; }
+        if (getQueryOperationStepList().isEmpty()) {
+            return null;
+        }
         final ArrayList<ODTQueryOperationStep> operations = new ArrayList<>(getQueryOperationStepList());
         Collections.reverse(operations);
         return (ODTResolvableQueryOperationStep) operations.get(0);
+    }
+
+    /**
+     * Returns the QueryStep by reversed index:
+     * /ont:ClassA / ont:property / ont:anotherProperty
+     * index = 0 => ont:anotherProperty
+     * index = 1 => ont:property
+     * etc...
+     */
+    public ODTQueryStep getStepMovingBackward(int index) {
+        final ArrayList<ODTResolvableQueryOperationStep> operationSteps = new ArrayList<>(
+                getResolvableQueryOperationStepList());
+        Collections.reverse(operationSteps);
+        return Optional.ofNullable(operationSteps.get(index)).map(ODTQueryOperationStep::getQueryStep).orElse(null);
+    }
+
+    /**
+     * Tries to split the query into a subject part (anything but the last part) and a predicate (the last part)
+     */
+    public Pair<Set<OntResource>, Property> resolveToSubjectPredicate() {
+        if (getQueryOperationStepList().size() < 2) {
+            return null;
+        }
+
+        ODTResolvableQueryStep subject = getStepMovingBackward(1);
+        final Set<OntResource> subjectResolved = subject != null ? subject.resolve() : Collections.emptySet();
+        if (subjectResolved.isEmpty()) {
+            return null;
+        }
+
+        ODTResolvableQueryStep predicate = getStepMovingBackward(0);
+        if (predicate instanceof ODTResolvableQualifiedUriStep) {
+            final ODTResolvableQualifiedUriStep qualifiedUriStep = (ODTResolvableQualifiedUriStep) predicate;
+            final String fullyQualifiedUri = qualifiedUriStep.getFullyQualifiedUri();
+            final Property property = OppModel.INSTANCE.getProperty(fullyQualifiedUri);
+            if (property != null) {
+                return new Pair<>(subjectResolved, property);
+            }
+        }
+        return null;
     }
 
     public boolean startsWithDelimiter() {

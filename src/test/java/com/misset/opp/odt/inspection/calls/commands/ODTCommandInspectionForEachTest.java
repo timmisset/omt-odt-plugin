@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection.commands;
+package com.misset.opp.odt.inspection.calls.commands;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.InspectionTestCase;
@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.commands.ODTCommandInspectionForEach.ALL_VALUES_ARE_TREATED_EQUAL;
-import static com.misset.opp.odt.inspection.commands.ODTCommandInspectionForEach.CANNOT_CALL_PROCEDURE_INSIDE_FOR_EACH;
+import static com.misset.opp.odt.inspection.calls.commands.ODTCommandInspectionForEach.ALL_VALUES_ARE_TREATED_EQUAL;
+import static com.misset.opp.odt.inspection.calls.commands.ODTCommandInspectionForEach.CANNOT_CALL_PROCEDURE_INSIDE_FOR_EACH;
 
 class ODTCommandInspectionForEachTest extends InspectionTestCase {
 

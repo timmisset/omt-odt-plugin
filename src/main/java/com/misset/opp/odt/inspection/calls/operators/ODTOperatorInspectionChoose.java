@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection.operators;
+package com.misset.opp.odt.inspection.calls.operators;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -11,6 +11,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTChooseBlock;
 import com.misset.opp.odt.psi.ODTOtherwisePath;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableChooseBlockStep;
@@ -39,7 +40,7 @@ public class ODTOperatorInspectionChoose extends LocalInspectionTool {
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
-        return new PsiElementVisitor() {
+        return new ModelAwarePsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTChooseBlock) {

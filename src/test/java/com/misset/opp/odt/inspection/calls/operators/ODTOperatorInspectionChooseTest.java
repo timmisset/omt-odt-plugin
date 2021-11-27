@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection.operators;
+package com.misset.opp.odt.inspection.calls.operators;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.InspectionTestCase;
@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.operators.ODTOperatorInspectionChoose.INCOMPLETE_CHOOSE_EXPECTED_END;
-import static com.misset.opp.odt.inspection.operators.ODTOperatorInspectionChoose.INCOMPLETE_CHOOSE_EXPECTED_WHEN_CONDITIONS;
-import static com.misset.opp.odt.inspection.operators.ODTOperatorInspectionChoose.OMIT_OTHERWISE;
-import static com.misset.opp.odt.inspection.operators.ODTOperatorInspectionChoose.REPLACE_QUICKFIX_TITLE;
-import static com.misset.opp.odt.inspection.operators.ODTOperatorInspectionChoose.USE_IIF;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.INCOMPLETE_CHOOSE_EXPECTED_END;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.INCOMPLETE_CHOOSE_EXPECTED_WHEN_CONDITIONS;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.OMIT_OTHERWISE;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.REPLACE_QUICKFIX_TITLE;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.USE_IIF;
 
 class ODTOperatorInspectionChooseTest extends InspectionTestCase {
 

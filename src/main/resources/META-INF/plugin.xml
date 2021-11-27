@@ -107,21 +107,27 @@
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryIdentifierOperator"/>
 
-        <!-- Builtin command inspections -->
-        <localInspection shortName="CommandInspectionForEach" hasStaticDescription="true"
+        <!-- Calls -->
+        <localInspection shortName="Calls" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect all ODT based calls" groupPath="ODT"
+                         groupName="Builtin" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.calls.ODTCallInspection"/>
+
+        <!-- Calls / Builtin command inspections -->
+        <localInspection shortName="BuiltinForEach" hasStaticDescription="true"
                          language="ODT" displayName="Inspect builtin command: FOREACH" groupPath="ODT"
                          groupName="Builtin" enabledByDefault="true"
-                         implementationClass="com.misset.opp.odt.inspection.commands.ODTCommandInspectionForEach"/>
+                         implementationClass="com.misset.opp.odt.inspection.calls.commands.ODTCommandInspectionForEach"/>
 
-        <!-- Builtin operator inspections -->
-        <localInspection shortName="OperatorInspectionChoose" hasStaticDescription="true"
+        <!-- Calls / Builtin operator inspections -->
+        <localInspection shortName="BuiltinChoose" hasStaticDescription="true"
                          language="ODT" displayName="Inspect builtin operator: CHOOSE" groupPath="ODT"
                          groupName="Builtin" enabledByDefault="true"
-                         implementationClass="com.misset.opp.odt.inspection.operators.ODTOperatorInspectionChoose"/>
-        <localInspection shortName="OperatorInspectionIIf" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose"/>
+        <localInspection shortName="BuiltinIIf" hasStaticDescription="true"
                          language="ODT" displayName="Inspect builtin operator: IIF" groupPath="ODT"
                          groupName="Builtin" enabledByDefault="true"
-                         implementationClass="com.misset.opp.odt.inspection.operators.ODTOperatorInspectionIIf"/>
+                         implementationClass="com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionIIf"/>
 
         <!-- TTL -->
         <postStartupActivity implementation="com.misset.opp.ttl.LoadOntologyStartupActivity"/>
@@ -133,6 +139,7 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
+
 
     </extensions>
     <depends>com.intellij.java</depends>

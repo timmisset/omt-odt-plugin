@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection.commands;
+package com.misset.opp.odt.inspection.calls.commands;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.builtin.commands.ForEachCommand;
+import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTCommandBlock;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTLogicalBlock;
@@ -21,7 +22,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * Code inspection for all unused declarations
+ * Code inspection for the specific Builtin Command ForEach which requires detailed information about the Call, rather than the
+ * Callable which is why it is handled in the OMT language.
+ * <p>
+ * Basic validation on call signature (number of arguments etc.) is already handled by the Builtin Command
  */
 public class ODTCommandInspectionForEach extends LocalInspectionTool {
     protected static final String CANNOT_CALL_PROCEDURE_INSIDE_FOR_EACH = "Cannot call a Procedure within a ForEach command";
@@ -35,7 +39,7 @@ public class ODTCommandInspectionForEach extends LocalInspectionTool {
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
-        return new PsiElementVisitor() {
+        return new ModelAwarePsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTCall) {

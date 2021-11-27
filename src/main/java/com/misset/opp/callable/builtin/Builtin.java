@@ -1,7 +1,10 @@
 package com.misset.opp.callable.builtin;
 
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
+import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -85,5 +88,41 @@ public abstract class Builtin implements Callable {
             return resolveError(resources, call);
         }
         return resolveFrom(resources, call);
+    }
+
+    @Override
+    public void validate(PsiCall call,
+                         ProblemsHolder holder) {
+        final int i = call.numberOfArguments();
+        if (!passesMinArguments(i) || !passesMaxArguments(i)) {
+            holder.registerProblem(call.getCallSignatureElement(),
+                    "Expects " + getExpectedArgumentsMessage() + " arguments. Call has " + i + " arguments",
+                    ProblemHighlightType.ERROR);
+        }
+    }
+
+    protected boolean passesMinArguments(int numberOfArguments) {
+        return numberOfArguments >= minNumberOfArguments();
+    }
+
+    protected boolean passesMaxArguments(int numberOfArguments) {
+        return maxNumberOfArguments() >= numberOfArguments || maxNumberOfArguments() == -1;
+    }
+
+    private String getExpectedArgumentsMessage() {
+        if (minNumberOfArguments() == 0) {
+            if (maxNumberOfArguments() > -1) {
+                return "at most " + maxNumberOfArguments() + " arguments";
+            } else {
+                return "no arguments";
+            }
+        } else if (minNumberOfArguments() > 0) {
+            if (maxNumberOfArguments() == -1) {
+                return "at least " + minNumberOfArguments() + " arguments";
+            } else {
+                return "between " + minNumberOfArguments() + " and " + maxNumberOfArguments() + " arguments";
+            }
+        }
+        return null;
     }
 }

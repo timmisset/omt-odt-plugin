@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection.operators;
+package com.misset.opp.odt.inspection.calls.operators;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.InspectionTestCase;
@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.operators.ODTOperatorInspectionIIf.COMBINE;
-import static com.misset.opp.odt.inspection.operators.ODTOperatorInspectionIIf.SIMPLIFY;
-import static com.misset.opp.odt.inspection.operators.ODTOperatorInspectionIIf.UNNECESSARY_IIF;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionIIf.COMBINE;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionIIf.SIMPLIFY;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionIIf.UNNECESSARY_IIF;
 
 class ODTOperatorInspectionIIfTest extends InspectionTestCase {
 

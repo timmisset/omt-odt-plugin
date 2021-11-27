@@ -50,7 +50,7 @@ public class OppModel {
     private static final String OPP = "http://ontologie.politie.nl/def/politie#";
     private static final String PLATFORM = "http://ontologie.politie.nl/def/platform#";
 
-    protected Property SHACL_PATH, SHACL_CLASS, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
+    protected Property SHACL_PATH, SHACL_CLASS, SHACL_MINCOUNT, SHACL_MAXCOUNT, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
     protected Property RDFS_SUBCLASS_OF;
     protected Property RDF_TYPE;
     private List<Property> classModelProperties;
@@ -81,6 +81,11 @@ public class OppModel {
     HashMap<OntResource, HashMap<Property, Set<OntResource>>> listObjectsCache = new HashMap<>();
     HashMap<OntResource, Set<Property>> listPredicatesCache = new HashMap<>();
 
+    // contain information from the SHACL model about the modularity of the predicates
+    HashMap<OntClass, List<Property>> required = new HashMap<>();
+    HashMap<OntClass, List<Property>> singles = new HashMap<>();
+    HashMap<OntClass, List<Property>> multiple = new HashMap<>();
+
     Logger logger = Logger.getInstance(OppModel.class);
 
     /**
@@ -88,7 +93,15 @@ public class OppModel {
      */
     private final OntModel model;
 
+    private boolean isUpdating = false;
+
+    public boolean isUpdating() {
+        return isUpdating;
+    }
+
     public OppModel(OntModel shaclModel) {
+        isUpdating = true;
+        clearModularity();
         this.shaclModel = shaclModel;
         // the OWL_DL restricts types, a resource can only be either a class, a property or an instance, not multiple at the same time
         // the RDFS_INF inferencing provides the support for sub/superclass logic
@@ -98,6 +111,7 @@ public class OppModel {
         loadSimpleModel();
         incrementModificationCount();
         INSTANCE = this;
+        isUpdating = false;
     }
 
     private void incrementModificationCount() {
@@ -105,6 +119,12 @@ public class OppModel {
         listSubjectsCache.clear();
         listObjectsCache.clear();
         listPredicatesCache.clear();
+    }
+
+    private void clearModularity() {
+        required.clear();
+        singles.clear();
+        multiple.clear();
     }
 
     private Set<OntClass> listShaclClasses() {
@@ -145,6 +165,8 @@ public class OppModel {
         SHACL_PATH = model.createProperty(SHACL + "path");
         SHACL_CLASS = model.createProperty(SHACL + "class");
         SHACL_DATATYPE = model.createProperty(SHACL + "datatype");
+        SHACL_MINCOUNT = model.createProperty(SHACL + "minCount");
+        SHACL_MAXCOUNT = model.createProperty(SHACL + "maxCount");
         SHACL_PROPERTY = model.createProperty(SHACL + "property");
         SHACL_PROPERYSHAPE = model.createProperty(SHACL + "PropertyShape");
 
@@ -278,6 +300,39 @@ public class OppModel {
             return;
         }
         subject.addProperty(predicate, object);
+
+        // modularity:
+        int min = getShaclPropertyInteger(shaclPropertyShape, SHACL_MINCOUNT);
+        int max = getShaclPropertyInteger(shaclPropertyShape, SHACL_MINCOUNT);
+        if (min == 1) {
+            addToMapCollection(required, subject, predicate);
+        }
+        if (max == 1) {
+            addToMapCollection(singles, subject, predicate);
+        } else {
+            addToMapCollection(multiple, subject, predicate);
+        }
+    }
+
+    private void addToMapCollection(HashMap<OntClass, List<Property>> map,
+                                    OntClass subject,
+                                    Property property) {
+        final List<Property> propertyList = map.getOrDefault(subject, new ArrayList<>());
+        propertyList.add(property);
+        map.put(subject, propertyList);
+    }
+
+    private int getShaclPropertyInteger(Resource shape,
+                                        Property property) {
+        if (shape.hasProperty(property)) {
+            try {
+                // catch any wrong usage of the model, not our job to fix that
+                return shape.getProperty(property).getObject().asLiteral().getInt();
+            } catch (Exception ignored) {
+                return 0;
+            }
+        }
+        return 0;
     }
 
     /**
@@ -710,7 +765,7 @@ public class OppModel {
      */
     public boolean areCompatible(OntResource resourceA,
                                  OntResource resourceB) {
-        if (resourceA == resourceB) {
+        if (resourceA.equals(resourceB)) {
             return true;
         }
         if (resourceA.isIndividual()) {
@@ -737,5 +792,51 @@ public class OppModel {
             }
         }
         return false;
+    }
+
+    public boolean isMultiple(Set<OntResource> resources,
+                              Property property) {
+        return resources.stream().allMatch(resource -> isMultiple(resource, property));
+    }
+
+    public boolean isMultiple(OntResource resource,
+                              Property property) {
+        return isModularity(multiple, toClass(resource), property);
+    }
+
+    public boolean isSingleton(Set<OntResource> resources,
+                               Property property) {
+        return resources.stream().allMatch(resource -> isSingleton(resource, property));
+    }
+
+    public boolean isSingleton(OntResource resource,
+                               Property property) {
+        return isModularity(singles, toClass(resource), property);
+    }
+
+    public boolean isRequired(Set<OntResource> resources,
+                              Property property) {
+        return resources.stream().allMatch(resource -> isRequired(resource, property));
+    }
+
+    public boolean isRequired(OntResource resource,
+                              Property property) {
+        return isModularity(required, toClass(resource), property);
+    }
+
+    private boolean isModularity(Map<OntClass, List<Property>> map,
+                                 OntClass ontClass,
+                                 Property property) {
+        if (ontClass == null) {
+            return false;
+        }
+        if (map.getOrDefault(ontClass, Collections.emptyList()).contains(property)) {
+            return true;
+        }
+        final OntClass superClass = ontClass.getSuperClass();
+        if (superClass.equals(ontClass)) {
+            return false;
+        }
+        return isModularity(map, superClass, property);
     }
 }

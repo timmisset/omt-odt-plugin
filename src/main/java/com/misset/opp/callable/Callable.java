@@ -1,6 +1,5 @@
 package com.misset.opp.callable;
 
-import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
@@ -44,11 +43,5 @@ public interface Callable extends Resolvable {
      */
     default void validate(PsiCall call,
                           ProblemsHolder holder) {
-        final int i = call.numberOfArguments();
-        if (i < minNumberOfArguments() || i > maxNumberOfArguments()) {
-            holder.registerProblem(call.getCallSignatureElement(),
-                    "Expects between " + minNumberOfArguments() + " and " + maxNumberOfArguments() + "arguments",
-                    ProblemHighlightType.ERROR);
-        }
     }
 }

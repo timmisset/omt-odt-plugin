@@ -4,6 +4,7 @@ import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -188,6 +189,14 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                 return new CachedValueProvider.Result<>(namespaces, getContainingFile());
             }
         });
+    }
+
+    @Override
+    public <T> CachedValueProvider.Result<T> getCachedValue(T result,
+                                                            ModificationTracker... additionalTrackers) {
+        final OMTFile hostFile = getHostFile();
+        return hostFile != null ? new CachedValueProvider.Result<>(result, hostFile, this, additionalTrackers) :
+                new CachedValueProvider.Result<>(result, this, additionalTrackers);
     }
 
 }
