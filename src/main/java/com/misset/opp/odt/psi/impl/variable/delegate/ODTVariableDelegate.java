@@ -11,5 +11,4 @@ public interface ODTVariableDelegate {
     boolean canBeDeclaredVariable(ODTVariable variable);
     PsiReference getReference();
     Set<OntResource> getType();
-    boolean isOMTVariableProvider();
 }

@@ -73,10 +73,6 @@ public abstract class OMTMetaType extends YamlMetaType {
                                            ForcedCompletionPath.@NotNull Iteration iteration) {
     }
 
-    public boolean isExportable() {
-        return false;
-    }
-
     public Set<OntResource> resolveValue(YAMLValue value) {
         final Collection<PsiResolvable> injectedContent = OMTProviderUtil.getInjectedContent(value,
                 PsiResolvable.class);

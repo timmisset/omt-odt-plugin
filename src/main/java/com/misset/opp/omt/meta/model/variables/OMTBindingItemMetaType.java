@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta.model.variables;
 
-import com.misset.opp.omt.meta.OMTInjectable;
+import com.intellij.openapi.util.TextRange;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
@@ -10,9 +10,10 @@ import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OMTBindingItemMetaType extends OMTMetaShorthandType implements OMTInjectable {
+public class OMTBindingItemMetaType extends OMTMetaShorthandType implements OMTNamedVariableMetaType {
     private static final Pattern SHORTHAND = Pattern.compile("^\\s*(\\$\\w+)\\s*(?:\\(\\s*(sync|input|output)\\s*\\))?$");
     protected static final String SYNTAX_ERROR = "Invalid syntax for parameter shorthand, use: '$name (sync|input|output)' OR $name'";
 
@@ -42,5 +43,21 @@ public class OMTBindingItemMetaType extends OMTMetaShorthandType implements OMTI
     @Override
     protected String getShorthandSyntaxError(YAMLValue value) {
         return SYNTAX_ERROR;
+    }
+
+    @Override
+    public String getName(YAMLValue value) {
+        final Matcher matcher = SHORTHAND.matcher(value.getText());
+        final boolean b = matcher.find();
+        return b ? matcher.group(1) : value.getText();
+    }
+
+    @Override
+    public TextRange getNameTextRange(YAMLValue value) {
+        final Matcher matcher = SHORTHAND.matcher(value.getText());
+        if (matcher.find() && matcher.group(1) != null) {
+            return new TextRange(matcher.start(1), matcher.end(1));
+        }
+        return TextRange.EMPTY_RANGE;
     }
 }

@@ -91,7 +91,7 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
         if (params != null && params.getValue() instanceof YAMLSequence) {
             final List<YAMLSequenceItem> items = ((YAMLSequence) params.getValue()).getItems();
             for (int i = 0; i < items.size(); i++) {
-                final String variableName = new OMTParamMetaType().getVariableName(items.get(i).getValue());
+                final String variableName = new OMTParamMetaType().getName(items.get(i).getValue());
                 call.setParamType(variableName, call.resolveSignatureArgument(i));
             }
         }

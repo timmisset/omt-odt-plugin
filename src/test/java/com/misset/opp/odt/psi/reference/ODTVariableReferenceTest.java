@@ -9,6 +9,7 @@ import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
+import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -85,7 +86,7 @@ class ODTVariableReferenceTest extends OMTTestCase {
             // in this case, it should return OMT variable: $test declared in the variables block
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             // is resolved to the OMT variable
-            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            Assertions.assertTrue(elementAtCaret instanceof YAMLPlainTextImpl);
         });
     }
 

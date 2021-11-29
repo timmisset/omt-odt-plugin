@@ -7,20 +7,17 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Variable;
 import com.misset.opp.callable.global.GlobalVariable;
 import com.misset.opp.callable.local.LocalVariableTypeProvider;
-import com.misset.opp.odt.ODTInjectionUtil;
+import com.misset.opp.callable.psi.PsiVariable;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
-import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.OMTTypeResolver;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
+import com.misset.opp.omt.psi.impl.variable.OMTVariableImpl;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
-import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.ArrayList;
@@ -41,7 +38,7 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
 
     @Override
     public boolean isDeclaredVariable() {
-        return !isAssignmentPart() && isOMTVariableProvider();
+        return false;
     }
 
     @Override
@@ -80,7 +77,11 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
         // find the closest variable assignment to determine earlier instances or assignments
         // of this variable to determine the type
         // the 'other' variable must resolve to the same declared variable as this instance
-        final PsiElement resolve = Optional.ofNullable(getReference()).map(PsiReference::resolve).orElse(null);
+        final PsiElement resolve = Optional.ofNullable(getReference())
+                .map(PsiReference::resolve)
+                .map(this::getWrapper)
+                .orElse(null);
+
         if (resolve == null) {
             return Optional.empty();
         }
@@ -145,6 +146,7 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
                                   PsiElement target) {
         return Optional.ofNullable(variable.getReference())
                 .map(PsiReference::resolve)
+                .map(this::getWrapper)
                 .map(target::equals)
                 .orElse(false);
     }
@@ -152,9 +154,15 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
     private Optional<Set<OntResource>> getTypeFromDeclaration() {
         return Optional.ofNullable(getReference())
                 .map(PsiReference::resolve)
-                .filter(ODTVariable.class::isInstance)
-                .map(ODTVariable.class::cast)
-                .map(this::getType);
+                .map(this::getWrapper)
+                .map(Variable::getType);
+    }
+
+    private PsiVariable getWrapper(PsiElement element) {
+        if (element instanceof PsiVariable) {
+            return (PsiVariable) element;
+        }
+        return element.getUserData(OMTVariableImpl.WRAPPER);
     }
 
     private Optional<Set<OntResource>> getTypeFromOMTLocalVariable() {
@@ -183,39 +191,5 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
                 .filter(pair -> pair.second instanceof LocalVariableTypeProvider)
                 .map(pair -> ((LocalVariableTypeProvider) pair.second).getType(element.getName(), pair.first))
                 .findFirst();
-    }
-
-    // todo: move this whole part to the declared variable delegate
-    // try to make the variables that are part of OMT language (params: variables:)
-    // a real part of the OMT language once more and resolve to a PsiVariable intermediary
-    private Set<OntResource> getType(ODTVariable declared) {
-        if (declared.isOMTVariableProvider()) {
-            // part of the OMT structure
-            return getType((YAMLValue) ODTInjectionUtil.getInjectionHost(declared));
-        } else {
-            return declared.getType();
-        }
-    }
-
-    private Set<OntResource> getType(YAMLValue yamlValue) {
-        return Optional.ofNullable(OMTMetaTypeProvider.getInstance(yamlValue.getProject())
-                .getValueMetaType(yamlValue))
-                .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
-                .filter(OMTTypeResolver.class::isInstance)
-                .map(OMTTypeResolver.class::cast)
-                .map(omtTypeResolver -> omtTypeResolver.getType(yamlValue))
-                .or(() -> getTypeFromDestructed(yamlValue))
-                .orElse(Collections.emptySet());
-    }
-
-    private Optional<Set<OntResource>> getTypeFromDestructed(YAMLValue yamlPsiElement) {
-        if(!(yamlPsiElement.getParent().getParent() instanceof YAMLMapping)) { return Optional.empty(); }
-        final YAMLMapping mapping = (YAMLMapping) yamlPsiElement.getParent().getParent();
-        return Optional.ofNullable(OMTMetaTypeProvider.getInstance(mapping.getProject())
-                        .getMetaTypeProxy(mapping))
-                .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
-                .filter(OMTTypeResolver.class::isInstance)
-                .map(OMTTypeResolver.class::cast)
-                .map(omtTypeResolver -> omtTypeResolver.getTypeFromDestructed(mapping));
     }
 }

@@ -28,7 +28,7 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
         if (isAssignmentPart()) {
             return false;
         }
-        return isOMTVariableProvider() || Optional.ofNullable(element.getParent())
+        return Optional.ofNullable(element.getParent())
                 .map(PsiElement::getParent)
                 .map(ODTDeclareVariable.class::isInstance)
                 .orElse(Boolean.FALSE);

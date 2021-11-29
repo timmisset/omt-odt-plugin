@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class OMTUnusedInspectionTest extends InspectionTestCase {
 
     @Override
@@ -35,4 +33,29 @@ class OMTUnusedInspectionTest extends InspectionTestCase {
         configureByText(content);
         assertNoWarning("MyComponent is never used");
     }
+
+    @Test
+    void testOMTVariableUnused() {
+        String content = insideActivityWithPrefixes(
+                "variables:\n" +
+                        "- $test\n" +
+                        "\n"
+        );
+        configureByText(content);
+        assertHasWarning("$test is never used");
+    }
+
+    @Test
+    void testOMTVariableUsed() {
+        String content = insideActivityWithPrefixes(
+                "variables:\n" +
+                        "- $test\n" +
+                        "onStart: |\n" +
+                        "  @LOG($test);\n" +
+                        ""
+        );
+        configureByText(content);
+        assertNoWarning("$test is never used");
+    }
+
 }

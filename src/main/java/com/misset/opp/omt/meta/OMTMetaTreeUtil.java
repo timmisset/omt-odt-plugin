@@ -61,13 +61,13 @@ public class OMTMetaTreeUtil {
                                                                 BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
         for (YAMLMapping mapping : linkedHashMap.keySet()) {
             T provider = linkedHashMap.get(mapping);
-            final HashMap<String, List<PsiElement>> prefixMap = mapFunction.apply(provider, mapping);
-            if (prefixMap.containsKey(key)) {
-                final PsiElement element = prefixMap.get(key).get(0);
+            final HashMap<String, List<PsiElement>> map = mapFunction.apply(provider, mapping);
+            if (map.containsKey(key)) {
+                final PsiElement element = map.get(key).get(0);
                 if (element == null) {
                     return Optional.empty();
                 }
-                ResolveResult[] results = prefixMap.get(key).stream()
+                ResolveResult[] results = map.get(key).stream()
                         .filter(Objects::nonNull)
                         .map(PsiElementResolveResult::new)
                         .toArray(ResolveResult[]::new);

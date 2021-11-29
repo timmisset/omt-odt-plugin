@@ -45,11 +45,4 @@ class ODTSemicolonAnnotatorTest extends InspectionTestCase {
         assertHasError(SEMICOLON_ILLEGAL);
     }
 
-    @Test
-    void testHasErrorWhenSemicolonAtVariable() {
-        String content = insideActivityWithPrefixes("variables:\n" +
-                "- $variable = 'test';");
-        configureByText(content);
-        assertHasError(SEMICOLON_ILLEGAL);
-    }
 }

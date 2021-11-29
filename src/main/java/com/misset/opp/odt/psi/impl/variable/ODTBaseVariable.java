@@ -7,7 +7,6 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.CachedValue;
@@ -19,7 +18,6 @@ import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.ODTDeclareVariable;
 import com.misset.opp.odt.psi.ODTDefineParam;
-import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.ODTVariableValue;
@@ -29,7 +27,6 @@ import com.misset.opp.odt.psi.impl.variable.delegate.ODTDefineInputParamDelegate
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsedVariableDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableAssignmentDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
-import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -134,33 +131,8 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
         });
     }
 
-    public boolean isOMTVariableProvider() {
-        return delegate.isOMTVariableProvider();
-    }
-
     @Override
     public @NotNull SearchScope getUseScope() {
-        return CachedValuesManager.getCachedValue(this, USAGE_SEARCH_SCOPE, () -> {
-            final SearchScope searchScope = isOMTVariableProvider() ? getOMTUseScope() : getODTUseScope();
-            return new CachedValueProvider.Result<>(searchScope,
-                    getContainingFile(),
-                    PsiModificationTracker.MODIFICATION_COUNT);
-        });
-    }
-
-    private SearchScope getODTUseScope() {
-        PsiElement useScope = PsiTreeUtil.getTopmostParentOfType(this, ODTScript.class);
-        if(useScope != null && useScope.getParent() != null){
-            // use the parent, sometimes there are javadocs with references to this element
-            // which are not in the same script
-            useScope = useScope.getParent();
-        }
-        return new LocalSearchScope(useScope != null ? useScope : getContainingFile());
-    }
-    private SearchScope getOMTUseScope() {
-        return Optional.ofNullable(getContainingFile().getClosestProvider(OMTVariableProvider.class))
-                .map(LocalSearchScope::new)
-                .map(SearchScope.class::cast)
-                .orElse(GlobalSearchScope.fileScope(getContainingFile()));
+        return new LocalSearchScope(getContainingFile());
     }
 }

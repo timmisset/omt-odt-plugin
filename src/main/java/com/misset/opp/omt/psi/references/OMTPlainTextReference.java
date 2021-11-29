@@ -7,22 +7,37 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
-import org.jetbrains.yaml.psi.YAMLValue;
+import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
+import java.util.Optional;
+
 public abstract class OMTPlainTextReference extends PsiReferenceBase.Poly<YAMLPlainTextImpl> implements PsiPolyVariantReference {
+    protected TextRange textRange;
+
     public OMTPlainTextReference(@NotNull YAMLPlainTextImpl element) {
-        super(element, TextRange.allOf(element.getText()), false);
+        this(element, TextRange.allOf(element.getText()));
+    }
+
+    public OMTPlainTextReference(@NotNull YAMLPlainTextImpl element,
+                                 TextRange textRange) {
+        super(element, textRange, false);
+        this.textRange = textRange;
     }
 
     @Override
     public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
-        final YAMLValue yamlValue = YAMLElementGenerator
-                .getInstance(getElement().getProject())
-                .createYamlKeyValue("dummy", newElementName)
-                .getValue();
-        if(yamlValue != null) { return myElement.replace(yamlValue); }
-        return myElement;
+        return handleElementRename(newElementName, textRange);
+    }
+
+    protected PsiElement handleElementRename(@NotNull String newElementName,
+                                             TextRange textRange) {
+        return Optional.ofNullable(YAMLElementGenerator.getInstance(myElement.getProject()))
+                .map(generator -> generator.createYamlKeyValue("foo",
+                        textRange.replace(myElement.getText(), newElementName)))
+                .map(YAMLKeyValue::getValue)
+                .map(myElement::replace)
+                .orElse(myElement);
     }
 
 }

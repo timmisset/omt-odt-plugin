@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.callable.psi.PsiVariable;
+import com.misset.opp.omt.psi.impl.variable.OMTVariableImpl;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLSequence;
@@ -53,7 +53,7 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
                         map));
     }
 
-    public static PsiVariable getReferenceTarget(YAMLSequenceItem sequenceItem) {
+    public static PsiElement getReferenceTarget(YAMLSequenceItem sequenceItem) {
         final YAMLValue yamlValue = sequenceItem.getValue();
         if (yamlValue instanceof YAMLMapping) {
             // destructed notation, return the "name":
@@ -68,8 +68,13 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
         }
     }
 
-    public static PsiVariable getVariable(YAMLValue value) {
-        return getInjectedContent(value, PsiVariable.class).stream().findFirst().orElse(null);
+    public static PsiElement getVariable(YAMLValue value) {
+        if (value == null) {
+            return null;
+        }
+        OMTVariableImpl.wrap(value);
+        return value;
+        //return getInjectedContent(value, PsiVariable.class).stream().findFirst().orElse(null);
     }
 
 }

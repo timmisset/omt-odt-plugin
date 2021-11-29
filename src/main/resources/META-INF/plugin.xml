@@ -21,16 +21,25 @@
         <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
                                 order="first" language="yaml"/>
         <psi.referenceContributor language="yaml"
-                                  implementation="com.misset.opp.omt.OMTReferenceContributor"/>
+                                  implementation="com.misset.opp.omt.symbols.OMTReferenceContributor"/>
+        <!-- Annotations -->
+        <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
+
+
         <!-- OMT -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>
-        <lang.parserDefinition language="OMT"
-                               implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
+        <lang.parserDefinition language="OMT" implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
         <postStartupActivity implementation="com.misset.opp.omt.IndexPrefixesStartupActivity"/>
         <postStartupActivity implementation="com.misset.opp.omt.LoadReasonsStartupActivity"/>
-        <!-- Annotations -->
-        <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
+        <psi.declarationProvider implementation="com.misset.opp.omt.symbols.OMTDeclarationProvider"/>
+        <renamePsiElementProcessor implementation="com.misset.opp.omt.refactor.OMTVariableRenameProcessor"/>
+        <renameHandler implementation="com.misset.opp.omt.refactor.OMTVariableRenameHandler"/>
+        <!--
+            isn't triggered, can be removed if alternative is created
+        <renamePsiElementProcessor implementation="com.misset.opp.omt.refactor.OMTPrefixRenameProcessor"/>-->
+        <referencesSearch implementation="com.misset.opp.omt.symbols.OMTReferencesSearch"/>
+
 
         <!-- Inspections -->
         <localInspection displayName="UnknownKeyInspection" groupName="OMT" language="OMT"
