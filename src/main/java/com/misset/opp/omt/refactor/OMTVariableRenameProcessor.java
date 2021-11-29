@@ -15,6 +15,7 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
+import com.misset.opp.omt.psi.impl.variable.OMTVariableImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -53,10 +54,7 @@ public class OMTVariableRenameProcessor extends RenamePsiElementProcessor {
                               UsageInfo @NotNull [] usages,
                               @Nullable RefactoringElementListener listener) throws IncorrectOperationException {
         final YAMLValue yamlValueElement = getYamlValueElement(element);
-        final PsiReference[] references = yamlValueElement.getReferences();
-        if (references.length > 0) {
-            references[0].handleElementRename(newName);
-        }
+        OMTVariableImpl.wrap(yamlValueElement).setName(newName);
         Arrays.stream(usages)
                 .map(UsageInfo::getReference)
                 .filter(Objects::nonNull)

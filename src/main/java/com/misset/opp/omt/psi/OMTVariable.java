@@ -12,4 +12,6 @@ public interface OMTVariable extends YAMLScalar, PsiVariable {
      * The name of the variable (without the $ prefix)
      */
     String getName();
+
+    void setName(String newName);
 }

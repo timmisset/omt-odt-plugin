@@ -12,20 +12,16 @@ import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.scalars.OMTOntologyPrefixMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTParamTypeType;
-import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.references.OMTImportMemberReference;
 import com.misset.opp.omt.psi.references.OMTImportPathReference;
 import com.misset.opp.omt.psi.references.OMTOntologyPrefixReference;
 import com.misset.opp.omt.psi.references.OMTParamTypeReference;
-import com.misset.opp.omt.psi.references.OMTVariableNameReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
-
-import java.util.ArrayList;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -47,8 +43,11 @@ public class OMTReferenceContributor extends PsiReferenceContributor {
                     return new PsiReference[]{new OMTImportMemberReference(plainText)};
                 } else if (metaType instanceof OMTOntologyPrefixMetaType) {
                     return new PsiReference[]{new OMTOntologyPrefixReference(plainText)};
-                } else if (metaType instanceof OMTNamedVariableMetaType) {
-                    return getNamedVariableMetaTypeReferences((OMTNamedVariableMetaType) metaType, plainText);
+                } else if (metaType instanceof OMTParamMetaType) {
+                    final TextRange typePrefixRange = ((OMTParamMetaType) metaType).getTypePrefixRange(plainText);
+                    if (typePrefixRange != null) {
+                        return new PsiReference[]{new OMTParamTypeReference(plainText, typePrefixRange)};
+                    }
                 } else if (metaType instanceof OMTParamTypeType) {
                     final OMTParamTypeReference omtParamTypeReference = new OMTParamTypeReference(plainText,
                             ((OMTParamTypeType) metaType).getTypePrefixRange(plainText));
@@ -59,26 +58,6 @@ public class OMTReferenceContributor extends PsiReferenceContributor {
                 return PsiReference.EMPTY_ARRAY;
             }
         };
-    }
-
-    private PsiReference @NotNull [] getNamedVariableMetaTypeReferences(OMTNamedVariableMetaType metaType,
-                                                                        YAMLPlainTextImpl plainText) {
-        final TextRange nameTextRange = metaType.getNameTextRange(plainText);
-        final ArrayList<PsiReference> psiReferences = new ArrayList<>();
-        if (nameTextRange != null) {
-            psiReferences.add(new OMTVariableNameReference(plainText, nameTextRange));
-        }
-
-        // additional references based on the type of variable:
-        if (metaType instanceof OMTParamMetaType) {
-            final TextRange typePrefixRange = ((OMTParamMetaType) metaType).getTypePrefixRange(plainText);
-            if (typePrefixRange != null) {
-                psiReferences.add(new OMTParamTypeReference(plainText, typePrefixRange));
-            }
-        }
-        // the value part of the Variable meta type is Resolvable outside the scope of the OMT / TTL language
-        // therefore, it should be handled by the injected language
-        return psiReferences.toArray(PsiReference[]::new);
     }
 
     private PsiReferenceProvider getYAMLKeyValueReferenceProvider() {

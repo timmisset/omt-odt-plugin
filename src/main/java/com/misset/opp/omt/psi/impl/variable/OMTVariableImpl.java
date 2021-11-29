@@ -1,12 +1,15 @@
 package com.misset.opp.omt.psi.impl.variable;
 
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.psi.OMTVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
+import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
@@ -50,6 +53,18 @@ public class OMTVariableImpl extends YAMLPlainTextImpl implements OMTVariable {
     @Override
     public String getName() {
         return getFromMeta(OMTNamedVariableMetaType::getName, value.getText());
+    }
+
+    @Override
+    public void setName(String newName) {
+        final TextRange textRange = (TextRange) getFromMeta(OMTNamedVariableMetaType::getNameTextRange,
+                value.getText());
+        final String renamed = textRange.replace(value.getText(), newName);
+        final YAMLKeyValue foo = YAMLElementGenerator.getInstance(value.getProject())
+                .createYamlKeyValue("foo", renamed);
+        if (foo.getValue() != null) {
+            value.replace(foo.getValue());
+        }
     }
 
     @Override
