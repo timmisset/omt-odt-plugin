@@ -4,7 +4,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.psi.PsiCall;
-import com.misset.opp.ttl.validation.TTLValidationUtil;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 

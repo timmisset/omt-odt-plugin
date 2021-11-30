@@ -141,6 +141,9 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
 
     private MetaTypeProxy getTaggedKeyValueMetaType(@NotNull YAMLKeyValue keyValue) {
         final YAMLKeyValue parentOfType = PsiTreeUtil.getParentOfType(keyValue, YAMLKeyValue.class);
+        if (parentOfType == null) {
+            return null;
+        }
         final MetaTypeProxy metaTypeProxy = getKeyValueMetaType(parentOfType);
         final Field featureByName = metaTypeProxy.getMetaType()
                 .findFeatureByName(keyValue.getKeyText());

@@ -30,9 +30,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
+public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
 
-    public ODTUsedVariableDelegate(ODTVariable element) {
+    public ODTUsageVariableDelegate(ODTVariable element) {
         super(element);
     }
 
@@ -51,7 +51,7 @@ public class ODTUsedVariableDelegate extends ODTBaseVariableDelegate  {
     }
 
     /**
-     * A variable can be typed by many different parts of the OMT and ODT languages
+     * A variable can be typed by many parts of the OMT and ODT languages
      * - via a PsiElement reference result
      * - local variable (either from OMT entry or ODT procedure/command) with context depending type
      * - global variable with static type

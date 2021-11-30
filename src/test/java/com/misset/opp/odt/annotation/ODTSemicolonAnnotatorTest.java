@@ -45,4 +45,30 @@ class ODTSemicolonAnnotatorTest extends InspectionTestCase {
         assertHasError(SEMICOLON_ILLEGAL);
     }
 
+    @Test
+    void testHasNoErrorWhenNestedAssignment() {
+        String content = insideProcedureRunWithPrefixes("VAR $test = 1");
+        configureByText(content);
+        assertHasError(SEMICOLON_REQUIRED);
+    }
+
+    @Test
+    void testHasNoErrorWhenNestedAssignmentWithSemicolon() {
+        String content = insideProcedureRunWithPrefixes("VAR $test = 1;");
+        configureByText(content);
+        assertNoError(SEMICOLON_REQUIRED);
+    }
+
+    @Test
+    void testHasErrorWhenQueryStatement() {
+        configureByText(insideQueryWithPrefixesNoSemicolonEnding("1"));
+        assertHasError(SEMICOLON_REQUIRED);
+    }
+
+    @Test
+    void testHasNoErrorWhenQueryStatementWithSemicolon() {
+        configureByText(insideQueryWithPrefixesNoSemicolonEnding("1;"));
+        assertNoError(SEMICOLON_REQUIRED);
+    }
+
 }

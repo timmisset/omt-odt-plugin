@@ -12,7 +12,7 @@ import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTRemoveFromCollection;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
-import com.misset.opp.ttl.validation.TTLValidationUtil;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.Nls;

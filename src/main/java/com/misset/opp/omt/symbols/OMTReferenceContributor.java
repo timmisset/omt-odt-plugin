@@ -50,7 +50,7 @@ public class OMTReferenceContributor extends PsiReferenceContributor {
                     }
                 } else if (metaType instanceof OMTParamTypeType) {
                     final OMTParamTypeReference omtParamTypeReference = new OMTParamTypeReference(plainText,
-                            ((OMTParamTypeType) metaType).getTypePrefixRange(plainText));
+                            TextRange.allOf(plainText.getText()));
                     if (omtParamTypeReference != null) {
                         return new PsiReference[]{omtParamTypeReference};
                     }

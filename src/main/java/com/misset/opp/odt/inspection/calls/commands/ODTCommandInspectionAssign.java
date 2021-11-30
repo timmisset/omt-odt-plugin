@@ -12,7 +12,7 @@ import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgument;
 import com.misset.opp.ttl.OppModel;
-import com.misset.opp.ttl.validation.TTLValidationUtil;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;

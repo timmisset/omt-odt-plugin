@@ -1,4 +1,4 @@
-package com.misset.opp.ttl.validation;
+package com.misset.opp.ttl.util;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;

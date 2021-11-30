@@ -100,9 +100,10 @@ class ODTVariableReferenceTest extends OMTTestCase {
         );
         configureByText(content);
         withProgress(() -> ReadAction.run(() ->
-                Assertions.assertEquals(1, ReferencesSearch.search(myFixture.getElementAtCaret())
-                        .findAll()
-                        .size())));
+                Assertions.assertEquals(1,
+                        ReferencesSearch.search(myFixture.findElementByText("$test", YAMLPlainTextImpl.class))
+                                .findAll()
+                                .size())));
 
     }
 

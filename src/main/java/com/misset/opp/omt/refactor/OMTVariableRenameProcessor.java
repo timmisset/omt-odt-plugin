@@ -54,11 +54,12 @@ public class OMTVariableRenameProcessor extends RenamePsiElementProcessor {
                               UsageInfo @NotNull [] usages,
                               @Nullable RefactoringElementListener listener) throws IncorrectOperationException {
         final YAMLValue yamlValueElement = getYamlValueElement(element);
-        OMTVariableImpl.wrap(yamlValueElement).setName(newName);
+        final String finalName = !newName.startsWith("$") ? "$" + newName : newName;
+        OMTVariableImpl.wrap(yamlValueElement).setName(finalName);
         Arrays.stream(usages)
                 .map(UsageInfo::getReference)
                 .filter(Objects::nonNull)
-                .forEach(reference -> reference.handleElementRename(newName));
+                .forEach(reference -> reference.handleElementRename(finalName));
     }
 
     @Override

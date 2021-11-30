@@ -1,7 +1,7 @@
 package com.misset.opp.callable.builtin.commands;
 
 import com.misset.opp.callable.builtin.BuiltInTest;
-import com.misset.opp.ttl.validation.TTLValidationUtil;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Test;
 
 class MoveToGraphCommandTest extends BuiltInTest {

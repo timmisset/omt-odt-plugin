@@ -6,7 +6,9 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
@@ -24,10 +26,12 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.impl.YAMLFileImpl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     private static final Key<CachedValue<HashMap<String, List<PsiElement>>>> EXPORTING_MEMBERS = new Key<>("EXPORTING_MEMBERS");
@@ -62,6 +66,19 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
                     .findAll();
             return new CachedValueProvider.Result<>(all, OMTLanguage.getLanguageModificationTracker(getProject()));
         });
+    }
+
+    @Override
+    public GlobalSearchScope getMemberUsageScope(boolean isExportable) {
+        List<OMTFile> files = new ArrayList<>();
+        files.add(this);
+        if (isExportable) {
+            files.addAll(getImportedBy());
+        }
+
+        return GlobalSearchScope.filesScope(getProject(),
+                files.stream().map(PsiFile::getVirtualFile).collect(
+                        Collectors.toSet()));
     }
 
     @Override

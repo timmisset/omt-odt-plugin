@@ -7,7 +7,6 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.util.IntentionFamilyName;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
@@ -31,12 +30,6 @@ public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase 
     protected static final String UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT = "Unnecessary wrapping of import statement";
     protected static final String UNWRAP_LOCAL_QUICKFIX_FAMILY_NAME = "Unwrap";
 
-
-    @Override
-    Logger getLogger() {
-        return Logger.getInstance(OMTUnnecessaryWrappingInspection.class);
-    }
-
     @Override
     @Nullable
     @Nls
@@ -53,7 +46,7 @@ public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase 
         return new StructureChecker(holder, metaTypeProvider);
     }
 
-    private static class StructureChecker extends SimpleYamlPsiVisitor {
+    protected class StructureChecker extends SimpleYamlPsiVisitor {
         private final YamlMetaTypeProvider myMetaTypeProvider;
         private final ProblemsHolder myProblemsHolder;
 
@@ -64,8 +57,18 @@ public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase 
         }
 
         @Override
+        public void visitElement(@NotNull PsiElement element) {
+            if (element instanceof YAMLKeyValue) {
+                visitYAMLKeyValue((YAMLKeyValue) element);
+            }
+        }
+
+        @Override
         protected void visitYAMLKeyValue(@NotNull YAMLKeyValue keyValue) {
-            visitMetaTypeProxy(keyValue, myMetaTypeProvider, OMTImportMetaType.class, (metaType) -> visitImport(keyValue));
+            visitMetaTypeProxy(keyValue,
+                    myMetaTypeProvider,
+                    OMTImportMetaType.class,
+                    (metaType) -> visitImport(keyValue));
         }
 
         private void visitImport(@NotNull YAMLKeyValue keyValue) {

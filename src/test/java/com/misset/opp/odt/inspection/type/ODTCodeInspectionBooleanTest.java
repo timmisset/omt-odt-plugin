@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.ttl.validation.TTLValidationUtil.ERROR_MESSAGE_BOOLEAN;
+import static com.misset.opp.ttl.util.TTLValidationUtil.ERROR_MESSAGE_BOOLEAN;
 
 class ODTCodeInspectionBooleanTest extends InspectionTestCase {
 

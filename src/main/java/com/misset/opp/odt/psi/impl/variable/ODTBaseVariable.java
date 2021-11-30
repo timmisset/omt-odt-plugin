@@ -24,7 +24,7 @@ import com.misset.opp.odt.psi.ODTVariableValue;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTDeclaredVariableDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTDefineInputParamDelegate;
-import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsedVariableDelegate;
+import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsageVariableDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableAssignmentDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.ttl.OppModel;
@@ -77,7 +77,7 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
             } else if (parentType instanceof ODTDefineParam) {
                 return new ODTDefineInputParamDelegate(this);
             } else {
-                return new ODTUsedVariableDelegate(this);
+                return new ODTUsageVariableDelegate(this);
             }
         });
     }

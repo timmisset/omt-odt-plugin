@@ -7,7 +7,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -34,7 +33,6 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.jetbrains.yaml.psi.YAMLValue;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -94,22 +92,10 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         return CachedValuesManager.getCachedValue(this, EXPORTING_MEMBER_SCOPE, () ->
         {
             final OMTFile hostFile = getHostFile();
-            final GlobalSearchScope scope;
             if (hostFile == null) {
-                scope = GlobalSearchScope.fileScope(this);
-                return new CachedValueProvider.Result<>(scope, this);
+                return getCachedValue(GlobalSearchScope.fileScope(this));
             } else {
-                List<OMTFile> files = new ArrayList<>();
-                files.add(hostFile);
-                if (isExportable()) {
-                    files.addAll(hostFile.getImportedBy());
-                }
-
-                scope = GlobalSearchScope.filesScope(getProject(),
-                        files.stream().map(PsiFile::getVirtualFile).collect(
-                                Collectors.toSet()));
-
-                return getCachedValue(scope);
+                return getCachedValue(hostFile.getMemberUsageScope(isExportable()));
             }
         });
     }

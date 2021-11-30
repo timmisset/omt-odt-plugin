@@ -5,7 +5,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
-import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -56,9 +55,9 @@ public class OMTVariableNameMetaType extends YamlScalarType implements OMTNamedV
         return Optional.ofNullable(yamlMapping)
                 .map(OMTMetaTypeProvider.getInstance(value.getProject())::getValueMetaType)
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
-                .filter(OMTParamMetaType.class::isInstance)
-                .map(OMTParamMetaType.class::cast)
-                .map(omtParamMetaType -> omtParamMetaType.getTypeFromDestructed(yamlMapping))
+                .filter(OMTNamedVariableMetaType.class::isInstance)
+                .map(OMTNamedVariableMetaType.class::cast)
+                .map(namedVariableMetaType -> namedVariableMetaType.getTypeFromDestructed(yamlMapping))
                 .orElse(Collections.emptySet());
     }
 }

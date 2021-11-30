@@ -4,11 +4,13 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.ODTScriptContent;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTScriptLineWithSemicolon;
+import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -26,7 +28,7 @@ public class ODTSemicolonAnnotator implements Annotator {
     public void annotate(@NotNull PsiElement element,
                          @NotNull AnnotationHolder holder) {
         if (element instanceof ODTScriptLine) {
-            final boolean hasSemicolonEnding = element.getParent() instanceof ODTScriptLineWithSemicolon;
+            final boolean hasSemicolonEnding = hasSemicolonEnding(element);
 
             final ODTScriptLine scriptLine = (ODTScriptLine) element;
             if (scriptLine instanceof ODTDefineQueryStatement && !hasSemicolonEnding) {
@@ -36,8 +38,10 @@ public class ODTSemicolonAnnotator implements Annotator {
                 // depends on the location:
                 final YamlMetaType injectionMetaType = ODTInjectionUtil.getInjectionMetaType(element);
                 if (injectionMetaType == null) {
-                    // no meta-type, the content is part of an ODT file, should have a semicolon ending in that case
-                    holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_REQUIRED).create();
+                    if (!hasSemicolonEnding) {
+                        // no meta-type, the content is part of an ODT file, should have a semicolon ending in that case
+                        holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_REQUIRED).create();
+                    }
                 } else {
                     if (!injectionMetaType.getClass()
                             .isAnnotationPresent(SimpleInjectable.class) && !hasSemicolonEnding) {
@@ -51,5 +55,18 @@ public class ODTSemicolonAnnotator implements Annotator {
                 }
             }
         }
+    }
+
+    private boolean hasSemicolonEnding(PsiElement element) {
+        final PsiElement deepestVisibleLast = PsiTreeUtil.getDeepestVisibleLast(element);
+        boolean containsSemicolonEnding = deepestVisibleLast != null && deepestVisibleLast.getNode()
+                .getElementType() == ODTTypes.SEMICOLON;
+
+        final PsiElement nextVisibleLeaf = PsiTreeUtil.nextVisibleLeaf(element);
+        boolean siblingSemicolon = nextVisibleLeaf != null && nextVisibleLeaf.getNode()
+                .getElementType() == ODTTypes.SEMICOLON;
+
+        return siblingSemicolon || containsSemicolonEnding ||
+                element.getParent() instanceof ODTScriptLineWithSemicolon;
     }
 }

@@ -38,8 +38,8 @@
         <!--
             isn't triggered, can be removed if alternative is created
         <renamePsiElementProcessor implementation="com.misset.opp.omt.refactor.OMTPrefixRenameProcessor"/>-->
-        <referencesSearch implementation="com.misset.opp.omt.symbols.OMTReferencesSearch"/>
-
+        <referencesSearch implementation="com.misset.opp.omt.findUsage.OMTVariableReferencesSearch"/>
+        <referencesSearch implementation="com.misset.opp.omt.findUsage.OMTPrefixReferencesSearch"/>
 
         <!-- Inspections -->
         <localInspection displayName="UnknownKeyInspection" groupName="OMT" language="OMT"

@@ -2,7 +2,7 @@ package com.misset.opp.callable.builtin.commands;
 
 import com.misset.opp.callable.builtin.BuiltInTest;
 import com.misset.opp.ttl.OppModel;
-import com.misset.opp.ttl.validation.TTLValidationUtil;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.Individual;
 import org.junit.jupiter.api.Test;
 

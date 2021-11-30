@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTBooleanStatement;
 import com.misset.opp.odt.psi.ODTIfBlock;
-import com.misset.opp.ttl.validation.TTLValidationUtil;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

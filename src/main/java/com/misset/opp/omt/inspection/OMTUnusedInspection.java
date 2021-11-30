@@ -4,14 +4,15 @@
 package com.misset.opp.omt.inspection;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
+import com.misset.opp.omt.meta.model.scalars.OMTIriMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
+import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,20 +34,16 @@ public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
     }
 
     @Override
-    Logger getLogger() {
-        return Logger.getInstance(OMTUnusedInspection.class);
-    }
-
-    @Override
     @NotNull
     protected PsiElementVisitor doBuildVisitor(@NotNull ProblemsHolder holder,
                                                @NotNull YamlMetaTypeProvider metaTypeProvider) {
         return new StructureChecker(holder, metaTypeProvider);
     }
 
-    private static class StructureChecker extends SimpleYamlPsiVisitor {
+    private class StructureChecker extends SimpleYamlPsiVisitor {
         private final YamlMetaTypeProvider myMetaTypeProvider;
         private final ProblemsHolder myProblemsHolder;
+        private OMTFile file;
 
         StructureChecker(@NotNull ProblemsHolder problemsHolder,
                          @NotNull YamlMetaTypeProvider metaTypeProvider) {
@@ -56,6 +53,10 @@ public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
 
         @Override
         public void visitElement(@NotNull PsiElement element) {
+            if (!(myProblemsHolder.getFile() instanceof OMTFile)) {
+                return;
+            }
+            file = (OMTFile) myProblemsHolder.getFile();
             if (element instanceof YAMLPlainTextImpl) {
                 visitPlainTextValue((YAMLPlainTextImpl) element);
             } else {
@@ -90,6 +91,8 @@ public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
                 final YamlMetaType metaType = meta.getMetaType();
                 if (metaType instanceof OMTModelItemMetaType) {
                     visitModelItem(meta, keyValue);
+                } else if (metaType instanceof OMTIriMetaType) {
+                    visitPrefix(keyValue);
                 }
             }
         }
@@ -102,7 +105,17 @@ public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
             }
             final boolean callable = ((OMTModelItemMetaType) meta.getMetaType()).isCallable((YAMLMapping) value);
 
-            if (callable && ReferencesSearch.search(keyValue, keyValue.getUseScope()).findFirst() == null) {
+            if (callable && ReferencesSearch.search(keyValue, file.getMemberUsageScope(true)).findFirst() == null) {
+                myProblemsHolder.registerProblem(
+                        keyValue.getKey(),
+                        keyValue.getKeyText() + " is never used",
+                        LIKE_UNUSED_SYMBOL);
+            }
+        }
+
+        private void visitPrefix(@NotNull YAMLKeyValue keyValue) {
+            if (ReferencesSearch.search(keyValue, new LocalSearchScope(keyValue.getContainingFile()))
+                    .findFirst() == null) {
                 myProblemsHolder.registerProblem(
                         keyValue.getKey(),
                         keyValue.getKeyText() + " is never used",

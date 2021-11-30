@@ -6,7 +6,7 @@ import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
-import com.misset.opp.ttl.validation.TTLValidationUtil;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
