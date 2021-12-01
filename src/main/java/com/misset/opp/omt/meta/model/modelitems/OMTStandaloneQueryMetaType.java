@@ -13,7 +13,6 @@ import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
-import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -64,7 +63,7 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
         final YAMLKeyValue base = mapping.getKeyValueByKey("base");
         if (base != null) {
             // base should adhere to the OMTVariableNameMetaType otherwise it will throw an error on the syntax check
-            addToGroupedMap(base.getValueText(), OMTVariableProviderUtil.getVariable(base.getValue()), variableMap);
+            addToGroupedMap(base.getValueText(), base.getValue(), variableMap);
         }
 
         return variableMap;

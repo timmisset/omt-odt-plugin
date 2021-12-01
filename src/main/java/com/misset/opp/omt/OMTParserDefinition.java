@@ -4,7 +4,6 @@ import com.intellij.lang.ParserDefinition;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
-import com.intellij.psi.tree.TokenSet;
 import com.misset.opp.omt.psi.impl.OMTFileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLParserDefinition;

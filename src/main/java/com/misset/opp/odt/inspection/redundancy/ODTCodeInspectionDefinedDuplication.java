@@ -48,6 +48,7 @@ public class ODTCodeInspectionDefinedDuplication extends LocalInspectionTool {
                     if (file instanceof ODTFile) {
                         final ResolveResult[] resolveResults = ((ODTFile) file).resolveInOMT(
                                         OMTCallableProvider.class,
+                                        OMTCallableProvider.KEY,
                                         name.getCallId(),
                                         OMTCallableProvider::getCallableMap)
                                 .orElse(ResolveResult.EMPTY_ARRAY);

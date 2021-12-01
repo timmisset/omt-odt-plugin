@@ -1,7 +1,6 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.omt.psi.impl.variable.OMTVariableImpl;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLSequence;
@@ -62,19 +61,9 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
             if (name == null) {
                 return null;
             }
-            return getVariable(name.getValue());
+            return name.getValue();
         } else {
-            return getVariable(yamlValue);
+            return yamlValue;
         }
     }
-
-    public static PsiElement getVariable(YAMLValue value) {
-        if (value == null) {
-            return null;
-        }
-        OMTVariableImpl.wrap(value);
-        return value;
-        //return getInjectedContent(value, PsiVariable.class).stream().findFirst().orElse(null);
-    }
-
 }

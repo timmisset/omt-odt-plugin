@@ -1,4 +1,4 @@
-package com.misset.opp.omt.psi.impl.variable;
+package com.misset.opp.omt.psi.impl.delegate;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -26,21 +26,21 @@ import java.util.function.BiFunction;
  * The MetaTypes are Psi-less classes which require to be called with the actual PsiElement they
  * represent in order to provide the information
  */
-public class OMTVariableImpl extends YAMLPlainTextImpl implements OMTVariable {
+public class OMTVariableDelegate extends YAMLPlainTextImpl implements OMTVariable {
     YAMLValue value;
 
-    private OMTVariableImpl(@NotNull YAMLValue yamlValue) {
+    private OMTVariableDelegate(@NotNull YAMLValue yamlValue) {
         super(yamlValue.getNode());
         this.value = yamlValue;
     }
 
-    public static OMTVariableImpl wrap(YAMLValue yamlValue) {
-        final OMTVariableImpl wrapper = yamlValue.getUserData(WRAPPER);
+    public static OMTVariableDelegate wrap(YAMLValue yamlValue) {
+        final OMTVariableDelegate wrapper = yamlValue.getUserData(WRAPPER);
         if (wrapper != null) {
             return wrapper;
         }
 
-        final OMTVariableImpl omtVariable = new OMTVariableImpl(yamlValue);
+        final OMTVariableDelegate omtVariable = new OMTVariableDelegate(yamlValue);
         yamlValue.putUserData(WRAPPER, omtVariable);
         return omtVariable;
     }
@@ -56,15 +56,16 @@ public class OMTVariableImpl extends YAMLPlainTextImpl implements OMTVariable {
     }
 
     @Override
-    public void setName(String newName) {
+    public PsiElement setName(String newName) {
         final TextRange textRange = (TextRange) getFromMeta(OMTNamedVariableMetaType::getNameTextRange,
                 value.getText());
         final String renamed = textRange.replace(value.getText(), newName);
         final YAMLKeyValue foo = YAMLElementGenerator.getInstance(value.getProject())
                 .createYamlKeyValue("foo", renamed);
         if (foo.getValue() != null) {
-            value.replace(foo.getValue());
+            return value.replace(foo.getValue());
         }
+        return value;
     }
 
     @Override

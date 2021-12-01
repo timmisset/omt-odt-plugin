@@ -1,11 +1,14 @@
 package com.misset.opp.odt.psi;
 
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
+import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
@@ -45,9 +48,10 @@ public interface ODTFile extends PsiFile {
     /**
      * Returns the first entry of:
      *
-     * @see ODTFile#getProviders(java.lang.Class)
+     * @see ODTFile#getProviders(java.lang.Class, com.intellij.openapi.util.Key)
      */
-    <T> YAMLMapping getClosestProvider(Class<T> metaTypeOrInterface);
+    <T extends OMTMetaTypeStructureProvider> YAMLMapping getClosestProvider(Class<T> metaTypeOrInterface,
+                                                                            Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> key);
 
     /**
      * Get all providers of the given MetaType, ordered by closest first
@@ -59,18 +63,21 @@ public interface ODTFile extends PsiFile {
      * obtain this information via the ODTFile itself since it will share the cache with other usage variables and thus
      * will much faster retrieve provider information during analysis.
      */
-    <T> LinkedHashMap<YAMLMapping, T> getProviders(Class<T> metaTypeOrInterface);
+    <T extends OMTMetaTypeStructureProvider> LinkedHashMap<YAMLMapping, T> getProviders(Class<T> metaTypeOrInterface,
+                                                                                        Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> key);
 
-    <T extends YAMLPsiElement, U> LinkedHashMap<T, U> getProviders(Class<T> yamlClass,
-                                                                   Class<U> metaTypeOrInterface);
+    <T extends YAMLPsiElement, U extends OMTMetaTypeStructureProvider> LinkedHashMap<T, U> getProviders(Class<T> yamlClass,
+                                                                                                        Class<U> metaTypeOrInterface,
+                                                                                                        Key<CachedValue<LinkedHashMap<T, U>>> key);
 
     /**
      * Resolve the reference present in the ODT language to an OMT element
      * For example, a Call to a ModelItem (YamlMapping)
      */
-    <T> Optional<ResolveResult[]> resolveInOMT(Class<T> providerClass,
-                                               String key,
-                                               BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction);
+    <T extends OMTMetaTypeStructureProvider> Optional<ResolveResult[]> resolveInOMT(Class<T> providerClass,
+                                                                                    Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> metaTypeStructureKey,
+                                                                                    String key,
+                                                                                    BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction);
 
     /**
      * Returns the prefix::namespaces that are available at the point of this Injected ODT fragment.

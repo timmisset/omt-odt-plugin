@@ -28,6 +28,7 @@ public class ODTVariableReference extends PsiReferenceBase.Poly<ODTVariable> imp
         return resolveInODT()
                 .or(() -> myElement.getContainingFile()
                         .resolveInOMT(OMTVariableProvider.class,
+                                OMTVariableProvider.KEY,
                                 myElement.getName(),
                                 OMTVariableProvider::getVariableMap))
                 .orElse(ResolveResult.EMPTY_ARRAY);

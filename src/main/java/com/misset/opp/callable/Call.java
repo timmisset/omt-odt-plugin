@@ -32,4 +32,6 @@ public interface Call {
 
     void setParamType(String paramName,
                       Set<OntResource> type);
+
+    String getCallId();
 }

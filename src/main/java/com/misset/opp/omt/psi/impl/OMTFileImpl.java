@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     private static final Key<CachedValue<HashMap<String, List<PsiElement>>>> EXPORTING_MEMBERS = new Key<>("EXPORTING_MEMBERS");
     private static final Key<CachedValue<Collection<OMTFile>>> IMPORTED_BY = new Key<>("IMPORTED_BY");
+    private boolean analysed = false;
 
     public OMTFileImpl(FileViewProvider viewProvider) {
         super(viewProvider);
@@ -105,6 +106,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     @Override
     public void clearCaches() {
         super.clearCaches();
+        analysed = false;
         Optional.ofNullable(getVirtualFile())
                 .map(VirtualFile::getPath)
                 .ifPresent(ExportedMembersIndex::removeFromIndex);

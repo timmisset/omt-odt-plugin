@@ -6,7 +6,6 @@ package com.misset.opp.omt.inspection;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
@@ -29,7 +28,7 @@ import static com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBO
 public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
 
     @Override
-    protected @Nullable YamlMetaTypeProvider getMetaTypeProvider(@NotNull ProblemsHolder holder) {
+    protected @Nullable OMTMetaTypeProvider getMetaTypeProvider(@NotNull ProblemsHolder holder) {
         return OMTMetaTypeProvider.getInstance(holder.getProject());
     }
 
@@ -41,14 +40,14 @@ public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
     }
 
     private class StructureChecker extends SimpleYamlPsiVisitor {
-        private final YamlMetaTypeProvider myMetaTypeProvider;
+        private final OMTMetaTypeProvider myMetaTypeProvider;
         private final ProblemsHolder myProblemsHolder;
         private OMTFile file;
 
         StructureChecker(@NotNull ProblemsHolder problemsHolder,
                          @NotNull YamlMetaTypeProvider metaTypeProvider) {
             myProblemsHolder = problemsHolder;
-            myMetaTypeProvider = metaTypeProvider;
+            myMetaTypeProvider = (OMTMetaTypeProvider) metaTypeProvider;
         }
 
         @Override
@@ -65,18 +64,14 @@ public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
         }
 
         private void visitPlainTextValue(@NotNull YAMLPlainTextImpl plainText) {
-            YamlMetaTypeProvider.MetaTypeProxy meta = myMetaTypeProvider.getMetaTypeProxy(plainText);
-            if (meta != null) {
-                final YamlMetaType metaType = meta.getMetaType();
-                if (metaType instanceof OMTNamedVariableMetaType) {
-                    if (ReferencesSearch.search(plainText, new LocalSearchScope(plainText.getContainingFile()))
-                            .findFirst() == null) {
-                        String name = ((OMTNamedVariableMetaType) metaType).getName(plainText);
-                        myProblemsHolder.registerProblem(
-                                plainText,
-                                name + " is never used",
-                                LIKE_UNUSED_SYMBOL);
-                    }
+            final YamlMetaType metaType = myMetaTypeProvider.getResolvedMetaType(plainText);
+            if (metaType instanceof OMTNamedVariableMetaType) {
+                if (ReferencesSearch.search(plainText).findFirst() == null) {
+                    String name = ((OMTNamedVariableMetaType) metaType).getName(plainText);
+                    myProblemsHolder.registerProblem(
+                            plainText,
+                            name + " is never used",
+                            LIKE_UNUSED_SYMBOL);
                 }
             }
         }
@@ -105,7 +100,7 @@ public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
             }
             final boolean callable = ((OMTModelItemMetaType) meta.getMetaType()).isCallable((YAMLMapping) value);
 
-            if (callable && ReferencesSearch.search(keyValue, file.getMemberUsageScope(true)).findFirst() == null) {
+            if (callable && ReferencesSearch.search(keyValue).findFirst() == null) {
                 myProblemsHolder.registerProblem(
                         keyValue.getKey(),
                         keyValue.getKeyText() + " is never used",
@@ -114,8 +109,7 @@ public class OMTUnusedInspection extends OMTMetaTypeInspectionBase {
         }
 
         private void visitPrefix(@NotNull YAMLKeyValue keyValue) {
-            if (ReferencesSearch.search(keyValue, new LocalSearchScope(keyValue.getContainingFile()))
-                    .findFirst() == null) {
+            if (ReferencesSearch.search(keyValue).findFirst() == null) {
                 myProblemsHolder.registerProblem(
                         keyValue.getKey(),
                         keyValue.getKeyText() + " is never used",

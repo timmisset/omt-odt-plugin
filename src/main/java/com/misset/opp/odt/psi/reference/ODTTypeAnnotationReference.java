@@ -22,6 +22,7 @@ public class ODTTypeAnnotationReference extends PsiReferenceBase.Poly<PsiElement
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         final ODTFile containingFile = (ODTFile) myElement.getContainingFile();
         return containingFile.resolveInOMT(OMTPrefixProvider.class,
+                        OMTPrefixProvider.KEY,
                         textRange.substring(myElement.getText()),
                         OMTPrefixProvider::getPrefixMap)
                 .orElse(ResolveResult.EMPTY_ARRAY);

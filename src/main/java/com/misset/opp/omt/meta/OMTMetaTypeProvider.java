@@ -66,6 +66,17 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
         });
     }
 
+    public @Nullable YamlMetaType getResolvedKeyValueMetaTypeMeta(@NotNull YAMLKeyValue keyValue) {
+        return Optional.ofNullable(getKeyValueMetaType(keyValue))
+                .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
+                .orElse(null);
+    }
+
+    public @Nullable YamlMetaType getResolvedMetaType(@NotNull PsiElement element) {
+        final MetaTypeProxy metaTypeProxy = getMetaTypeProxy(element);
+        return metaTypeProxy != null ? metaTypeProxy.getMetaType() : null;
+    }
+
     /**
      * The OMTMetaTypeProvider enriches the default YamlMetaTypeProvider by including support for
      * !Tag identifiers in the YamlValues.

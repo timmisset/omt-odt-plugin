@@ -20,8 +20,9 @@ public class OMTProviderUtil {
      * is in implementation of OMTInjectable.
      * The root element (Script) of the injected File is searched using the PsiTreeUtil.findChildrenOfType
      */
-    public static <T extends PsiElement> Collection<T> getInjectedContent(YAMLValue value, Class<T> contentClass) {
-        if(value == null || !value.isValid()) {
+    public static <T extends PsiElement> Collection<T> getInjectedContent(YAMLValue value,
+                                                                          Class<T> contentClass) {
+        if (value == null || !value.isValid()) {
             return Collections.emptyList();
         }
 
@@ -31,8 +32,9 @@ public class OMTProviderUtil {
                 .map(pairs -> pairs.get(0))
                 .map(pair -> pair.getFirst())
                 .map(element ->
-                                contentClass.isAssignableFrom(element.getClass()) ? Collections.singletonList(contentClass.cast(element)) :
-                        PsiTreeUtil.findChildrenOfType(element, contentClass))
+                        contentClass.isAssignableFrom(element.getClass()) ? Collections.singletonList(contentClass.cast(
+                                element)) :
+                                PsiTreeUtil.findChildrenOfType(element, contentClass))
                 .orElse(Collections.emptyList());
     }
 

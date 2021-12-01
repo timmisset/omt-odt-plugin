@@ -30,7 +30,10 @@ public class ODTNamespacePrefixReference extends PsiReferenceBase.Poly<ODTBaseNa
         // then resolve in OMT using the PrefixProviders
         return resolveInODT()
                 .or(() -> myElement.getContainingFile()
-                        .resolveInOMT(OMTPrefixProvider.class, myElement.getName(), OMTPrefixProvider::getPrefixMap))
+                        .resolveInOMT(OMTPrefixProvider.class,
+                                OMTPrefixProvider.KEY,
+                                myElement.getName(),
+                                OMTPrefixProvider::getPrefixMap))
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 

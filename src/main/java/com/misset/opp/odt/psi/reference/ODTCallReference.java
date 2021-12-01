@@ -36,6 +36,7 @@ public class ODTCallReference extends PsiReferenceBase.Poly<ODTResolvableCall> i
         return resolveInODT()
                 .or(() -> myElement.getContainingFile()
                         .resolveInOMT(OMTCallableProvider.class,
+                                OMTCallableProvider.KEY,
                                 myElement.getCallId(),
                                 OMTCallableProvider::getCallableMap))
                 .orElse(ResolveResult.EMPTY_ARRAY);

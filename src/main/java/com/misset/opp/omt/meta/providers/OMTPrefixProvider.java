@@ -1,16 +1,21 @@
 package com.misset.opp.omt.meta.providers;
 
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.CachedValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil.addPrefixesToMap;
 
-public interface OMTPrefixProvider {
+public interface OMTPrefixProvider extends OMTMetaTypeStructureProvider {
+    Key<CachedValue<LinkedHashMap<YAMLMapping, OMTPrefixProvider>>> KEY = new Key<>("OMTPrefixProvider");
+
     /**
      * Returns the prefix map from the expected key 'prefixes', since all current providers
      * use the same key and structure to provide the structure, this interface has a default method

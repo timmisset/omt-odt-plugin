@@ -24,6 +24,7 @@ import com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
@@ -117,34 +118,37 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         });
     }
 
-    public <T> YAMLMapping getClosestProvider(Class<T> metaTypeOrInterface) {
-        final LinkedHashMap<YAMLMapping, T> providers = getProviders(metaTypeOrInterface);
+    public <T extends OMTMetaTypeStructureProvider> YAMLMapping getClosestProvider(Class<T> metaTypeOrInterface,
+                                                                                   Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> key) {
+        final LinkedHashMap<YAMLMapping, T> providers = getProviders(metaTypeOrInterface, key);
         return providers.keySet().stream().findFirst().orElse(null);
     }
 
-    public <T> LinkedHashMap<YAMLMapping, T> getProviders(Class<T> metaTypeOrInterface) {
-        return getProviders(YAMLMapping.class, metaTypeOrInterface);
+    public <T extends OMTMetaTypeStructureProvider> LinkedHashMap<YAMLMapping, T> getProviders(Class<T> metaTypeOrInterface,
+                                                                                               Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> key) {
+        return getProviders(YAMLMapping.class, metaTypeOrInterface, key);
     }
 
-    public <T extends YAMLPsiElement, U> LinkedHashMap<T, U> getProviders(Class<T> yamlType,
-                                                                          Class<U> metaTypeOrInterface) {
+    public <T extends YAMLPsiElement, U extends OMTMetaTypeStructureProvider> LinkedHashMap<T, U> getProviders(Class<T> yamlType,
+                                                                                                               Class<U> metaTypeOrInterface,
+                                                                                                               Key<CachedValue<LinkedHashMap<T, U>>> key) {
         /*
             It's important to set the modification tracker to MODIFICATION_COUNT
             This will make sure there is no PSI information retained which could cause memory leaks
          */
-        Key<CachedValue<LinkedHashMap<T, U>>> metaKey = new Key<>("META_" + metaTypeOrInterface.getSimpleName());
         return CachedValuesManager.getCachedValue(this,
-                metaKey,
+                key,
                 () -> getCachedValue(ODTInjectionUtil.getProviders(
                         this,
                         yamlType,
                         metaTypeOrInterface)));
     }
 
-    public <T> Optional<ResolveResult[]> resolveInOMT(Class<T> providerClass,
-                                                      String key,
-                                                      BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
-        final LinkedHashMap<YAMLMapping, T> providers = getProviders(providerClass);
+    public <T extends OMTMetaTypeStructureProvider> Optional<ResolveResult[]> resolveInOMT(Class<T> providerClass,
+                                                                                           Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> metaTypeStructureKey,
+                                                                                           String key,
+                                                                                           BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
+        final LinkedHashMap<YAMLMapping, T> providers = getProviders(providerClass, metaTypeStructureKey);
         return OMTMetaTreeUtil.resolveProvider(providers, key, mapFunction);
     }
 
@@ -155,7 +159,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
             final Map<String, String> namespaces;
             if (hostFile != null) {
                 // in OMT files
-                namespaces = getProviders(OMTPrefixProvider.class).entrySet().stream()
+                namespaces = getProviders(OMTPrefixProvider.class, OMTPrefixProvider.KEY).entrySet().stream()
                         .map(entry -> entry.getValue().getNamespaces(entry.getKey()))
                         .flatMap(map -> map.entrySet().stream())
                         .collect(Collectors.toMap(Map.Entry::getKey,

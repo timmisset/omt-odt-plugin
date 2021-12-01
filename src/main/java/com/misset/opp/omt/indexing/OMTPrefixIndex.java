@@ -38,7 +38,8 @@ public class OMTPrefixIndex {
                         .stream()
                         .map(psiManager::findFile)
                         .filter(OMTFile.class::isInstance)
-                        .forEach(file -> indexPrefixes((OMTFile) file)));
+                        .map(OMTFile.class::cast)
+                        .forEach(this::indexPrefixes));
                 this.orderIndexByFrequence();
             }
 

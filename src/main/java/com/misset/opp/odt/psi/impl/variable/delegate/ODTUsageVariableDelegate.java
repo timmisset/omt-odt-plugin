@@ -15,7 +15,7 @@ import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
-import com.misset.opp.omt.psi.impl.variable.OMTVariableImpl;
+import com.misset.opp.omt.psi.impl.delegate.OMTVariableDelegate;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLValue;
@@ -162,12 +162,12 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
         if (element instanceof PsiVariable) {
             return (PsiVariable) element;
         }
-        return element.getUserData(OMTVariableImpl.WRAPPER);
+        return element.getUserData(OMTVariableDelegate.WRAPPER);
     }
 
     private Optional<Set<OntResource>> getTypeFromOMTLocalVariable() {
         return element.getContainingFile()
-                .getProviders(YAMLValue.class, OMTLocalVariableProvider.class)
+                .getProviders(YAMLValue.class, OMTLocalVariableProvider.class, OMTLocalVariableProvider.KEY)
                 .entrySet()
                 .stream()
                 // map the Provider and YamlPsiElement (mapping) to resolve to set of local variables that are present
