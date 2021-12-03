@@ -1,7 +1,6 @@
 package com.misset.opp.ttl;
 
 import com.intellij.openapi.components.Service;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.io.FileUtil;
@@ -34,7 +33,6 @@ public final class OppModelLoader {
 
     private final HashMap<Resource, OntModel> ontologies = new HashMap<>();
     private final List<Resource> processed = new ArrayList<>();
-    Logger logger = Logger.getInstance(OppModelLoader.class);
 
     private static OntModel model;
     private ProgressIndicator indicator = ProgressManager.getGlobalProgressIndicator();
@@ -112,7 +110,7 @@ public final class OppModelLoader {
     }
     private FileInputStream readFile(File file) {
         try {
-            logger.warn("Reading file: " + file.getAbsolutePath());
+            setIndicatorText2(file.getName());
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

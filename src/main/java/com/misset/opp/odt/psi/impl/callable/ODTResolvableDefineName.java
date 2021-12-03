@@ -45,7 +45,7 @@ public abstract class ODTResolvableDefineName extends ODTASTWrapperPsiElement im
     @Override
     public @NotNull SearchScope getUseScope() {
         final ODTFile containingFile = getContainingFile();
-        return containingFile.getExportingMemberUseScope();
+        return containingFile.getExportingMemberUseScope(getName());
     }
 
     public String getCallId() {

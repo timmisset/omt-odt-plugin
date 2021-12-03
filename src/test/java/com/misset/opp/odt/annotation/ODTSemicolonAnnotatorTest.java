@@ -29,6 +29,7 @@ class ODTSemicolonAnnotatorTest extends InspectionTestCase {
         String content = insideProcedureRunWithPrefixes("/ont:ClassA;");
         configureByText(content);
         assertNoError(SEMICOLON_REQUIRED);
+        assertNoError(SEMICOLON_ILLEGAL);
     }
 
     @Test
@@ -36,6 +37,7 @@ class ODTSemicolonAnnotatorTest extends InspectionTestCase {
         String content = insideStandaloneQueryWithPrefixes("query: /ont:ClassA");
         configureByText(content);
         assertNoError(SEMICOLON_REQUIRED);
+        assertNoError(SEMICOLON_ILLEGAL);
     }
 
     @Test
@@ -46,17 +48,48 @@ class ODTSemicolonAnnotatorTest extends InspectionTestCase {
     }
 
     @Test
-    void testHasNoErrorWhenNestedAssignment() {
+    void testHasErrorWhenVariableAssignment() {
         String content = insideProcedureRunWithPrefixes("VAR $test = 1");
         configureByText(content);
         assertHasError(SEMICOLON_REQUIRED);
     }
 
     @Test
-    void testHasNoErrorWhenNestedAssignmentWithSemicolon() {
+    void testHasNoErrorWhenVariableAssignmentWithSemicolon() {
         String content = insideProcedureRunWithPrefixes("VAR $test = 1;");
         configureByText(content);
         assertNoError(SEMICOLON_REQUIRED);
+        assertNoError(SEMICOLON_ILLEGAL);
+    }
+
+    @Test
+    void testHasNoErrorWhenNestedSignatureArgument() {
+        String content = insideProcedureRunWithPrefixes("@LOG(@COMMAND());");
+        configureByText(content);
+        assertNoError(SEMICOLON_REQUIRED);
+        assertNoError(SEMICOLON_ILLEGAL);
+    }
+
+    @Test
+    void testHasErrorWhenNestedSignatureArgumentHasSemicolon() {
+        String content = insideProcedureRunWithPrefixes("@LOG(@COMMAND(););");
+        configureByText(content);
+        assertNoError(SEMICOLON_ILLEGAL);
+    }
+
+    @Test
+    void testHasNoErrorOnReturnStatement() {
+        String content = insideProcedureRunWithPrefixes("RETURN @COMMAND(1);");
+        configureByText(content);
+        assertNoError(SEMICOLON_REQUIRED);
+        assertNoError(SEMICOLON_ILLEGAL);
+    }
+
+    @Test
+    void testHasErrorOnReturnStatementWithoutSemicolon() {
+        String content = insideProcedureRunWithPrefixes("RETURN @COMMAND(1)");
+        configureByText(content);
+        assertHasError(SEMICOLON_REQUIRED);
     }
 
     @Test
@@ -69,6 +102,7 @@ class ODTSemicolonAnnotatorTest extends InspectionTestCase {
     void testHasNoErrorWhenQueryStatementWithSemicolon() {
         configureByText(insideQueryWithPrefixesNoSemicolonEnding("1;"));
         assertNoError(SEMICOLON_REQUIRED);
+        assertNoError(SEMICOLON_ILLEGAL);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.misset.opp.omt.inspection;
+package com.misset.opp.omt.inspection.redundancy;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.InspectionTestCase;
@@ -22,7 +22,7 @@ class OMTDuplicateVariableInspectionTest extends InspectionTestCase {
                         "-  name: $test\n"
         );
         configureByText(content);
-        assertHasError("Duplication");
+        assertHasWarning("Duplication");
     }
 
     @Test
@@ -34,7 +34,7 @@ class OMTDuplicateVariableInspectionTest extends InspectionTestCase {
                         "-  name: $test\n"
         );
         configureByText(content);
-        assertHasError("Duplication");
+        assertHasWarning("Duplication");
     }
 
     @Test
@@ -46,7 +46,7 @@ class OMTDuplicateVariableInspectionTest extends InspectionTestCase {
                         "   test: $test\n"
         );
         configureByText(content);
-        assertHasError("Duplication");
+        assertHasWarning("Duplication");
     }
 
     @Test
@@ -58,7 +58,7 @@ class OMTDuplicateVariableInspectionTest extends InspectionTestCase {
                         "   test: $test\n"
         );
         configureByText(content);
-        assertHasError("Duplication");
+        assertHasWarning("Duplication");
     }
 
     @Test
@@ -68,7 +68,7 @@ class OMTDuplicateVariableInspectionTest extends InspectionTestCase {
                         "-  $test\n" +
                         "base: $test\n");
         configureByText(content);
-        assertHasError("Duplication");
+        assertHasWarning("Duplication");
     }
 
 }

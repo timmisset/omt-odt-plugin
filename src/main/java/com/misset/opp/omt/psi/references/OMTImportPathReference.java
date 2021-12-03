@@ -27,7 +27,6 @@ public class OMTImportPathReference extends PsiReferenceBase.Poly<YAMLKeyValue> 
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        System.out.println("Trying to resolve: " + myElement.getKeyText());
         final OMTFile omtFile = OMTImportMetaType.resolveToOMTFile(myElement);
         if (omtFile != null) {
             return PsiElementResolveResult.createResults(omtFile);
@@ -63,7 +62,7 @@ public class OMTImportPathReference extends PsiReferenceBase.Poly<YAMLKeyValue> 
         if (fromFile == null || toFile == null) {
             return null;
         }
-        if(fromFile.getVirtualFile().getFileSystem() instanceof TempFileSystem) {
+        if (fromFile.getVirtualFile().getFileSystem() instanceof TempFileSystem) {
             return "./unit-test-success/myFile.omt";
         }
 
@@ -72,5 +71,10 @@ public class OMTImportPathReference extends PsiReferenceBase.Poly<YAMLKeyValue> 
                 .toString()
                 .replace("\\", "/");
         return (!pathToFile.startsWith(".") ? "./" : "") + pathToFile;
+    }
+
+    @Override
+    public boolean isReferenceTo(@NotNull PsiElement element) {
+        return super.isReferenceTo(element);
     }
 }

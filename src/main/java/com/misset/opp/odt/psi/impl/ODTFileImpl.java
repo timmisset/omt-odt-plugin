@@ -5,8 +5,10 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -21,6 +23,7 @@ import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.ODTLanguage;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix;
+import com.misset.opp.omt.indexing.ImportedMembersIndex;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
@@ -34,10 +37,12 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.jetbrains.yaml.psi.YAMLValue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -86,19 +91,23 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         });
     }
 
-    /**
-     * Returns
-     */
-    public SearchScope getExportingMemberUseScope() {
-        return CachedValuesManager.getCachedValue(this, EXPORTING_MEMBER_SCOPE, () ->
-        {
-            final OMTFile hostFile = getHostFile();
-            if (hostFile == null) {
-                return getCachedValue(GlobalSearchScope.fileScope(this));
-            } else {
-                return getCachedValue(hostFile.getMemberUsageScope(isExportable()));
-            }
-        });
+    public PsiFile getHostOrContaining() {
+        return Optional.ofNullable(getHostFile())
+                .map(PsiFile.class::cast)
+                .orElse(getContainingFile());
+    }
+
+    public SearchScope getExportingMemberUseScope(String name) {
+        final ArrayList<PsiFile> psiFiles = new ArrayList<>();
+        psiFiles.add(getHostOrContaining());
+        if (isExportable()) {
+            psiFiles.addAll(ImportedMembersIndex.getImportingFiles(name));
+        }
+        final List<VirtualFile> targetFiles = psiFiles.stream()
+                .map(PsiFile::getVirtualFile)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        return GlobalSearchScope.filesScope(getProject(), targetFiles);
     }
 
     @Override

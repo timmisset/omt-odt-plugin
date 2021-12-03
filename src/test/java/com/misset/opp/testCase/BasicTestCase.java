@@ -56,36 +56,47 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
         return configureByText(getFileName(), content, false);
     }
 
-    protected T configureByText(String fileName, String content) {
+    protected T configureByText(String fileName,
+                                String content) {
         return configureByText(fileName, content, false);
     }
 
-    protected T configureByText(String content, boolean acceptErrorElements) {
+    protected T configureByText(String content,
+                                boolean acceptErrorElements) {
         return configureByText(getFileName(), content, acceptErrorElements);
     }
 
     protected abstract T castToFile(PsiFile file);
 
+    protected void buildIndexes(T file) {
+    }
+
     protected OMTFile getContainingOMTFile(ODTFileImpl file) {
         final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(file.getProject());
         return (OMTFile) ReadAction.compute(() -> instance.getInjectionHost(file).getContainingFile());
     }
+
     protected T configureByText(String fileName,
-                                                    String content,
-                                                    boolean acceptErrorElements) {
+                                String content,
+                                boolean acceptErrorElements) {
         if (myFixture == null) {
             fail("Fixture is not defined, call super.setUp()");
         }
         final PsiFile psiFile = myFixture.configureByText(fileName, content);
         if (!acceptErrorElements && PsiTreeUtil.hasErrorElements(psiFile)) {
-            String errorMessage = ReadAction.compute(() -> PsiTreeUtil.findChildrenOfType(psiFile, PsiErrorElement.class)
+            String errorMessage = ReadAction.compute(() -> PsiTreeUtil.findChildrenOfType(psiFile,
+                            PsiErrorElement.class)
                     .stream()
-                    .map(psiErrorElement -> String.format("description: %s, error element: %s", psiErrorElement.getErrorDescription(), psiErrorElement.getText()))
+                    .map(psiErrorElement -> String.format("description: %s, error element: %s",
+                            psiErrorElement.getErrorDescription(),
+                            psiErrorElement.getText()))
                     .collect(Collectors.joining("\n")));
             fail(String.format("Configured PsiFile has an error element: %n%s%n%n%s", errorMessage, ReadAction.compute(
                     psiFile::getText)));
         }
-        return castToFile(psiFile);
+        final T file = castToFile(psiFile);
+        buildIndexes(file);
+        return file;
     }
 
 

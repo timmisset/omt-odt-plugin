@@ -1,4 +1,4 @@
-package com.misset.opp.omt;
+package com.misset.opp.omt.startup;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

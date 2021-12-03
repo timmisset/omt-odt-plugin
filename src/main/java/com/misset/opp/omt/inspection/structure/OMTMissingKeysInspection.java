@@ -1,4 +1,4 @@
-package com.misset.opp.omt.inspection;
+package com.misset.opp.omt.inspection.structure;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;

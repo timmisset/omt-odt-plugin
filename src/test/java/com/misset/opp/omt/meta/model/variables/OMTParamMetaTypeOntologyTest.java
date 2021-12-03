@@ -44,7 +44,6 @@ class OMTParamMetaTypeOntologyTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final ODTDefineName defineName = (ODTDefineName)myFixture.getElementAtCaret();
             final Set<OntResource> resolve = defineName.resolve();
-            // no type is provided, should be an empty collection
             Assertions.assertFalse(resolve.isEmpty());
             Assertions.assertEquals(OppModel.INSTANCE.XSD_STRING_INSTANCE, resolve.toArray()[0]);
         });
@@ -64,7 +63,6 @@ class OMTParamMetaTypeOntologyTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final ODTDefineName defineName = (ODTDefineName)myFixture.getElementAtCaret();
             final Set<OntResource> resolve = defineName.resolve();
-            // no type is provided, should be an empty collection
             Assertions.assertFalse(resolve.isEmpty());
             Assertions.assertEquals(OppModel.INSTANCE.XSD_STRING_INSTANCE, resolve.toArray()[0]);
         });
@@ -83,7 +81,6 @@ class OMTParamMetaTypeOntologyTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final ODTDefineName defineName = (ODTDefineName)myFixture.getElementAtCaret();
             final Set<OntResource> resolve = defineName.resolve();
-            // no type is provided, should be an empty collection
             Assertions.assertFalse(resolve.isEmpty());
             Assertions.assertEquals(createClass("ClassA"), ((OntResource)resolve.toArray()[0]).asIndividual().getOntClass());
         });

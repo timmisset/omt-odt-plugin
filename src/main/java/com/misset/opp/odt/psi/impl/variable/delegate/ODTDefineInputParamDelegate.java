@@ -13,7 +13,6 @@ import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.prefix.PrefixUtil;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
-import org.h2.util.StringUtils;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.util.Arrays;
@@ -76,7 +75,7 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
             } else {
                 // no curie reference, probably a primitive type:
                 // (string)
-                final String value = StringUtils.unEnclose(dataElement.getText());
+                final String value = dataElement.getText().replaceAll("[()]", "");
                 return Optional.ofNullable(OppModel.INSTANCE.parsePrimitive(value))
                         .map(OntResource.class::cast)
                         .map(Set::of)

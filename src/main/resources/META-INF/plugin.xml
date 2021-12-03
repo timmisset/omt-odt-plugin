@@ -21,7 +21,7 @@
         <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
                                 order="first" language="yaml"/>
         <!-- Annotations -->
-        <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
+        <!--        <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>-->
 
 
         <!-- OMT -->
@@ -32,28 +32,49 @@
                                implementationClass="com.misset.opp.omt.YAMLOMTParserDefinition"/>
         <lang.findUsagesProvider language="yaml" order="before yamlFindUsagesProvider"
                                  implementationClass="com.misset.opp.omt.OMTFindUsageProvider"/>
-        <postStartupActivity implementation="com.misset.opp.omt.IndexPrefixesStartupActivity"/>
-        <postStartupActivity implementation="com.misset.opp.omt.LoadReasonsStartupActivity"/>
+        <psi.referenceContributor language="yaml" implementation="com.misset.opp.omt.OMTYamlReferenceContributor"/>
+        <postStartupActivity implementation="com.misset.opp.omt.startup.IndexPrefixesStartupActivity"/>
+        <postStartupActivity implementation="com.misset.opp.omt.startup.LoadReasonsStartupActivity"/>
+        <postStartupActivity implementation="com.misset.opp.omt.startup.ImportedMembersStartupActivity"/>
 
         <!-- Inspections -->
-        <localInspection displayName="UnknownKeyInspection" groupName="OMT" language="OMT"
-                         enabledByDefault="true" level="ERROR"
-                         implementationClass="com.misset.opp.omt.inspection.OMTUnkownKeysInspection"/>
-        <localInspection displayName="OMTUnusedInspection" groupName="OMT" language="OMT"
-                         enabledByDefault="true" level="WARNING"
-                         implementationClass="com.misset.opp.omt.inspection.OMTUnusedInspection"/>
-        <localInspection displayName="OMTUnnecessaryWrappingInspection" groupName="OMT" language="OMT"
-                         enabledByDefault="true" level="WARNING"
+        <!-- Unused-->
+        <localInspection displayName="OMTUnusedModelItemInspection" groupPath="OMT" language="OMT"
+                         enabledByDefault="true" level="WARNING" groupName="Unused"
+                         implementationClass="com.misset.opp.omt.inspection.unused.OMTUnusedModelItemInspection"/>
+        <localInspection displayName="OMTUnusedVariableInspection" groupPath="OMT" language="OMT"
+                         enabledByDefault="true" level="WARNING" groupName="Unused"
+                         implementationClass="com.misset.opp.omt.inspection.unused.OMTUnusedVariableInspection"/>
+        <localInspection displayName="OMTUnusedPrefixIriInspection" groupPath="OMT" language="OMT"
+                         enabledByDefault="true" level="WARNING" groupName="Unused"
+                         implementationClass="com.misset.opp.omt.inspection.unused.OMTUnusedPrefixIriInspection"/>
+        <localInspection displayName="OMTUnusedImportMemberInspection" groupPath="OMT" language="OMT"
+                         enabledByDefault="true" level="WARNING" groupName="Unused"
+                         implementationClass="com.misset.opp.omt.inspection.unused.OMTUnusedImportMemberInspection"/>
+
+        <!-- Structure -->
+        <localInspection displayName="UnknownKeysInspection" groupPath="OMT" language="OMT"
+                         enabledByDefault="true" level="ERROR" groupName="Structure"
+                         implementationClass="com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection"/>
+        <localInspection displayName="MissingKeysInspection" groupPath="OMT" language="OMT"
+                         enabledByDefault="true" level="ERROR" groupName="Structure"
+                         implementationClass="com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection"/>
+        <localInspection displayName="ValueInspection" groupPath="OMT" language="OMT"
+                         enabledByDefault="true" level="ERROR" groupName="Structure"
+                         implementationClass="com.misset.opp.omt.inspection.structure.OMTValueInspection"/>
+
+        <!-- Style -->
+        <localInspection displayName="OMTUnnecessaryWrappingInspection" groupPath="OMT" language="OMT"
+                         enabledByDefault="true" level="WARNING" groupName="Style"
                          implementationClass="com.misset.opp.omt.inspection.OMTUnnecessaryWrappingInspection"/>
-        <localInspection displayName="DuplicateVariableInspection" groupName="OMT" language="OMT"
-                         enabledByDefault="true" level="ERROR"
-                         implementationClass="com.misset.opp.omt.inspection.OMTDuplicateVariableInspection"/>
-        <localInspection displayName="MissingKeyInspection" groupName="OMT" language="OMT"
-                         enabledByDefault="true" level="ERROR"
-                         implementationClass="com.misset.opp.omt.inspection.OMTMissingKeysInspection"/>
-        <localInspection displayName="ValueInspection" groupName="OMT" language="OMT"
-                         enabledByDefault="true" level="ERROR"
-                         implementationClass="com.misset.opp.omt.inspection.OMTValueInspection"/>
+
+        <!-- Redundancy -->
+        <localInspection displayName="DuplicateVariableInspection" groupName="Redundancy" language="OMT"
+                         enabledByDefault="true" level="WARNING" groupPath="OMT"
+                         implementationClass="com.misset.opp.omt.inspection.redundancy.OMTDuplicateVariableInspection"/>
+        <localInspection displayName="OMTDuplicateImportInspection" groupName="Redundancy" language="OMT"
+                         enabledByDefault="true" level="WARNING" groupPath="OMT"
+                         implementationClass="com.misset.opp.omt.inspection.redundancy.OMTDuplicateImportInspection"/>
 
 
         <!-- ODT -->
@@ -81,39 +102,39 @@
                                     implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
 
         <!-- Inspections -->
-        <localInspection displayName="Unused" groupName="Redundancy" language="ODT"
-                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.ODTUnusedInspection"/>
-        <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT"
-                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.ODTResolvableInspection"/>
-        <localInspection displayName="Unreachable code" groupName="Redundancy" language="ODT"
-                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionUnreachable"/>
-        <localInspection displayName="Unnecessary wrapping" groupName="Redundancy" language="ODT"
-                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.ODTStyleInspectionUnnecessaryWrappingSubquery"/>
-        <!-- Types -->
-        <localInspection displayName="Boolean value" groupName="Type validation" language="ODT"
-                         enabledByDefault="true" level="ERROR" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.type.ODTCodeInspectionBoolean"/>
-        <localInspection displayName="Collections and Assignments" groupName="Type validation" language="ODT"
-                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.type.ODTCodeInspectionCollectionStatement"/>
-
         <!-- Redudancy -->
         <localInspection displayName="Duplicated DEFINE statements" groupName="Redundancy" language="ODT"
-                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
                          implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication"/>
 
         <localInspection displayName="Unnecessary Identifier operator" groupName="Redundancy" language="ODT"
-                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryIdentifierOperator"/>
+        <localInspection displayName="Unused" groupName="Redundancy" language="ODT" groupPath="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.ODTUnusedInspection"/>
+        <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT" groupPath="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.ODTResolvableInspection"/>
+        <localInspection displayName="Unreachable code" groupName="Redundancy" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionUnreachable"/>
+        <localInspection displayName="Unnecessary wrapping" groupName="Redundancy" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
+                         implementationClass="com.misset.opp.odt.inspection.ODTStyleInspectionUnnecessaryWrappingSubquery"/>
+        <!-- Types -->
+        <localInspection displayName="Boolean value" groupName="Types" language="ODT"
+                         enabledByDefault="true" level="ERROR" hasStaticDescription="true" groupPath="ODT"
+                         implementationClass="com.misset.opp.odt.inspection.type.ODTCodeInspectionBoolean"/>
+        <localInspection displayName="Collections and Assignments" groupName="Types" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
+                         implementationClass="com.misset.opp.odt.inspection.type.ODTCodeInspectionCollectionStatement"/>
+
 
         <!-- Calls -->
         <localInspection shortName="Calls" hasStaticDescription="true"
                          language="ODT" displayName="Inspect all ODT based calls" groupPath="ODT"
-                         groupName="Builtin" enabledByDefault="true"
+                         groupName="RDF" enabledByDefault="true"
                          implementationClass="com.misset.opp.odt.inspection.calls.ODTCallInspection"/>
 
         <!-- Calls / Builtin command inspections -->

@@ -15,7 +15,7 @@ import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
-import com.misset.opp.omt.psi.impl.delegate.OMTVariableDelegate;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlVariableDelegate;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLValue;
@@ -109,9 +109,20 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
             return assignmentVariables;
         }
 
+        // no self-referencing
+        // for example:
+        // VAR $total = $total / PLUS(1);
+        // the value $total should not be resolved by resolving the assignment
+        scriptLine = PsiTreeUtil.getPrevSiblingOfType(scriptLine, ODTScriptLine.class);
+
         while (scriptLine != null) {
-            assignmentVariables.addAll(PsiTreeUtil.findChildrenOfType(scriptLine, ODTVariableAssignment.class)
+            assignmentVariables.addAll(PsiTreeUtil.findChildrenOfType(scriptLine, ODTVariable.class)
                     .stream()
+                    .filter(variable ->
+                            variable != element &&
+                                    variable.getParent() instanceof ODTVariableAssignment &&
+                                    variable.getName() != null && variable.getName().equals(element.getName()))
+                    .map(variable -> (ODTVariableAssignment) variable.getParent())
                     .map(assignment -> getVariableFromAssignment(assignment, target))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList()));
@@ -144,7 +155,7 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
 
     private boolean hasSameTarget(ODTVariable variable,
                                   PsiElement target) {
-        return Optional.ofNullable(variable.getReference())
+        return variable == target || Optional.ofNullable(variable.getReference())
                 .map(PsiReference::resolve)
                 .map(this::getWrapper)
                 .map(target::equals)
@@ -161,8 +172,10 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
     private PsiVariable getWrapper(PsiElement element) {
         if (element instanceof PsiVariable) {
             return (PsiVariable) element;
+        } else if (element instanceof YAMLValue) {
+            return new OMTYamlVariableDelegate((YAMLValue) element);
         }
-        return element.getUserData(OMTVariableDelegate.WRAPPER);
+        return null;
     }
 
     private Optional<Set<OntResource>> getTypeFromOMTLocalVariable() {
@@ -190,6 +203,7 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
                 .map(call -> new Pair<>(call, call.getCallable()))
                 .filter(pair -> pair.second instanceof LocalVariableTypeProvider)
                 .map(pair -> ((LocalVariableTypeProvider) pair.second).getType(element.getName(), pair.first))
+                .filter(ontResources -> !ontResources.isEmpty())
                 .findFirst();
     }
 }

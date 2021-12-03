@@ -1,4 +1,4 @@
-package com.misset.opp.omt;
+package com.misset.opp.omt.startup;
 
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -23,8 +23,4 @@ public class IndexPrefixesStartupActivity implements StartupActivity {
             );
         });
     }
-
-
-
-
 }

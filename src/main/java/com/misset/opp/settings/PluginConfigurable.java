@@ -3,7 +3,7 @@ package com.misset.opp.settings;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsContexts;
-import com.misset.opp.omt.LoadReasonsStartupActivity;
+import com.misset.opp.omt.startup.LoadReasonsStartupActivity;
 import com.misset.opp.ttl.LoadOntologyStartupActivity;
 import org.jetbrains.annotations.Nullable;
 

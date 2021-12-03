@@ -36,7 +36,7 @@ public interface ODTFile extends PsiFile {
      * Returns the exporting member use-scope for this ODT file
      * This is limited to the files that import the OMT host container of this file
      */
-    SearchScope getExportingMemberUseScope();
+    SearchScope getExportingMemberUseScope(String name);
 
     /**
      * Based on the position of this ODTFile as injected language in the OMT structure, the content of this ODT file

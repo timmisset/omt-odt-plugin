@@ -65,6 +65,47 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
     }
 
     @Test
+    void testGetTypeFromAssignment() {
+        String content = insideProcedureRunWithPrefixes("" +
+                "VAR $values = 'test';\n" +
+                "@FOREACH($values, $<caret>value);");
+        configureByText(content);
+        ReadAction.run(() -> {
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
+        });
+    }
+
+    @Test
+    void testGetTypeFromMultipleAssignments() {
+        String content = insideProcedureRunWithPrefixes("" +
+                "VAR $values = 'test';\n" +
+                "@FOREACH($values, $<caret>value);");
+        configureByText(content);
+        ReadAction.run(() -> {
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
+        });
+    }
+
+    @Test
+    void testGetTypeReassignment() {
+        // this test's actual purpose is to validate that there is no stackoverflow
+        // caused by the the value trying to resolve itself by the not yet resolved assignment
+        String content = insideProcedureRunWithPrefixes("" +
+                "VAR $total = 1;\n" +
+                "$total = $<caret>total / PLUS(1);");
+        configureByText(content);
+        ReadAction.run(() -> {
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
+            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_NUMBER_INSTANCE);
+        });
+    }
+
+    @Test
     void testGetTypeFromGlobalVariableMedewerkerGraph() {
         assertEquals(OppModel.INSTANCE.MEDEWERKER_GRAPH, resolveQueryStatementToSingleResult("$medewerkerGraph"));
     }

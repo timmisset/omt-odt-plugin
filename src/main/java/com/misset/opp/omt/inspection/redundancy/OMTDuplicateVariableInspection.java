@@ -1,8 +1,9 @@
-package com.misset.opp.omt.inspection;
+package com.misset.opp.omt.inspection.redundancy;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.misset.opp.omt.inspection.OMTMetaTypeInspectionBase;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;

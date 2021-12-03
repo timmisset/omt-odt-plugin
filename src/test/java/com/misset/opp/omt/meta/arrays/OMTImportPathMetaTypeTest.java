@@ -2,8 +2,8 @@ package com.misset.opp.omt.meta.arrays;
 
 import com.intellij.application.options.CodeStyle;
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.omt.inspection.OMTUnkownKeysInspection;
-import com.misset.opp.omt.inspection.OMTValueInspection;
+import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
+import com.misset.opp.omt.inspection.structure.OMTValueInspection;
 import com.misset.opp.testCase.InspectionTestCase;
 import org.jetbrains.yaml.formatter.YAMLCodeStyleSettings;
 import org.junit.jupiter.api.Assertions;

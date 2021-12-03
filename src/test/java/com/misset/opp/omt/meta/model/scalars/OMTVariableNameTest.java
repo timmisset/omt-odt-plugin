@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model.scalars;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.omt.inspection.OMTValueInspection;
+import com.misset.opp.omt.inspection.structure.OMTValueInspection;
 import com.misset.opp.testCase.InspectionTestCase;
 import org.junit.jupiter.api.Test;
 

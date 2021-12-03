@@ -26,23 +26,12 @@ import java.util.function.BiFunction;
  * The MetaTypes are Psi-less classes which require to be called with the actual PsiElement they
  * represent in order to provide the information
  */
-public class OMTVariableDelegate extends YAMLPlainTextImpl implements OMTVariable {
+public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements OMTVariable, OMTYamlDelegate {
     YAMLValue value;
 
-    private OMTVariableDelegate(@NotNull YAMLValue yamlValue) {
+    public OMTYamlVariableDelegate(@NotNull YAMLValue yamlValue) {
         super(yamlValue.getNode());
         this.value = yamlValue;
-    }
-
-    public static OMTVariableDelegate wrap(YAMLValue yamlValue) {
-        final OMTVariableDelegate wrapper = yamlValue.getUserData(WRAPPER);
-        if (wrapper != null) {
-            return wrapper;
-        }
-
-        final OMTVariableDelegate omtVariable = new OMTVariableDelegate(yamlValue);
-        yamlValue.putUserData(WRAPPER, omtVariable);
-        return omtVariable;
     }
 
     @Override
@@ -71,6 +60,10 @@ public class OMTVariableDelegate extends YAMLPlainTextImpl implements OMTVariabl
     @Override
     public Set<OntResource> getType() {
         return getFromMeta(OMTNamedVariableMetaType::getType, Collections.emptySet());
+    }
+
+    public TextRange getNameTextRange() {
+        return getFromMeta(OMTNamedVariableMetaType::getNameTextRange, TextRange.allOf(getName()));
     }
 
     @Override

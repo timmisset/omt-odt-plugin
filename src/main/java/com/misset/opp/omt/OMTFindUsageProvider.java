@@ -32,16 +32,13 @@ public class OMTFindUsageProvider extends YAMLFindUsagesProvider implements Find
 
     @Override
     public @Nullable @NonNls String getHelpId(@NotNull PsiElement psiElement) {
-        if (!psiElement.getClass().isAnnotationPresent(OMTOverride.class)) {
-            return super.getHelpId(psiElement);
-        }
         return null;
     }
 
     @Override
     public @Nls @NotNull String getType(@NotNull PsiElement element) {
         if (!element.getClass().isAnnotationPresent(OMTOverride.class)) {
-            return super.getHelpId(element);
+            return super.getType(element);
         }
 
         final YamlMetaType metaType = getMetaValueType(element);

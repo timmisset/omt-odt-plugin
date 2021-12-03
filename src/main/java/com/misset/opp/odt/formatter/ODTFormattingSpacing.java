@@ -21,8 +21,8 @@ public class ODTFormattingSpacing {
 
     private SpacingBuilder getDefaultSpacingBuilder(@NotNull CodeStyleSettings settings) {
         return new SpacingBuilder(settings, ODTLanguage.INSTANCE)
-                .around(ODTTypes.SCRIPT_LINE).blankLines(0)
-                .around(ODTTypes.SCRIPT_LINE_WITH_SEMICOLON).blankLines(0);
+                .between(ODTTypes.SCRIPT_LINE, ODTTypes.SCRIPT_LINE).blankLines(0)
+                .around(ODTTypes.SCRIPT_LINE).blankLines(0);
     }
 
     public Spacing computeSpacing(@NotNull Block parent, @Nullable Block child1, @NotNull Block child2) {

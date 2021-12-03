@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.omt.inspection.OMTUnkownKeysInspection;
+import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
 import com.misset.opp.testCase.InspectionTestCase;
 import org.junit.jupiter.api.Test;
 

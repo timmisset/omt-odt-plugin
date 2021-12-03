@@ -1,9 +1,9 @@
 package com.misset.opp.omt.meta.model.handlers;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.omt.inspection.OMTMissingKeysInspection;
-import com.misset.opp.omt.inspection.OMTUnkownKeysInspection;
-import com.misset.opp.omt.inspection.OMTValueInspection;
+import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
+import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
+import com.misset.opp.omt.inspection.structure.OMTValueInspection;
 import com.misset.opp.testCase.InspectionTestCase;
 import org.junit.jupiter.api.Test;
 

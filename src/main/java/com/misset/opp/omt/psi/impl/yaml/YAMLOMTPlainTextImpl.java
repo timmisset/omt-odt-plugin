@@ -15,7 +15,7 @@ import com.misset.opp.omt.meta.model.scalars.OMTOntologyPrefixMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTParamTypeType;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
-import com.misset.opp.omt.psi.impl.delegate.OMTVariableDelegate;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.references.OMTImportMemberReference;
 import com.misset.opp.omt.psi.references.OMTOntologyPrefixReference;
 import com.misset.opp.omt.psi.references.OMTParamTypeReference;
@@ -71,7 +71,7 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
         final YamlMetaType metaType = OMTMetaTypeProvider.getInstance(getProject()).getResolvedMetaType(this);
         if (metaType instanceof OMTNamedVariableMetaType) {
             final String finalName = !name.startsWith("$") ? "$" + name : name;
-            return OMTVariableDelegate.wrap(this).setName(finalName);
+            return OMTYamlDelegateFactory.createDelegate(this).setName(finalName);
         }
         return this;
     }
@@ -80,7 +80,7 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
     public String getName() {
         final YamlMetaType metaType = OMTMetaTypeProvider.getInstance(getProject()).getResolvedMetaType(this);
         if (metaType instanceof OMTNamedVariableMetaType) {
-            return OMTVariableDelegate.wrap(this).getName();
+            return OMTYamlDelegateFactory.createDelegate(this).getName();
         }
         return super.getName();
     }

@@ -1,11 +1,13 @@
 package com.misset.opp.testCase;
 
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.OMTFileType;
+import com.misset.opp.omt.indexing.ImportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
 
 public class OMTTestCase extends BasicTestCase<OMTFile> {
@@ -113,5 +115,10 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
             return getContainingOMTFile((ODTFileImpl) file);
         }
         return (OMTFile) file;
+    }
+
+    @Override
+    protected void buildIndexes(OMTFile file) {
+        ReadAction.run(() -> ImportedMembersIndex.analyse(file));
     }
 }

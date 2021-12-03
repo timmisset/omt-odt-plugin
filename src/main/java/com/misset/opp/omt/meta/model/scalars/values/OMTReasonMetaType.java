@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta.model.scalars.values;
 
-import com.misset.opp.omt.LoadReasonsStartupActivity;
+import com.misset.opp.omt.startup.LoadReasonsStartupActivity;
 
 import java.util.HashMap;
 import java.util.Set;
