@@ -7,6 +7,7 @@ import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
+import org.apache.commons.lang3.function.TriFunction;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,6 +92,8 @@ public abstract class Builtin implements Callable {
         return resolveFrom(resources, call);
     }
 
+    protected String getShorthandSyntax() { return null; }
+
     /**
      * Generic validation that should be called on every Builtin member, such as the number of arguments
      * Since this method is always required it should not be overridden, instead override the
@@ -101,43 +104,24 @@ public abstract class Builtin implements Callable {
     @Override
     public final void validate(PsiCall call,
                                ProblemsHolder holder) {
-        final int i = call.numberOfArguments();
-        if (!passesMinArguments(i) || !passesMaxArguments(i)) {
-            holder.registerProblem(call.getCallSignatureElement(),
-                    "Expects " + getExpectedArgumentsMessage() + " arguments. Call has " + i + " arguments",
+        Callable.super.validate(call, holder);
+        String flag = call.getFlag();
+        if(flag != null && !getFlags().contains(flag)) {
+            holder.registerProblem(call.getFlagElement(),
+                    "Illegal flag, options are: " + String.join(", ", getFlags()),
                     ProblemHighlightType.ERROR);
         }
+        String shorthandSyntax = getShorthandSyntax();
+        if(shorthandSyntax != null) {
+            holder.registerProblem(call, "Prefer syntax shorthand: " + shorthandSyntax, ProblemHighlightType.WEAK_WARNING);
+        }
+
         specificValidation(call, holder);
     }
 
     protected void specificValidation(PsiCall call,
                                       ProblemsHolder holder) {
 
-    }
-
-    protected boolean passesMinArguments(int numberOfArguments) {
-        return numberOfArguments >= minNumberOfArguments();
-    }
-
-    protected boolean passesMaxArguments(int numberOfArguments) {
-        return maxNumberOfArguments() >= numberOfArguments || maxNumberOfArguments() == -1;
-    }
-
-    private String getExpectedArgumentsMessage() {
-        if (minNumberOfArguments() == 0) {
-            if (maxNumberOfArguments() > -1) {
-                return "at most " + maxNumberOfArguments() + " arguments";
-            } else {
-                return "no arguments";
-            }
-        } else if (minNumberOfArguments() > 0) {
-            if (maxNumberOfArguments() == -1) {
-                return "at least " + minNumberOfArguments() + " arguments";
-            } else {
-                return "between " + minNumberOfArguments() + " and " + maxNumberOfArguments() + " arguments";
-            }
-        }
-        return null;
     }
 
     protected boolean validateNamedGraphArgument(int index,
@@ -167,6 +151,27 @@ public abstract class Builtin implements Callable {
                                               ProblemsHolder holder) {
         if (call.numberOfArguments() >= index) {
             return TTLValidationUtil.validateBoolean(call.resolveSignatureArgument(index),
+                    holder,
+                    call.getCallSignatureArgumentElement(index));
+        }
+        return true;
+    }
+
+    protected boolean validateNumberArgument(int index,
+                                              PsiCall call,
+                                              ProblemsHolder holder) {
+        if (call.numberOfArguments() >= index) {
+            return TTLValidationUtil.validateNumber(call.resolveSignatureArgument(index),
+                    holder,
+                    call.getCallSignatureArgumentElement(index));
+        }
+        return true;
+    }
+    protected boolean validateIntegerArgument(int index,
+                                              PsiCall call,
+                                              ProblemsHolder holder) {
+        if (call.numberOfArguments() >= index) {
+            return TTLValidationUtil.validateInteger(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -215,5 +220,30 @@ public abstract class Builtin implements Callable {
                     call.getCallSignatureArgumentElement(index));
         }
         return true;
+    }
+    protected void validateAllArguments(PsiCall call,
+                                        ProblemsHolder holder,
+                                        TriFunction<Integer, PsiCall, ProblemsHolder, Boolean> validation) {
+        if(call.numberOfArguments() > 0) {
+            for(int i = 0; i < call.numberOfArguments(); i++) {
+                validation.apply(i, call, holder);
+            }
+        }
+    }
+    protected void validateAllArgumentsCompatible(PsiCall call,
+                                                  ProblemsHolder holder) {
+        if(call.numberOfArguments() == 1) {
+            TTLValidationUtil.validateCompatibleTypes(
+                    call.getCallInputType(), call.resolveSignatureArgument(0),
+                    holder, call);
+        }
+        else if(call.numberOfArguments() >= 2) {
+            Set<OntResource> ontResources = call.resolveSignatureArgument(0);
+            for(int i = 1; i < call.numberOfArguments(); i++) {
+                TTLValidationUtil.validateCompatibleTypes(
+                        ontResources, call.resolveSignatureArgument(i),
+                        holder, call.getCallSignatureElement());
+            }
+        }
     }
 }

@@ -10,18 +10,15 @@ import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.ArgumentMatchers;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 public abstract class BuiltInTest extends OMTOntologyTestCase {
 
@@ -64,9 +61,12 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
 
         return call;
     }
+
     private Set<OntResource> getArgumentsAtIndex(Set<OntResource>[] resources, int index) {
         //
-        if(resources.length <= index) { return Collections.emptySet(); }
+        if (resources.length <= index) {
+            return Collections.emptySet();
+        }
         return resources[index];
     }
 
@@ -142,28 +142,58 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
         testArgument(builtin, index, expected, errorMessage, invalidArgument);
     }
 
+    protected void testValidInput(Builtin builtin,
+                                  OntResource input) {
+        PsiCall call = getCall();
+        doReturn(Set.of(input)).when(call).getCallInputType();
+        builtin.validate(call, holder);
+        verify(holder, never()).registerProblem(eq(call), anyString(), any(ProblemHighlightType.class));
+    }
+
+    protected void testInvalidInput(Builtin builtin,
+                                    OntResource input,
+                                    String errorMessage) {
+        PsiCall call = getCall();
+        doReturn(Set.of(input)).when(call).getCallInputType();
+        builtin.validate(call, holder);
+        verify(holder).registerProblem(eq(call), startsWith(errorMessage), any(ProblemHighlightType.class));
+    }
+
     protected void testArgument(Builtin builtin,
                                 int index,
                                 OntResource expected,
                                 String errorMessage,
                                 OntResource invalidArgument) {
-        final PsiElement callArgument = mockArguments[index];
+        testValidArgument(builtin, index, expected);
+        testInvalidArgument(builtin, index, invalidArgument, errorMessage);
+    }
 
-        List<Set<OntResource>> validArguments = new ArrayList<>();
+    protected void testValidArgument(Builtin builtin,
+                                     int index,
+                                     OntResource argumentType) {
+        final PsiElement callArgument = mockArguments[index];
+        testArgument(builtin, index, argumentType);
+        verify(holder, never()).registerProblem(eq(callArgument), anyString(), eq(ProblemHighlightType.ERROR));
+    }
+
+    protected void testInvalidArgument(Builtin builtin,
+                                       int index,
+                                       OntResource argumentType,
+                                       String errorMessage) {
+        final PsiElement callArgument = mockArguments[index];
+        testArgument(builtin, index, argumentType);
+        verify(holder).registerProblem(eq(callArgument), startsWith(errorMessage), eq(ProblemHighlightType.ERROR));
+    }
+    private void testArgument(Builtin builtin,
+                              int index,
+                              OntResource argumentType) {
+        reset(holder);
         List<Set<OntResource>> invalidArguments = new ArrayList<>();
-        while (validArguments.size() <= index) {
-            validArguments.add(Set.of(expected));
-            invalidArguments.add(Set.of(invalidArgument));
+        while (invalidArguments.size() <= index) {
+            invalidArguments.add(Set.of(argumentType));
         }
 
-        final PsiCall validCall = getCall(validArguments.toArray(Set[]::new));
-        final ProblemsHolder validHolder = mock(ProblemsHolder.class);
-        builtin.validate(validCall, validHolder);
-        verify(validHolder, never()).registerProblem(callArgument, errorMessage, ProblemHighlightType.ERROR);
-
-        final ProblemsHolder invalidHolder = mock(ProblemsHolder.class);
         final PsiCall invalidCall = getCall(invalidArguments.toArray(Set[]::new));
-        builtin.validate(invalidCall, invalidHolder);
-        verify(invalidHolder).registerProblem(callArgument, errorMessage, ProblemHighlightType.ERROR);
+        builtin.validate(invalidCall, holder);
     }
 }

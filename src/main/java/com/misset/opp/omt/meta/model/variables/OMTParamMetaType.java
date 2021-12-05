@@ -55,6 +55,10 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTNamedVa
 
     @Override
     public Set<OntResource> getType(YAMLValue value) {
+        if(value instanceof YAMLMapping) {
+            return getTypeFromDestructed((YAMLMapping) value);
+        }
+
         final Matcher matcher = SHORTHAND.matcher(value.getText());
         final boolean b = matcher.find();
         if (!b || matcher.group(3) == null) {

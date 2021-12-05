@@ -24,6 +24,10 @@ public class CastOperator extends BuiltInOperator {
      */
     public Set<OntResource> resolveFrom(Set<OntResource> resources,
                                         Call call) {
-        return OppModel.INSTANCE.toIndividuals(call.resolveSignatureArgument(0));
+        Set<OntResource> argument = call.resolveSignatureArgument(0);
+        if (argument.contains(OppModel.INSTANCE.IRI)) {
+            return Set.of(OppModel.INSTANCE.OWL_THING);
+        }
+        return OppModel.INSTANCE.toIndividuals(argument);
     }
 }

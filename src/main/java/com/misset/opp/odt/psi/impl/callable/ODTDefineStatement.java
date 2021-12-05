@@ -1,23 +1,28 @@
 package com.misset.opp.odt.psi.impl.callable;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Call;
+import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
+import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement implements PsiCallable, PsiJavaDocumentedElement {
     public ODTDefineStatement(@NotNull ASTNode node) {
@@ -43,12 +48,25 @@ public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement impleme
 
     @Override
     public int minNumberOfArguments() {
-        return 0;
+        return Optional.ofNullable(getDefineParam())
+                .map(ODTDefineParam::getVariableList)
+                .map(List::size)
+                .orElse(0);
     }
 
     @Override
     public int maxNumberOfArguments() {
-        return 0;
+        return minNumberOfArguments();
+    }
+
+    @Override
+    public Set<OntResource> getParamType(int index) {
+        return Optional.ofNullable(getDefineParam())
+                .map(ODTDefineParam::getVariableList)
+                .filter(odtVariables -> odtVariables.size() >= index + 1)
+                .map(odtVariables -> odtVariables.get(index))
+                .map(ODTVariableDelegate::getType)
+                .orElse(Collections.emptySet());
     }
 
     @Override

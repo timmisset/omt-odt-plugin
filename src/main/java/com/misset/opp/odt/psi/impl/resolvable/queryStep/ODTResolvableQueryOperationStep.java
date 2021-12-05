@@ -161,12 +161,12 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
                 // all either pass or fail.
                 return filter(getQueryStep().resolve());
             } else {
+
                 return CachedValuesManager.getCachedValue(this,
                         RESOLVED_VALUE,
                         () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()),
                                 PsiModificationTracker.MODIFICATION_COUNT,
-                                getContainingFile(),
-                                getContainingFile().getHostFile(),
+                                getContainingFile().getHostFile() == null ? getContainingFile() : getContainingFile().getHostFile(),
                                 OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
             }
         } else {

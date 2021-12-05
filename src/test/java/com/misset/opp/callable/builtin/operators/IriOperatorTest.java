@@ -8,7 +8,7 @@ class IriOperatorTest extends BuiltInTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(IriOperator.INSTANCE, oppModel.OWL_THING);
+        assertResolved(IriOperator.INSTANCE, oppModel.IRI);
     }
 
 

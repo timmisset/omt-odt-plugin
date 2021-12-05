@@ -5,3 +5,5 @@
 /.gradle/
 /src/test/resources/full-opp-model/
 /src/test/resources/tmp/
+/idea-flex.skeleton
+/jflex-1.7.0-2.jar

@@ -6,6 +6,7 @@ import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -29,15 +30,15 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
         } else if (elementType == ODTTypes.STRING) {
             result = oppModel.XSD_STRING_INSTANCE;
         } else if (elementType == ODTTypes.INTEGER) {
-            result = oppModel.XSD_NUMBER_INSTANCE;
+            result = oppModel.XSD_INTEGER_INSTANCE;
         } else if (elementType == ODTTypes.DECIMAL) {
-            result = oppModel.XSD_NUMBER_INSTANCE;
+            result = oppModel.XSD_DECIMAL_INSTANCE;
         } else if (elementType == ODTTypes.INTERPOLATED_STRING) {
             result = oppModel.XSD_STRING_INSTANCE;
         } else if (elementType == ODTTypes.NULL) {
             result = null; // returns an emptySet which is the ODT equivalent of null
         } else if (elementType == ODTTypes.PRIMITIVE) {
-            final Individual individual = oppModel.parsePrimitive(getText());
+            final Individual individual = TTLValueParserUtil.parsePrimitive(getText());
             result = individual != null ? individual.getOntClass() : null;
         } else {
             result = oppModel.OWL_THING;

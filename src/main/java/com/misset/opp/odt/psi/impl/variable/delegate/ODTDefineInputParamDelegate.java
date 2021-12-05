@@ -1,17 +1,20 @@
 package com.misset.opp.odt.psi.impl.variable.delegate;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.javadoc.PsiDocTag;
+import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.*;
+import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.prefix.PrefixUtil;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
@@ -43,8 +46,17 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
                         OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
     }
 
+    private PsiElement getScope() {
+        return Optional.ofNullable(PsiTreeUtil.getParentOfType(element, ODTScript.class))
+                .map(PsiElement::getParent)
+                .orElse(null);
+    }
+
     private Set<OntResource> calculateType() {
-        final PsiDocTag docTag = ReadAction.compute(() -> ReferencesSearch.search(element)
+        PsiElement scope = getScope();
+        if(scope == null) { return Collections.emptySet(); }
+        final PsiDocTag docTag = ReadAction.compute(() -> ReferencesSearch.search(element,
+                        new LocalSearchScope(scope))
                 .mapping(PsiReference::getElement)
                 .filtering(PsiDocTag.class::isInstance)
                 .mapping(PsiDocTag.class::cast)
@@ -76,7 +88,7 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
                 // no curie reference, probably a primitive type:
                 // (string)
                 final String value = dataElement.getText().replaceAll("[()]", "");
-                return Optional.ofNullable(OppModel.INSTANCE.parsePrimitive(value))
+                return Optional.ofNullable(TTLValueParserUtil.parsePrimitive(value))
                         .map(OntResource.class::cast)
                         .map(Set::of)
                         .orElse(Collections.emptySet());

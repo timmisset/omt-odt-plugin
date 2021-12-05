@@ -1,23 +1,27 @@
 package com.misset.opp.omt.psi.impl;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
+import com.misset.opp.callable.psi.PsiCall;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.OMTProcedureMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
+import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.OMTCallable;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
-import org.jetbrains.yaml.psi.YAMLKeyValue;
-import org.jetbrains.yaml.psi.YAMLMapping;
-import org.jetbrains.yaml.psi.YAMLSequence;
-import org.jetbrains.yaml.psi.YAMLValue;
+import org.jetbrains.yaml.meta.model.YamlMetaType;
+import org.jetbrains.yaml.psi.*;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -72,18 +76,45 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
 
     @Override
     public int minNumberOfArguments() {
+        return getInputParameters().size();
+    }
+
+    private List<YAMLSequenceItem> getInputParameters() {
         return Optional.ofNullable(mapping.getKeyValueByKey("params"))
                 .map(YAMLKeyValue::getValue)
                 .filter(YAMLSequence.class::isInstance)
                 .map(YAMLSequence.class::cast)
-                .map(sequence -> sequence.getItems().size())
-                .orElse(0);
+                .map(YAMLSequence::getItems)
+                .orElse(Collections.emptyList());
     }
 
     @Override
     public int maxNumberOfArguments() {
         // input parameters are never optional, min and max number are identical
         return minNumberOfArguments();
+    }
+
+    @Override
+    public Set<OntResource> getParamType(int index) {
+        List<YAMLSequenceItem> inputParameters = getInputParameters();
+        if (inputParameters.size() <= index) {
+            return Collections.emptySet();
+        }
+        return getTypeFromParameter(inputParameters.get(index));
+    }
+
+    private Set<OntResource> getTypeFromParameter(YAMLSequenceItem sequenceItem) {
+        YAMLValue value = sequenceItem.getValue();
+        if(value == null) { return Collections.emptySet(); }
+        YamlMetaTypeProvider.MetaTypeProxy metaTypeProxy = OMTMetaTypeProvider.getInstance(sequenceItem.getProject()).getMetaTypeProxy(sequenceItem);
+        if (metaTypeProxy != null) {
+            YamlMetaType metaType = metaTypeProxy.getMetaType();
+            if(metaType instanceof OMTParamMetaType) {
+                OMTParamMetaType paramMetaType = (OMTParamMetaType) metaType;
+                return paramMetaType.getType(value);
+            }
+        }
+        return Collections.emptySet();
     }
 
     @Override
@@ -140,4 +171,5 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
     public PsiElement getCallTarget() {
         return keyValue.getKey();
     }
+
 }

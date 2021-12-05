@@ -57,7 +57,7 @@ public class OMTVariableNameMetaType extends YamlScalarType implements OMTNamedV
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
                 .filter(OMTNamedVariableMetaType.class::isInstance)
                 .map(OMTNamedVariableMetaType.class::cast)
-                .map(namedVariableMetaType -> namedVariableMetaType.getTypeFromDestructed(yamlMapping))
+                .map(namedVariableMetaType -> namedVariableMetaType.getType(yamlMapping))
                 .orElse(Collections.emptySet());
     }
 }

@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTInjectable;
 import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,7 +68,7 @@ public class OMTParamTypeType extends YamlScalarType implements OMTInjectable {
                     .collect(Collectors.toSet());
         } else {
             // not a curie, try to resolve as simple type:
-            return Optional.ofNullable(OppModel.INSTANCE.parsePrimitive(type))
+            return Optional.ofNullable(TTLValueParserUtil.parsePrimitive(type))
                     .map(OntResource.class::cast)
                     .map(Set::of)
                     .orElse(Collections.emptySet());

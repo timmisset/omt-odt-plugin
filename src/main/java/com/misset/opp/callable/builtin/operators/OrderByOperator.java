@@ -1,5 +1,8 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.callable.psi.PsiCall;
+
 public class OrderByOperator extends BuiltInCollectionOperator {
     private OrderByOperator() { }
     public static final OrderByOperator INSTANCE = new OrderByOperator();
@@ -17,5 +20,10 @@ public class OrderByOperator extends BuiltInCollectionOperator {
     @Override
     public int minNumberOfArguments() {
         return 0;
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        validateBooleanArgument(1, call, holder);
     }
 }

@@ -1,5 +1,9 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.callable.psi.PsiCall;
+import com.misset.opp.ttl.util.TTLValidationUtil;
+
 public class ConcatOperator extends BuiltInStringOperator {
     private ConcatOperator() { }
     public static final ConcatOperator INSTANCE = new ConcatOperator();
@@ -13,5 +17,4 @@ public class ConcatOperator extends BuiltInStringOperator {
     public int maxNumberOfArguments() {
         return -1;
     }
-
 }

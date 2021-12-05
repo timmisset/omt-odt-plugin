@@ -1,5 +1,7 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.callable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
@@ -26,5 +28,10 @@ public class LastOperator extends BuiltInOperator {
     @Override
     protected Set<OntResource> resolveFrom(Set<OntResource> resources) {
         return resources;
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        validateBooleanArgument(0, call, holder);
     }
 }

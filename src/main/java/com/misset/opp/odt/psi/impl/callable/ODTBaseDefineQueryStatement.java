@@ -52,10 +52,6 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
 
     @Override
     public void annotate(AnnotationHolder holder) {
-        // inspect SEMICOLON endings
-        // these are optional in the lexer to be more lenient when writing the query statement
-        if (getLastChild().getNode().getElementType() != ODTTypes.SEMICOLON) {
-            holder.newAnnotation(HighlightSeverity.ERROR, "Missing semicolon").create();
-        }
+
     }
 }

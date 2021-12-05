@@ -21,7 +21,7 @@
         <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
                                 order="first" language="yaml"/>
         <!-- Annotations -->
-        <!--        <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>-->
+        <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
 
 
         <!-- OMT -->
@@ -97,9 +97,7 @@
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.CodeAnnotatorUnresolvable"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTSemicolonAnnotator"/>
-
-        <lang.documentationProvider language="ODT"
-                                    implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
+        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTDocumentationAnnotator"/>
 
         <!-- Inspections -->
         <!-- Redudancy -->
@@ -167,6 +165,7 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
+
 
 
     </extensions>

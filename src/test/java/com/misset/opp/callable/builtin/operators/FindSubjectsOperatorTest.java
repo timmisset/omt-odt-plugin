@@ -1,6 +1,7 @@
 package com.misset.opp.callable.builtin.operators;
 
 import com.misset.opp.callable.builtin.BuiltInTest;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntProperty;
@@ -43,5 +44,11 @@ class FindSubjectsOperatorTest extends BuiltInTest {
 
         // return a class that has the property and object (xsd_integer_instance)
         assertResolved(FindSubjectsOperator.INSTANCE, individuals, Set.of(individualWithClass), Set.of(property), Set.of(oppModel.XSD_INTEGER_INSTANCE));
+    }
+
+    @Test
+    void testValidArguments() {
+        testValidArgument(EveryOperator.INSTANCE, 0, oppModel.NAMED_GRAPH);
+        testInvalidArgument(EveryOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 }

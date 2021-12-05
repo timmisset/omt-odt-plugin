@@ -86,7 +86,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                     .map(OMTFile.class::cast)
                     .orElse(null);
             return new CachedValueProvider.Result<>(omtFile,
-                    omtFile,
+                    omtFile == null ? this : omtFile,
                     PsiModificationTracker.MODIFICATION_COUNT);
         });
     }

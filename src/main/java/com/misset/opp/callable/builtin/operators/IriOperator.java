@@ -19,8 +19,6 @@ public class IriOperator extends BuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        // The IRI operator is only ever used in the CAST operator
-        // it should cast to an OWL_THING
-        return OppModel.INSTANCE.OWL_THING;
+        return OppModel.INSTANCE.IRI;
     }
 }

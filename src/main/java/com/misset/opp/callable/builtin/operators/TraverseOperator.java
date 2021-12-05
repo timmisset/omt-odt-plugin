@@ -1,5 +1,7 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
@@ -25,5 +27,11 @@ public class TraverseOperator extends BuiltInOperator {
     @Override
     public OntResource resolveSingle() {
         return OppModel.INSTANCE.OWL_THING;
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        validateStringArgument(0, call, holder);
+        validateBooleanArgument(1, call, holder);
     }
 }

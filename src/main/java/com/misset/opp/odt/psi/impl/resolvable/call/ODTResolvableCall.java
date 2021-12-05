@@ -195,6 +195,11 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     }
 
     @Override
+    public PsiElement getFlagElement() {
+        return getFlagSignature();
+    }
+
+    @Override
     public int numberOfArguments() {
         return getSignatureArguments().size();
     }
@@ -252,5 +257,10 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
             return ((ODTResolvableQueryPath) query).resolveToSubjectPredicate();
         }
         return null;
+    }
+
+    @Override
+    public Set<OntResource> getCallInputType() {
+        return resolvePreviousStep();
     }
 }

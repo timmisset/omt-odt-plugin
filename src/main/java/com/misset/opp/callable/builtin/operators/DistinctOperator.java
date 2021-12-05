@@ -1,5 +1,7 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.callable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.List;
@@ -29,4 +31,8 @@ public class DistinctOperator extends BuiltInCollectionOperator {
         return IGNORE_CASE_FLAG;
     }
 
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        validateIgnoreCaseFlagUsage(1, call, holder);
+    }
 }

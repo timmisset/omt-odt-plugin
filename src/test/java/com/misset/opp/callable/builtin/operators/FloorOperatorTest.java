@@ -1,6 +1,7 @@
 package com.misset.opp.callable.builtin.operators;
 
 import com.misset.opp.callable.builtin.BuiltInTest;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Test;
 
 class FloorOperatorTest extends BuiltInTest {
@@ -11,4 +12,11 @@ class FloorOperatorTest extends BuiltInTest {
         assertResolved(FloorOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
         assertResolved(FloorOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
     }
+
+    @Test
+    void testValidInputs() {
+        testValidInput(EveryOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
+        testInvalidInput(EveryOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+    }
+
 }

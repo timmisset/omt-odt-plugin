@@ -1,6 +1,11 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.util.Pair;
 import com.misset.opp.callable.Call;
+import com.misset.opp.callable.psi.PsiCall;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
@@ -32,5 +37,13 @@ public class CatchOperator extends BuiltInOperator {
     public Set<OntResource> resolveError(Set<OntResource> resources,
                                          Call call) {
         return call.resolveSignatureArgument(0);
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        if(call.numberOfArguments() == 1) {
+            Pair<Set<OntResource>, Set<OntResource>> possibilities = Pair.create(call.getCallInputType(), call.resolveSignatureArgument(0));
+            validateCompatibleOutcomePossibilities(possibilities, call, holder);
+        }
     }
 }

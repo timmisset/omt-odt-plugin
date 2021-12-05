@@ -1,6 +1,9 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
 public class FloorOperator extends BuiltInOperator {
@@ -20,5 +23,10 @@ public class FloorOperator extends BuiltInOperator {
     @Override
     public OntResource resolveSingle() {
         return OppModel.INSTANCE.XSD_INTEGER_INSTANCE;
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        TTLValidationUtil.validateDecimal(call.getCallInputType(), holder, call);
     }
 }

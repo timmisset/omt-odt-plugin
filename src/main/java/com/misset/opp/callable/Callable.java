@@ -1,6 +1,9 @@
 package com.misset.opp.callable;
 
+import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.psi.PsiElement;
+import com.misset.opp.callable.builtin.Builtin;
 import com.misset.opp.callable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -39,9 +42,42 @@ public interface Callable extends Resolvable {
     default @NotNull Set<OntResource> resolve() { return Collections.emptySet(); }
 
     /**
-     * Validate the call, check the number of arguments, types etc
+     * Generic validation that should be called on every Callable member, such as the number of arguments
+     * If additional validations are required, make sure to also call this method
      */
     default void validate(PsiCall call,
-                          ProblemsHolder holder) {
+                               ProblemsHolder holder) {
+        final int i = call.numberOfArguments();
+        if (!passesMinArguments(i) || !passesMaxArguments(i)) {
+            PsiElement callSignatureElement = call.getCallSignatureElement();
+            holder.registerProblem(callSignatureElement != null ? callSignatureElement : call,
+                    "Expects " + getExpectedArgumentsMessage() + " arguments. Call has " + i + " arguments",
+                    ProblemHighlightType.ERROR);
+        }
+    }
+
+    private boolean passesMinArguments(int numberOfArguments) {
+        return numberOfArguments >= minNumberOfArguments();
+    }
+
+    private boolean passesMaxArguments(int numberOfArguments) {
+        return maxNumberOfArguments() >= numberOfArguments || maxNumberOfArguments() == -1;
+    }
+
+    private String getExpectedArgumentsMessage() {
+        if (minNumberOfArguments() == 0) {
+            if (maxNumberOfArguments() > -1) {
+                return "at most " + maxNumberOfArguments() + " arguments";
+            } else {
+                return "no arguments";
+            }
+        } else if (minNumberOfArguments() > 0) {
+            if (maxNumberOfArguments() == -1) {
+                return "at least " + minNumberOfArguments() + " arguments";
+            } else {
+                return "between " + minNumberOfArguments() + " and " + maxNumberOfArguments() + " arguments";
+            }
+        }
+        return null;
     }
 }

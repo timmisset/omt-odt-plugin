@@ -1,6 +1,9 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.Call;
+import com.misset.opp.callable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
@@ -13,6 +16,11 @@ public class MergeOperator extends BuiltInOperator {
     @Override
     public String getName() {
         return "MERGE";
+    }
+
+    @Override
+    protected String getShorthandSyntax() {
+        return "|";
     }
 
     @Override
@@ -36,5 +44,13 @@ public class MergeOperator extends BuiltInOperator {
             }
         }
         return output;
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        validateAllArgumentsCompatible(call, holder);
+        if(call.numberOfArguments() >= 2 && !call.getCallInputType().isEmpty()) {
+            holder.registerProblem(call, "Using 2 or more arguments will ignore the input value, consider using pipes instead (<query> | <query> | <query>)", ProblemHighlightType.WARNING);
+        }
     }
 }

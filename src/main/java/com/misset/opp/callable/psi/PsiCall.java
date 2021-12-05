@@ -7,6 +7,7 @@ import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -17,6 +18,8 @@ public interface PsiCall extends Call, PsiElement {
     PsiElement getCallSignatureElement();
 
     PsiElement getCallSignatureArgumentElement(int index);
+
+    PsiElement getFlagElement();
 
     /**
      * Returns the information leading up to the resolved value
@@ -34,6 +37,15 @@ public interface PsiCall extends Call, PsiElement {
      */
     default @Nullable Pair<Set<OntResource>, Property> getSignatureLeadingInformation(int signatureArgument) {
         return null;
+    }
+
+    /**
+     * Operators are applied within a path where it behaves as a pipe, taking in a value, operates on it and
+     * returns a value. The getCallInputType provides the input type for the operator. It's equal to the
+     * outcome of the previous step in the path being resolved
+     */
+    default Set<OntResource> getCallInputType() {
+        return Collections.emptySet();
     }
 
 }

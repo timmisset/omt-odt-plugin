@@ -13,3 +13,6 @@ The YAML API supports an experimental feature called a MetaType provider. This h
 and reduced the amount of code for this plugin significantly since it is facilitates Yaml/OMT path traversing and translation into
 OMT elements that can than be easily plugged into Inspections.
 The plugin now contains many marker annotations for Unstable that are inherited from the Yaml API
+
+### JDK Compatability
+Make sure to target JDK 11 when running the tests

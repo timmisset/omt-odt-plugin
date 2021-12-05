@@ -1,5 +1,8 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.callable.psi.PsiCall;
+
 public class CountOperator extends BuiltInIntegerOperator {
     private CountOperator() { }
     public static final CountOperator INSTANCE = new CountOperator();
@@ -19,4 +22,8 @@ public class CountOperator extends BuiltInIntegerOperator {
         return 1;
     }
 
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        validateBooleanArgument(0, call, holder);
+    }
 }

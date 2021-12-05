@@ -1,6 +1,8 @@
 package com.misset.opp.callable.builtin.operators;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.Call;
+import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
@@ -42,5 +44,10 @@ public class FindSubjectsOperator extends BuiltInOperator {
                     call.resolveSignatureArgument(1));
         }
         return Collections.emptySet();
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        validateNamedGraphArgument(2, call, holder);
     }
 }

@@ -60,7 +60,7 @@ public class OppModel {
     public Individual OWL_THING;
     public OntClass OPP_CLASS;
     public OntClass GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
-    public Individual JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH;
+    public Individual IRI, JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH;
     public OntClass XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
     public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
 
@@ -180,6 +180,7 @@ public class OppModel {
 
         OPP_CLASS = model.createClass(OPP + "Class");
         JSON_OBJECT = OPP_CLASS.createIndividual(OPP + "JSON_OBJECT");
+        IRI = OPP_CLASS.createIndividual(OPP + "IRI");
         ERROR = OPP_CLASS.createIndividual(OPP + "ERROR");
 
         GRAPH_CLASS = model.createClass(PLATFORM + "Graph");
@@ -215,17 +216,6 @@ public class OppModel {
         // to accept a date at a datetime position, but not the other way around
         XSD_DATE.addSuperClass(XSD_DATETIME);
         XSD_DATE_INSTANCE = model.createIndividual(XSD_DATE);
-    }
-
-    public Individual parsePrimitive(String description) {
-        if ("string".equals(description)) {
-            return XSD_STRING_INSTANCE;
-        } else if ("boolean".equals(description)) {
-            return XSD_BOOLEAN_INSTANCE;
-        } else if ("number".equals(description)) {
-            return XSD_NUMBER_INSTANCE;
-        }
-        return null; // unknown
     }
 
     private void loadSimpleModel() {

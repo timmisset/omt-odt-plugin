@@ -1,6 +1,7 @@
 package com.misset.opp.callable.builtin.operators;
 
 import com.misset.opp.callable.builtin.BuiltInTest;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Test;
 
 class DateFormatOperatorTest extends BuiltInTest {
@@ -9,5 +10,12 @@ class DateFormatOperatorTest extends BuiltInTest {
     @Test
     protected void testResolve() {
         assertResolved(DateFormatOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+    }
+
+    @Test
+    void testArgumentTypes() {
+        testValidInput(DateFormatOperator.INSTANCE, oppModel.XSD_DATE_INSTANCE);
+        testValidInput(DateFormatOperator.INSTANCE, oppModel.XSD_DATETIME_INSTANCE);
+        testArgument(DateFormatOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 }
