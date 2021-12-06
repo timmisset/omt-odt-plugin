@@ -13,6 +13,10 @@ class TypeOperatorTest extends BuiltInTest {
         assertResolved(TypeOperator.INSTANCE,
                 Set.of(oppModel.XSD_DATE_INSTANCE),
                 Set.of(oppModel.XSD_DATE));
+
+        assertResolved(TypeOperator.INSTANCE,
+                Set.of(oppModel.MEDEWERKER_GRAPH),
+                Set.of(oppModel.IRI));
     }
 
 }

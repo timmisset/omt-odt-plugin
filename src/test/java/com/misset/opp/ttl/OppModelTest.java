@@ -49,7 +49,7 @@ class OppModelTest extends OMTOntologyTestCase {
         assertStatementContains(statements, createProperty("booleanPredicate"), createXsdResource("boolean"));
         assertStatementNotContains(statements, oppModel.RDF_TYPE, oppModel.OWL_CLASS);
         assertStatementContains(statements, oppModel.RDF_TYPE, CLASS_A);
-        assertStatementContains(statements, oppModel.RDF_TYPE, oppModel.OWL_THING_INSTANCE);
+        assertStatementContains(statements, oppModel.RDF_TYPE, oppModel.OWL_THING_CLASS);
     }
 
     @Test

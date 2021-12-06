@@ -101,7 +101,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_NUMBER_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
         });
     }
 
