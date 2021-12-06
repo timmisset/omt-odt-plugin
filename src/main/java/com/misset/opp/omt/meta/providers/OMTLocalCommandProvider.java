@@ -12,4 +12,6 @@ public interface OMTLocalCommandProvider extends OMTMetaTypeStructureProvider {
     Key<CachedValue<LinkedHashMap<YAMLPsiElement, OMTLocalCommandProvider>>> KEY = new Key<>("OMTCallableProvider");
 
     HashMap<String, LocalCommand> getLocalCommandsMap();
+
+    String getDescription();
 }

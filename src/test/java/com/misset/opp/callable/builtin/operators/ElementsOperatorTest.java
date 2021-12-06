@@ -8,6 +8,6 @@ class ElementsOperatorTest extends BuiltInTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(ElementsOperator.INSTANCE, oppModel.OWL_THING);
+        assertResolved(ElementsOperator.INSTANCE, oppModel.OWL_THING_INSTANCE);
     }
 }

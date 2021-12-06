@@ -24,7 +24,7 @@ public interface PsiCallable extends Callable, PsiElement {
         for(int i = 0; i < call.numberOfArguments(); i++) {
             Set<OntResource> argumentType = call.resolveSignatureArgument(i);
             Set<OntResource> paramType = getParamType(i);
-            if(!argumentType.isEmpty() && !paramType.isEmpty()) {
+            if(paramType != null && !argumentType.isEmpty() && !paramType.isEmpty()) {
                 TTLValidationUtil.validateCompatibleTypes(paramType, argumentType, holder, call.getCallSignatureArgumentElement(i));
             }
         }

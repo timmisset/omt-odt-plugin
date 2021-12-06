@@ -15,7 +15,7 @@ class CastOperatorTest extends BuiltInTest {
         assertResolved(CastOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, oppModel.XSD_DATETIME_INSTANCE, Set.of(oppModel.XSD_DATETIME));
         assertResolved(CastOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, oppModel.XSD_DATE_INSTANCE, Set.of(oppModel.XSD_DATE));
         assertResolved(CastOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE, Set.of(oppModel.XSD_BOOLEAN));
-        assertResolved(CastOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, oppModel.OWL_THING, Set.of(IriOperator.INSTANCE.resolveSingle()));
+        assertResolved(CastOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, oppModel.OWL_THING_INSTANCE, Set.of(IriOperator.INSTANCE.resolveSingle()));
         assertResolved(CastOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, oppModel.JSON_OBJECT, Set.of(JsonOperator.INSTANCE.resolveSingle()));
     }
 

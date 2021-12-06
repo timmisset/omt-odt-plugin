@@ -103,4 +103,9 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
         map.put(Rollback.INSTANCE.getCallId(), Rollback.INSTANCE);
         return map;
     }
+
+    @Override
+    public String getDescription() {
+        return "Activity";
+    }
 }

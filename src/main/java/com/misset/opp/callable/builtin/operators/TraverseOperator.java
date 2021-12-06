@@ -26,7 +26,7 @@ public class TraverseOperator extends BuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModel.INSTANCE.OWL_THING;
+        return OppModel.INSTANCE.OWL_THING_INSTANCE;
     }
 
     @Override

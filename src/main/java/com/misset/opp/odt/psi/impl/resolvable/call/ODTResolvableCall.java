@@ -60,6 +60,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     private static final Key<CachedValue<Callable>> CALLABLE = new Key("CALLABLE");
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED = new Key("RESOLVED");
     private final HashMap<String, Set<OntResource>> parameters = new HashMap<>();
+    private String localCommandProvider = null;
 
     @Override
     public PsiReference getReference() {
@@ -105,6 +106,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
         }
     }
 
+
     private Optional<Callable> getLocalCommand() {
         final YAMLPsiElement injectionHost = ODTInjectionUtil.getInjectionHost(this);
         if (injectionHost == null) {
@@ -117,6 +119,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
             OMTLocalCommandProvider callableProvider = linkedHashMap.get(mapping);
             final HashMap<String, LocalCommand> callableMap = callableProvider.getLocalCommandsMap();
             if (callableMap.containsKey(getCallId())) {
+                localCommandProvider = callableProvider.getDescription();
                 return Optional.of(callableMap.get(getCallId()));
             }
         }
@@ -137,7 +140,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     @Override
     public String getDocumentation() {
         return Optional.ofNullable(getCallable())
-                .map(callable -> callable.getDescription(null))
+                .map(callable -> callable.getDescription(localCommandProvider))
                 .orElse(null);
     }
 

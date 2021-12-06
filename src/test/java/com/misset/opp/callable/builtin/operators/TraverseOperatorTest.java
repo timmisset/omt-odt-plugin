@@ -11,8 +11,8 @@ class TraverseOperatorTest extends BuiltInTest {
     @Test
     protected void testResolve() {
         assertResolved(TraverseOperator.INSTANCE,
-                Set.of(oppModel.OWL_THING),
-                Set.of(oppModel.OWL_THING));
+                Set.of(oppModel.OWL_THING_INSTANCE),
+                Set.of(oppModel.OWL_THING_INSTANCE));
     }
 
 }

@@ -41,7 +41,7 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
             final Individual individual = TTLValueParserUtil.parsePrimitive(getText());
             result = individual != null ? individual.getOntClass() : null;
         } else {
-            result = oppModel.OWL_THING;
+            result = oppModel.OWL_THING_INSTANCE;
         }
 
         // a constant value, like a string, boolean, number etc is considered

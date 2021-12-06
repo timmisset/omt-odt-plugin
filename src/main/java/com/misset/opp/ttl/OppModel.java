@@ -57,7 +57,7 @@ public class OppModel {
 
     protected OntClass OWL_CLASS;
     protected OntClass OWL_THING_CLASS;
-    public Individual OWL_THING;
+    public Individual OWL_THING_INSTANCE;
     public OntClass OPP_CLASS;
     public OntClass GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
     public Individual IRI, JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH;
@@ -176,7 +176,7 @@ public class OppModel {
 
         OWL_CLASS = model.createClass(OWL + "Class");
         OWL_THING_CLASS = model.createClass(OWL + "Thing");
-        OWL_THING = OWL_THING_CLASS.createIndividual(OWL + "Thing_INSTANCE");
+        OWL_THING_INSTANCE = OWL_THING_CLASS.createIndividual(OWL + "Thing_INSTANCE");
 
         OPP_CLASS = model.createClass(OPP + "Class");
         JSON_OBJECT = OPP_CLASS.createIndividual(OPP + "JSON_OBJECT");
@@ -232,7 +232,7 @@ public class OppModel {
         final List<Statement> superClasses = ontClass.listProperties(RDFS_SUBCLASS_OF).toList();
         if (superClasses.isEmpty()) {
             // base class in the model, subclass of Owl:Thing
-            simpleModelClass.addSuperClass(OWL_THING);
+            simpleModelClass.addSuperClass(OWL_THING_CLASS);
         } else {
             superClasses.forEach(statement -> simpleModelClass.addSuperClass(statement.getObject().asResource()));
         }
@@ -369,13 +369,13 @@ public class OppModel {
 
     public Set<OntResource> listSubjects(Property predicate,
                                          Set<OntResource> objects) {
-        if (objects.contains(OWL_THING)) {
+        if (objects.contains(OWL_THING_INSTANCE)) {
             /*
                  This is the equivalent of using an Object class.
                  Anything can be an Object so there is no way to resolve
                  to anything in particular
              */
-            return Set.of(OWL_THING);
+            return Set.of(OWL_THING_INSTANCE);
         }
         return objects.stream()
                 .map(classObject -> listSubjects(predicate, classObject))
@@ -460,13 +460,13 @@ public class OppModel {
 
     public Set<OntResource> listObjects(Set<OntResource> classSubjects,
                                         Property predicate) {
-        if (classSubjects.contains(OWL_THING)) {
+        if (classSubjects.contains(OWL_THING_INSTANCE)) {
             /*
                  This is the equivalent of using an Object class.
                  Anything can be an Object so there is no way to resolve
                  to anything in particular
              */
-            return Set.of(OWL_THING);
+            return Set.of(OWL_THING_INSTANCE);
         }
         return classSubjects.stream()
                 .map(subject -> listObjects(subject, predicate))

@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
+import com.misset.opp.callable.local.*;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
@@ -8,6 +9,7 @@ import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.model.scalars.values.OMTReasonMetaType;
+import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +23,10 @@ import java.util.function.Supplier;
 import static com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil.addPrefixesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
-public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTPrefixProvider {
+public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implements
+        OMTVariableProvider,
+        OMTPrefixProvider,
+        OMTLocalCommandProvider {
     protected OMTProcedureMetaType() {
         super("OMT Component");
     }
@@ -61,5 +66,18 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
         HashMap<String, List<PsiElement>> map = new HashMap<>();
         addPrefixesToMap(yamlMapping, "prefixes", map);
         return map;
+    }
+
+    @Override
+    public HashMap<String, LocalCommand> getLocalCommandsMap() {
+        final HashMap<String, LocalCommand> map = new HashMap<>();
+        map.put(Commit.INSTANCE.getCallId(), Commit.INSTANCE);
+        map.put(Rollback.INSTANCE.getCallId(), Rollback.INSTANCE);
+        return map;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Procedure";
     }
 }
