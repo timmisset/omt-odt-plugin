@@ -47,7 +47,7 @@ public class YAMLOMTKeyValueImpl extends YAMLKeyValueImpl {
     }
 
     @Override
-    public PsiReference[] getReferences() {
+    public PsiReference @NotNull [] getReferences() {
         return Optional.ofNullable(getReference())
                 .stream()
                 .toArray(PsiReference[]::new);

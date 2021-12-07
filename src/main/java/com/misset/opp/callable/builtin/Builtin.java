@@ -2,12 +2,12 @@ package com.misset.opp.callable.builtin;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.util.TriConsumer;
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
-import org.apache.commons.lang3.function.TriFunction;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -124,26 +124,24 @@ public abstract class Builtin implements Callable {
 
     }
 
-    protected boolean validateNamedGraphArgument(int index,
-                                                 PsiCall call,
-                                                 ProblemsHolder holder) {
+    protected void validateNamedGraphArgument(int index,
+                                              PsiCall call,
+                                              ProblemsHolder holder) {
         if (call.numberOfArguments() >= index) {
-            return TTLValidationUtil.validateNamedGraph(call.resolveSignatureArgument(index),
+            TTLValidationUtil.validateNamedGraph(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
-        return true;
     }
 
-    protected boolean validateInstancesArgument(int index,
-                                                PsiCall call,
-                                                ProblemsHolder holder) {
+    protected void validateInstancesArgument(int index,
+                                             PsiCall call,
+                                             ProblemsHolder holder) {
         if (call.numberOfArguments() >= index) {
-            return TTLValidationUtil.validateInstances(call.resolveSignatureArgument(index),
+            TTLValidationUtil.validateInstances(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
-        return true;
     }
 
     protected boolean validateBooleanArgument(int index,
@@ -157,82 +155,79 @@ public abstract class Builtin implements Callable {
         return true;
     }
 
-    protected boolean validateNumberArgument(int index,
-                                              PsiCall call,
-                                              ProblemsHolder holder) {
+    protected void validateNumberArgument(int index,
+                                          PsiCall call,
+                                          ProblemsHolder holder) {
         if (call.numberOfArguments() >= index) {
-            return TTLValidationUtil.validateNumber(call.resolveSignatureArgument(index),
+            TTLValidationUtil.validateNumber(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
-        return true;
-    }
-    protected boolean validateIntegerArgument(int index,
-                                              PsiCall call,
-                                              ProblemsHolder holder) {
-        if (call.numberOfArguments() >= index) {
-            return TTLValidationUtil.validateInteger(call.resolveSignatureArgument(index),
-                    holder,
-                    call.getCallSignatureArgumentElement(index));
-        }
-        return true;
     }
 
-    protected boolean validateJSONArgument(int index,
+    protected void validateIntegerArgument(int index,
                                            PsiCall call,
                                            ProblemsHolder holder) {
         if (call.numberOfArguments() >= index) {
-            return TTLValidationUtil.validateJSON(call.resolveSignatureArgument(index),
+            TTLValidationUtil.validateInteger(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
-        return true;
     }
 
-    protected boolean validateStringArgument(int index,
+    protected void validateJSONArgument(int index,
+                                        PsiCall call,
+                                        ProblemsHolder holder) {
+        if (call.numberOfArguments() >= index) {
+            TTLValidationUtil.validateJSON(call.resolveSignatureArgument(index),
+                    holder,
+                    call.getCallSignatureArgumentElement(index));
+        }
+    }
+
+    protected void validateStringArgument(int index,
+                                          PsiCall call,
+                                          ProblemsHolder holder) {
+        if (call.numberOfArguments() >= index) {
+            TTLValidationUtil.validateString(call.resolveSignatureArgument(index),
+                    holder,
+                    call.getCallSignatureArgumentElement(index));
+        }
+    }
+
+    protected void validateClassNameArgument(int index,
                                              PsiCall call,
                                              ProblemsHolder holder) {
         if (call.numberOfArguments() >= index) {
-            return TTLValidationUtil.validateString(call.resolveSignatureArgument(index),
+            TTLValidationUtil.validateClassName(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
-        return true;
     }
 
-    protected boolean validateClassNameArgument(int index,
-                                                PsiCall call,
-                                                ProblemsHolder holder) {
+    protected void validateGraphShapeArgument(int index,
+                                              PsiCall call,
+                                              ProblemsHolder holder) {
         if (call.numberOfArguments() >= index) {
-            return TTLValidationUtil.validateClassName(call.resolveSignatureArgument(index),
+            TTLValidationUtil.validateGraphShape(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
-        return true;
     }
 
-    protected boolean validateGraphShapeArgument(int index,
-                                                 PsiCall call,
-                                                 ProblemsHolder holder) {
-        if (call.numberOfArguments() >= index) {
-            return TTLValidationUtil.validateGraphShape(call.resolveSignatureArgument(index),
-                    holder,
-                    call.getCallSignatureArgumentElement(index));
-        }
-        return true;
-    }
     protected void validateAllArguments(PsiCall call,
                                         ProblemsHolder holder,
-                                        TriFunction<Integer, PsiCall, ProblemsHolder, Boolean> validation) {
-        if(call.numberOfArguments() > 0) {
-            for(int i = 0; i < call.numberOfArguments(); i++) {
-                validation.apply(i, call, holder);
+                                        TriConsumer<Integer, PsiCall, ProblemsHolder> validation) {
+        if (call.numberOfArguments() > 0) {
+            for (int i = 0; i < call.numberOfArguments(); i++) {
+                validation.accept(i, call, holder);
             }
         }
     }
+
     protected void validateAllArgumentsCompatible(PsiCall call,
                                                   ProblemsHolder holder) {
-        if(call.numberOfArguments() == 1) {
+        if (call.numberOfArguments() == 1) {
             TTLValidationUtil.validateCompatibleTypes(
                     call.getCallInputType(), call.resolveSignatureArgument(0),
                     holder, call);

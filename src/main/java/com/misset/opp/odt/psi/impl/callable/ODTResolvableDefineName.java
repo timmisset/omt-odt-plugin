@@ -9,6 +9,7 @@ import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
@@ -17,6 +18,7 @@ import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -61,7 +63,9 @@ public abstract class ODTResolvableDefineName extends ODTASTWrapperPsiElement im
 
     @Override
     public @Nullable PsiDocComment getDocComment() {
-        return getParent().getDocComment();
+        return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, PsiJavaDocumentedElement.class))
+                .map(PsiJavaDocumentedElement::getDocComment)
+                .orElse(null);
     }
 
     @Override

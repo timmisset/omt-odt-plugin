@@ -1,12 +1,13 @@
 package com.misset.opp.omt.psi.impl;
 
-import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.psi.PsiCall;
-import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
@@ -14,17 +15,14 @@ import com.misset.opp.omt.meta.OMTProcedureMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.OMTCallable;
-import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Wrapper class for YAMLMapping elements that represent a callable OMT item such as ModelItems.
@@ -36,6 +34,7 @@ import java.util.function.Function;
  * which needs to be able to instantiate without being wrapped around any PSI Element.
  */
 public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable {
+    private static final Key<CachedValue<HashMap<Integer, Set<OntResource>>>> PARAMETER_TYPES = new Key<>("PARAMETER_TYPES");
     private final YAMLMapping mapping;
     private final YAMLKeyValue keyValue;
 
@@ -96,20 +95,29 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
 
     @Override
     public Set<OntResource> getParamType(int index) {
-        List<YAMLSequenceItem> inputParameters = getInputParameters();
-        if (inputParameters.size() <= index) {
-            return Collections.emptySet();
-        }
-        return getTypeFromParameter(inputParameters.get(index));
+        return getParameterTypes().getOrDefault(index, Collections.emptySet());
+    }
+
+    @Override
+    public HashMap<Integer, Set<OntResource>> getParameterTypes() {
+        return CachedValuesManager.getCachedValue(this, PARAMETER_TYPES, () -> {
+            List<Set<OntResource>> types = getInputParameters()
+                    .stream()
+                    .map(this::getTypeFromParameter)
+                    .collect(Collectors.toList());
+            return new CachedValueProvider.Result<>(mapCallableParameters(types), getContainingFile());
+        });
     }
 
     private Set<OntResource> getTypeFromParameter(YAMLSequenceItem sequenceItem) {
         YAMLValue value = sequenceItem.getValue();
-        if(value == null) { return Collections.emptySet(); }
+        if (value == null) {
+            return Collections.emptySet();
+        }
         YamlMetaTypeProvider.MetaTypeProxy metaTypeProxy = OMTMetaTypeProvider.getInstance(sequenceItem.getProject()).getMetaTypeProxy(sequenceItem);
         if (metaTypeProxy != null) {
             YamlMetaType metaType = metaTypeProxy.getMetaType();
-            if(metaType instanceof OMTParamMetaType) {
+            if (metaType instanceof OMTParamMetaType) {
                 OMTParamMetaType paramMetaType = (OMTParamMetaType) metaType;
                 return paramMetaType.getType(value);
             }

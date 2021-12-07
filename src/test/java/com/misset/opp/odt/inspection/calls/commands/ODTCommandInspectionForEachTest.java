@@ -42,6 +42,15 @@ class ODTCommandInspectionForEachTest extends InspectionTestCase {
     }
 
     @Test
+    void testForEachCommandUnnecessaryUsageOfForEachShowsWarningWhenUpdatingCollection() {
+        String content = insideProcedureRunWithPrefixes("" +
+                "VAR $someItem;\n" +
+                "@FOREACH('', { $someItem / ont:someProperty += $value });");
+        configureByText(content);
+        assertHasWarning(ALL_VALUES_ARE_TREATED_EQUAL);
+    }
+
+    @Test
     void testForEachCommandUnnecessaryUsageOfForEachShowsNoWarningWhenInsideLogicalBlock() {
         String content = insideProcedureRunWithPrefixes("" +
                 "@FOREACH('', { IF 1 == 2 { $value = ''; } });");
@@ -53,6 +62,15 @@ class ODTCommandInspectionForEachTest extends InspectionTestCase {
     void testForEachCommandUnnecessaryUsageOfForEachShowsNoWarningWhenInsideCall() {
         String content = insideProcedureRunWithPrefixes("" +
                 "@FOREACH('', { @SomeCommand($value); });");
+        configureByText(content);
+        assertNoWarning(ALL_VALUES_ARE_TREATED_EQUAL);
+    }
+
+    @Test
+    void testForEachCommandUnnecessaryUsageOfForEachShowsNoWarningWhenUsedAsAssignmentValue() {
+        String content = insideProcedureRunWithPrefixes("" +
+                "VAR $myValue;\n" +
+                "@FOREACH('', { $myValue = $value; });");
         configureByText(content);
         assertNoWarning(ALL_VALUES_ARE_TREATED_EQUAL);
     }

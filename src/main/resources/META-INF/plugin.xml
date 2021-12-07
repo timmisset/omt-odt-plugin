@@ -130,10 +130,26 @@
 
 
         <!-- Calls -->
-        <localInspection shortName="Calls" hasStaticDescription="true"
-                         language="ODT" displayName="Inspect all ODT based calls" groupPath="ODT"
-                         groupName="RDF" enabledByDefault="true"
-                         implementationClass="com.misset.opp.odt.inspection.calls.ODTCallInspection"/>
+        <localInspection shortName="BuiltinCommands" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect all calls to ODT Builtin Commands" groupPath="ODT"
+                         groupName="Calls" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.calls.ODTBuiltinCommandCallInspection"/>
+        <localInspection shortName="BuiltinOperators" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect all calls to ODT Builtin Operators" groupPath="ODT"
+                         groupName="Calls" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.calls.ODTBuiltinOperatorCallInspection"/>
+        <localInspection shortName="DefinedCommands" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect all calls to ODT Defined Commands" groupPath="ODT"
+                         groupName="Calls" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.calls.ODTDefinedCommandCallInspection"/>
+        <localInspection shortName="DefinedQueries" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect all calls to ODT Defined Queries" groupPath="ODT"
+                         groupName="Calls" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.calls.ODTDefinedOperatorCallInspection"/>
+        <localInspection shortName="OMTCallables" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect all calls to OMT Callables" groupPath="ODT"
+                         groupName="Calls" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.calls.ODTOMTCallInspection"/>
 
         <!-- Calls / Builtin command inspections -->
         <localInspection shortName="BuiltinForEach" hasStaticDescription="true"
@@ -165,7 +181,6 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
-
 
 
     </extensions>

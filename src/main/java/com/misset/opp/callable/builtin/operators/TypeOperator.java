@@ -2,8 +2,7 @@ package com.misset.opp.callable.builtin.operators;
 
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.ResourceUtil;
-import com.misset.opp.ttl.util.TTLValidationUtil;
-import com.misset.opp.ttl.util.TTLValueParserUtil;
+import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
@@ -28,7 +27,8 @@ public class TypeOperator extends BuiltInOperator {
         return resources.stream().map(this::mapToType).collect(Collectors.toSet());
     }
     private OntResource mapToType(OntResource resource) {
-        if(ResourceUtil.isType(resource)) {
+        OntClass ontClass = OppModel.INSTANCE.toClass(resource);
+        if (ResourceUtil.isType(ontClass)) {
             return resource.asIndividual().getOntClass();
         } else {
             return OppModel.INSTANCE.IRI;

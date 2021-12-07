@@ -53,7 +53,14 @@ variable ::=                                VARIABLE_NAME {
 // literal indentifier, the "|" in Yaml. In which case it should be followed by an empty line and and 
 script ::=                                  scriptLine+
 // a scriptline is contained by the addition of the semicolon at the end
-scriptLine ::=                              (commandBlock | logicalBlock | defineCommandStatement | statement) SEMICOLON*
+// The DOC_COMMENT is borrowed from Java
+// this requires a workaround for now since this is outside the scope of the Parser Generation process
+// After generating the parser, remove the added ODTTYPES.DOC_COMMENT and then import the static
+// com.intellij.psi.impl.source.tree.JavaDocElementType.DOC_COMMENT
+scriptLine ::=                              DOC_COMMENT? (commandBlock | logicalBlock | defineCommandStatement | statement) SEMICOLON* {
+    implements="com.intellij.psi.PsiJavaDocumentedElement"
+    extends="com.misset.opp.odt.psi.impl.ODTDocumentedScriptLine"
+}
 statement ::=                               declareVariable | variableAssignment | definePrefix | commandCall |
                                             collectionStatement | returnStatement | queryStatement | defineQueryStatement
 

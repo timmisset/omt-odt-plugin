@@ -4,7 +4,9 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTInjectionUtil;
+import com.misset.opp.odt.psi.ODTInterpolation;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
@@ -26,8 +28,11 @@ public class ODTSemicolonAnnotator implements Annotator {
         if (element instanceof ODTScriptLine) {
             final boolean hasSemicolonEnding = hasSemicolonEnding(element);
             final ODTScriptLine scriptLine = (ODTScriptLine) element;
-
-            if (scriptLine.getStatement() == null) {
+            if (PsiTreeUtil.getParentOfType(scriptLine, ODTInterpolation.class) != null) {
+                if (hasSemicolonEnding) {
+                    holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
+                }
+            } else if (scriptLine.getStatement() == null) {
                 // only statements should ever end with a semicolon:
                 if (hasSemicolonEnding) {
                     holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();

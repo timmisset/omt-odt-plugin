@@ -2,13 +2,15 @@ package com.misset.opp.callable;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.callable.builtin.Builtin;
 import com.misset.opp.callable.psi.PsiCall;
+import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +18,7 @@ import java.util.Set;
  * Any callable class / psiElement that can evaluate a call with OntResource input/output
  */
 public interface Callable extends Resolvable {
+    Logger LOGGER = Logger.getInstance(Callable.class);
 
     String getName();
 
@@ -47,13 +50,22 @@ public interface Callable extends Resolvable {
      */
     default void validate(PsiCall call,
                                ProblemsHolder holder) {
-        final int i = call.numberOfArguments();
-        if (!passesMinArguments(i) || !passesMaxArguments(i)) {
-            PsiElement callSignatureElement = call.getCallSignatureElement();
-            holder.registerProblem(callSignatureElement != null ? callSignatureElement : call,
-                    "Expects " + getExpectedArgumentsMessage() + " arguments. Call has " + i + " arguments",
-                    ProblemHighlightType.ERROR);
-        }
+        LoggerUtil.runWithLogger(LOGGER,
+                ms -> "Validation of call " + call.getText() + " against " + getName() + " took " + ms + " milliseconds",
+                () -> {
+                    final int numberOfArguments = call.numberOfArguments();
+                    if (!passesMinArguments(numberOfArguments) || !passesMaxArguments(numberOfArguments)) {
+                        PsiElement callSignatureElement = call.getCallSignatureElement();
+                        holder.registerProblem(callSignatureElement != null ? callSignatureElement : call,
+                                "Expects " + getExpectedArgumentsMessage() + " arguments. Call has " + numberOfArguments + " arguments",
+                                ProblemHighlightType.ERROR);
+                    }
+                });
+
+    }
+
+    default HashMap<Integer, Set<OntResource>> getParameterTypes() {
+        return new HashMap<>();
     }
 
     private boolean passesMinArguments(int numberOfArguments) {
@@ -79,5 +91,13 @@ public interface Callable extends Resolvable {
             }
         }
         return null;
+    }
+
+    default HashMap<Integer, Set<OntResource>> mapCallableParameters(List<Set<OntResource>> resources) {
+        HashMap<Integer, Set<OntResource>> typeMapping = new HashMap<>();
+        for (int i = 0; i < resources.size(); i++) {
+            typeMapping.put(i, resources.get(i));
+        }
+        return typeMapping;
     }
 }

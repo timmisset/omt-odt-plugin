@@ -1,10 +1,12 @@
 package com.misset.opp.odt.documentation;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -17,14 +19,17 @@ public class ODTDocumentationUtil {
     );
 
     @Nullable
-    public static String getJavaDocComment(PsiElement element) {
-        final PsiElement docEnd = PsiTreeUtil.prevVisibleLeaf(element);
-        if (docEnd == null || !(docEnd.getParent() instanceof PsiDocComment)) {
-            return null;
+    public static String getJavaDocComment(@NotNull PsiElement element) {
+        if (element.getParent() instanceof PsiJavaDocumentedElement) {
+            PsiDocComment docComment = ((PsiJavaDocumentedElement) element.getParent()).getDocComment();
+            if (docComment == null) {
+                return null;
+            }
+            return Arrays.stream(docComment.getDescriptionElements())
+                    .map(PsiElement::getText)
+                    .collect(Collectors.joining("<br>"));
         }
-        return Arrays.stream(((PsiDocComment) docEnd.getParent()).getDescriptionElements())
-                .map(PsiElement::getText)
-                .collect(Collectors.joining("<br>"));
+        return null;
     }
 
     @Nullable

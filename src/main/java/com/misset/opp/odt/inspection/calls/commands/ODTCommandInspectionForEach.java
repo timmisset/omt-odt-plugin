@@ -8,11 +8,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.builtin.commands.ForEachCommand;
 import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
-import com.misset.opp.odt.psi.ODTCommandBlock;
-import com.misset.opp.odt.psi.ODTCommandCall;
-import com.misset.opp.odt.psi.ODTLogicalBlock;
-import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import org.jetbrains.annotations.Nls;
@@ -72,7 +68,7 @@ public class ODTCommandInspectionForEach extends LocalInspectionTool {
                 final boolean unnecessaryUsage = PsiTreeUtil.findChildrenOfType(commandBlock, ODTVariable.class)
                         .stream()
                         .filter(variable -> variable.getName() != null && variable.getName().equals("$value"))
-                        .noneMatch(variable -> isEncapsulatedByLogicalBlockOrCall(variable, call));
+                        .noneMatch(variable -> isAssigningToVariable(variable) || isEncapsulatedByLogicalBlockOrCall(variable, call));
                 if (unnecessaryUsage) {
                     holder.registerProblem(call, ALL_VALUES_ARE_TREATED_EQUAL, ProblemHighlightType.WARNING);
                 }
@@ -85,8 +81,13 @@ public class ODTCommandInspectionForEach extends LocalInspectionTool {
         return call.getCallable() instanceof OMTCallableImpl;
     }
 
-    private boolean isEncapsulatedByLogicalBlockOrCall(@NotNull PsiElement variable,
+    private boolean isEncapsulatedByLogicalBlockOrCall(@NotNull ODTVariable variable,
                                                        @NotNull ODTCall call) {
         return PsiTreeUtil.getParentOfType(variable, ODTLogicalBlock.class, ODTCommandCall.class) != call;
+    }
+
+    private boolean isAssigningToVariable(@NotNull ODTVariable variable) {
+        ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(variable, ODTVariableAssignment.class);
+        return variableAssignment != null && !variableAssignment.getVariableList().contains(variable);
     }
 }

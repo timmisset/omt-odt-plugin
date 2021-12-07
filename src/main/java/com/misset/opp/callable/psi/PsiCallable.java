@@ -1,10 +1,11 @@
 package com.misset.opp.callable.psi;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.Callable;
-import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
+import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
@@ -13,6 +14,7 @@ import java.util.Set;
  * Any PsiElement that is callable should use this interface to indicate that it's also a valid PsiElement
  */
 public interface PsiCallable extends Callable, PsiElement {
+    Logger LOGGER = Logger.getInstance(PsiCallable.class);
 
     PsiElement getCallTarget();
 
@@ -21,12 +23,16 @@ public interface PsiCallable extends Callable, PsiElement {
     @Override
     default void validate(PsiCall call, ProblemsHolder holder) {
         Callable.super.validate(call, holder);
-        for(int i = 0; i < call.numberOfArguments(); i++) {
-            Set<OntResource> argumentType = call.resolveSignatureArgument(i);
-            Set<OntResource> paramType = getParamType(i);
-            if(paramType != null && !argumentType.isEmpty() && !paramType.isEmpty()) {
-                TTLValidationUtil.validateCompatibleTypes(paramType, argumentType, holder, call.getCallSignatureArgumentElement(i));
-            }
-        }
+        LoggerUtil.runWithLogger(LOGGER,
+                ms -> "Validation of call " + call.getText() + " against " + getName() + " took " + ms + " milliseconds",
+                () -> {
+                    for (int i = 0; i < call.numberOfArguments(); i++) {
+                        Set<OntResource> argumentType = call.resolveSignatureArgument(i);
+                        Set<OntResource> paramType = getParamType(i);
+                        if (paramType != null && !argumentType.isEmpty() && !paramType.isEmpty()) {
+                            TTLValidationUtil.validateCompatibleTypes(paramType, argumentType, holder, call.getCallSignatureArgumentElement(i));
+                        }
+                    }
+                });
     }
 }

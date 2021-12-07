@@ -76,11 +76,13 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements OMTName
 
     @Override
     public Set<OntResource> getType(YAMLValue value) {
-        if (value != null) {
-            // if an injected Resolvable is present it will be resolved
+        if (value == null) {
+            return Collections.emptySet();
+        } else if (value instanceof YAMLMapping) {
+            return getTypeFromDestructed((YAMLMapping) value);
+        } else {
             return resolveValue(value);
         }
-        return Collections.emptySet();
     }
 
     @Override

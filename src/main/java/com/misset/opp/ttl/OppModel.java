@@ -7,30 +7,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SimpleModificationTracker;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.settings.SettingsState;
-import org.apache.jena.ontology.ConversionException;
-import org.apache.jena.ontology.Individual;
-import org.apache.jena.ontology.OntClass;
-import org.apache.jena.ontology.OntModel;
-import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.ontology.OntResource;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -422,7 +404,7 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
-    private OntClass toClass(OntResource resource) {
+    public OntClass toClass(OntResource resource) {
         if (resource.isIndividual()) {
             return resource.asIndividual().getOntClass();
         }
@@ -639,6 +621,7 @@ public class OppModel {
         ).collect(Collectors.toSet());
     }
 
+
     public OntClass getClass(Resource resource) {
         return model.getOntClass(resource.getURI());
     }
@@ -740,7 +723,7 @@ public class OppModel {
     public boolean areCompatible(Set<OntResource> resourcesA,
                                  Set<OntResource> resourcesB) {
         return resourcesB.stream()
-                .allMatch(resourceB -> areCompatible(resourcesA, resourceB));
+                .anyMatch(resourceB -> areCompatible(resourcesA, resourceB));
     }
 
     private boolean areCompatible(Set<OntResource> resourcesA,
@@ -755,7 +738,8 @@ public class OppModel {
      */
     public boolean areCompatible(OntResource resourceA,
                                  OntResource resourceB) {
-        if (resourceA.equals(resourceB)) {
+        if (resourceA.equals(resourceB) ||
+                resourceA.equals(OWL_THING_INSTANCE)) {
             return true;
         }
         if (resourceA.isIndividual()) {
