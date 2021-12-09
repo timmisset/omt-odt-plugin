@@ -51,7 +51,7 @@ public interface Callable extends Resolvable {
     default void validate(PsiCall call,
                                ProblemsHolder holder) {
         LoggerUtil.runWithLogger(LOGGER,
-                ms -> "Validation of call " + call.getText() + " against " + getName() + " took " + ms + " milliseconds",
+                "Validation of call " + call.getCallId(),
                 () -> {
                     final int numberOfArguments = call.numberOfArguments();
                     if (!passesMinArguments(numberOfArguments) || !passesMaxArguments(numberOfArguments)) {

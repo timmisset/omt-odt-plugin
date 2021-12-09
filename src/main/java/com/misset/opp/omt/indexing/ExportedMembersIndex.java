@@ -11,6 +11,7 @@ import java.util.List;
 public class ExportedMembersIndex {
 
     private static final HashMap<String, HashMap<String, List<PsiElement>>> exportedMembers = new HashMap<>();
+    private static final HashMap<String, List<String>> exportedMembersByName = new HashMap<>();
 
     public static HashMap<String, List<PsiElement>> getExportedMembers(String path,
                                                                        Project project) {
@@ -19,6 +20,13 @@ public class ExportedMembersIndex {
         } else {
             return calculateExportedMembers(path, project);
         }
+    }
+
+    /**
+     * Returns a list with locations where there is a PsiFile that contains the member
+     */
+    public static List<String> getExportedMemberLocationsByName(String name) {
+        return exportedMembersByName.get(name);
     }
 
     public static void removeFromIndex(String path) {
@@ -38,6 +46,7 @@ public class ExportedMembersIndex {
         }
         final HashMap<String, List<PsiElement>> exportingMembersMap = omtFile.getExportingMembersMap();
         exportedMembers.put(path, exportingMembersMap);
+//        exportingMembersMap.keySet().forEach(key -> exportedMembersByName.put(key, path));
         return exportingMembersMap;
     }
 

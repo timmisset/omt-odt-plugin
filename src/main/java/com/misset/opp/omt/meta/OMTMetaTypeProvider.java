@@ -47,8 +47,12 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
         super(modelAccess, YAML_MODIFICATION_TRACKER);
     }
 
+    public static OMTMetaTypeProvider INSTANCE = null;
     public static OMTMetaTypeProvider getInstance(@NotNull Project project) {
-        return project.getService(OMTMetaTypeProvider.class);
+        if (INSTANCE == null) {
+            INSTANCE = project.getService(OMTMetaTypeProvider.class);
+        }
+        return INSTANCE;
     }
 
     @Override

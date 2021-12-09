@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -14,15 +15,12 @@ import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUr
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implements ODTQueryPath {
@@ -30,19 +28,21 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
         super(node);
     }
 
+    Logger LOGGER = Logger.getInstance(ODTResolvableQueryPath.class);
+
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Optional.ofNullable(getLastOperation())
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolve: " + getText(), () -> Optional.ofNullable(getLastOperation())
                 .map(ODTResolvable::resolve)
-                .orElse(Collections.emptySet());
+                .orElse(Collections.emptySet()));
     }
 
     @Override
     public Set<OntResource> resolve(Set<OntResource> resources,
                                     Call call) {
-        return Optional.ofNullable(getLastOperation())
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolve with resources: " + getText(), () -> Optional.ofNullable(getLastOperation())
                 .map(lastStep -> lastStep.resolve(resources, call))
-                .orElse(Collections.emptySet());
+                .orElse(Collections.emptySet()));
     }
 
     private Set<OntResource> fromSet;
@@ -57,6 +57,7 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
         this.fromSet = null;
         return resolve;
     }
+
     public Set<OntResource> getFromSet() {
         return fromSet;
     }
@@ -88,26 +89,28 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
      * Tries to split the query into a subject part (anything but the last part) and a predicate (the last part)
      */
     public Pair<Set<OntResource>, Property> resolveToSubjectPredicate() {
-        if (getQueryOperationStepList().size() < 2) {
-            return null;
-        }
-
-        ODTResolvableQueryStep subject = getStepMovingBackward(1);
-        final Set<OntResource> subjectResolved = subject != null ? subject.resolve() : Collections.emptySet();
-        if (subjectResolved.isEmpty()) {
-            return null;
-        }
-
-        ODTResolvableQueryStep predicate = getStepMovingBackward(0);
-        if (predicate instanceof ODTResolvableQualifiedUriStep) {
-            final ODTResolvableQualifiedUriStep qualifiedUriStep = (ODTResolvableQualifiedUriStep) predicate;
-            final String fullyQualifiedUri = qualifiedUriStep.getFullyQualifiedUri();
-            final Property property = OppModel.INSTANCE.getProperty(fullyQualifiedUri);
-            if (property != null) {
-                return new Pair<>(subjectResolved, property);
+        return LoggerUtil.computeWithLogger(LOGGER, "resolveToSubjectPredicate: " + getText(), () -> {
+            if (getQueryOperationStepList().size() < 2) {
+                return null;
             }
-        }
-        return null;
+
+            ODTResolvableQueryStep subject = getStepMovingBackward(1);
+            final Set<OntResource> subjectResolved = subject != null ? subject.resolve() : Collections.emptySet();
+            if (subjectResolved.isEmpty()) {
+                return null;
+            }
+
+            ODTResolvableQueryStep predicate = getStepMovingBackward(0);
+            if (predicate instanceof ODTResolvableQualifiedUriStep) {
+                final ODTResolvableQualifiedUriStep qualifiedUriStep = (ODTResolvableQualifiedUriStep) predicate;
+                final String fullyQualifiedUri = qualifiedUriStep.getFullyQualifiedUri();
+                final Property property = OppModel.INSTANCE.getProperty(fullyQualifiedUri);
+                if (property != null) {
+                    return new Pair<>(subjectResolved, property);
+                }
+            }
+            return null;
+        });
     }
 
     public boolean startsWithDelimiter() {

@@ -55,7 +55,7 @@ script ::=                                  scriptLine+
 // a scriptline is contained by the addition of the semicolon at the end
 // The DOC_COMMENT is borrowed from Java
 // this requires a workaround for now since this is outside the scope of the Parser Generation process
-// After generating the parser, remove the added ODTTYPES.DOC_COMMENT and then import the static
+// After generating the parser, remove the added ODTTYPES.DOC_COMMENT in the ODTTypes interface and then import the static
 // com.intellij.psi.impl.source.tree.JavaDocElementType.DOC_COMMENT
 scriptLine ::=                              DOC_COMMENT? (commandBlock | logicalBlock | defineCommandStatement | statement) SEMICOLON* {
     implements="com.intellij.psi.PsiJavaDocumentedElement"

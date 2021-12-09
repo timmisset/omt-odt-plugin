@@ -33,10 +33,10 @@
         <lang.findUsagesProvider language="yaml" order="before yamlFindUsagesProvider"
                                  implementationClass="com.misset.opp.omt.OMTFindUsageProvider"/>
         <psi.referenceContributor language="yaml" implementation="com.misset.opp.omt.OMTYamlReferenceContributor"/>
-        <postStartupActivity implementation="com.misset.opp.omt.startup.IndexPrefixesStartupActivity"/>
-        <postStartupActivity implementation="com.misset.opp.omt.startup.LoadReasonsStartupActivity"/>
-        <postStartupActivity implementation="com.misset.opp.omt.startup.ImportedMembersStartupActivity"/>
-
+        <postStartupActivity id="prefixes" implementation="com.misset.opp.omt.startup.IndexPrefixesStartupActivity"/>
+        <postStartupActivity id="reasons" implementation="com.misset.opp.omt.startup.LoadReasonsStartupActivity"/>
+        <postStartupActivity id="importedMembers"
+                             implementation="com.misset.opp.omt.startup.ImportedMembersStartupActivity"/>
         <!-- Inspections -->
         <!-- Unused-->
         <localInspection displayName="OMTUnusedModelItemInspection" groupPath="OMT" language="OMT"
@@ -181,7 +181,6 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
-
 
     </extensions>
     <depends>com.intellij.java</depends>

@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SimpleModificationTracker;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.settings.SettingsState;
+import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.iterator.ExtendedIterator;
@@ -46,6 +47,7 @@ public class OppModel {
     public OntClass XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
     public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
 
+    private static final Logger LOGGER = Logger.getInstance(OppModel.class);
     /*
         The modification count whenever the model is loaded
         Any RDF resolving cached values should subscribe to this modification tracker to drop their
@@ -62,6 +64,7 @@ public class OppModel {
     HashMap<OntResource, HashMap<Property, Set<OntResource>>> listSubjectsCache = new HashMap<>();
     HashMap<OntResource, HashMap<Property, Set<OntResource>>> listObjectsCache = new HashMap<>();
     HashMap<OntResource, Set<Property>> listPredicatesCache = new HashMap<>();
+    HashMap<String, Set<Individual>> classIndividualsCache = new HashMap<>();
 
     // contain information from the SHACL model about the modularity of the predicates
     HashMap<OntClass, List<Property>> required = new HashMap<>();
@@ -75,7 +78,7 @@ public class OppModel {
      */
     private final OntModel model;
 
-    private boolean isUpdating = false;
+    private boolean isUpdating;
 
     public boolean isUpdating() {
         return isUpdating;
@@ -101,6 +104,7 @@ public class OppModel {
         listSubjectsCache.clear();
         listObjectsCache.clear();
         listPredicatesCache.clear();
+        classIndividualsCache.clear();
     }
 
     private void clearModularity() {
@@ -310,7 +314,7 @@ public class OppModel {
     /**
      * Returns the list with all predicate-objects for the provided subject
      */
-    public Set<Statement> listPredicateObjects(OntResource subject) {
+    protected Set<Statement> listPredicateObjects(OntResource subject) {
         if (subject.isIndividual()) {
             return listPredicateObjectsForIndividual(subject.asIndividual());
         }
@@ -351,57 +355,65 @@ public class OppModel {
 
     public Set<OntResource> listSubjects(Property predicate,
                                          Set<OntResource> objects) {
-        if (objects.contains(OWL_THING_INSTANCE)) {
+        return LoggerUtil.computeWithLogger(LOGGER, "listSubjects for predicate " + predicate.getURI(), () -> {
+            if (objects.contains(OWL_THING_INSTANCE)) {
             /*
                  This is the equivalent of using an Object class.
                  Anything can be an Object so there is no way to resolve
                  to anything in particular
              */
-            return Set.of(OWL_THING_INSTANCE);
-        }
-        return objects.stream()
-                .map(classObject -> listSubjects(predicate, classObject))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                return Set.of(OWL_THING_INSTANCE);
+            }
+            return objects.stream()
+                    .map(classObject -> listSubjects(predicate, classObject))
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
+        });
     }
 
     public Set<OntResource> listSubjects(Property predicate,
                                          OntResource object) {
-
-        final Set<OntResource> cachedResources = listSubjectsCache.getOrDefault(object, new HashMap<>()).get(predicate);
-        if (cachedResources == null) {
-            final Set<OntResource> resources;
-            if (object.isIndividual()) {
-                // the returned subjects should also be the instances of the classes that point to
-                // the ontClass of the Individual
-                resources = listSubjectsForIndividual(predicate, object.asIndividual());
-            } else if (object.isClass()) {
-                resources = listSubjectsForClass(predicate, object.asClass());
-            } else {
-                resources = Collections.emptySet();
+        return LoggerUtil.computeWithLogger(LOGGER, "listSubjects for predicate " + predicate.getURI() + " object " + object.getURI(), () -> {
+            final Set<OntResource> cachedResources = listSubjectsCache.getOrDefault(object, new HashMap<>()).get(predicate);
+            if (cachedResources == null) {
+                final Set<OntResource> resources;
+                if (object.isIndividual()) {
+                    // the returned subjects should also be the instances of the classes that point to
+                    // the ontClass of the Individual
+                    resources = listSubjectsForIndividual(predicate, object.asIndividual());
+                } else if (object.isClass()) {
+                    resources = listSubjectsForClass(predicate, object.asClass());
+                } else {
+                    resources = Collections.emptySet();
+                }
+                final HashMap<Property, Set<OntResource>> byObject = listSubjectsCache.getOrDefault(object,
+                        new HashMap<>());
+                byObject.put(predicate, resources);
+                listSubjectsCache.put(object, byObject);
+                return resources;
             }
-            final HashMap<Property, Set<OntResource>> byObject = listSubjectsCache.getOrDefault(object,
-                    new HashMap<>());
-            byObject.put(predicate, resources);
-            listSubjectsCache.put(object, byObject);
-            return resources;
-        }
-        return cachedResources;
+            return cachedResources;
+        });
     }
 
     public Set<OntResource> filterSubjects(Set<OntResource> subjects,
                                            Set<OntResource> predicates) {
-        return subjects.stream()
+        return LoggerUtil.computeWithLogger(LOGGER, "Filtering " + subjects.size() + " subjects for " + predicates.size() + " predicates", () -> subjects.stream()
                 .filter(subject -> hasAnyPredicate(subject, predicates))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
     }
 
     public Set<OntResource> filterSubjects(Set<OntResource> subjects,
                                            Set<OntResource> predicates,
                                            Set<OntResource> objects) {
-        return subjects.stream()
-                .filter(subject -> hasAnyPredicateObject(subject, predicates, objects))
-                .collect(Collectors.toSet());
+        return LoggerUtil.computeWithLogger(LOGGER,
+                "Filtering " + subjects.size() + " subjects for " +
+                        predicates.size() + " predicates" +
+                        objects.size() + " objects",
+                () -> subjects.stream()
+                        .filter(subject -> hasAnyPredicateObject(subject, predicates, objects))
+                        .collect(Collectors.toSet()));
+
     }
 
     public OntClass toClass(OntResource resource) {
@@ -599,6 +611,18 @@ public class OppModel {
     }
 
     public Set<Individual> getClassIndividuals(String classUri) {
+        if (classIndividualsCache.containsKey(classUri)) {
+            return classIndividualsCache.get(classUri);
+        }
+        Set<Individual> individuals = calculateClassIndividuals(classUri);
+        classIndividualsCache.put(classUri, individuals);
+        return individuals;
+    }
+
+    private Set<Individual> calculateClassIndividuals(String classUri) {
+        if (classUri.equals(OWL_THING_CLASS.getURI())) {
+            return Set.of(OWL_THING_INSTANCE);
+        }
         return Optional.ofNullable(getClass(classUri))
                 .map(ontClass -> ontClass.listInstances(true).toList())
                 .stream()

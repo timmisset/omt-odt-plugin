@@ -24,11 +24,18 @@ public interface PsiCallable extends Callable, PsiElement {
     default void validate(PsiCall call, ProblemsHolder holder) {
         Callable.super.validate(call, holder);
         LoggerUtil.runWithLogger(LOGGER,
-                ms -> "Validation of call " + call.getText() + " against " + getName() + " took " + ms + " milliseconds",
+                "Validation of call " + call.getCallId(),
                 () -> {
                     for (int i = 0; i < call.numberOfArguments(); i++) {
-                        Set<OntResource> argumentType = call.resolveSignatureArgument(i);
-                        Set<OntResource> paramType = getParamType(i);
+                        int finalI = i;
+                        Set<OntResource> argumentType = LoggerUtil.computeWithLogger(
+                                LOGGER,
+                                "Calculating signature argument " + i + " for " + call.getCallId(),
+                                () -> call.resolveSignatureArgument(finalI));
+                        Set<OntResource> paramType = LoggerUtil.computeWithLogger(
+                                LOGGER,
+                                "Calculating parameter " + i + " for " + getName(),
+                                () -> getParamType(finalI));
                         if (paramType != null && !argumentType.isEmpty() && !paramType.isEmpty()) {
                             TTLValidationUtil.validateCompatibleTypes(paramType, argumentType, holder, call.getCallSignatureArgumentElement(i));
                         }

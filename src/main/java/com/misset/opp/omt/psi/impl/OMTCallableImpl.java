@@ -15,6 +15,7 @@ import com.misset.opp.omt.meta.OMTProcedureMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.OMTCallable;
+import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -100,13 +101,16 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
 
     @Override
     public HashMap<Integer, Set<OntResource>> getParameterTypes() {
-        return CachedValuesManager.getCachedValue(this, PARAMETER_TYPES, () -> {
-            List<Set<OntResource>> types = getInputParameters()
-                    .stream()
-                    .map(this::getTypeFromParameter)
-                    .collect(Collectors.toList());
-            return new CachedValueProvider.Result<>(mapCallableParameters(types), getContainingFile());
-        });
+        return CachedValuesManager.getCachedValue(this,
+                PARAMETER_TYPES,
+                () -> new CachedValueProvider.Result<>(mapCallableParameters(calculateParameterTypes()), getContainingFile()));
+    }
+
+    private List<Set<OntResource>> calculateParameterTypes() {
+        return LoggerUtil.computeWithLogger(LOGGER, "calculateParameterTypes for " + getName(), () -> getInputParameters()
+                .stream()
+                .map(this::getTypeFromParameter)
+                .collect(Collectors.toList()));
     }
 
     private Set<OntResource> getTypeFromParameter(YAMLSequenceItem sequenceItem) {

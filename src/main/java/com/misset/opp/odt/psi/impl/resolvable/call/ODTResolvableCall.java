@@ -3,6 +3,7 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.Pair;
@@ -19,12 +20,7 @@ import com.misset.opp.callable.builtin.operators.BuiltinOperators;
 import com.misset.opp.callable.local.LocalCommand;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.ODTInjectionUtil;
-import com.misset.opp.odt.psi.ODTCallName;
-import com.misset.opp.odt.psi.ODTDefineName;
-import com.misset.opp.odt.psi.ODTQuery;
-import com.misset.opp.odt.psi.ODTResolvableValue;
-import com.misset.opp.odt.psi.ODTSignature;
-import com.misset.opp.odt.psi.ODTSignatureArgument;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
@@ -33,6 +29,7 @@ import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
@@ -41,13 +38,7 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectLocalCommandProviders;
@@ -61,6 +52,8 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED = new Key("RESOLVED");
     private final HashMap<String, Set<OntResource>> parameters = new HashMap<>();
     private String localCommandProvider = null;
+
+    Logger LOGGER = Logger.getInstance(ODTResolvableCall.class);
 
     @Override
     public PsiReference getReference() {
@@ -76,17 +69,23 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     public abstract String getCallId();
 
     public Callable getCallable() {
-        return CachedValuesManager.getCachedValue(this, CALLABLE, () -> {
-            final Callable callable = Optional.ofNullable(getReference())
-                    .map(PsiReference::resolve)
-                    .map(this::getCallable)
-                    .or(this::getLocalCommand)
-                    .or(this::getBuiltin)
-                    .orElse(null);
-            return new CachedValueProvider.Result<>(callable,
-                    getContainingFile(),
-                    PsiModificationTracker.MODIFICATION_COUNT);
-        });
+        return CachedValuesManager.getCachedValue(this, CALLABLE, () -> new CachedValueProvider.Result<>(calculateCallable(),
+                getContainingFile(),
+                PsiModificationTracker.MODIFICATION_COUNT));
+    }
+
+    private Callable calculateCallable() {
+        return LoggerUtil.computeWithLogger(LOGGER, "Getting callable for call " + getCallId(),
+                () -> getBuiltin()
+                        .or(this::getLocalCommand)
+                        .or(this::resolveFromReference)
+                        .orElse(null));
+    }
+
+    private Optional<Callable> resolveFromReference() {
+        return Optional.ofNullable(getReference())
+                .map(PsiReference::resolve)
+                .map(this::getCallable);
     }
 
     @Override
