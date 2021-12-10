@@ -40,18 +40,29 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
 
     @Test
     void testIndentQueryStatementBrokenStatement() {
-        assertFormatting("DEFINE QUERY query =>$someValue /\n" +
+        assertFormatting("DEFINE QUERY query => $someValue /\n" +
                         "LOG;",
-                "DEFINE QUERY query =>$someValue /\n" +
+                "DEFINE QUERY query => $someValue /\n" +
                         "<indent>LOG;");
     }
 
     @Test
     void testIndentQueryStatementBrokenStatementOnPathSeperator() {
-        assertFormatting("DEFINE QUERY query =>$someValue\n" +
+        assertFormatting("DEFINE QUERY query => $someValue\n" +
                         "/ LOG;",
-                "DEFINE QUERY query =>$someValue\n" +
+                "DEFINE QUERY query => $someValue\n" +
                         "<indent>/ LOG;");
+    }
+
+    @Test
+    void testChooseBlock() {
+        assertFormatting(
+                "CHOOSE WHEN true => 'hi' WHEN false => 'bye' OTHERWISE => 'confused' END",
+                "CHOOSE\n" +
+                        "<indent>WHEN true => 'hi'\n" +
+                        "<indent>WHEN false => 'bye'\n" +
+                        "<indent>OTHERWISE => 'confused'\n" +
+                        "END");
     }
 
     @Override
@@ -60,7 +71,5 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
         super.assertFormatting(before, after);
     }
 
-    private String getIndentedText(String text) {
-        return text.replace("<indent>", getIndent());
-    }
+
 }

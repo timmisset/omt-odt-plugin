@@ -486,38 +486,15 @@ public class ODTParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IF_OPERATOR (query | (PARENTHESES_OPEN query PARENTHESES_CLOSE))
+  // IF_OPERATOR query
   public static boolean ifBlock(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ifBlock")) return false;
     if (!nextTokenIs(b, IF_OPERATOR)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, IF_OPERATOR);
-    r = r && ifBlock_1(b, l + 1);
-    exit_section_(b, m, IF_BLOCK, r);
-    return r;
-  }
-
-  // query | (PARENTHESES_OPEN query PARENTHESES_CLOSE)
-  private static boolean ifBlock_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ifBlock_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = query(b, l + 1, -1);
-    if (!r) r = ifBlock_1_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // PARENTHESES_OPEN query PARENTHESES_CLOSE
-  private static boolean ifBlock_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ifBlock_1_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, PARENTHESES_OPEN);
     r = r && query(b, l + 1, -1);
-    r = r && consumeToken(b, PARENTHESES_CLOSE);
-    exit_section_(b, m, null, r);
+    exit_section_(b, m, IF_BLOCK, r);
     return r;
   }
 

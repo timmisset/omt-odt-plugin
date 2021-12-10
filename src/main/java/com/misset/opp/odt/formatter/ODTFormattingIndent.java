@@ -11,9 +11,6 @@ public class ODTFormattingIndent {
     private static final TokenSet WITH_CHILD_INDENT = TokenSet.create(
             ODTTypes.COMMAND_BLOCK
     );
-    private static final TokenSet INDENTED_WHEN_NOT_ROOT = TokenSet.create(
-            ODTTypes.SCRIPT
-    );
     private static final TokenSet QUERY_STEPS = TokenSet.create(
             ODTTypes.QUERY_OPERATION_STEP, ODTTypes.FORWARD_SLASH
     );
@@ -33,10 +30,11 @@ public class ODTFormattingIndent {
     public static Indent computeIndent(ASTNode node) {
         if (!isRootElement(node)) {
             IElementType elementType = node.getElementType();
-            if (INDENTED_WHEN_NOT_ROOT.contains(elementType)) {
+            if (elementType == ODTTypes.SCRIPT) {
                 return Indent.getNormalIndent();
-            }
-            if (isInside(node, ODTTypes.DEFINE_QUERY_STATEMENT) && QUERY_STEPS.contains(elementType)) {
+            } else if (ODTTokenSets.CHOOSE_INDENTED_OPERATORS.contains(elementType)) {
+                return Indent.getNormalIndent(true);
+            } else if (isInside(node, ODTTypes.DEFINE_QUERY_STATEMENT) && QUERY_STEPS.contains(elementType)) {
                 return Indent.getNormalIndent(false);
             }
         }

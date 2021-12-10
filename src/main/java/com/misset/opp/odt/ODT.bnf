@@ -115,7 +115,7 @@ resolvableValue ::=                         query | commandCall {
     mixin="com.misset.opp.odt.psi.impl.resolvable.ODTResolvableValueBase"
 }
 logicalBlock ::=                            ifBlock commandBlock? (ELSE_OPERATOR ifBlock commandBlock?)* elseBlock? { extends=scriptLine}
-ifBlock ::=                                 IF_OPERATOR (query | (PARENTHESES_OPEN query PARENTHESES_CLOSE))
+ifBlock ::=                                 IF_OPERATOR query
 elseBlock ::=                               ELSE_OPERATOR commandBlock
 returnStatement ::=                         RETURN_OPERATOR resolvableValue? { extends=statement }
 chooseBlock ::=                             CHOOSE_OPERATOR

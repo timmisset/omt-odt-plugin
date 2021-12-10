@@ -44,6 +44,10 @@ public class ODTFormattingTestCase extends ODTTestCase {
         return Strings.repeat(" ", INDENT_SIZE);
     }
 
+    protected String getIndentedText(String text) {
+        return text.replace("<indent>", getIndent());
+    }
+
     protected void assertFormatting(String before, String after) {
         configureByText(before);
         format();

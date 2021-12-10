@@ -29,8 +29,30 @@ public class ODTFormattingSpacing {
                 // script
                 .between(ODTTypes.SCRIPT_LINE, ODTTypes.SCRIPT_LINE).blankLines(0)
                 .around(ODTTypes.SCRIPT_LINE).blankLines(0)
+                .between(ODTTypes.CURLY_OPEN, ODTTypes.SCRIPT).spacing(0, 0, 1, false, 0)
+                .between(ODTTypes.SCRIPT, ODTTypes.CURLY_CLOSED).spacing(0, 0, 1, false, 0)
+                .between(ODTTypes.SCRIPT_LINE, ODTTypes.SCRIPT_LINE).spacing(0, 0, 0, true, 1)
+                // condition block
+                .between(ODTTypes.IF_BLOCK, ODTTypes.COMMAND_BLOCK).spacing(1, 1, 0, false, 0)
+                .between(ODTTypes.IF_OPERATOR, ODTTokenSets.QUERY_TYPES).spaces(1)
+                .between(ODTTypes.ELSE_OPERATOR, ODTTypes.COMMAND_BLOCK).spacing(1, 1, 0, false, 0)
+                .between(ODTTypes.COMMAND_BLOCK, ODTTypes.ELSE_BLOCK).spacing(1, 1, 0, false, 0)
+                .between(ODTTypes.COMMAND_BLOCK, ODTTypes.ELSE_OPERATOR).spacing(1, 1, 0, false, 0)
+
                 // query
+                .around(ODTTypes.LAMBDA).spaces(1)
                 .aroundInside(ODTTypes.STEP_SEPERATOR, ODTTypes.QUERY_PATH).spaces(1)
+                .aroundInside(ODTTypes.ROOT_INDICATOR, ODTTypes.QUERY_PATH).spaces(0)
+                .before(ODTTokenSets.CHOOSE_BLOCKS).spacing(0, 0, 1, false, 1)
+
+                // signature
+                .between(ODTTypes.COMMA, ODTTypes.SIGNATURE_ARGUMENT).spaces(1)
+                .between(ODTTypes.SIGNATURE_ARGUMENT, ODTTypes.COMMA).spaces(0)
+                .between(ODTTypes.PARENTHESES_OPEN, ODTTypes.SIGNATURE_ARGUMENT).spaces(0)
+                .between(ODTTypes.SIGNATURE_ARGUMENT, ODTTypes.PARENTHESES_CLOSE).spaces(0)
+
+                // assignment operators
+                .around(ODTTokenSets.ASSIGNMENT_OPERATORS).spaces(1)
                 ;
     }
 

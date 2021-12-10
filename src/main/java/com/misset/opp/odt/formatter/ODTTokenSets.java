@@ -8,4 +8,11 @@ public interface ODTTokenSets {
     TokenSet QUERY_TYPES = TokenSet.create(
             ODTTypes.QUERY_PATH, ODTTypes.QUERY_ARRAY, ODTTypes.BOOLEAN_STATEMENT, ODTTypes.EQUATION_STATEMENT
     );
+    TokenSet ASSIGNMENT_OPERATORS = TokenSet.create(
+            ODTTypes.EQUALS, ODTTypes.ADD, ODTTypes.REMOVE
+    );
+    TokenSet CHOOSE_BLOCKS = TokenSet.create(ODTTypes.CHOOSE_BLOCK, ODTTypes.WHEN_PATH,
+            ODTTypes.OTHERWISE_PATH, ODTTypes.END_PATH);
+    TokenSet CHOOSE_INDENTED_OPERATORS = TokenSet.create(ODTTypes.WHEN_OPERATOR, ODTTypes.OTHERWISE_OPERATOR);
+    TokenSet CHOOSE_ROOT_OPERATORS = TokenSet.create(ODTTypes.CHOOSE_OPERATOR, ODTTypes.END_OPERATOR);
 }
