@@ -96,7 +96,7 @@ public class ODTParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // CHOOSE_OPERATOR 
+  // CHOOSE_OPERATOR
   //                                                 whenPath*
   //                                                 otherwisePath?
   //                                                 endPath?
@@ -936,6 +936,18 @@ public class ODTParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // FORWARD_SLASH
+  public static boolean rootIndicator(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rootIndicator")) return false;
+    if (!nextTokenIs(b, FORWARD_SLASH)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FORWARD_SLASH);
+    exit_section_(b, m, ROOT_INDICATOR, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // SCHEMALESS_IRI
   public static boolean schemalessIriStep(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "schemalessIriStep")) return false;
@@ -1100,6 +1112,18 @@ public class ODTParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, PLUS);
     if (!r) r = consumeToken(b, QUESTION_MARK);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // FORWARD_SLASH
+  public static boolean stepSeperator(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stepSeperator")) return false;
+    if (!nextTokenIs(b, FORWARD_SLASH)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FORWARD_SLASH);
+    exit_section_(b, m, STEP_SEPERATOR, r);
     return r;
   }
 
@@ -1273,7 +1297,7 @@ public class ODTParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FORWARD_SLASH? queryOperationStep (FORWARD_SLASH queryOperationStep)*
+  // rootIndicator? queryOperationStep (stepSeperator queryOperationStep)*
   public static boolean queryPath(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "queryPath")) return false;
     boolean r;
@@ -1285,14 +1309,14 @@ public class ODTParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FORWARD_SLASH?
+  // rootIndicator?
   private static boolean queryPath_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "queryPath_0")) return false;
-    consumeTokenSmart(b, FORWARD_SLASH);
+    rootIndicator(b, l + 1);
     return true;
   }
 
-  // (FORWARD_SLASH queryOperationStep)*
+  // (stepSeperator queryOperationStep)*
   private static boolean queryPath_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "queryPath_2")) return false;
     while (true) {
@@ -1303,12 +1327,12 @@ public class ODTParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // FORWARD_SLASH queryOperationStep
+  // stepSeperator queryOperationStep
   private static boolean queryPath_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "queryPath_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokenSmart(b, FORWARD_SLASH);
+    r = stepSeperator(b, l + 1);
     r = r && queryOperationStep(b, l + 1);
     exit_section_(b, m, null, r);
     return r;

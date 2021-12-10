@@ -8,9 +8,8 @@ import org.jetbrains.annotations.Nullable;
 public class ODTFormattingAlignment {
 
     @Nullable
-    public Alignment computeAlignment(@NotNull ASTNode node) {
+    public static Alignment computeAlignment(@NotNull ASTNode node) {
         return null;
     }
-
 
 }

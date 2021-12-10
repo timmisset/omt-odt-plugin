@@ -88,7 +88,10 @@ definePrefix ::=                            PREFIX_DEFINE_START namespacePrefix 
     mixin="com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix"
 }
 defineParam ::=                             PARENTHESES_OPEN (variable (COMMA variable)*)? PARENTHESES_CLOSE
-callName ::=                                SYMBOL | BOOLEAN_OPERATOR
+callName ::=                                SYMBOL | BOOLEAN_OPERATOR {
+    extends="com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCallName"
+    implements="com.misset.opp.odt.documentation.ODTDocumented"
+}
 // MEMBER CALLS
 // A call to either an Operator or a Command. In case of the latter, it's always prefixed with @
 operatorCall ::=                            callName flagSignature? signature? {
@@ -115,7 +118,7 @@ logicalBlock ::=                            ifBlock commandBlock? (ELSE_OPERATOR
 ifBlock ::=                                 IF_OPERATOR (query | (PARENTHESES_OPEN query PARENTHESES_CLOSE))
 elseBlock ::=                               ELSE_OPERATOR commandBlock
 returnStatement ::=                         RETURN_OPERATOR resolvableValue? { extends=statement }
-chooseBlock ::=                             CHOOSE_OPERATOR 
+chooseBlock ::=                             CHOOSE_OPERATOR
                                                 whenPath*
                                                 otherwisePath?
                                                 endPath? {
@@ -133,7 +136,7 @@ otherwisePath ::=                           OTHERWISE_OPERATOR LAMBDA? query? {
     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableOtherwisePathStep"
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
 }
-endPath ::=                                 END_OPERATOR 
+endPath ::=                                 END_OPERATOR
 // QUERIES
 // A query is the superclass of different variants of a query.
 // it is used to break the array into meaningful subsections based on detected tokens
@@ -149,7 +152,9 @@ query     ::=                               queryPath | queryArray | booleanStat
 // For example, a queryArray can consist of 'a' | 'b' in which both 'a' and 'b' are encapsulated
 // into a queryPath and subsequently a queryStep
 // The queryPath is constructed using the Forward slash as delimiter a contains as many steps as possible
-queryPath ::=                               FORWARD_SLASH? queryOperationStep (FORWARD_SLASH queryOperationStep)* {
+rootIndicator ::=                           FORWARD_SLASH
+stepSeperator ::=                           FORWARD_SLASH
+queryPath ::=                               rootIndicator? queryOperationStep (stepSeperator queryOperationStep)* {
     extends=query
     mixin="com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath"
 }

@@ -13,9 +13,12 @@ public class ODTDocumentationAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         if (element instanceof ODTDocumented) {
-            String documentation = ((ODTDocumented) element).getDocumentation();
-            if (documentation != null) {
-                holder.newAnnotation(HighlightSeverity.INFORMATION, "").tooltip(documentation).create();
+            ODTDocumented documented = (ODTDocumented) element;
+            String documentation = (documented).getDocumentation();
+            if (documentation != null && !documentation.isBlank()) {
+                holder.newAnnotation(HighlightSeverity.INFORMATION, documentation)
+                        .range(documented.getDocumentationElement())
+                        .tooltip(documentation).create();
             }
         }
     }

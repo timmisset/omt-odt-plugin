@@ -9,24 +9,12 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
-import com.misset.opp.odt.psi.ODTDeclareVariable;
-import com.misset.opp.odt.psi.ODTDefineParam;
-import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.ODTVariableAssignment;
-import com.misset.opp.odt.psi.ODTVariableValue;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
-import com.misset.opp.odt.psi.impl.variable.delegate.ODTDeclaredVariableDelegate;
-import com.misset.opp.odt.psi.impl.variable.delegate.ODTDefineInputParamDelegate;
-import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsageVariableDelegate;
-import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableAssignmentDelegate;
-import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
+import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +30,6 @@ import java.util.Set;
  */
 public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements ODTVariable {
     private final ODTVariableDelegate delegate;
-    private static final Key<CachedValue<SearchScope>> USAGE_SEARCH_SCOPE = new Key<>("USAGE_SEARCH_SCOPE");
     protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
     protected static final Key<CachedValue<Set<OntResource>>> VARIABLE_TYPE = new Key<>("VARIABLE_TYPE");
 

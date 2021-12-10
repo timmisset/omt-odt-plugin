@@ -4,6 +4,7 @@ package com.misset.opp.odt.psi;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.PsiNamedElement;
+import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep;
 import com.misset.opp.odt.psi.impl.variable.ODTVariableWrapper;
@@ -24,7 +25,7 @@ public class ODTVisitor extends PsiElementVisitor {
   }
 
   public void visitCallName(@NotNull ODTCallName o) {
-    visitPsiElement(o);
+    visitDocumented(o);
   }
 
   public void visitChooseBlock(@NotNull ODTChooseBlock o) {
@@ -188,6 +189,10 @@ public class ODTVisitor extends PsiElementVisitor {
     visitStatement(o);
   }
 
+  public void visitRootIndicator(@NotNull ODTRootIndicator o) {
+    visitPsiElement(o);
+  }
+
   public void visitSchemalessIriStep(@NotNull ODTSchemalessIriStep o) {
     visitQueryStep(o);
   }
@@ -213,6 +218,10 @@ public class ODTVisitor extends PsiElementVisitor {
   }
 
   public void visitStepDecorator(@NotNull ODTStepDecorator o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStepSeperator(@NotNull ODTStepSeperator o) {
     visitPsiElement(o);
   }
 
@@ -247,6 +256,10 @@ public class ODTVisitor extends PsiElementVisitor {
 
   public void visitPsiNamedElement(@NotNull PsiNamedElement o) {
     visitElement(o);
+  }
+
+  public void visitDocumented(@NotNull ODTDocumented o) {
+    visitPsiElement(o);
   }
 
   public void visitResolvable(@NotNull ODTResolvable o) {

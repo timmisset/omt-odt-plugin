@@ -1,11 +1,7 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTScript;
@@ -44,12 +40,17 @@ public class ODTCallReference extends PsiReferenceBase.Poly<ODTResolvableCall> i
 
     private Optional<ResolveResult[]> resolveInODT() {
         final ODTScript script = PsiTreeUtil.getTopmostParentOfType(myElement, ODTScript.class);
-        if(script == null) { return Optional.empty(); }
+        ODTDefineStatement defineStatement = PsiTreeUtil.getParentOfType(myElement, ODTDefineStatement.class);
+        if (script == null) {
+            return Optional.empty();
+        }
 
         return PsiTreeUtil.findChildrenOfType(script, ODTDefineStatement.class)
                 .stream()
-                // must have the same name
-                .filter(odtDefineStatement -> odtDefineStatement.getCallId().equals(myElement.getCallId()))
+                // must have the same name and cannot contain itself
+                // i.e. a call from an ODTDefineStatement must always refer to one listed above it
+                .filter(odtDefineStatement -> defineStatement != odtDefineStatement &&
+                        odtDefineStatement.getCallId().equals(myElement.getCallId()))
                 .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
                 .map(ODTDefineStatement::getDefineName)
                 .map(PsiElementResolveResult::createResults);

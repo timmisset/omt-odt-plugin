@@ -1,5 +1,6 @@
 package com.misset.opp.odt.formatter;
 
+import com.intellij.formatting.Alignment;
 import com.intellij.formatting.Block;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.Spacing;
@@ -51,6 +52,21 @@ public class ODTFormattingBlock extends AbstractBlock {
 
     @Override
     public Indent getIndent() {
-        return super.getIndent();
+        return formattingContext.computeIndent(getNode());
+    }
+
+    @Override
+    public @Nullable Alignment getAlignment() {
+        return formattingContext.computeAlignment(getNode());
+    }
+
+    @Override
+    protected @Nullable Indent getChildIndent() {
+        return formattingContext.computeChildIndent(getNode());
+    }
+
+    @Override
+    public boolean isIncomplete() {
+        return formattingContext.isIncomplete(getNode());
     }
 }

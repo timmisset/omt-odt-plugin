@@ -21,7 +21,7 @@ public class DurationOperator extends BuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModel.INSTANCE.JSON_OBJECT;
+        return OppModel.INSTANCE.XSD_DURATION_INSTANCE;
     }
 
     @Override

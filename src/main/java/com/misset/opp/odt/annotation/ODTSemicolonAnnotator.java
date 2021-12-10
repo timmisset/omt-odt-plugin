@@ -4,6 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTInterpolation;
@@ -21,11 +22,13 @@ public class ODTSemicolonAnnotator implements Annotator {
 
     protected static final String SEMICOLON_REQUIRED = "Semicolon required";
     protected static final String SEMICOLON_ILLEGAL = "Should not contain a semicolon";
+    protected static final String SEMICOLON_UNNECESSARY = "Unnecessary semicolon";
 
     @Override
     public void annotate(@NotNull PsiElement element,
                          @NotNull AnnotationHolder holder) {
-        if (element instanceof ODTScriptLine) {
+        IElementType elementType = element.getNode().getElementType();
+        if (elementType == ODTTypes.SCRIPT_LINE) {
             final boolean hasSemicolonEnding = hasSemicolonEnding(element);
             final ODTScriptLine scriptLine = (ODTScriptLine) element;
             if (PsiTreeUtil.getParentOfType(scriptLine, ODTInterpolation.class) != null) {
@@ -56,6 +59,11 @@ public class ODTSemicolonAnnotator implements Annotator {
                         holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
                     }
                 }
+            }
+        } else if (elementType == ODTTypes.SEMICOLON) {
+            PsiElement prevVisibleLeaf = PsiTreeUtil.prevVisibleLeaf(element);
+            if (prevVisibleLeaf != null && prevVisibleLeaf.getNode().getElementType() == ODTTypes.SEMICOLON) {
+                holder.newAnnotation(HighlightSeverity.WARNING, SEMICOLON_UNNECESSARY).create();
             }
         }
     }

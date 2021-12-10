@@ -51,6 +51,7 @@ public interface ODTTypes {
   IElementType REMOVE_FROM_COLLECTION = new ODTElementType("REMOVE_FROM_COLLECTION");
   IElementType RESOLVABLE_VALUE = new ODTElementType("RESOLVABLE_VALUE");
   IElementType RETURN_STATEMENT = new ODTElementType("RETURN_STATEMENT");
+  IElementType ROOT_INDICATOR = new ODTElementType("ROOT_INDICATOR");
   IElementType SCHEMALESS_IRI_STEP = new ODTElementType("SCHEMALESS_IRI_STEP");
   IElementType SCRIPT = new ODTElementType("SCRIPT");
   IElementType SCRIPT_LINE = new ODTElementType("SCRIPT_LINE");
@@ -58,6 +59,7 @@ public interface ODTTypes {
   IElementType SIGNATURE_ARGUMENT = new ODTElementType("SIGNATURE_ARGUMENT");
   IElementType STATEMENT = new ODTElementType("STATEMENT");
   IElementType STEP_DECORATOR = new ODTElementType("STEP_DECORATOR");
+  IElementType STEP_SEPERATOR = new ODTElementType("STEP_SEPERATOR");
   IElementType SUB_QUERY = new ODTElementType("SUB_QUERY");
   IElementType VARIABLE = new ODTElementType("VARIABLE");
   IElementType VARIABLE_ASSIGNMENT = new ODTElementType("VARIABLE_ASSIGNMENT");
@@ -201,6 +203,8 @@ public interface ODTTypes {
         return new ODTResolvableValueImpl(node);
       } else if (type == RETURN_STATEMENT) {
         return new ODTReturnStatementImpl(node);
+      } else if (type == ROOT_INDICATOR) {
+        return new ODTRootIndicatorImpl(node);
       } else if (type == SCHEMALESS_IRI_STEP) {
         return new ODTSchemalessIriStepImpl(node);
       } else if (type == SCRIPT) {
@@ -213,6 +217,8 @@ public interface ODTTypes {
         return new ODTSignatureArgumentImpl(node);
       } else if (type == STEP_DECORATOR) {
         return new ODTStepDecoratorImpl(node);
+      } else if (type == STEP_SEPERATOR) {
+        return new ODTStepSeperatorImpl(node);
       } else if (type == SUB_QUERY) {
         return new ODTSubQueryImpl(node);
       } else if (type == VARIABLE) {

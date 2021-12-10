@@ -3,19 +3,18 @@ package com.misset.opp.odt.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.psi.ODTCallName;
+import com.misset.opp.odt.psi.ODTRootIndicator;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCallName;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTCallNameImpl extends ODTBaseCallName implements ODTCallName {
+public class ODTRootIndicatorImpl extends ODTASTWrapperPsiElement implements ODTRootIndicator {
 
-  public ODTCallNameImpl(@NotNull ASTNode node) {
+  public ODTRootIndicatorImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitCallName(this);
+    visitor.visitRootIndicator(this);
   }
 
   @Override

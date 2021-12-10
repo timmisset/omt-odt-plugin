@@ -42,6 +42,21 @@ public class TTLValidationUtil {
         }
     }
 
+    public static void validateRequiredTypes(Set<OntResource> required,
+                                             Set<OntResource> provided,
+                                             ProblemsHolder holder,
+                                             PsiElement element) {
+        if (required == null || provided == null || required.isEmpty() || provided.isEmpty()) {
+            // don't register problem
+            return;
+        }
+        if (!OppModel.INSTANCE.areCompatible(required, provided)) {
+            holder.registerProblem(element,
+                    createRequiredTypesWarning(required, provided),
+                    ProblemHighlightType.WARNING);
+        }
+    }
+
     public static void validateModularityMultiple(Set<OntResource> subject,
                                                   Property predicate,
                                                   ProblemsHolder holder,
@@ -208,6 +223,15 @@ public class TTLValidationUtil {
                 ResourceUtil.describeUrisJoined(resourcesB) + "\n" +
                 "to" + "\n" +
                 ResourceUtil.describeUrisJoined(resourcesA);
+    }
+
+    private static String createRequiredTypesWarning(Set<OntResource> required,
+                                                     Set<OntResource> provided) {
+        return "Incompatible types:" + "\n" +
+                "required " + "\n" +
+                ResourceUtil.describeUrisJoined(required) + "\n" +
+                "provided" + "\n" +
+                ResourceUtil.describeUrisJoined(provided);
     }
 
 }

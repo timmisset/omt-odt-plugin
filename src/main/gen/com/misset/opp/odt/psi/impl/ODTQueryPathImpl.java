@@ -4,11 +4,10 @@ package com.misset.opp.odt.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.psi.ODTQueryOperationStep;
-import com.misset.opp.odt.psi.ODTQueryPath;
-import com.misset.opp.odt.psi.ODTVisitor;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,6 +31,18 @@ public class ODTQueryPathImpl extends ODTResolvableQueryPath implements ODTQuery
   @NotNull
   public List<ODTQueryOperationStep> getQueryOperationStepList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ODTQueryOperationStep.class);
+  }
+
+  @Override
+  @Nullable
+  public ODTRootIndicator getRootIndicator() {
+    return findChildByClass(ODTRootIndicator.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ODTStepSeperator> getStepSeperatorList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ODTStepSeperator.class);
   }
 
 }

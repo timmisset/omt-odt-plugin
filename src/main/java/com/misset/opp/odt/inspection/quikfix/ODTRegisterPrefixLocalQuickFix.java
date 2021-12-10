@@ -57,7 +57,6 @@ public class ODTRegisterPrefixLocalQuickFix implements LocalQuickFix {
         } else {
             script.addAfter(definePrefix, existingDefinePrefix);
         }
-
     }
 
 }

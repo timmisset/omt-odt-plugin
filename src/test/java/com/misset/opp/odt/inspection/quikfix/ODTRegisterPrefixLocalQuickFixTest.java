@@ -29,10 +29,10 @@ class ODTRegisterPrefixLocalQuickFixTest extends ODTTestCase {
 
         WriteCommandAction.runWriteCommandAction(getProject(), () -> odtRegisterPrefixLocalQuickFix.applyFix(getProject(), problemDescriptor));
 
-        final String content = ReadAction.compute(() -> getFile().getText());
+        final String content = ReadAction.compute(() -> getEditor().getDocument().getText());
         // todo: indentation is not yet correct, acceptable for now, fix when formatter is implemented
-        Assertions.assertEquals("PREFIX ont: <http://ontology#>\n" +
-                "        /ont:ClassA", content);
+        Assertions.assertEquals("PREFIX ont: <http://ontology#>;\n" +
+                "/ont:ClassA", content);
     }
 
 }

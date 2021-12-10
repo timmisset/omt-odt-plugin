@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.annotation.ODTSemicolonAnnotator.SEMICOLON_ILLEGAL;
-import static com.misset.opp.odt.annotation.ODTSemicolonAnnotator.SEMICOLON_REQUIRED;
+import static com.misset.opp.odt.annotation.ODTSemicolonAnnotator.*;
 
 class ODTSemicolonAnnotatorTest extends InspectionTestCase {
 
@@ -105,4 +104,11 @@ class ODTSemicolonAnnotatorTest extends InspectionTestCase {
         assertNoError(SEMICOLON_ILLEGAL);
     }
 
+    @Test
+    void testHasWarningWhenQueryStatementWithUnnecessarySemicolon() {
+        configureByText(insideQueryWithPrefixesNoSemicolonEnding("1;;"));
+        assertNoError(SEMICOLON_REQUIRED);
+        assertNoError(SEMICOLON_ILLEGAL);
+        assertHasWarning(SEMICOLON_UNNECESSARY);
+    }
 }

@@ -3,19 +3,18 @@ package com.misset.opp.odt.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.psi.ODTCallName;
+import com.misset.opp.odt.psi.ODTStepSeperator;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCallName;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTCallNameImpl extends ODTBaseCallName implements ODTCallName {
+public class ODTStepSeperatorImpl extends ODTASTWrapperPsiElement implements ODTStepSeperator {
 
-  public ODTCallNameImpl(@NotNull ASTNode node) {
+  public ODTStepSeperatorImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitCallName(this);
+    visitor.visitStepSeperator(this);
   }
 
   @Override

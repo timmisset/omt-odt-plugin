@@ -88,6 +88,11 @@
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
         <postStartupActivity implementation="com.misset.opp.callable.builtin.LoadDocumentationStartupActivity"/>
         <lang.formatter language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTFormattingModelBuilder"/>
+        <codeInsight.unresolvedReferenceQuickFixProvider
+                implementation="com.misset.opp.odt.ODTUnresolvedReferenceQuickFixProvider"/>
+        <enterHandlerDelegate implementation="com.misset.opp.odt.formatter.ODTEnterHandlerDelegateAdapter"/>
+        <lang.braceMatcher language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTPairedBraceMatcher"/>
+
         <!-- Completions -->
         <completion.contributor language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.ODTTraverseCompletion"/>
@@ -181,6 +186,7 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
+
 
     </extensions>
     <depends>com.intellij.java</depends>

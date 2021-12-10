@@ -16,6 +16,7 @@ public interface Call {
     @NotNull
     Set<OntResource> resolveSignatureArgument(int index);
 
+    @NotNull
     List<Set<OntResource>> resolveSignatureArguments();
 
     @Nullable

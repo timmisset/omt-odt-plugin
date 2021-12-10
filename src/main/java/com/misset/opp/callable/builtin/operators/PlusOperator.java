@@ -24,11 +24,12 @@ public class PlusOperator extends BuiltinMathOperator {
     }
 
 
+
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         if(call.numberOfArguments() == 1) {
-            TTLValidationUtil.validateNumber(call.getCallInputType(), holder, call);
+            TTLValidationUtil.validateRequiredTypes(validInputs, call.getCallInputType(), holder, call);
         }
-        validateAllArguments(call, holder, this::validateNumberArgument);
+        validateAllArguments(call, holder, validator);
     }
 }

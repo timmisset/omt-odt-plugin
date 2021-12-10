@@ -6,11 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.LocalTimeCounter;
-import com.misset.opp.odt.psi.ODTCallName;
-import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.ODTNamespacePrefix;
-import com.misset.opp.odt.psi.ODTScriptLine;
-import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,7 +43,7 @@ public final class ODTElementGenerator {
 
     public ODTScriptLine createDefinePrefix(String prefix,
                                             String namespace) {
-        return fromFile("PREFIX " + prefix + ": <" + namespace + ">", ODTScriptLine.class);
+        return fromFile("PREFIX " + prefix + ": <" + namespace + ">;", ODTScriptLine.class);
     }
 
     public ODTCallName createCallName(String name) {

@@ -44,8 +44,9 @@ public class OppModel {
     public OntClass OPP_CLASS;
     public OntClass GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
     public Individual IRI, JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH;
-    public OntClass XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME;
-    public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE, XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE;
+    public OntClass XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME, XSD_DURATION;
+    public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE,
+            XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE, XSD_DURATION_INSTANCE;
 
     private static final Logger LOGGER = Logger.getInstance(OppModel.class);
     /*
@@ -202,6 +203,9 @@ public class OppModel {
         // to accept a date at a datetime position, but not the other way around
         XSD_DATE.addSuperClass(XSD_DATETIME);
         XSD_DATE_INSTANCE = model.createIndividual(XSD_DATE);
+
+        XSD_DURATION = model.createClass(XSD + "duration");
+        XSD_DURATION_INSTANCE = model.createIndividual(XSD_DURATION);
     }
 
     private void loadSimpleModel() {

@@ -117,7 +117,7 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
         return Optional.ofNullable(getFirstChild())
                 .map(PsiElement::getNode)
                 .map(ASTNode::getElementType)
-                .map(ODTTypes.FORWARD_SLASH::equals)
+                .map(ODTTypes.ROOT_INDICATOR::equals)
                 .orElse(false);
     }
 

@@ -8,6 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 public class OMTParamTypeReference extends OMTPlainTextReference {
+    public OMTParamTypeReference(@NotNull YAMLPlainTextImpl element) {
+        super(element);
+    }
+
     public OMTParamTypeReference(@NotNull YAMLPlainTextImpl element,
                                  @NotNull
                                          TextRange textRange) {

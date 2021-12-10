@@ -125,6 +125,11 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
         return Optional.empty();
     }
 
+    @Override
+    public String getLocalCommandProvider() {
+        return localCommandProvider;
+    }
+
     private Optional<Callable> getBuiltin() {
         return Optional.ofNullable(BuiltinCommands.builtinCommands.get(getCallId()))
                 .or(() -> Optional.ofNullable(BuiltinOperators.builtinOperators.get(getCallId())));
@@ -136,12 +141,6 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
         return getCallName().replace(callName);
     }
 
-    @Override
-    public String getDocumentation() {
-        return Optional.ofNullable(getCallable())
-                .map(callable -> callable.getDescription(localCommandProvider))
-                .orElse(null);
-    }
 
     @Override
     public @NotNull Set<OntResource> resolve() {
@@ -207,8 +206,8 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     }
 
     @Override
-    public List<Set<OntResource>> resolveSignatureArguments() {
-        return null;
+    public @NotNull List<Set<OntResource>> resolveSignatureArguments() {
+        return Collections.emptyList();
     }
 
     @Override

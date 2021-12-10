@@ -9,7 +9,7 @@ class DurationOperatorTest extends BuiltInTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(DurationOperator.INSTANCE, oppModel.JSON_OBJECT);
+        assertResolved(DurationOperator.INSTANCE, oppModel.XSD_DURATION_INSTANCE);
     }
 
     @Test

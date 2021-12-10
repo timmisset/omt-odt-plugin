@@ -13,9 +13,11 @@ import com.misset.opp.omt.meta.OMTImportMemberMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.scalars.OMTOntologyPrefixMetaType;
 import com.misset.opp.omt.meta.model.scalars.OMTParamTypeType;
+import com.misset.opp.omt.meta.model.scalars.references.OMTPayloadQueryReferenceMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
+import com.misset.opp.omt.psi.references.OMTCallableReference;
 import com.misset.opp.omt.psi.references.OMTImportMemberReference;
 import com.misset.opp.omt.psi.references.OMTOntologyPrefixReference;
 import com.misset.opp.omt.psi.references.OMTParamTypeReference;
@@ -53,8 +55,9 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
                 return new OMTParamTypeReference(this, typePrefixRange);
             }
         } else if (metaType instanceof OMTParamTypeType) {
-            return new OMTParamTypeReference(this,
-                    TextRange.allOf(this.getText()));
+            return new OMTParamTypeReference(this);
+        } else if (metaType instanceof OMTPayloadQueryReferenceMetaType) {
+            return new OMTCallableReference(this);
         }
         return null;
     }
