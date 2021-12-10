@@ -47,6 +47,16 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
     }
 
     @Test
+    void testIndentQueryStatementBrokenStatementWithOtherOperators() {
+        assertFormatting("DEFINE QUERY query => $someValue\n" +
+                        "AND $anotherValue AND\n" +
+                        "NOT $theLastValue;",
+                "DEFINE QUERY query => $someValue\n" +
+                        "<indent>AND $anotherValue AND\n" +
+                        "<indent>NOT $theLastValue;");
+    }
+
+    @Test
     void testIndentQueryStatementBrokenStatementOnPathSeperator() {
         assertFormatting("DEFINE QUERY query => $someValue\n" +
                         "/ LOG;",

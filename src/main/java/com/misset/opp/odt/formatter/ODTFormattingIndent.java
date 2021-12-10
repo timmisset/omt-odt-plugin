@@ -2,6 +2,7 @@ package com.misset.opp.odt.formatter;
 
 import com.intellij.formatting.Indent;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.JavaDocTokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.misset.opp.odt.ODTParserDefinition;
@@ -12,7 +13,11 @@ public class ODTFormattingIndent {
             ODTTypes.COMMAND_BLOCK
     );
     private static final TokenSet QUERY_STEPS = TokenSet.create(
-            ODTTypes.QUERY_OPERATION_STEP, ODTTypes.FORWARD_SLASH
+            ODTTypes.QUERY_OPERATION_STEP, ODTTypes.FORWARD_SLASH, ODTTypes.BOOLEAN_OPERATOR
+    );
+    private static final TokenSet JAVA_DOC_INDENTED = TokenSet.create(
+            JavaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS,
+            JavaDocTokenType.DOC_COMMENT_END
     );
 
     private static boolean isRootElement(ASTNode node) {
@@ -36,6 +41,8 @@ public class ODTFormattingIndent {
                 return Indent.getNormalIndent(true);
             } else if (isInside(node, ODTTypes.DEFINE_QUERY_STATEMENT) && QUERY_STEPS.contains(elementType)) {
                 return Indent.getNormalIndent(false);
+            } else if (JAVA_DOC_INDENTED.contains(elementType)) {
+                return Indent.getSpaceIndent(1);
             }
         }
         return Indent.getNoneIndent();

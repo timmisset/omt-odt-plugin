@@ -5,6 +5,7 @@ import com.intellij.formatting.FormattingContext;
 import com.intellij.formatting.Spacing;
 import com.intellij.formatting.SpacingBuilder;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.JavaDocTokenType;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.formatter.common.AbstractBlock;
 import com.intellij.psi.tree.IElementType;
@@ -53,6 +54,12 @@ public class ODTFormattingSpacing {
 
                 // assignment operators
                 .around(ODTTokenSets.ASSIGNMENT_OPERATORS).spaces(1)
+
+                // make sure inserted javadoc elements are automatically formatted correctly
+                .before(JavaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS).spacing(0, 0, 1, false, 1)
+                .before(JavaDocTokenType.DOC_COMMENT_END).spacing(0, 0, 1, false, 1)
+
+
                 ;
     }
 

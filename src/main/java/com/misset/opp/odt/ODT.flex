@@ -82,6 +82,7 @@ RESERVED_NAME=                  "IF"
 <YYINITIAL> {
     "PREFIX"                                                  { yybegin(PREFIX); return ODTTypes.PREFIX_DEFINE_START; }
     "DEFINE"                                                  { yybegin(DEFINE); return ODTTypes.DEFINE_START; }
+    "/**"                                                     { return ODTIgnored.DOC_COMMENT_START; }
 
     {BOOLEAN}                                                 { return ODTTypes.BOOLEAN; }
     {NULL}                                                    { return ODTTypes.NULL; }

@@ -90,4 +90,15 @@ class ODTFormattingSpacingTest extends ODTFormattingTestCase {
                 "$variable += 'hi';");
     }
 
+    @Test
+    void testJavaDocsBlock() {
+        assertFormatting(
+                "/**\n" +
+                        "* SomeInfo\n" +
+                        "*/\n",
+                "/**\n" +
+                        " * SomeInfo\n" +
+                        " */\n");
+    }
+
 }
