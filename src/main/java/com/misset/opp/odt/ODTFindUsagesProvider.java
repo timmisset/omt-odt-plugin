@@ -1,12 +1,12 @@
 package com.misset.opp.odt;
 
 import com.intellij.lang.findUsages.FindUsagesProvider;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.psi.ODTDefineCommandStatement;
-import com.misset.opp.odt.psi.ODTDefineName;
-import com.misset.opp.odt.psi.ODTDefineParam;
-import com.misset.opp.odt.psi.ODTDefineQueryStatement;
-import com.misset.opp.odt.psi.ODTVariable;
+import com.intellij.psi.PsiNamedElement;
+import com.misset.opp.callable.Callable;
+import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ public class ODTFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public @Nullable @NonNls String getHelpId(@NotNull PsiElement psiElement) {
-        return "null";
+        return null;
     }
 
     @Override
@@ -45,7 +45,11 @@ public class ODTFindUsagesProvider implements FindUsagesProvider {
             return "variable";
         } else if(element instanceof ODTDefineQueryStatement) {
             return "query";
-        } else if(element instanceof ODTDefineCommandStatement) {
+        } else if (element instanceof ODTDefineCommandStatement) {
+            return "command";
+        } else if (element instanceof ODTOperatorCall) {
+            return "operator";
+        } else if (element instanceof ODTCommandCall) {
             return "command";
         }
         return "null";
@@ -53,12 +57,24 @@ public class ODTFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public @Nls @NotNull String getDescriptiveName(@NotNull PsiElement element) {
+        if (element instanceof ODTCall) {
+            // unresolved call but might be a local or built-in:
+            ODTCall call = (ODTCall) element;
+            Callable callable = (call).getCallable();
+            return callable != null ? callable.getDescription(call.getLocalCommandProvider()) : element.getText();
+        }
         return element.getText();
     }
 
     @Override
     public @Nls @NotNull String getNodeText(@NotNull PsiElement element,
                                             boolean useFullName) {
+        if (element instanceof PsiNamedElement) {
+            @Nullable @NlsSafe String name = ((PsiNamedElement) element).getName();
+            if (name != null) {
+                return name;
+            }
+        }
         return element.getText();
     }
 }

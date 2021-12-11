@@ -7,22 +7,13 @@ import com.intellij.openapi.util.io.FileUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 /*
@@ -59,7 +50,7 @@ public final class OppModelLoader {
         if(!rootFile.exists()) { return; }
         setIndicatorText("Reading ontology file");
         // load all other ontology files in the subfolders (recursively)
-        FileUtils.listFiles(rootFile.getParentFile(), new String[] { "ttl" }, true)
+        FileUtils.listFiles(rootFile.getParentFile(), new String[]{"ttl"}, true)
                 .stream()
                 .filter(file -> !FileUtil.filesEqual(file, rootFile))
                 .peek(file -> setIndicatorText2(file.getName()))
@@ -67,7 +58,7 @@ public final class OppModelLoader {
                 .filter(Objects::nonNull)
                 .map(this::getSubmodel)
                 .forEach(subModel -> ontologies.put(getOntologyResource(subModel), subModel));
-        model.read(readFile(rootFile), null, "TTL");
+        model.read(readFile(rootFile), "https://misset-it.nl", "TTL");
         processImports(model);
         processData();
     }

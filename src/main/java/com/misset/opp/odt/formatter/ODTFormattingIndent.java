@@ -6,14 +6,20 @@ import com.intellij.psi.JavaDocTokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.misset.opp.odt.ODTParserDefinition;
+import com.misset.opp.odt.psi.ODTIgnored;
 import com.misset.opp.odt.psi.ODTTypes;
 
 public class ODTFormattingIndent {
     private static final TokenSet WITH_CHILD_INDENT = TokenSet.create(
-            ODTTypes.COMMAND_BLOCK
+            ODTTypes.COMMAND_BLOCK, ODTTypes.SIGNATURE
     );
+    // If a query gets wrapped, the tokens that introduce an indent so that the next
+    // line gets properly indented
     private static final TokenSet QUERY_STEPS = TokenSet.create(
-            ODTTypes.QUERY_OPERATION_STEP, ODTTypes.FORWARD_SLASH, ODTTypes.BOOLEAN_OPERATOR
+            ODTTypes.QUERY_OPERATION_STEP,
+            ODTTypes.FORWARD_SLASH,
+            ODTTypes.BOOLEAN_OPERATOR,
+            ODTIgnored.END_OF_LINE_COMMENT
     );
     private static final TokenSet JAVA_DOC_INDENTED = TokenSet.create(
             JavaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS,
@@ -40,6 +46,8 @@ public class ODTFormattingIndent {
             } else if (ODTTokenSets.CHOOSE_INDENTED_OPERATORS.contains(elementType)) {
                 return Indent.getNormalIndent(true);
             } else if (isInside(node, ODTTypes.DEFINE_QUERY_STATEMENT) && QUERY_STEPS.contains(elementType)) {
+                return Indent.getNormalIndent(false);
+            } else if (elementType == ODTTypes.SIGNATURE_ARGUMENT) {
                 return Indent.getNormalIndent(false);
             } else if (JAVA_DOC_INDENTED.contains(elementType)) {
                 return Indent.getSpaceIndent(1);
