@@ -16,17 +16,9 @@ import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
-import org.jetbrains.yaml.psi.YAMLKeyValue;
-import org.jetbrains.yaml.psi.YAMLMapping;
-import org.jetbrains.yaml.psi.YAMLSequence;
-import org.jetbrains.yaml.psi.YAMLSequenceItem;
+import org.jetbrains.yaml.psi.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
@@ -58,12 +50,14 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
     @Override
     public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
         HashMap<String, List<PsiElement>> variableMap = new HashMap<>();
-        addSequenceToMap(mapping, "params", variableMap);
+        addSequenceToMap(mapping, "params", variableMap, true);
 
         final YAMLKeyValue base = mapping.getKeyValueByKey("base");
         if (base != null) {
             // base should adhere to the OMTVariableNameMetaType otherwise it will throw an error on the syntax check
-            addToGroupedMap(base.getValueText(), base.getValue(), variableMap);
+            YAMLValue value = base.getValue();
+            OMTVariableProvider.IS_PARAMETER.set(value, true);
+            addToGroupedMap(base.getValueText(), value, variableMap);
         }
 
         return variableMap;
@@ -106,7 +100,22 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
     }
 
     @Override
-    public boolean isVoid() {
+    public boolean isVoid(YAMLMapping mapping) {
         return false;
+    }
+
+    @Override
+    public boolean canBeAppliedTo(YAMLMapping mapping, Set<OntResource> resources) {
+        return false;
+    }
+
+    @Override
+    public Set<OntResource> getSecondReturnArgument() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public String getType() {
+        return "StandaloneQuery";
     }
 }

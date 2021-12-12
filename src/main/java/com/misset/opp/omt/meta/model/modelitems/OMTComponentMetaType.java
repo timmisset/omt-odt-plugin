@@ -3,12 +3,7 @@ package com.misset.opp.omt.meta.model.modelitems;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTWatchersArrayMetaType;
-import com.misset.opp.omt.meta.model.OMTActionsMetaType;
-import com.misset.opp.omt.meta.model.OMTBindingMetaType;
-import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
-import com.misset.opp.omt.meta.model.OMTPayloadMetaType;
-import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
-import com.misset.opp.omt.meta.model.OMTRulesMetaType;
+import com.misset.opp.omt.meta.model.*;
 import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTQueriesMetaType;
@@ -78,5 +73,10 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
     @Override
     public boolean isCallable() {
         return false;
+    }
+
+    @Override
+    public String getType() {
+        return "Component";
     }
 }

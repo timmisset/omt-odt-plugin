@@ -6,18 +6,10 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.*;
 import com.misset.opp.odt.ODTFileType;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.ODTLanguage;
@@ -37,18 +29,12 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.jetbrains.yaml.psi.YAMLValue;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class ODTFileImpl extends PsiFileBase implements ODTFile {
-    private static final Key<CachedValue<YAMLPsiElement>> HOST = new Key<>("HOST");
+    private static final Key<CachedValue<PsiLanguageInjectionHost>> HOST = new Key<>("HOST");
     private static final Key<CachedValue<OMTFile>> HOST_FILE = new Key<>("HOST_FILE");
     private static final Key<CachedValue<GlobalSearchScope>> EXPORTING_MEMBER_SCOPE = new Key<>("EXPORTING_MEMBER_SCOPE");
     private static final Key<CachedValue<Boolean>> IS_EXPORTABLE = new Key<>("IS_EXPORTABLE");
@@ -63,7 +49,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         return ODTFileType.INSTANCE;
     }
 
-    public @Nullable YAMLPsiElement getHost() {
+    public PsiLanguageInjectionHost getHost() {
         return CachedValuesManager.getCachedValue(this, HOST, () -> {
             final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(getProject());
             final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(this);
@@ -72,7 +58,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                         this,
                         PsiModificationTracker.MODIFICATION_COUNT);
             }
-            return new CachedValueProvider.Result<>((YAMLPsiElement) injectionHost,
+            return new CachedValueProvider.Result<>(injectionHost,
                     injectionHost.getContainingFile(),
                     PsiModificationTracker.MODIFICATION_COUNT);
         });

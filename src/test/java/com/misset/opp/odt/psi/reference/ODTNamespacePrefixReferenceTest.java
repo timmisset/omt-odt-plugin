@@ -3,8 +3,8 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTDefinePrefix;
+import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.junit.jupiter.api.Assertions;
@@ -84,7 +84,7 @@ class ODTNamespacePrefixReferenceTest extends OMTTestCase {
                             "   MyActivity: !Activity\n" +
                             "       onStart: |\n" +
                             "           @LOG(/abcd:test);\n",
-                    ODTInjectionUtil.getInjectionHost(myFixture.getFile()).getContainingFile().getText());
+                    getContainingOMTFile((ODTFileImpl) getFile()).getText());
         });
     }
 }

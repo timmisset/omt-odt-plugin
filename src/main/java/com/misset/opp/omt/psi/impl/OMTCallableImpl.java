@@ -13,6 +13,7 @@ import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.OMTProcedureMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
+import com.misset.opp.omt.meta.model.modelitems.OMTModelItemDelegateMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.OMTCallable;
 import com.misset.opp.util.LoggerUtil;
@@ -30,9 +31,12 @@ import java.util.stream.Collectors;
  * OMTCallableImpl can be used to resolve and obtain information about the callable and, if required,
  * will use a meta-type delegate to get more specific information based on the type of Callable.
  * <p>
- * The OMTModelItemMetaType and OTMCallableImpl differ in the sense that the OMTCallableImpl is a specific
- * wrapper for the PSI tree element while the OMTModelItemMetaType serves as structure check for YAML
- * which needs to be able to instantiate without being wrapped around any PSI Element.
+ * The OMTModelItemMetaType and OTMCallableImpl differ in the sense that the OMTCallableImpl is a non-specific
+ * wrapper for the PsiElement.
+ * The OMTModelItemMetaType serves as structure check for YAML
+ * which needs to be able to instantiate without being wrapped around any PsiElement. It requires to be provided
+ * with a YAMLMapping element on method that requires information specific an instance of the MetaType in the
+ * PsiTree. Therefore, the OTMCallableImpl is basically a proxy between the PsiCallable and OMTMetaTypes
  */
 public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable {
     private static final Key<CachedValue<HashMap<Integer, Set<OntResource>>>> PARAMETER_TYPES = new Key<>("PARAMETER_TYPES");
@@ -60,13 +64,14 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
 
     @Override
     public String getType() {
-        return Optional.ofNullable(mapping.getParent())
-                .filter(YAMLKeyValue.class::isInstance)
-                .map(YAMLKeyValue.class::cast)
-                .map(YAMLKeyValue::getValue)
-                .map(YAMLValue::getTag)
-                .map(element -> element.getText().substring(1))
-                .orElse(null);
+        return computeFromMeta(OMTModelItemDelegateMetaType.class, OMTModelItemDelegateMetaType::getType, "OMT Callable");
+    }
+
+    @Override
+    public boolean canBeAppliedTo(Set<OntResource> resources) {
+        return computeFromMeta(OMTMetaCallable.class,
+                omtMetaCallable -> omtMetaCallable.canBeAppliedTo(mapping, resources),
+                false);
     }
 
     @Override
@@ -157,7 +162,9 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
     @Override
     public Set<OntResource> resolve(Set<OntResource> resources,
                                     Call call) {
-        return resolve(mapping, resources, call);
+        return computeFromMeta(OMTMetaCallable.class,
+                omtMetaCallable -> omtMetaCallable.resolve(mapping, resources, call),
+                Collections.emptySet());
     }
 
     private <T, U> U computeFromMeta(Class<T> metaType,
@@ -171,17 +178,12 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
     }
 
     @Override
-    public Set<OntResource> resolve(YAMLMapping mapping,
-                                    Set<OntResource> resources,
-                                    Call call) {
-        return computeFromMeta(OMTMetaCallable.class,
-                omtMetaCallable -> omtMetaCallable.resolve(mapping, resources, call),
-                Collections.emptySet());
-    }
-
-    @Override
     public PsiElement getCallTarget() {
         return keyValue.getKey();
     }
 
+    @Override
+    public Set<OntResource> getSecondReturnArgument() {
+        return OMTCallable.super.getSecondReturnArgument();
+    }
 }

@@ -50,7 +50,7 @@ public class ODTCodeInspectionDefinedDuplication extends LocalInspectionTool {
                                         OMTCallableProvider.class,
                                         OMTCallableProvider.KEY,
                                         name.getCallId(),
-                                        OMTCallableProvider::getCallableMap)
+                                        (provider, mapping) -> provider.getCallableMap(mapping, ((ODTFile) file).getHost()))
                                 .orElse(ResolveResult.EMPTY_ARRAY);
                         // Either declared in the OMT file or imported:
                         if (resolveResults.length > 0) {

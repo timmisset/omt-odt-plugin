@@ -13,5 +13,5 @@ public interface OMTLocalCommandProvider extends OMTMetaTypeStructureProvider {
 
     HashMap<String, LocalCommand> getLocalCommandsMap();
 
-    String getDescription();
+    String getType();
 }

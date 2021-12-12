@@ -45,7 +45,7 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
     @Override
     public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
         HashMap<String, List<PsiElement>> variableMap = new HashMap<>();
-        OMTVariableProviderUtil.addSequenceToMap(mapping, "params", variableMap);
+        OMTVariableProviderUtil.addSequenceToMap(mapping, "params", variableMap, true);
 
         return variableMap;
     }

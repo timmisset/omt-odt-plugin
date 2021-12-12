@@ -4,26 +4,32 @@ import com.misset.opp.callable.local.LocalVariable;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
-import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * Provides LocalVariables present at the given position in the OMTModel
- *
- * @see OMTLocalVariableTypeProviderMetaType provides the types for the variables, which are depend on another
- * level in the model to be calculated
+ * Provides LocalVariables present at the given position in the OMTModel.
+ * Requires OMTLocalVariableTypeProvider to provide the actual LocalVariables and their types
+ * <p>
+ * OMTLocalVariableProviderMetaType determines which of the LocalVariables are present at the exact
+ * key:value pair in the OMTModel. For example:
+ * <p>
+ * ```model:
+ * Activity: !Activity
+ * variables:
+ * ## OMTLocalVariableTypeProvider is the entire variable with all keys
+ * - name:  $variable
+ * value: 'test'
+ * onChange: |          <-- OMTLocalVariableProviderMetaType
+ * $newValue
+ * ```
+ * If the Variable would have another script based entry aside from onChange, the local variables would
+ * not be present there.
  */
 public abstract class OMTLocalVariableProviderMetaType extends OMTScriptMetaType implements OMTLocalVariableProvider {
 
@@ -41,34 +47,10 @@ public abstract class OMTLocalVariableProviderMetaType extends OMTScriptMetaType
                 OMTLocalVariableTypeProvider.class,
                 false,
                 Objects::isNull);
-
-        final HashMap<String, LocalVariable> map = new HashMap<>();
-        getLocalVariables().forEach(
-                variableName -> map.put(variableName, getLocalVariable(variableName, contextProviders))
-        );
-        return map;
+        return contextProviders.entrySet().stream()
+                .map(entry -> entry.getValue().getLocalVariables(entry.getKey()))
+                .flatMap(Collection::stream)
+                .filter(localVariable -> getLocalVariables().contains(localVariable.getName()))
+                .collect(Collectors.toMap(LocalVariable::getName, localVariable -> localVariable, (t, t2) -> t));
     }
-
-    private LocalVariable getLocalVariable(String name,
-                                           LinkedHashMap<YAMLMapping, OMTLocalVariableTypeProvider> contextProviders) {
-        final Set<OntResource> type = contextProviders.entrySet().stream()
-                .map(entrySet -> getLocalVariableType(entrySet.getValue(), entrySet.getKey(), name))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(Collections.emptySet());
-        return new LocalVariable(name, type);
-    }
-
-    /*
-        Returns null when the provider doesn't provide for the specific name
-     */
-    private @Nullable Set<OntResource> getLocalVariableType(OMTLocalVariableTypeProvider provider,
-                                                            YAMLMapping mapping,
-                                                            String name) {
-        if (!provider.providesTypeFor(name)) {
-            return null;
-        }
-        return provider.getType(name, mapping);
-    }
-
 }

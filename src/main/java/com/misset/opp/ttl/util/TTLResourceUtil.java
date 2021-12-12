@@ -1,5 +1,6 @@
-package com.misset.opp.ttl;
+package com.misset.opp.ttl.util;
 
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntResource;
 
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ResourceUtil {
+public class TTLResourceUtil {
     public static boolean isType(OntResource resource) {
         return resource.isClass() && isXSDType(resource);
     }
@@ -27,14 +28,12 @@ public class ResourceUtil {
     public static String describeUrisJoined(Set<OntResource> resources) {
         return String.join(", ", describeUris(resources));
     }
-
     public static List<String> describeUris(Set<OntResource> resources) {
         return resources.stream()
-                .map(ResourceUtil::describeUri)
+                .map(TTLResourceUtil::describeUri)
                 .sorted()
                 .collect(Collectors.toList());
     }
-
     public static String describeUri(OntResource resource) {
         if (resource.isClass()) {
             if (resource.getNameSpace().equals(OppModel.XSD)) {
@@ -56,4 +55,25 @@ public class ResourceUtil {
             return resource.getURI();
         }
     }
+
+
+    public static String describeUrisForLookupJoined(Set<OntResource> resources) {
+        return String.join(", ", describeUrisLookup(resources));
+    }
+
+    public static List<String> describeUrisLookup(Set<OntResource> resources) {
+        return resources.stream()
+                .map(TTLResourceUtil::describeUriForLookup)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public static String describeUriForLookup(OntResource resource) {
+        if (resource instanceof Individual) {
+            return ((Individual) resource).getOntClass().getLocalName();
+        }
+        return resource.getLocalName();
+    }
+
+
 }

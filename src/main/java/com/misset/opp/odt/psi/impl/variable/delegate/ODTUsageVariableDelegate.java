@@ -6,7 +6,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Variable;
 import com.misset.opp.callable.global.GlobalVariable;
-import com.misset.opp.callable.local.LocalVariableTypeProvider;
+import com.misset.opp.callable.local.CallableLocalVariableTypeProvider;
 import com.misset.opp.callable.psi.PsiVariable;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTScriptLine;
@@ -20,14 +20,7 @@ import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLValue;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
@@ -201,8 +194,9 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
         return PsiTreeUtil.collectParents(element, ODTCall.class, false, Objects::isNull)
                 .stream()
                 .map(call -> new Pair<>(call, call.getCallable()))
-                .filter(pair -> pair.second instanceof LocalVariableTypeProvider)
-                .map(pair -> ((LocalVariableTypeProvider) pair.second).getType(element.getName(), pair.first))
+                .filter(pair -> pair.second instanceof CallableLocalVariableTypeProvider)
+                .map(pair -> ((CallableLocalVariableTypeProvider) pair.second)
+                        .getType(element.getName(), pair.first, pair.first.getArgumentIndexOf(element)))
                 .filter(ontResources -> !ontResources.isEmpty())
                 .findFirst();
     }

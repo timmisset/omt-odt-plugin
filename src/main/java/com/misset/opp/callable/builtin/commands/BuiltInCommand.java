@@ -45,4 +45,14 @@ public abstract class BuiltInCommand extends Builtin {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public String getType() {
+        return "Builtin Command";
+    }
+
+    @Override
+    public boolean canBeAppliedTo(Set<OntResource> resources) {
+        return false;
+    }
 }

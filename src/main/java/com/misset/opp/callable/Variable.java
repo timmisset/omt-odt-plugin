@@ -12,4 +12,16 @@ public interface Variable {
 
     Set<OntResource> getType();
 
+    default boolean isParameter() {
+        return false;
+    }
+
+    default boolean isReadonly() {
+        return false;
+    }
+
+    default boolean isGlobal() {
+        return false;
+    }
+
 }

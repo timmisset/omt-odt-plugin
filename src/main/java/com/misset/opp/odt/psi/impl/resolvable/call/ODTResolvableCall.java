@@ -8,11 +8,9 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.builtin.commands.BuiltinCommands;
@@ -36,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
-import org.jetbrains.yaml.psi.YAMLPsiElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,8 +45,8 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
         super(node);
     }
 
-    private static final Key<CachedValue<Callable>> CALLABLE = new Key("CALLABLE");
-    private static final Key<CachedValue<Set<OntResource>>> RESOLVED = new Key("RESOLVED");
+    private static final Key<CachedValue<Callable>> CALLABLE = new Key<>("CALLABLE");
+    private static final Key<CachedValue<Set<OntResource>>> RESOLVED = new Key<>("RESOLVED");
     private final HashMap<String, Set<OntResource>> parameters = new HashMap<>();
     private String localCommandProvider = null;
 
@@ -107,7 +104,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
 
 
     private Optional<Callable> getLocalCommand() {
-        final YAMLPsiElement injectionHost = ODTInjectionUtil.getInjectionHost(this);
+        final PsiLanguageInjectionHost injectionHost = ODTInjectionUtil.getInjectionHost(this);
         if (injectionHost == null) {
             return Optional.empty();
         }
@@ -118,7 +115,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
             OMTLocalCommandProvider callableProvider = linkedHashMap.get(mapping);
             final HashMap<String, LocalCommand> callableMap = callableProvider.getLocalCommandsMap();
             if (callableMap.containsKey(getCallId())) {
-                localCommandProvider = callableProvider.getDescription();
+                localCommandProvider = callableProvider.getType();
                 return Optional.of(callableMap.get(getCallId()));
             }
         }
@@ -263,5 +260,14 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     @Override
     public Set<OntResource> getCallInputType() {
         return resolvePreviousStep();
+    }
+
+    @Override
+    public int getArgumentIndexOf(PsiElement element) {
+        return getSignatureArguments().stream()
+                .filter(argument -> PsiTreeUtil.isAncestor(argument, element, true))
+                .map(getSignatureArguments()::indexOf)
+                .findFirst()
+                .orElse(-1);
     }
 }

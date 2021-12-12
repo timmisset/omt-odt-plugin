@@ -60,4 +60,5 @@ public class OMTBindingItemMetaType extends OMTMetaShorthandType implements OMTN
         }
         return TextRange.EMPTY_RANGE;
     }
+
 }

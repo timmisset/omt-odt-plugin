@@ -96,7 +96,10 @@
         <!-- Completions -->
         <completion.contributor language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.ODTTraverseCompletion"/>
-
+        <completion.contributor language="ODT"
+                                implementationClass="com.misset.opp.odt.completion.ODTOperatorCompletion"/>
+        <completion.contributor language="ODT"
+                                implementationClass="com.misset.opp.odt.completion.ODTVariableCompletion"/>
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>
@@ -132,7 +135,9 @@
         <localInspection displayName="Collections and Assignments" groupName="Types" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
                          implementationClass="com.misset.opp.odt.inspection.type.ODTCodeInspectionCollectionStatement"/>
-
+        <localInspection displayName="Untyped warning" groupName="Types" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
+                         implementationClass="com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning"/>
 
         <!-- Calls -->
         <localInspection shortName="BuiltinCommands" hasStaticDescription="true"

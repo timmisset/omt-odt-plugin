@@ -1,12 +1,15 @@
 package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.openapi.util.TextRange;
+import com.misset.opp.callable.local.LocalVariable;
 import com.misset.opp.omt.meta.OMTInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.model.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTOnChangeScriptMetaType;
+import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -24,10 +27,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SimpleInjectable
-public class OMTVariableMetaType extends OMTMetaShorthandType implements OMTNamedVariableMetaType, OMTInjectable {
+public class OMTVariableMetaType extends OMTMetaShorthandType implements
+        OMTNamedVariableMetaType,
+        OMTLocalVariableTypeProvider,
+        OMTInjectable {
 
     private static final Set<String> requiredFeatures = Set.of("name");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    private final List<LocalVariable> LOCAL_VARIABLES = List.of(
+            new LocalVariable("$newValue", "New value for the payload item", Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE)),
+            new LocalVariable("$oldValue", "Old value for the payload item", Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE))
+    );
 
     static {
         features.put("name", OMTVariableNameMetaType::new);
@@ -106,5 +116,14 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements OMTName
     @Override
     public String getName(YAMLValue value) {
         return getNameTextRange(value).substring(value.getText());
+    }
+
+    @Override
+    public List<LocalVariable> getLocalVariables(YAMLMapping mapping) {
+        Set<OntResource> type = getType(mapping);
+        return List.of(
+                new LocalVariable("$newValue", "New value for the variable", type),
+                new LocalVariable("$oldValue", "Old value for the variable", type)
+        );
     }
 }

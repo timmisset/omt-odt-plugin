@@ -36,4 +36,9 @@ public class OMTOntologyMetaType extends OMTModelItemDelegateMetaType {
     public boolean isCallable() {
         return true;
     }
+
+    @Override
+    public String getType() {
+        return "Ontology";
+    }
 }

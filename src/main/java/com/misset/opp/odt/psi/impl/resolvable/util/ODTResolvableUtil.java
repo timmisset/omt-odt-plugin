@@ -6,7 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.syntax.ODTSyntaxHighlighter;
-import com.misset.opp.ttl.ResourceUtil;
+import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 
@@ -28,7 +28,7 @@ public class ODTResolvableUtil {
                 .tooltip(
                         resources.stream()
                                 .sorted(Comparator.comparing(Resource::toString))
-                                .map(ResourceUtil::describeUri)
+                                .map(TTLResourceUtil::describeUri)
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.joining("<br>")))
                 .range(range);
@@ -43,16 +43,16 @@ public class ODTResolvableUtil {
     }
 
     private static TextAttributesKey getOntologyTextAttributesKey(Set<OntResource> resources) {
-        if (resources.stream().allMatch(ResourceUtil::isValue)) {
+        if (resources.stream().allMatch(TTLResourceUtil::isValue)) {
             return ODTSyntaxHighlighter.OntologyValueAttributesKey;
         }
         if (resources.stream().allMatch(OntResource::isIndividual)) {
             return ODTSyntaxHighlighter.OntologyInstanceAttributesKey;
         }
-        if (resources.stream().allMatch(ResourceUtil::isType)) {
+        if (resources.stream().allMatch(TTLResourceUtil::isType)) {
             return ODTSyntaxHighlighter.OntologyTypeAttributesKey;
         }
-        if (resources.stream().allMatch(ResourceUtil::isClass)) {
+        if (resources.stream().allMatch(TTLResourceUtil::isClass)) {
             return ODTSyntaxHighlighter.OntologyClassAttributesKey;
         }
         return null;

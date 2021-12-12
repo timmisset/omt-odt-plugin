@@ -12,6 +12,7 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
@@ -28,7 +29,7 @@ import java.util.Set;
  * to their implementation.
  * Overlapping logic is confined in this base class
  */
-public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements ODTVariable {
+public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements ODTVariable, ODTVariableWrapper {
     private final ODTVariableDelegate delegate;
     protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
     protected static final Key<CachedValue<Set<OntResource>>> VARIABLE_TYPE = new Key<>("VARIABLE_TYPE");
@@ -82,6 +83,11 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
     }
 
     @Override
+    public boolean canBeAnnotated() {
+        return getDelegate() instanceof ODTDefineInputParamDelegate;
+    }
+
+    @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
         if (!name.startsWith("$")) {
             name = "$" + name;
@@ -91,6 +97,7 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
     }
 
     @Override
+    @NotNull
     public String getName() {
         return getText();
     }
@@ -100,6 +107,11 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
                 .map(PsiNamedElement::getName)
                 .map(s -> s.equals(getName()))
                 .orElse(false);
+    }
+
+    @Override
+    public boolean isParameter() {
+        return getDelegate() instanceof ODTDefineInputParamDelegate;
     }
 
     @Override
@@ -114,6 +126,7 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
             return new CachedValueProvider.Result<>(type,
                     getContainingFile(),
                     PsiModificationTracker.MODIFICATION_COUNT,
+                    ODTCodeUntypedInspectionWarning.PARAM_ANNOTATION,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }

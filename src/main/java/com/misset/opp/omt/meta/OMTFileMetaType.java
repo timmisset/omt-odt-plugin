@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.omt.meta.model.OMTModelMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTCommandsMetaType;
@@ -17,9 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addImportStatementsToMap;
-import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addInjectedCallablesToMap;
-import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addModelItemsToMap;
+import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.*;
 
 /**
  * The OMTFileMetaType is the root for all OMT features
@@ -46,14 +45,15 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping) {
+    public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping,
+                                                                     PsiLanguageInjectionHost host) {
         /*
             The OMT File will provide the callables for the root elements queries, commands and import
          */
         final HashMap<String, List<PsiElement>> map = new HashMap<>();
         // first add the queries and commands, in case of shadowing the same name for imports, the defined statements are used
-        addInjectedCallablesToMap(yamlMapping, "queries", map);
-        addInjectedCallablesToMap(yamlMapping, "commands", map);
+        addInjectedCallablesToMap(yamlMapping, "queries", map, host);
+        addInjectedCallablesToMap(yamlMapping, "commands", map, host);
 
         final YAMLKeyValue model = yamlMapping.getKeyValueByKey("model");
         if (model != null && model.getValue() instanceof YAMLMapping) {

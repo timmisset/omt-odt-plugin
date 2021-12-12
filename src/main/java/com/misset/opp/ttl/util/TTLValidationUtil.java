@@ -4,7 +4,6 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.ttl.OppModel;
-import com.misset.opp.ttl.ResourceUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -84,7 +83,7 @@ public class TTLValidationUtil {
                     .filter(Objects::nonNull)
                     .map(individual -> (OntResource) individual)
                     .collect(Collectors.toSet());
-            String message = "Acceptable types: " + ResourceUtil.describeUrisJoined(acceptableIndividuals);
+            String message = "Acceptable types: " + TTLResourceUtil.describeUrisJoined(acceptableIndividuals);
             holder.registerProblem(element, message, ProblemHighlightType.ERROR);
         }
     }
@@ -220,18 +219,18 @@ public class TTLValidationUtil {
                                                          Set<OntResource> resourcesB) {
         return "Incompatible types:" + "\n" +
                 "cannot assign " + "\n" +
-                ResourceUtil.describeUrisJoined(resourcesB) + "\n" +
+                TTLResourceUtil.describeUrisJoined(resourcesB) + "\n" +
                 "to" + "\n" +
-                ResourceUtil.describeUrisJoined(resourcesA);
+                TTLResourceUtil.describeUrisJoined(resourcesA);
     }
 
     private static String createRequiredTypesWarning(Set<OntResource> required,
                                                      Set<OntResource> provided) {
         return "Incompatible types:" + "\n" +
                 "required " + "\n" +
-                ResourceUtil.describeUrisJoined(required) + "\n" +
+                TTLResourceUtil.describeUrisJoined(required) + "\n" +
                 "provided" + "\n" +
-                ResourceUtil.describeUrisJoined(provided);
+                TTLResourceUtil.describeUrisJoined(provided);
     }
 
 }

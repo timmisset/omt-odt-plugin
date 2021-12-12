@@ -1,5 +1,6 @@
 package com.misset.opp.odt.psi.impl.resolvable.call;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.psi.PsiCall;
@@ -41,4 +42,9 @@ public interface ODTCall extends PsiCall, PsiNamedElement, ODTResolvable {
      */
     @NotNull
     Set<OntResource> resolveSignatureArgument(int index);
+
+    /**
+     * Returns the argument index which contains the provided element
+     */
+    int getArgumentIndexOf(PsiElement element);
 }

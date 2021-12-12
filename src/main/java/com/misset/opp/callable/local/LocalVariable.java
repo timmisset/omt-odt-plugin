@@ -47,4 +47,9 @@ public class LocalVariable implements Variable {
     public Set<OntResource> getType() {
         return type;
     }
+
+    @Override
+    public boolean isReadonly() {
+        return true;
+    }
 }

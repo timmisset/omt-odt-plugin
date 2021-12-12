@@ -34,7 +34,7 @@ public class ODTCallReference extends PsiReferenceBase.Poly<ODTResolvableCall> i
                         .resolveInOMT(OMTCallableProvider.class,
                                 OMTCallableProvider.KEY,
                                 myElement.getCallId(),
-                                OMTCallableProvider::getCallableMap))
+                                (provider, mapping) -> provider.getCallableMap(mapping, myElement.getContainingFile().getHost())))
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 

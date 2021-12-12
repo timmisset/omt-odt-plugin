@@ -2,12 +2,18 @@ package com.misset.opp.omt.meta.model;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.callable.Resolvable;
+import com.misset.opp.callable.local.LocalVariable;
+import com.misset.opp.callable.psi.PsiResolvable;
 import com.misset.opp.omt.meta.OMTInjectable;
-import com.misset.opp.omt.meta.OMTLocalVariableTypeProviderMetaType;
+import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.model.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.references.OMTPayloadQueryReferenceMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTOnChangeScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
+import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
+import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -15,16 +21,18 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 @SimpleInjectable
-public class OMTPayloadItemMetaType extends OMTLocalVariableTypeProviderMetaType implements OMTInjectable, OMTLocalVariableTypeProvider {
+public class OMTPayloadItemMetaType extends OMTMetaType implements
+        OMTInjectable,
+        OMTLocalVariableTypeProvider {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    private final List<LocalVariable> LOCAL_VARIABLES = List.of(
+            new LocalVariable("$newValue", "New value for the payload item. Since a payload item is exposed, the newValue can be any kind of value", Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE)),
+            new LocalVariable("$oldValue", "Old value for the payload item. Since a payload item is exposed, the newValue can be any kind of value", Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE))
+    );
 
     static {
         features.put("value", OMTQueryMetaType::new);
@@ -68,15 +76,29 @@ public class OMTPayloadItemMetaType extends OMTLocalVariableTypeProviderMetaType
     }
 
     @Override
-    protected YAMLValue getTypeProviderMap(String variableName,
-                                           @NotNull YAMLMapping mapping) {
+    public List<LocalVariable> getLocalVariables(YAMLMapping mapping) {
+        Set<OntResource> type = getType(mapping);
+        return List.of(
+                new LocalVariable("$newValue", "New value for the variable", type),
+                new LocalVariable("$oldValue", "Old value for the variable", type)
+        );
+    }
+
+    private Set<OntResource> getType(YAMLMapping mapping) {
+        final YAMLValue yamlValue = getTypeProviderMap(mapping);
+        return Optional.ofNullable(yamlValue)
+                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvable.class))
+                .orElse(Collections.emptySet())
+                .stream()
+                .map(Resolvable::resolve)
+                .findFirst()
+                .orElse(Collections.emptySet());
+    }
+
+    private YAMLValue getTypeProviderMap(@NotNull YAMLMapping mapping) {
         return Optional.ofNullable(mapping.getKeyValueByKey("value"))
                 .map(YAMLKeyValue::getValue)
                 .orElse(null);
     }
 
-    @Override
-    protected List<String> getVariables() {
-        return List.of("$newValue", "$oldValue");
-    }
 }

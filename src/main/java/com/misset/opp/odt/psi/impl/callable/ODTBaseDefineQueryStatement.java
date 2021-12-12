@@ -3,10 +3,8 @@ package com.misset.opp.odt.psi.impl.callable;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.HighlightSeverity;
 import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
-import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -53,5 +51,15 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
     @Override
     public void annotate(AnnotationHolder holder) {
 
+    }
+
+    @Override
+    public String getType() {
+        return "DEFINE QUERY";
+    }
+
+    @Override
+    public boolean canBeAppliedTo(Set<OntResource> resources) {
+        return true;
     }
 }

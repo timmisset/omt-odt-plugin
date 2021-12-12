@@ -93,10 +93,20 @@ public abstract class BuiltInOperator extends Builtin {
                                                           PsiCall call,
                                                           ProblemsHolder holder) {
         boolean b = OppModel.INSTANCE.areCompatible(possibilities.getFirst(), possibilities.getSecond());
-        if(!b) {
+        if (!b) {
             holder.registerProblem(call,
                     "Possible outcomes are incompatible, not illegal but it smells fishy",
                     ProblemHighlightType.WEAK_WARNING);
         }
+    }
+
+    @Override
+    public String getType() {
+        return "Builtin Operator";
+    }
+
+    @Override
+    public boolean canBeAppliedTo(Set<OntResource> resources) {
+        return true;
     }
 }

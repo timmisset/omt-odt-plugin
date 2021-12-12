@@ -32,4 +32,14 @@ public abstract class ODTBaseDefineCommandStatement extends ODTDefineStatement i
     public @NotNull Set<OntResource> resolve() {
         return Collections.emptySet();
     }
+
+    @Override
+    public String getType() {
+        return "DEFINE COMMAND";
+    }
+
+    @Override
+    public boolean canBeAppliedTo(Set<OntResource> resources) {
+        return false;
+    }
 }

@@ -1,6 +1,7 @@
 package com.misset.opp.odt;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
@@ -16,9 +17,9 @@ import java.util.Optional;
 public class ODTInjectionUtil {
 
     /**
-     * Returns the YamlScalar which is the host for the entire ODT file that the provided element is part of
+     * Returns the InjectionHost which is the host for the entire ODT file that the provided element is part of
      */
-    public static YAMLPsiElement getInjectionHost(PsiElement element) {
+    public static PsiLanguageInjectionHost getInjectionHost(PsiElement element) {
         return Optional.ofNullable(element)
                 .map(PsiElement::getContainingFile)
                 .filter(ODTFile.class::isInstance)

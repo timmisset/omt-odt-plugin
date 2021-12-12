@@ -4,12 +4,23 @@ import com.misset.opp.callable.Variable;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
 public abstract class GlobalVariable implements Variable {
 
     private static final HashMap<String, GlobalVariable> globalVariableHashMap = new HashMap<>();
+
+    @Override
+    public boolean isReadonly() {
+        return true;
+    }
+
+    @Override
+    public boolean isGlobal() {
+        return true;
+    }
 
     private static final GlobalVariable MEDEWERKER_GRAPH = new GlobalVariable() {
         @Override
@@ -86,6 +97,10 @@ public abstract class GlobalVariable implements Variable {
 
     public static GlobalVariable getVariable(String name) {
         return globalVariableHashMap.get(name);
+    }
+
+    public static Collection<GlobalVariable> getVariables() {
+        return globalVariableHashMap.values();
     }
 
 }

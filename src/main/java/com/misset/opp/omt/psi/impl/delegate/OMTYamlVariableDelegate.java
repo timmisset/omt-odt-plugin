@@ -4,6 +4,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
+import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.psi.OMTVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +65,11 @@ public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements OMTVar
 
     public TextRange getNameTextRange() {
         return getFromMeta(OMTNamedVariableMetaType::getNameTextRange, TextRange.allOf(getName()));
+    }
+
+    @Override
+    public boolean isParameter() {
+        return OMTVariableProvider.IS_PARAMETER.get(getOriginalElement());
     }
 
     @Override

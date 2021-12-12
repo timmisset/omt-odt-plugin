@@ -100,4 +100,15 @@ public interface Callable extends Resolvable {
         }
         return typeMapping;
     }
+
+    /**
+     * The type of callable
+     */
+    String getType();
+
+    /**
+     * If the callable (as operator) can be applied on the resources.
+     * Should return true if any value from resources is valid.
+     */
+    boolean canBeAppliedTo(Set<OntResource> resources);
 }

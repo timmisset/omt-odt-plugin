@@ -1,10 +1,6 @@
 package com.misset.opp.odt.completion;
 
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -19,11 +15,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static com.intellij.patterns.PsiJavaPatterns.psiElement;
 
@@ -59,15 +51,6 @@ public class ODTTraverseCompletion extends CompletionContributor {
 
             }
         });
-
-        extend(CompletionType.BASIC, psiElement(), new CompletionProvider<>() {
-            @Override
-            protected void addCompletions(@NotNull CompletionParameters parameters,
-                                          @NotNull ProcessingContext context,
-                                          @NotNull CompletionResultSet result) {
-                System.out.println(parameters.getPosition());
-            }
-        });
     }
 
     private void addModelTraverseLookupElements(Set<Property> predicates,
@@ -94,6 +77,7 @@ public class ODTTraverseCompletion extends CompletionContributor {
                 .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
                 .withTailText(direction == TraverseDirection.FORWARD ? " -> forward" : " <- reverse")
                 .withTypeText("", Icons.TTLFile, false)
+                .withIcon(Icons.TTLFile)
                 .withPresentableText(title);
     }
 

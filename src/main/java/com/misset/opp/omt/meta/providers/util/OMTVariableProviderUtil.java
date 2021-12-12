@@ -1,11 +1,8 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.yaml.psi.YAMLKeyValue;
-import org.jetbrains.yaml.psi.YAMLMapping;
-import org.jetbrains.yaml.psi.YAMLSequence;
-import org.jetbrains.yaml.psi.YAMLSequenceItem;
-import org.jetbrains.yaml.psi.YAMLValue;
+import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import org.jetbrains.yaml.psi.*;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 import java.util.HashMap;
@@ -27,9 +24,11 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
         }
         return null;
     }
+
     private static String getVariableName(YAMLPlainTextImpl text) {
         return text.getText().split(" ")[0]; // remove any assignments or typings and only keep the $name
     }
+
     private static String getVariableName(YAMLMapping destructed, String destructedKeyId) {
         return Optional.ofNullable(destructed.getKeyValueByKey(destructedKeyId))
                 .map(YAMLKeyValue::getValue)
@@ -37,22 +36,38 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
                 .orElse(null);
     }
 
-    public static void addSequenceToMap(YAMLMapping mapping, String key, HashMap<String, List<PsiElement>> map) {
+    public static void addSequenceToMap(YAMLMapping mapping,
+                                        String key,
+                                        HashMap<String, List<PsiElement>> map) {
+        addSequenceToMap(mapping, key, map, false);
+    }
+
+    public static void addSequenceToMap(YAMLMapping mapping,
+                                        String key,
+                                        HashMap<String, List<PsiElement>> map,
+                                        boolean isParameter) {
         final YAMLKeyValue variables = mapping.getKeyValueByKey(key);
-        if(variables != null && variables.getValue() instanceof YAMLSequence) {
-            addSequenceToMap((YAMLSequence) variables.getValue(), map);
+        if (variables != null && variables.getValue() instanceof YAMLSequence) {
+            addSequenceToMap((YAMLSequence) variables.getValue(), map, isParameter);
         }
     }
 
     public static void addSequenceToMap(YAMLSequence sequence,
-                                        HashMap<String, List<PsiElement>> map) {
+                                        HashMap<String, List<PsiElement>> map
+    ) {
+        addSequenceToMap(sequence, map, false);
+    }
+
+    public static void addSequenceToMap(YAMLSequence sequence,
+                                        HashMap<String, List<PsiElement>> map,
+                                        boolean isParameter) {
         sequence.getItems()
                 .forEach(sequenceItem -> addToGroupedMap(getVariableName(sequenceItem),
-                        getReferenceTarget(sequenceItem),
+                        getReferenceTarget(sequenceItem, isParameter),
                         map));
     }
 
-    public static PsiElement getReferenceTarget(YAMLSequenceItem sequenceItem) {
+    private static PsiElement getReferenceTarget(YAMLSequenceItem sequenceItem, boolean isParameter) {
         final YAMLValue yamlValue = sequenceItem.getValue();
         if (yamlValue instanceof YAMLMapping) {
             // destructed notation, return the "name":
@@ -61,9 +76,14 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
             if (name == null) {
                 return null;
             }
-            return name.getValue();
+            return setIsParameter(name.getValue(), isParameter);
         } else {
-            return yamlValue;
+            return setIsParameter(yamlValue, isParameter);
         }
+    }
+
+    private static PsiElement setIsParameter(PsiElement element, boolean isParameter) {
+        OMTVariableProvider.IS_PARAMETER.set(element, isParameter);
+        return element;
     }
 }

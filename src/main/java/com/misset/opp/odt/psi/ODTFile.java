@@ -4,6 +4,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.CachedValue;
@@ -13,11 +14,7 @@ import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 
 public interface ODTFile extends PsiFile {
@@ -25,7 +22,7 @@ public interface ODTFile extends PsiFile {
     /**
      * Returns the Yaml Host element where this ODT file is injected into
      */
-    YAMLPsiElement getHost();
+    PsiLanguageInjectionHost getHost();
 
     /**
      * Returns the containing OMT File that contains the Yaml Host element where this ODT file is injected into

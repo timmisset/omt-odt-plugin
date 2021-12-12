@@ -1,22 +1,15 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.callable.local.Cancel;
-import com.misset.opp.callable.local.Commit;
-import com.misset.opp.callable.local.Done;
-import com.misset.opp.callable.local.GetErrorState;
-import com.misset.opp.callable.local.HasError;
-import com.misset.opp.callable.local.LocalCommand;
-import com.misset.opp.callable.local.Rollback;
+import com.intellij.psi.PsiLanguageInjectionHost;
+import com.misset.opp.callable.Call;
+import com.misset.opp.callable.local.*;
+import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTWatchersArrayMetaType;
-import com.misset.opp.omt.meta.model.OMTActionsMetaType;
-import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
-import com.misset.opp.omt.meta.model.OMTPayloadMetaType;
-import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
-import com.misset.opp.omt.meta.model.OMTRulesMetaType;
+import com.misset.opp.omt.meta.model.*;
 import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.model.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTCommandsMetaType;
@@ -27,23 +20,32 @@ import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addInjectedCallablesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
-public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTCallableProvider, OMTPrefixProvider, OMTLocalCommandProvider {
+public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
+        OMTVariableProvider,
+        OMTCallableProvider,
+        OMTPrefixProvider,
+        OMTLocalCommandProvider,
+        OMTMetaCallable {
     protected OMTActivityMetaType() {
         super("OMT Activity");
     }
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+
     static {
         features.put("title", OMTInterpolatedStringMetaType::new);
         features.put("onDefaultClose", OMTInterpolatedStringMetaType::new);
@@ -75,15 +77,15 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
     public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
         HashMap<String, List<PsiElement>> map = new HashMap<>();
         addSequenceToMap(mapping, "variables", map);
-        addSequenceToMap(mapping, "params", map);
+        addSequenceToMap(mapping, "params", map, true);
         return map;
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping) {
+    public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping, PsiLanguageInjectionHost host) {
         HashMap<String, List<PsiElement>> map = new HashMap<>();
-        addInjectedCallablesToMap(yamlMapping, "commands", map);
-        addInjectedCallablesToMap(yamlMapping, "queries", map);
+        addInjectedCallablesToMap(yamlMapping, "commands", map, host);
+        addInjectedCallablesToMap(yamlMapping, "queries", map, host);
         return map;
     }
 
@@ -105,7 +107,30 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
     }
 
     @Override
-    public String getDescription() {
+    public String getType() {
         return "Activity";
+    }
+
+    @Override
+    public Set<OntResource> resolve(YAMLMapping mapping, Set<OntResource> resources, Call call) {
+        // todo:
+        // calculate the possible outcomes from the Activity, can be done if the activity has a 'returns' field
+        return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
+    }
+
+    @Override
+    public boolean isVoid(YAMLMapping mapping) {
+        return mapping.getKeyValueByKey("returns") == null;
+    }
+
+    @Override
+    public boolean canBeAppliedTo(YAMLMapping mapping, Set<OntResource> resources) {
+        return false;
+    }
+
+    @Override
+    public Set<OntResource> getSecondReturnArgument() {
+        // $committed value
+        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
 }

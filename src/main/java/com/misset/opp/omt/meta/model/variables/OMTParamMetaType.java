@@ -62,7 +62,7 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTNamedVa
         final Matcher matcher = SHORTHAND.matcher(value.getText());
         final boolean b = matcher.find();
         if (!b || matcher.group(3) == null) {
-            return null;
+            return Collections.emptySet();
         } // no type provided
         return OMTParamTypeType.resolveType(value, matcher.group(3));
     }
