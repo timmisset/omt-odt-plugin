@@ -7,7 +7,7 @@ import com.misset.opp.odt.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ODTScriptLineImpl extends ODTDocumentedScriptLine implements ODTScriptLine {
+public class ODTScriptLineImpl extends ODTBaseScriptLine implements ODTScriptLine {
 
   public ODTScriptLineImpl(@NotNull ASTNode node) {
     super(node);

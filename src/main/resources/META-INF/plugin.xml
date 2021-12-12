@@ -100,6 +100,9 @@
                                 implementationClass="com.misset.opp.odt.completion.ODTOperatorCompletion"/>
         <completion.contributor language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.ODTVariableCompletion"/>
+        <completion.contributor language="ODT"
+                                implementationClass="com.misset.opp.odt.completion.ODTCommandCompletion"/>
+
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>

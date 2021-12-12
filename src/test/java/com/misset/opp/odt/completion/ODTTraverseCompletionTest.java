@@ -1,17 +1,56 @@
 package com.misset.opp.odt.completion;
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.testCase.OMTCompletionTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ODTTraverseCompletionTest extends OMTOntologyTestCase {
+import java.util.List;
+
+class ODTTraverseCompletionTest extends OMTCompletionTestCase {
     // todo: add some more tests for different model traversions
 
     @Test
-    void testQueryStepForwardTraversion() {
+    void testQueryStepTraversion() {
         configureByText(insideQueryWithPrefixes("/ont:ClassA / <caret>"), true);
-        final LookupElement[] lookupElements = myFixture.completeBasic();
-        Assertions.assertNotEquals(0, lookupElements.length);
+        List<String> lookupStrings = getLookupStrings();
+        assertContainsElements(lookupStrings, "^rdf:type", "ont:booleanPredicate", "ont:classPredicate");
+    }
+
+    @Test
+    void testQueryStepTraversionReverse() {
+        String content = insideProcedureRunWithPrefixes(
+                "VAR $variableA;\n" +
+                        "VAR $anotherVariable = '' / <caret>");
+        configureByText(content, true);
+        assertContainsElements(getLookupStrings(), "rdf:type", "^ont:stringPredicate");
+    }
+
+    @Test
+    void testAtFirstStepInsideOfDefinedQuery() {
+        String content = insideQueryWithPrefixes("<caret>");
+        configureByText(content, true);
+        assertContainsElements(getLookupStrings(), "rdf:type");
+    }
+
+    @Test
+    void testNotAtFirstStepOutsideOfDefinedQuery() {
+        String content = insideProcedureRunWithPrefixes(
+                "VAR $variableA;\n" +
+                        "VAR $anotherVariable = <caret>");
+        configureByText(content, true);
+        assertDoesntContain(getLookupStrings(), "rdf:type");
+    }
+
+    @Test
+    void testQueryStepFiltersForType() {
+        configureByText(withPrefixes("queries:\n" +
+                "   /**\n" +
+                "    * @param $booleanValue (boolean)\n" +
+                "    */\n" +
+                "   DEFINE QUERY query($booleanValue) => $booleanValue;\n" +
+                "   DEFINE QUERY anotherQuery => query(/ont:ClassA / ^rdf:type / <caret>);\n"), true);
+        List<String> lookupStrings = getLookupStrings();
+        Assertions.assertTrue(lookupStrings.contains("ont:booleanPredicate"));
+        Assertions.assertFalse(lookupStrings.contains("ont:classPredicate"));
     }
 }

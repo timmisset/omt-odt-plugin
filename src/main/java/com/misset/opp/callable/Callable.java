@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.psi.PsiCall;
+import com.misset.opp.ttl.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -34,22 +35,36 @@ public interface Callable extends Resolvable {
     int maxNumberOfArguments();
 
     boolean isVoid();
+
     boolean isCommand();
 
     default List<String> getFlags() {
         return Collections.emptyList();
     }
 
-    default Set<OntResource> getSecondReturnArgument() { return Collections.emptySet(); }
+    default Set<OntResource> getSecondReturnArgument() {
+        return Collections.emptySet();
+    }
 
-    default @NotNull Set<OntResource> resolve() { return Collections.emptySet(); }
+    default @NotNull Set<OntResource> resolve() {
+        return Collections.emptySet();
+    }
+
+    default Set<OntResource> returns() {
+        Set<OntResource> resolve = resolve();
+        if (resolve.isEmpty()) {
+            return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
+        } else {
+            return resolve;
+        }
+    }
 
     /**
      * Generic validation that should be called on every Callable member, such as the number of arguments
      * If additional validations are required, make sure to also call this method
      */
     default void validate(PsiCall call,
-                               ProblemsHolder holder) {
+                          ProblemsHolder holder) {
         LoggerUtil.runWithLogger(LOGGER,
                 "Validation of call " + call.getCallId(),
                 () -> {
@@ -66,6 +81,14 @@ public interface Callable extends Resolvable {
 
     default HashMap<Integer, Set<OntResource>> getParameterTypes() {
         return new HashMap<>();
+    }
+
+    /**
+     * The acceptable types at the given position, taking the context of the Callable into consideration
+     * For example, if @ADD_TO is called with a String type for the collection, the argument should be a string to
+     */
+    default Set<OntResource> getAcceptableArgumentType(int index, Call call) {
+        return getParameterTypes().getOrDefault(index, Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE));
     }
 
     private boolean passesMinArguments(int numberOfArguments) {

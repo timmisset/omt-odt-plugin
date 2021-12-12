@@ -21,7 +21,7 @@ class ODTOperatorCompletionTest extends OMTCompletionTestCase {
                 "   DEFINE QUERY queryC => '';\n";
         configureByText(content, true);
         List<String> lookupStrings = getLookupStrings();
-        assertContainsElements(lookupStrings, "queryA");
+        assertContainsElements(lookupStrings, "queryA", "LOG");
         assertDoesntContain(lookupStrings, "queryC");
     }
 
@@ -30,9 +30,44 @@ class ODTOperatorCompletionTest extends OMTCompletionTestCase {
         String content = "queries: |\n" +
                 "   DEFINE QUERY queryA => '';\n" +
                 "commands: |\n" +
-                "   DEFINE COMMAND command => { <caret> };\n";
+                "   DEFINE COMMAND command => { VAR $variable = <caret> }\n";
         configureByText(content, true);
         List<String> lookupStrings = getLookupStrings();
         assertContainsElements(lookupStrings, "queryA");
+    }
+
+    @Test
+    void testInsideCallArgument() {
+        String content = "queries: |\n" +
+                "   DEFINE QUERY queryA => '';\n" +
+                "commands: |\n" +
+                "   DEFINE COMMAND command => { @LOG(<caret>); }\n";
+        configureByText(content, true);
+        List<String> lookupStrings = getLookupStrings();
+        assertContainsElements(lookupStrings, "queryA");
+        assertDoesntContain(lookupStrings, "LOG");
+    }
+
+    @Test
+    void testInsideCallArgumentHasBuiltinOperatorsOnNextStep() {
+        String content = "queries: |\n" +
+                "   DEFINE QUERY queryA => '';\n" +
+                "commands: |\n" +
+                "   DEFINE COMMAND command => { @LOG('' / <caret>); }\n";
+        configureByText(content, true);
+        List<String> lookupStrings = getLookupStrings();
+        assertContainsElements(lookupStrings, "queryA", "LOG");
+    }
+
+    @Test
+    void testNoBuiltinOperatorsOnVariableAssignment() {
+        String content = "queries: |\n" +
+                "   DEFINE QUERY queryA => '';\n" +
+                "commands: |\n" +
+                "   DEFINE COMMAND command => { $variable = <caret>; }\n";
+        configureByText(content, true);
+        List<String> lookupStrings = getLookupStrings();
+        assertContainsElements(lookupStrings, "queryA");
+        assertDoesntContain(lookupStrings, "LOG");
     }
 }

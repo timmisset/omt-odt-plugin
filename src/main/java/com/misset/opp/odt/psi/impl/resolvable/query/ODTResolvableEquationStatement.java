@@ -1,8 +1,11 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTEquationStatement;
 import com.misset.opp.odt.psi.ODTQuery;
+import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -11,9 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery implements ODTEquationStatement {
+public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery implements ODTEquationStatement,
+        ODTTypeFilterProvider {
     public ODTResolvableEquationStatement(@NotNull ASTNode node) {
         super(node);
     }
@@ -66,5 +71,17 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
             return resource.asIndividual().getOntClass();
         }
         return null;
+    }
+
+
+    @Override
+    public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {
+        ODTQuery leftSide = getQueryList().get(0);
+        ODTQuery rightSide = getQueryList().get(1);
+        ODTQuery opposite = PsiTreeUtil.isAncestor(leftSide, element, true) ? leftSide : rightSide;
+        Set<OntResource> oppositeResources = opposite.resolve();
+
+        return resources -> resources.isEmpty() || oppositeResources.isEmpty() ||
+                OppModel.INSTANCE.areCompatible(oppositeResources, resources);
     }
 }

@@ -34,6 +34,16 @@ public class AssignCommand extends BuiltInCommand {
         return call.resolveSignatureArgument(0);
     }
 
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, Call call) {
+        if (index > 1) {
+            if (index % 2 == 0) {
+                return call.resolveSignatureArgument(index - 1);
+            }
+        }
+        return null;
+    }
+
     /**
      * Validate that the AssignCommand is called with the right amount of parameters and an uneven amount
      * Any further inspection requires information much more extensive than the generic PsiCall can provide.

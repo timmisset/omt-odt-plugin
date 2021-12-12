@@ -8,6 +8,7 @@ import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 
+import java.util.HashMap;
 import java.util.Set;
 
 public class AddToCommand extends BuiltInCommand {
@@ -29,6 +30,19 @@ public class AddToCommand extends BuiltInCommand {
     @Override
     protected Set<OntResource> resolveFrom(Call call) {
         return combineArgumentResources(call);
+    }
+
+    @Override
+    public HashMap<Integer, Set<OntResource>> getParameterTypes() {
+        return super.getParameterTypes();
+    }
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, Call call) {
+        if (index == 1) {
+            return call.resolveSignatureArgument(0);
+        }
+        return null;
     }
 
     @Override

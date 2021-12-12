@@ -4,15 +4,14 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.openapi.util.Pair;
 import com.misset.opp.callable.builtin.BuiltInTest;
 import com.misset.opp.callable.psi.PsiCall;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.startsWith;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class AddToCommandTest extends BuiltInTest {
 
@@ -50,5 +49,14 @@ class AddToCommandTest extends BuiltInTest {
         verify(holder).registerProblem(eq(signature),
                 startsWith("Suspicious assignment"),
                 eq(ProblemHighlightType.WARNING));
+    }
+
+    @Test
+    void testAcceptableArgumentType() {
+        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE));
+        Assertions.assertTrue(AddToCommand.INSTANCE.getAcceptableArgumentType(1, call)
+                .contains(oppModel.XSD_STRING_INSTANCE));
+        Assertions.assertFalse(AddToCommand.INSTANCE.getAcceptableArgumentType(1, call)
+                .contains(oppModel.XSD_BOOLEAN_INSTANCE));
     }
 }

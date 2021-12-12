@@ -6,6 +6,7 @@ import com.misset.opp.callable.Call;
 import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -61,5 +62,15 @@ public class JsonParseCommand extends BuiltInCommand {
         validateJSONArgument(0, call, holder);
         validateClassNameArgument(1, call, holder);
         validateNamedGraphArgument(2, call, holder);
+    }
+
+    @Override
+    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, Call call) {
+        if (index == 0) {
+            return Set.of(OppModel.INSTANCE.JSON_OBJECT);
+        } else if (index == 2) {
+            return Set.of(OppModel.INSTANCE.NAMED_GRAPH);
+        }
+        return null;
     }
 }

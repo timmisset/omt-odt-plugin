@@ -35,7 +35,7 @@ public class OppModel {
 
     protected Property SHACL_PATH, SHACL_CLASS, SHACL_MINCOUNT, SHACL_MAXCOUNT, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
     protected Property RDFS_SUBCLASS_OF;
-    protected Property RDF_TYPE;
+    public Property RDF_TYPE;
     private List<Property> classModelProperties;
 
     protected OntClass OWL_CLASS;

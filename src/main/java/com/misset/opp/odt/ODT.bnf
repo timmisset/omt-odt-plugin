@@ -59,7 +59,7 @@ script ::=                                  scriptLine+
 // com.intellij.psi.impl.source.tree.JavaDocElementType.DOC_COMMENT
 scriptLine ::=                              DOC_COMMENT? (commandBlock | logicalBlock | defineCommandStatement | statement) SEMICOLON* {
     implements="com.intellij.psi.PsiJavaDocumentedElement"
-    extends="com.misset.opp.odt.psi.impl.ODTDocumentedScriptLine"
+    extends="com.misset.opp.odt.psi.impl.ODTBaseScriptLine"
 }
 statement ::=                               declareVariable | variableAssignment | definePrefix | commandCall |
                                             collectionStatement | returnStatement | queryStatement | defineQueryStatement

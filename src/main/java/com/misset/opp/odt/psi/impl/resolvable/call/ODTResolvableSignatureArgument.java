@@ -3,12 +3,16 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.callable.Callable;
 import com.misset.opp.callable.Resolvable;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
+import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,8 +20,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
-public abstract class ODTResolvableSignatureArgument extends ODTASTWrapperPsiElement implements ODTSignatureArgument {
+public abstract class ODTResolvableSignatureArgument extends ODTASTWrapperPsiElement
+        implements ODTSignatureArgument, ODTTypeFilterProvider {
     public ODTResolvableSignatureArgument(@NotNull ASTNode node) {
         super(node);
     }
@@ -48,5 +54,23 @@ public abstract class ODTResolvableSignatureArgument extends ODTASTWrapperPsiEle
     @Override
     public void annotate(AnnotationHolder holder) {
         /* Annotation is performed on the content of the Signature argument */
+    }
+
+    @Override
+    public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {
+        ODTCall call = PsiTreeUtil.getParentOfType(element, ODTCall.class, true);
+        if (call == null) {
+            return ODTTypeFilterProvider.ACCEPT_ALL;
+        }
+
+        Callable callable = call.getCallable();
+        if (callable == null) {
+            return ODTTypeFilterProvider.ACCEPT_ALL;
+        }
+
+        int argumentIndexOf = call.getArgumentIndexOf(element);
+        Set<OntResource> acceptableArgumentType = callable.getAcceptableArgumentType(argumentIndexOf, call);
+
+        return resources -> resources.isEmpty() || OppModel.INSTANCE.areCompatible(acceptableArgumentType, resources);
     }
 }

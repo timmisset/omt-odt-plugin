@@ -1,11 +1,7 @@
 package com.misset.opp.odt.completion;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.patterns.PsiJavaElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PlatformIcons;
@@ -16,7 +12,7 @@ import com.misset.opp.callable.global.GlobalVariable;
 import com.misset.opp.callable.local.CallableLocalVariableTypeProvider;
 import com.misset.opp.callable.local.LocalVariable;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.ODTQueryStep;
+import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.variable.ODTBaseVariable;
 import com.misset.opp.odt.psi.util.PsiRelationshipUtil;
@@ -24,62 +20,68 @@ import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlVariableDelegate;
 import com.misset.opp.ttl.util.TTLResourceUtil;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import static com.intellij.patterns.PsiJavaPatterns.psiElement;
-
-public class ODTVariableCompletion extends ODTCallCompletion {
-    private static final PsiJavaElementPattern.Capture<PsiElement> QUERY_STEP_OPERATOR =
-            psiElement()
-                    .inside(ODTQueryStep.class);
+public class ODTVariableCompletion extends CompletionContributor {
 
     public ODTVariableCompletion() {
-
-
-        extend(CompletionType.BASIC, QUERY_STEP_OPERATOR, new CompletionProvider<>() {
+        extend(CompletionType.BASIC, CompletionPatterns.FIRST_QUERY_STEP, new CompletionProvider<>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters,
                                           @NotNull ProcessingContext context,
                                           @NotNull CompletionResultSet result) {
+
                 PsiElement position = parameters.getPosition();
+                Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
+
                 ODTFile originalFile = (ODTFile) parameters.getOriginalFile();
+
+                PsiTreeUtil.getParentOfType(position, ODTTypeFilterProvider.class);
+
                 // add global variables
-                GlobalVariable.getVariables()
-                        .stream()
-                        .map(this::getLookupElement)
-                        .forEach(result::addElement);
+                addVariables(GlobalVariable.getVariables(), typeFilter, result);
 
                 // add variables declared in this file:
                 // do not use the original file here, the relationship util matches on common parents
                 // and the original file is not the same as the (temp) completion file
-                PsiTreeUtil.findChildrenOfType(position.getContainingFile(), ODTBaseVariable.class)
+                addVariables(PsiTreeUtil.findChildrenOfType(position.getContainingFile(), ODTBaseVariable.class)
                         .stream()
                         .filter(odtVariable -> PsiRelationshipUtil.canBeRelatedElement(odtVariable, position))
-                        .map(this::getLookupElement)
-                        .forEach(result::addElement);
+                        .collect(Collectors.toList()), typeFilter, result);
 
                 // add local variables from commands ($value, $index, $array):
-                addLocalVariablesForCall(position, result);
+                addVariables(getLocalVariablesForCall(position), typeFilter, result);
 
                 // add local variables from host providers ($newValue, $oldValue):
-                addLocalVariableProviders(originalFile, result);
+                addVariables(getLocalVariableProviders(originalFile), typeFilter, result);
 
                 // add declared variables from other host providers
-                addDeclaredVariableProviders(originalFile, result);
+                addVariables(getDeclaredVariableProviders(originalFile), typeFilter, result);
             }
 
-            private void addLocalVariablesForCall(PsiElement element, @NotNull CompletionResultSet result) {
-                PsiTreeUtil.collectParents(element, ODTCall.class, false, Objects::isNull)
+            private void addVariables(Collection<? extends Variable> variables,
+                                      Predicate<Set<OntResource>> typeFilter,
+                                      @NotNull CompletionResultSet result) {
+                variables.stream()
+                        .filter(variable -> typeFilter.test(variable.getType()))
+                        .map(this::getLookupElement)
+                        .forEach(result::addElement);
+            }
+
+            private List<Variable> getLocalVariablesForCall(PsiElement element) {
+                return PsiTreeUtil.collectParents(element, ODTCall.class, false, Objects::isNull)
                         .stream()
                         .map(call -> getLocalVariablesForCall(call, element))
                         .flatMap(Collection::parallelStream)
-                        .map(this::getLookupElement)
-                        .forEach(result::addElement);
+                        .collect(Collectors.toList());
             }
 
             private List<LocalVariable> getLocalVariablesForCall(ODTCall call, PsiElement element) {
@@ -90,38 +92,36 @@ public class ODTVariableCompletion extends ODTCallCompletion {
                 return Collections.emptyList();
             }
 
-            private void addDeclaredVariableProviders(ODTFile originalFile, @NotNull CompletionResultSet result) {
+            private List<OMTYamlVariableDelegate> getDeclaredVariableProviders(ODTFile originalFile) {
                 // add variables from host provider:
                 LinkedHashMap<YAMLMapping, OMTVariableProvider> providers = originalFile.getProviders(OMTVariableProvider.class, OMTVariableProvider.KEY);
-                providers.forEach(
-                        (mapping, omtVariableProvider) -> addDeclaredVariableProviders(mapping, omtVariableProvider, result)
-                );
+                return providers.entrySet().stream()
+                        .map(entry -> getDeclaredVariableProviders(entry.getKey(), entry.getValue()))
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList());
             }
 
-            private void addDeclaredVariableProviders(YAMLMapping mapping,
-                                                      OMTVariableProvider provider,
-                                                      @NotNull CompletionResultSet result) {
+            private List<OMTYamlVariableDelegate> getDeclaredVariableProviders(YAMLMapping mapping,
+                                                                               OMTVariableProvider provider) {
                 HashMap<String, List<PsiElement>> variableMap = provider.getVariableMap(mapping);
-                variableMap.values()
+                return variableMap.values()
                         .stream()
                         .flatMap(Collection::stream)
                         .filter(YAMLPlainTextImpl.class::isInstance)
                         .map(YAMLPlainTextImpl.class::cast)
                         .map(OMTYamlVariableDelegate::new)
-                        .map(this::getLookupElement)
-                        .forEach(result::addElement);
+                        .collect(Collectors.toList());
             }
 
-            private void addLocalVariableProviders(ODTFile originalFile, @NotNull CompletionResultSet result) {
+            private List<LocalVariable> getLocalVariableProviders(ODTFile originalFile) {
                 // add variables from host provider:
                 LinkedHashMap<YAMLValue, OMTLocalVariableProvider> providers = originalFile.getProviders(YAMLValue.class, OMTLocalVariableProvider.class, OMTLocalVariableProvider.KEY);
-                providers.entrySet()
+                return providers.entrySet()
                         .stream()
                         .map(entrySet -> entrySet.getValue().getLocalVariableMap(entrySet.getKey()))
                         .map(Map::values)
                         .flatMap(Collection::stream)
-                        .map(this::getLookupElement)
-                        .forEach(result::addElement);
+                        .collect(Collectors.toList());
             }
 
             private @NotNull LookupElementBuilder getLookupElement(Variable variable) {

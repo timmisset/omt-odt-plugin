@@ -10,6 +10,7 @@ import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -231,14 +232,29 @@ public abstract class Builtin implements Callable {
             TTLValidationUtil.validateCompatibleTypes(
                     call.getCallInputType(), call.resolveSignatureArgument(0),
                     holder, call);
-        }
-        else if(call.numberOfArguments() >= 2) {
+        } else if (call.numberOfArguments() >= 2) {
             Set<OntResource> ontResources = call.resolveSignatureArgument(0);
-            for(int i = 1; i < call.numberOfArguments(); i++) {
+            for (int i = 1; i < call.numberOfArguments(); i++) {
                 TTLValidationUtil.validateCompatibleTypes(
                         ontResources, call.resolveSignatureArgument(i),
                         holder, call.getCallSignatureElement());
             }
         }
+    }
+
+    @Override
+    public final Set<OntResource> getAcceptableArgumentType(int index, Call call) {
+        Set<OntResource> acceptableArgumentTypeWithContext = getAcceptableArgumentTypeWithContext(index, call);
+        if (acceptableArgumentTypeWithContext == null) {
+            return Callable.super.getAcceptableArgumentType(index, call);
+        }
+        return acceptableArgumentTypeWithContext;
+    }
+
+    /**
+     * Returns null if there are no specifics, empty set if it accepts no input
+     */
+    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, Call call) {
+        return null;
     }
 }
