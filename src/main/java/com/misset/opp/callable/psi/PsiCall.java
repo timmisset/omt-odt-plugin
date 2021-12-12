@@ -44,7 +44,7 @@ public interface PsiCall extends Call, PsiElement {
      * returns a value. The getCallInputType provides the input type for the operator. It's equal to the
      * outcome of the previous step in the path being resolved
      */
-    default Set<OntResource> getCallInputType() {
+    default Set<OntResource> resolveCallInput() {
         return Collections.emptySet();
     }
 

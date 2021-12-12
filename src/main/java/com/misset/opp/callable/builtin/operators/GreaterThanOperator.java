@@ -1,6 +1,5 @@
 package com.misset.opp.callable.builtin.operators;
 
-import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
@@ -36,4 +35,8 @@ public class GreaterThanOperator extends BuiltInBooleanOperator {
         TTLValidationUtil.validateHasOntClass(resources, holder, call, acceptableTypes);
     }
 
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        return Set.of(OppModel.INSTANCE.XSD_STRING, OppModel.INSTANCE.XSD_NUMBER);
+    }
 }

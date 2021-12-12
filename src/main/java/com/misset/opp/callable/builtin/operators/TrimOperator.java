@@ -20,6 +20,6 @@ public class TrimOperator extends BuiltInStringOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateString(call.getCallInputType(), holder, call);
+        TTLValidationUtil.validateString(call.resolveCallInput(), holder, call);
     }
 }

@@ -80,7 +80,7 @@ public abstract class BuiltInOperator extends Builtin {
         final Set<OntResource> left;
         final Set<OntResource> right;
         if(call.numberOfArguments() == 1) {
-            left = call.getCallInputType();
+            left = call.resolveCallInput();
             right = call.resolveSignatureArgument(0);
         } else if(call.numberOfArguments() == 2) {
             left = call.resolveSignatureArgument(0);

@@ -230,7 +230,7 @@ public abstract class Builtin implements Callable {
                                                   ProblemsHolder holder) {
         if (call.numberOfArguments() == 1) {
             TTLValidationUtil.validateCompatibleTypes(
-                    call.getCallInputType(), call.resolveSignatureArgument(0),
+                    call.resolveCallInput(), call.resolveSignatureArgument(0),
                     holder, call);
         } else if (call.numberOfArguments() >= 2) {
             Set<OntResource> ontResources = call.resolveSignatureArgument(0);
@@ -243,7 +243,7 @@ public abstract class Builtin implements Callable {
     }
 
     @Override
-    public final Set<OntResource> getAcceptableArgumentType(int index, Call call) {
+    public final Set<OntResource> getAcceptableArgumentType(int index, PsiCall call) {
         Set<OntResource> acceptableArgumentTypeWithContext = getAcceptableArgumentTypeWithContext(index, call);
         if (acceptableArgumentTypeWithContext == null) {
             return Callable.super.getAcceptableArgumentType(index, call);
@@ -254,7 +254,7 @@ public abstract class Builtin implements Callable {
     /**
      * Returns null if there are no specifics, empty set if it accepts no input
      */
-    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, Call call) {
+    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         return null;
     }
 }

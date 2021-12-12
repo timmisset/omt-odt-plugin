@@ -258,7 +258,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     }
 
     @Override
-    public Set<OntResource> getCallInputType() {
+    public Set<OntResource> resolveCallInput() {
         return resolvePreviousStep();
     }
 

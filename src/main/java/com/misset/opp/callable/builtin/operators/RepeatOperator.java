@@ -3,6 +3,7 @@ package com.misset.opp.callable.builtin.operators;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.psi.PsiCall;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
@@ -42,5 +43,14 @@ public class RepeatOperator extends BuiltInOperator {
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         validateNumberArgument(1, call, holder);
         validateNumberArgument(2, call, holder);
+    }
+
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        if (index == 1 || index == 2) {
+            return Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE);
+        }
+        return null;
     }
 }

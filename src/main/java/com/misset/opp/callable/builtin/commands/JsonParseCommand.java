@@ -65,7 +65,7 @@ public class JsonParseCommand extends BuiltInCommand {
     }
 
     @Override
-    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, Call call) {
+    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
             return Set.of(OppModel.INSTANCE.JSON_OBJECT);
         } else if (index == 2) {

@@ -3,9 +3,12 @@ package com.misset.opp.callable.builtin.operators;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.psi.PsiCall;
+import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.OntResource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,8 +45,8 @@ public class FormatOperator extends BuiltInStringOperator {
                     return;
                 }
                 for(int i = 1; i < call.numberOfArguments(); i++) {
-                    String flag = replacementFlags.get(i-1);
-                    if("%s".equals(flag)) {
+                    String flag = replacementFlags.get(i - 1);
+                    if ("%s".equals(flag)) {
                         validateStringArgument(i, call, holder);
                     } else {
                         validateNumberArgument(i, call, holder);
@@ -51,5 +54,13 @@ public class FormatOperator extends BuiltInStringOperator {
                 }
             }
         }
+    }
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        if (index == 0) {
+            return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
+        }
+        return null;
     }
 }

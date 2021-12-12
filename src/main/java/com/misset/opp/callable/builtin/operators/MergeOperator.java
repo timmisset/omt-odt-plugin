@@ -49,7 +49,7 @@ public class MergeOperator extends BuiltInOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         validateAllArgumentsCompatible(call, holder);
-        if(call.numberOfArguments() >= 2 && !call.getCallInputType().isEmpty()) {
+        if (call.numberOfArguments() >= 2 && !call.resolveCallInput().isEmpty()) {
             holder.registerProblem(call, "Using 2 or more arguments will ignore the input value, consider using pipes instead (<query> | <query> | <query>)", ProblemHighlightType.WARNING);
         }
     }

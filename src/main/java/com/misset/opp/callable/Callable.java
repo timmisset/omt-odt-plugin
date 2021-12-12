@@ -87,7 +87,7 @@ public interface Callable extends Resolvable {
      * The acceptable types at the given position, taking the context of the Callable into consideration
      * For example, if @ADD_TO is called with a String type for the collection, the argument should be a string to
      */
-    default Set<OntResource> getAcceptableArgumentType(int index, Call call) {
+    default Set<OntResource> getAcceptableArgumentType(int index, PsiCall call) {
         return getParameterTypes().getOrDefault(index, Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE));
     }
 

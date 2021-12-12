@@ -35,7 +35,7 @@ public class AssignCommand extends BuiltInCommand {
     }
 
     @Override
-    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, Call call) {
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index > 1) {
             if (index % 2 == 0) {
                 return call.resolveSignatureArgument(index - 1);

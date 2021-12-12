@@ -42,7 +42,7 @@ public class MoveToGraphCommand extends BuiltInCommand {
 
 
     @Override
-    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, Call call) {
+    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 1) {
             return Set.of(OppModel.INSTANCE.NAMED_GRAPH);
         }

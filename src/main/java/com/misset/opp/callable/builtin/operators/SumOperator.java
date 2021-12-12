@@ -31,6 +31,12 @@ public class SumOperator extends BuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateNumber(call.getCallInputType(), holder, call);
+        TTLValidationUtil.validateNumber(call.resolveCallInput(), holder, call);
+    }
+
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        return Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE);
     }
 }

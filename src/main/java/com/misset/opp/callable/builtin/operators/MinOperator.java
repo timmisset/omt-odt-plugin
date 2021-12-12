@@ -5,6 +5,7 @@ import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class MinOperator extends BuiltInCollectionOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         Set<OntClass> acceptableTypes = Set.of(OppModel.INSTANCE.XSD_NUMBER, OppModel.INSTANCE.XSD_DATETIME);
-        TTLValidationUtil.validateHasOntClass(call.getCallInputType(),
+        TTLValidationUtil.validateHasOntClass(call.resolveCallInput(),
                 holder,
                 call,
                 acceptableTypes);
@@ -38,5 +39,14 @@ public class MinOperator extends BuiltInCollectionOperator {
                 holder,
                 call.getCallSignatureArgumentElement(0),
                 acceptableTypes);
+    }
+
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        if (index == 0) {
+            return Set.of(OppModel.INSTANCE.XSD_NUMBER, OppModel.INSTANCE.XSD_DATETIME);
+        }
+        return null;
     }
 }

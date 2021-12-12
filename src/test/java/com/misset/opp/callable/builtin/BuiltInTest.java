@@ -10,7 +10,6 @@ import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.mockito.ArgumentMatchers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -145,7 +144,7 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
     protected void testValidInput(Builtin builtin,
                                   OntResource input) {
         PsiCall call = getCall();
-        doReturn(Set.of(input)).when(call).getCallInputType();
+        doReturn(Set.of(input)).when(call).resolveCallInput();
         builtin.validate(call, holder);
         verify(holder, never()).registerProblem(eq(call), anyString(), any(ProblemHighlightType.class));
     }
@@ -154,7 +153,7 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
                                     OntResource input,
                                     String errorMessage) {
         PsiCall call = getCall();
-        doReturn(Set.of(input)).when(call).getCallInputType();
+        doReturn(Set.of(input)).when(call).resolveCallInput();
         builtin.validate(call, holder);
         verify(holder).registerProblem(eq(call), startsWith(errorMessage), any(ProblemHighlightType.class));
     }

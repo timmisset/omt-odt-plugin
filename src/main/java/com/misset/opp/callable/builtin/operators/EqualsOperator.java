@@ -36,4 +36,14 @@ public class EqualsOperator extends BuiltInBooleanOperator {
         Set<OntResource> ontResources = validateLeftRightCompatible(call, holder);
         validateIgnoreCaseFlagIsUsedOnStrings(ontResources, call, holder);
     }
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        if (index == 0) {
+            return call.resolveCallInput();
+        } else if (index == 1) {
+            return call.resolveSignatureArgument(0);
+        }
+        return null;
+    }
 }

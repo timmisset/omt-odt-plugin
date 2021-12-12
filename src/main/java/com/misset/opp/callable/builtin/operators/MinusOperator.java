@@ -3,6 +3,9 @@ package com.misset.opp.callable.builtin.operators;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.util.TTLValidationUtil;
+import org.apache.jena.ontology.OntResource;
+
+import java.util.Set;
 
 public class MinusOperator extends BuiltinMathOperator {
     private MinusOperator() { }
@@ -25,9 +28,15 @@ public class MinusOperator extends BuiltinMathOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        if(call.numberOfArguments() == 1) {
-            TTLValidationUtil.validateRequiredTypes(validInputs, call.getCallInputType(), holder, call);
+        if (call.numberOfArguments() == 1) {
+            TTLValidationUtil.validateRequiredTypes(validInputs, call.resolveCallInput(), holder, call);
         }
         validateAllArguments(call, holder, validator);
+    }
+
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        return validInputs;
     }
 }

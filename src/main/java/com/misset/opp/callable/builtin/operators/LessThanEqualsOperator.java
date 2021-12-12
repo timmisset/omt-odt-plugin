@@ -34,4 +34,9 @@ public class LessThanEqualsOperator extends BuiltInBooleanOperator {
         Set<OntClass> acceptableTypes = Set.of(OppModel.INSTANCE.XSD_STRING, OppModel.INSTANCE.XSD_NUMBER);
         TTLValidationUtil.validateHasOntClass(resources, holder, call, acceptableTypes);
     }
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        return Set.of(OppModel.INSTANCE.XSD_STRING, OppModel.INSTANCE.XSD_NUMBER);
+    }
 }

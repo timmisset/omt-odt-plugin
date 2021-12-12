@@ -50,4 +50,12 @@ public class FindSubjectsOperator extends BuiltInOperator {
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         validateNamedGraphArgument(2, call, holder);
     }
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        if (index == 2) {
+            return Set.of(OppModel.INSTANCE.NAMED_GRAPH);
+        }
+        return null;
+    }
 }

@@ -1,7 +1,6 @@
 package com.misset.opp.callable.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.callable.Call;
 import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -45,7 +44,7 @@ public class HttpCallCommandPost extends BuiltInHttpCommand {
     }
 
     @Override
-    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, Call call) {
+    protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
             return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
         } else if (index == 1) {

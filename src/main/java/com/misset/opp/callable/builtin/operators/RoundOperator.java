@@ -45,17 +45,26 @@ public class RoundOperator extends BuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        Set<OntResource> callInputType = call.getCallInputType();
+        Set<OntResource> callInputType = call.resolveCallInput();
         TTLValidationUtil.validateNumber(callInputType, holder, call);
         validateNumberArgument(0, call, holder);
 
-        if("0".equals(call.getSignatureValue(0))) {
+        if ("0".equals(call.getSignatureValue(0))) {
             holder.registerProblem(call.getCallSignatureArgumentElement(0),
                     "Unnecessary decimalPlaces value", ProblemHighlightType.WEAK_WARNING);
         }
-        if(!callInputType.isEmpty() && callInputType.stream().allMatch(OppModel.INSTANCE.XSD_INTEGER_INSTANCE::equals)) {
+        if (!callInputType.isEmpty() && callInputType.stream().allMatch(OppModel.INSTANCE.XSD_INTEGER_INSTANCE::equals)) {
             holder.registerProblem(call.getCallSignatureArgumentElement(0),
                     "Input is already an integer", ProblemHighlightType.WEAK_WARNING);
         }
+    }
+
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        if (index == 0) {
+            return Set.of(OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
+        }
+        return null;
     }
 }

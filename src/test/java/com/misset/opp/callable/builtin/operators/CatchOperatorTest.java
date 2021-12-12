@@ -35,7 +35,7 @@ class CatchOperatorTest extends BuiltInTest {
     @Test
     void testArgumentTypesCompatibleTypes() {
         PsiCall call = getCall(Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE));
-        doReturn(Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE)).when(call).getCallInputType();
+        doReturn(Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE)).when(call).resolveCallInput();
         CatchOperator.INSTANCE.specificValidation(call, holder);
         verify(holder, never()).registerProblem(any(), any(), any(ProblemHighlightType.class));
     }
@@ -43,7 +43,7 @@ class CatchOperatorTest extends BuiltInTest {
     @Test
     void testArgumentTypesInCompatibleTypes() {
         PsiCall call = getCall(Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE));
-        doReturn(Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE)).when(call).getCallInputType();
+        doReturn(Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE)).when(call).resolveCallInput();
         CatchOperator.INSTANCE.specificValidation(call, holder);
         verify(holder).registerProblem(eq(call), startsWith("Possible outcomes are incompatible"), any(ProblemHighlightType.class));
     }

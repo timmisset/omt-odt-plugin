@@ -2,7 +2,11 @@ package com.misset.opp.callable.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.callable.psi.PsiCall;
+import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
+import org.apache.jena.ontology.OntResource;
+
+import java.util.Set;
 
 public class AndOperator extends BuiltInBooleanOperator {
     private AndOperator() { }
@@ -20,9 +24,14 @@ public class AndOperator extends BuiltInBooleanOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        if(call.numberOfArguments() == 1) {
-            TTLValidationUtil.validateBoolean(call.getCallInputType(), holder, call);
+        if (call.numberOfArguments() == 1) {
+            TTLValidationUtil.validateBoolean(call.resolveCallInput(), holder, call);
         }
         validateAllArguments(call, holder, this::validateBooleanArgument);
+    }
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
 }

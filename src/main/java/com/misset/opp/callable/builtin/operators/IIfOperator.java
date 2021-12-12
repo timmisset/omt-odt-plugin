@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.psi.PsiCall;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
@@ -42,9 +43,21 @@ public class IIfOperator extends BuiltInOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         validateBooleanArgument(0, call, holder);
-        if(call.numberOfArguments() == 3) {
+        if (call.numberOfArguments() == 3) {
             Pair<Set<OntResource>, Set<OntResource>> possibilities = Pair.create(call.resolveSignatureArgument(1), call.resolveSignatureArgument(2));
             validateCompatibleOutcomePossibilities(possibilities, call, holder);
         }
+    }
+
+    @Override
+    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+        if (index == 0) {
+            return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+        } else if (index == 1) {
+            return call.resolveSignatureArgument(2);
+        } else if (index == 2) {
+            return call.resolveSignatureArgument(1);
+        }
+        return null;
     }
 }
