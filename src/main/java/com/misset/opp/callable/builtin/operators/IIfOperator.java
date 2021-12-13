@@ -32,6 +32,11 @@ public class IIfOperator extends BuiltInOperator {
     }
 
     @Override
+    public boolean isStatic() {
+        return true;
+    }
+
+    @Override
     public Set<OntResource> resolveFrom(Set<OntResource> resources,
                                         Call call) {
         final HashSet<OntResource> output = new HashSet<>();

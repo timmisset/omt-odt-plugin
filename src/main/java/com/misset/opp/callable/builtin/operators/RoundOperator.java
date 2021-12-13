@@ -67,4 +67,9 @@ public class RoundOperator extends BuiltInOperator {
         }
         return null;
     }
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_DECIMAL_INSTANCE);
+    }
 }

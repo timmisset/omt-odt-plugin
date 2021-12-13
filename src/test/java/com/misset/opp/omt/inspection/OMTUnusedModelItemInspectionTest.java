@@ -2,13 +2,13 @@ package com.misset.opp.omt.inspection;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.unused.OMTUnusedModelItemInspection;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Collections;
 
-class OMTUnusedModelItemInspectionTest extends InspectionTestCase {
+class OMTUnusedModelItemInspectionTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

@@ -1,20 +1,16 @@
 package com.misset.opp.odt.inspection.calls.operators;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.INCOMPLETE_CHOOSE_EXPECTED_END;
-import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.INCOMPLETE_CHOOSE_EXPECTED_WHEN_CONDITIONS;
-import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.OMIT_OTHERWISE;
-import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.REPLACE_QUICKFIX_TITLE;
-import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.USE_IIF;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose.*;
 
-class ODTOperatorInspectionChooseTest extends InspectionTestCase {
+class ODTOperatorInspectionChooseTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

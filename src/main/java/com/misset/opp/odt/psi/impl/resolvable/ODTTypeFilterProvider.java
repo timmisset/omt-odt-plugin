@@ -37,7 +37,7 @@ public interface ODTTypeFilterProvider extends PsiElement {
 
     Predicate<Set<OntResource>> getTypeFilter(PsiElement element);
 
-    private static PsiElement getCompletionPlaceholderTopElement(PsiElement element) {
+    static PsiElement getCompletionPlaceholderTopElement(PsiElement element) {
         return PsiTreeUtil.getParentOfType(element, ODTCall.class);
     }
 }

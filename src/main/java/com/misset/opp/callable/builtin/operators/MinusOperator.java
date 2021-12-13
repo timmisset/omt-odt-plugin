@@ -39,4 +39,10 @@ public class MinusOperator extends BuiltinMathOperator {
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         return validInputs;
     }
+
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return validInputs;
+    }
 }

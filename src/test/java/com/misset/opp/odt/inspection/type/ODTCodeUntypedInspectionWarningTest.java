@@ -1,14 +1,14 @@
 package com.misset.opp.odt.inspection.type;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Set;
 
-class ODTCodeUntypedInspectionWarningTest extends InspectionTestCase {
+class ODTCodeUntypedInspectionWarningTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

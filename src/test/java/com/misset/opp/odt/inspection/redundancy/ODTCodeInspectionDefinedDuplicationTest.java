@@ -1,7 +1,7 @@
 package com.misset.opp.odt.inspection;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -10,7 +10,7 @@ import java.util.Collections;
 import static com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION;
 import static com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_SHADOW;
 
-class ODTCodeInspectionDefinedDuplicationTest extends InspectionTestCase {
+class ODTCodeInspectionDefinedDuplicationTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

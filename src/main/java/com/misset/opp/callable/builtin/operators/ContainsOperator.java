@@ -45,4 +45,10 @@ public class ContainsOperator extends BuiltInBooleanOperator {
         }
         return null;
     }
+
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
+    }
 }

@@ -1,7 +1,7 @@
 package com.misset.opp.odt.inspection.redundancy;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.Collections;
 
 import static com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionUnreachable.WARNING_MESSAGE;
 
-class ODTCodeInspectionUnreachableTest extends InspectionTestCase {
+class ODTCodeInspectionUnreachableTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

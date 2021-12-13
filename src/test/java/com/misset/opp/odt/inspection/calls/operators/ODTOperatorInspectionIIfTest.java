@@ -1,7 +1,7 @@
 package com.misset.opp.odt.inspection.calls.operators;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,11 +10,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionIIf.COMBINE;
-import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionIIf.SIMPLIFY;
-import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionIIf.UNNECESSARY_IIF;
+import static com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionIIf.*;
 
-class ODTOperatorInspectionIIfTest extends InspectionTestCase {
+class ODTOperatorInspectionIIfTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

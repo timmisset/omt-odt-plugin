@@ -31,4 +31,9 @@ public class DateFormatOperator extends BuiltInStringOperator {
         }
         return null;
     }
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_DATETIME_INSTANCE);
+    }
 }

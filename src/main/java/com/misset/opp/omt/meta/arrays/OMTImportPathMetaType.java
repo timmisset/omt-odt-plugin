@@ -1,10 +1,6 @@
 package com.misset.opp.omt.meta.arrays;
 
-import com.intellij.codeInspection.InspectionManager;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.codeInspection.*;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -26,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class OMTImportPathMetaType extends YamlArrayType {
     private final String path;
@@ -46,10 +43,7 @@ public class OMTImportPathMetaType extends YamlArrayType {
         // suggest sorting:
         if (value instanceof YAMLSequence) {
             final YAMLSequence sequence = (YAMLSequence) value;
-            final List<YAMLSequenceItem> items = new ArrayList<>(sequence.getItems());
-            items.sort(Comparator.comparing(o -> Optional.ofNullable(o.getValue())
-                    .map(PsiElement::getText)
-                    .orElse("")));
+            List<YAMLSequenceItem> items = getSortedList(sequence);
             if (!items.equals(sequence.getItems())) {
                 // not the same sort order, so must be unsorted:
                 final InspectionManager manager = problemsHolder.getManager();
@@ -65,6 +59,21 @@ public class OMTImportPathMetaType extends YamlArrayType {
         }
     }
 
+    private List<YAMLSequenceItem> getSortedList(YAMLSequence sequence) {
+        final List<YAMLSequenceItem> items = new ArrayList<>(sequence.getItems());
+        List<String> values = items.stream()
+                .map(sequenceItem -> sequenceItem.getValue() != null ? sequenceItem.getValue().getText() : "")
+                .sorted(String.CASE_INSENSITIVE_ORDER
+                        .thenComparing(Comparator.naturalOrder()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        items.sort(Comparator.comparing(o -> Optional.ofNullable(o.getValue())
+                .map(PsiElement::getText)
+                .map(values::indexOf)
+                .orElse(-1)));
+        return items;
+    }
+
     private LocalQuickFix getSortingQuickFix() {
         return new LocalQuickFix() {
             @Override
@@ -78,10 +87,7 @@ public class OMTImportPathMetaType extends YamlArrayType {
                 final PsiElement psiElement = descriptor.getPsiElement();
                 if (psiElement instanceof YAMLSequence) {
                     final YAMLSequence yamlSequence = (YAMLSequence) psiElement;
-                    final List<YAMLSequenceItem> items = new ArrayList<>(yamlSequence.getItems());
-                    items.sort(Comparator.comparing(o -> Optional.ofNullable(o.getValue())
-                            .map(PsiElement::getText)
-                            .orElse("")));
+                    List<YAMLSequenceItem> items = getSortedList(yamlSequence);
 
                     final YAMLElementGenerator generator = YAMLElementGenerator.getInstance(project);
                     PsiParserFacade parserFacade = PsiParserFacade.SERVICE.getInstance(project);

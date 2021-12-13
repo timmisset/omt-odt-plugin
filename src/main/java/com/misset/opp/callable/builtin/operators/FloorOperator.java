@@ -6,8 +6,12 @@ import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.Set;
+
 public class FloorOperator extends BuiltInOperator {
-    private FloorOperator() { }
+    private FloorOperator() {
+    }
+
     public static final FloorOperator INSTANCE = new FloorOperator();
 
     @Override
@@ -28,5 +32,10 @@ public class FloorOperator extends BuiltInOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         TTLValidationUtil.validateDecimal(call.resolveCallInput(), holder, call);
+    }
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_DECIMAL_INSTANCE);
     }
 }

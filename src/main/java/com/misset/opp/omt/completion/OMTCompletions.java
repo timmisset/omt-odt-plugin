@@ -21,7 +21,7 @@ public class OMTCompletions extends CompletionContributor {
         Sometimes we need access to the original element / file
         The Yaml completions do not provide this information to the meta-types so they can be retrieved via this class
      */
-    private static HashMap<PsiElement, CompletionParameters> completionParametersHashMap = new HashMap<>();
+    private static final HashMap<PsiElement, CompletionParameters> completionParametersHashMap = new HashMap<>();
 
     public OMTCompletions() {
         extend(CompletionType.BASIC, psiElement(), new OMTKeyCompletion());

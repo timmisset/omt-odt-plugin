@@ -3,7 +3,7 @@ package com.misset.opp.omt.meta;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +15,13 @@ import java.util.stream.Collectors;
 
 import static com.misset.opp.omt.meta.OMTImportMemberMetaType.NOT_AN_EXPORTED_MEMBER;
 
-class OMTImportMemberMetaTypeTest extends InspectionTestCase {
+class OMTImportMemberMetaTypeTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
         return Collections.singleton(OMTValueInspection.class);
     }
+
     @Test
     void testCompletionShowsImportableMembers() {
         configureByText("queries.omt", "queries:\n" +

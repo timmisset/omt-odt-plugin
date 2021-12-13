@@ -37,6 +37,11 @@ public class LessThanEqualsOperator extends BuiltInBooleanOperator {
 
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        return Set.of(OppModel.INSTANCE.XSD_STRING, OppModel.INSTANCE.XSD_NUMBER);
+        return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE, OppModel.INSTANCE.XSD_NUMBER_INSTANCE);
+    }
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE, OppModel.INSTANCE.XSD_NUMBER_INSTANCE);
     }
 }

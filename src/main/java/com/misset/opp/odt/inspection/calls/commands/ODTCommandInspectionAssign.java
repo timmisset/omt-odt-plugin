@@ -6,20 +6,22 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.callable.builtin.commands.ForEachCommand;
+import com.misset.opp.callable.builtin.commands.AssignCommand;
 import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
+import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgument;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
-import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 public class ODTCommandInspectionAssign extends LocalInspectionTool {
     protected static final String CANNOT_ASSIGN_USING_A_REVERSE_PATH = "Cannot assign using a REVERSE path";
     protected static final String EXPECTED_A_SINGLE_PREDICATE = "Expected a single predicate";
+    protected static final String UNKNOWN_PREDICATE = "Unknown predicate";
+    protected static final String ROOT_INDICATOR_EXPECTED = "Path should start with root indicator (forward slash)";
 
     @Override
     public @Nullable @Nls String getStaticDescription() {
@@ -45,23 +49,27 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTCall) {
-                    if (((ODTCall) element).getCallable() != ForEachCommand.INSTANCE) {
+                    if (((ODTCall) element).getCallable() != AssignCommand.INSTANCE) {
                         return;
                     }
-                    inspectForEach(holder, (ODTCall) element);
+                    inspectAssign(holder, (ODTCall) element);
                 }
             }
         };
     }
 
-    private void inspectForEach(@NotNull ProblemsHolder holder,
-                                @NotNull ODTCall call) {
+    private void inspectAssign(@NotNull ProblemsHolder holder,
+                               @NotNull ODTCall call) {
         if (call.numberOfArguments() >= 3 && call.numberOfArguments() % 2 != 0) {
             final Set<OntResource> subject = call.resolveSignatureArgument(0);
             for (int i = 1; i < call.numberOfArguments(); i = i + 2) {
 
                 final ODTResolvableSignatureArgument predicateArgument = call.getSignatureArgument(i);
                 if (predicateArgument == null) {
+                    return;
+                }
+                if (PsiTreeUtil.getDeepestFirst(predicateArgument).getNode().getElementType() != ODTTypes.FORWARD_SLASH) {
+                    holder.registerProblem(predicateArgument, ROOT_INDICATOR_EXPECTED, ProblemHighlightType.ERROR);
                     return;
                 }
 
@@ -71,18 +79,24 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
                     return;
                 }
 
-                final List<OntResource> predicates = call.resolveSignatureArgument(i)
+                final List<Property> predicates = call.resolveSignatureArgument(i)
                         .stream()
-                        .filter(OntResource::isProperty)
+                        .map(resource -> OppModel.INSTANCE.getProperty(resource))
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList());
 
-                if (predicates.size() != 1 || predicates.stream().noneMatch(OntResource::isProperty)) {
+                if (predicates.size() == 0) {
+                    holder.registerProblem(predicateArgument,
+                            UNKNOWN_PREDICATE,
+                            ProblemHighlightType.ERROR);
+                    return;
+                } else if (predicates.size() > 1) {
                     holder.registerProblem(predicateArgument,
                             EXPECTED_A_SINGLE_PREDICATE,
                             ProblemHighlightType.ERROR);
                     return;
                 }
-                final OntProperty predicate = predicates.get(0).asProperty();
+                final Property predicate = predicates.get(0);
 
                 final Set<OntResource> object = OppModel.INSTANCE.listObjects(subject, predicate);
                 if (object.isEmpty()) {

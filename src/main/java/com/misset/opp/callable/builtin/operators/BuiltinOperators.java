@@ -2,11 +2,13 @@ package com.misset.opp.callable.builtin.operators;
 
 import com.misset.opp.callable.Callable;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class BuiltinOperators {
 
-    public static final HashMap<String, Callable> builtinOperators = new HashMap<>();
+    private static final HashMap<String, Callable> builtinOperators = new HashMap<>();
     static void addOperator(BuiltInOperator operator) {
         builtinOperators.put(operator.getCallId(), operator);
     }
@@ -79,5 +81,21 @@ public class BuiltinOperators {
         addOperator(TruncOperator.INSTANCE);
         addOperator(TypeOperator.INSTANCE);
         addOperator(UpperCaseOperator.INSTANCE);
+    }
+
+    public static Collection<Callable> getStaticOperators() {
+        return builtinOperators.values().stream().filter(Callable::isStatic).collect(Collectors.toList());
+    }
+
+    public static Collection<Callable> getNonStaticOperators() {
+        return builtinOperators.values().stream().filter(callable -> !callable.isStatic()).collect(Collectors.toList());
+    }
+
+    public static Collection<Callable> getOperators() {
+        return builtinOperators.values();
+    }
+
+    public static Callable get(String name) {
+        return builtinOperators.get(name);
     }
 }

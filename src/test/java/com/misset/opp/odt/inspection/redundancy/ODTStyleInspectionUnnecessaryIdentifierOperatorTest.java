@@ -1,7 +1,7 @@
 package com.misset.opp.odt.inspection.redundancy;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ import java.util.Collections;
 import static com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryIdentifierOperator.REMOVE;
 import static com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryIdentifierOperator.WARNING;
 
-class ODTStyleInspectionUnnecessaryIdentifierOperatorTest extends InspectionTestCase {
+class ODTStyleInspectionUnnecessaryIdentifierOperatorTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

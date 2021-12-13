@@ -19,6 +19,7 @@ public class OMTRegisterPrefixLocalQuickFix implements LocalQuickFix {
 
     private String prefix;
     private String iri;
+
     public OMTRegisterPrefixLocalQuickFix(String prefix, String iri) {
         this.prefix = prefix;
         this.iri = iri;
@@ -37,36 +38,45 @@ public class OMTRegisterPrefixLocalQuickFix implements LocalQuickFix {
     @Override
     public void applyFix(@NotNull Project project,
                          @NotNull ProblemDescriptor descriptor) {
+        addPrefix(project, getSourceYamlElement(descriptor));
+    }
 
-        final PsiElement sourceYamlElement = getSourceYamlElement(descriptor);
-        if(sourceYamlElement == null) { return; }
+    public void addPrefix(@NotNull Project project, PsiElement sourceYamlElement) {
+        if (sourceYamlElement == null) {
+            return;
+        }
         final YAMLMapping rootMapping = PsiTreeUtil.getTopmostParentOfType(sourceYamlElement,
                 YAMLMapping.class);
-        if(rootMapping == null) { return; }
+        if (rootMapping == null) {
+            return;
+        }
         final YAMLKeyValue prefix = createPrefix(project);
         final YAMLKeyValue prefixes = rootMapping.getKeyValueByKey("prefixes");
-        if(prefixes != null) {
+        if (prefixes != null) {
             final YAMLValue value = prefixes.getValue();
-            if(value instanceof YAMLMapping) {
-                ((YAMLMapping)value).putKeyValue(prefix);
+            if (value instanceof YAMLMapping) {
+                ((YAMLMapping) value).putKeyValue(prefix);
             }
         } else {
             rootMapping.putKeyValue(createPrefixes(project, prefix));
         }
     }
+
     private PsiElement getSourceYamlElement(@NotNull ProblemDescriptor descriptor) {
         final PsiElement psiElement = descriptor.getPsiElement();
-        if(psiElement instanceof YAMLPsiElement || psiElement == null) {
+        if (psiElement instanceof YAMLPsiElement || psiElement == null) {
             return psiElement;
         } else {
             final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(psiElement.getProject());
             return instance.getInjectionHost(psiElement);
         }
     }
+
     private YAMLKeyValue createPrefixes(Project project, YAMLKeyValue prefix) {
         return YAMLElementGenerator.getInstance(project)
                 .createYamlKeyValue("prefixes", prefix.getText());
     }
+
     private YAMLKeyValue createPrefix(Project project) {
         return YAMLElementGenerator.getInstance(project)
                 .createYamlKeyValue(prefix, "<" + iri + ">");

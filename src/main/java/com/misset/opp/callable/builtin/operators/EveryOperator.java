@@ -42,4 +42,9 @@ public class EveryOperator extends BuiltInBooleanOperator {
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+    }
 }

@@ -12,19 +12,19 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OMTPrefixIndex {
 
     private static HashMap<String, List<String>> map = new HashMap<>();
+
     public static List<String> getNamespaces(String prefix) {
         return map.getOrDefault(prefix, Collections.emptyList());
+    }
+
+    public static List<String> getPrefixes(String namespace) {
+        return map.getOrDefault(namespace, Collections.emptyList());
     }
 
     public static Task.Backgroundable getIndexTask(Project project) {
@@ -40,7 +40,7 @@ public class OMTPrefixIndex {
                         .filter(OMTFile.class::isInstance)
                         .map(OMTFile.class::cast)
                         .forEach(this::indexPrefixes));
-                this.orderIndexByFrequence();
+                this.orderIndexByFrequency();
             }
 
             private void indexPrefixes(OMTFile file) {
@@ -52,22 +52,30 @@ public class OMTPrefixIndex {
                         .map(YAMLMapping.class::cast)
                         .forEach(this::addToIndex);
             }
+
             private void addToIndex(YAMLMapping mapping) {
                 mapping.getKeyValues().stream().forEach(this::addToIndex);
             }
+
             private void addToIndex(YAMLKeyValue keyValue) {
-                final String key = keyValue.getKeyText();
+                addToIndex(keyValue.getKeyText(), trimValue(keyValue.getValueText()));
+                addToIndex(trimValue(keyValue.getValueText()), keyValue.getKeyText());
+            }
+
+            private void addToIndex(String key, String value) {
                 List<String> valuesForKey = map.getOrDefault(key, new ArrayList<>());
-                valuesForKey.add(trimValue(keyValue.getValueText()));
+                valuesForKey.add(value);
                 map.put(key, valuesForKey);
             }
+
             private String trimValue(String valueText) {
                 return valueText.substring(1, valueText.length() - 1);
             }
-            private void orderIndexByFrequence() {
+
+            private void orderIndexByFrequency() {
                 // the list is ordered first, the more times a specific IRI is used for a prefix the higher it
                 // moves up the list. Then the list is filtered (distinct)
-                for(Map.Entry<String, List<String>> entry : map.entrySet()) {
+                for (Map.Entry<String, List<String>> entry : map.entrySet()) {
                     final List<String> list = entry.getValue();
                     list.sort(Comparator.comparing(i -> Collections.frequency(list, i)).reversed());
                     final List<String> orderedList = list.stream().distinct().collect(Collectors.toList());

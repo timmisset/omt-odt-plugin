@@ -2,18 +2,19 @@ package com.misset.opp.omt.meta;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Collections;
 
-class OMTActionsMetaTypeTest extends InspectionTestCase {
+class OMTActionsMetaTypeTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
         return Collections.singleton(OMTUnkownKeysInspection.class);
     }
+
     @Test
     void testCompletionShowsImportableMembers() {
         configureByText(insideActivityWithPrefixes(

@@ -1,12 +1,12 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.misset.opp.testCase.CompletionTestCase;
+import com.misset.opp.testCase.OMTCompletionTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class OMTActivityMetaTypeTest extends CompletionTestCase {
+class OMTActivityMetaTypeTest extends OMTCompletionTestCase {
 
     @Test
     void computeKeyCompletions() {
@@ -16,7 +16,8 @@ class OMTActivityMetaTypeTest extends CompletionTestCase {
                 "       title: title\n" +
                 "       <caret>\n" +
                 "\n";
-        final List<String> completionList = getCompletionList(content);
+        configureByText(content);
+        final List<String> completionList = getLookupStrings();
         new OMTActivityMetaType().getFeatures()
                 .keySet()
                 .stream()

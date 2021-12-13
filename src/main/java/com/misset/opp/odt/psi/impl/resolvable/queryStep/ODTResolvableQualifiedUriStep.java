@@ -10,6 +10,7 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -66,4 +67,11 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
     }
 
 
+    public String getNamespace() {
+        return ResourceFactory.createResource(getFullyQualifiedUri()).getNameSpace();
+    }
+
+    public String getLocalName() {
+        return ResourceFactory.createResource(getFullyQualifiedUri()).getLocalName();
+    }
 }

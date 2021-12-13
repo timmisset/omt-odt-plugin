@@ -103,6 +103,14 @@
         <completion.contributor language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.ODTCommandCompletion"/>
 
+        <!-- Specific completions that should run first and stop the completion when applicable -->
+        <completion.contributor
+                order="first" language="ODT"
+                implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionAssign"/>
+        <completion.contributor
+                order="first" language="ODT"
+                implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph"/>
+
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>
@@ -131,6 +139,9 @@
         <localInspection displayName="Unnecessary wrapping" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
                          implementationClass="com.misset.opp.odt.inspection.ODTStyleInspectionUnnecessaryWrappingSubquery"/>
+        <localInspection displayName="Fully qualified URI" groupName="Redundancy" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.ODTQualifiedURIInspection"/>
         <!-- Types -->
         <localInspection displayName="Boolean value" groupName="Types" language="ODT"
                          enabledByDefault="true" level="ERROR" hasStaticDescription="true" groupPath="ODT"
@@ -143,45 +154,33 @@
                          implementationClass="com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning"/>
 
         <!-- Calls -->
-        <localInspection shortName="BuiltinCommands" hasStaticDescription="true"
-                         language="ODT" displayName="Inspect all calls to ODT Builtin Commands" groupPath="ODT"
+        <localInspection shortName="ODTCalls" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect all calls" groupPath="ODT"
                          groupName="Calls" enabledByDefault="true"
-                         implementationClass="com.misset.opp.odt.inspection.calls.ODTBuiltinCommandCallInspection"/>
-        <localInspection shortName="BuiltinOperators" hasStaticDescription="true"
-                         language="ODT" displayName="Inspect all calls to ODT Builtin Operators" groupPath="ODT"
-                         groupName="Calls" enabledByDefault="true"
-                         implementationClass="com.misset.opp.odt.inspection.calls.ODTBuiltinOperatorCallInspection"/>
-        <localInspection shortName="DefinedCommands" hasStaticDescription="true"
-                         language="ODT" displayName="Inspect all calls to ODT Defined Commands" groupPath="ODT"
-                         groupName="Calls" enabledByDefault="true"
-                         implementationClass="com.misset.opp.odt.inspection.calls.ODTDefinedCommandCallInspection"/>
-        <localInspection shortName="DefinedQueries" hasStaticDescription="true"
-                         language="ODT" displayName="Inspect all calls to ODT Defined Queries" groupPath="ODT"
-                         groupName="Calls" enabledByDefault="true"
-                         implementationClass="com.misset.opp.odt.inspection.calls.ODTDefinedOperatorCallInspection"/>
-        <localInspection shortName="OMTCallables" hasStaticDescription="true"
-                         language="ODT" displayName="Inspect all calls to OMT Callables" groupPath="ODT"
-                         groupName="Calls" enabledByDefault="true"
-                         implementationClass="com.misset.opp.odt.inspection.calls.ODTOMTCallInspection"/>
+                         implementationClass="com.misset.opp.odt.inspection.calls.ODTCallInspection"/>
 
         <!-- Calls / Builtin command inspections -->
-        <localInspection shortName="BuiltinForEach" hasStaticDescription="true"
+        <localInspection shortName="FOREACH" hasStaticDescription="true"
                          language="ODT" displayName="Inspect builtin command: FOREACH" groupPath="ODT"
-                         groupName="Builtin" enabledByDefault="true"
+                         groupName="BuiltinCommands" enabledByDefault="true"
                          implementationClass="com.misset.opp.odt.inspection.calls.commands.ODTCommandInspectionForEach"/>
-        <localInspection shortName="BuiltinLoadOntology" hasStaticDescription="true"
+        <localInspection shortName="LOAD_ONTOLOGY" hasStaticDescription="true"
                          language="ODT" displayName="Inspect builtin command: LOAD_ONTOLOGY" groupPath="ODT"
-                         groupName="Builtin" enabledByDefault="true"
+                         groupName="BuiltinCommands" enabledByDefault="true"
                          implementationClass="com.misset.opp.odt.inspection.calls.commands.ODTCommandInspectionLoadOntology"/>
+        <localInspection shortName="ASSIGN" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect builtin command: ASSIGN" groupPath="ODT"
+                         groupName="BuiltinCommands" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.calls.commands.ODTCommandInspectionAssign"/>
 
         <!-- Calls / Builtin operator inspections -->
-        <localInspection shortName="BuiltinChoose" hasStaticDescription="true"
+        <localInspection shortName="CHOOSE" hasStaticDescription="true"
                          language="ODT" displayName="Inspect builtin operator: CHOOSE" groupPath="ODT"
-                         groupName="Builtin" enabledByDefault="true"
+                         groupName="BuiltinOperators" enabledByDefault="true"
                          implementationClass="com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionChoose"/>
-        <localInspection shortName="BuiltinIIf" hasStaticDescription="true"
+        <localInspection shortName="IIF" hasStaticDescription="true"
                          language="ODT" displayName="Inspect builtin operator: IIF" groupPath="ODT"
-                         groupName="Builtin" enabledByDefault="true"
+                         groupName="BuiltinOperators" enabledByDefault="true"
                          implementationClass="com.misset.opp.odt.inspection.calls.operators.ODTOperatorInspectionIIf"/>
 
         <!-- TTL -->

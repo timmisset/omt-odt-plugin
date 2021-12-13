@@ -1,13 +1,13 @@
 package com.misset.opp.omt.inspection.redundancy;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Collections;
 
-class OMTDuplicateVariableInspectionTest extends InspectionTestCase {
+class OMTDuplicateVariableInspectionTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

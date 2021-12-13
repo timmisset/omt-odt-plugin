@@ -2,13 +2,13 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
-import com.misset.opp.testCase.InspectionTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Collections;
 
-class OMTOntologyMetaTypeRequiredKeyTest extends InspectionTestCase {
+class OMTOntologyMetaTypeRequiredKeyTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

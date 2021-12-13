@@ -129,7 +129,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
 
     private Optional<Callable> getBuiltin() {
         return Optional.ofNullable(BuiltinCommands.builtinCommands.get(getCallId()))
-                .or(() -> Optional.ofNullable(BuiltinOperators.builtinOperators.get(getCallId())));
+                .or(() -> Optional.ofNullable(BuiltinOperators.get(getCallId())));
     }
 
     @Override

@@ -35,16 +35,26 @@ public class ODTRegisterPrefixLocalQuickFix implements LocalQuickFix {
     @Override
     public void applyFix(@NotNull Project project,
                          @NotNull ProblemDescriptor descriptor) {
-        final PsiElement psiElement = descriptor.getPsiElement();
-        if(psiElement == null || !psiElement.isValid()) { return; }
+        addPrefix(project, descriptor.getPsiElement());
+    }
+
+    public void addPrefix(@NotNull Project project,
+                          PsiElement psiElement) {
+        if (psiElement == null || !psiElement.isValid()) {
+            return;
+        }
 
         final ODTScript script = PsiTreeUtil.getTopmostParentOfType(psiElement, ODTScript.class);
-        if(script == null) { return; }
+        if (script == null) {
+            return;
+        }
 
         // retrieve as scriptline, which is what we need to insert
-        final ODTScriptLine definePrefix = ODTElementGenerator.getInstance(psiElement.getProject())
+        final ODTScriptLine definePrefix = ODTElementGenerator.getInstance(project)
                 .createDefinePrefix(prefix, namespace);
-        if(definePrefix == null) { return; }
+        if (definePrefix == null) {
+            return;
+        }
         // check if there is an anchor to use, an existing DEFINE prefix at the root script
         final ODTScriptLine existingDefinePrefix = PsiTreeUtil.findChildrenOfAnyType(script, ODTDefinePrefix.class).stream()
                 .filter(existingPrefix -> PsiTreeUtil.getParentOfType(existingPrefix, ODTScript.class) == script)

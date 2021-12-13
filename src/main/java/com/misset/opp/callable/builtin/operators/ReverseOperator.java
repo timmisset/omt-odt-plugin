@@ -6,7 +6,7 @@ public class ReverseOperator extends BuiltInCollectionOperator {
 
     @Override
     public String getName() {
-        return "REPLACE";
+        return "REVERSE";
     }
 
     @Override

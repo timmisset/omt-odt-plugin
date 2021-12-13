@@ -37,19 +37,17 @@ public class ODTCommandCompletion extends ODTCallCompletion {
                                           @NotNull CompletionResultSet result) {
                 PsiElement position = parameters.getPosition();
                 Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
+                Predicate<Set<OntResource>> precedingFilter = resources -> true;
 
-                // add BuiltinOperators:
-                BuiltinCommands.builtinCommands.values()
-                        .stream()
-                        .map(ODTCommandCompletion.super::getLookupElement)
-                        .forEach(result::addElement);
+                // add BuiltinCommands:
+                addCallables(BuiltinCommands.builtinCommands.values(), result, typeFilter, precedingFilter);
 
                 // if inside a queries block, add the preceding sibling statements as callable options
-                addCallables(getFromSiblingDefined(position), result, typeFilter);
+                addCallables(getFromSiblingDefined(position), result, typeFilter, precedingFilter);
 
                 // and all that are provided by the (if any) host file:
                 ODTFile originalFile = (ODTFile) parameters.getOriginalFile();
-                addCallables(getFromCallableProviders(originalFile), result, typeFilter);
+                addCallables(getFromCallableProviders(originalFile), result, typeFilter, precedingFilter);
 
                 // and all local commands available at this point:
                 LinkedHashMap<YAMLPsiElement, OMTLocalCommandProvider> localCommandProviders = originalFile.getProviders(YAMLPsiElement.class, OMTLocalCommandProvider.class, OMTLocalCommandProvider.KEY);
@@ -58,7 +56,7 @@ public class ODTCommandCompletion extends ODTCallCompletion {
                         .map(OMTLocalCommandProvider::getLocalCommandsMap)
                         .map(HashMap::values)
                         .flatMap(Collection::stream)
-                        .collect(Collectors.toList()), result, typeFilter);
+                        .collect(Collectors.toList()), result, typeFilter, precedingFilter);
             }
         });
     }

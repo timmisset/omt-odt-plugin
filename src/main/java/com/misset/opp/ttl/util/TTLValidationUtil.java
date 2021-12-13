@@ -22,7 +22,7 @@ public class TTLValidationUtil {
     public static final String ERROR_MESSAGE_INTEGER = "Integer required";
     public static final String ERROR_MESSAGE_NUMBER = "Number required";
     public static final String ERROR_MESSAGE_DATE_TIME = "Date(time) required";
-    public static final String ERROR_MESSAGE_NAMED_GRAPH = "Namedgraph instance required";
+    public static final String ERROR_MESSAGE_NAMED_GRAPH = "NamedGraph instance required";
     public static final String ERROR_MESSAGE_INSTANCES = "Instance of class required";
     public static final String ERROR_MESSAGE_GRAPH_SHAPE = "GraphShape required";
 
@@ -143,7 +143,7 @@ public class TTLValidationUtil {
         validate(resources,
                 holder,
                 element,
-                OppModel.INSTANCE.XSD_INTEGER::equals,
+                OppModel.INSTANCE.XSD_INTEGER_INSTANCE::equals,
                 ERROR_MESSAGE_INTEGER);
     }
 

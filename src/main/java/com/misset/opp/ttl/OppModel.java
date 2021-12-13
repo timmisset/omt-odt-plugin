@@ -36,7 +36,7 @@ public class OppModel {
     protected Property SHACL_PATH, SHACL_CLASS, SHACL_MINCOUNT, SHACL_MAXCOUNT, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
     protected Property RDFS_SUBCLASS_OF;
     public Property RDF_TYPE;
-    private List<Property> classModelProperties;
+    public List<Property> classModelProperties;
 
     protected OntClass OWL_CLASS;
     protected OntClass OWL_THING_CLASS;
@@ -624,7 +624,7 @@ public class OppModel {
     }
 
     private Set<Individual> calculateClassIndividuals(String classUri) {
-        if (classUri.equals(OWL_THING_CLASS.getURI())) {
+        if (classUri == null || classUri.equals(OWL_THING_CLASS.getURI())) {
             return Set.of(OWL_THING_INSTANCE);
         }
         return Optional.ofNullable(getClass(classUri))
@@ -767,7 +767,8 @@ public class OppModel {
     public boolean areCompatible(OntResource resourceA,
                                  OntResource resourceB) {
         if (resourceA.equals(resourceB) ||
-                resourceA.equals(OWL_THING_INSTANCE)) {
+                resourceA.equals(OWL_THING_INSTANCE) ||
+                resourceB.equals(OWL_THING_INSTANCE)) {
             return true;
         }
         if (resourceA.isIndividual()) {

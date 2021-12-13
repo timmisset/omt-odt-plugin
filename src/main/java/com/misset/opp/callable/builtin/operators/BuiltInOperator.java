@@ -27,13 +27,21 @@ public abstract class BuiltInOperator extends Builtin {
         return false;
     }
 
-    public String getCallId() { return getName(); }
+    public String getCallId() {
+        return getName();
+    }
+
+    @Override
+    public boolean isStatic() {
+        return false;
+    }
 
     protected void validateIgnoreCaseFlagUsage(int dynamicArgumentIndex,
                                                PsiCall call,
                                                ProblemsHolder holder) {
         validateFlagUsage(dynamicArgumentIndex, call, holder, "true", "ignoreCase");
     }
+
     protected void validateFlagUsage(int dynamicArgumentIndex,
                                      PsiCall call,
                                      ProblemsHolder holder,

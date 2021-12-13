@@ -21,4 +21,9 @@ public class CurrentDateOperator extends BuiltInOperator {
     public OntResource resolveSingle() {
         return OppModel.INSTANCE.XSD_DATE_INSTANCE;
     }
+
+    @Override
+    public boolean isStatic() {
+        return true;
+    }
 }

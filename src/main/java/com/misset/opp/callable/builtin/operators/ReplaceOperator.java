@@ -38,4 +38,9 @@ public class ReplaceOperator extends BuiltInStringOperator {
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
     }
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
+    }
 }

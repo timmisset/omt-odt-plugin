@@ -93,10 +93,12 @@ public abstract class ODTCallCompletion extends CompletionContributor {
 
     protected void addCallables(Collection<? extends Callable> callables,
                                 @NotNull CompletionResultSet result,
-                                Predicate<Set<OntResource>> typeFilter) {
+                                Predicate<Set<OntResource>> typeFilter,
+                                Predicate<Set<OntResource>> precedingFilter) {
         callables.stream()
                 .filter(Objects::nonNull)
                 .filter(selectionFilter)
+                .filter(callable -> precedingFilter.test(callable.getAcceptableInputType()))
                 .filter(callable -> typeFilter.test(callable.returns()))
                 .map(this::getLookupElement)
                 .forEach(result::addElement);

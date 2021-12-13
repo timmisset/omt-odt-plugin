@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class InspectionTestCase extends OMTTestCase {
+public abstract class OMTInspectionTestCase extends OMTTestCase {
 
     protected abstract Collection<Class<? extends LocalInspectionTool>> getEnabledInspections();
 

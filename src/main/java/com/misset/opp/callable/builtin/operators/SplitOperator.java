@@ -9,7 +9,9 @@ import org.apache.jena.ontology.OntResource;
 import java.util.Set;
 
 public class SplitOperator extends BuiltInStringOperator {
-    private SplitOperator() { }
+    private SplitOperator() {
+    }
+
     public static final SplitOperator INSTANCE = new SplitOperator();
 
     @Override
@@ -30,5 +32,11 @@ public class SplitOperator extends BuiltInStringOperator {
             return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
         }
         return null;
+    }
+
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
     }
 }

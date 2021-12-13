@@ -18,5 +18,4 @@ public class OMTCompletionTestCase extends OMTOntologyTestCase {
                 LookupElement::getLookupString
         ).collect(Collectors.toList());
     }
-
 }

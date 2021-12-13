@@ -1,7 +1,6 @@
 package com.misset.opp.odt.completion;
 
 import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
@@ -28,7 +27,7 @@ public class ODTTraverseCompletion extends CompletionContributor {
     ElementPattern<PsiElement> TRAVERSE =
             or(AFTER_FIRST_QUERY_STEP, INSIDE_DEFINED_QUERY, INSIDE_QUERY_FILTER);
 
-    private enum TraverseDirection {
+    public enum TraverseDirection {
         FORWARD, REVERSE
     }
 
@@ -85,19 +84,24 @@ public class ODTTraverseCompletion extends CompletionContributor {
         predicates.stream()
                 .map(resource -> getPredicateLookupElement(resource,
                         direction,
-                        availableNamespaces))
+                        availableNamespaces,
+                        false))
                 .filter(Objects::nonNull)
                 .forEach(result::addElement);
     }
 
-    private LookupElement getPredicateLookupElement(Property resource,
-                                                    TraverseDirection direction,
-                                                    Map<String, String> availableNamespaces) {
+    public static LookupElementBuilder getPredicateLookupElement(Resource resource,
+                                                                 TraverseDirection direction,
+                                                                 Map<String, String> availableNamespaces,
+                                                                 boolean rootIndicator) {
         String title = parseToCurie(resource, availableNamespaces);
         if (title == null) {
             return null;
         }
         String lookupText = direction == TraverseDirection.REVERSE ? "^" + title : title;
+        if (rootIndicator) {
+            lookupText = "/" + lookupText;
+        }
         return LookupElementBuilder.create(lookupText)
                 .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
                 .withTailText(direction == TraverseDirection.FORWARD ? " -> forward" : " <- reverse")
@@ -106,8 +110,8 @@ public class ODTTraverseCompletion extends CompletionContributor {
                 .withPresentableText(title);
     }
 
-    private String parseToCurie(Resource resource,
-                                Map<String, String> availableNamespaces) {
+    public static String parseToCurie(Resource resource,
+                                      Map<String, String> availableNamespaces) {
         final String uri = resource.getURI();
         if (uri == null) {
             return null;

@@ -42,4 +42,9 @@ public class DivideByOperator extends BuiltInOperator {
         }
         return null;
     }
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE);
+    }
 }

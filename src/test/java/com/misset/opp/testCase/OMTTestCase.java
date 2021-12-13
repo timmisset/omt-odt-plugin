@@ -8,6 +8,7 @@ import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.indexing.ImportedMembersIndex;
+import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.psi.OMTFile;
 
 public class OMTTestCase extends BasicTestCase<OMTFile> {
@@ -82,12 +83,12 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
      * @param queryStatement only the queryStatement without the define and semicolon
      * @return
      */
-    protected String insideQueryWithPrefixes(String queryStatement, String ... params) {
+    protected String insideQueryWithPrefixes(String queryStatement, String... params) {
         return insideQueryWithPrefixesNoSemicolonEnding(queryStatement) + ";";
 
     }
 
-    protected String insideQueryWithPrefixesNoSemicolonEnding(String queryStatement, String ... params) {
+    protected String insideQueryWithPrefixesNoSemicolonEnding(String queryStatement, String... params) {
         return withPrefixes(String.format("queries: |\n" +
                 "   DEFINE QUERY query(%s) => %s", String.join(", ", params), queryStatement));
     }
@@ -119,6 +120,9 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
 
     @Override
     protected void buildIndexes(OMTFile file) {
-        ReadAction.run(() -> ImportedMembersIndex.analyse(file));
+        ReadAction.run(() -> {
+            ImportedMembersIndex.analyse(file);
+            OMTPrefixIndex.getIndexTask(getProject()).run(null);
+        });
     }
 }

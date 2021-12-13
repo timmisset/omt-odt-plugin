@@ -45,8 +45,13 @@ public class MaxOperator extends BuiltInCollectionOperator {
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModel.INSTANCE.XSD_NUMBER, OppModel.INSTANCE.XSD_DATETIME);
+            return Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE, OppModel.INSTANCE.XSD_DATETIME_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    public Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE, OppModel.INSTANCE.XSD_DATETIME_INSTANCE);
     }
 }

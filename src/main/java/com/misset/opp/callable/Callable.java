@@ -60,6 +60,14 @@ public interface Callable extends Resolvable {
     }
 
     /**
+     * Returns true of the callable can be placed anywhere without any leading information
+     * usually true for all commands and queries but also some operators can apply.
+     */
+    default boolean isStatic() {
+        return true;
+    }
+
+    /**
      * Generic validation that should be called on every Callable member, such as the number of arguments
      * If additional validations are required, make sure to also call this method
      */
@@ -89,6 +97,10 @@ public interface Callable extends Resolvable {
      */
     default Set<OntResource> getAcceptableArgumentType(int index, PsiCall call) {
         return getParameterTypes().getOrDefault(index, Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE));
+    }
+
+    default Set<OntResource> getAcceptableInputType() {
+        return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
     }
 
     private boolean passesMinArguments(int numberOfArguments) {
