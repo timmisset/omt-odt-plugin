@@ -315,6 +315,10 @@ public class OppModel {
         return 0;
     }
 
+    public Set<OntClass> listClasses() {
+        return model.listClasses().toSet();
+    }
+
     /**
      * Returns the list with all predicate-objects for the provided subject
      */

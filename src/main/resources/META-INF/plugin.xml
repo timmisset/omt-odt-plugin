@@ -103,13 +103,14 @@
         <completion.contributor language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.ODTCommandCompletion"/>
 
+
         <!-- Specific completions that should run first and stop the completion when applicable -->
-        <completion.contributor
-                order="first" language="ODT"
-                implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionAssign"/>
-        <completion.contributor
-                order="first" language="ODT"
-                implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph"/>
+        <completion.contributor order="first" language="ODT"
+                                implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionAssign"/>
+        <completion.contributor order="first" language="ODT"
+                                implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph"/>
+        <completion.contributor order="first" language="ODT"
+                                implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionNew"/>
 
         <!-- Annotations -->
         <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>

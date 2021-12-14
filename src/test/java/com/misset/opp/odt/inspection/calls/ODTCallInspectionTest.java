@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
+import static com.misset.opp.odt.inspection.calls.ODTCallInspection.ROOT_INDICATOR_EXPECTED;
+
 class ODTCallInspectionTest extends OMTInspectionTestCase {
 
     @Override
@@ -40,5 +42,19 @@ class ODTCallInspectionTest extends OMTInspectionTestCase {
                 "           @Activity!nested();\n";
         configureByText(content);
         assertNoError("Illegal flag");
+    }
+
+    @Test
+    void testErrorWhenNoRootPathInCommandCall() {
+        String content = insideProcedureRunWithPrefixes("@CALL(ont:ClassA)");
+        configureByText(content);
+        assertHasError(ROOT_INDICATOR_EXPECTED);
+    }
+
+    @Test
+    void testNoErrorWhenNoRootPathInOperatorCall() {
+        String content = insideProcedureRunWithPrefixes("CALL(ont:ClassA)");
+        configureByText(content);
+        assertNoError(ROOT_INDICATOR_EXPECTED);
     }
 }

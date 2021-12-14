@@ -107,7 +107,8 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
 
     @Override
     public Set<OntResource> getSecondReturnArgument() {
-        return null;
+        // $committed value
+        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
 
     @Override

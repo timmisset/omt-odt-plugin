@@ -62,4 +62,32 @@ class ODTVariableAssignmentInspectionTest extends OMTInspectionTestCase {
         configureByText(content);
         assertHasWarning(WARNING_NO_SECOND_ARGUMENT);
     }
+
+    @Test
+    void testNoWarningWhenCallingActivity() {
+        String content = "model:\n" +
+                "   Activity: !Activity\n" +
+                "       onStart:\n" +
+                "           @LOG();\n" +
+                "   AnotherActivity: !Activity\n" +
+                "       onStart:\n" +
+                "           VAR $variable, $committed = @Activity();\n" +
+                "";
+        configureByText(content);
+        assertNoWarning(WARNING_NO_SECOND_ARGUMENT);
+    }
+
+    @Test
+    void testNoWarningWhenCallingProcedure() {
+        String content = "model:\n" +
+                "   Procedure: !Procedure\n" +
+                "       onRun:\n" +
+                "           @LOG();\n" +
+                "   AnotherActivity: !Activity\n" +
+                "       onStart:\n" +
+                "           VAR $variable, $committed = @Procedure();\n" +
+                "";
+        configureByText(content);
+        assertNoWarning(WARNING_NO_SECOND_ARGUMENT);
+    }
 }
