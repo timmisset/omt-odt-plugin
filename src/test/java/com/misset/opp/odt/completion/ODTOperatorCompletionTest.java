@@ -44,7 +44,7 @@ class ODTOperatorCompletionTest extends OMTCompletionTestCase {
                 "   DEFINE COMMAND command => { @LOG(<caret>); }\n";
         configureByText(content, true);
         List<String> lookupStrings = getLookupStrings();
-        assertContainsElements(lookupStrings, "queryA");
+        assertContainsElements(lookupStrings, "queryA", "CURRENT_DATE", "CURRENT_DATETIME");
         assertDoesntContain(lookupStrings, "LOG");
     }
 
@@ -57,6 +57,7 @@ class ODTOperatorCompletionTest extends OMTCompletionTestCase {
         configureByText(content, true);
         List<String> lookupStrings = getLookupStrings();
         assertContainsElements(lookupStrings, "queryA", "LOG");
+        assertDoesntContain(lookupStrings, "CURRENT_DATE", "CURRENT_DATETIME");
     }
 
     @Test
@@ -67,7 +68,7 @@ class ODTOperatorCompletionTest extends OMTCompletionTestCase {
                 "   DEFINE COMMAND command => { $variable = <caret>; }\n";
         configureByText(content, true);
         List<String> lookupStrings = getLookupStrings();
-        assertContainsElements(lookupStrings, "queryA");
+        assertContainsElements(lookupStrings, "queryA", "CURRENT_DATE", "CURRENT_DATETIME");
         assertDoesntContain(lookupStrings, "LOG");
     }
 }

@@ -4,16 +4,17 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.omt.inspection.OMTMetaTypeInspectionBase;
+import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
-import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.*;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class OMTDuplicateImportInspection extends OMTMetaTypeInspectionBase {
 
@@ -46,20 +47,52 @@ public class OMTDuplicateImportInspection extends OMTMetaTypeInspectionBase {
             }
 
             final YamlMetaType metaType = meta.getMetaType();
-            if (metaType instanceof OMTVariableProvider) {
-                final OMTVariableProvider variableProvider = (OMTVariableProvider) metaType;
-                inspectMap(variableProvider.getVariableMap(mapping));
+            if (metaType instanceof OMTImportMetaType) {
+                inspectMap(mapping, (OMTImportMetaType) metaType);
             }
         }
 
-        private void inspectMap(HashMap<String, List<PsiElement>> variableMap) {
-            variableMap.values()
-                    .stream()
-                    .filter(psiElements -> psiElements.size() > 1)
-                    .forEach(psiElements -> psiElements.forEach(this::registerProblem));
+        private void inspectMap(YAMLMapping mapping, OMTImportMetaType importMetaType) {
+            // inspect the map for duplicate import paths (with possible different access methods)
+            // group keys by resolving to their absolute path
+            mapping.getKeyValues().stream()
+                    .collect(Collectors.groupingBy(this::nullSafePathMap))
+                    .forEach(this::inspectInstances);
+
+            // then inspect all the import members within a single key-value
+            mapping.getKeyValues().forEach(this::inspectImportMembers);
+        }
+
+        private String nullSafePathMap(YAMLKeyValue keyValue) {
+            return Optional.ofNullable(OMTImportMetaType.resolveToPath(keyValue))
+                    .orElse("");
+        }
+
+        private void inspectImportMembers(YAMLKeyValue keyValue) {
+            YAMLValue value = keyValue.getValue();
+            if (value instanceof YAMLSequence) {
+                ((YAMLSequence) value).getItems().stream()
+                        .collect(Collectors.groupingBy(this::getMemberName))
+                        .forEach(this::inspectInstances);
+            }
+        }
+
+        private String getMemberName(YAMLSequenceItem sequenceItem) {
+            return Optional.ofNullable(sequenceItem.getValue())
+                    .map(PsiElement::getText)
+                    .orElse("");
+        }
+
+        private void inspectInstances(String name, List<? extends YAMLPsiElement> instances) {
+            if (instances.size() > 1) {
+                instances.forEach(this::registerProblem);
+            }
         }
 
         private void registerProblem(PsiElement psiElement) {
+            if (psiElement instanceof YAMLKeyValue) {
+                psiElement = ((YAMLKeyValue) psiElement).getKey();
+            }
             if (psiElement == null) {
                 return;
             }

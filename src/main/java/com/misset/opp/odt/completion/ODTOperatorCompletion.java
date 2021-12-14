@@ -43,7 +43,8 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                     precedingFilter = resources -> true;
                 } else {
                     Set<OntResource> previousStep = queryStep.resolvePreviousStep();
-                    precedingFilter = acceptableInput -> OppModel.INSTANCE.areCompatible(acceptableInput, previousStep);
+                    precedingFilter = acceptableInput -> previousStep.isEmpty() ||
+                            OppModel.INSTANCE.areCompatible(acceptableInput, previousStep);
                 }
 
                 // add BuiltinOperators
@@ -63,10 +64,9 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                 // static Operators are ones that don't require (actually don't want) to be applied on an input
                 // but only as start. For example, the DATE_TIME stamp or IIF operator=
                 if (BUILTIN_OPERATOR_STRICT.accepts(position)) {
-                    if (AFTER_FIRST_QUERY_STEP.accepts(position)) {
-                        addCallables(BuiltinOperators.getNonStaticOperators(), result, typeFilter, precedingFilter);
-                    } else {
-                        addCallables(BuiltinOperators.getOperators(), result, typeFilter, precedingFilter);
+                    addCallables(BuiltinOperators.getNonStaticOperators(), result, typeFilter, precedingFilter);
+                    if (!AFTER_FIRST_QUERY_STEP.accepts(position)) {
+                        addCallables(BuiltinOperators.getStaticOperators(), result, typeFilter, precedingFilter);
                     }
                 } else {
                     // only add the static builtin operators:

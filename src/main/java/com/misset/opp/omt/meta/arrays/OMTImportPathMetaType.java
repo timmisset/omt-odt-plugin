@@ -25,13 +25,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OMTImportPathMetaType extends YamlArrayType {
-    private final String path;
     protected static final String UNSORTED_IMPORT_MEMBERS = "Unsorted import members";
     protected static final String SORT_MEMBERS = "Sort members";
 
     public OMTImportPathMetaType(String path) {
         super(new OMTImportMemberMetaType());
-        this.path = path;
     }
 
     @Override
@@ -40,7 +38,7 @@ public class OMTImportPathMetaType extends YamlArrayType {
         // require YAMLSequence validation
         super.validateValue(value, problemsHolder);
 
-        // suggest sorting:
+        // check if sorted:
         if (value instanceof YAMLSequence) {
             final YAMLSequence sequence = (YAMLSequence) value;
             List<YAMLSequenceItem> items = getSortedList(sequence);

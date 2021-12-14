@@ -67,12 +67,20 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
     @Test
     void testChooseBlock() {
         assertFormatting(
-                "CHOOSE WHEN true => 'hi' WHEN false => 'bye' OTHERWISE => 'confused' END",
-                "CHOOSE\n" +
-                        "<indent>WHEN true => 'hi'\n" +
-                        "<indent>WHEN false => 'bye'\n" +
-                        "<indent>OTHERWISE => 'confused'\n" +
-                        "END");
+                "DEFINE QUERY query => \n" +
+                        "CHOOSE WHEN true => 'hi' WHEN false => 'bye' OTHERWISE => 'confused' END",
+                "DEFINE QUERY query =>\n" +
+                        "    CHOOSE\n" +
+                        "        WHEN true => 'hi'\n" +
+                        "        WHEN false => 'bye'\n" +
+                        "        OTHERWISE => 'confused'\n" +
+                        "    END");
+    }
+
+    @Test
+    void testMultilineQuery() {
+        assertFormatting("$variable /\nLOG",
+                "$variable /\n<indent>LOG");
     }
 
     @Override

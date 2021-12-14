@@ -1,7 +1,6 @@
-package com.misset.opp.omt.inspection;
+package com.misset.opp.omt.inspection.unused;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.omt.inspection.unused.OMTUnusedVariableInspection;
 import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Test;
 

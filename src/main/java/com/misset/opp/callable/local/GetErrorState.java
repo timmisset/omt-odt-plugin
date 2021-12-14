@@ -1,8 +1,16 @@
 package com.misset.opp.callable.local;
 
+import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
+
 public class GetErrorState extends LocalCommand {
     public static GetErrorState INSTANCE = new GetErrorState();
-    protected GetErrorState() {}
+
+    protected GetErrorState() {
+    }
 
     @Override
     public String getName() {
@@ -12,6 +20,11 @@ public class GetErrorState extends LocalCommand {
     @Override
     public String getDescription(String context) {
         return String.format("Get the current error state for the %s", context);
+    }
+
+    @Override
+    public @NotNull Set<OntResource> resolve() {
+        return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
     }
 
     @Override

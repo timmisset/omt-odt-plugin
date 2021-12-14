@@ -3,27 +3,12 @@ package com.misset.opp.callable.local;
 import com.misset.opp.callable.Variable;
 import org.apache.jena.ontology.OntResource;
 
-import java.util.Collections;
 import java.util.Set;
 
 public class LocalVariable implements Variable {
-    private String name;
-    private String description;
-    private Set<OntResource> type;
-
-    public LocalVariable(String name) {
-        this(name, name, Collections.emptySet());
-    }
-
-    public LocalVariable(String name,
-                         String description) {
-        this(name, description, Collections.emptySet());
-    }
-
-    public LocalVariable(String name,
-                         Set<OntResource> type) {
-        this(name, name, type);
-    }
+    private final String name;
+    private final String description;
+    private final Set<OntResource> type;
 
     public LocalVariable(String name,
                          String description,

@@ -1,17 +1,30 @@
 package com.misset.opp.callable.local;
 
+import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
+
 public class HasError extends LocalCommand {
     public static HasError INSTANCE = new HasError();
-    protected HasError() {}
+
+    protected HasError() {
+    }
 
     @Override
     public String getName() {
-        return "GET_ERROR_STATE";
+        return "HAS_ERROR";
     }
 
     @Override
     public String getDescription(String context) {
         return String.format("Check if there is an error for the %s", context);
+    }
+
+    @Override
+    public @NotNull Set<OntResource> resolve() {
+        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
 
     @Override

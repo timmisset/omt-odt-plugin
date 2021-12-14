@@ -3,8 +3,11 @@ package com.misset.opp.odt.formatter;
 import com.intellij.formatting.Indent;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.JavaDocTokenType;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTParserDefinition;
 import com.misset.opp.odt.psi.ODTIgnored;
 import com.misset.opp.odt.psi.ODTTypes;
@@ -28,7 +31,14 @@ public class ODTFormattingIndent {
 
     private static boolean isRootElement(ASTNode node) {
         ASTNode treeParent = node.getTreeParent();
-        return treeParent != null && treeParent.getElementType() == ODTParserDefinition.ODTFileElementType;
+        return treeParent != null &&
+                treeParent.getElementType() == ODTParserDefinition.ODTFileElementType;
+    }
+
+    private static boolean isFirstStatement(ASTNode node) {
+        PsiElement psi = node.getPsi();
+        PsiFile file = PsiTreeUtil.getParentOfType(psi, PsiFile.class);
+        return file != null && PsiTreeUtil.getDeepestFirst(file) == PsiTreeUtil.getDeepestFirst(psi);
     }
 
     private static boolean isInside(ASTNode node, IElementType insideType) {
@@ -39,14 +49,14 @@ public class ODTFormattingIndent {
     }
 
     public static Indent computeIndent(ASTNode node) {
-        if (!isRootElement(node)) {
+        if (!isFirstStatement(node) && !isRootElement(node)) {
             IElementType elementType = node.getElementType();
             if (elementType == ODTTypes.SCRIPT) {
                 return Indent.getNormalIndent();
             } else if (ODTTokenSets.CHOOSE_INDENTED_OPERATORS.contains(elementType)) {
                 return Indent.getNormalIndent(true);
-            } else if (isInside(node, ODTTypes.DEFINE_QUERY_STATEMENT) && QUERY_STEPS.contains(elementType)) {
-                return Indent.getNormalIndent(false);
+            } else if (QUERY_STEPS.contains(elementType)) {
+                return Indent.getNormalIndent(!isInside(node, ODTTypes.DEFINE_QUERY_STATEMENT));
             } else if (elementType == ODTTypes.SIGNATURE_ARGUMENT) {
                 return Indent.getNormalIndent(false);
             } else if (JAVA_DOC_INDENTED.contains(elementType)) {
