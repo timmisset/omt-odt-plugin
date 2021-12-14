@@ -11,6 +11,8 @@ import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.callable.Variable;
+import com.misset.opp.callable.global.GlobalVariable;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
@@ -83,6 +85,11 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
     }
 
     @Override
+    public boolean isAssignedVariable() {
+        return delegate.isAssignedVariable();
+    }
+
+    @Override
     public boolean canBeAnnotated() {
         return getDelegate() instanceof ODTDefineInputParamDelegate;
     }
@@ -129,6 +136,23 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
                     ODTCodeUntypedInspectionWarning.PARAM_ANNOTATION,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
+    }
+
+    @Override
+    public boolean isGlobal() {
+        return GlobalVariable.getVariable(getName()) != null;
+    }
+
+    @Override
+    public Variable getDeclared() {
+        return delegate.getDeclared();
+    }
+
+    @Override
+    public boolean isReadonly() {
+        return Optional.ofNullable(getDeclared())
+                .map(Variable::isReadonly)
+                .orElse(false);
     }
 
     @Override

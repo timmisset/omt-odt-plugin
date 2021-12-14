@@ -7,7 +7,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Variable;
 import com.misset.opp.callable.global.GlobalVariable;
 import com.misset.opp.callable.local.CallableLocalVariableTypeProvider;
-import com.misset.opp.callable.psi.PsiVariable;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
@@ -15,7 +14,6 @@ import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlVariableDelegate;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLValue;
@@ -155,21 +153,19 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
                 .orElse(false);
     }
 
-    private Optional<Set<OntResource>> getTypeFromDeclaration() {
+    @Override
+    public Variable getDeclared() {
         return Optional.ofNullable(getReference())
                 .map(PsiReference::resolve)
                 .map(this::getWrapper)
+                .orElse(null);
+    }
+
+    private Optional<Set<OntResource>> getTypeFromDeclaration() {
+        return Optional.ofNullable(getDeclared())
                 .map(Variable::getType);
     }
 
-    private PsiVariable getWrapper(PsiElement element) {
-        if (element instanceof PsiVariable) {
-            return (PsiVariable) element;
-        } else if (element instanceof YAMLValue) {
-            return new OMTYamlVariableDelegate((YAMLValue) element);
-        }
-        return null;
-    }
 
     private Optional<Set<OntResource>> getTypeFromOMTLocalVariable() {
         return element.getContainingFile()
@@ -189,6 +185,7 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
         return Optional.ofNullable(GlobalVariable.getVariable(element.getName()))
                 .map(Variable::getType);
     }
+
 
     private Optional<Set<OntResource>> getTypeFromCallContext() {
         return PsiTreeUtil.collectParents(element, ODTCall.class, false, Objects::isNull)

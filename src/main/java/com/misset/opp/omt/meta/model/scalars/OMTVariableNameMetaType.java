@@ -48,16 +48,29 @@ public class OMTVariableNameMetaType extends YamlScalarType implements OMTNamedV
         return TextRange.allOf(value.getText());
     }
 
-    @Override
-    public Set<OntResource> getType(YAMLValue value) {
-        // only the param: variable declaration has a typing, resolve via destructed meta-type
+    private OMTNamedVariableMetaType getParentMeta(YAMLValue value) {
         final YAMLMapping yamlMapping = PsiTreeUtil.getParentOfType(value, YAMLMapping.class);
         return Optional.ofNullable(yamlMapping)
                 .map(OMTMetaTypeProvider.getInstance(value.getProject())::getValueMetaType)
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
                 .filter(OMTNamedVariableMetaType.class::isInstance)
                 .map(OMTNamedVariableMetaType.class::cast)
+                .orElse(null);
+    }
+
+    @Override
+    public Set<OntResource> getType(YAMLValue value) {
+        final YAMLMapping yamlMapping = PsiTreeUtil.getParentOfType(value, YAMLMapping.class);
+        return Optional.ofNullable(getParentMeta(value))
                 .map(namedVariableMetaType -> namedVariableMetaType.getType(yamlMapping))
                 .orElse(Collections.emptySet());
+    }
+
+    @Override
+    public boolean isReadonly(YAMLValue value) {
+        final YAMLMapping yamlMapping = PsiTreeUtil.getParentOfType(value, YAMLMapping.class);
+        return Optional.ofNullable(getParentMeta(value))
+                .map(namedVariableMetaType -> namedVariableMetaType.isReadonly(yamlMapping))
+                .orElse(false);
     }
 }

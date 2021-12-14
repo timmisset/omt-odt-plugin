@@ -25,4 +25,8 @@ public interface OMTNamedVariableMetaType {
     }
 
     TextRange getNameTextRange(YAMLValue value);
+
+    default boolean isReadonly(YAMLValue value) {
+        return false;
+    }
 }

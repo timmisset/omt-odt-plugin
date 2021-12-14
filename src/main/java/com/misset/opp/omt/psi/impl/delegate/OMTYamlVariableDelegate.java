@@ -89,4 +89,9 @@ public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements OMTVar
                 .map(omtNamedVariableMetaType -> ifPresent.apply(omtNamedVariableMetaType, value))
                 .orElse(orElse);
     }
+
+    @Override
+    public boolean isReadonly() {
+        return getFromMeta(OMTNamedVariableMetaType::isReadonly, false);
+    }
 }

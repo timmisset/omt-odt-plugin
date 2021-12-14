@@ -9,7 +9,6 @@ import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.model.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTOnChangeScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
-import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -34,10 +33,6 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements
 
     private static final Set<String> requiredFeatures = Set.of("name");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
-    private final List<LocalVariable> LOCAL_VARIABLES = List.of(
-            new LocalVariable("$newValue", "New value for the payload item", Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE)),
-            new LocalVariable("$oldValue", "Old value for the payload item", Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE))
-    );
 
     static {
         features.put("name", OMTVariableNameMetaType::new);
@@ -93,6 +88,16 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements
         } else {
             return resolveValue(value);
         }
+    }
+
+    @Override
+    public boolean isReadonly(YAMLValue value) {
+        if (!(value instanceof YAMLMapping)) {
+            return false;
+        }
+        YAMLMapping yamlMapping = (YAMLMapping) value;
+        YAMLKeyValue readonly = yamlMapping.getKeyValueByKey("readonly");
+        return readonly != null && "true".equals(readonly.getValueText());
     }
 
     @Override

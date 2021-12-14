@@ -1,9 +1,9 @@
 package com.misset.opp.odt.psi.impl.variable.delegate;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.callable.Callable;
+import com.misset.opp.callable.Variable;
 import com.misset.opp.odt.psi.ODTDeclareVariable;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
@@ -25,13 +25,21 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
 
     @Override
     public boolean isDeclaredVariable() {
-        if (isAssignmentPart()) {
-            return false;
-        }
-        return Optional.ofNullable(element.getParent())
-                .map(PsiElement::getParent)
-                .map(ODTDeclareVariable.class::isInstance)
-                .orElse(Boolean.FALSE);
+        return !isAssignmentPart() &&
+                PsiTreeUtil.getParentOfType(element, ODTDeclareVariable.class) != null;
+    }
+
+    @Override
+    public Variable getDeclared() {
+        return isDeclaredVariable() ? element : Optional.ofNullable(getReference())
+                .map(PsiReference::resolve)
+                .map(this::getWrapper)
+                .orElse(null);
+    }
+
+    @Override
+    public boolean isAssignedVariable() {
+        return !isAssignmentPart();
     }
 
     @Override
