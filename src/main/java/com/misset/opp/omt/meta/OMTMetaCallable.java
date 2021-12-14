@@ -4,6 +4,8 @@ import com.misset.opp.callable.Call;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -36,4 +38,8 @@ public interface OMTMetaCallable {
     Set<OntResource> getSecondReturnArgument();
 
     String getType();
+
+    default List<String> getFlags() {
+        return Collections.emptyList();
+    }
 }

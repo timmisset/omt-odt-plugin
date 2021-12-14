@@ -151,6 +151,7 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
     @Override
     public boolean isReadonly() {
         return Optional.ofNullable(getDeclared())
+                .filter(variable -> variable != this)
                 .map(Variable::isReadonly)
                 .orElse(false);
     }

@@ -186,4 +186,9 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
     public Set<OntResource> getSecondReturnArgument() {
         return computeFromMeta(OMTMetaCallable.class, OMTMetaCallable::getSecondReturnArgument, Collections.emptySet());
     }
+
+    @Override
+    public List<String> getFlags() {
+        return computeFromMeta(OMTMetaCallable.class, OMTMetaCallable::getFlags, Collections.emptyList());
+    }
 }

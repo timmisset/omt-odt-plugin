@@ -133,4 +133,9 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
         // $committed value
         return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
     }
+
+    @Override
+    public List<String> getFlags() {
+        return List.of("!nested", "!sibling", "!siblingCommit", "!autonomous", "!dialog");
+    }
 }

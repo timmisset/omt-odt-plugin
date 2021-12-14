@@ -106,12 +106,6 @@ public abstract class Builtin implements Callable {
     public final void validate(PsiCall call,
                                ProblemsHolder holder) {
         Callable.super.validate(call, holder);
-        String flag = call.getFlag();
-        if(flag != null && !getFlags().contains(flag)) {
-            holder.registerProblem(call.getFlagElement(),
-                    "Illegal flag, options are: " + String.join(", ", getFlags()),
-                    ProblemHighlightType.ERROR);
-        }
         String shorthandSyntax = getShorthandSyntax();
         if(shorthandSyntax != null) {
             holder.registerProblem(call, "Prefer syntax shorthand: " + shorthandSyntax, ProblemHighlightType.WEAK_WARNING);

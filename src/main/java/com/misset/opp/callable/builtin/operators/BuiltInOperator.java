@@ -15,7 +15,7 @@ import java.util.Set;
 
 public abstract class BuiltInOperator extends Builtin {
 
-    protected static final List<String> IGNORE_CASE_FLAG = List.of("ignoreCase");
+    protected static final List<String> IGNORE_CASE_FLAG = List.of("!ignoreCase");
 
     @Override
     public boolean isCommand() {

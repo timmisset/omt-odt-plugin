@@ -109,4 +109,9 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
     public Set<OntResource> getSecondReturnArgument() {
         return null;
     }
+
+    @Override
+    public List<String> getFlags() {
+        return List.of("!nested", "!sibling", "!siblingCommit", "!autonomous");
+    }
 }

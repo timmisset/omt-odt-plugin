@@ -76,15 +76,29 @@ public interface Callable extends Resolvable {
         LoggerUtil.runWithLogger(LOGGER,
                 "Validation of call " + call.getCallId(),
                 () -> {
-                    final int numberOfArguments = call.numberOfArguments();
-                    if (!passesMinArguments(numberOfArguments) || !passesMaxArguments(numberOfArguments)) {
-                        PsiElement callSignatureElement = call.getCallSignatureElement();
-                        holder.registerProblem(callSignatureElement != null ? callSignatureElement : call,
-                                "Expects " + getExpectedArgumentsMessage() + " arguments. Call has " + numberOfArguments + " arguments",
-                                ProblemHighlightType.ERROR);
-                    }
+                    validateCallArguments(call, holder);
+                    validateCallFlag(call, holder);
                 });
 
+    }
+
+    private void validateCallArguments(PsiCall call, ProblemsHolder holder) {
+        final int numberOfArguments = call.numberOfArguments();
+        if (!passesMinArguments(numberOfArguments) || !passesMaxArguments(numberOfArguments)) {
+            PsiElement callSignatureElement = call.getCallSignatureElement();
+            holder.registerProblem(callSignatureElement != null ? callSignatureElement : call,
+                    "Expects " + getExpectedArgumentsMessage() + " arguments. Call has " + numberOfArguments + " arguments",
+                    ProblemHighlightType.ERROR);
+        }
+    }
+
+    private void validateCallFlag(PsiCall call, ProblemsHolder holder) {
+        String flag = call.getFlag();
+        if (flag != null && !getFlags().contains(flag)) {
+            holder.registerProblem(call.getFlagElement(),
+                    "Illegal flag, options are: " + String.join(", ", getFlags()),
+                    ProblemHighlightType.ERROR);
+        }
     }
 
     default HashMap<Integer, Set<OntResource>> getParameterTypes() {
