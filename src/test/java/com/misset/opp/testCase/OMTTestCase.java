@@ -1,7 +1,6 @@
 package com.misset.opp.testCase;
 
 import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
@@ -91,12 +90,6 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
     protected String insideQueryWithPrefixesNoSemicolonEnding(String queryStatement, String... params) {
         return withPrefixes(String.format("queries: |\n" +
                 "   DEFINE QUERY query(%s) => %s", String.join(", ", params), queryStatement));
-    }
-
-    protected void withProgress(Runnable runnable) {
-        ProgressManager.getInstance().runProcessWithProgressSynchronously(
-                runnable, "Test", false, getProject()
-        );
     }
 
     protected ODTResolvableCall getCallByName(String callName) {

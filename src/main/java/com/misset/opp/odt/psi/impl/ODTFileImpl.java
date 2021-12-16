@@ -20,7 +20,6 @@ import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
-import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -154,13 +153,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
             final Map<String, String> namespaces;
             if (hostFile != null) {
                 // in OMT files
-                namespaces = getProviders(OMTPrefixProvider.class, OMTPrefixProvider.KEY).entrySet().stream()
-                        .map(entry -> entry.getValue().getNamespaces(entry.getKey()))
-                        .flatMap(map -> map.entrySet().stream())
-                        .collect(Collectors.toMap(Map.Entry::getKey,
-                                Map.Entry::getValue,
-                                (s, s2) -> s));// preserve the closest to the element, basically shadowing the parent declaration if applicable
-
+                namespaces = hostFile.getAvailableNamespaces(getHost());
             } else {
                 // in ODT files
                 namespaces =

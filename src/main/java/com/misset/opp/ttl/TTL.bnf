@@ -1,0 +1,63 @@
+// Based on RDF 1.1 Turtle
+// https://www.w3.org/TR/turtle/
+
+{
+  parserClass="org.intellij.sdk.language.parser.TTLParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="TTL"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.misset.opp.ttl.psi"
+  psiImplPackage="com.misset.opp.ttl.psi.impl"
+
+  elementTypeHolderClass="com.misset.opp.ttl.psi.TTLTypes"
+  elementTypeClass="com.misset.opp.ttl.psi.TTLElementType"
+  tokenTypeClass="com.misset.opp.ttl.psi.TTLTokenType"
+}
+
+TTLFile                 ::= declaredBaseUri? declaredImportUri* statement*
+declaredBaseUri         ::= BASE_URI
+declaredImportUri       ::= IMPORT_URI
+statement               ::=	directive | triples DOT
+directive	            ::=	prefixId | base | sparqlPrefix | sparqlBase
+prefixId	            ::=	ATPREFIX PNAME_NS IRIREF DOT {
+    implements="com.misset.opp.ttl.psi.prefix.TTLPrefixHolder"
+    extends="com.misset.opp.ttl.psi.prefix.TTLBasePrefixId"
+}
+base	                ::=	ATBASE IRIREF DOT                                   { extends=directive }
+sparqlBase	            ::=	BASE_LEADING IRIREF                                 { extends=directive }
+sparqlPrefix	        ::=	PREFIX_LEADING PNAME_NS IRIREF                      { extends=directive }
+triples	                ::=	subject predicateObjectList | blankNodePropertyList predicateObjectList?
+// predicateObject is not part of the TTL literature but makes it easier to navigate the Psi Tree
+predicateObject         ::= verb objectList
+predicateObjectList	    ::=	predicateObject (SEMICOLON (predicateObject)?)*
+objectList	            ::=	object (COMMA object)*
+verb	                ::=	predicate | A
+subject	                ::=	iri | blankNode | collection {
+    extends="com.misset.opp.ttl.psi.spo.TTLBaseSubject"
+    implements="com.misset.opp.ttl.psi.spo.TTLSPO<com.misset.opp.ttl.stubs.subject.TTLSubjectStub>"
+    elementTypeClass="com.misset.opp.ttl.stubs.subject.TTLSubjectStubElementType"
+}
+predicate	            ::=	iri
+object	                ::=	iri | blankNode | collection | blankNodePropertyList | literal {
+    extends="com.misset.opp.ttl.psi.spo.TTLBaseObject"
+    implements="com.misset.opp.ttl.psi.spo.TTLSPO<com.misset.opp.ttl.stubs.object.TTLObjectStub>"
+    elementTypeClass="com.misset.opp.ttl.stubs.object.TTLObjectStubElementType"
+}
+literal	                ::=	rdfLiteral | numericLiteral | booleanLiteral
+blankNodePropertyList	::=	BRACKET_OPEN predicateObjectList BRACKET_CLOSE
+collection	            ::=	PARENTHESIS_OPEN object* PARENTHESIS_CLOSE
+numericLiteral	        ::=	INTEGER | DECIMAL | DOUBLE
+rdfLiteral	            ::=	string (LANGTAG | DATATYPE_LEADING iri)?
+booleanLiteral	        ::=	TRUE | FALSE
+string	                ::=	STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE
+iri	                    ::=	IRIREF | prefixedName {
+    extends="com.misset.opp.ttl.psi.iri.TTLBaseIri"
+    implements="com.misset.opp.ttl.psi.iri.TTLIriHolder"
+}
+prefixedName	        ::=	PNAME_LN | PNAME_NS {
+    implements="com.misset.opp.ttl.psi.prefix.TTLPrefixedNameHolder"
+    extends="com.misset.opp.ttl.psi.prefix.TTLBasePrefixedName"
+}
+blankNode	            ::=	BLANK_NODE_LABEL | ANON

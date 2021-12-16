@@ -60,7 +60,14 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
             addModelItemsToMap((YAMLMapping) model.getValue(), map);
         }
 
+        map.putAll(getImportingMembers(yamlMapping));
+
+        return map;
+    }
+
+    public static @NotNull HashMap<String, List<PsiElement>> getImportingMembers(YAMLMapping yamlMapping) {
         final YAMLKeyValue imports = yamlMapping.getKeyValueByKey("import");
+        final HashMap<String, List<PsiElement>> map = new HashMap<>();
         if (imports != null && imports.getValue() instanceof YAMLMapping) {
             addImportStatementsToMap((YAMLMapping) imports.getValue(), map);
         }

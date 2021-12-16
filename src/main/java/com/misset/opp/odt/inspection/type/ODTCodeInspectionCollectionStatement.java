@@ -6,11 +6,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
-import com.misset.opp.odt.psi.ODTAddToCollection;
-import com.misset.opp.odt.psi.ODTCollectionStatement;
-import com.misset.opp.odt.psi.ODTQuery;
-import com.misset.opp.odt.psi.ODTRemoveFromCollection;
-import com.misset.opp.odt.psi.ODTResolvableValue;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
@@ -27,7 +23,7 @@ import java.util.Set;
 public class ODTCodeInspectionCollectionStatement extends LocalInspectionTool {
     @Override
     public @Nullable @Nls String getStaticDescription() {
-        return "Validates that assignments have equal or compatible RDF types and checks the modularity";
+        return "Validates that assignments have equal or compatible RDF types and checks the cardinality";
     }
 
     @Override
@@ -50,13 +46,13 @@ public class ODTCodeInspectionCollectionStatement extends LocalInspectionTool {
                         resolvableValue);
 
                 if (query instanceof ODTResolvableQueryPath) {
-                    inspectModularity(collectionStatement, (ODTResolvableQueryPath) query, resolvableValue);
+                    inspectCardinality(collectionStatement, (ODTResolvableQueryPath) query, resolvableValue);
                 }
             }
 
-            private void inspectModularity(ODTCollectionStatement collectionStatement,
-                                           ODTResolvableQueryPath query,
-                                           ODTResolvableValue resolvableValue) {
+            private void inspectCardinality(ODTCollectionStatement collectionStatement,
+                                            ODTResolvableQueryPath query,
+                                            ODTResolvableValue resolvableValue) {
                 final Pair<Set<OntResource>, Property> subjectPredicate = query.resolveToSubjectPredicate();
                 if (subjectPredicate == null) {
                     return;
@@ -65,7 +61,7 @@ public class ODTCodeInspectionCollectionStatement extends LocalInspectionTool {
                 if (collectionStatement instanceof ODTAddToCollection ||
                         collectionStatement instanceof ODTRemoveFromCollection ||
                         resolvableValue.isMultiple()) {
-                    TTLValidationUtil.validateModularityMultiple(subjectPredicate.getFirst(),
+                    TTLValidationUtil.validateCardinalityMultiple(subjectPredicate.getFirst(),
                             subjectPredicate.getSecond(),
                             holder,
                             resolvableValue);

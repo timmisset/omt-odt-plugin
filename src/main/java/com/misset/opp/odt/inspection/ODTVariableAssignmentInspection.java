@@ -36,8 +36,8 @@ public class ODTVariableAssignmentInspection extends LocalInspectionTool {
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTVariable) {
                     ODTVariable variable = (ODTVariable) element;
-                    inspectVariable(variable, holder);
                     if (variable.isAssignedVariable()) {
+                        inspectVariable(variable, holder);
                         ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(variable, ODTVariableAssignment.class);
                         if (variableAssignment == null) {
                             return;

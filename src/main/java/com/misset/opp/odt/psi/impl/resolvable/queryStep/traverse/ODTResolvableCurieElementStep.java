@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTInjectionUtil;
@@ -36,8 +37,13 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
     }
 
     @Override
+    protected TextRange getModelReferenceTextRange() {
+        return getLastChild().getTextRangeInParent();
+    }
+
+    @Override
     public void inspect(ProblemsHolder holder) {
-        if(getFullyQualifiedUri() == null) {
+        if (getFullyQualifiedUri() == null) {
             final PsiElement prefix = getNamespacePrefix().getFirstChild();
             boolean injectedInOMT = ODTInjectionUtil.getInjectionHost(holder.getFile()) != null;
             holder.registerProblem(prefix,

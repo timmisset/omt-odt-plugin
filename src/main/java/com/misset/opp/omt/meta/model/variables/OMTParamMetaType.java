@@ -1,11 +1,14 @@
 package com.misset.opp.omt.meta.model.variables;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.model.scalars.OMTParamTypeType;
 import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
+import com.misset.opp.omt.psi.references.OMTParamTypeReference;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -106,5 +109,11 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTNamedVa
             return new TextRange(matcher.start(3), matcher.end(3));
         }
         return null;
+    }
+
+    @Override
+    public void validateValue(@NotNull YAMLValue value, @NotNull ProblemsHolder problemsHolder) {
+        super.validateValue(value, problemsHolder);
+        OMTParamTypeType.validatePrefixReference((OMTParamTypeReference) value.getReference(), problemsHolder);
     }
 }

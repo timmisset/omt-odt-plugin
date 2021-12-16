@@ -5,16 +5,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.callable.builtin.commands.NewGraphCommand;
-import com.misset.opp.odt.completion.ODTTraverseCompletion;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 import static com.misset.opp.odt.completion.CompletionPatterns.getInsideBuiltinCommandSignaturePattern;
-import static com.misset.opp.odt.completion.ODTTraverseCompletion.TraverseDirection.FORWARD;
 
 public class ODTCommandCompletionNewGraph extends CompletionContributor {
 
@@ -37,8 +36,8 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
 
                     // show all graphshape instances:
                     OppModel.INSTANCE.GRAPH_SHAPE.listInstances().mapWith(
-                                    resource -> ODTTraverseCompletion
-                                            .getPredicateLookupElement(resource, FORWARD, availableNamespaces, true))
+                                    resource -> TTLResourceUtil
+                                            .getRootLookupElement(resource, "Graphshape", availableNamespaces))
                             .forEachRemaining(result::addElement);
 
                     result.stopHere();

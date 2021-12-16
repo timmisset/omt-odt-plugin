@@ -18,6 +18,7 @@ public abstract class OMTMetaTypeInspectionBase extends YamlMetaTypeInspectionBa
         return OMTMetaTypeProvider.getInstance(holder.getProject());
     }
 
+
     protected static <T extends OMTMetaType> void visitMetaTypeProxy(YAMLKeyValue keyValue,
                                                                      YamlMetaTypeProvider metaTypeProvider,
                                                                      Class<T> metaTypeClass,

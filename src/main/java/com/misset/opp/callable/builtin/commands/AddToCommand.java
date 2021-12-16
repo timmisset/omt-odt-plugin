@@ -58,7 +58,7 @@ public class AddToCommand extends BuiltInCommand {
         // validate modality
         final Pair<Set<OntResource>, Property> signatureLeadingInformation = call.getSignatureLeadingInformation(0);
         if (call.getCallSignatureElement() != null && signatureLeadingInformation != null) {
-            TTLValidationUtil.validateModularityMultiple(signatureLeadingInformation.getFirst(),
+            TTLValidationUtil.validateCardinalityMultiple(signatureLeadingInformation.getFirst(),
                     signatureLeadingInformation.getSecond(),
                     holder,
                     call.getCallSignatureElement());

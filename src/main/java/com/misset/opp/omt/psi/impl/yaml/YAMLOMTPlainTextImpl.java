@@ -9,6 +9,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.omt.meta.OMTExportMemberMetaType;
 import com.misset.opp.omt.meta.OMTImportMemberMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.scalars.OMTOntologyPrefixMetaType;
@@ -17,10 +18,7 @@ import com.misset.opp.omt.meta.model.scalars.references.OMTPayloadQueryReference
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
-import com.misset.opp.omt.psi.references.OMTCallableReference;
-import com.misset.opp.omt.psi.references.OMTImportMemberReference;
-import com.misset.opp.omt.psi.references.OMTOntologyPrefixReference;
-import com.misset.opp.omt.psi.references.OMTParamTypeReference;
+import com.misset.opp.omt.psi.references.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
@@ -47,6 +45,8 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
         final YamlMetaType metaType = OMTMetaTypeProvider.getInstance(getProject()).getResolvedMetaType(this);
         if (metaType instanceof OMTImportMemberMetaType) {
             return new OMTImportMemberReference(this);
+        } else if (metaType instanceof OMTExportMemberMetaType) {
+            return new OMTExportMemberReference(this);
         } else if (metaType instanceof OMTOntologyPrefixMetaType) {
             return new OMTOntologyPrefixReference(this);
         } else if (metaType instanceof OMTParamMetaType) {
@@ -55,12 +55,13 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
                 return new OMTParamTypeReference(this, typePrefixRange);
             }
         } else if (metaType instanceof OMTParamTypeType) {
-            return new OMTParamTypeReference(this);
+            return OMTParamTypeType.getReference(this);
         } else if (metaType instanceof OMTPayloadQueryReferenceMetaType) {
             return new OMTCallableReference(this);
         }
         return null;
     }
+
 
     @Override
     public PsiReference @NotNull [] getReferences() {

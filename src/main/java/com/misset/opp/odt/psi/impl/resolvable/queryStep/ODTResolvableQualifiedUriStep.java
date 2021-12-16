@@ -4,10 +4,15 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import com.misset.opp.odt.psi.ODTQueryReverseStep;
+import com.misset.opp.odt.psi.reference.ODTTTLSubjectPredicateReference;
+import com.misset.opp.odt.psi.reference.ODTTTLSubjectReference;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -66,6 +71,24 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
         }
     }
 
+    /**
+     * Return the TextRange that should be used for the reference to the TTL model
+     */
+    protected abstract TextRange getModelReferenceTextRange();
+
+    @Override
+    public PsiReference getReference() {
+        if (getParent() instanceof ODTQueryReverseStep) {
+            return null;
+        }
+        if (isRootStep()) {
+            // reference a TTL Subject
+            return new ODTTTLSubjectReference(this, getModelReferenceTextRange());
+        } else {
+            // reference a TTL Predicate
+            return new ODTTTLSubjectPredicateReference(this, getModelReferenceTextRange());
+        }
+    }
 
     public String getNamespace() {
         return ResourceFactory.createResource(getFullyQualifiedUri()).getNameSpace();

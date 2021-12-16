@@ -15,7 +15,9 @@ import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.indexing.ExportedMembersIndex;
 import com.misset.opp.omt.indexing.ImportedMembersIndex;
 import com.misset.opp.omt.meta.OMTFileMetaType;
+import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.model.OMTModelMetaType;
+import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
@@ -24,9 +26,8 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.impl.YAMLFileImpl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     private static final Key<CachedValue<HashMap<String, List<PsiElement>>>> EXPORTING_MEMBERS = new Key<>(
@@ -80,5 +81,17 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
         Optional.ofNullable(getVirtualFile())
                 .map(VirtualFile::getPath)
                 .ifPresent(ExportedMembersIndex::removeFromIndex);
+    }
+
+    @Override
+    public Map<String, String> getAvailableNamespaces(PsiElement element) {
+        return OMTMetaTreeUtil.collectMetaParents(element, YAMLMapping.class, OMTPrefixProvider.class, false, Objects::isNull)
+                .entrySet()
+                .stream()
+                .map(entry -> entry.getValue().getNamespaces(entry.getKey()))
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (s, s2) -> s));
     }
 }

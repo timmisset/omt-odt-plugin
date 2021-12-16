@@ -3,6 +3,7 @@ package com.misset.opp.testCase;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -99,6 +100,10 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
         return file;
     }
 
-
+    protected void withProgress(Runnable runnable) {
+        ProgressManager.getInstance().runProcessWithProgressSynchronously(
+                runnable, "Test", false, getProject()
+        );
+    }
 
 }

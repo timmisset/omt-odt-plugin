@@ -1,7 +1,6 @@
 package com.misset.opp.odt.completion;
 
 import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -10,7 +9,7 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.ttl.OppModel;
-import com.misset.opp.util.Icons;
+import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -82,32 +81,11 @@ public class ODTTraverseCompletion extends CompletionContributor {
                                                 Map<String, String> availableNamespaces,
                                                 CompletionResultSet result) {
         predicates.stream()
-                .map(resource -> getPredicateLookupElement(resource,
+                .map(resource -> TTLResourceUtil.getPredicateLookupElement(resource,
                         direction,
-                        availableNamespaces,
-                        false))
+                        availableNamespaces))
                 .filter(Objects::nonNull)
                 .forEach(result::addElement);
-    }
-
-    public static LookupElementBuilder getPredicateLookupElement(Resource resource,
-                                                                 TraverseDirection direction,
-                                                                 Map<String, String> availableNamespaces,
-                                                                 boolean rootIndicator) {
-        String title = parseToCurie(resource, availableNamespaces);
-        if (title == null) {
-            return null;
-        }
-        String lookupText = direction == TraverseDirection.REVERSE ? "^" + title : title;
-        if (rootIndicator) {
-            lookupText = "/" + lookupText;
-        }
-        return LookupElementBuilder.create(lookupText)
-                .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
-                .withTailText(direction == TraverseDirection.FORWARD ? " -> forward" : " <- reverse")
-                .withTypeText("", Icons.TTLFile, false)
-                .withIcon(Icons.TTLFile)
-                .withPresentableText(title);
     }
 
     public static String parseToCurie(Resource resource,

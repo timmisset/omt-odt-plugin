@@ -12,7 +12,6 @@ import com.misset.opp.omt.meta.model.scalars.references.OMTPayloadQueryReference
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTOnChangeScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
-import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
@@ -29,10 +28,6 @@ public class OMTPayloadItemMetaType extends OMTMetaType implements
         OMTInjectable,
         OMTLocalVariableTypeProvider {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
-    private final List<LocalVariable> LOCAL_VARIABLES = List.of(
-            new LocalVariable("$newValue", "New value for the payload item. Since a payload item is exposed, the newValue can be any kind of value", Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE)),
-            new LocalVariable("$oldValue", "Old value for the payload item. Since a payload item is exposed, the newValue can be any kind of value", Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE))
-    );
 
     static {
         features.put("value", OMTQueryMetaType::new);

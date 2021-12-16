@@ -15,11 +15,7 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.misset.opp.util.ImportUtil.getOMTFile;
 
@@ -32,7 +28,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
 
     @Override
     protected YamlMetaType getMapEntryType(String name) {
-        return new OMTImportPathMetaType(name);
+        return new OMTImportPathMetaType();
     }
 
     public static HashMap<String, List<PsiElement>> getExportedMembersFromOMTFile(YAMLKeyValue keyValue) {
@@ -91,7 +87,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
                             @NotNull ProblemsHolder problemsHolder) {
         // the map with ImportPaths is not validated by the default validator
         if (keyValue.getValue() instanceof YAMLMapping) {
-            final OMTImportPathMetaType omtImportPathMetaType = new OMTImportPathMetaType("ImportPath");
+            final OMTImportPathMetaType omtImportPathMetaType = new OMTImportPathMetaType();
             ((YAMLMapping) keyValue.getValue()).getKeyValues()
                     .forEach(_keyValue -> omtImportPathMetaType.validateKey(_keyValue, problemsHolder));
         }

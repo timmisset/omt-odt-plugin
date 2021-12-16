@@ -5,10 +5,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.callable.builtin.commands.AssignCommand;
-import com.misset.opp.odt.completion.ODTTraverseCompletion;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
@@ -59,8 +59,8 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                     Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
                     predicates.stream()
-                            .map(property -> ODTTraverseCompletion.getPredicateLookupElement(
-                                    property, ODTTraverseCompletion.TraverseDirection.FORWARD, availableNamespaces, true))
+                            .map(property -> TTLResourceUtil.getRootLookupElement(
+                                    property, "Predicate", availableNamespaces))
                             .filter(Objects::nonNull)
                             .forEach(result::addElement);
                     result.stopHere();

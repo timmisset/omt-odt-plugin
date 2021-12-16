@@ -26,20 +26,29 @@ public final class OppModelLoader {
     private final List<Resource> processed = new ArrayList<>();
 
     private static OntModel model;
+    private static Collection<File> modelFiles = Collections.emptyList();
     private ProgressIndicator indicator = ProgressManager.getGlobalProgressIndicator();
 
     public OppModelLoader() { }
     public OppModel read(File file) {
         return read(file, indicator);
     }
+
     public OppModel read(File file, ProgressIndicator indicator) {
         this.indicator = indicator;
         model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         init(file);
         return new OppModel(model);
     }
+
+    public static Collection<File> getModelFiles() {
+        return modelFiles;
+    }
+
     private void setIndicatorText(String text) {
-        if(indicator == null) { return; }
+        if (indicator == null) {
+            return;
+        }
         indicator.setText(text);
     }
     private void setIndicatorText2(String text) {
@@ -47,10 +56,13 @@ public final class OppModelLoader {
         indicator.setText2(text);
     }
     private void init(File rootFile) {
-        if(!rootFile.exists()) { return; }
+        if (!rootFile.exists()) {
+            return;
+        }
         setIndicatorText("Reading ontology file");
         // load all other ontology files in the subfolders (recursively)
-        FileUtils.listFiles(rootFile.getParentFile(), new String[]{"ttl"}, true)
+        modelFiles = FileUtils.listFiles(rootFile.getParentFile(), new String[]{"ttl"}, true);
+        modelFiles
                 .stream()
                 .filter(file -> !FileUtil.filesEqual(file, rootFile))
                 .peek(file -> setIndicatorText2(file.getName()))

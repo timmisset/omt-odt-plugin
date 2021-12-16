@@ -1,10 +1,15 @@
 package com.misset.opp.ttl.util;
 
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.misset.opp.odt.completion.ODTTraverseCompletion;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.util.Icons;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Resource;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,6 +61,13 @@ public class TTLResourceUtil {
         }
     }
 
+    public static String fromIriRef(String iriRef) {
+        if (iriRef.startsWith("<") && iriRef.endsWith(">")) {
+            return iriRef.substring(1, iriRef.length() - 1);
+        }
+        return iriRef;
+    }
+
 
     public static String describeUrisForLookupJoined(Set<OntResource> resources) {
         return String.join(", ", describeUrisLookup(resources));
@@ -76,4 +88,48 @@ public class TTLResourceUtil {
     }
 
 
+    public static LookupElementBuilder getPredicateLookupElement(Resource resource,
+                                                                 ODTTraverseCompletion.TraverseDirection direction,
+                                                                 Map<String, String> availableNamespaces) {
+        String title = ODTTraverseCompletion.parseToCurie(resource, availableNamespaces);
+        if (title == null) {
+            return null;
+        }
+        String lookupText = direction == ODTTraverseCompletion.TraverseDirection.REVERSE ? "^" + title : title;
+        return LookupElementBuilder.create(lookupText)
+                .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
+                .withTailText(direction == ODTTraverseCompletion.TraverseDirection.FORWARD ? " -> forward" : " <- reverse")
+                .withTypeText("", Icons.TTLFile, false)
+                .withIcon(Icons.TTLFile)
+                .withPresentableText(title);
+    }
+
+    public static LookupElementBuilder getRootLookupElement(Resource resource,
+                                                            String typeText,
+                                                            Map<String, String> availableNamespaces) {
+        String title = ODTTraverseCompletion.parseToCurie(resource, availableNamespaces);
+        if (title == null) {
+            return null;
+        }
+        String lookupText = "/" + title;
+        return LookupElementBuilder.create(lookupText)
+                .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
+                .withTypeText(typeText, Icons.TTLFile, false)
+                .withIcon(Icons.TTLFile)
+                .withPresentableText(title);
+    }
+
+    public static LookupElementBuilder getTypeLookupElement(OntResource resource,
+                                                            Map<String, String> availableNamespaces) {
+        String lookupText = ODTTraverseCompletion.parseToCurie(resource, availableNamespaces);
+        if (lookupText == null) {
+            return null;
+        }
+        String typeText = isType(resource) ? "Type" : "Class";
+        return LookupElementBuilder.create(lookupText)
+                .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
+                .withTypeText("Type", Icons.TTLFile, false)
+                .withIcon(Icons.TTLFile)
+                .withPresentableText(lookupText);
+    }
 }

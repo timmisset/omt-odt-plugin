@@ -65,6 +65,7 @@ public class PluginConfigurable implements Configurable {
         pathMapping.put("@forensische-opsporing", "frontend/libs/forensische-opsporing-domain");
         pathMapping.put("@generiek", "frontend/libs/generiek-domain");
         pathMapping.put("@handeling", "frontend/libs/handeling-domain");
+        pathMapping.put("@main", "frontend/libs/main-domain");
         pathMapping.put("@mpg", "frontend/libs/mpg-domain");
         pathMapping.put("@registratie", "frontend/libs/registratie-domain");
         pathMapping.put("@shared", "frontend/libs/shared-domain");

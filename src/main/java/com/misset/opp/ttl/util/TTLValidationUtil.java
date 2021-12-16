@@ -56,10 +56,10 @@ public class TTLValidationUtil {
         }
     }
 
-    public static void validateModularityMultiple(Set<OntResource> subject,
-                                                  Property predicate,
-                                                  ProblemsHolder holder,
-                                                  PsiElement element) {
+    public static void validateCardinalityMultiple(Set<OntResource> subject,
+                                                   Property predicate,
+                                                   ProblemsHolder holder,
+                                                   PsiElement element) {
         if (OppModel.INSTANCE.isSingleton(subject, predicate)) {
             // assigning a collection or creating a collection where a singleton is expected
             holder.registerProblem(element,
@@ -99,7 +99,7 @@ public class TTLValidationUtil {
                                     PsiElement element,
                                     Predicate<OntResource> condition,
                                     String error) {
-        if (!resources.isEmpty() && !resources.stream().allMatch(condition)) {
+        if (!resources.isEmpty() && !resources.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) && !resources.stream().allMatch(condition)) {
             holder.registerProblem(element, error, ProblemHighlightType.ERROR);
             return false;
         }

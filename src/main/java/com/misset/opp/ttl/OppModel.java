@@ -33,7 +33,7 @@ public class OppModel {
     private static final String OPP = "http://ontologie.politie.nl/def/politie#";
     private static final String PLATFORM = "http://ontologie.politie.nl/def/platform#";
 
-    protected Property SHACL_PATH, SHACL_CLASS, SHACL_MINCOUNT, SHACL_MAXCOUNT, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
+    public Property SHACL_PATH, SHACL_CLASS, SHACL_MINCOUNT, SHACL_MAXCOUNT, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
     protected Property RDFS_SUBCLASS_OF;
     public Property RDF_TYPE;
     public List<Property> classModelProperties;
@@ -65,9 +65,10 @@ public class OppModel {
     HashMap<OntResource, HashMap<Property, Set<OntResource>>> listSubjectsCache = new HashMap<>();
     HashMap<OntResource, HashMap<Property, Set<OntResource>>> listObjectsCache = new HashMap<>();
     HashMap<OntResource, Set<Property>> listPredicatesCache = new HashMap<>();
+    HashMap<OntResource, Set<Statement>> listPredicateObjectsCache = new HashMap<>();
     HashMap<String, Set<Individual>> classIndividualsCache = new HashMap<>();
 
-    // contain information from the SHACL model about the modularity of the predicates
+    // contain information from the SHACL model about the cardinality of the predicates
     HashMap<OntClass, List<Property>> required = new HashMap<>();
     HashMap<OntClass, List<Property>> singles = new HashMap<>();
     HashMap<OntClass, List<Property>> multiple = new HashMap<>();
@@ -86,18 +87,22 @@ public class OppModel {
     }
 
     public OppModel(OntModel shaclModel) {
-        isUpdating = true;
-        clearModularity();
         this.shaclModel = shaclModel;
-        // the OWL_DL restricts types, a resource can only be either a class, a property or an instance, not multiple at the same time
-        // the RDFS_INF inferencing provides the support for sub/superclass logic
         model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
-        setProperties();
-        setPrimitives();
-        loadSimpleModel();
-        incrementModificationCount();
-        INSTANCE = this;
-        isUpdating = false;
+
+        LoggerUtil.runWithLogger(LOGGER, "Loading OppModel from Shacl", () -> {
+            isUpdating = true;
+            clearCardinality();
+            // the OWL_DL restricts types, a resource can only be either a class, a property or an instance, not multiple at the same time
+            // the RDFS_INF inferencing provides the support for sub/superclass logic
+            setProperties();
+            setPrimitives();
+            loadSimpleModel();
+            incrementModificationCount();
+            INSTANCE = this;
+            isUpdating = false;
+        });
+
     }
 
     private void incrementModificationCount() {
@@ -106,9 +111,10 @@ public class OppModel {
         listObjectsCache.clear();
         listPredicatesCache.clear();
         classIndividualsCache.clear();
+        listPredicateObjectsCache.clear();
     }
 
-    private void clearModularity() {
+    private void clearCardinality() {
         required.clear();
         singles.clear();
         multiple.clear();
@@ -281,7 +287,7 @@ public class OppModel {
         }
         subject.addProperty(predicate, object);
 
-        // modularity:
+        // cardinality:
         int min = getShaclPropertyInteger(shaclPropertyShape, SHACL_MINCOUNT);
         int max = getShaclPropertyInteger(shaclPropertyShape, SHACL_MINCOUNT);
         if (min == 1) {
@@ -322,19 +328,26 @@ public class OppModel {
     /**
      * Returns the list with all predicate-objects for the provided subject
      */
-    protected Set<Statement> listPredicateObjects(OntResource subject) {
-        if (subject.isIndividual()) {
-            return listPredicateObjectsForIndividual(subject.asIndividual());
-        }
-        if (!subject.isClass()) {
-            return Collections.emptySet();
-        }
-        OntClass ontClass = subject.asClass();
-        final HashSet<Statement> hashSet = new HashSet<>(ontClass.listProperties().toSet());
-        ontClass.listSuperClasses().forEach(
-                superClass -> hashSet.addAll(superClass.listProperties().toSet())
-        );
-        return hashSet;
+    public Set<Statement> listPredicateObjects(OntResource subject) {
+        return LoggerUtil.computeWithLogger(LOGGER, "listPredicateObjects for " + subject.getURI(), () -> {
+            if (!listPredicateObjectsCache.containsKey(subject)) {
+                final HashSet<Statement> hashSet;
+                if (subject.isIndividual()) {
+                    hashSet = new HashSet<>(listPredicateObjectsForIndividual(subject.asIndividual()));
+                } else if (!subject.isClass()) {
+                    hashSet = new HashSet<>();
+                } else {
+                    OntClass ontClass = subject.asClass();
+                    hashSet = new HashSet<>(ontClass.listProperties().toSet());
+                    ontClass.listSuperClasses().forEach(
+                            superClass -> hashSet.addAll(superClass.listProperties().toSet())
+                    );
+                }
+                listPredicateObjectsCache.put(subject, hashSet);
+                return hashSet;
+            }
+            return listPredicateObjectsCache.get(subject);
+        });
     }
 
     private Set<Statement> listPredicateObjectsForIndividual(Individual individual) {
@@ -808,7 +821,7 @@ public class OppModel {
 
     public boolean isMultiple(OntResource resource,
                               Property property) {
-        return isModularity(multiple, toClass(resource), property);
+        return isCardinality(multiple, toClass(resource), property);
     }
 
     public boolean isSingleton(Set<OntResource> resources,
@@ -818,7 +831,7 @@ public class OppModel {
 
     public boolean isSingleton(OntResource resource,
                                Property property) {
-        return isModularity(singles, toClass(resource), property);
+        return isCardinality(singles, toClass(resource), property);
     }
 
     public boolean isRequired(Set<OntResource> resources,
@@ -828,12 +841,12 @@ public class OppModel {
 
     public boolean isRequired(OntResource resource,
                               Property property) {
-        return isModularity(required, toClass(resource), property);
+        return isCardinality(required, toClass(resource), property);
     }
 
-    private boolean isModularity(Map<OntClass, List<Property>> map,
-                                 OntClass ontClass,
-                                 Property property) {
+    private boolean isCardinality(Map<OntClass, List<Property>> map,
+                                  OntClass ontClass,
+                                  Property property) {
         if (ontClass == null) {
             return false;
         }
@@ -844,6 +857,6 @@ public class OppModel {
         if (superClass.equals(ontClass)) {
             return false;
         }
-        return isModularity(map, superClass, property);
+        return isCardinality(map, superClass, property);
     }
 }
