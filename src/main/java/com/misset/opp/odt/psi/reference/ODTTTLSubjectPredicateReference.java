@@ -31,8 +31,7 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
         ODTResolvableQualifiedUriStep element = getElement();
         Set<OntResource> previousStep = element.resolvePreviousStep();
         List<String> acceptableSubjectClasses = previousStep.stream()
-                .map(OppModel.INSTANCE::toClass)
-                .map(ontClass -> ontClass.listSuperClasses().toList())
+                .map(OppModel.INSTANCE::listOntClasses)
                 .flatMap(Collection::stream)
                 .map(Resource::getURI)
                 .collect(Collectors.toList());

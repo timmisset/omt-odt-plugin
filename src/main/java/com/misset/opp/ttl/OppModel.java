@@ -541,8 +541,8 @@ public class OppModel {
         doesn't always provide the entire list of superclasses. The difference might be the
         reasoner using the rdf:type instead of directly accessing known superclasses of the Class
      */
-    private Set<OntClass> listOntClasses(Individual individual) {
-        final OntClass ontClass = individual.getOntClass(true);
+    public Set<OntClass> listOntClasses(OntResource resource) {
+        final OntClass ontClass = toClass(resource);
         final HashSet<OntClass> classes = new HashSet<>();
         classes.add(ontClass);
         classes.addAll(ontClass.listSuperClasses().toSet());

@@ -1,5 +1,6 @@
 package com.misset.opp.ttl.stubs.object;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.intellij.psi.PsiElement;
@@ -7,10 +8,11 @@ import com.intellij.psi.stubs.*;
 import com.misset.opp.ttl.TTLLanguage;
 import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.psi.impl.TTLObjectImpl;
-import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
+import com.misset.opp.ttl.stubs.index.TTLObjectStubIndex;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.function.Function;
 
 public class TTLObjectStubElementType extends IStubElementType<TTLObjectStub, TTLObject> {
     public TTLObjectStubElementType(String debugName) {
@@ -43,7 +45,7 @@ public class TTLObjectStubElementType extends IStubElementType<TTLObjectStub, TT
         jsonObject.addProperty("isPredicate", stub.isPredicate());
         jsonObject.addProperty("isObject", stub.isObject());
         jsonObject.addProperty("subjectIri", stub.getSubjectIri());
-        dataStream.writeName(jsonObject.getAsString());
+        dataStream.writeName(jsonObject.toString());
     }
 
     @Override
@@ -54,10 +56,18 @@ public class TTLObjectStubElementType extends IStubElementType<TTLObjectStub, TT
         }
         JsonObject json = JsonParser.parseString(s).getAsJsonObject();
         return new TTLObjectStubImpl(parentStub,
-                json.get("iri").getAsString(),
-                json.get("isPredicate").getAsBoolean(),
-                json.get("isObject").getAsBoolean(),
-                json.get("subjectIri").getAsString());
+                getJsonElement(json, "iri", JsonElement::getAsString),
+                Boolean.TRUE.equals(getJsonElement(json, "isPredicate", JsonElement::getAsBoolean)),
+                Boolean.TRUE.equals(getJsonElement(json, "isObject", JsonElement::getAsBoolean)),
+                getJsonElement(json, "subjectIri", JsonElement::getAsString));
+    }
+
+    private <T> T getJsonElement(JsonObject jsonObject, String key, Function<JsonElement, T> value) {
+        JsonElement jsonElement = jsonObject.get(key);
+        if (jsonElement.isJsonNull()) {
+            return null;
+        }
+        return value.apply(jsonElement);
     }
 
     @Override
@@ -66,6 +76,6 @@ public class TTLObjectStubElementType extends IStubElementType<TTLObjectStub, TT
         if (qualifiedUri == null) {
             return;
         }
-        sink.occurrence(TTLSubjectStubIndex.KEY, qualifiedUri);
+        sink.occurrence(TTLObjectStubIndex.KEY, qualifiedUri);
     }
 }

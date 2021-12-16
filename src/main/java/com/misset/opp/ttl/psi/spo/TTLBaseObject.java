@@ -46,7 +46,8 @@ public abstract class TTLBaseObject extends StubBasedPsiElementBase<TTLObjectStu
     @Override
     public String getSubjectIri() {
         return getFromStubOrElse(TTLObjectStub::getSubjectIri,
-                () -> Optional.ofNullable(PsiTreeUtil.getParentOfType(this, TTLSubject.class))
+                () -> Optional.ofNullable(PsiTreeUtil.getTopmostParentOfType(this, TTLStatement.class))
+                        .map(ttlStatement -> PsiTreeUtil.findChildOfType(ttlStatement, TTLSubject.class))
                         .map(TTLSPO::getQualifiedUri)
                         .orElse(null));
     }

@@ -1,9 +1,9 @@
 package com.misset.opp.ttl.stubs.object;
 
 import com.intellij.psi.stubs.StubElement;
-import com.misset.opp.ttl.psi.TTLSubject;
+import com.misset.opp.ttl.psi.TTLObject;
 
-public interface TTLObjectStub extends StubElement<TTLSubject> {
+public interface TTLObjectStub extends StubElement<TTLObject> {
 
     String getQualifiedUri();
 

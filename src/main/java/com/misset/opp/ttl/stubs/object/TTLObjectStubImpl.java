@@ -2,11 +2,11 @@ package com.misset.opp.ttl.stubs.object;
 
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
-import com.misset.opp.ttl.psi.TTLSubject;
+import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.psi.TTLTypes;
 import org.jetbrains.annotations.Nullable;
 
-public class TTLObjectStubImpl extends StubBase<TTLSubject> implements TTLObjectStub {
+public class TTLObjectStubImpl extends StubBase<TTLObject> implements TTLObjectStub {
     private final String iri;
     private final boolean isPredicate;
     private final boolean isObject;
@@ -17,7 +17,7 @@ public class TTLObjectStubImpl extends StubBase<TTLSubject> implements TTLObject
                                 boolean isPredicate,
                                 boolean isObject,
                                 String subjectIri) {
-        super(parent, (TTLObjectStubElementType) TTLTypes.SUBJECT);
+        super(parent, (TTLObjectStubElementType) TTLTypes.OBJECT);
         this.iri = iri;
         this.isPredicate = isPredicate;
         this.isObject = isObject;
