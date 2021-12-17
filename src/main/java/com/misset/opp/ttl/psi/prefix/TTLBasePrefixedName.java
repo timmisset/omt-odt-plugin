@@ -56,6 +56,16 @@ public abstract class TTLBasePrefixedName extends ASTWrapperPsiElement implement
     }
 
     @Override
+    public int getTextOffset() {
+        return getPrefixIdTextRange().getEndOffset() + super.getTextOffset();
+    }
+
+    @Override
+    public String getName() {
+        return getText().substring(getTextOffset() - super.getTextOffset());
+    }
+
+    @Override
     public TextRange getPrefixIdTextRange() {
         int index = getText().indexOf(":");
         if (index == -1) {

@@ -29,7 +29,7 @@ public class TTLObjectStubElementType extends IStubElementType<TTLObjectStub, TT
         return new TTLObjectStubImpl(parentStub,
                 psi.getQualifiedUri(),
                 psi.isPredicate(),
-                psi.isObject(),
+                psi.isObjectClass(),
                 psi.getSubjectIri());
     }
 

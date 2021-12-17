@@ -5,6 +5,8 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.ttl.psi.TTLPrefixId;
+import com.misset.opp.ttl.psi.TTLSubject;
+import com.misset.opp.ttl.psi.prefix.TTLBasePrefixedName;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +16,8 @@ import java.util.function.Predicate;
 
 public class TTLFindUsagesProvider implements FindUsagesProvider {
     public static final Predicate<PsiElement> CHECK_CAN_FIND_USAGES = element ->
-            element instanceof TTLPrefixId;
+            element instanceof TTLPrefixId ||
+                    element instanceof TTLBasePrefixedName || element instanceof TTLSubject;
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
@@ -29,6 +32,8 @@ public class TTLFindUsagesProvider implements FindUsagesProvider {
     @Override
     public @Nls @NotNull String getType(@NotNull PsiElement element) {
         if (element instanceof TTLPrefixId) {
+            return "prefix";
+        } else if (element instanceof TTLBasePrefixedName) {
             return "prefix";
         }
         return "null";

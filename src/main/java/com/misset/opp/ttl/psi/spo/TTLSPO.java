@@ -16,7 +16,7 @@ public interface TTLSPO<T extends StubElement<? extends PsiElement>> extends Stu
         return false;
     }
 
-    default boolean isObject() {
+    default boolean isObjectClass() {
         return false;
     }
 

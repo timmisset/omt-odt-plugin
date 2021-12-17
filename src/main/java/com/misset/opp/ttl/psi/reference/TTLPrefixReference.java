@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TTLPrefixReference extends PsiReferenceBase.Poly<TTLPrefixedName> implements PsiPolyVariantReference {
     public TTLPrefixReference(TTLPrefixedName prefixedName, TextRange textRange) {
-        super(prefixedName, textRange, false);
+        super(prefixedName, textRange, true);
     }
 
     @Override

@@ -43,7 +43,10 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
                         TTLObject.class
                 ).stream()
                 .filter(TTLSPO::isPredicate)
-                .filter(ttlObject -> acceptableSubjectClasses.contains(ttlObject.getSubjectIri()))
+                .filter(ttlObject ->
+                        // when the previous step cannot be resolved, resolve to every class in the model
+                        // that has this predicate. The user can select one when multiple options are available
+                        acceptableSubjectClasses.isEmpty() || acceptableSubjectClasses.contains(ttlObject.getSubjectIri()))
                 .map(PsiElementResolveResult::new)
                 .toArray(ResolveResult[]::new);
     }
