@@ -63,6 +63,11 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
     }
 
     @Override
+    public PsiElement getOriginalElement() {
+        return keyValue;
+    }
+
+    @Override
     public String getType() {
         return computeFromMeta(OMTModelItemDelegateMetaType.class, OMTModelItemDelegateMetaType::getType, "OMT Callable");
     }
@@ -72,11 +77,6 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
         return computeFromMeta(OMTMetaCallable.class,
                 omtMetaCallable -> omtMetaCallable.canBeAppliedTo(mapping, resources),
                 false);
-    }
-
-    @Override
-    public String getDescription(String context) {
-        return getName() + " (" + getType() + ")";
     }
 
     @Override
@@ -91,6 +91,19 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
                 .map(YAMLSequence.class::cast)
                 .map(YAMLSequence::getItems)
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Map<Integer, String> getParameterNames() {
+        List<YAMLSequenceItem> inputParameters = getInputParameters();
+        HashMap<Integer, String> parameterNames = new HashMap<>();
+        for (int i = 0; i < inputParameters.size(); i++) {
+            String nameFromParameter = getNameFromParameter(inputParameters.get(i));
+            if (nameFromParameter != null) {
+                parameterNames.put(i, nameFromParameter);
+            }
+        }
+        return parameterNames;
     }
 
     @Override
@@ -134,6 +147,22 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
         return Collections.emptySet();
     }
 
+    private String getNameFromParameter(YAMLSequenceItem sequenceItem) {
+        YAMLValue value = sequenceItem.getValue();
+        if (value == null) {
+            return null;
+        }
+        YamlMetaTypeProvider.MetaTypeProxy metaTypeProxy = OMTMetaTypeProvider.getInstance(sequenceItem.getProject()).getMetaTypeProxy(sequenceItem);
+        if (metaTypeProxy != null) {
+            YamlMetaType metaType = metaTypeProxy.getMetaType();
+            if (metaType instanceof OMTParamMetaType) {
+                OMTParamMetaType paramMetaType = (OMTParamMetaType) metaType;
+                return paramMetaType.getName(value);
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean isVoid() {
         return computeFromMeta(Callable.class, Callable::isVoid, false);
@@ -175,11 +204,6 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
                 .map(metaType::cast)
                 .map(ifMetaIsPresent)
                 .orElse(orElse);
-    }
-
-    @Override
-    public PsiElement getCallTarget() {
-        return keyValue.getKey();
     }
 
     @Override

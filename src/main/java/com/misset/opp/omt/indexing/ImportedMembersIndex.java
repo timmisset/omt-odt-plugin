@@ -1,24 +1,20 @@
 package com.misset.opp.omt.indexing;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLSequenceItem;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class ImportedMembersIndex {
 
     private static final HashMap<String, List<OMTFile>> importedMembers = new HashMap<>();
     private static final Set<OMTFile> containedFiles = new HashSet<>();
+
+    private static final Logger LOGGER = Logger.getInstance(ImportedMembersIndex.class);
 
     public static List<OMTFile> getImportingFiles(String callableName) {
         return importedMembers.getOrDefault(callableName, Collections.emptyList());
@@ -45,19 +41,21 @@ public class ImportedMembersIndex {
     }
 
     public static void analyse(OMTFile file) {
-        if (containedFiles.contains(file)) {
-            removeFromIndex(file);
-        }
-        Optional.ofNullable(PsiTreeUtil.findChildOfType(file, YAMLMapping.class))
-                .map(yamlMapping -> yamlMapping.getKeyValueByKey("import"))
-                .map(importMap -> PsiTreeUtil.findChildrenOfType(importMap, YAMLSequenceItem.class))
-                .stream()
-                .flatMap(Collection::stream)
-                .map(YAMLSequenceItem::getValue)
-                .filter(Objects::nonNull)
-                .distinct()
-                .forEach(yamlValue -> addToIndex(yamlValue.getText(), file));
-        containedFiles.add(file);
+        LoggerUtil.runWithLogger(LOGGER, "Analysis of " + file.getName(), () -> {
+            if (containedFiles.contains(file)) {
+                removeFromIndex(file);
+            }
+            Optional.ofNullable(PsiTreeUtil.findChildOfType(file, YAMLMapping.class))
+                    .map(yamlMapping -> yamlMapping.getKeyValueByKey("import"))
+                    .map(importMap -> PsiTreeUtil.findChildrenOfType(importMap, YAMLSequenceItem.class))
+                    .stream()
+                    .flatMap(Collection::stream)
+                    .map(YAMLSequenceItem::getValue)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .forEach(yamlValue -> addToIndex(yamlValue.getText(), file));
+            containedFiles.add(file);
+        });
     }
 
     private static void addToIndex(String name,

@@ -72,10 +72,7 @@ queryStatement ::=                          query { extends=statement }
 // there is also a collection of BuiltIn operators and commands which are included
 // and finally, all runnable OMT modelitems are available as Commands (Activity, Procedure) or Operator (StandAloneQuery)
 // only the Defined members are part of set of the grammar parser
-defineName ::=                              SYMBOL {
-    extends="com.misset.opp.odt.psi.impl.callable.ODTResolvableDefineName"
-    implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
-}
+defineName ::=                              SYMBOL
 defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query  {
     extends=statement
     mixin="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"

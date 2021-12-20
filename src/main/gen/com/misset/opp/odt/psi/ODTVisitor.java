@@ -64,7 +64,7 @@ public class ODTVisitor extends PsiElementVisitor {
   }
 
   public void visitDefineName(@NotNull ODTDefineName o) {
-    visitResolvable(o);
+    visitPsiElement(o);
   }
 
   public void visitDefineParam(@NotNull ODTDefineParam o) {

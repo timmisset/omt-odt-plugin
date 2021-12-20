@@ -6,7 +6,10 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.*;
@@ -138,10 +141,11 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                         metaTypeOrInterface)));
     }
 
-    public <T extends OMTMetaTypeStructureProvider> Optional<ResolveResult[]> resolveInOMT(Class<T> providerClass,
-                                                                                           Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> metaTypeStructureKey,
-                                                                                           String key,
-                                                                                           BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
+    @Override
+    public <T extends OMTMetaTypeStructureProvider, U extends PsiElement> Optional<List<U>> resolveInOMT(Class<T> providerClass,
+                                                                                                         Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> metaTypeStructureKey,
+                                                                                                         String key,
+                                                                                                         BiFunction<T, YAMLMapping, HashMap<String, List<U>>> mapFunction) {
         final LinkedHashMap<YAMLMapping, T> providers = getProviders(providerClass, metaTypeStructureKey);
         return OMTMetaTreeUtil.resolveProvider(providers, key, mapFunction);
     }

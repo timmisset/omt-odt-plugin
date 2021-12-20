@@ -1,6 +1,5 @@
 package com.misset.opp.odt.psi.impl.variable.delegate;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
@@ -8,21 +7,19 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.*;
+import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.prefix.PrefixUtil;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -61,7 +58,7 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
                 .filtering(PsiDocTag.class::isInstance)
                 .mapping(PsiDocTag.class::cast)
                 .findFirst());
-        if (docTag != null && docTag.getDataElements().length == 2) {
+        if (docTag != null && docTag.getDataElements().length >= 2) {
             // we can retrieve the type from the DocTag:
             final PsiElement dataElement = docTag.getDataElements()[1];
             final PsiReference[] references = docTag.getReferences();
@@ -70,7 +67,7 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
                             .intersects(dataElement.getTextRangeInParent()))
                     .findFirst();
             if (curieReference.isPresent()) {
-                // there is reference available for the type, meaning we should try to resolve it to the prefix
+                // there is a reference available for the type, meaning we should try to resolve it to the prefix
                 // and generate a fully qualified URI from it:
                 final PsiElement prefix = curieReference.get().resolve();
                 if (prefix instanceof YAMLKeyValue) {

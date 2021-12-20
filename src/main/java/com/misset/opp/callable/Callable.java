@@ -10,10 +10,7 @@ import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Any callable class / psiElement that can evaluate a call with OntResource input/output
@@ -102,6 +99,10 @@ public interface Callable extends Resolvable {
     }
 
     default HashMap<Integer, Set<OntResource>> getParameterTypes() {
+        return new HashMap<>();
+    }
+
+    default Map<Integer, String> getParameterNames() {
         return new HashMap<>();
     }
 

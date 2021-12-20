@@ -87,7 +87,7 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
 
     @Override
     public String getType() {
-        return "Procedure";
+        return "PROCEDURE";
     }
 
     @Override

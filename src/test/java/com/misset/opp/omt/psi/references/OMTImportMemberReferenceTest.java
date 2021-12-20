@@ -3,7 +3,7 @@ package com.misset.opp.omt.psi.references;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.usageView.UsageInfo;
-import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
@@ -27,7 +27,7 @@ class OMTImportMemberReferenceTest extends OMTTestCase {
 
         ReadAction.run(() -> {
             final YAMLPlainTextImpl query = myFixture.findElementByText("query", YAMLPlainTextImpl.class);
-            Assertions.assertTrue(query.getReference().resolve() instanceof ODTDefineName);
+            Assertions.assertTrue(query.getReference().resolve() instanceof PsiCallable);
         });
     }
 
@@ -43,7 +43,7 @@ class OMTImportMemberReferenceTest extends OMTTestCase {
                 "");
         ReadAction.run(() -> {
             final YAMLPlainTextImpl command = myFixture.findElementByText("command", YAMLPlainTextImpl.class);
-            Assertions.assertTrue(command.getReference().resolve() instanceof ODTDefineName);
+            Assertions.assertTrue(command.getReference().resolve() instanceof PsiCallable);
         });
     }
 
@@ -59,8 +59,8 @@ class OMTImportMemberReferenceTest extends OMTTestCase {
                 "   DEFINE COMMAND comm<caret>and => { }");
 
         withProgress(() -> ReadAction.run(() -> {
-            final ODTDefineName defineName = (ODTDefineName) myFixture.getElementAtCaret();
-            final Collection<UsageInfo> usages = myFixture.findUsages(defineName);
+            final PsiCallable callable = (PsiCallable) myFixture.getElementAtCaret();
+            final Collection<UsageInfo> usages = myFixture.findUsages(callable);
             Assertions.assertEquals(1, usages.size());
             Assertions.assertTrue(usages.stream().findFirst().get().getReference() instanceof OMTImportMemberReference);
         }));

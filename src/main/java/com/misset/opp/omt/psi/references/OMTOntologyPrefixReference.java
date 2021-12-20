@@ -15,6 +15,7 @@ public class OMTOntologyPrefixReference extends OMTPlainTextReference {
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         return resolveProvider(myElement, OMTPrefixProvider.class, myElement.getText(), OMTPrefixProvider::getPrefixMap)
+                .map(this::toResults)
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 }

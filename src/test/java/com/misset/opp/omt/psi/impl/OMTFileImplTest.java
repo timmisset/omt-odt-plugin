@@ -1,7 +1,7 @@
 package com.misset.opp.omt.psi.impl;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
@@ -34,7 +34,7 @@ class OMTFileImplTest extends OMTTestCase {
                 "   DEFINE QUERY exportedQuery => 'hello world';\n" +
                 "";
         final OMTFile omtFile = configureByText(content);
-        final HashMap<String, List<PsiElement>> exportingMembersMap = omtFile.getExportingMembersMap();
+        final HashMap<String, List<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
         assertNotEmpty(exportingMembersMap.keySet());
         Assertions.assertTrue(exportingMembersMap.containsKey("@MyActivity"));
         Assertions.assertTrue(exportingMembersMap.containsKey("@exportedCommand"));
@@ -61,7 +61,7 @@ class OMTFileImplTest extends OMTTestCase {
                 "   DEFINE QUERY query => 'hello world';\n" +
                 "";
         final OMTFile omtFile = configureByText(importingFile);
-        final HashMap<String, List<PsiElement>> exportingMembersMap = omtFile.getExportingMembersMap();
+        final HashMap<String, List<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
         Assertions.assertTrue(exportingMembersMap.containsKey("@MyActivity"));
         Assertions.assertTrue(exportingMembersMap.containsKey("query"));
         Assertions.assertNotNull(exportingMembersMap.get("@MyActivity"));

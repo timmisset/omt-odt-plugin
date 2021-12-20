@@ -2,13 +2,23 @@ package com.misset.opp.omt.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.misset.opp.callable.psi.PsiCallable;
+import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public interface OMTFile extends PsiFile {
-    HashMap<String, List<PsiElement>> getExportingMembersMap();
+    YAMLMapping getRootMapping();
+
+    HashMap<String, List<PsiCallable>> getExportingMembersMap();
+
+    HashMap<String, List<PsiCallable>> getDeclaredExportingMembersMap();
 
     Map<String, String> getAvailableNamespaces(PsiElement element);
+
+    String getModuleName();
+
+    OMTFile getModuleFile();
 }

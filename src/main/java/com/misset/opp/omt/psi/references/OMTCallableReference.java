@@ -21,6 +21,7 @@ public class OMTCallableReference extends OMTPlainTextReference {
         LinkedHashMap<YAMLMapping, OMTCallableProvider> providerMap =
                 OMTMetaTreeUtil.collectMetaParents(myElement, YAMLMapping.class, OMTCallableProvider.class, false, Objects::isNull);
         return OMTMetaTreeUtil.resolveProvider(providerMap, myElement.getText(), OMTCallableProvider::getCallableMap)
+                .map(this::toResults)
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 }

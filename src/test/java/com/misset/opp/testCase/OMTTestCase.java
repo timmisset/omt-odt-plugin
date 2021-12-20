@@ -6,9 +6,11 @@ import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.OMTFileType;
+import com.misset.opp.omt.indexing.ExportedMembersIndex;
 import com.misset.opp.omt.indexing.ImportedMembersIndex;
 import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.psi.OMTFile;
+import org.junit.jupiter.api.BeforeEach;
 
 public class OMTTestCase extends BasicTestCase<OMTFile> {
     public OMTTestCase() {
@@ -115,7 +117,18 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
     protected void buildIndexes(OMTFile file) {
         ReadAction.run(() -> {
             ImportedMembersIndex.analyse(file);
-            OMTPrefixIndex.getIndexTask(getProject()).run(null);
+            ExportedMembersIndex.analyse(file);
+            OMTPrefixIndex.analyse(file);
+            OMTPrefixIndex.orderIndexByFrequency();
         });
+    }
+
+    @Override
+    @BeforeEach
+    protected void setUp() {
+        super.setUp();
+        ImportedMembersIndex.clear();
+        ExportedMembersIndex.clear();
+        OMTPrefixIndex.clear();
     }
 }

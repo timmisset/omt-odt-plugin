@@ -1,19 +1,13 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
@@ -56,22 +50,23 @@ public class OMTMetaTreeUtil {
      * Resolve the provider based on an already available map of providers
      * Use this with a cached resultset of providers
      */
-    public static <T> Optional<ResolveResult[]> resolveProvider(LinkedHashMap<YAMLMapping, T> linkedHashMap,
-                                                                String key,
-                                                                BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
+    public static <T, U extends PsiElement> Optional<List<U>> resolveProvider(LinkedHashMap<YAMLMapping, T> linkedHashMap,
+                                                                              String key,
+                                                                              BiFunction<T, YAMLMapping, HashMap<String, List<U>>> mapFunction) {
         for (YAMLMapping mapping : linkedHashMap.keySet()) {
             T provider = linkedHashMap.get(mapping);
-            final HashMap<String, List<PsiElement>> map = mapFunction.apply(provider, mapping);
+            final HashMap<String, List<U>> map = mapFunction.apply(provider, mapping);
             if (map.containsKey(key)) {
-                final PsiElement element = map.get(key).get(0);
-                if (element == null) {
-                    return Optional.empty();
-                }
-                ResolveResult[] results = map.get(key).stream()
-                        .filter(Objects::nonNull)
-                        .map(PsiElementResolveResult::new)
-                        .toArray(ResolveResult[]::new);
-                return Optional.of(results);
+                return Optional.ofNullable(map.get(key));
+//                final PsiElement element = map.get(key).get(0);
+//                if (element == null) {
+//                    return Optional.empty();
+//                }
+//                ResolveResult[] results = map.get(key).stream()
+//                        .filter(Objects::nonNull)
+//                        .map(PsiElementResolveResult::new)
+//                        .toArray(ResolveResult[]::new);
+//                return Optional.of(results);
             }
         }
 
@@ -81,10 +76,10 @@ public class OMTMetaTreeUtil {
     /**
      * Walks the OMT PsiTree upwards collecting elements by their meta-type
      */
-    public static <T> Optional<ResolveResult[]> resolveProvider(PsiElement currentElement,
-                                                                Class<T> providerClass,
-                                                                String key,
-                                                                BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
+    public static <T> Optional<List<PsiElement>> resolveProvider(PsiElement currentElement,
+                                                                 Class<T> providerClass,
+                                                                 String key,
+                                                                 BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction) {
 
         final LinkedHashMap<YAMLMapping, T> linkedHashMap = collectMetaParents(
                 currentElement,

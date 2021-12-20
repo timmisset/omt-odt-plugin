@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.meta.model.OMTModelMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.scalars.scripts.OMTCommandsMetaType;
@@ -45,29 +45,35 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping,
-                                                                     PsiLanguageInjectionHost host) {
-        /*
-            The OMT File will provide the callables for the root elements queries, commands and import
-         */
-        final HashMap<String, List<PsiElement>> map = new HashMap<>();
-        // first add the queries and commands, in case of shadowing the same name for imports, the defined statements are used
-        addInjectedCallablesToMap(yamlMapping, "queries", map, host);
-        addInjectedCallablesToMap(yamlMapping, "commands", map, host);
+    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping,
+                                                                      PsiLanguageInjectionHost host) {
 
-        final YAMLKeyValue model = yamlMapping.getKeyValueByKey("model");
-        if (model != null && model.getValue() instanceof YAMLMapping) {
-            addModelItemsToMap((YAMLMapping) model.getValue(), map);
-        }
-
+        final HashMap<String, List<PsiCallable>> map = new HashMap<>();
+        map.putAll(getDeclaredCallableMap(yamlMapping, host));
         map.putAll(getImportingMembers(yamlMapping));
-
         return map;
     }
 
-    public static @NotNull HashMap<String, List<PsiElement>> getImportingMembers(YAMLMapping yamlMapping) {
+    public static @NotNull HashMap<String, List<PsiCallable>> getDeclaredCallableMap(YAMLMapping mapping,
+                                                                                     PsiLanguageInjectionHost host) {
+        /*
+            The OMT File will provide the callables for the root elements queries, commands and import
+         */
+        final HashMap<String, List<PsiCallable>> map = new HashMap<>();
+        // first add the queries and commands, in case of shadowing the same name for imports, the defined statements are used
+        addInjectedCallablesToMap(mapping, "queries", map, host);
+        addInjectedCallablesToMap(mapping, "commands", map, host);
+
+        final YAMLKeyValue model = mapping.getKeyValueByKey("model");
+        if (model != null && model.getValue() instanceof YAMLMapping) {
+            addModelItemsToMap((YAMLMapping) model.getValue(), map);
+        }
+        return map;
+    }
+
+    public static @NotNull HashMap<String, List<PsiCallable>> getImportingMembers(YAMLMapping yamlMapping) {
         final YAMLKeyValue imports = yamlMapping.getKeyValueByKey("import");
-        final HashMap<String, List<PsiElement>> map = new HashMap<>();
+        final HashMap<String, List<PsiCallable>> map = new HashMap<>();
         if (imports != null && imports.getValue() instanceof YAMLMapping) {
             addImportStatementsToMap((YAMLMapping) imports.getValue(), map);
         }

@@ -3,8 +3,6 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -15,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class ODTVariableReference extends PsiReferenceBase.Poly<ODTVariable> implements PsiPolyVariantReference {
+public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> {
     public ODTVariableReference(@NotNull ODTVariable element) {
         super(element, TextRange.allOf(element.getText()), false);
     }
@@ -26,12 +24,17 @@ public class ODTVariableReference extends PsiReferenceBase.Poly<ODTVariable> imp
             return ResolveResult.EMPTY_ARRAY;
         }
         return resolveInODT()
-                .or(() -> myElement.getContainingFile()
-                        .resolveInOMT(OMTVariableProvider.class,
-                                OMTVariableProvider.KEY,
-                                myElement.getName(),
-                                OMTVariableProvider::getVariableMap))
+                .or(this::resolveFromProvider)
                 .orElse(ResolveResult.EMPTY_ARRAY);
+    }
+
+    private Optional<ResolveResult[]> resolveFromProvider() {
+        return myElement.getContainingFile()
+                .resolveInOMT(OMTVariableProvider.class,
+                        OMTVariableProvider.KEY,
+                        myElement.getName(),
+                        OMTVariableProvider::getVariableMap)
+                .map(this::toResults);
     }
 
     private Optional<ResolveResult[]> resolveInODT() {

@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.meta.OMTMetaMapType;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
@@ -26,8 +26,8 @@ public class OMTModelMetaType extends OMTMetaMapType implements OMTCallableProvi
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping, PsiLanguageInjectionHost host) {
-        final HashMap<String, List<PsiElement>> map = new HashMap<>();
+    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping, PsiLanguageInjectionHost host) {
+        final HashMap<String, List<PsiCallable>> map = new HashMap<>();
         addModelItemsToMap(yamlMapping, map);
         return map;
     }

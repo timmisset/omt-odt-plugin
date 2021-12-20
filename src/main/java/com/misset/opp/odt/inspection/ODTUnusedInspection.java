@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.odt.psi.ODTVariable;
@@ -33,11 +34,17 @@ public class ODTUnusedInspection extends LocalInspectionTool {
                 if (!(element instanceof PsiNamedElement)) {
                     return;
                 }
+                // don't gray-out the entire element but only the name, for example, the DEFINE QUERY query => ''
+                // only 'query' should be gray
+                PsiElement targetElement = element instanceof PsiNameIdentifierOwner ?
+                        ((PsiNameIdentifierOwner) element).getIdentifyingElement() :
+                        element;
+
                 final PsiNamedElement namedElement = (PsiNamedElement) element;
                 if (!isException(element) && ReferencesSearch.search(element, element.getUseScope())
                         .allowParallelProcessing().findFirst() == null) {
                     holder.registerProblem(
-                            namedElement,
+                            targetElement,
                             namedElement.getName() + " is never used",
                             LIKE_UNUSED_SYMBOL);
                 }

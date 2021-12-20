@@ -5,7 +5,6 @@ import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
@@ -70,11 +69,13 @@ public interface ODTFile extends PsiFile {
     /**
      * Resolve the reference present in the ODT language to an OMT element
      * For example, a Call to a ModelItem (YamlMapping)
+     *
+     * @return
      */
-    <T extends OMTMetaTypeStructureProvider> Optional<ResolveResult[]> resolveInOMT(Class<T> providerClass,
-                                                                                    Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> metaTypeStructureKey,
-                                                                                    String key,
-                                                                                    BiFunction<T, YAMLMapping, HashMap<String, List<PsiElement>>> mapFunction);
+    <T extends OMTMetaTypeStructureProvider, U extends PsiElement> Optional<List<U>> resolveInOMT(Class<T> providerClass,
+                                                                                                  Key<CachedValue<LinkedHashMap<YAMLMapping, T>>> metaTypeStructureKey,
+                                                                                                  String key,
+                                                                                                  BiFunction<T, YAMLMapping, HashMap<String, List<U>>> mapFunction);
 
     /**
      * Returns the prefix::namespaces that are available at the point of this Injected ODT fragment.

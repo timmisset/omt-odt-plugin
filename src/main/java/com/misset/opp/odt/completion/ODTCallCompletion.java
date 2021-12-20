@@ -15,7 +15,6 @@ import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.*;
@@ -73,7 +72,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
         return callables;
     }
 
-    protected List<PsiCallable> getFromCallableProviders(ODTFile file) {
+    protected List<PsiCallable> getFromCallableProviders(@NotNull ODTFile file) {
         LinkedHashMap<YAMLMapping, OMTCallableProvider> providers = file.getProviders(OMTCallableProvider.class, OMTCallableProvider.KEY);
         return providers.entrySet()
                 .stream()
@@ -81,17 +80,16 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .flatMap(Collection::stream).collect(Collectors.toList());
     }
 
-    private List<PsiCallable> getFromCallableProviders(ODTFile file,
+    private List<PsiCallable> getFromCallableProviders(@NotNull ODTFile file,
                                                        YAMLMapping mapping,
-                                                       OMTCallableProvider provider) {
-        HashMap<String, List<PsiElement>> callableMap = provider.getCallableMap(mapping, file.getHost());
+                                                       @NotNull OMTCallableProvider provider) {
+        HashMap<String, List<PsiCallable>> callableMap = provider.getCallableMap(mapping, file.getHost());
         return callableMap.values().stream()
                 .flatMap(Collection::stream)
-                .map(this::toCallable)
                 .collect(Collectors.toList());
     }
 
-    protected void addCallables(Collection<? extends Callable> callables,
+    protected void addCallables(@NotNull Collection<? extends Callable> callables,
                                 @NotNull CompletionResultSet result,
                                 Predicate<Set<OntResource>> typeFilter,
                                 Predicate<Set<OntResource>> precedingFilter) {
@@ -103,9 +101,4 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .map(this::getLookupElement)
                 .forEach(result::addElement);
     }
-
-    private @Nullable PsiCallable toCallable(PsiElement element) {
-        return PsiTreeUtil.getParentOfType(element, PsiCallable.class);
-    }
-
 }

@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
@@ -16,8 +17,8 @@ import java.util.function.Predicate;
 
 public class ODTFindUsagesProvider implements FindUsagesProvider {
     public static final Predicate<PsiElement> CHECK_CAN_FIND_USAGES = element ->
-            element instanceof ODTDefineName ||
-            isDeclaredVariable(element);
+            element instanceof ODTDefineStatement ||
+                    isDeclaredVariable(element);
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {

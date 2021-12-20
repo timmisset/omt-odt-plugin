@@ -18,8 +18,13 @@
                 has YAML as language and cannot be modified to be OMT for .omt files
                 Therefore, certain extensions need to be hooked into the yaml language, not the OMT extension of yaml
                 -->
+        <lang.parserDefinition language="yaml" order="first"
+                               implementationClass="com.misset.opp.omt.YAMLOMTParserDefinition"/>
         <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
                                 order="first" language="yaml"/>
+        <psi.referenceContributor language="yaml" implementation="com.misset.opp.omt.OMTYamlReferenceContributor"/>
+        <codeInsight.parameterNameHints language="yaml" implementationClass="com.misset.opp.omt.OMTParameterNameHints"/>
+
         <!-- Annotations -->
         <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
 
@@ -28,15 +33,14 @@
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>
         <lang.parserDefinition language="OMT" implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
-        <lang.parserDefinition language="yaml" order="first"
-                               implementationClass="com.misset.opp.omt.YAMLOMTParserDefinition"/>
+
         <lang.findUsagesProvider language="yaml" order="before yamlFindUsagesProvider"
                                  implementationClass="com.misset.opp.omt.OMTFindUsageProvider"/>
-        <psi.referenceContributor language="yaml" implementation="com.misset.opp.omt.OMTYamlReferenceContributor"/>
-        <postStartupActivity id="prefixes" implementation="com.misset.opp.omt.startup.IndexPrefixesStartupActivity"/>
+
         <postStartupActivity id="reasons" implementation="com.misset.opp.omt.startup.LoadReasonsStartupActivity"/>
         <postStartupActivity id="importedMembers"
-                             implementation="com.misset.opp.omt.startup.ImportedMembersStartupActivity"/>
+                             implementation="com.misset.opp.omt.startup.IndexOMTStartupActivity"/>
+
         <!-- Inspections -->
         <!-- Unused-->
         <localInspection displayName="Unused model items" groupPath="OMT" language="OMT"
@@ -122,7 +126,7 @@
         <!-- Redudancy -->
         <localInspection displayName="Duplicated DEFINE statements" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
-                         implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication"/>
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionDefinedDuplication"/>
 
         <localInspection displayName="Unnecessary Identifier operator" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"

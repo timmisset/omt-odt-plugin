@@ -3,8 +3,6 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -14,9 +12,10 @@ import com.misset.opp.odt.psi.impl.prefix.ODTBaseNamespacePrefix;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 
-public class ODTNamespacePrefixReference extends PsiReferenceBase.Poly<ODTBaseNamespacePrefix> implements PsiPolyVariantReference {
+public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTBaseNamespacePrefix> {
     public ODTNamespacePrefixReference(@NotNull ODTBaseNamespacePrefix element) {
         super(element, TextRange.allOf(element.getName()), false);
     }
@@ -29,12 +28,18 @@ public class ODTNamespacePrefixReference extends PsiReferenceBase.Poly<ODTBaseNa
         // resolve in current ODT file
         // then resolve in OMT using the PrefixProviders
         return resolveInODT()
-                .or(() -> myElement.getContainingFile()
-                        .resolveInOMT(OMTPrefixProvider.class,
-                                OMTPrefixProvider.KEY,
-                                myElement.getName(),
-                                OMTPrefixProvider::getPrefixMap))
+                .or(this::resolveFromProvider)
                 .orElse(ResolveResult.EMPTY_ARRAY);
+    }
+
+    private Optional<ResolveResult[]> resolveFromProvider() {
+        Optional<List<PsiElement>> psiElements = myElement.getContainingFile()
+                .resolveInOMT(OMTPrefixProvider.class,
+                        OMTPrefixProvider.KEY,
+                        myElement.getName(),
+                        OMTPrefixProvider::getPrefixMap);
+
+        return psiElements.map(this::toResults);
     }
 
     private Optional<ResolveResult[]> resolveInODT() {

@@ -10,6 +10,7 @@ import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTProcedureMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTStandaloneQueryMetaType;
 import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyMetaType;
+import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.*;
@@ -27,7 +28,7 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
 
     public static void addInjectedCallablesToMap(YAMLMapping mapping,
                                                  String key,
-                                                 HashMap<String, List<PsiElement>> map,
+                                                 HashMap<String, List<PsiCallable>> map,
                                                  PsiLanguageInjectionHost host) {
         final YAMLKeyValue callables = mapping.getKeyValueByKey(key);
         if (host != null && PsiTreeUtil.isAncestor(callables, host, true)) {
@@ -38,7 +39,7 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
             return;
         }
         getInjectedContent(callables.getValue(), PsiCallable.class)
-                .forEach(callable -> addToGroupedMap(callable.getCallId(), callable.getCallTarget(), map));
+                .forEach(callable -> addToGroupedMap(callable.getCallId(), callable, map));
     }
 
     /**
@@ -49,16 +50,16 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
      * @param map     - the map to add the Callable items to
      */
     public static void addImportStatementsToMap(YAMLMapping mapping,
-                                                HashMap<String, List<PsiElement>> map) {
+                                                HashMap<String, List<PsiCallable>> map) {
         mapping.getKeyValues().forEach(
                 keyValue -> addImportStatementsToMap(keyValue, map)
         );
     }
 
     private static void addImportStatementsToMap(YAMLKeyValue keyValue,
-                                                 HashMap<String, List<PsiElement>> map) {
+                                                 HashMap<String, List<PsiCallable>> map) {
         final YAMLValue value = keyValue.getValue();
-        final HashMap<String, List<PsiElement>> exportingMembersMap = OMTImportMetaType.getExportedMembersFromOMTFile(
+        final HashMap<String, List<PsiCallable>> exportingMembersMap = OMTImportMetaType.getExportedMembersFromOMTFile(
                 keyValue);
         if (value instanceof YAMLSequence) {
             final YAMLSequence sequence = (YAMLSequence) value;
@@ -70,7 +71,7 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
         }
     }
 
-    private static void addExportingMemberToMap(String name, HashMap<String, List<PsiElement>> exportingMembersMap, HashMap<String, List<PsiElement>> map) {
+    private static void addExportingMemberToMap(String name, HashMap<String, List<PsiCallable>> exportingMembersMap, HashMap<String, List<PsiCallable>> map) {
         String key = exportingMembersMap.containsKey(name) ? name : "@" + name;
         if (!exportingMembersMap.containsKey(key)) {
             return;
@@ -79,7 +80,7 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
     }
 
     public static void addModelItemsToMap(YAMLMapping mapping,
-                                          HashMap<String, List<PsiElement>> map) {
+                                          HashMap<String, List<PsiCallable>> map) {
         mapping.getKeyValues()
                 .forEach(
                         keyValue -> {
@@ -93,9 +94,9 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
                             if (valueMetaType != null) {
                                 final YamlMetaType metaType = valueMetaType.getMetaType();
                                 if (metaType instanceof OMTActivityMetaType || metaType instanceof OMTProcedureMetaType) {
-                                    addToGroupedMap("@" + keyValue.getKeyText(), keyValue, map);
+                                    addToGroupedMap("@" + keyValue.getKeyText(), new OMTCallableImpl(keyValue), map);
                                 } else if (metaType instanceof OMTStandaloneQueryMetaType || metaType instanceof OMTOntologyMetaType) {
-                                    addToGroupedMap(keyValue.getKeyText(), keyValue, map);
+                                    addToGroupedMap(keyValue.getKeyText(), new OMTCallableImpl(keyValue), map);
                                 }
                             }
 

@@ -1,9 +1,9 @@
 package com.misset.opp.omt.meta.providers;
 
 import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.CachedValue;
+import com.misset.opp.callable.psi.PsiCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -21,9 +21,9 @@ public interface OMTCallableProvider extends OMTMetaTypeStructureProvider {
      * an injected fragment receiving its own callable elements as response
      */
     @NotNull
-    HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping, @Nullable PsiLanguageInjectionHost host);
+    HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping, @Nullable PsiLanguageInjectionHost host);
 
-    default HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping) {
+    default HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping) {
         return getCallableMap(yamlMapping, null);
     }
 }

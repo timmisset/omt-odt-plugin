@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.model.scalars.OMTIriMetaType;
@@ -41,12 +42,12 @@ public class OMTPrefixProviderUtil extends OMTProviderUtil {
     public static String resolveToFullyQualifiedUri(PsiElement element,
                                                     String prefix,
                                                     String localName) {
-        final Optional<ResolveResult[]> resolveResults = OMTMetaTreeUtil.resolveProvider(element,
+        final Optional<List<PsiElement>> resolveResults = OMTMetaTreeUtil.resolveProvider(element,
                 OMTPrefixProvider.class,
                 prefix,
                 OMTPrefixProvider::getPrefixMap);
         if (resolveResults.isPresent()) {
-            final ResolveResult[] results = resolveResults.get();
+            final ResolveResult[] results = resolveResults.get().stream().map(PsiElementResolveResult::new).toArray(ResolveResult[]::new);
             final PsiElement prefixElement = results[0].getElement();
             if (prefixElement instanceof YAMLKeyValue) {
                 final String namespace = OMTIriMetaType.getNamespace(((YAMLKeyValue) prefixElement).getValue());

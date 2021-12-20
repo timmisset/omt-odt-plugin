@@ -1,15 +1,14 @@
 package com.misset.opp.omt.psi.references;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.*;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
+import java.util.List;
 import java.util.Optional;
 
 public abstract class OMTPlainTextReference extends PsiReferenceBase.Poly<YAMLPlainTextImpl> implements PsiPolyVariantReference {
@@ -38,6 +37,17 @@ public abstract class OMTPlainTextReference extends PsiReferenceBase.Poly<YAMLPl
                 .map(YAMLKeyValue::getValue)
                 .map(myElement::replace)
                 .orElse(myElement);
+    }
+
+    protected ResolveResult[] toResults(List<? extends PsiElement> resolvedElements, boolean resolveToOriginalElement) {
+        return resolvedElements.stream()
+                .map(psiCallable -> resolveToOriginalElement ? psiCallable.getOriginalElement() : psiCallable)
+                .map(PsiElementResolveResult::new)
+                .toArray(ResolveResult[]::new);
+    }
+
+    protected ResolveResult[] toResults(List<? extends PsiElement> resolvedElements) {
+        return toResults(resolvedElements, true);
     }
 
 }

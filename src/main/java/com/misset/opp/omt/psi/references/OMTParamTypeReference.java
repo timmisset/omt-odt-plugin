@@ -23,6 +23,7 @@ public class OMTParamTypeReference extends OMTPlainTextReference {
         final String prefix = textRange.substring(myElement.getText());
         return OMTMetaTreeUtil
                 .resolveProvider(myElement, OMTPrefixProvider.class, prefix, OMTPrefixProvider::getPrefixMap)
+                .map(this::toResults)
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 }

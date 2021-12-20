@@ -20,9 +20,13 @@ public class ODTTTLSubjectReference extends PsiReferenceBase.Poly<ODTResolvableQ
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         ODTResolvableQualifiedUriStep element = getElement();
+        String fullyQualifiedUri = element.getFullyQualifiedUri();
+        if (fullyQualifiedUri == null) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
         return StubIndex.getElements(
                         TTLSubjectStubIndex.KEY,
-                        element.getFullyQualifiedUri(),
+                        fullyQualifiedUri,
                         element.getProject(),
                         TTLScopeUtil.getModelSearchScope(myElement.getProject()),
                         TTLSubject.class

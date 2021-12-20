@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.local.*;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
@@ -82,8 +83,8 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getCallableMap(YAMLMapping yamlMapping, PsiLanguageInjectionHost host) {
-        HashMap<String, List<PsiElement>> map = new HashMap<>();
+    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping, PsiLanguageInjectionHost host) {
+        HashMap<String, List<PsiCallable>> map = new HashMap<>();
         addInjectedCallablesToMap(yamlMapping, "commands", map, host);
         addInjectedCallablesToMap(yamlMapping, "queries", map, host);
         return map;
@@ -108,7 +109,7 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
 
     @Override
     public String getType() {
-        return "Activity";
+        return "ACTIVITY";
     }
 
     @Override

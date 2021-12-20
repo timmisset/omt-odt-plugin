@@ -1,11 +1,7 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiReferenceContributor;
-import com.intellij.psi.PsiReferenceProvider;
-import com.intellij.psi.PsiReferenceRegistrar;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.source.javadoc.PsiDocTagImpl;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.util.ProcessingContext;
@@ -23,7 +19,7 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 /**
  * The Javadoc comments that can be added into the ODT language as annotations are parsed as PsiDocComment.
  * This makes them effectively a JAVA language element which is why this contributor has to be registered to
- * the JAVA language, not the ODT (this took me 2 days!)
+ * the JAVA language, not the ODT
  * The PsiDocTags are the elements that use the 'getReferencesFromProviders' which triggers this contributor
  *
  * @see PsiDocTagImpl#getReferences()

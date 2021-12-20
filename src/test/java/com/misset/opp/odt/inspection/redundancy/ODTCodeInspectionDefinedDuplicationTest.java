@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection;
+package com.misset.opp.odt.inspection.redundancy;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.OMTInspectionTestCase;
@@ -7,14 +7,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION;
-import static com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_SHADOW;
-
 class ODTCodeInspectionDefinedDuplicationTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(com.misset.opp.odt.inspection.ODTCodeInspectionDefinedDuplication.class);
+        return Collections.singleton(ODTCodeInspectionDefinedDuplication.class);
     }
 
     @Test
@@ -23,7 +20,7 @@ class ODTCodeInspectionDefinedDuplicationTest extends OMTInspectionTestCase {
                 "   DEFINE QUERY query => 'a';\n" +
                 "   DEFINE QUERY query => 'b';";
         configureByText(content);
-        assertHasWarning(WARNING_MESSAGE_DUPLICATION);
+        assertHasWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
     }
 
     @Test
@@ -32,7 +29,7 @@ class ODTCodeInspectionDefinedDuplicationTest extends OMTInspectionTestCase {
                 "   DEFINE QUERY queryA => 'a';\n" +
                 "   DEFINE QUERY queryB => 'b';";
         configureByText(content);
-        assertNoWarning(WARNING_MESSAGE_DUPLICATION);
+        assertNoWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
     }
 
     @Test
@@ -42,7 +39,7 @@ class ODTCodeInspectionDefinedDuplicationTest extends OMTInspectionTestCase {
                 "commands: |\n" +
                 "   DEFINE COMMAND sameName => { }";
         configureByText(content);
-        assertNoWarning(WARNING_MESSAGE_DUPLICATION);
+        assertNoWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
     }
 
     @Test
@@ -55,7 +52,7 @@ class ODTCodeInspectionDefinedDuplicationTest extends OMTInspectionTestCase {
                 "       onRun: @LOG('hi');\n" +
                 "";
         configureByText(content);
-        assertHasWarning(WARNING_MESSAGE_SHADOW);
+        assertHasWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_SHADOW);
     }
 
 }

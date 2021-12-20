@@ -19,25 +19,19 @@ import com.misset.opp.ttl.psi.TTLTypes;
  */
 class TTLLexer implements FlexLexer {
 
-  /**
-   * This character denotes the end of file
-   */
+  /** This character denotes the end of file */
   public static final int YYEOF = -1;
 
-  /**
-   * initial size of the lookahead buffer
-   */
+  /** initial size of the lookahead buffer */
   private static final int ZZ_BUFFERSIZE = 16384;
 
-  /**
-   * lexical states
-   */
+  /** lexical states */
   public static final int YYINITIAL = 0;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
    * ZZ_LEXSTATE[l+1] is the state in the DFA for the lexical state l
-   * at the beginning of a line
+   *                  at the beginning of a line
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
@@ -417,7 +411,7 @@ class TTLLexer implements FlexLexer {
   /**
    * Creates a new scanner
    *
-   * @param in the java.io.Reader to read input from.
+   * @param   in  the java.io.Reader to read input from.
    */
   TTLLexer(java.io.Reader in) {
     this.zzReader = in;
@@ -439,7 +433,7 @@ class TTLLexer implements FlexLexer {
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
     while (i < packed.length()) {
-      int count = packed.charAt(i++);
+      int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);
     }
@@ -466,8 +460,9 @@ class TTLLexer implements FlexLexer {
   /**
    * Refills the input buffer.
    *
-   * @return {@code false}, iff there was new input.
-   * @throws java.io.IOException if any I/O-Error occurs
+   * @return      {@code false}, iff there was new input.
+   *
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   private boolean zzRefill() throws java.io.IOException {
     return true;
@@ -503,11 +498,12 @@ class TTLLexer implements FlexLexer {
   /**
    * Returns the character at position {@code pos} from the
    * matched text.
-   * <p>
+   *
    * It is equivalent to yytext().charAt(pos), but faster
    *
    * @param pos the position of the character to fetch.
    *            A value from 0 to yylength()-1.
+   *
    * @return the character at position pos
    */
   public final char yycharat(int pos) {
@@ -525,23 +521,24 @@ class TTLLexer implements FlexLexer {
 
   /**
    * Reports an error that occurred while scanning.
-   * <p>
+   *
    * In a wellformed scanner (no or only correct usage of
    * yypushback(int) and a match-all fallback rule) this method
    * will only be called with things that "Can't Possibly Happen".
    * If this method is called, something is seriously wrong
    * (e.g. a JFlex bug producing a faulty scanner etc.).
-   * <p>
+   *
    * Usual syntax/scanner level error handling should be done
    * in error fallback rules.
    *
-   * @param errorCode the code of the errormessage to display
+   * @param   errorCode  the code of the errormessage to display
    */
   private void zzScanError(int errorCode) {
     String message;
     try {
       message = ZZ_ERROR_MSG[errorCode];
-    } catch (ArrayIndexOutOfBoundsException e) {
+    }
+    catch (ArrayIndexOutOfBoundsException e) {
       message = ZZ_ERROR_MSG[ZZ_UNKNOWN_ERROR];
     }
 
@@ -557,8 +554,8 @@ class TTLLexer implements FlexLexer {
    * @param number the number of characters to be read again.
    *               This number must not be greater than yylength()!
    */
-  public void yypushback(int number) {
-    if (number > yylength())
+  public void yypushback(int number)  {
+    if ( number > yylength() )
       zzScanError(ZZ_PUSHBACK_2BIG);
 
     zzMarkedPos -= number;
@@ -581,8 +578,8 @@ class TTLLexer implements FlexLexer {
    * Resumes scanning until the next regular expression is matched,
    * the end of input is encountered or an I/O-Error occurs.
    *
-   * @return the next token
-   * @throws java.io.IOException if any I/O-Error occurs
+   * @return      the next token
+   * @exception java.io.IOException  if any I/O-Error occurs
    */
   public IElementType advance() throws java.io.IOException {
     int zzInput;
@@ -642,7 +639,7 @@ class TTLLexer implements FlexLexer {
               zzCurrentPosL += Character.charCount(zzInput);
             }
           }
-          int zzNext = zzTransL[zzRowMapL[zzState] + ZZ_CMAP(zzInput)];
+          int zzNext = zzTransL[ zzRowMapL[zzState] + ZZ_CMAP(zzInput)];
           if (zzNext == -1) break zzForAction;
           zzState = zzNext;
 
@@ -650,7 +647,7 @@ class TTLLexer implements FlexLexer {
           if ((zzAttributes & 1) == 1) {
             zzAction = zzState;
             zzMarkedPosL = zzCurrentPosL;
-            if ((zzAttributes & 8) == 8) break zzForAction;
+            if ( (zzAttributes & 8) == 8) break zzForAction;
           }
 
         }
@@ -859,13 +856,12 @@ class TTLLexer implements FlexLexer {
             break;
           case 33: {
             return TTLTypes.IMPORT_URI;
-          }
-          // fall through
-          case 66:
-            break;
+            } 
+            // fall through
+          case 66: break;
           default:
             zzScanError(ZZ_NO_MATCH);
-        }
+          }
       }
     }
   }

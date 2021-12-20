@@ -2,7 +2,7 @@ package com.misset.opp.testCase;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.OppModelLoader;
 import org.apache.jena.ontology.Individual;
@@ -83,14 +83,14 @@ public class OMTOntologyTestCase extends OMTTestCase {
         // otherwise the findElementByText will return null
         String content = insideQueryWithPrefixes("<caret>" + query);
         configureByText(content);
-        return ReadAction.compute(() -> myFixture.findElementByText("query", ODTDefineName.class).resolve());
+        return ReadAction.compute(() -> myFixture.findElementByText("query", ODTDefineStatement.class).resolve());
     }
     protected Set<OntResource> resolveQueryAtCaret(String content) {
         configureByText(content);
         return ReadAction.compute(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            if (elementAtCaret instanceof ODTDefineName) {
-                return ((ODTDefineName) elementAtCaret).resolve();
+            if (elementAtCaret instanceof ODTDefineStatement) {
+                return ((ODTDefineStatement) elementAtCaret).resolve();
             } else {
                 Assertions.fail("Could not resolve query");
             }

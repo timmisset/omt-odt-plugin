@@ -2,7 +2,7 @@ package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.callable.Callable;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -21,7 +21,7 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
         );
         configureByText(content);
         // is resolved to the DEFINE statement
-        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof ODTDefineName));
+        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof Callable));
     }
 
     @Test
@@ -36,7 +36,7 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
         );
         configureByText(content);
         // is resolved to the defined variable
-        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof ODTDefineName));
+        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof Callable));
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.openapi.application.ReadAction;
-import com.misset.opp.odt.psi.ODTDefineName;
+import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -23,8 +23,8 @@ class OMTVariableMetaTypeOntologyTest extends OMTOntologyTestCase {
                 "";
         configureByText(content);
         ReadAction.run(() -> {
-            final ODTDefineName defineName = (ODTDefineName)myFixture.getElementAtCaret();
-            final Set<OntResource> resolve = defineName.resolve();
+            final ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
+            final Set<OntResource> resolve = defineStatement.resolve();
             // no type is provided, should be an empty collection
             Assertions.assertTrue(resolve.isEmpty());
         });
@@ -42,8 +42,8 @@ class OMTVariableMetaTypeOntologyTest extends OMTOntologyTestCase {
                 "";
         configureByText(content);
         ReadAction.run(() -> {
-            final ODTDefineName defineName = (ODTDefineName)myFixture.getElementAtCaret();
-            final Set<OntResource> resolve = defineName.resolve();
+            final ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
+            final Set<OntResource> resolve = defineStatement.resolve();
             // no type is provided, should be an empty collection
             Assertions.assertFalse(resolve.isEmpty());
             Assertions.assertEquals(OppModel.INSTANCE.XSD_STRING_INSTANCE, resolve.toArray()[0]);
@@ -62,8 +62,8 @@ class OMTVariableMetaTypeOntologyTest extends OMTOntologyTestCase {
                 "";
         configureByText(content);
         ReadAction.run(() -> {
-            final ODTDefineName defineName = (ODTDefineName)myFixture.getElementAtCaret();
-            final Set<OntResource> resolve = defineName.resolve();
+            final ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
+            final Set<OntResource> resolve = defineStatement.resolve();
             // no type is provided, should be an empty collection
             Assertions.assertFalse(resolve.isEmpty());
             Assertions.assertEquals(OppModel.INSTANCE.XSD_STRING_INSTANCE, resolve.toArray()[0]);
@@ -81,11 +81,11 @@ class OMTVariableMetaTypeOntologyTest extends OMTOntologyTestCase {
                 "");
         configureByText(content);
         ReadAction.run(() -> {
-            final ODTDefineName defineName = (ODTDefineName)myFixture.getElementAtCaret();
-            final Set<OntResource> resolve = defineName.resolve();
+            final ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
+            final Set<OntResource> resolve = defineStatement.resolve();
             // no type is provided, should be an empty collection
             Assertions.assertFalse(resolve.isEmpty());
-            Assertions.assertEquals(createClass("ClassA"), ((OntResource)resolve.toArray()[0]).asIndividual().getOntClass());
+            Assertions.assertEquals(createClass("ClassA"), ((OntResource) resolve.toArray()[0]).asIndividual().getOntClass());
         });
     }
 

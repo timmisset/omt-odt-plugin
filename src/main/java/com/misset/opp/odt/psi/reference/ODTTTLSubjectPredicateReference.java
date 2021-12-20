@@ -29,6 +29,10 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         ODTResolvableQualifiedUriStep element = getElement();
+        String fullyQualifiedUri = element.getFullyQualifiedUri();
+        if (fullyQualifiedUri == null) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
         Set<OntResource> previousStep = element.resolvePreviousStep();
         List<String> acceptableSubjectClasses = previousStep.stream()
                 .map(OppModel.INSTANCE::listOntClasses)

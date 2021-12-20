@@ -1,9 +1,9 @@
 package com.misset.opp.omt.psi.references;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -19,18 +19,26 @@ public class OMTImportMemberReference extends OMTPlainTextReference {
         super(element);
     }
 
-    @Override
-    public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
+    public ResolveResult @NotNull [] multiResolveToOriginal(boolean resolveToOriginalElement) {
         final YAMLPlainTextImpl element = getElement();
         final YAMLKeyValue keyValue = PsiTreeUtil.getParentOfType(element, YAMLKeyValue.class);
 
         String name = element.getText();
-        final HashMap<String, List<PsiElement>> exportingMembersMap = OMTImportMetaType.getExportedMembersFromOMTFile(
+        final HashMap<String, List<PsiCallable>> exportingMembersMap = OMTImportMetaType.getExportedMembersFromOMTFile(
                 keyValue);
         return Optional.ofNullable(exportingMembersMap.get(name))
                 .or(() -> Optional.ofNullable(exportingMembersMap.get("@" + name)))
-                .map(psiElements -> psiElements.get(0))
-                .map(PsiElementResolveResult::createResults)
+                .map(psiCallables -> toResults(psiCallables, resolveToOriginalElement))
                 .orElse(ResolveResult.EMPTY_ARRAY);
+    }
+
+    public PsiElement resolve(boolean resolveToOriginalElement) {
+        ResolveResult[] resolveResults = multiResolveToOriginal(resolveToOriginalElement);
+        return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+    }
+
+    @Override
+    public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
+        return multiResolveToOriginal(true);
     }
 }

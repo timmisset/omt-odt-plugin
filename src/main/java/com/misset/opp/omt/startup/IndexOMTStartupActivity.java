@@ -10,12 +10,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
+import com.misset.opp.omt.indexing.ExportedMembersIndex;
 import com.misset.opp.omt.indexing.ImportedMembersIndex;
+import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ImportedMembersStartupActivity implements StartupActivity {
+public class IndexOMTStartupActivity implements StartupActivity {
     @Override
     public void runActivity(@NotNull Project project) {
         DumbService.getInstance(project).runWhenSmart(() -> {
@@ -43,7 +45,7 @@ public class ImportedMembersStartupActivity implements StartupActivity {
         }
         final PsiManager psiManager = PsiManager.getInstance(project);
         if (indicator != null) {
-            indicator.setText("Indexing OMT Imports");
+            indicator.setText("Indexing OMT Files");
         }
         FilenameIndex.getAllFilesByExt(project, "omt")
                 .stream()
@@ -54,7 +56,10 @@ public class ImportedMembersStartupActivity implements StartupActivity {
                     if (indicator != null) {
                         indicator.setText2(omtFile.getName());
                     }
+                    OMTPrefixIndex.analyse(omtFile);
                     ImportedMembersIndex.analyse(omtFile);
+                    ExportedMembersIndex.analyse(omtFile);
                 });
+        OMTPrefixIndex.orderIndexByFrequency();
     }
 }

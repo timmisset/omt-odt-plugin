@@ -9,9 +9,12 @@ import com.intellij.psi.PsiElement;
 import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
+import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.omt.util.OMTImportUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Code annotator for all unused declarations
@@ -38,9 +41,15 @@ public class CodeAnnotatorUnresolvable implements Annotator {
                              @NotNull ODTResolvableCall call) {
         final Callable callable = call.getCallable();
         if (callable == null) {
-            holder.newAnnotation(HighlightSeverity.ERROR, String.format("%s is not declared", call.getName()))
-                    .range(call.getCallName())
-                    .create();
+            OMTFile hostFile = call.getContainingFile().getHostFile();
+            IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(hostFile, call);
+
+            AnnotationBuilder annotationBuilder = holder.newAnnotation(HighlightSeverity.ERROR, String.format("%s is not declared", call.getName()))
+                    .range(call.getCallName());
+            Arrays.stream(importIntentions)
+                    .filter(Objects::nonNull)
+                    .forEach(annotationBuilder::withFix);
+            annotationBuilder.create();
         }
     }
 

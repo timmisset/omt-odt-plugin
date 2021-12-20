@@ -1,25 +1,33 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 
-public class ODTCallReference extends PsiReferenceBase.Poly<ODTResolvableCall> implements PsiPolyVariantReference {
+public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> {
     public ODTCallReference(@NotNull ODTResolvableCall element,
                             TextRange rangeInElement) {
         super(element, rangeInElement, false);
     }
 
-    @Override
-    public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
+    public PsiElement resolve(boolean resolveToOriginalElement) {
+        ResolveResult[] resolveResults = multiResolveToOriginal(resolveToOriginalElement);
+        return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+    }
+
+    public ResolveResult @NotNull [] multiResolveToOriginal(boolean resolveToOriginalElement) {
         // An ODT call is made to either an OMT Callable element such as an Activity, Procedure within the host OMT file
         // or directly to a built-in command-call or operator
 
@@ -29,16 +37,22 @@ public class ODTCallReference extends PsiReferenceBase.Poly<ODTResolvableCall> i
         // - host -> OMTFile.model
         // - host -> OMTFile.queries || OMTFile.commands
         // - host -> OMTFile.import
-        return resolveInODT()
-                .or(() -> myElement.getContainingFile()
-                        .resolveInOMT(OMTCallableProvider.class,
-                                OMTCallableProvider.KEY,
-                                myElement.getCallId(),
-                                (provider, mapping) -> provider.getCallableMap(mapping, myElement.getContainingFile().getHost())))
+        return resolveInODT(resolveToOriginalElement)
+                .or(() -> resolveFromProvider(resolveToOriginalElement))
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 
-    private Optional<ResolveResult[]> resolveInODT() {
+    private Optional<ResolveResult[]> resolveFromProvider(boolean resolveToOriginalElement) {
+        Optional<List<PsiCallable>> psiElements = myElement.getContainingFile()
+                .resolveInOMT(OMTCallableProvider.class,
+                        OMTCallableProvider.KEY,
+                        myElement.getCallId(),
+                        (provider, mapping) -> provider.getCallableMap(mapping, myElement.getContainingFile().getHost()));
+
+        return psiElements.map(psiCallables -> toResults(psiCallables, resolveToOriginalElement));
+    }
+
+    private Optional<ResolveResult[]> resolveInODT(boolean resolveToOriginalElement) {
         final ODTScript script = PsiTreeUtil.getTopmostParentOfType(myElement, ODTScript.class);
         ODTDefineStatement defineStatement = PsiTreeUtil.getParentOfType(myElement, ODTDefineStatement.class);
         if (script == null) {
@@ -52,12 +66,17 @@ public class ODTCallReference extends PsiReferenceBase.Poly<ODTResolvableCall> i
                 .filter(odtDefineStatement -> defineStatement != odtDefineStatement &&
                         odtDefineStatement.getCallId().equals(myElement.getCallId()))
                 .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
-                .map(ODTDefineStatement::getDefineName)
+                .map(odtDefineStatement -> resolveToOriginalElement ? odtDefineStatement.getOriginalElement() : odtDefineStatement)
                 .map(PsiElementResolveResult::createResults);
     }
 
     @Override
     public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
         return myElement.setName(newElementName);
+    }
+
+    @Override
+    public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
+        return multiResolveToOriginal(true);
     }
 }

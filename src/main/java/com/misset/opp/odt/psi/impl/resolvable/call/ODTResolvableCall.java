@@ -9,7 +9,6 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.callable.Callable;
@@ -20,19 +19,16 @@ import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
-import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.*;
@@ -53,7 +49,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     Logger LOGGER = Logger.getInstance(ODTResolvableCall.class);
 
     @Override
-    public PsiReference getReference() {
+    public ODTCallReference getReference() {
         return new ODTCallReference(this, getCallName().getTextRangeInParent());
     }
 
@@ -81,27 +77,15 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
 
     private Optional<Callable> resolveFromReference() {
         return Optional.ofNullable(getReference())
-                .map(PsiReference::resolve)
-                .map(this::getCallable);
+                .map(odtCallReference -> odtCallReference.resolve(false))
+                .filter(Callable.class::isInstance)
+                .map(Callable.class::cast);
     }
 
     @Override
     public String getName() {
         return getCallName().getText();
     }
-
-    private Callable getCallable(PsiElement element) {
-        if (element instanceof YAMLKeyValue) { // resolves to OMT !Activity, !Procedure etc
-            return Optional.of((YAMLKeyValue) element)
-                    .map(OMTCallableImpl::new)
-                    .orElse(null);
-        } else if (element instanceof ODTDefineName) {
-            return (ODTDefineStatement) element.getParent();
-        } else {
-            return null;
-        }
-    }
-
 
     private Optional<Callable> getLocalCommand() {
         final PsiLanguageInjectionHost injectionHost = ODTInjectionUtil.getInjectionHost(this);

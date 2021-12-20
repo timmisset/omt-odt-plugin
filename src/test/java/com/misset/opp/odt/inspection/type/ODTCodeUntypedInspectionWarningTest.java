@@ -23,12 +23,23 @@ class ODTCodeUntypedInspectionWarningTest extends OMTInspectionTestCase {
     }
 
     @Test
-    void testNoWarningWhenNotAnnotated() {
+    void testNoWarningWhenAnnotated() {
         configureByText("queries: |\n" +
                 "   /**\n" +
                 "    * @param $param (string)\n" +
                 "    */\n" +
                 "   DEFINE QUERY query($param) => '';\n");
+        assertNoWarning(ODTCodeUntypedInspectionWarning.WARNING);
+    }
+
+    @Test
+    void testNoWarningWhenMultipleAnnotated() {
+        configureByText("queries: |\n" +
+                "   /**\n" +
+                "    * @param $param (string)\n" +
+                "    * @param $param2 (string)\n" +
+                "    */\n" +
+                "   DEFINE QUERY query($param, $param2) => '';\n");
         assertNoWarning(ODTCodeUntypedInspectionWarning.WARNING);
     }
 
