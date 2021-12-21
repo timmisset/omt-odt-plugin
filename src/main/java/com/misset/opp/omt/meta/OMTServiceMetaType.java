@@ -3,7 +3,7 @@ package com.misset.opp.omt.meta;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
-import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;

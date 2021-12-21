@@ -10,6 +10,7 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.*;
@@ -21,8 +22,8 @@ import com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix;
 import com.misset.opp.omt.indexing.ImportedMembersIndex;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
+import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -94,7 +95,11 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         final List<VirtualFile> targetFiles = psiFiles.stream()
                 .map(PsiFile::getVirtualFile)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ArrayList::new));
+        if (isExportable()) {
+            // also, all module files can declare the member as reference
+            targetFiles.addAll(FilenameIndex.getAllFilesByExt(getProject(), "module.omt"));
+        }
         return GlobalSearchScope.filesScope(getProject(), targetFiles);
     }
 

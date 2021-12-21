@@ -3,7 +3,7 @@ package com.misset.opp.omt.meta.model.modelitems.ontology;
 import com.misset.opp.omt.meta.OMTInjectable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
-import com.misset.opp.omt.meta.model.scalars.OMTTypeIdentifierMetaType;
+import com.misset.opp.omt.meta.scalars.OMTTypeIdentifierMetaType;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlIntegerType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;

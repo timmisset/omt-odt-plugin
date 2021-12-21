@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.model.modelitems.ontology;
 
 import com.misset.opp.omt.meta.arrays.OMTOntologyClassesArrayMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemDelegateMetaType;
-import com.misset.opp.omt.meta.model.scalars.OMTOntologyPrefixMetaType;
+import com.misset.opp.omt.meta.scalars.OMTOntologyPrefixMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;

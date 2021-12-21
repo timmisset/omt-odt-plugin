@@ -1,10 +1,8 @@
 package com.misset.opp.omt.indexing;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
 import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.util.ImportUtil;
 import com.misset.opp.util.LoggerUtil;
 
 import java.util.ArrayList;
@@ -14,28 +12,35 @@ import java.util.List;
 
 public class ExportedMembersIndex {
 
-    private static final HashMap<String, HashMap<String, List<PsiCallable>>> exportedMembers = new HashMap<>();
+    private static final HashMap<OMTFile, HashMap<String, List<PsiCallable>>> exportedMembers = new HashMap<>();
     private static final HashMap<String, List<PsiCallable>> exportedMembersByName = new HashMap<>();
     private static final Logger LOGGER = Logger.getInstance(ImportedMembersIndex.class);
 
-    public static HashMap<String, List<PsiCallable>> getExportedMembers(String path,
-                                                                        Project project) {
-        if (exportedMembers.containsKey(path)) {
-            return exportedMembers.get(path);
+    public static HashMap<String, List<PsiCallable>> getExportedMembers(OMTFile file) {
+        if (exportedMembers.containsKey(file)) {
+            return exportedMembers.get(file);
         } else {
-            return calculateExportedMembers(path, project);
+            analyse(file);
+            return exportedMembers.getOrDefault(file, new HashMap<>());
         }
+    }
+
+    public static void removeFromIndex(OMTFile file) {
+        exportedMembers.remove(file);
     }
 
     public static void analyse(OMTFile file) {
         LoggerUtil.runWithLogger(LOGGER, "Analysis of " + file.getName(), () -> {
-            String path = file.getVirtualFile().getPath();
-            HashMap<String, List<PsiCallable>> exportingMembersMap = file.getDeclaredExportingMembersMap();
-            exportedMembers.put(path, exportingMembersMap);
-            exportingMembersMap.keySet().forEach(
+            if (file.getVirtualFile() == null) {
+                return;
+            }
+            exportedMembers.put(file, file.getExportingMembersMap());
+
+            HashMap<String, List<PsiCallable>> declaredExportingMembersMap = file.getDeclaredExportingMembersMap();
+            declaredExportingMembersMap.keySet().forEach(
                     s -> {
                         List<PsiCallable> paths = exportedMembersByName.getOrDefault(s, new ArrayList<>());
-                        paths.addAll(exportingMembersMap.get(s));
+                        paths.addAll(declaredExportingMembersMap.get(s));
                         exportedMembersByName.put(s, paths);
                     }
             );
@@ -52,25 +57,9 @@ public class ExportedMembersIndex {
         return psiCallables;
     }
 
-    public static void removeFromIndex(String path) {
-        exportedMembers.remove(path);
-    }
-
     public static void clear() {
         exportedMembers.clear();
         exportedMembersByName.clear();
-    }
-
-    private static HashMap<String, List<PsiCallable>> calculateExportedMembers(String path,
-                                                                               Project project) {
-
-        final OMTFile omtFile = ImportUtil.getOMTFile(path, project);
-        if (omtFile == null) {
-            return new HashMap<>();
-        }
-        final HashMap<String, List<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
-        exportedMembers.put(path, exportingMembersMap);
-        return exportingMembersMap;
     }
 
 }

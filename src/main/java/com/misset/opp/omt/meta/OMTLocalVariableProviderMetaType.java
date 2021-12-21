@@ -1,9 +1,9 @@
 package com.misset.opp.omt.meta;
 
 import com.misset.opp.callable.local.LocalVariable;
-import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
+import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;

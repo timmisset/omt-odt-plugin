@@ -67,6 +67,13 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
         return configureByText(getFileName(), content, acceptErrorElements);
     }
 
+    protected T addFileToProject(String relativePath, String content) {
+        PsiFile psiFile = myFixture.addFileToProject(relativePath, content);
+        T typedFile = castToFile(psiFile);
+        buildIndexes(typedFile);
+        return typedFile;
+    }
+
     protected abstract T castToFile(PsiFile file);
 
     protected void buildIndexes(T file) {

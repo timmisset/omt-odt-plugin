@@ -2,8 +2,8 @@ package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.openapi.util.TextRange;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
-import com.misset.opp.omt.meta.model.scalars.OMTVariableNameMetaType;
-import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
+import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLValue;

@@ -11,8 +11,12 @@ import com.misset.opp.omt.indexing.ImportedMembersIndex;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
-import com.misset.opp.omt.meta.model.scalars.OMTIriMetaType;
+import com.misset.opp.omt.meta.module.OMTDeclareMetaType;
+import com.misset.opp.omt.meta.module.OMTDeclaredModuleMetaType;
+import com.misset.opp.omt.meta.scalars.OMTIriMetaType;
 import com.misset.opp.omt.psi.references.OMTImportPathReference;
+import com.misset.opp.omt.psi.references.OMTModuleExportReference;
+import com.misset.opp.omt.psi.references.OMTModuleReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
@@ -40,8 +44,16 @@ public class YAMLOMTKeyValueImpl extends YAMLKeyValueImpl {
 
     @Override
     public PsiReference getReference() {
-        if (getKey() != null && getMetaType() instanceof OMTImportMetaType) {
+        if (getKey() == null) {
+            return null;
+        }
+        YamlMetaType metaType = getMetaType();
+        if (metaType instanceof OMTImportMetaType) {
             return new OMTImportPathReference(this, getKey().getTextRangeInParent());
+        } else if (metaType instanceof OMTDeclareMetaType) {
+            return new OMTModuleReference(this, getKey().getTextRangeInParent());
+        } else if (metaType instanceof OMTDeclaredModuleMetaType) {
+            return new OMTModuleExportReference(this, getKey().getTextRangeInParent());
         }
         return null;
     }

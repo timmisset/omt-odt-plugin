@@ -18,6 +18,7 @@ import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.indexing.ExportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.settings.SettingsState;
+import com.misset.opp.util.ImportUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.*;
@@ -228,7 +229,7 @@ public class OMTImportUtil {
         return path;
     }
 
-    public static String resolveToPath(Project project, PsiFile containingFile, String path) {
+    public static String resolveToPath(Project project, OMTFile containingFile, String path) {
         final SettingsState settingsState = SettingsState.getInstance(project);
         final Collection<String> keySet = settingsState.mappingPaths.keySet();
 
@@ -266,5 +267,19 @@ public class OMTImportUtil {
             return virtualFile.toString();
         }
         return virtualFile.getPath();
+    }
+
+    public static OMTFile getOMTFile(String path, Project project) {
+        final VirtualFile file = ImportUtil.getFile(path);
+        if (file == null) {
+            return null;
+        }
+        PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
+        if (psiFile instanceof OMTFile) {
+            return (OMTFile) psiFile;
+        } else {
+            // do not throw class-cast exception, instead annotate the import path that it's the wrong format
+            return null;
+        }
     }
 }

@@ -2,6 +2,8 @@ package com.misset.opp.odt.inspection;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.openapi.application.ReadAction;
+import com.misset.opp.omt.indexing.OMTPrefixIndex;
+import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,8 +24,10 @@ class ODTQualifiedURIInspectionTest extends OMTInspectionTestCase {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        myFixture.addFileToProject("dummy.omt", "prefixes:\n" +
+        OMTFile omtFile = (OMTFile) myFixture.addFileToProject("dummy.omt", "prefixes:\n" +
                 "   ont: <http://ontology#>");
+        ReadAction.run(() -> OMTPrefixIndex.analyse(omtFile));
+
     }
 
     @Test

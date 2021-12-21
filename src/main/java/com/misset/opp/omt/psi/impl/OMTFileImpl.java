@@ -77,10 +77,11 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     @Override
     public void clearCaches() {
         super.clearCaches();
-        ImportedMembersIndex.analyse(this);
-        Optional.ofNullable(getVirtualFile())
-                .map(VirtualFile::getPath)
-                .ifPresent(ExportedMembersIndex::removeFromIndex);
+        // Psi changes should render all index records of this file to be obsolete
+        // The indexes are set up in such a way that reading the index for this
+        // will recreate the index records first
+        ExportedMembersIndex.removeFromIndex(this);
+        ImportedMembersIndex.removeFromIndex(this);
     }
 
     /**
@@ -141,4 +142,6 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
         }
         return null;
     }
+
+
 }

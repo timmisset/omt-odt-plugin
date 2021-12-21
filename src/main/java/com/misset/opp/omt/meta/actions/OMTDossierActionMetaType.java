@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.actions;
 
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
-import com.misset.opp.omt.meta.model.scalars.OMTInterpolatedStringMetaType;
+import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.meta.model.YamlStringType;
 

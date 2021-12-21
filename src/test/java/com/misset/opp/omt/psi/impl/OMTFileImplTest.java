@@ -1,5 +1,6 @@
 package com.misset.opp.omt.psi.impl;
 
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiFile;
 import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.OMTFileType;
@@ -65,8 +66,25 @@ class OMTFileImplTest extends OMTTestCase {
         Assertions.assertTrue(exportingMembersMap.containsKey("@MyActivity"));
         Assertions.assertTrue(exportingMembersMap.containsKey("query"));
         Assertions.assertNotNull(exportingMembersMap.get("@MyActivity"));
+    }
 
+    @Test
+    void testGetExportingMembersFromIndexFile() {
+        myFixture.addFileToProject("exportingFile.omt", "queries:\n" +
+                "   DEFINE QUERY memberA => '';\n" +
+                "   DEFINE QUERY memberB => '';\n");
+        OMTFile omtFile = configureByText("index.omt", "import:\n" +
+                "   exportingFile.omt:\n" +
+                "   - memberA\n" +
+                "   - memberB\n");
 
+        ReadAction.run(() -> {
+            HashMap<String, List<PsiCallable>> declaredExportingMembersMap = omtFile.getDeclaredExportingMembersMap();
+            HashMap<String, List<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
+            Assertions.assertTrue(declaredExportingMembersMap.isEmpty());
+            Assertions.assertFalse(exportingMembersMap.isEmpty());
+            assertContainsElements(exportingMembersMap.keySet(), "memberA", "memberB");
+        });
     }
 
 }

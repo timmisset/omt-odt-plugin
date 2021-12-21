@@ -2,6 +2,7 @@ package com.misset.opp.omt.psi.references;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.psi.PsiElement;
 import com.intellij.usageView.UsageInfo;
 import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.psi.OMTFile;
@@ -81,6 +82,25 @@ class OMTImportMemberReferenceTest extends OMTTestCase {
             Assertions.assertEquals("import:\n" +
                     "   ./importedFile.omt:\n" +
                     "   - commandNewName\n", importingFile.getText());
+        });
+    }
+
+    @Test
+    void testCanReferenceViaIndex() {
+        myFixture.addFileToProject("index.omt", "import:\n" +
+                "   exportingFile.omt:\n" +
+                "   - memberA\n" +
+                "   - memberB\n");
+        myFixture.addFileToProject("exportingFile.omt", "queries:\n" +
+                "   DEFINE QUERY memberA => '';\n" +
+                "   DEFINE QUERY memberB => '';\n");
+        myFixture.configureByText("importingFile.omt", "import:\n" +
+                "   index.omt:\n" +
+                "   - <caret>memberA\n" +
+                "   - memberB\n");
+        ReadAction.run(() -> {
+            PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            Assertions.assertTrue(elementAtCaret instanceof PsiCallable);
         });
     }
 }

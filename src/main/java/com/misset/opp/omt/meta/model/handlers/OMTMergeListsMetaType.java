@@ -1,10 +1,10 @@
 package com.misset.opp.omt.meta.model.handlers;
 
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.model.scalars.queries.OMTBooleanQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.OMTPredicateQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.OMTSubjectQueryType;
-import com.misset.opp.omt.meta.model.scalars.values.OMTHandlersFromMetaType;
+import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
+import com.misset.opp.omt.meta.scalars.queries.OMTPredicateQueryType;
+import com.misset.opp.omt.meta.scalars.queries.OMTSubjectQueryType;
+import com.misset.opp.omt.meta.scalars.values.OMTHandlersFromMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;

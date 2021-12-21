@@ -18,7 +18,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
     @BeforeEach
     protected void setUp() {
         super.setUp();
-        myFixture.addFileToProject("importing.omt", "" +
+        addFileToProject("importing.omt", "" +
                 "queries: |\n" +
                 "   DEFINE QUERY memberA => 'memberA';\n" +
                 "");
@@ -48,7 +48,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
 
     @Test
     void testNoWarningForDeferredImport() {
-        myFixture.addFileToProject("deferredImport.omt", "" +
+        addFileToProject("deferredImport.omt", "" +
                 "import: \n" +
                 "   ./index.omt:\n" +
                 "   - memberA");
@@ -63,7 +63,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
     void testWarningForNonUsedDeferredImport() {
         // the memberA is not used from the index.omt import
         // therefore, the import of memberA in index.omt is still unused
-        myFixture.addFileToProject("deferredImport.omt", "" +
+        addFileToProject("deferredImport.omt", "" +
                 "import: \n" +
                 "   ./index.omt:\n" +
                 "   - memberB\n" +

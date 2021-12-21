@@ -5,7 +5,8 @@ import com.misset.opp.omt.meta.arrays.OMTProceduresArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTServicesArrayMetaType;
 import com.misset.opp.omt.meta.model.OMTActionsMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
-import com.misset.opp.omt.meta.model.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.omt.meta.module.OMTDeclareMetaType;
+import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -35,6 +36,7 @@ public class OMTModuleFileType extends OMTFileMetaType {
         features.put("services", OMTServicesArrayMetaType::new);
         features.put("procedures", OMTProceduresArrayMetaType::new);
         features.put("export", OMTExportArrayMetaType::new);
+        features.put("declare", OMTDeclareMetaType::new);
     }
 
     @Override

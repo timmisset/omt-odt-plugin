@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static com.misset.opp.util.ImportUtil.getOMTFile;
+import static com.misset.opp.omt.util.OMTImportUtil.getOMTFile;
 
 public class OMTImportMetaType extends OMTMetaMapType {
 
@@ -31,7 +31,8 @@ public class OMTImportMetaType extends OMTMetaMapType {
 
     public static HashMap<String, List<PsiCallable>> getExportedMembersFromOMTFile(YAMLKeyValue keyValue) {
         return Optional.ofNullable(resolveToPath(keyValue))
-                .map(path -> ExportedMembersIndex.getExportedMembers(path, keyValue.getProject()))
+                .map(path -> OMTImportUtil.getOMTFile(path, keyValue.getProject()))
+                .map(ExportedMembersIndex::getExportedMembers)
                 .orElse(new HashMap<>());
     }
 
@@ -41,7 +42,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
                 .orElse(null);
     }
     public static String resolveToPath(YAMLKeyValue keyValue) {
-        return OMTImportUtil.resolveToPath(keyValue.getProject(), keyValue.getContainingFile(), keyValue.getKeyText());
+        return OMTImportUtil.resolveToPath(keyValue.getProject(), (OMTFile) keyValue.getContainingFile(), keyValue.getKeyText());
     }
 
     @Override

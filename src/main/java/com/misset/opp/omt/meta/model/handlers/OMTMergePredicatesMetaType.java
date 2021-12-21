@@ -2,12 +2,12 @@ package com.misset.opp.omt.meta.model.handlers;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.meta.OMTMetaType;
-import com.misset.opp.omt.meta.model.scalars.queries.OMTBooleanQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.OMTPredicateQueryType;
-import com.misset.opp.omt.meta.model.scalars.queries.OMTSubjectQueryType;
-import com.misset.opp.omt.meta.model.scalars.values.OMTHandlersFromMetaType;
-import com.misset.opp.omt.meta.model.scalars.values.OMTHandlersMetaType;
-import com.misset.opp.omt.meta.model.scalars.values.OMTHandlersUseMetaType;
+import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
+import com.misset.opp.omt.meta.scalars.queries.OMTPredicateQueryType;
+import com.misset.opp.omt.meta.scalars.queries.OMTSubjectQueryType;
+import com.misset.opp.omt.meta.scalars.values.OMTHandlersFromMetaType;
+import com.misset.opp.omt.meta.scalars.values.OMTHandlersMetaType;
+import com.misset.opp.omt.meta.scalars.values.OMTHandlersUseMetaType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
