@@ -1,13 +1,11 @@
 package com.misset.opp.omt.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
-import com.misset.opp.callable.Call;
-import com.misset.opp.callable.Callable;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
@@ -16,8 +14,12 @@ import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemDelegateMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.OMTCallable;
+import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.*;
@@ -38,10 +40,12 @@ import java.util.stream.Collectors;
  * with a YAMLMapping element on method that requires information specific an instance of the MetaType in the
  * PsiTree. Therefore, the OTMCallableImpl is basically a proxy between the PsiCallable and OMTMetaTypes
  */
-public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable {
+public class OMTCallableImpl extends PsiCallable implements OMTCallable {
     private static final Key<CachedValue<HashMap<Integer, Set<OntResource>>>> PARAMETER_TYPES = new Key<>("PARAMETER_TYPES");
     private final YAMLMapping mapping;
     private final YAMLKeyValue keyValue;
+
+    private static final Logger LOGGER = Logger.getInstance(OMTCallableImpl.class);
 
     public OMTCallableImpl(YAMLKeyValue keyValue) {
         super(keyValue.getNode());
@@ -189,10 +193,10 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
     }
 
     @Override
-    public Set<OntResource> resolve(Set<OntResource> resources,
-                                    Call call) {
+    public @NotNull Set<OntResource> resolve(Set<OntResource> inputResources,
+                                             PsiCall call) {
         return computeFromMeta(OMTMetaCallable.class,
-                omtMetaCallable -> omtMetaCallable.resolve(mapping, resources, call),
+                omtMetaCallable -> omtMetaCallable.resolve(mapping, inputResources, call),
                 Collections.emptySet());
     }
 
@@ -209,6 +213,11 @@ public class OMTCallableImpl extends ASTWrapperPsiElement implements OMTCallable
     @Override
     public Set<OntResource> getSecondReturnArgument() {
         return computeFromMeta(OMTMetaCallable.class, OMTMetaCallable::getSecondReturnArgument, Collections.emptySet());
+    }
+
+    @Override
+    public boolean isStatic() {
+        return true;
     }
 
     @Override

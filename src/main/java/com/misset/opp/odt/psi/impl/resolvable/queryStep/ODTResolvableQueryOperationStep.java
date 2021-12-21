@@ -6,7 +6,6 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.*;
-import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
@@ -16,6 +15,7 @@ import com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
+import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +55,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     }
 
     public Set<OntResource> resolvePreviousStep(Set<OntResource> resources,
-                                                @Nullable Call call) {
+                                                @Nullable PsiCall call) {
         if (isFirstStepInPath()) {
             // the fromSet is to support filtering overrides
             // each OntResource going into the filter is evaluated with the filter to determine if it survives
@@ -86,7 +86,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
      */
     private Set<OntResource> resolvePreviousStep(PsiElement container,
                                                  Set<OntResource> resources,
-                                                 @Nullable Call call) {
+                                                 @Nullable PsiCall call) {
         if (container instanceof ODTBaseDefineQueryStatement) {
             return ((ODTBaseDefineQueryStatement) container).getBase();
         }
@@ -169,8 +169,8 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     }
 
     @Override
-    public Set<OntResource> resolve(Set<OntResource> resources,
-                                    Call call) {
+    public @NotNull Set<OntResource> resolve(Set<OntResource> resources,
+                                             PsiCall call) {
         return Optional.ofNullable(getQueryStep())
                 .map(queryStep -> queryStep.resolve(resources, call))
                 .orElse(Collections.emptySet());

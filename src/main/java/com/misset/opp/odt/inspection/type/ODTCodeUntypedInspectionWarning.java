@@ -12,11 +12,11 @@ import com.intellij.psi.impl.PsiJavaParserFacadeImpl;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableVariableStep;
+import com.misset.opp.resolvable.Callable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +47,7 @@ public class ODTCodeUntypedInspectionWarning extends LocalInspectionTool {
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTVariable) {
                     ODTVariable variable = (ODTVariable) element;
-                    if (variable.canBeAnnotated() && variable.getType().isEmpty()) {
+                    if (variable.canBeAnnotated() && variable.resolve().isEmpty()) {
                         holder.registerProblem(
                                 element,
                                 ANNOTATE_PARAMETER_WITH_TYPE,

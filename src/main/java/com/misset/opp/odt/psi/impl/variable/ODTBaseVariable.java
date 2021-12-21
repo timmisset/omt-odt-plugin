@@ -11,13 +11,13 @@ import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.callable.Variable;
-import com.misset.opp.callable.global.GlobalVariable;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
+import com.misset.opp.resolvable.Variable;
+import com.misset.opp.resolvable.global.GlobalVariable;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -127,9 +127,9 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
     }
 
     @Override
-    public Set<OntResource> getType() {
+    public @NotNull Set<OntResource> resolve() {
         return CachedValuesManager.getCachedValue(this, VARIABLE_TYPE, () -> {
-            final Set<OntResource> type = delegate.getType();
+            final Set<OntResource> type = delegate.resolve();
             return new CachedValueProvider.Result<>(type,
                     getContainingFile(),
                     PsiModificationTracker.MODIFICATION_COUNT,

@@ -27,7 +27,7 @@ public class ODTDeclaredVariableDelegate extends ODTBaseVariableDelegate {
     }
 
     @Override
-    public Set<OntResource> getType() {
+    public Set<OntResource> resolve() {
         return Collections.emptySet();
     }
 }

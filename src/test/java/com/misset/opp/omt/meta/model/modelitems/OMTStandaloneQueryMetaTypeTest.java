@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.callable.Call;
+import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.Individual;
@@ -14,9 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.Set;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
 
@@ -25,7 +23,7 @@ class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
         configureByText(insideStandaloneQueryWithPrefixes("query: \n" +
                 "   /ont:ClassA"));
         assertResolvedContainsResource(Collections.emptySet(),
-                mock(Call.class),
+                mock(PsiCall.class),
                 OppModel.INSTANCE.getClass("http://ontology#ClassA"));
     }
 
@@ -35,13 +33,13 @@ class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
                 "   - $paramA (ont:ClassA)\n" +
                 "query: $paramA"));
         assertResolvedContainsResource(Collections.emptySet(),
-                mock(Call.class),
+                mock(PsiCall.class),
                 OppModel.INSTANCE.getIndividual("http://ontology#ClassA_INSTANCE"));
     }
 
     @Test
     void testResolveStandaloneQueryWithNonAnnotatedParameters() {
-        final Call call = mock(Call.class);
+        final PsiCall call = mock(PsiCall.class);
         final Individual individual = OppModel.INSTANCE.getIndividual("http://ontology#ClassA_INSTANCE");
         final Set<OntResource> resources = Set.of(individual);
         doReturn(resources).when(call).resolveSignatureArgument(0);
@@ -55,7 +53,7 @@ class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
     }
 
     private void assertResolvedContainsResource(Set<OntResource> resources,
-                                                Call call,
+                                                PsiCall call,
                                                 OntResource resource) {
         ReadAction.run(() -> {
             final YAMLMapping mapping = PsiTreeUtil.findChildrenOfType(getFile(), YAMLKeyValue.class)

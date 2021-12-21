@@ -59,7 +59,7 @@ public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements OMTVar
     }
 
     @Override
-    public Set<OntResource> getType() {
+    public @NotNull Set<OntResource> resolve() {
         return getFromMeta(OMTNamedVariableMetaType::getType, Collections.emptySet());
     }
 

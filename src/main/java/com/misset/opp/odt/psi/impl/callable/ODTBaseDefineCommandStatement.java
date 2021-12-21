@@ -43,4 +43,8 @@ public abstract class ODTBaseDefineCommandStatement extends ODTDefineStatement i
         return false;
     }
 
+    @Override
+    public boolean isStatic() {
+        return true;
+    }
 }

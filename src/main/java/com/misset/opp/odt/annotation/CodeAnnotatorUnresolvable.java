@@ -6,11 +6,11 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.callable.Callable;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.util.OMTImportUtil;
+import com.misset.opp.resolvable.Callable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class CodeAnnotatorUnresolvable implements Annotator {
 
     private void inspectVariable(@NotNull AnnotationHolder holder,
                                  @NotNull ODTVariable variable) {
-        if (!variable.isDeclaredVariable() && variable.getType().isEmpty()) {
+        if (!variable.isDeclaredVariable() && variable.resolve().isEmpty()) {
             validateReference(holder, variable, String.format("%s is not declared", variable.getText()));
         }
     }

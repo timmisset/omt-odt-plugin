@@ -7,12 +7,12 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PlatformIcons;
-import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.ODTBaseScriptLine;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
+import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -97,7 +97,10 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .filter(Objects::nonNull)
                 .filter(selectionFilter)
                 .filter(callable -> precedingFilter.test(callable.getAcceptableInputType()))
-                .filter(callable -> typeFilter.test(callable.returns()))
+                .filter(callable -> {
+                    Set<OntResource> resolve = callable.resolve();
+                    return resolve.isEmpty() || typeFilter.test(resolve);
+                })
                 .map(this::getLookupElement)
                 .forEach(result::addElement);
     }

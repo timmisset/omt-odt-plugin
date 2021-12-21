@@ -1,8 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.callable.Call;
-import com.misset.opp.callable.psi.PsiResolvable;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
@@ -13,6 +11,8 @@ import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
+import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.resolvable.psi.PsiResolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -71,7 +71,7 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
     @Override
     public Set<OntResource> resolve(YAMLMapping mapping,
                                     Set<OntResource> resources,
-                                    Call call) {
+                                    PsiCall call) {
 
         // intercept the call and provide context for the parameters (if any)
         final YAMLKeyValue base = mapping.getKeyValueByKey("base");

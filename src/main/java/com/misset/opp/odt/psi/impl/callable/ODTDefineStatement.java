@@ -14,16 +14,15 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.callable.Call;
-import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
+import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,8 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement implements
-        PsiCallable,
+public abstract class ODTDefineStatement extends PsiCallable implements
         PsiNameIdentifierOwner,
         PsiJavaDocumentedElement {
     private static final Key<CachedValue<HashMap<Integer, Set<OntResource>>>> PARAMETER_TYPES = new Key<>("PARAMETER_TYPES");
@@ -61,7 +59,7 @@ public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement impleme
     @Override
     public String getDescription(String context) {
         String javaDocComment = ODTDocumentationUtil.getJavaDocCommentDescription(this);
-        return javaDocComment == null || javaDocComment.replace("<br>", "\n").isBlank() ? PsiCallable.super.getDescription(context) : javaDocComment;
+        return javaDocComment == null || javaDocComment.replace("<br>", "\n").isBlank() ? super.getDescription(context) : javaDocComment;
     }
 
     @Override
@@ -89,13 +87,18 @@ public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement impleme
     }
 
     @Override
+    public ODTFile getContainingFile() {
+        return (ODTFile) super.getContainingFile();
+    }
+
+    @Override
     public HashMap<Integer, Set<OntResource>> getParameterTypes() {
         return CachedValuesManager.getCachedValue(this, PARAMETER_TYPES, () -> {
             List<Set<OntResource>> types = Optional.ofNullable(getDefineParam())
                     .map(ODTDefineParam::getVariableList)
                     .stream()
                     .flatMap(Collection::stream)
-                    .map(ODTVariableDelegate::getType)
+                    .map(ODTVariableDelegate::resolve)
                     .collect(Collectors.toList());
             return new CachedValueProvider.Result<>(mapCallableParameters(types), getContainingFile());
         });
@@ -112,7 +115,7 @@ public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement impleme
 
     public abstract ODTDefineParam getDefineParam();
 
-    protected void decorateCall(Call call) {
+    protected void decorateCall(PsiCall call) {
         final List<ODTVariable> variables = Optional.ofNullable(getDefineParam())
                 .map(ODTDefineParam::getVariableList)
                 .orElse(Collections.emptyList());

@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta;
 
-import com.misset.opp.callable.Call;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
@@ -26,7 +26,7 @@ public interface OMTMetaCallable {
      */
     Set<OntResource> resolve(YAMLMapping mapping,
                              Set<OntResource> resources,
-                             Call call);
+                             PsiCall call);
 
     boolean isVoid(YAMLMapping mapping);
 

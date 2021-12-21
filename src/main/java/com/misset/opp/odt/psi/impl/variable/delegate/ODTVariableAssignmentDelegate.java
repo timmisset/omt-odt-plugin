@@ -2,14 +2,14 @@ package com.misset.opp.odt.psi.impl.variable.delegate;
 
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.Variable;
 import com.misset.opp.odt.psi.ODTDeclareVariable;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.ODTVariableValue;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
+import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -43,7 +43,7 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
     }
 
     @Override
-    public Set<OntResource> getType() {
+    public Set<OntResource> resolve() {
         // (VAR) $variableA, $variableB = @SOME_COMMAND();
         final ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(element,
                 ODTVariableAssignment.class);

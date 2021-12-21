@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.providers;
 
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.util.CachedValue;
-import com.misset.opp.callable.local.LocalCommand;
+import com.misset.opp.resolvable.local.LocalCommand;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
 import java.util.HashMap;

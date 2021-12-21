@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.callable.builtin.commands.AssignCommand;
+import com.misset.opp.odt.builtin.commands.AssignCommand;
 import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTTypes;
@@ -60,9 +60,9 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
 
     private void inspectAssign(@NotNull ProblemsHolder holder,
                                @NotNull ODTCall call) {
-        if (call.numberOfArguments() >= 3 && call.numberOfArguments() % 2 != 0) {
+        if (call.getNumberOfArguments() >= 3 && call.getNumberOfArguments() % 2 != 0) {
             final Set<OntResource> subject = call.resolveSignatureArgument(0);
-            for (int i = 1; i < call.numberOfArguments(); i = i + 2) {
+            for (int i = 1; i < call.getNumberOfArguments(); i = i + 2) {
 
                 final ODTResolvableSignatureArgument predicateArgument = call.getSignatureArgument(i);
                 if (predicateArgument == null) {

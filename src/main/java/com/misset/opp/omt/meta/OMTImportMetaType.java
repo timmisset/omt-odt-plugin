@@ -1,11 +1,11 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.indexing.ExportedMembersIndex;
 import com.misset.opp.omt.meta.arrays.OMTImportPathMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.util.OMTImportUtil;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;

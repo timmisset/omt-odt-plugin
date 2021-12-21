@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.misset.opp.callable.builtin.commands.AssignCommand;
+import com.misset.opp.odt.builtin.commands.AssignCommand;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.ttl.OppModel;
@@ -69,7 +69,7 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
 
             private Set<OntResource> existingPredicates(ODTCommandCall call) {
                 Set<OntResource> predicates = new HashSet<>();
-                for (int i = 1; i < call.numberOfArguments(); i = i + 2) {
+                for (int i = 1; i < call.getNumberOfArguments(); i = i + 2) {
                     predicates.addAll(call.resolveSignatureArgument(i));
                 }
                 return predicates;

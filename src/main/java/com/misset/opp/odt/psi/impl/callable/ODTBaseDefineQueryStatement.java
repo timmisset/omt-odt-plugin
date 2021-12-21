@@ -3,10 +3,10 @@ package com.misset.opp.odt.psi.impl.callable;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
-import com.misset.opp.callable.Call;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,10 +40,10 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
     }
 
     @Override
-    public Set<OntResource> resolve(Set<OntResource> resources,
-                                    Call call) {
+    public @NotNull Set<OntResource> resolve(Set<OntResource> inputResources,
+                                             PsiCall call) {
         decorateCall(call);
-        return getQuery().resolve(resources, call);
+        return getQuery().resolve(inputResources, call);
     }
 
     @Override
@@ -72,4 +72,11 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
                 .map(docTag -> ODTDocumentationUtil.getTypeFromDocTag(docTag, 0))
                 .orElse(Collections.emptySet());
     }
+
+    @Override
+    public boolean isStatic() {
+        return true;
+    }
+
+
 }

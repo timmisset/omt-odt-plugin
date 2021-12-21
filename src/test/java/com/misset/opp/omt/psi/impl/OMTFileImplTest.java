@@ -2,9 +2,9 @@ package com.misset.opp.omt.psi.impl;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiFile;
-import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

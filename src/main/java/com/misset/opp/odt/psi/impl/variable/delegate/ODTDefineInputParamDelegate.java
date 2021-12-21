@@ -33,7 +33,7 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
     }
 
     @Override
-    public Set<OntResource> getType() {
+    public Set<OntResource> resolve() {
         return CachedValuesManager.getCachedValue(element, ONT_TYPE, () ->
                 new CachedValueProvider.Result<>(calculateType(),
                         element.getContainingFile(),

@@ -3,9 +3,9 @@ package com.misset.opp.odt.psi.impl.resolvable;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
-import com.misset.opp.callable.Resolvable;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
+import com.misset.opp.resolvable.Resolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 

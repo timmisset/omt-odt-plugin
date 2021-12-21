@@ -1,8 +1,8 @@
 package com.misset.opp.omt.indexing;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
 
 import java.util.ArrayList;

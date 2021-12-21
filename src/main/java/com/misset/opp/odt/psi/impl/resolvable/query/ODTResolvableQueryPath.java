@@ -5,7 +5,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTQueryPath;
 import com.misset.opp.odt.psi.ODTQueryStep;
@@ -14,6 +13,7 @@ import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep;
+import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
@@ -38,8 +38,8 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
     }
 
     @Override
-    public Set<OntResource> resolve(Set<OntResource> resources,
-                                    Call call) {
+    public @NotNull Set<OntResource> resolve(Set<OntResource> resources,
+                                             PsiCall call) {
         return LoggerUtil.computeWithLogger(LOGGER, "Resolve with resources: " + getText(), () -> Optional.ofNullable(getLastOperation())
                 .map(lastStep -> lastStep.resolve(resources, call))
                 .orElse(Collections.emptySet()));

@@ -7,7 +7,7 @@ import com.intellij.patterns.PsiJavaElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.misset.opp.callable.builtin.Builtin;
+import com.misset.opp.odt.builtin.Builtin;
 import com.misset.opp.odt.psi.*;
 import org.jetbrains.annotations.NotNull;
 

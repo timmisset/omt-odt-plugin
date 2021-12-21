@@ -1,7 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.openapi.application.ReadAction;
-import com.misset.opp.callable.builtin.operators.BuiltInOperator;
+import com.misset.opp.odt.builtin.operators.BuiltInOperator;
 import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;

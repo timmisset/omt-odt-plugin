@@ -4,9 +4,6 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.callable.Variable;
-import com.misset.opp.callable.global.GlobalVariable;
-import com.misset.opp.callable.local.CallableLocalVariableTypeProvider;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
@@ -14,6 +11,9 @@ import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
+import com.misset.opp.providers.CallableLocalVariableTypeProvider;
+import com.misset.opp.resolvable.Variable;
+import com.misset.opp.resolvable.global.GlobalVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLValue;
@@ -48,14 +48,14 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
      * - global variable with static type
      */
     @Override
-    public Set<OntResource> getType() {
-        return getTypeFromOMTLocalVariable()
-                .or(this::getTypeFromGlobalVariable)
-                .or(this::getTypeFromCallContext)
-                .orElse(getTypeFromContext());
+    public Set<OntResource> resolve() {
+        return resolveFromOMTLocalVariable()
+                .or(this::resolveFromGlobalVariable)
+                .or(this::resolveFromCallContext)
+                .orElse(resolveFromContext());
     }
 
-    private Set<OntResource> getTypeFromContext() {
+    private Set<OntResource> resolveFromContext() {
         // combine the type assignments up to this point
         // and potentially set by the declaration (OMT or ODT)
         final HashSet<OntResource> resources = new HashSet<>();
@@ -84,7 +84,7 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
             return Optional.empty();
         }
         return Optional.of(variablesFromAssignments.stream()
-                .map(ODTVariableDelegate::getType)
+                .map(ODTVariableDelegate::resolve)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet()));
     }
@@ -163,11 +163,11 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
 
     private Optional<Set<OntResource>> getTypeFromDeclaration() {
         return Optional.ofNullable(getDeclared())
-                .map(Variable::getType);
+                .map(Variable::resolve);
     }
 
 
-    private Optional<Set<OntResource>> getTypeFromOMTLocalVariable() {
+    private Optional<Set<OntResource>> resolveFromOMTLocalVariable() {
         return element.getContainingFile()
                 .getProviders(YAMLValue.class, OMTLocalVariableProvider.class, OMTLocalVariableProvider.KEY)
                 .entrySet()
@@ -177,23 +177,23 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
                 .filter(Objects::nonNull)
                 // resolve the type from the local variable
                 // the type is set by OMTLocalVariableTypeProvider corresponding with the OMTLocalVariableProvider
-                .map(Variable::getType)
+                .map(Variable::resolve)
                 .findFirst();
     }
 
-    private Optional<Set<OntResource>> getTypeFromGlobalVariable() {
+    private Optional<Set<OntResource>> resolveFromGlobalVariable() {
         return Optional.ofNullable(GlobalVariable.getVariable(element.getName()))
-                .map(Variable::getType);
+                .map(Variable::resolve);
     }
 
 
-    private Optional<Set<OntResource>> getTypeFromCallContext() {
+    private Optional<Set<OntResource>> resolveFromCallContext() {
         return PsiTreeUtil.collectParents(element, ODTCall.class, false, Objects::isNull)
                 .stream()
                 .map(call -> new Pair<>(call, call.getCallable()))
                 .filter(pair -> pair.second instanceof CallableLocalVariableTypeProvider)
                 .map(pair -> ((CallableLocalVariableTypeProvider) pair.second)
-                        .getType(element.getName(), pair.first, pair.first.getArgumentIndexOf(element)))
+                        .resolve(element.getName(), pair.first, pair.first.getArgumentIndexOf(element)))
                 .filter(ontResources -> !ontResources.isEmpty())
                 .findFirst();
     }

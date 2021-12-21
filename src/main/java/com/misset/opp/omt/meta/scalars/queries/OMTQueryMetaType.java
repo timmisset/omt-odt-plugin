@@ -1,10 +1,10 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
-import com.misset.opp.callable.Resolvable;
-import com.misset.opp.callable.psi.PsiResolvable;
 import com.misset.opp.omt.meta.OMTInjectable;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
+import com.misset.opp.resolvable.Resolvable;
+import com.misset.opp.resolvable.psi.PsiResolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlScalarType;

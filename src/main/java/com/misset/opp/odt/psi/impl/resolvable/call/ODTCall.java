@@ -2,12 +2,12 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.psi.PsiCall;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.ODTFlagSignature;
 import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

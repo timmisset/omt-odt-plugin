@@ -8,7 +8,7 @@ import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.misset.opp.callable.builtin.operators.BuiltinOperators;
+import com.misset.opp.odt.builtin.operators.BuiltinOperators;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;

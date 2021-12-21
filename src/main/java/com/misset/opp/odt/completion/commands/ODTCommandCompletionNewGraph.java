@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.misset.opp.callable.builtin.commands.NewGraphCommand;
+import com.misset.opp.odt.builtin.commands.NewGraphCommand;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.ttl.OppModel;

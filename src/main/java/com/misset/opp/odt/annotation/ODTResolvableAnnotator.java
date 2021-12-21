@@ -22,7 +22,7 @@ public class ODTResolvableAnnotator implements Annotator {
         if (element instanceof ODTResolvable) {
             ((ODTResolvable) element).annotate(holder);
         } else if (element instanceof ODTVariable && !(element.getParent() instanceof ODTVariableStep)) {
-            final Set<OntResource> type = ((ODTVariable) element).getType();
+            final Set<OntResource> type = ((ODTVariable) element).resolve();
             if (!type.isEmpty()) {
                 ODTResolvableUtil.annotateResolved(type, holder, element, true);
             }

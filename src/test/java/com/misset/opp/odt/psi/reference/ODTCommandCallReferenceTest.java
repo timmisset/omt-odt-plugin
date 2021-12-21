@@ -2,8 +2,8 @@ package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.misset.opp.callable.Callable;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.resolvable.Callable;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.junit.jupiter.api.Assertions;

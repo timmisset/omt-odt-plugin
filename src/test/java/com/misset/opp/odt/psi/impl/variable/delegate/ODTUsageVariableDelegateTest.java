@@ -22,7 +22,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
         });
     }
 
@@ -38,7 +38,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
         });
     }
 
@@ -49,7 +49,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
         });
     }
 
@@ -60,7 +60,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
         });
     }
 
@@ -73,7 +73,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
         });
     }
 
@@ -86,7 +86,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModel.INSTANCE.XSD_STRING_INSTANCE);
         });
     }
 
@@ -101,7 +101,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).getType(), OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
         });
     }
 

@@ -11,18 +11,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.builtin.commands.BuiltinCommands;
-import com.misset.opp.callable.builtin.operators.BuiltinOperators;
-import com.misset.opp.callable.local.LocalCommand;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.ODTInjectionUtil;
+import com.misset.opp.odt.builtin.commands.BuiltinCommands;
+import com.misset.opp.odt.builtin.operators.BuiltinOperators;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
+import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
@@ -182,7 +182,7 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     }
 
     @Override
-    public int numberOfArguments() {
+    public int getNumberOfArguments() {
         return getSignatureArguments().size();
     }
 

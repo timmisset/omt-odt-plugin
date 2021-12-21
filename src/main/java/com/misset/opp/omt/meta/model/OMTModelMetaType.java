@@ -1,10 +1,10 @@
 package com.misset.opp.omt.meta.model;
 
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.misset.opp.callable.psi.PsiCallable;
 import com.misset.opp.omt.meta.OMTMetaMapType;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLMapping;

@@ -6,11 +6,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.ProcessingContext;
-import com.misset.opp.callable.Callable;
-import com.misset.opp.callable.Variable;
-import com.misset.opp.callable.global.GlobalVariable;
-import com.misset.opp.callable.local.CallableLocalVariableTypeProvider;
-import com.misset.opp.callable.local.LocalVariable;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
@@ -19,6 +14,11 @@ import com.misset.opp.odt.psi.util.PsiRelationshipUtil;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlVariableDelegate;
+import com.misset.opp.providers.CallableLocalVariableTypeProvider;
+import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.Variable;
+import com.misset.opp.resolvable.global.GlobalVariable;
+import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -71,7 +71,7 @@ public class ODTVariableCompletion extends CompletionContributor {
                                       Predicate<Set<OntResource>> typeFilter,
                                       @NotNull CompletionResultSet result) {
                 variables.stream()
-                        .filter(variable -> typeFilter.test(variable.getType()))
+                        .filter(variable -> typeFilter.test(variable.resolve()))
                         .map(this::getLookupElement)
                         .forEach(result::addElement);
             }
@@ -129,7 +129,7 @@ public class ODTVariableCompletion extends CompletionContributor {
                         .withLookupString(variable.getName().substring(1))
                         .withLookupString(variable.getName().substring(1).toLowerCase())
                         .withIcon(variable.isParameter() ? PlatformIcons.PARAMETER_ICON : PlatformIcons.VARIABLE_ICON)
-                        .withTypeText(TTLResourceUtil.describeUrisForLookupJoined(variable.getType()));
+                        .withTypeText(TTLResourceUtil.describeUrisForLookupJoined(variable.resolve()));
             }
         });
     }

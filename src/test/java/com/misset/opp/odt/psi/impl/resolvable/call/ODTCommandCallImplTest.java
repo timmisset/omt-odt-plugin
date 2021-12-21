@@ -2,9 +2,9 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.callable.builtin.commands.BuiltInCommand;
-import com.misset.opp.callable.local.LocalCommand;
+import com.misset.opp.odt.builtin.commands.BuiltInCommand;
 import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.testCase.OMTTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -45,7 +45,7 @@ class ODTCommandCallImplTest extends OMTTestCase {
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            Set<OntResource> variableType = ((ODTVariable) elementAtCaret).getType();
+            Set<OntResource> variableType = ((ODTVariable) elementAtCaret).resolve();
             assertContainsElements(variableType, OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
         });
     }

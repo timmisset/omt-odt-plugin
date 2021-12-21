@@ -1,7 +1,7 @@
 package com.misset.opp.omt.psi;
 
-import com.misset.opp.callable.psi.PsiCallable;
+import com.misset.opp.resolvable.Callable;
 
-public interface OMTCallable extends PsiCallable {
+public interface OMTCallable extends Callable {
     String getType();
 }
