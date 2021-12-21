@@ -2,15 +2,22 @@ package com.misset.opp.odt.documentation;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaDocumentedElement;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.prefix.PrefixUtil;
+import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.util.TTLValueParserUtil;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.yaml.psi.YAMLKeyValue;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ODTDocumentationUtil {
@@ -19,15 +26,20 @@ public class ODTDocumentationUtil {
     );
 
     @Nullable
-    public static String getJavaDocComment(@NotNull PsiElement element) {
-        if (element.getParent() instanceof PsiJavaDocumentedElement) {
-            PsiDocComment docComment = ((PsiJavaDocumentedElement) element.getParent()).getDocComment();
-            if (docComment == null) {
-                return null;
-            }
-            return Arrays.stream(docComment.getDescriptionElements())
+    public static String getJavaDocCommentDescription(@NotNull PsiElement element) {
+        PsiDocComment psiDocComment = getJavaDocComment(element);
+        if (psiDocComment != null) {
+            return Arrays.stream(psiDocComment.getDescriptionElements())
                     .map(PsiElement::getText)
                     .collect(Collectors.joining("<br>"));
+        }
+        return null;
+    }
+
+    @Nullable
+    public static PsiDocComment getJavaDocComment(@NotNull PsiElement element) {
+        if (element.getParent() instanceof PsiJavaDocumentedElement) {
+            return ((PsiJavaDocumentedElement) element.getParent()).getDocComment();
         }
         return null;
     }
@@ -46,4 +58,42 @@ public class ODTDocumentationUtil {
                 .anyMatch(docOwnerClass -> docOwnerClass.isAssignableFrom(element.getClass()));
     }
 
+    private static final Pattern LOCAL_NAME = Pattern.compile("\\([^:]*:([^)]*)\\)");
+
+    public static Set<OntResource> getTypeFromDocTag(PsiDocTag docTag, int dataElementPosition) {
+        if (docTag != null && docTag.getDataElements().length > dataElementPosition) {
+            // we can retrieve the type from the DocTag:
+            final PsiElement dataElement = docTag.getDataElements()[dataElementPosition];
+            final PsiReference[] references = docTag.getReferences();
+            final Optional<PsiReference> curieReference = Arrays.stream(references)
+                    .filter(psiReference -> psiReference.getRangeInElement()
+                            .intersects(dataElement.getTextRangeInParent()))
+                    .findFirst();
+            if (curieReference.isPresent()) {
+                // there is a reference available for the type, meaning we should try to resolve it to the prefix
+                // and generate a fully qualified URI from it:
+                final PsiElement prefix = curieReference.get().resolve();
+                if (prefix instanceof YAMLKeyValue) {
+                    final Matcher matcher = LOCAL_NAME.matcher(dataElement.getText());
+                    if (matcher.find()) {
+                        return Optional.ofNullable(PrefixUtil.getFullyQualifiedUri((YAMLKeyValue) prefix,
+                                        matcher.group(1)))
+                                .map(OppModel.INSTANCE::getClassIndividuals)
+                                .stream()
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.toSet());
+                    }
+                }
+            } else {
+                // no curie reference, probably a primitive type:
+                // (string)
+                final String value = dataElement.getText().replaceAll("[()]", "");
+                return Optional.ofNullable(TTLValueParserUtil.parsePrimitive(value))
+                        .map(OntResource.class::cast)
+                        .map(Set::of)
+                        .orElse(Collections.emptySet());
+            }
+        }
+        return Collections.emptySet();
+    }
 }

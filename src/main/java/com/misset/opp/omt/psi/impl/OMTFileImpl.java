@@ -77,11 +77,8 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     @Override
     public void clearCaches() {
         super.clearCaches();
-        // Psi changes should render all index records of this file to be obsolete
-        // The indexes are set up in such a way that reading the index for this
-        // will recreate the index records first
         ExportedMembersIndex.removeFromIndex(this);
-        ImportedMembersIndex.removeFromIndex(this);
+        ImportedMembersIndex.analyse(this);
     }
 
     /**

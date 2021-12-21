@@ -5,18 +5,14 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.*;
 import com.misset.opp.callable.Call;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
@@ -71,7 +67,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
             // for example:
             // /ont:ClassA / ^rdf:type[rdf:type == /ont:ClassA]
             // the rdf:type in the filter should return the outcome of the ^rdf:type
-            return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTQueryFilter.class, ODTSignature.class))
+            return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTQueryFilter.class, ODTSignature.class, ODTBaseDefineQueryStatement.class))
                     .map(container -> resolvePreviousStep(container, resources, call))
                     .orElse(Collections.emptySet());
         } else {
@@ -91,6 +87,9 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     private Set<OntResource> resolvePreviousStep(PsiElement container,
                                                  Set<OntResource> resources,
                                                  @Nullable Call call) {
+        if (container instanceof ODTBaseDefineQueryStatement) {
+            return ((ODTBaseDefineQueryStatement) container).getBase();
+        }
         final ODTResolvableQueryOperationStep queryOperationStep = PsiTreeUtil.getParentOfType(container,
                 ODTResolvableQueryOperationStep.class);
         if (queryOperationStep == null) {
@@ -99,11 +98,6 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
         if (container instanceof ODTQueryFilter) {
             // resolve the queryStep, without filter, so it can be passed into the filter:
             return queryOperationStep.resolveWithoutFilter();
-        } else if (container instanceof ODTDefineStatement) {
-            /*
-                todo
-                allow for a @base annotation to determine the leading item
-             */
         }
         // else, repeat the process of either unwrapping from a container or resolving the previous step in the same path
         return queryOperationStep.resolvePreviousStep(resources, call);

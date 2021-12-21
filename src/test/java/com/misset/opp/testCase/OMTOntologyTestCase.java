@@ -47,7 +47,7 @@ public class OMTOntologyTestCase extends OMTTestCase {
      * When the ontology is required in a test that is not inheriting from OMTOntologyTestCase
      * this method can be used to load the ontology and return the OppModel
      */
-    public static OppModel getOntologyModel() {
+    public static OppModel initOntologyModel() {
         return new OppModelLoader().read(getRootPath());
     }
 

@@ -26,7 +26,7 @@ class OMTParamTypeTypeTest extends OMTInspectionTestCase {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        OMTOntologyTestCase.getOntologyModel();
+        OMTOntologyTestCase.initOntologyModel();
     }
 
     @Test

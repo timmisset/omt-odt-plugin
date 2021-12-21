@@ -11,24 +11,21 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.impl.prefix.PrefixUtil;
 import com.misset.opp.ttl.OppModel;
-import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.OntResource;
-import org.jetbrains.yaml.psi.YAMLKeyValue;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * VAR $variable;
  */
 public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
-    private static final Pattern LOCAL_NAME = Pattern.compile("\\([^:]*:([^)]*)\\)");
+
     private static final Key<CachedValue<Set<OntResource>>> ONT_TYPE = new Key<>("ONT_TYPE");
 
     public ODTDefineInputParamDelegate(ODTVariable element) {
@@ -58,39 +55,6 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
                 .filtering(PsiDocTag.class::isInstance)
                 .mapping(PsiDocTag.class::cast)
                 .findFirst());
-        if (docTag != null && docTag.getDataElements().length >= 2) {
-            // we can retrieve the type from the DocTag:
-            final PsiElement dataElement = docTag.getDataElements()[1];
-            final PsiReference[] references = docTag.getReferences();
-            final Optional<PsiReference> curieReference = Arrays.stream(references)
-                    .filter(psiReference -> psiReference.getRangeInElement()
-                            .intersects(dataElement.getTextRangeInParent()))
-                    .findFirst();
-            if (curieReference.isPresent()) {
-                // there is a reference available for the type, meaning we should try to resolve it to the prefix
-                // and generate a fully qualified URI from it:
-                final PsiElement prefix = curieReference.get().resolve();
-                if (prefix instanceof YAMLKeyValue) {
-                    final Matcher matcher = LOCAL_NAME.matcher(dataElement.getText());
-                    if (matcher.find()) {
-                        return Optional.ofNullable(PrefixUtil.getFullyQualifiedUri((YAMLKeyValue) prefix,
-                                        matcher.group(1)))
-                                .map(OppModel.INSTANCE::getClassIndividuals)
-                                .stream()
-                                .flatMap(Collection::stream)
-                                .collect(Collectors.toSet());
-                    }
-                }
-            } else {
-                // no curie reference, probably a primitive type:
-                // (string)
-                final String value = dataElement.getText().replaceAll("[()]", "");
-                return Optional.ofNullable(TTLValueParserUtil.parsePrimitive(value))
-                        .map(OntResource.class::cast)
-                        .map(Set::of)
-                        .orElse(Collections.emptySet());
-            }
-        }
-        return Collections.emptySet();
+        return ODTDocumentationUtil.getTypeFromDocTag(docTag, 1);
     }
 }

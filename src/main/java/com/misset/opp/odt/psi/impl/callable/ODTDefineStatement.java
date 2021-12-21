@@ -16,6 +16,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.callable.Call;
 import com.misset.opp.callable.psi.PsiCallable;
+import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
@@ -48,6 +49,9 @@ public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement impleme
 
     @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
+        ODTDefineName odtDefineName = ODTElementGenerator.getInstance(getProject())
+                .fromFile("DEFINE QUERY " + name + " => '';", ODTDefineName.class);
+        getDefineName().replace(odtDefineName);
         return this;
     }
 
@@ -56,7 +60,7 @@ public abstract class ODTDefineStatement extends ODTASTWrapperPsiElement impleme
 
     @Override
     public String getDescription(String context) {
-        String javaDocComment = ODTDocumentationUtil.getJavaDocComment(this);
+        String javaDocComment = ODTDocumentationUtil.getJavaDocCommentDescription(this);
         return javaDocComment == null || javaDocComment.replace("<br>", "\n").isBlank() ? PsiCallable.super.getDescription(context) : javaDocComment;
     }
 

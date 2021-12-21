@@ -29,7 +29,7 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
         OMTPrefixProvider,
         OMTMetaCallable {
     protected OMTStandaloneQueryMetaType() {
-        super("OMT Component");
+        super("OMT StandaloneQuery");
     }
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();

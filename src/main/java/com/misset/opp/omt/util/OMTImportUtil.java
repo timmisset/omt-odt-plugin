@@ -64,7 +64,7 @@ public class OMTImportUtil {
                 importPath = "'" + importPath + "'";
             }
         }
-        return importPath != null ? importPath.replace("\\", "/") : null;
+        return importPath.replace("\\", "/");
     }
 
     private static OMTFile getImportedFile(PsiCallable psiCallable) {
@@ -237,9 +237,9 @@ public class OMTImportUtil {
         String trimmedPath = trimPath(project, path);
 
         if (trimmedPath.startsWith(MODULE)) {
-            // TODO: resolve module from FS
-            // String moduleName = path.substring(MODULE.length());
-            return null;
+            String moduleName = trimmedPath.substring(MODULE.length());
+            OMTFile module = OMTModuleUtil.getModule(project, moduleName);
+            return module != null ? module.getVirtualFile().getPath() : null;
         } else if (keySet.stream().anyMatch(trimmedPath::startsWith)) {
             final Pair<String, String> mapEntry = keySet.stream().sorted(Comparator.reverseOrder())
                     .filter(trimmedPath::startsWith)

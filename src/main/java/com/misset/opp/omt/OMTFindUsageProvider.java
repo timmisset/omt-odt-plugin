@@ -59,6 +59,10 @@ public class OMTFindUsageProvider extends YAMLFindUsagesProvider implements Find
         }
 
         if (element instanceof YAMLKeyValue) {
+            final YamlMetaType metaType = getMetaValueType(element);
+            if (metaType instanceof OMTModelItemMetaType) {
+                return metaType.getTypeName();
+            }
             return ((YAMLKeyValue) element).getKeyText();
         } else if (element instanceof YAMLPlainTextImpl) {
             final YamlMetaType metaType = getMetaType(element);

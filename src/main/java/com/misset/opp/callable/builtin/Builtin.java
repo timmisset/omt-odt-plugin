@@ -1,6 +1,5 @@
 package com.misset.opp.callable.builtin;
 
-import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.util.TriConsumer;
 import com.misset.opp.callable.Call;
@@ -106,11 +105,6 @@ public abstract class Builtin implements Callable {
     public final void validate(PsiCall call,
                                ProblemsHolder holder) {
         Callable.super.validate(call, holder);
-        String shorthandSyntax = getShorthandSyntax();
-        if(shorthandSyntax != null) {
-            holder.registerProblem(call, "Prefer syntax shorthand: " + shorthandSyntax, ProblemHighlightType.WEAK_WARNING);
-        }
-
         specificValidation(call, holder);
     }
 

@@ -42,4 +42,5 @@ public abstract class ODTBaseDefineCommandStatement extends ODTDefineStatement i
     public boolean canBeAppliedTo(Set<OntResource> resources) {
         return false;
     }
+
 }

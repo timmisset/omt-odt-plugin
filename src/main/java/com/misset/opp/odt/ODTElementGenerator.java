@@ -80,7 +80,10 @@ public final class ODTElementGenerator {
         stringBuilder.append("/**\n");
         description.forEach(s -> stringBuilder.append(" * ").append(s).append("\n"));
 
-        tags.forEach(psiDocTag -> stringBuilder.append(" * ").append(psiDocTag.getText()).append("\n"));
+        tags.stream()
+                .map(PsiElement::getText)
+                .map(s -> s.contains("\n") ? s.substring(0, s.indexOf("\n")) : s)
+                .forEach(s -> stringBuilder.append(" * ").append(s).append("\n"));
         stringBuilder.append(" */\n");
         return fromFile(stringBuilder.toString(), PsiDocComment.class);
     }

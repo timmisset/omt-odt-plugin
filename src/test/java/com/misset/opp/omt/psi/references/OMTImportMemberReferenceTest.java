@@ -68,13 +68,13 @@ class OMTImportMemberReferenceTest extends OMTTestCase {
     }
 
     @Test
-    void testRenameCall() {
+    void testRenameCallable() {
         final OMTFile importingFile = configureByText("" +
                 "import:\n" +
                 "   ./importedFile.omt:\n" +
                 "   - command\n" +
                 "");
-        configureByText("importedFile.omt", "" +
+        OMTFile omtFile = configureByText("importedFile.omt", "" +
                 "commands:\n" +
                 "   DEFINE COMMAND comm<caret>and => { }");
         WriteCommandAction.runWriteCommandAction(getProject(), () -> {
@@ -82,6 +82,31 @@ class OMTImportMemberReferenceTest extends OMTTestCase {
             Assertions.assertEquals("import:\n" +
                     "   ./importedFile.omt:\n" +
                     "   - commandNewName\n", importingFile.getText());
+            Assertions.assertEquals("commands:\n" +
+                    "   DEFINE COMMAND commandNewName => { }", omtFile.getText());
+        });
+    }
+
+    @Test
+    void testRenameCall() {
+        final OMTFile importingFile = configureByText("" +
+                "import:\n" +
+                "   ./importedFile.omt:\n" +
+                "   - Procedure\n" +
+                "");
+        OMTFile omtFile = configureByText("importedFile.omt", "" +
+                "model:\n" +
+                "   <caret>Procedure: !Procedure\n" +
+                "       onRun: @LOG('hi');\n" +
+                "");
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> {
+            myFixture.renameElementAtCaret("ProcedureNewName");
+            Assertions.assertEquals("import:\n" +
+                    "   ./importedFile.omt:\n" +
+                    "   - ProcedureNewName\n", importingFile.getText());
+            Assertions.assertEquals("model:\n" +
+                    "   ProcedureNewName: !Procedure\n" +
+                    "       onRun: @LOG('hi');\n", omtFile.getText());
         });
     }
 

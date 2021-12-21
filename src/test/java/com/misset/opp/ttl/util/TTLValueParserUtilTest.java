@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class TTLValueParserUtilTest {
     @BeforeEach
     protected void setUp() {
-        OMTOntologyTestCase.getOntologyModel();
+        OMTOntologyTestCase.initOntologyModel();
     }
 
     @Test

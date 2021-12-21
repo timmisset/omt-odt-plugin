@@ -23,7 +23,7 @@ class ODTOperatorInspectionIIfTest extends OMTInspectionTestCase {
     @BeforeEach
     protected void setUp() {
         super.setUp();
-        OMTOntologyTestCase.getOntologyModel();
+        OMTOntologyTestCase.initOntologyModel();
     }
 
     @Test

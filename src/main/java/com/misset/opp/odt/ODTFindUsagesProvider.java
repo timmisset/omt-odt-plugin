@@ -5,8 +5,9 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.callable.Callable;
+import com.misset.opp.callable.psi.PsiCallable;
+import com.misset.opp.callable.psi.PsiVariable;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
@@ -17,7 +18,7 @@ import java.util.function.Predicate;
 
 public class ODTFindUsagesProvider implements FindUsagesProvider {
     public static final Predicate<PsiElement> CHECK_CAN_FIND_USAGES = element ->
-            element instanceof ODTDefineStatement ||
+            element instanceof PsiCallable ||
                     isDeclaredVariable(element);
 
     @Override
@@ -63,6 +64,10 @@ public class ODTFindUsagesProvider implements FindUsagesProvider {
             ODTCall call = (ODTCall) element;
             Callable callable = (call).getCallable();
             return callable != null ? callable.getDescription(call.getLocalCommandProvider()) : element.getText();
+        } else if (element instanceof PsiCallable) {
+            return ((PsiCallable) element).getName();
+        } else if (element instanceof PsiVariable) {
+            return ((PsiVariable) element).getName();
         }
         return element.getText();
     }
