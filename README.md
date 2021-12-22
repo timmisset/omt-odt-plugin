@@ -1,18 +1,38 @@
-IntelliJ Plugin for OMT / ODT language
+IntelliJ Plugin for OMT and ODT languages version 5+
 
-> Work in progress
+A complete make-over of the plugin since version 4.x
 
-This is a complete make-over of the current plugin.
-- The OMT language will only ever be considered a YAML extension and is handled by extending the available YAML API available in IntelliJ
-- The ODT language will be considered a plugin language that is analysed as inserted snippets
-  - References to the OMT language and other ODT snippets will be possible
-  - ...
-- The TTL (Turtle) language will be copied as is, this is mainly used to generate the Apache Jena model that is used to traverse queries
+The plugin provides support for 3 languages:
 
-The YAML API supports an experimental feature called a MetaType provider. This has been implemented in this plugin which appears to be stable 
-and reduced the amount of code for this plugin significantly since it is facilitates Yaml/OMT path traversing and translation into
-OMT elements that can than be easily plugged into Inspections.
-The plugin now contains many marker annotations for Unstable that are inherited from the Yaml API
+## OMT
+
+OMT is a YAML language extension that provides context-based structure using a so called MetaTypeProvider. This makes it
+possible to supply a model with (coded) rules and restrictions, expected values and much more. It is by far the biggest
+difference with version 4.x since the YAML lexer is used as-is and only a limited adaption of the Parser was required to
+intercept PsiElement generation for specific items. For more info, read the README at the omt package.
+
+## ODT
+
+ODT is a Domain Specific Language with a Builtin toolbox of Operators and Commands that provide out-of-the-box
+functionality for the language. Using DEFINE Commands & Queries, more functionalities are created. ODT can be injected
+at dedicated sections in the OMT structure, for which the MultiHostInjector is used. Moreover, when using a .odt
+extension the ODT language can exist stand-alone. For more info, read the README at the odt package.
+
+## TTL
+
+TTL (Turtle) is a community standard for working with Linked Data. The implementation in this plugin expects a SHACL
+based model that is then translated into a simple Subject-Predicate-Object statement model. This simplified model is
+used to resolve the elements in the OMT and ODT languages. This allows the plugin to provide (ontology) type-checking,
+code completion suggestions and much more.
+
+## Language interoperability
+
+TTL is a standalone language and is unaware of the ODT and OMT languages. ODT uses the TTL language and OMT language (
+when injected). It is aware of both languages and has direct dependencies on both languages to be operational. OMT is
+the host language but is not directly aware of the hosted language. Meaning, it uses the interfaces of resolvable and
+shared to provide/inject context to the hosted language but has no direct relationship. This would make it possible to
+completely swap out ODT for another injected language, as long as it implements the interfaces correctly.
 
 ### JDK Compatability
+
 Make sure to target JDK 11 when running the tests

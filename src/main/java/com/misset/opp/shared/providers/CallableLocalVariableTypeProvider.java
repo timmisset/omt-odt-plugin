@@ -1,4 +1,4 @@
-package com.misset.opp.providers;
+package com.misset.opp.shared.providers;
 
 import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.resolvable.psi.PsiCall;

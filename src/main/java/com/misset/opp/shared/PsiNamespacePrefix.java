@@ -1,4 +1,4 @@
-package com.misset.opp.resolvable.psi;
+package com.misset.opp.shared;
 
 import com.intellij.psi.PsiElement;
 
