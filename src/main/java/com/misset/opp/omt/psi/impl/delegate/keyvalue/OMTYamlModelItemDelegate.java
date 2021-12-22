@@ -1,12 +1,23 @@
-package com.misset.opp.omt.psi.impl.delegate;
+package com.misset.opp.omt.psi.impl.delegate.keyvalue;
 
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate {
 
@@ -24,16 +35,27 @@ public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYam
         return metaType.isCallable(mapping);
     }
 
-    public String getName() {
-        return keyValue.getName();
-    }
-
     public PsiElement getKey() {
         return keyValue.getKey();
     }
 
     @Override
+    public PsiElement getOriginalElement() {
+        return keyValue;
+    }
+
+    @Override
     public PsiReference @NotNull [] getReferences() {
         return OMTYamlDelegate.super.getReferences();
+    }
+
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        final ArrayList<PsiFile> psiFiles = new ArrayList<>();
+        psiFiles.add(keyValue.getContainingFile());
+        psiFiles.addAll(OMTImportedMembersIndex.getImportingFiles(getName()));
+        final List<VirtualFile> targetFiles = psiFiles.stream().map(PsiFile::getVirtualFile)
+                .filter(Objects::nonNull).collect(Collectors.toList());
+        return GlobalSearchScope.filesScope(getProject(), targetFiles);
     }
 }

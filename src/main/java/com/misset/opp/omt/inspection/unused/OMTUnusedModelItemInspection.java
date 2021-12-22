@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlModelItemDelegate;
+import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlModelItemDelegate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 

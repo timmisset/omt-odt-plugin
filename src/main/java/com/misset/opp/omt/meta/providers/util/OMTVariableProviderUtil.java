@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlVariableDelegate;
+import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlVariableDelegate;
 import org.jetbrains.yaml.psi.*;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 

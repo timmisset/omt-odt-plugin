@@ -12,7 +12,7 @@ import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlImportMemberDelegate;
+import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlImportMemberDelegate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 

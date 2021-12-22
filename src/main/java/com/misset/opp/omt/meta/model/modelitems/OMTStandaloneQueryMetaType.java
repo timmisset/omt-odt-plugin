@@ -11,7 +11,7 @@ import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlVariableDelegate;
+import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlVariableDelegate;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiResolvable;
 import org.apache.jena.ontology.OntResource;

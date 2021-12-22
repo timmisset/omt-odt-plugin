@@ -11,9 +11,9 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.util.Optional;
 
-public class OMTModuleReference extends PsiReferenceBase.Poly<YAMLKeyValue> implements PsiPolyVariantReference {
-    public OMTModuleReference(@NotNull YAMLKeyValue element,
-                              @NotNull TextRange textRange) {
+public class OMTDeclaredModuleReference extends PsiReferenceBase.Poly<YAMLKeyValue> implements PsiPolyVariantReference {
+    public OMTDeclaredModuleReference(@NotNull YAMLKeyValue element,
+                                      @NotNull TextRange textRange) {
         super(element, textRange, false);
     }
 

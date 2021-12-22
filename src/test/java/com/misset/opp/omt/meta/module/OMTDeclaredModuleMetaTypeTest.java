@@ -3,7 +3,7 @@ package com.misset.opp.omt.meta.module;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
-import com.misset.opp.omt.psi.references.OMTModuleExportReference;
+import com.misset.opp.omt.psi.references.OMTDeclaredInterfaceReference;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.testCase.OMTCompletionTestCase;
 import org.jetbrains.yaml.psi.YAMLValue;
@@ -63,7 +63,7 @@ class OMTDeclaredModuleMetaTypeTest extends OMTCompletionTestCase {
                 "");
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            ResolveResult[] resolveResults = ((OMTModuleExportReference) elementAtCaret.getReference()).multiResolve(false);
+            ResolveResult[] resolveResults = ((OMTDeclaredInterfaceReference) elementAtCaret.getReference()).multiResolve(false);
             Assertions.assertEquals(2, resolveResults.length);
             Assertions.assertTrue(Arrays.stream(resolveResults).anyMatch(resolveResult -> resolveResult.getElement() instanceof YAMLValue));
             Assertions.assertTrue(Arrays.stream(resolveResults).anyMatch(resolveResult -> resolveResult.getElement() instanceof PsiCallable));

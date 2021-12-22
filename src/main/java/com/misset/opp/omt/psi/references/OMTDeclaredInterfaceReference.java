@@ -13,9 +13,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class OMTModuleExportReference extends PsiReferenceBase.Poly<YAMLKeyValue> implements PsiPolyVariantReference {
-    public OMTModuleExportReference(@NotNull YAMLKeyValue element,
-                                    @NotNull TextRange textRange) {
+public class OMTDeclaredInterfaceReference extends PsiReferenceBase.Poly<YAMLKeyValue> implements PsiPolyVariantReference {
+    public OMTDeclaredInterfaceReference(@NotNull YAMLKeyValue element,
+                                         @NotNull TextRange textRange) {
         super(element, textRange, false);
     }
 

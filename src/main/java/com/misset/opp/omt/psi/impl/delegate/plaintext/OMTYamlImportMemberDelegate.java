@@ -1,17 +1,18 @@
-package com.misset.opp.omt.psi.impl.delegate;
+package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import com.misset.opp.omt.psi.references.OMTOntologyPrefixReference;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.misset.opp.omt.psi.references.OMTImportMemberReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-public class OMTYamlOntologyPrefixDelegate extends YAMLPlainTextImpl implements OMTYamlDelegate {
+public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements OMTYamlDelegate {
     YAMLPlainTextImpl value;
 
-    public OMTYamlOntologyPrefixDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
+    public OMTYamlImportMemberDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
         super(yamlValue.getNode());
         this.value = yamlValue;
     }
@@ -22,7 +23,7 @@ public class OMTYamlOntologyPrefixDelegate extends YAMLPlainTextImpl implements 
     }
 
     @Override
-    public PsiElement setName(@NotNull String newName) {
+    public PsiElement setName(String newName) {
         final YAMLKeyValue value = YAMLElementGenerator.getInstance(this.value.getProject())
                 .createYamlKeyValue("foo", newName);
         return value.replace(value);
@@ -30,7 +31,7 @@ public class OMTYamlOntologyPrefixDelegate extends YAMLPlainTextImpl implements 
 
     @Override
     public PsiReference getReference() {
-        return new OMTOntologyPrefixReference(value);
+        return new OMTImportMemberReference(value);
     }
 
     @Override

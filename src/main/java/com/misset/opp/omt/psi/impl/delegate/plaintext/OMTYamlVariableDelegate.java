@@ -1,4 +1,4 @@
-package com.misset.opp.omt.psi.impl.delegate;
+package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
@@ -7,6 +7,7 @@ import com.intellij.psi.PsiReference;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.psi.OMTVariable;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTParamTypeReference;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;

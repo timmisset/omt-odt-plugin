@@ -1,8 +1,9 @@
-package com.misset.opp.omt.psi.impl.delegate;
+package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTParamTypeReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
