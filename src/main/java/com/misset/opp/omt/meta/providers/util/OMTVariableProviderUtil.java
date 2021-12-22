@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlVariableDelegate;
 import org.jetbrains.yaml.psi.*;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
@@ -83,7 +83,7 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
     }
 
     private static PsiElement setIsParameter(PsiElement element, boolean isParameter) {
-        OMTVariableProvider.IS_PARAMETER.set(element, isParameter);
+        OMTYamlVariableDelegate.IS_PARAMETER.set(element, isParameter);
         return element;
     }
 }

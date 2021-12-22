@@ -16,6 +16,17 @@ import java.util.HashMap;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
+/**
+ * Generic completion contributor for the entire OMT Structure.
+ * The actual completion calculations are performed by the MetaTypes.
+ * <p>
+ * The base class YamlMetaTypeCompletionProviderBase has as a shortcoming that it can call key completions
+ * on an empty map. In this case the MetaType, which has no direct PsiElement context, is called with a null value
+ * for the map. This makes it impossible to get any context required to set completion LookupElements.
+ * To fix this, this wrapper class registers the CompletionParameters that are created initially by the framework.
+ * Luckily, the entire completion process happens inside a single (main) thread making this a thread-safe way of
+ * having that information statically available.
+ */
 public class OMTCompletions extends CompletionContributor {
     /*
         Sometimes we need access to the original element / file
@@ -43,7 +54,7 @@ public class OMTCompletions extends CompletionContributor {
         completionParametersHashMap.remove(parameters.getPosition());
     }
 
-    class OMTKeyCompletion extends YamlMetaTypeCompletionProviderBase {
+    static class OMTKeyCompletion extends YamlMetaTypeCompletionProviderBase {
         @Override
         protected @Nullable YamlMetaTypeProvider getMetaTypeProvider(@NotNull CompletionParameters params) {
             return OMTMetaTypeProvider.getInstance(params.getPosition().getProject());

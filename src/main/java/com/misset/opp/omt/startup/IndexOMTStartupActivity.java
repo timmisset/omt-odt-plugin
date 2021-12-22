@@ -10,8 +10,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
-import com.misset.opp.omt.indexing.ExportedMembersIndex;
-import com.misset.opp.omt.indexing.ImportedMembersIndex;
+import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
+import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
@@ -57,8 +57,8 @@ public class IndexOMTStartupActivity implements StartupActivity {
                         indicator.setText2(omtFile.getName());
                     }
                     OMTPrefixIndex.analyse(omtFile);
-                    ImportedMembersIndex.analyse(omtFile);
-                    ExportedMembersIndex.analyse(omtFile);
+                    OMTImportedMembersIndex.analyse(omtFile);
+                    OMTExportedMembersIndex.analyse(omtFile);
                 });
         OMTPrefixIndex.orderIndexByFrequency();
     }

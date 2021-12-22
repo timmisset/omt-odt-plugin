@@ -9,12 +9,16 @@ import org.jetbrains.yaml.psi.YAMLSequenceItem;
 
 import java.util.*;
 
-public class ImportedMembersIndex {
+/**
+ * Index that holds the PsiCallable names and which files import them. This is used to reduce
+ * the search scope when finding references to a PsiCallable element
+ */
+public class OMTImportedMembersIndex {
 
     private static final HashMap<String, List<OMTFile>> importedMembers = new HashMap<>();
     private static final Set<OMTFile> containedFiles = new HashSet<>();
 
-    private static final Logger LOGGER = Logger.getInstance(ImportedMembersIndex.class);
+    private static final Logger LOGGER = Logger.getInstance(OMTImportedMembersIndex.class);
 
     public static List<OMTFile> getImportingFiles(String callableName) {
         return importedMembers.getOrDefault(callableName, Collections.emptyList());

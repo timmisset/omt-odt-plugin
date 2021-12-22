@@ -15,10 +15,13 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.jetbrains.yaml.psi.YAMLValue;
 
+/**
+ * Reusable LocalQuickFix that is used on multiple positions
+ */
 public class OMTRegisterPrefixLocalQuickFix implements LocalQuickFix {
 
-    private String prefix;
-    private String iri;
+    private final String prefix;
+    private final String iri;
 
     public OMTRegisterPrefixLocalQuickFix(String prefix, String iri) {
         this.prefix = prefix;

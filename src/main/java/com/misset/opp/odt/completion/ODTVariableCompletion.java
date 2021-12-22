@@ -13,6 +13,7 @@ import com.misset.opp.odt.psi.impl.variable.ODTBaseVariable;
 import com.misset.opp.odt.psi.util.PsiRelationshipUtil;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlVariableDelegate;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Variable;
@@ -109,7 +110,8 @@ public class ODTVariableCompletion extends CompletionContributor {
                         .flatMap(Collection::stream)
                         .filter(YAMLPlainTextImpl.class::isInstance)
                         .map(YAMLPlainTextImpl.class::cast)
-                        .map(OMTYamlVariableDelegate::new)
+                        .map(OMTYamlDelegateFactory::createDelegate)
+                        .map(OMTYamlVariableDelegate.class::cast)
                         .collect(Collectors.toList());
             }
 

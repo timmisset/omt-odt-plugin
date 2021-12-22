@@ -1,8 +1,9 @@
 <html>
 <body>
-The inspection validates that the variable declared in the OMT language is used
-<!-- tooltip end -->
-Please note that this does not validate the usage of variables declared inside injected (ODT) fragments.
-There is a separate Inspection available for ODT
+Detects unused variables that are declared in the OMT language<br>
+Any variable declared in an injected fragment (ODT) is not part of this validation.<br>
+<br>
+All declared variables in the OMT language have a scope which is limited to the current file, therefore the
+inspection limits its usage search to the current file.<br>
 </body>
 </html>

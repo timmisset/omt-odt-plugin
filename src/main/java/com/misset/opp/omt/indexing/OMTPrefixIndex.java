@@ -8,6 +8,10 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Index that holds is run once to determine all existing prefix-namespace mappings in the OMT files
+ * Used to suggest registering prefixes in OMT files when the prefix is unknown or a fully qualified uri is used
+ */
 public class OMTPrefixIndex {
 
     private static final HashMap<String, List<String>> map = new HashMap<>();

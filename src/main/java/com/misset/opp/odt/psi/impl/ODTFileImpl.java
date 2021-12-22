@@ -19,7 +19,7 @@ import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.ODTLanguage;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix;
-import com.misset.opp.omt.indexing.ImportedMembersIndex;
+import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
@@ -90,7 +90,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         final ArrayList<PsiFile> psiFiles = new ArrayList<>();
         psiFiles.add(getHostOrContaining());
         if (isExportable()) {
-            psiFiles.addAll(ImportedMembersIndex.getImportingFiles(name));
+            psiFiles.addAll(OMTImportedMembersIndex.getImportingFiles(name));
         }
         final List<VirtualFile> targetFiles = psiFiles.stream()
                 .map(PsiFile::getVirtualFile)

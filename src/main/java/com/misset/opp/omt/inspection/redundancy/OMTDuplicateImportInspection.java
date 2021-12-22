@@ -29,7 +29,7 @@ public class OMTDuplicateImportInspection extends OMTMetaTypeInspectionBase {
         return new StructureChecker(holder, metaTypeProvider);
     }
 
-    protected class StructureChecker extends SimpleYamlPsiVisitor {
+    protected static class StructureChecker extends SimpleYamlPsiVisitor {
         private final YamlMetaTypeProvider yamlMetaTypeProvider;
         private final ProblemsHolder problemsHolder;
 
@@ -48,11 +48,11 @@ public class OMTDuplicateImportInspection extends OMTMetaTypeInspectionBase {
 
             final YamlMetaType metaType = meta.getMetaType();
             if (metaType instanceof OMTImportMetaType) {
-                inspectMap(mapping, (OMTImportMetaType) metaType);
+                inspectMap(mapping);
             }
         }
 
-        private void inspectMap(YAMLMapping mapping, OMTImportMetaType importMetaType) {
+        private void inspectMap(YAMLMapping mapping) {
             // inspect the map for duplicate import paths (with possible different access methods)
             // group keys by resolving to their absolute path
             mapping.getKeyValues().stream()

@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.omt.indexing.ExportedMembersIndex;
+import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
 import com.misset.opp.omt.meta.arrays.OMTImportPathMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.util.OMTImportUtil;
@@ -32,7 +32,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
     public static HashMap<String, List<PsiCallable>> getExportedMembersFromOMTFile(YAMLKeyValue keyValue) {
         return Optional.ofNullable(resolveToPath(keyValue))
                 .map(path -> OMTImportUtil.getOMTFile(path, keyValue.getProject()))
-                .map(ExportedMembersIndex::getExportedMembers)
+                .map(OMTExportedMembersIndex::getExportedMembers)
                 .orElse(new HashMap<>());
     }
 

@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  */
 public class OMTParamTypeType extends YamlScalarType {
 
-    private static final Pattern CURIE_PATTERN = Pattern.compile("([A-z0-9]+):([A-z0-9]+)");
+    public static final Pattern CURIE_PATTERN = Pattern.compile("([A-z0-9]+):([A-z0-9]+)");
     private static final Pattern URI_PATTERN = Pattern.compile("<([^\\s]*)>");
     private static final Pattern SIMPLE_PATTERN = Pattern.compile("[a-z]+");
     private static final Logger LOGGER = Logger.getInstance(OMTParamTypeType.class);
@@ -55,7 +55,7 @@ public class OMTParamTypeType extends YamlScalarType {
         super("OMTParamTypeType");
     }
 
-    public static OMTParamTypeReference getReference(YAMLPlainTextImpl plainText) {
+    public OMTParamTypeReference getReference(YAMLPlainTextImpl plainText) {
         Matcher matcher = CURIE_PATTERN.matcher(plainText.getTextValue());
         boolean b = matcher.find();
         if (!b) {

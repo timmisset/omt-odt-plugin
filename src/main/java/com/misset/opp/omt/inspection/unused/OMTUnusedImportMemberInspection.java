@@ -8,11 +8,11 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
-import com.misset.opp.omt.indexing.ImportedMembersIndex;
+import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.omt.psi.impl.delegate.OMTImportMemberDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlImportMemberDelegate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
@@ -35,7 +35,7 @@ public class OMTUnusedImportMemberInspection extends LocalInspectionTool {
                     return;
                 }
                 final OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
-                if (delegate instanceof OMTImportMemberDelegate) {
+                if (delegate instanceof OMTYamlImportMemberDelegate) {
                     Optional.ofNullable(element.getReference())
                             .map(PsiReference::resolve)
                             .map(targetElement -> isNeverUsed(targetElement, element))
@@ -54,7 +54,7 @@ public class OMTUnusedImportMemberInspection extends LocalInspectionTool {
                                              PsiElement importElement) {
                 // all files that import this file are also part of the scope:
                 PsiFile file = holder.getFile();
-                List<OMTFile> importingFiles = ImportedMembersIndex.getImportingFiles(importElement.getText());
+                List<OMTFile> importingFiles = OMTImportedMembersIndex.getImportingFiles(importElement.getText());
                 List<PsiElement> placesToSearch = ReferencesSearch.search(file, new LocalSearchScope(importingFiles.toArray(PsiFile[]::new)))
                         .findAll()
                         .stream()

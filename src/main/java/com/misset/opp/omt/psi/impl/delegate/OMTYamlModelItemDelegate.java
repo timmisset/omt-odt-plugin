@@ -1,7 +1,9 @@
 package com.misset.opp.omt.psi.impl.delegate;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
@@ -30,4 +32,8 @@ public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYam
         return keyValue.getKey();
     }
 
+    @Override
+    public PsiReference @NotNull [] getReferences() {
+        return OMTYamlDelegate.super.getReferences();
+    }
 }

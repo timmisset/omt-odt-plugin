@@ -10,11 +10,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class ExportedMembersIndex {
+/**
+ * Index that holds the PsiCallable elements
+ * Indexed by OMTFile which includes all exportable elements, including elements that are imported from other files.
+ * Indexed by Name which returns to declaring elements by name.
+ */
+public class OMTExportedMembersIndex {
 
     private static final HashMap<OMTFile, HashMap<String, List<PsiCallable>>> exportedMembers = new HashMap<>();
     private static final HashMap<String, List<PsiCallable>> exportedMembersByName = new HashMap<>();
-    private static final Logger LOGGER = Logger.getInstance(ImportedMembersIndex.class);
+    private static final Logger LOGGER = Logger.getInstance(OMTImportedMembersIndex.class);
 
     public static HashMap<String, List<PsiCallable>> getExportedMembers(OMTFile file) {
         if (exportedMembers.containsKey(file)) {
@@ -39,9 +44,9 @@ public class ExportedMembersIndex {
             HashMap<String, List<PsiCallable>> declaredExportingMembersMap = file.getDeclaredExportingMembersMap();
             declaredExportingMembersMap.keySet().forEach(
                     s -> {
-                        List<PsiCallable> paths = exportedMembersByName.getOrDefault(s, new ArrayList<>());
-                        paths.addAll(declaredExportingMembersMap.get(s));
-                        exportedMembersByName.put(s, paths);
+                        List<PsiCallable> callables = exportedMembersByName.getOrDefault(s, new ArrayList<>());
+                        callables.addAll(declaredExportingMembersMap.get(s));
+                        exportedMembersByName.put(s, callables);
                     }
             );
         });

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.misset.opp.omt.OMTYamlReferenceContributor;
-import com.misset.opp.omt.indexing.ImportedMembersIndex;
+import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
@@ -78,7 +78,7 @@ public class YAMLOMTKeyValueImpl extends YAMLKeyValueImpl {
     private SearchScope getModelItemSearchScope() {
         final ArrayList<PsiFile> psiFiles = new ArrayList<>();
         psiFiles.add(getContainingFile());
-        psiFiles.addAll(ImportedMembersIndex.getImportingFiles(getName()));
+        psiFiles.addAll(OMTImportedMembersIndex.getImportingFiles(getName()));
         final List<VirtualFile> targetFiles = psiFiles.stream().map(PsiFile::getVirtualFile)
                 .filter(Objects::nonNull).collect(Collectors.toList());
         return GlobalSearchScope.filesScope(getProject(), targetFiles);

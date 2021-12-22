@@ -6,16 +6,19 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.omt.meta.OMTExportMemberMetaType;
 import com.misset.opp.omt.meta.OMTImportMemberMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
+import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.meta.scalars.OMTIriMetaType;
+import com.misset.opp.omt.meta.scalars.OMTOntologyPrefixMetaType;
+import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
-import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 public class OMTYamlDelegateFactory {
@@ -44,11 +47,17 @@ public class OMTYamlDelegateFactory {
             }
         } else if (psiElement instanceof YAMLPlainTextImpl) {
             final YamlMetaType metaType = instance.getResolvedMetaType(psiElement);
-            final YAMLValue yamlValue = (YAMLValue) psiElement;
+            final YAMLPlainTextImpl yamlPlainText = (YAMLPlainTextImpl) psiElement;
             if (metaType instanceof OMTNamedVariableMetaType) {
-                return new OMTYamlVariableDelegate(yamlValue);
+                return new OMTYamlVariableDelegate(yamlPlainText, metaType instanceof OMTParamMetaType);
             } else if (metaType instanceof OMTImportMemberMetaType) {
-                return new OMTImportMemberDelegate(yamlValue);
+                return new OMTYamlImportMemberDelegate(yamlPlainText);
+            } else if (metaType instanceof OMTExportMemberMetaType) {
+                return new OMTYamlPayloadQueryReferenceDelegate(yamlPlainText);
+            } else if (metaType instanceof OMTOntologyPrefixMetaType) {
+                return new OMTYamlOntologyPrefixDelegate(yamlPlainText);
+            } else if (metaType instanceof OMTParamTypeType) {
+                return new OMTYamlParamTypeDelegate(yamlPlainText);
             }
         }
         if (delegate == null) {

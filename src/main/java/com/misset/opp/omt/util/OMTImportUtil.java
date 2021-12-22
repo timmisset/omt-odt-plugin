@@ -13,7 +13,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.indexing.ExportedMembersIndex;
+import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
@@ -33,7 +33,7 @@ public class OMTImportUtil {
     private static final String MODULE = "module:";
 
     public static IntentionAction[] getImportIntentions(OMTFile file, PsiCall call) {
-        return ExportedMembersIndex.getExportedMemberLocationsByName(call.getCallId())
+        return OMTExportedMembersIndex.getExportedMemberLocationsByName(call.getCallId())
                 .stream()
                 .map(psiCallable -> getIntentionActions(file, psiCallable))
                 .toArray(IntentionAction[]::new);

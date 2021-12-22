@@ -1,0 +1,12 @@
+<html>
+<body>
+Detects unnecessary wrapping of import paths<br>
+YAML requires no single or double quoted wrapping of relative paths or module imports. <br>
+Only imports that use a domain shorthand notation are required to be wrapped.<br>
+<br>
+Examples:<br>
+import:<br>
+'./otherFile.omt': <-- unnecessary<br>
+'@domain/otherFile.omt': <-- necessary<br>
+</body>
+</html>

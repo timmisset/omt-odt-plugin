@@ -9,7 +9,6 @@ import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.psi.references.OMTParamTypeReference;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -34,7 +33,7 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTNamedVa
     }
 
     private static final Pattern SHORTHAND = Pattern.compile("^(\\$\\w+)\\s*(\\(([^)]+)\\))?$");
-    private static final Pattern SHORTHAND_TYPED = Pattern.compile("^(\\$\\w+)\\s*(\\(([A-z0-9]+):([A-z0-9]+)\\))?$");
+    public static final Pattern SHORTHAND_TYPED = Pattern.compile("^(\\$\\w+)\\s*(\\(([A-z0-9]+):([A-z0-9]+)\\))?$");
     protected static final String SYNTAX_ERROR = "Invalid syntax for parameter shorthand, use: '$name (type)' OR '$name'";
 
     public OMTParamMetaType() {
@@ -100,15 +99,6 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTNamedVa
             return new TextRange(matcher.start(1), matcher.end(1));
         }
         return TextRange.EMPTY_RANGE;
-    }
-
-    public @Nullable TextRange getTypePrefixRange(YAMLPlainTextImpl value) {
-        final Matcher matcher = SHORTHAND_TYPED.matcher(value.getText());
-        final boolean b = matcher.find();
-        if (b && matcher.groupCount() == 4 && matcher.start(3) > -1) {
-            return new TextRange(matcher.start(3), matcher.end(3));
-        }
-        return null;
     }
 
     @Override
