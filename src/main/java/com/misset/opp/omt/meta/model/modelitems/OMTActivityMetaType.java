@@ -64,7 +64,7 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
         features.put("onCancel", OMTScriptMetaType::new);
         features.put("onDone", OMTScriptMetaType::new);
         features.put("returns", OMTQueryMetaType::new);
-        features.put("actions", OMTActionsMetaType::new);
+        features.put("actions", OMTActionsMapMetaType::new);
         features.put("reason", OMTReasonMetaType::new);
         features.put("payload", OMTPayloadMetaType::new);
     }

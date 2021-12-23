@@ -15,7 +15,7 @@ public class OMTEntityBarActionMetaType extends OMTMetaType {
     }
 
     public OMTEntityBarActionMetaType() {
-        super("Action");
+        super("EntityBar Action");
     }
 
     @Override

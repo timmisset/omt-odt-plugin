@@ -22,9 +22,4 @@ public class OMTGraphQueryType extends OMTQueryMetaType {
         }
         holder.registerProblem(scalarValue, "Expected a query that resolves to a graph");
     }
-
-    @Override
-    public @NotNull String getDisplayName() {
-        return super.getDisplayName() + " (graph)";
-    }
 }

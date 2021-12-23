@@ -38,7 +38,7 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
         features.put("queries", OMTQueriesMetaType::new);
         features.put("commands", OMTCommandsMetaType::new);
         features.put("onInit", OMTScriptMetaType::new);
-        features.put("actions", OMTActionsMetaType::new);
+        features.put("actions", OMTActionsMapMetaType::new);
         features.put("payload", OMTPayloadMetaType::new);
         features.put("rules", OMTRulesMetaType::new);
     }

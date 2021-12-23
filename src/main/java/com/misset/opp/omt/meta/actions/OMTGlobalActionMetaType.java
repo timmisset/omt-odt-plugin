@@ -20,7 +20,7 @@ public class OMTGlobalActionMetaType extends OMTMetaType {
         features.put("entitybar", OMTEntityBarActionsArrayMetaType::new);
     }
     public OMTGlobalActionMetaType() {
-        super("Action");
+        super("Global Action");
     }
 
     @Override

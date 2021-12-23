@@ -17,7 +17,7 @@ public class OMTDossierActionMetaType extends OMTMetaType {
         features.put("params", OMTParamsArrayMetaType::new);
     }
     public OMTDossierActionMetaType() {
-        super("Action");
+        super("Dossier Action");
     }
 
     @Override

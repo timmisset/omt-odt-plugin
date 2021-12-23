@@ -7,5 +7,4 @@ public class OMTQueryGraphArrayMetaType extends YamlArrayType {
     public OMTQueryGraphArrayMetaType() {
         super(new OMTGraphQueryType());
     }
-
 }

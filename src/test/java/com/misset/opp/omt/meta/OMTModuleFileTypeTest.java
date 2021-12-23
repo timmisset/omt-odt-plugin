@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-class OMTActionsMetaTypeTest extends OMTInspectionTestCase {
+class OMTModuleFileTypeTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
@@ -16,16 +16,9 @@ class OMTActionsMetaTypeTest extends OMTInspectionTestCase {
     }
 
     @Test
-    void testCompletionShowsImportableMembers() {
-        configureByText(insideActivityWithPrefixes(
-                "actions: \n" +
-                        "   myAction:\n" +
-                        "       onSelect: |\n" +
-                        "           @LOG('do something');\n" +
-                        "       disabled: true\n" +
-                        ""
-        ));
-        assertNoErrors();
+    void testHasNoModelProperty() {
+        configureByText("test.module.omt", "model:\n" +
+                "   Activiteit: !Activity\n");
+        assertHasError("Key 'model' is not expected here");
     }
-
 }
