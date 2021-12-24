@@ -3,83 +3,51 @@ package com.misset.opp.odt.formatter;
 import com.intellij.formatting.Indent;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.JavaDocTokenType;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTParserDefinition;
-import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.ODTIgnored;
-import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTTypes;
 
+import java.util.Optional;
+
 public class ODTFormattingIndent {
-    private static final TokenSet WITH_CHILD_INDENT = TokenSet.create(
-            ODTTypes.COMMAND_BLOCK, ODTTypes.SIGNATURE
-    );
-    // If a query gets wrapped, the tokens that introduce an indent so that the next
-    // line gets properly indented
-    private static final TokenSet QUERY_STEPS = TokenSet.create(
-            ODTTypes.QUERY_OPERATION_STEP,
-            ODTTypes.FORWARD_SLASH,
-            ODTTypes.BOOLEAN_OPERATOR,
-            ODTIgnored.END_OF_LINE_COMMENT
-    );
     private static final TokenSet JAVA_DOC_INDENTED = TokenSet.create(
             JavaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS,
             JavaDocTokenType.DOC_COMMENT_END
     );
-
-    private static boolean isRootElement(ASTNode node) {
-        ASTNode treeParent = node.getTreeParent();
-        return treeParent != null &&
-                treeParent.getElementType() == ODTParserDefinition.ODTFileElementType;
-    }
-
-    private static <T extends PsiElement> boolean isFirstStatement(ASTNode node, Class<T> parentClass) {
-        PsiElement psi = node.getPsi();
-        T file = PsiTreeUtil.getTopmostParentOfType(psi, parentClass);
-        return file != null && PsiTreeUtil.getDeepestFirst(file) == PsiTreeUtil.getDeepestFirst(psi);
-    }
-
-    private static boolean isInside(ASTNode node, IElementType insideType) {
-        while (node != null && node.getElementType() != insideType) {
-            node = node.getTreeParent();
-        }
-        return node != null;
-    }
+    private static final TokenSet CLOSING_ENCAPSULATIONS = TokenSet.create(
+            ODTTypes.CURLY_CLOSED, ODTTypes.BRACKET_CLOSED, ODTTypes.PARENTHESES_CLOSE,
+            ODTTypes.END_PATH
+    );
 
     public static Indent computeIndent(ASTNode node) {
-        if (!isFirstStatement(node, ODTFile.class)
-                && !isRootElement(node)) {
-            IElementType elementType = node.getElementType();
-            if (elementType == ODTTypes.SCRIPT) {
-                return Indent.getNormalIndent();
-            } else if (ODTTokenSets.CHOOSE_INDENTED_OPERATORS.contains(elementType)) {
-                return Indent.getNormalIndent(true);
-            } else if (QUERY_STEPS.contains(elementType)) {
-                if (isFirstStatement(node, ODTQuery.class)) {
-                    if (isInside(node, ODTTypes.DEFINE_QUERY_STATEMENT)) {
-                        return Indent.getNormalIndent(false);
-                    }
-                } else {
-                    return Indent.getNormalIndent(!isInside(node, ODTTypes.DEFINE_QUERY_STATEMENT));
-                }
-            } else if (elementType == ODTTypes.SIGNATURE_ARGUMENT) {
-                return Indent.getNormalIndent(false);
-            } else if (JAVA_DOC_INDENTED.contains(elementType)) {
-                return Indent.getSpaceIndent(1);
-            }
+        IElementType parentType = getParentType(node);
+        IElementType elementType = node.getElementType();
+        if (elementType == ODTTypes.SCRIPT_LINE ||
+                // Scriptline with DocComment is a multiline scriptline and will get indented otherwise
+                parentType == ODTTypes.SCRIPT_LINE ||
+                CLOSING_ENCAPSULATIONS.contains(elementType)) {
+            return Indent.getNoneIndent();
+        } else if (JAVA_DOC_INDENTED.contains(elementType)) {
+            return Indent.getSpaceIndent(1);
         }
-        return Indent.getNoneIndent();
+        return null;
+    }
+
+    private static IElementType getParentType(ASTNode node) {
+        return Optional.ofNullable(node.getTreeParent())
+                .map(ASTNode::getElementType)
+                .orElse(null);
     }
 
     public static Indent computeChildIndent(ASTNode node) {
+        if (ODTFormattingWrapping.isIncomplete(node)) {
+            return null;
+        }
         IElementType elementType = node.getElementType();
-        if (WITH_CHILD_INDENT.contains(elementType)) {
-            return Indent.getNormalIndent();
-        } else {
+        if (elementType == ODTParserDefinition.ODTFileElementType) {
             return Indent.getNoneIndent();
         }
+        return null;
     }
 }

@@ -160,6 +160,9 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
             return null;
         }
         final MetaTypeProxy metaTypeProxy = getKeyValueMetaType(parentOfType);
+        if (metaTypeProxy == null) {
+            return null;
+        }
         final Field featureByName = metaTypeProxy.getMetaType()
                 .findFeatureByName(keyValue.getKeyText());
 

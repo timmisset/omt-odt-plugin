@@ -14,6 +14,44 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
     }
 
     @Test
+    void testHasIndentOnNestedNewLine() {
+        configureByText("IF true {<caret>\n" +
+                "}");
+        enter();
+        Assertions.assertEquals(getIndentedText("IF true {\n" +
+                "<indent>\n" +
+                "}"), getDocumentText());
+    }
+
+    @Test
+    void testHasIndentOnNestedFilterNewLine() {
+        configureByText("IF true [<caret>\n");
+        enter();
+        Assertions.assertEquals(getIndentedText("IF true [\n" +
+                "<indent>\n"), getDocumentText());
+    }
+
+    @Test
+    void testHasIndentOnNestedParenthesisNewLine() {
+        configureByText("IF (<caret>\n");
+        enter();
+        Assertions.assertEquals(getIndentedText("IF (\n" +
+                "<indent>\n"), getDocumentText());
+    }
+
+    @Test
+    void testHasIndentOnNestedNewLineWithContent() {
+        configureByText(getIndentedText("IF true {\n" +
+                "<indent>VAR $x;<caret>\n" +
+                "}"));
+        enter();
+        Assertions.assertEquals(getIndentedText("IF true {\n" +
+                "<indent>VAR $x;\n" +
+                "<indent>\n" +
+                "}"), getDocumentText());
+    }
+
+    @Test
     void testNoIndentationOnSecondLine() {
         assertFormatting("PREFIX ont: <http://ontology#>;VAR $test = '1';",
                 "PREFIX ont: <http://ontology#>;\n" +
@@ -83,10 +121,86 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
                 "$variable /\n<indent>LOG");
     }
 
+    @Test
+    void testFormatEOLComments() {
+        assertFormatting("IF true {\n" +
+                "      # some comment\n" +
+                "   @LOG('here');\n" +
+                "}", "IF true {\n" +
+                "    # some comment\n" +
+                "    @LOG('here');\n" +
+                "}");
+    }
+
+    @Test
+    void testMultilineScriptNoIndents() {
+        assertCorrectFormatting("VAR $variableA;\n" +
+                "VAR $variableB;\n" +
+                "VAR $variableC;");
+    }
+
+    @Test
+    void testMultilineScriptInsideCommand() {
+        assertCorrectFormatting("{\n" +
+                "<indent>VAR $variableA;\n" +
+                "<indent>VAR $variableB;\n" +
+                "<indent>VAR $variableC;\n" +
+                "}");
+    }
+
+    @Test
+    void testMultilineScriptLineInsideFilter() {
+        assertCorrectFormatting("$variable[\n" +
+                "<indent>true\n" +
+                "]");
+    }
+
+    @Test
+    void testMultilineScriptLineInsideParenthesis() {
+        assertCorrectFormatting("@CALL(\n" +
+                "<indent>true\n" +
+                ")");
+    }
+
+    @Test
+    void testMultilineMultipleArgumentsLineUp() {
+        assertCorrectFormatting("@CALL(\n" +
+                "<indent>true,\n" +
+                "<indent>false,\n" +
+                "<indent>1\n" +
+                ")");
+    }
+
+    @Test
+    void testMultiNestedCommand() {
+        assertCorrectFormatting("IF true {\n" +
+                "<indent>IF false {\n" +
+                "<indent><indent>VAR $variableA\n" +
+                "<indent>}\n" +
+                "<indent>VAR $variableB;\n" +
+                "<indent>VAR $variableC;\n" +
+                "}");
+    }
+
+    @Test
+    void testDocComment() {
+        assertCorrectFormatting("/**\n" +
+                " * @base (TypeOrClass)\n" +
+                " * @param $param2 (TypeOrClass)\n" +
+                " * @param $param (TypeOrClass)\n" +
+                " */\n" +
+                "DEFINE QUERY query($param2, $param) => ont:booleanPredicate;");
+    }
+
     @Override
     public void assertFormatting(String before, String after) {
         after = getIndentedText(after);
         super.assertFormatting(before, after);
+    }
+
+    private void assertCorrectFormatting(String formatted) {
+        String indentedText = getIndentedText(formatted);
+        super.assertFormatting(indentedText, indentedText);
     }
 
 
