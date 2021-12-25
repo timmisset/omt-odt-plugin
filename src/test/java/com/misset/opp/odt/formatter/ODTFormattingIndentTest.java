@@ -192,6 +192,16 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
                 "DEFINE QUERY query($param2, $param) => ont:booleanPredicate;");
     }
 
+    @Test
+    void testEOLComment() {
+        assertCorrectFormatting("# Some random text\n" +
+                "/**\n" +
+                " * @param $paramA (ont:ClassA)\n" +
+                " */\n" +
+                "DEFINE QUERY query => $param\n" +
+                "<indent>/ EXISTS;");
+    }
+
     @Override
     public void assertFormatting(String before, String after) {
         after = getIndentedText(after);

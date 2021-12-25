@@ -3,11 +3,14 @@ package com.misset.opp.testCase;
 import com.google.common.base.Strings;
 import com.intellij.application.options.CodeStyle;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
+import com.intellij.testFramework.fixtures.JavaCodeInsightTestFixture;
 import com.misset.opp.odt.psi.ODTFile;
 import org.junit.jupiter.api.Assertions;
 
@@ -19,9 +22,13 @@ public class ODTFormattingTestCase extends ODTTestCase {
         WriteCommandAction.runWriteCommandAction(getProject(), () -> myFixture.type("\n"));
     }
 
-    protected void format() {
+    public static void doFormat(JavaCodeInsightTestFixture myFixture, Project project, PsiFile file) {
         CodeStyleManager codeStyleManager = CodeStyleManager.getInstance(myFixture.getProject());
-        WriteCommandAction.runWriteCommandAction(getProject(), (Computable<PsiElement>) () -> codeStyleManager.reformat(getFile()));
+        WriteCommandAction.runWriteCommandAction(project, (Computable<PsiElement>) () -> codeStyleManager.reformat(file));
+    }
+
+    protected void format() {
+        doFormat(myFixture, getProject(), getFile());
     }
 
     @Override
