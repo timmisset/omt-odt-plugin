@@ -95,6 +95,7 @@
                 implementation="com.misset.opp.odt.ODTUnresolvedReferenceQuickFixProvider"/>
         <enterHandlerDelegate implementation="com.misset.opp.odt.formatter.ODTEnterHandlerDelegateAdapter"/>
         <lang.braceMatcher language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTPairedBraceMatcher"/>
+        <codeStyleSettingsProvider implementation="com.misset.opp.odt.settings.ODTCodeStyleSettingsProvider"/>
 
         <!-- Completions -->
         <completion.contributor language="ODT"

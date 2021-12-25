@@ -36,10 +36,5 @@ public class ODTFormattingWrapping {
         return lastChild != null ? lastChild.getElementType() : null;
     }
 
-    private static boolean isIncompleteCommandBlock(ASTNode node) {
-        return
-                node.getElementType() == ODTTypes.COMMAND_BLOCK &&
-                        node.getText().replace("\n", "").equals("{}");
-    }
 
 }

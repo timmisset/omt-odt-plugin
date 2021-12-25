@@ -12,6 +12,7 @@ import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 
 import java.util.ArrayList;
@@ -22,16 +23,22 @@ import java.util.stream.Collectors;
 public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate {
 
     private final YAMLKeyValue keyValue;
-    private final YAMLMapping mapping;
+    private YAMLMapping mapping = null;
     private final OMTModelItemMetaType metaType = new OMTModelItemMetaType("modelItem");
 
     public OMTYamlModelItemDelegate(YAMLKeyValue keyValue) {
         super(keyValue.getNode());
         this.keyValue = keyValue;
-        this.mapping = (YAMLMapping) keyValue.getValue();
+        YAMLValue value = keyValue.getValue();
+        if (value instanceof YAMLMapping) {
+            this.mapping = (YAMLMapping) value;
+        }
     }
 
     public boolean isCallable() {
+        if (mapping == null) {
+            return false;
+        }
         return metaType.isCallable(mapping);
     }
 

@@ -26,6 +26,9 @@ public class ODTFormattingIndent {
         if (elementType == ODTTypes.SCRIPT_LINE ||
                 // Scriptline with DocComment is a multiline scriptline and will get indented otherwise
                 parentType == ODTTypes.SCRIPT_LINE ||
+                // Script with comments is a multiline scriptline
+                parentType == ODTTypes.SCRIPT ||
+                parentType == ODTParserDefinition.ODTFileElementType ||
                 CLOSING_ENCAPSULATIONS.contains(elementType)) {
             return Indent.getNoneIndent();
         } else if (JAVA_DOC_INDENTED.contains(elementType)) {
