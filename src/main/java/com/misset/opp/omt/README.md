@@ -18,8 +18,8 @@ the injected language itself.
 
 ### Context providers
 
-Some MetaType classes provide additional context to a part of the YAML file. This is primarily used to provide context
-to the injected language fragments. The injected language should be able to deal with these providers and their provided
+Some MetaType classes provide additional context to a part of the OMT file. This is primarily used to provide context to
+the injected language fragments. The injected language should be able to deal with these providers and their provided
 elements/context. Examples are:
 
 * Activity provides PsiVariables, PsiCallables, Prefixes, LocalCommands
