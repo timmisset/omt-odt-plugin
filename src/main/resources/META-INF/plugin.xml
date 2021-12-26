@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.misset.OMT</id>
     <name>OMT / ODT Language</name>
-    <vendor email="tim.misset@live.com" url="https://github.com/timmisset/omt">Misset</vendor>
+    <vendor email="tim@misset-it.nl" url="https://github.com/timmisset/omt-odt-plugin">Misset</vendor>
 
     <description>Plugin for the OPP specific languages OMT and ODT</description>
     <depends>com.intellij.modules.java</depends>

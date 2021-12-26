@@ -61,10 +61,13 @@ patchPluginXml {
     changeNotes = """
         <strong>5.0</strong><br/>
         Completely re-written OMT / ODT plugin</br>
-        It is now fully backed by the native IntelliJ Yaml plugin for all OMT related actions</br>
+        It is now fully backed by the native IntelliJ Yaml plugin for the OMT/YAML Structure</br>
         All ODT fragments are injected as code snippets. This makes it a bit slower but much more stable</br>
         </br>
-        
+        It is strongly advised to read the documentation at: https://github.com/timmisset/omt-odt-plugin
+        </br>
+        Since the plugin was basically recreated from scratch, there migt be some features missing or not working
+        anymore, please report them at github.</br>
       """
 }
 tasks {
