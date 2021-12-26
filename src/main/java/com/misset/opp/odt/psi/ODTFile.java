@@ -4,12 +4,12 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.shared.InjectionHost;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
@@ -21,7 +21,7 @@ public interface ODTFile extends PsiFile {
     /**
      * Returns the Yaml Host element where this ODT file is injected into
      */
-    PsiLanguageInjectionHost getHost();
+    InjectionHost getHost();
 
     /**
      * Returns the containing OMT File that contains the Yaml Host element where this ODT file is injected into

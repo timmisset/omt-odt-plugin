@@ -25,6 +25,7 @@ import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.shared.InjectionHost;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -37,9 +38,8 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class ODTFileImpl extends PsiFileBase implements ODTFile {
-    private static final Key<CachedValue<PsiLanguageInjectionHost>> HOST = new Key<>("HOST");
+    private static final Key<CachedValue<InjectionHost>> HOST = new Key<>("HOST");
     private static final Key<CachedValue<OMTFile>> HOST_FILE = new Key<>("HOST_FILE");
-    private static final Key<CachedValue<GlobalSearchScope>> EXPORTING_MEMBER_SCOPE = new Key<>("EXPORTING_MEMBER_SCOPE");
     private static final Key<CachedValue<Boolean>> IS_EXPORTABLE = new Key<>("IS_EXPORTABLE");
     private static final Key<CachedValue<Map<String, String>>> NAMESPACES = new Key<>("NAMESPACES");
 
@@ -52,16 +52,16 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         return ODTFileType.INSTANCE;
     }
 
-    public PsiLanguageInjectionHost getHost() {
+    public InjectionHost getHost() {
         return CachedValuesManager.getCachedValue(this, HOST, () -> {
             final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(getProject());
             final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(this);
-            if (!(injectionHost instanceof YAMLPsiElement)) {
+            if (!(injectionHost instanceof InjectionHost)) {
                 return new CachedValueProvider.Result<>(null,
                         this,
                         PsiModificationTracker.MODIFICATION_COUNT);
             }
-            return new CachedValueProvider.Result<>(injectionHost,
+            return new CachedValueProvider.Result<>((InjectionHost) injectionHost,
                     injectionHost.getContainingFile(),
                     PsiModificationTracker.MODIFICATION_COUNT);
         });

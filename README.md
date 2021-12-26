@@ -19,14 +19,20 @@ The plugin provides support for 3 languages:
 OMT is a YAML language extension that provides context-based structure using a so called MetaTypeProvider. This makes it
 possible to supply a model with (coded) rules and restrictions, expected values and much more. It is by far the biggest
 difference with version 4.x since the YAML lexer is used as-is and only a limited adaption of the Parser was required to
-intercept PsiElement generation for specific items. For more info, read the README at the omt package.
+intercept PsiElement generation for specific items.
+
+For more info, read the README at
+the [omt package](https://github.com/timmisset/omt-odt-plugin/blob/master/src/main/java/com/misset/opp/omt/README.md).
 
 ## ODT
 
 ODT is a Domain Specific Language with a Builtin toolbox of Operators and Commands that provide out-of-the-box
 functionality for the language. Using DEFINE Commands & Queries, more functionalities are created. ODT can be injected
 at dedicated sections in the OMT structure, for which the MultiHostInjector is used. Moreover, when using a .odt
-extension the ODT language can exist stand-alone. For more info, read the README at the odt package.
+extension the ODT language can exist stand-alone.
+
+For more info, read the README at
+the [odt package](https://github.com/timmisset/omt-odt-plugin/blob/master/src/main/java/com/misset/opp/odt/README.md).
 
 ## TTL
 

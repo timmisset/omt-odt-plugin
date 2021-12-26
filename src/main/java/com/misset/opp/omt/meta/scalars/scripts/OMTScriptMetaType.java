@@ -1,9 +1,9 @@
 package com.misset.opp.omt.meta.scalars.scripts;
 
-import com.misset.opp.omt.meta.OMTInjectable;
+import com.misset.opp.omt.meta.OMTMetaInjectable;
 import org.jetbrains.yaml.meta.model.YamlScalarType;
 
-public class OMTScriptMetaType extends YamlScalarType implements OMTInjectable {
+public class OMTScriptMetaType extends YamlScalarType implements OMTMetaInjectable {
     boolean isExportable = false;
 
     public OMTScriptMetaType() {

@@ -62,7 +62,7 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                                              Predicate<Set<OntResource>> typeFilter,
                                              Predicate<Set<OntResource>> precedingFilter) {
                 // static Operators are ones that don't require (actually don't want) to be applied on an input
-                // but only as start. For example, the DATE_TIME stamp or IIF operator=
+                // but only as start. For example, the DATE_TIME stamp or IIF operator.
                 if (BUILTIN_OPERATOR_STRICT.accepts(position)) {
                     addCallables(BuiltinOperators.getNonStaticOperators(), result, typeFilter, precedingFilter);
                     if (!AFTER_FIRST_QUERY_STEP.accepts(position)) {

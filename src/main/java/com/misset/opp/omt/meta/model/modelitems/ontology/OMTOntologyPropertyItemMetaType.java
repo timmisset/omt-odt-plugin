@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems.ontology;
 
-import com.misset.opp.omt.meta.OMTInjectable;
+import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import com.misset.opp.omt.meta.scalars.OMTTypeIdentifierMetaType;
@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 @SimpleInjectable
-public class OMTOntologyPropertyItemMetaType extends OMTMetaType implements OMTInjectable {
+public class OMTOntologyPropertyItemMetaType extends OMTMetaType implements OMTMetaInjectable {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     private static final Set<String> requiredFields = Set.of("type");
 

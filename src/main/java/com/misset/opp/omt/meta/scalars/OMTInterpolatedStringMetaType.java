@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.scalars;
 
 import com.intellij.openapi.util.TextRange;
-import com.misset.opp.omt.meta.OMTInjectable;
+import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import org.jetbrains.yaml.meta.model.YamlStringType;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SimpleInjectable
-public class OMTInterpolatedStringMetaType extends YamlStringType implements OMTInjectable {
+public class OMTInterpolatedStringMetaType extends YamlStringType implements OMTMetaInjectable {
     private final Pattern INTERPOLATION = Pattern.compile("\\$\\{([^}]+)}");
     private final Pattern TITLE_VARIABLE = Pattern.compile("^(\\$[-A-z]+)$");
 

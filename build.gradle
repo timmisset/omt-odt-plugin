@@ -59,15 +59,37 @@ patchPluginXml {
     sinceBuild = '211'
 
     changeNotes = """
-        <strong>5.0</strong><br/>
+        <h1>OMT / ODT plugin 5.0</h1>
         Completely re-written OMT / ODT plugin</br>
         It is now fully backed by the native IntelliJ Yaml plugin for the OMT/YAML Structure</br>
-        All ODT fragments are injected as code snippets. This makes it a bit slower but much more stable</br>
+        All ODT fragments are injected as code snippets. This makes it a bit slower but much more stable. You might notice that starting up intelliJ will take a bit longer (about 5 seconds), this is because IntelliJ doesn't index injected fragments which requires the plugin to index all OMT files itself at start-up. I'm working on improving this performance.</br>
         </br>
-        It is strongly advised to read the documentation at: https://github.com/timmisset/omt-odt-plugin
+        <a href="https://github.com/timmisset/omt-odt-plugin/blob/master/README.md">It is strongly advised to read the documentation</a>
+        <h2>New features</h2>
+        Aside from the refactoring, some new features were also introduced
+        <h2>ODT</h2>
+        <ul>
+        <li>ODT files can be processed stand-alone</li>
+        <li>Syntax highlighting by resolved type</li>
+        <li>Reasoning now includes NamedGraphs and GraphShapes</li>
+        <li>Validation includes minCount and maxCount as specified in the model</li>
+        </ul>
+        <h2>OMT</h2>
+        <ul>
+        <li>Added support for declared imports (module:import)</li>
+        <li>The mapping structure of project domains is configurable</li>
+        </ul>
+        
         </br>
         Since the plugin was basically recreated from scratch, there migt be some features missing or not working
         anymore, please report them at github.</br>
+
+        <h2>Removed features</h2>
+        Some features were not working correctly in the old version and have been removed. These might be re-introduced in the future upon demand.
+        <ul>
+        <li>Refactor-rename from the TTL model to the OMT / ODT usage. This was not used and required heavy re-index when the model was updated.</li>
+        <li>Introduce local variable. Action was not triggered properly, will return in the future.</li>
+        </ul>
       """
 }
 tasks {

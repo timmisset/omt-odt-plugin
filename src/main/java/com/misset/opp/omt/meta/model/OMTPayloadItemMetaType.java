@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.model;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.omt.meta.OMTInjectable;
+import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 @SimpleInjectable
 public class OMTPayloadItemMetaType extends OMTMetaType implements
-        OMTInjectable,
+        OMTMetaInjectable,
         OMTLocalVariableTypeProvider {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
