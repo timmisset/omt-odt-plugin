@@ -7,12 +7,12 @@ The OMT language is an extension of YAML.
 The OMT structure determines the markup and context of the OMT language. For this the (experimental) MetaTypeProvider is
 used which is developed and maintained by IntelliJ/Jetbrains. The MetaTypeProvider was extended a bit for OMT to provide
 support for !tag identified elements, this allows for specific structures to be provided for things like !Activity. All
-modelItems reside in the key:value pair model:value, there was no support no narrow the meta type based on the tag. See:
+modelItems reside in the key:value pair model:value, there was no support to narrow the meta type based on the tag. See:
 com.misset.opp.omt.meta.OMTMetaTypeProvider
 
 ### Injection
 
-OMT MetaType classes that implement the OMTInjectable interface provide text-ranges which part of their content is
+OMT MetaType classes that implement the OMTMetaInjectable interface provide text-ranges which part of their content is
 available to be re-parsed as the injected language. The responsibility of re-parsing and anything after that is part of
 the injected language itself.
 
