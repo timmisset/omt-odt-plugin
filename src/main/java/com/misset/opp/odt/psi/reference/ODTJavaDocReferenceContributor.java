@@ -39,7 +39,9 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
                 List<PsiReference> referenceList = new ArrayList<>();
                 if (docTag.getName().equals("param") && docTag.getValueElement() != null) {
                     Optional.ofNullable(getParamReference(docTag)).ifPresent(referenceList::add);
-                    Optional.ofNullable(getTypeReference(docTag)).ifPresent(referenceList::add);
+                    Optional.ofNullable(getTypeReference(docTag, 1)).ifPresent(referenceList::add);
+                } else if (docTag.getName().equals("base") && docTag.getValueElement() != null) {
+                    Optional.ofNullable(getTypeReference(docTag, 0)).ifPresent(referenceList::add);
                 }
                 return referenceList.toArray(PsiReference[]::new);
             }
@@ -53,9 +55,9 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
                         .orElse(null);
             }
 
-            private PsiReference getTypeReference(PsiDocTag docTag) {
-                if (docTag.getDataElements().length >= 2) {
-                    final PsiElement dataElement = docTag.getDataElements()[1];
+            private PsiReference getTypeReference(PsiDocTag docTag, int position) {
+                if (docTag.getDataElements().length >= position) {
+                    final PsiElement dataElement = docTag.getDataElements()[position];
                     // @param $param (ont:Class)
                     // the dataElement == (ont:Class)
                     // Use the RegEx to determine the from-to range within the dataElement to cutOut: ont

@@ -123,6 +123,16 @@ class ODTCodeUntypedInspectionWarningTest extends OMTInspectionTestCase {
     }
 
     @Test
+    void testHasNoBaseWarningWhenAnnotatedAndStartsWithIndentifierStepWithCurieType() {
+        configureByText(withPrefixes("queries:\n" +
+                "  /**\n" +
+                "   * @base (ont:ClassA)\n" +
+                "   */\n" +
+                "  DEFINE QUERY query => ont:booleanPredicate;\n"));
+        assertNoWarning(ODTCodeUntypedInspectionWarning.ANNOTATE_BASE_WITH_TYPE);
+    }
+
+    @Test
     void testHasBaseWarningWhenNotAnnotatedAndStartsWithCurie() {
         configureByText(insideQueryWithPrefixes("ont:someProperty"));
         assertHasWarning(ODTCodeUntypedInspectionWarning.ANNOTATE_BASE_WITH_TYPE);
