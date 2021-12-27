@@ -32,6 +32,10 @@ the initial highlighting. This is a known issue, simply type something in the do
 The highlighting also uses resolved types to make it possible to give a class and a class instance a different color,
 underscore etc.
 
+By default, IntelliJ will set a background highlighting for injected language fragments, you can modify / remove this
+here:
+File | Settings | Editor | Color Scheme | General
+
 ## Resolvable
 
 Most of the features of the plugin for the ODT language revolve around the Resolvable interface. Anything which is a
