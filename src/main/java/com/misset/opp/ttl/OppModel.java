@@ -23,6 +23,14 @@ import java.util.stream.Collectors;
  * <p>
  * When a query resolves a step using the rdf:type, the outcome will be OntClass
  * When a query resolves a step using the ^rdf:type, the outcome will be Individual
+ * <p>
+ * <p>
+ * Note:
+ * While performance testing the plugin, it became apparent that the Apache Jena model is not really optimized for performance.
+ * Probably with good reason but there seems to be no basic caching mechanism which is why querying the model with the same input
+ * multiple times will always re-run the entire query.
+ * Since we have a good handle on when the model is updated we can safely assume that, when there is no change in the TTL model,
+ * using the same query multiple times will always return the same result and thus should be cached.
  */
 public class OppModel {
     public static final String XSD = "http://www.w3.org/2001/XMLSchema#";
@@ -67,6 +75,8 @@ public class OppModel {
     HashMap<OntResource, Set<Property>> listPredicatesCache = new HashMap<>();
     HashMap<OntResource, Set<Statement>> listPredicateObjectsCache = new HashMap<>();
     HashMap<String, Set<Individual>> classIndividualsCache = new HashMap<>();
+    HashMap<String, OntResource> mappedResources = new HashMap<>();
+    HashMap<String, Individual> mappedIndividuals = new HashMap<>();
 
     // contain information from the SHACL model about the cardinality of the predicates
     HashMap<OntClass, List<Property>> required = new HashMap<>();
@@ -112,6 +122,8 @@ public class OppModel {
         listPredicatesCache.clear();
         classIndividualsCache.clear();
         listPredicateObjectsCache.clear();
+        mappedResources.clear();
+        mappedIndividuals.clear();
     }
 
     private void clearCardinality() {
@@ -619,16 +631,42 @@ public class OppModel {
     }
 
     public OntResource getResource(Resource resource) {
-        return model.getOntResource(resource);
+        return LoggerUtil.computeWithLogger(LOGGER,
+                "Retrieve " + resource.getURI() + " as resource from model",
+                () -> model.getOntResource(resource));
     }
 
     public OntResource getResource(String uri) {
-        return model.getOntResource(uri);
+        return LoggerUtil.computeWithLogger(LOGGER,
+                "Retrieve " + uri + " as string from model",
+                () -> {
+                    // Retrieving by string is a rather slow process in Jena,
+                    // since it's safe to cache in this case, let's do it!
+                    if (mappedResources.containsKey(uri)) {
+                        return mappedResources.get(uri);
+                    } else {
+                        OntResource ontResource = model.getOntResource(uri);
+                        mappedResources.put(uri, ontResource);
+                        return ontResource;
+                    }
+                });
     }
 
     @Nullable
     public Individual getIndividual(@Nullable String uri) {
-        return uri == null ? null : model.getIndividual(uri);
+        return uri == null ? null : LoggerUtil.computeWithLogger(LOGGER,
+                "Retrieve " + uri + " as string from model",
+                () -> {
+                    // Retrieving by string is a rather slow process in Jena,
+                    // since it's safe to cache in this case, let's do it!
+                    if (mappedIndividuals.containsKey(uri)) {
+                        return mappedIndividuals.get(uri);
+                    } else {
+                        Individual individual = model.getIndividual(uri);
+                        mappedIndividuals.put(uri, individual);
+                        return individual;
+                    }
+                });
     }
 
     public Set<Individual> getClassIndividuals(String classUri) {

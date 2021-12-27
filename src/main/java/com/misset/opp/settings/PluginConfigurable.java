@@ -77,6 +77,9 @@ public class PluginConfigurable implements Configurable {
         modelInstanceMapping.put("http://data\\.politie\\.nl/19000000000000_\\S+",
                 "http://ontologie.politie.nl/def/platform#NamedGraph");
         state.modelInstanceMapping = modelInstanceMapping;
+
+        state.applyQueryStepFilter = true;
+        state.resolveCallSignatures = true;
     }
 
     @Override
@@ -88,6 +91,8 @@ public class PluginConfigurable implements Configurable {
     public boolean isModified() {
         SettingsState settingsState = getState();
         boolean modified = !settingsComponent.getOntologyModelRootPath().equals(settingsState.ontologyModelRootPath);
+        modified |= settingsComponent.getApplyQueryStepFilter() != settingsState.applyQueryStepFilter;
+        modified |= settingsComponent.getResolveCallSignature() != settingsState.resolveCallSignatures;
         modified |= isMappingPathsModified(settingsState);
         modified |= isModelInstanceMappingModified(settingsState);
         modified |= !settingsComponent.getReasonsRoot().equals(settingsState.reasonsFolder);
@@ -125,6 +130,8 @@ public class PluginConfigurable implements Configurable {
         saveReasonsState(settingsState);
         saveMappingState(settingsState);
         saveModelInstanceMappingState(settingsState);
+        settingsState.resolveCallSignatures = settingsComponent.getResolveCallSignature();
+        settingsState.applyQueryStepFilter = settingsComponent.getApplyQueryStepFilter();
     }
 
     private void saveOntologyState(SettingsState settingsState) {
@@ -170,6 +177,8 @@ public class PluginConfigurable implements Configurable {
         settingsComponent.setReasonsRoot(settingsState.reasonsFolder);
         settingsComponent.setPathMapper(settingsState.mappingPaths);
         settingsComponent.setModelInstanceMapper(settingsState.modelInstanceMapping);
+        settingsComponent.setApplyQueryStepFilter(settingsState.applyQueryStepFilter);
+        settingsComponent.setResolveCallSignature(settingsState.resolveCallSignatures);
     }
 
     @Override

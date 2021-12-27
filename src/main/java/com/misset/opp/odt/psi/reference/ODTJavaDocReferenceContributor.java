@@ -56,7 +56,7 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
             }
 
             private PsiReference getTypeReference(PsiDocTag docTag, int position) {
-                if (docTag.getDataElements().length >= position) {
+                if (docTag.getDataElements().length > position) {
                     final PsiElement dataElement = docTag.getDataElements()[position];
                     // @param $param (ont:Class)
                     // the dataElement == (ont:Class)

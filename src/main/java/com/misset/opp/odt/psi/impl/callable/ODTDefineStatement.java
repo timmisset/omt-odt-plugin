@@ -23,6 +23,7 @@ import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.settings.SettingsState;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -116,11 +117,18 @@ public abstract class ODTDefineStatement extends PsiCallable implements
     public abstract ODTDefineParam getDefineParam();
 
     protected void decorateCall(PsiCall call) {
+        HashMap<Integer, Set<OntResource>> parameterTypes = getParameterTypes();
         final List<ODTVariable> variables = Optional.ofNullable(getDefineParam())
                 .map(ODTDefineParam::getVariableList)
                 .orElse(Collections.emptyList());
         for (int i = 0; i < variables.size(); i++) {
-            call.setParamType(variables.get(i).getName(), call.resolveSignatureArgument(i));
+            if (parameterTypes.containsKey(i) && !parameterTypes.get(i).isEmpty()) {
+                call.setParamType(variables.get(i).getName(), parameterTypes.get(i));
+            } else {
+                if (SettingsState.getInstance(call.getProject()).resolveCallSignatures) {
+                    call.setParamType(variables.get(i).getName(), call.resolveSignatureArgument(i));
+                }
+            }
         }
     }
 

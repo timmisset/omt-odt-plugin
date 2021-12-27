@@ -28,6 +28,8 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
     public String reasonsFolder = "";
     public Map<String, String> mappingPaths = new HashMap<>();
     public Map<String, String> modelInstanceMapping = new HashMap<>();
+    public boolean resolveCallSignatures = true;
+    public boolean applyQueryStepFilter = true;
     private boolean useDefaultSettings = false;
 
     public static SettingsState getInstance(Project project) {

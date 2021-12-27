@@ -5,6 +5,7 @@ import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
 import com.misset.opp.settings.components.ModelInstanceMapperTable;
@@ -25,9 +26,15 @@ public class SettingsComponent {
     private final TextFieldWithBrowseButton reasonsRoot = getFolderLocationSetting();
     private final PathMapperTable pathMapperTable = new PathMapperTable();
     private final ModelInstanceMapperTable modelInstanceMapperTable = new ModelInstanceMapperTable();
+    private final JBCheckBox resolveCallSignature = new JBCheckBox("Resolve call signature when input parameter is not typed");
+    private final JBCheckBox applyQueryStepFilter = new JBCheckBox("Apply query step filter, disabled means all filters resolve to owl:Thing");
 
     public SettingsComponent() {
         myMainPanel = FormBuilder.createFormBuilder()
+                .addComponent(new JXTitledSeparator("Heavy features"))
+                .addComponent(new JBLabel("Certain features can seriously impact the performance of the plugin"))
+                .addComponent(resolveCallSignature)
+                .addComponent(applyQueryStepFilter)
                 .addComponent(new JXTitledSeparator("Ontology"))
                 .addComponent(new JBLabel("Specify the root file of the OPP model"))
                 .addComponent(new JBLabel("All ttl files in the same folder and subfolders are also read"))
@@ -130,6 +137,22 @@ public class SettingsComponent {
                 .sorted(Comparator.comparing(ModelInstanceMapperTable.Item::getRegEx))
                 .collect(Collectors.toList());
         modelInstanceMapperTable.setValues(values);
+    }
+
+    public void setApplyQueryStepFilter(boolean selected) {
+        this.applyQueryStepFilter.setSelected(selected);
+    }
+
+    public boolean getApplyQueryStepFilter() {
+        return applyQueryStepFilter.isSelected();
+    }
+
+    public void setResolveCallSignature(boolean selected) {
+        this.resolveCallSignature.setSelected(selected);
+    }
+
+    public boolean getResolveCallSignature() {
+        return resolveCallSignature.isSelected();
     }
 
 }

@@ -3,6 +3,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
@@ -17,6 +18,7 @@ import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.settings.SettingsState;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
@@ -38,7 +40,9 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     }
 
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED_VALUE = new Key<>("RESOLVED_VALUE");
-    Logger LOGGER = Logger.getInstance(ODTResolvableQueryOperationStep.class);
+    private static final Logger LOGGER = Logger.getInstance(ODTResolvableQueryOperationStep.class);
+
+    private final SettingsState settingsState = ReadAction.compute(() -> SettingsState.getInstance(getProject()));
 
     @Override
     public ODTResolvableQueryPath getParent() {
@@ -130,9 +134,16 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
 
     private Set<OntResource> filter(Set<OntResource> resources,
                                     ODTQueryFilter filter) {
+        // range selection filtering has no impact on the performance and
+        // can be done without the settings check
         if (filter.getRangeSelection() != null) {
             return resources;
         }
+
+        if (!settingsState.applyQueryStepFilter) {
+            return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
+        }
+
         final ODTQuery query = filter.getQuery();
         if (query instanceof ODTResolvableQuery) {
             return query.filter(resources);
@@ -151,7 +162,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
      */
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return LoggerUtil.computeWithLogger(LOGGER, "Resolve: " + getText(), () -> {
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolving " + getText(), () -> {
             if (getQueryStep() != null) {
                 if (isPartOfFilter()) {
                     // Filters are evaluated more often to determine which of the input resources
