@@ -17,12 +17,15 @@ import com.intellij.psi.util.*;
 import com.misset.opp.odt.ODTFileType;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.ODTLanguage;
+import com.misset.opp.odt.psi.ODTDefinePrefix;
 import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix;
 import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
+import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.shared.InjectionHost;
@@ -42,6 +45,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     private static final Key<CachedValue<OMTFile>> HOST_FILE = new Key<>("HOST_FILE");
     private static final Key<CachedValue<Boolean>> IS_EXPORTABLE = new Key<>("IS_EXPORTABLE");
     private static final Key<CachedValue<Map<String, String>>> NAMESPACES = new Key<>("NAMESPACES");
+    private static final Key<CachedValue<List<ODTNamespacePrefix>>> PREFIXES = new Key<>("PREFIXES");
 
     public ODTFileImpl(@NotNull FileViewProvider provider) {
         super(provider, ODTLanguage.INSTANCE);
@@ -183,4 +187,34 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                 new CachedValueProvider.Result<>(result, this, additionalTrackers);
     }
 
+    @Override
+    public List<ODTNamespacePrefix> getLocalNamespacePrefixes() {
+        return CachedValuesManager.getCachedValue(this, PREFIXES, () -> {
+            List<ODTNamespacePrefix> prefixes = PsiTreeUtil.findChildrenOfType(this, ODTDefinePrefix.class)
+                    .stream()
+                    .map(ODTDefinePrefix::getNamespacePrefix)
+                    .collect(Collectors.toList());
+            return new CachedValueProvider.Result<>(prefixes, this);
+        });
+    }
+
+    private HashMap<String, List<PsiElement>> hostPrefixNamespaces = new HashMap<>();
+
+    @Override
+    public List<PsiElement> getHostPrefixNamespace(String key) {
+        if (getHost() == null) {
+            return Collections.emptyList();
+        }
+        if (hostPrefixNamespaces.containsKey(key)) {
+            return hostPrefixNamespaces.get(key);
+        }
+
+        List<PsiElement> psiElements = resolveInOMT(OMTPrefixProvider.class,
+                OMTPrefixProvider.KEY,
+                key,
+                OMTPrefixProvider::getPrefixMap)
+                .orElse(Collections.emptyList());
+        hostPrefixNamespaces.put(key, psiElements);
+        return psiElements;
+    }
 }

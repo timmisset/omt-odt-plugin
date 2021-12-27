@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -13,6 +14,7 @@ import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.impl.ODTNamespacePrefixImpl;
 import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
+import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -22,13 +24,17 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
         super(node);
     }
 
+    private static final Logger LOGGER = Logger.getInstance(ODTResolvableCurieElementStep.class);
+
     @Override
     public String calculateFullyQualifiedUri() {
-        final ODTNamespacePrefixImpl namespacePrefix = (ODTNamespacePrefixImpl) getNamespacePrefix();
-        return namespacePrefix.getFullyQualifiedUri(
-                Optional.ofNullable(PsiTreeUtil.nextVisibleLeaf(namespacePrefix))
-                        .map(PsiElement::getText)
-                        .orElse(null));
+        return LoggerUtil.computeWithLogger(LOGGER, "Calculating URI from Curie for " + getText(), () -> {
+            final ODTNamespacePrefixImpl namespacePrefix = (ODTNamespacePrefixImpl) getNamespacePrefix();
+            return namespacePrefix.getFullyQualifiedUri(
+                    Optional.ofNullable(PsiTreeUtil.nextVisibleLeaf(namespacePrefix))
+                            .map(PsiElement::getText)
+                            .orElse(null));
+        });
     }
 
     @Override

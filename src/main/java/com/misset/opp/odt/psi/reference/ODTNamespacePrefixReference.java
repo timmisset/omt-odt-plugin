@@ -1,56 +1,47 @@
 package com.misset.opp.odt.psi.reference;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.odt.psi.ODTDefinePrefix;
-import com.misset.opp.odt.psi.ODTScript;
+import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.prefix.ODTBaseNamespacePrefix;
-import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
+import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 
 public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTBaseNamespacePrefix> {
+    Logger LOGGER = Logger.getInstance(ODTNamespacePrefixReference.class);
     public ODTNamespacePrefixReference(@NotNull ODTBaseNamespacePrefix element) {
         super(element, TextRange.allOf(element.getName()), false);
     }
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        if (!myElement.isValid()) {
-            return ResolveResult.EMPTY_ARRAY;
-        }
-        // resolve in current ODT file
-        // then resolve in OMT using the PrefixProviders
-        return resolveInODT()
-                .or(this::resolveFromProvider)
-                .orElse(ResolveResult.EMPTY_ARRAY);
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolving namespace prefix " + myElement.getName(), () -> {
+            if (!myElement.isValid()) {
+                return ResolveResult.EMPTY_ARRAY;
+            }
+            // resolve in current ODT file
+            // then resolve in OMT using the PrefixProviders
+            return resolveInODT()
+                    .or(this::resolveFromProvider)
+                    .orElse(ResolveResult.EMPTY_ARRAY);
+        });
     }
 
     private Optional<ResolveResult[]> resolveFromProvider() {
-        Optional<List<PsiElement>> psiElements = myElement.getContainingFile()
-                .resolveInOMT(OMTPrefixProvider.class,
-                        OMTPrefixProvider.KEY,
-                        myElement.getName(),
-                        OMTPrefixProvider::getPrefixMap);
-
-        return psiElements.map(this::toResults);
+        return Optional.of(toResults(myElement.getContainingFile()
+                .getHostPrefixNamespace(myElement.getName())));
     }
 
     private Optional<ResolveResult[]> resolveInODT() {
-        final ODTScript script = PsiTreeUtil.getTopmostParentOfType(myElement, ODTScript.class);
-        if (script == null) {
-            return Optional.empty();
-        }
-
-        return PsiTreeUtil.findChildrenOfType(script, ODTDefinePrefix.class)
+        ODTFile containingFile = myElement.getContainingFile();
+        return containingFile.getLocalNamespacePrefixes()
                 .stream()
-                .map(ODTDefinePrefix::getNamespacePrefix)
                 // must have the same name
                 .filter(namespacePrefix -> Optional.of(getElement().getName())
                         .map(s -> s.equals(namespacePrefix.getName()))

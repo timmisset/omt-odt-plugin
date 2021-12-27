@@ -54,7 +54,7 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
             }
 
             private PsiReference getTypeReference(PsiDocTag docTag) {
-                if (docTag.getDataElements().length == 2) {
+                if (docTag.getDataElements().length >= 2) {
                     final PsiElement dataElement = docTag.getDataElements()[1];
                     // @param $param (ont:Class)
                     // the dataElement == (ont:Class)

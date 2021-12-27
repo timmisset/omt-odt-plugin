@@ -19,7 +19,7 @@ public class OMTExportedMembersIndex {
 
     private static final HashMap<OMTFile, HashMap<String, List<PsiCallable>>> exportedMembers = new HashMap<>();
     private static final HashMap<String, List<PsiCallable>> exportedMembersByName = new HashMap<>();
-    private static final Logger LOGGER = Logger.getInstance(OMTImportedMembersIndex.class);
+    private static final Logger LOGGER = Logger.getInstance(OMTExportedMembersIndex.class);
 
     public static HashMap<String, List<PsiCallable>> getExportedMembers(OMTFile file) {
         if (exportedMembers.containsKey(file)) {

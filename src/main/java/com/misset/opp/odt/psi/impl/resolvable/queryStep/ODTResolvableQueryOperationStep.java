@@ -3,6 +3,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.*;
@@ -17,6 +18,7 @@ import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +38,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     }
 
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED_VALUE = new Key<>("RESOLVED_VALUE");
+    Logger LOGGER = Logger.getInstance(ODTResolvableQueryOperationStep.class);
 
     @Override
     public ODTResolvableQueryPath getParent() {
@@ -148,24 +151,26 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
      */
     @Override
     public @NotNull Set<OntResource> resolve() {
-        if (getQueryStep() != null) {
-            if (isPartOfFilter()) {
-                // Filters are evaluated more often to determine which of the input resources
-                // survive the filter. Therefore, caching the outcome of one would mean they
-                // all either pass or fail.
-                return filter(getQueryStep().resolve());
-            } else {
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolve: " + getText(), () -> {
+            if (getQueryStep() != null) {
+                if (isPartOfFilter()) {
+                    // Filters are evaluated more often to determine which of the input resources
+                    // survive the filter. Therefore, caching the outcome of one would mean they
+                    // all either pass or fail.
+                    return filter(getQueryStep().resolve());
+                } else {
 
-                return CachedValuesManager.getCachedValue(this,
-                        RESOLVED_VALUE,
-                        () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()),
-                                PsiModificationTracker.MODIFICATION_COUNT,
-                                getContainingFile().getHostFile() == null ? getContainingFile() : getContainingFile().getHostFile(),
-                                OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
+                    return CachedValuesManager.getCachedValue(this,
+                            RESOLVED_VALUE,
+                            () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()),
+                                    PsiModificationTracker.MODIFICATION_COUNT,
+                                    getContainingFile().getHostFile() == null ? getContainingFile() : getContainingFile().getHostFile(),
+                                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
+                }
+            } else {
+                return Collections.emptySet();
             }
-        } else {
-            return Collections.emptySet();
-        }
+        });
     }
 
     @Override

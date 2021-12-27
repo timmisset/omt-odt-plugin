@@ -44,10 +44,21 @@ class ODTCodeUntypedInspectionWarningTest extends OMTInspectionTestCase {
     void testNoWarningWhenMultipleAnnotated() {
         configureByText("queries: |\n" +
                 "   /**\n" +
-                "    * @param $param (string)\n" +
-                "    * @param $param2 (string)\n" +
+                "    * @param $one (string)\n" +
+                "    * @param $two (string)\n" +
                 "    */\n" +
-                "   DEFINE QUERY query($param, $param2) => '';\n");
+                "   DEFINE QUERY query($one, $two) => '';\n");
+        assertNoWarning(ODTCodeUntypedInspectionWarning.ANNOTATE_PARAMETER_WITH_TYPE);
+    }
+
+    @Test
+    void testNoWarningWhenWithCurie() {
+        configureByText(withPrefixes("queries: |\n" +
+                "   /**\n" +
+                "    * @param $one (ont:ClassA)\n" +
+                "    * @param $two (ont:ClassB)\n" +
+                "    */\n" +
+                "   DEFINE QUERY query($one, $two) => '';\n"));
         assertNoWarning(ODTCodeUntypedInspectionWarning.ANNOTATE_PARAMETER_WITH_TYPE);
     }
 

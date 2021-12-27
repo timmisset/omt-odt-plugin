@@ -90,4 +90,8 @@ public interface ODTFile extends PsiFile {
      */
     <T> CachedValueProvider.Result<T> getCachedValue(T result,
                                                      ModificationTracker... additionalTrackers);
+
+    List<ODTNamespacePrefix> getLocalNamespacePrefixes();
+
+    List<PsiElement> getHostPrefixNamespace(String key);
 }
