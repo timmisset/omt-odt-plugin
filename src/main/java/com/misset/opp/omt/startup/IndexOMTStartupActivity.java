@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
-import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
 import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.psi.OMTFile;
@@ -58,7 +57,6 @@ public class IndexOMTStartupActivity implements StartupActivity {
                     }
                     OMTPrefixIndex.analyse(omtFile);
                     OMTImportedMembersIndex.analyse(omtFile);
-                    OMTExportedMembersIndex.analyse(omtFile);
                 });
         OMTPrefixIndex.orderIndexByFrequency();
     }

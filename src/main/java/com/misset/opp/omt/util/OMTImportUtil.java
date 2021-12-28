@@ -11,8 +11,11 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.PsiSearchHelper;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
@@ -24,19 +27,55 @@ import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.*;
 
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class OMTImportUtil {
     private static final String MODULE = "module:";
 
-    public static IntentionAction[] getImportIntentions(OMTFile file, PsiCall call) {
-        return OMTExportedMembersIndex.getExportedMemberLocationsByName(call.getCallId())
+    /**
+     * Returns IntentionActions to import the given PsiCall as PsiCallable from anywhere in the project
+     */
+    public static IntentionAction[] getImportIntentions(OMTFile importingFile, PsiCall call) {
+        Project project = importingFile.getProject();
+        PsiSearchHelper psiSearchHelper = PsiSearchHelper.getInstance(project);
+        // limit the search scope to only OMT files, but within the entire project
+        GlobalSearchScope scope = GlobalSearchScope.getScopeRestrictedByFileTypes(
+                GlobalSearchScope.projectScope(project),
+                OMTFileType.INSTANCE);
+        List<IntentionAction> intentionActions = new ArrayList<>();
+        Set<PsiFile> filesInScope = new HashSet<>();
+
+        // The callable can be present in the OMT Language (host) as exportable
+        // ModelItem. Or it can be present in the Injected language. In case of the latter,
+        // we need to extend the search to the Literals of the OMT (or actually YAML) language
+        // which are always the host elements for the injected language
+        psiSearchHelper.processAllFilesWithWord(call.getName(), scope, file -> {
+            filesInScope.add(file);
+            return true;
+        }, true);
+        psiSearchHelper.processAllFilesWithWordInLiterals(call.getName(), scope, file -> {
+            filesInScope.add(file);
+            return true;
+        });
+        filesInScope
                 .stream()
-                .map(psiCallable -> getIntentionActions(file, psiCallable))
-                .toArray(IntentionAction[]::new);
+                .filter(OMTFile.class::isInstance)
+                .map(OMTFile.class::cast)
+                .forEach(file -> addIntentionToList(file, importingFile, call, intentionActions));
+        return intentionActions.toArray(new IntentionAction[0]);
+    }
+
+    private static boolean addIntentionToList(OMTFile importedFile, OMTFile importingFile, PsiCall call, List<IntentionAction> actions) {
+        HashMap<String, List<PsiCallable>> exportedMembers = OMTExportedMembersIndex.getExportedMembers(importedFile);
+        String callId = call.getCallId();
+        if (exportedMembers.containsKey(callId)) {
+            List<PsiCallable> psiCallables = exportedMembers.get(callId);
+            psiCallables.stream()
+                    .map(psiCallable -> getIntentionAction(importingFile, psiCallable))
+                    .forEach(actions::add);
+        }
+        // return true to the processor, we always want to search all applicable files
+        return true;
     }
 
     /**
@@ -182,7 +221,7 @@ public class OMTImportUtil {
         return YAMLElementGenerator.getInstance(project).createYamlKeyValue("import", importEntry.getText());
     }
 
-    private static IntentionAction getIntentionActions(OMTFile omtFile, PsiCallable callable) {
+    private static IntentionAction getIntentionAction(OMTFile omtFile, PsiCallable callable) {
         String importPath = getImportPath(omtFile, callable);
         if (importPath == null) {
             return null;

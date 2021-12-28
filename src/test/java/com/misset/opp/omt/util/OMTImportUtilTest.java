@@ -87,7 +87,7 @@ class OMTImportUtilTest extends OMTTestCase {
     }
 
     @Test
-    void testGetImportIntentions() {
+    void testGetImportIntentionsFromInjected() {
         myFixture.addFileToProject("moduleA.module.omt", "moduleName: ModuleA");
         OMTFile importedFile = (OMTFile) myFixture.addFileToProject("importedFile.omt", "queries:\n" +
                 "   DEFINE QUERY queryB => '';");
@@ -101,6 +101,26 @@ class OMTImportUtilTest extends OMTTestCase {
             IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(importingFile, call);
             Assertions.assertEquals(1, importIntentions.length);
             Assertions.assertEquals("Import as DEFINE QUERY from ./importedFile.omt", importIntentions[0].getText());
+        });
+    }
+
+    @Test
+    void testGetImportIntentionsFromOMT() {
+        myFixture.addFileToProject("moduleA.module.omt", "moduleName: ModuleA");
+        OMTFile importedFile = (OMTFile) myFixture.addFileToProject("importedFile.omt", "model:\n" +
+                "   queryB: !StandaloneQuery\n" +
+                "       query: ''\n" +
+                "");
+        OMTExportedMembersIndex.analyse(importedFile);
+        OMTFile importingFile = configureByText("importingFile.omt", "queries:\n" +
+                "   DEFINE QUERY queryA => <caret>queryB;");
+
+
+        ReadAction.run(() -> {
+            PsiCall call = (PsiCall) myFixture.getElementAtCaret();
+            IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(importingFile, call);
+            Assertions.assertEquals(1, importIntentions.length);
+            Assertions.assertEquals("Import as StandaloneQuery from ./importedFile.omt", importIntentions[0].getText());
         });
     }
 

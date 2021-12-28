@@ -5,20 +5,19 @@ import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Index that holds the PsiCallable elements
- * Indexed by OMTFile which includes all exportable elements, including elements that are imported from other files.
- * Indexed by Name which returns to declaring elements by name.
+ * Index that holds references to the PsiCallable elements that are exportable from OMT files.
+ * Mapping the exportable PsiCallable elements of an OMT file is time-consuming because many can be part of the
+ * injected language fragments. Therefore, this index will cache that information so it can be re-used when
+ * nothing is changed within the files.
+ * Resetting the index is triggered by the clear caches mechanism of the OMTFile
  */
 public class OMTExportedMembersIndex {
 
     private static final HashMap<OMTFile, HashMap<String, List<PsiCallable>>> exportedMembers = new HashMap<>();
-    private static final HashMap<String, List<PsiCallable>> exportedMembersByName = new HashMap<>();
     private static final Logger LOGGER = Logger.getInstance(OMTExportedMembersIndex.class);
 
     public static HashMap<String, List<PsiCallable>> getExportedMembers(OMTFile file) {
@@ -40,31 +39,11 @@ public class OMTExportedMembersIndex {
                 return;
             }
             exportedMembers.put(file, file.getExportingMembersMap());
-
-            HashMap<String, List<PsiCallable>> declaredExportingMembersMap = file.getDeclaredExportingMembersMap();
-            declaredExportingMembersMap.keySet().forEach(
-                    s -> {
-                        List<PsiCallable> callables = exportedMembersByName.getOrDefault(s, new ArrayList<>());
-                        callables.addAll(declaredExportingMembersMap.get(s));
-                        exportedMembersByName.put(s, callables);
-                    }
-            );
         });
-    }
-
-    /**
-     * Returns a list with locations where there is a PsiFile that contains the member
-     */
-    public static List<PsiCallable> getExportedMemberLocationsByName(String name) {
-        List<PsiCallable> psiCallables = exportedMembersByName.getOrDefault(name, Collections.emptyList());
-        // clean-up
-        psiCallables.removeIf(psiCallable -> !psiCallable.isValid());
-        return psiCallables;
     }
 
     public static void clear() {
         exportedMembers.clear();
-        exportedMembersByName.clear();
     }
 
 }

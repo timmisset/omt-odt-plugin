@@ -82,8 +82,14 @@ public interface PsiCall extends PsiResolvable {
 
     /**
      * Returns the callId that should exactly match the callId of the compatible Callable
+     * for example @Call($param) will return @Call
      */
     String getCallId();
+
+    /**
+     * Returns the name of the call, for example @Call($param) will return Call
+     */
+    String getName();
 
     /**
      * Returns the Signature PsiElement. Used to narrow the scope of validation Errors, Warnings etc
