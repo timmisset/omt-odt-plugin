@@ -11,7 +11,6 @@ import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
-import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlVariableDelegate;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiResolvable;
 import org.apache.jena.ontology.OntResource;
@@ -57,7 +56,6 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
         if (base != null) {
             // base should adhere to the OMTVariableNameMetaType otherwise it will throw an error on the syntax check
             YAMLValue value = base.getValue();
-            OMTYamlVariableDelegate.IS_PARAMETER.set(value, true);
             addToGroupedMap(base.getValueText(), value, variableMap);
         }
 

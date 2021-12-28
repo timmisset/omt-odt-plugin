@@ -13,15 +13,19 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReference;
 import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
+import com.misset.opp.omt.meta.OMTOntologyTypeProvider;
 import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.omt.psi.references.OMTParamTypeReference;
+import com.misset.opp.omt.psi.references.OMTParamTypePrefixReference;
+import com.misset.opp.omt.util.PatternUtil;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import com.misset.opp.ttl.util.TTLValueParserUtil;
 import com.misset.opp.util.LoggerUtil;
+import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -42,11 +46,11 @@ import java.util.stream.Collectors;
 /**
  * The Meta-type for a OMTParamMetaType
  */
-public class OMTParamTypeType extends YamlScalarType {
+public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeProvider {
 
     public static final Pattern CURIE_PATTERN = Pattern.compile("([A-z0-9]+):([A-z0-9]+)");
-    private static final Pattern URI_PATTERN = Pattern.compile("<([^\\s]*)>");
-    private static final Pattern SIMPLE_PATTERN = Pattern.compile("[a-z]+");
+    public static final Pattern URI_PATTERN = Pattern.compile("<([^\\s]*)>");
+    private static final Pattern PRIMITIVE_PATTERN = Pattern.compile("[a-z]+");
     private static final Logger LOGGER = Logger.getInstance(OMTParamTypeType.class);
 
     protected static final String UNKNOWN_PREFIX = "Unknown prefix";
@@ -55,60 +59,82 @@ public class OMTParamTypeType extends YamlScalarType {
         super("OMTParamTypeType");
     }
 
-    public OMTParamTypeReference getReference(YAMLPlainTextImpl plainText) {
-        Matcher matcher = CURIE_PATTERN.matcher(plainText.getTextValue());
-        boolean b = matcher.find();
-        if (!b) {
-            return null;
+    @Override
+    protected void validateScalarValue(@NotNull YAMLScalar scalar,
+                                       @NotNull ProblemsHolder holder) {
+        if (URI_PATTERN.matcher(scalar.getTextValue()).find()) {
+            validateUriPattern(scalar, holder);
+        } else if (CURIE_PATTERN.matcher(scalar.getTextValue()).find()) {
+            validateCuriePattern(scalar, holder);
+        } else if (PRIMITIVE_PATTERN.matcher(scalar.getTextValue()).find()) {
+            validatePrimitivePattern(scalar, holder);
+        } else {
+            holder.registerProblem(scalar, "Syntax error, match either: " + CURIE_PATTERN.pattern() + " or " + URI_PATTERN.pattern() + " or " + PRIMITIVE_PATTERN.pattern(), ProblemHighlightType.ERROR);
         }
-
-        return new OMTParamTypeReference(plainText, TextRange.create(matcher.start(1), matcher.end(1)));
     }
 
-    @Override
-    protected void validateScalarValue(@NotNull YAMLScalar scalarValue,
-                                       @NotNull ProblemsHolder holder) {
-        if (!isUri(scalarValue) & !isCurie(scalarValue) && !SIMPLE_PATTERN.matcher(scalarValue.getTextValue()).find()) {
-            holder.registerProblem(scalarValue, "Syntax error, match either: " + CURIE_PATTERN.pattern() + " or " + URI_PATTERN.pattern() + " or " + SIMPLE_PATTERN.pattern(), ProblemHighlightType.ERROR);
+    private void validateUriPattern(YAMLScalar scalar, ProblemsHolder holder) {
+        // create a resource to extract the namespace and localName. The resource doesn't have to exist
+        // at this point, only be a valid URI pattern.
+        String text = scalar.getText();
+        String uri = PatternUtil.getText(text, URI_PATTERN, 1);
+
+        Resource resource = ResourceFactory.createResource(scalar.getTextValue());
+        String namespace = resource.getNameSpace();
+        String localName = resource.getLocalName();
+        if (namespace == null || localName == null) {
+            holder.registerProblem(scalar,
+                    "Syntax error, not a valid URI",
+                    ProblemHighlightType.ERROR);
             return;
         }
-        if (uri != null) {
-            Resource resource = ResourceFactory.createResource(uri);
-            String namespace = resource.getNameSpace();
-            String localName = resource.getLocalName();
-            if (namespace == null || localName == null) {
-                holder.registerProblem(scalarValue,
-                        "Syntax error, not a valid URI",
-                        ProblemHighlightType.ERROR);
-                return;
-            }
-            List<String> prefixes = OMTPrefixIndex.getPrefixes(namespace);
-            if (!prefixes.isEmpty()) {
-                holder.registerProblem(scalarValue, "Using fully qualified URI",
-                        ProblemHighlightType.WARNING,
-                        prefixes.stream()
-                                .map(prefix -> getQuickFix(prefix, namespace, localName))
-                                .toArray(LocalQuickFix[]::new));
-            }
-            validateResource(uri, scalarValue, holder);
-        } else if (curie != null) {
-            OMTFile containingFile = (OMTFile) scalarValue.getContainingFile();
-            Map<String, String> availableNamespaces = containingFile.getAvailableNamespaces(scalarValue);
-            String namespace = availableNamespaces.entrySet()
-                    .stream()
-                    .filter(stringStringEntry -> stringStringEntry.getValue().equals(prefix))
-                    .map(Map.Entry::getKey)
-                    .findFirst()
-                    .orElse(null);
-            if (namespace == null) {
-                validatePrefixReference((OMTParamTypeReference) scalarValue.getReference(), holder);
-            } else {
-                validateResource(namespace + localname, scalarValue, holder);
-            }
+        // If the namespace is already available as prefix somewhere, show a warning to convert
+        // the fully qualified notation to a prefix notation
+        List<String> prefixes = OMTPrefixIndex.getPrefixes(namespace);
+        if (!prefixes.isEmpty()) {
+            holder.registerProblem(scalar, "Using fully qualified URI",
+                    ProblemHighlightType.WARNING,
+                    prefixes.stream()
+                            .map(prefix -> getQuickFix(prefix, namespace, localName))
+                            .toArray(LocalQuickFix[]::new));
+        }
+        // finally, validate that the resource is part of the model and a class or type
+        validateResource(uri, scalar, holder);
+    }
+
+    private void validateCuriePattern(YAMLScalar scalar, ProblemsHolder holder) {
+        OMTFile containingFile = (OMTFile) scalar.getContainingFile();
+        Map<String, String> availableNamespaces = containingFile.getAvailableNamespaces(scalar);
+        String textValue = scalar.getTextValue();
+        String prefix = PatternUtil.getText(textValue, CURIE_PATTERN, 1);
+        String localName = PatternUtil.getText(textValue, CURIE_PATTERN, 2);
+        String namespace = availableNamespaces.entrySet()
+                .stream()
+                .filter(stringStringEntry -> stringStringEntry.getValue().equals(prefix))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+        if (namespace == null) {
+            validatePrefixReference(scalar, holder);
+        } else {
+            validateResource(namespace + localName, scalar, holder);
         }
     }
 
-    public static void validatePrefixReference(OMTParamTypeReference reference, ProblemsHolder holder) {
+    private void validatePrimitivePattern(YAMLScalar scalar, ProblemsHolder holder) {
+        OntClass ontClass = TTLValueParserUtil.parsePrimitiveClass(scalar.getTextValue());
+        if (ontClass == null) {
+            holder.registerProblem(scalar, "Unknown primitive type");
+        }
+    }
+
+    public static void validatePrefixReference(YAMLValue scalar, ProblemsHolder holder) {
+        PsiReference[] references = scalar.getReferences();
+        OMTParamTypePrefixReference reference = Arrays.stream(references)
+                .filter(OMTParamTypePrefixReference.class::isInstance)
+                .map(OMTParamTypePrefixReference.class::cast)
+                .findFirst()
+                .orElse(null);
         if (reference == null || reference.resolve() != null) {
             return;
         }
@@ -136,31 +162,7 @@ public class OMTParamTypeType extends YamlScalarType {
         }
     }
 
-    private String uri = null;
 
-    private boolean isUri(YAMLScalar scalarValue) {
-        Matcher matcher = URI_PATTERN.matcher(scalarValue.getTextValue());
-        boolean b = matcher.find();
-        if (b) {
-            uri = matcher.group(1);
-        }
-        return b;
-    }
-
-    private String curie;
-    private String localname;
-    private String prefix;
-
-    private boolean isCurie(YAMLScalar scalarValue) {
-        Matcher matcher = CURIE_PATTERN.matcher(scalarValue.getTextValue());
-        boolean b = matcher.find();
-        if (b) {
-            curie = matcher.group();
-            prefix = matcher.group(1);
-            localname = matcher.group(2);
-        }
-        return b;
-    }
 
     @Override
     public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar, @Nullable CompletionContext completionContext) {
@@ -187,30 +189,50 @@ public class OMTParamTypeType extends YamlScalarType {
      * Resolves the type that is present as string
      *
      * @param type    the type part of the declaration (the part between parenthesis if shorthanded, otherwise the value from the type key)
+     *                examples:
+     *                ont:ClassA
+     *                <http://ontologyClassA>
+     *                string
      * @param element the element (YAMLValue) that contains the type
      */
     public static Set<OntResource> resolveType(PsiElement element,
                                                String type) {
         return LoggerUtil.computeWithLogger(LOGGER, "Calculating param type for " + type, () -> {
-            final Matcher matcher = CURIE_PATTERN.matcher(type);
-            final boolean b = matcher.find();
-            if (b) {
-                // it's a  curie, try to resolve via the prefix:
-                String prefix = type.substring(matcher.start(1), matcher.end(1));
-                String localName = type.substring(matcher.start(2), matcher.end(2));
-                final String uri = OMTPrefixProviderUtil.resolveToFullyQualifiedUri(element, prefix, localName);
-                return OppModel.INSTANCE.getClassIndividuals(uri)
-                        .stream()
-                        .map(OntResource.class::cast)
-                        .collect(Collectors.toSet());
-            } else {
-                // not a curie, try to resolve as simple type:
-                return Optional.ofNullable(TTLValueParserUtil.parsePrimitive(type))
-                        .map(OntResource.class::cast)
-                        .map(Set::of)
-                        .orElse(Collections.emptySet());
-            }
+            // resolve from URI
+            return Optional.ofNullable(getQualifiedUri(element, type))
+                    .map(OppModel.INSTANCE::getClassIndividuals)
+                    .stream()
+                    .flatMap(Collection::stream)
+                    .map(OntResource.class::cast)
+                    .collect(Collectors.toSet());
         });
+    }
+
+    private static String getQualifiedUri(PsiElement element, String type) {
+        return resolveTypeFromURI(type)
+                .or(() -> resolveTypeFromCurie(element, type))
+                .or(() -> resolveTypeFromPrimitive(type))
+                .orElse(null);
+    }
+
+    private static Optional<String> resolveTypeFromURI(String type) {
+        return PatternUtil.getTextRange(type, URI_PATTERN, 1)
+                .map(textRange -> textRange.substring(type));
+    }
+
+    private static Optional<String> resolveTypeFromCurie(PsiElement element, String type) {
+        final Matcher matcher = CURIE_PATTERN.matcher(type);
+        if (matcher.find()) {
+            String prefix = type.substring(matcher.start(1), matcher.end(1));
+            String localName = type.substring(matcher.start(2), matcher.end(2));
+            return Optional.ofNullable(OMTPrefixProviderUtil.resolveToFullyQualifiedUri(element, prefix, localName));
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<String> resolveTypeFromPrimitive(String type) {
+        return Optional.ofNullable(TTLValueParserUtil.parsePrimitiveClass(type))
+                .map(Resource::getURI);
     }
 
     private LocalQuickFix getQuickFix(String prefix, String namespace, String localName) {
@@ -231,7 +253,8 @@ public class OMTParamTypeType extends YamlScalarType {
                 PsiElement psiElement = descriptor.getPsiElement();
 
                 // replace the current element:
-                YAMLValue newValue = YAMLElementGenerator.getInstance(project).createYamlKeyValue("foo", prefix + ":" + localName)
+                YAMLValue newValue = YAMLElementGenerator.getInstance(project)
+                        .createYamlKeyValue("foo", prefix + ":" + localName)
                         .getValue();
                 if (newValue != null) {
                     psiElement = psiElement.replace(newValue);
@@ -239,5 +262,18 @@ public class OMTParamTypeType extends YamlScalarType {
                 new OMTRegisterPrefixLocalQuickFix(prefix, namespace).addPrefix(project, psiElement);
             }
         };
+    }
+
+    @Override
+    public String getFullyQualifiedURI(YAMLPlainTextImpl value) {
+        return getQualifiedUri(value, value.getTextValue());
+    }
+
+    @Override
+    public TextRange getOntologyTypeTextRange(YAMLPlainTextImpl value) {
+        String text = value.getText();
+        return PatternUtil.getTextRange(text, URI_PATTERN, 1)
+                .or(() -> PatternUtil.getTextRange(text, CURIE_PATTERN, 2))
+                .orElse(TextRange.EMPTY_RANGE);
     }
 }

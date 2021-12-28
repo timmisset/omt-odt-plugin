@@ -4,15 +4,16 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.omt.psi.references.OMTParamTypeReference;
+import com.misset.opp.omt.psi.references.OMTParamTypePrefixReference;
+import com.misset.opp.omt.psi.references.OMTTTLSubjectReference;
+import com.misset.opp.omt.util.PatternUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-import java.util.regex.Matcher;
-
 import static com.misset.opp.omt.meta.scalars.OMTParamTypeType.CURIE_PATTERN;
+import static com.misset.opp.omt.meta.scalars.OMTParamTypeType.URI_PATTERN;
 
 public class OMTYamlParamTypeDelegate extends YAMLPlainTextImpl implements OMTYamlDelegate {
     YAMLPlainTextImpl value;
@@ -28,25 +29,31 @@ public class OMTYamlParamTypeDelegate extends YAMLPlainTextImpl implements OMTYa
     }
 
     @Override
-    public PsiElement setName(String newName) {
+    public PsiElement setName(@NotNull String newName) {
         final YAMLKeyValue value = YAMLElementGenerator.getInstance(this.value.getProject())
                 .createYamlKeyValue("foo", newName);
         return replace(value);
     }
 
     @Override
-    public OMTParamTypeReference getReference() {
-        Matcher matcher = CURIE_PATTERN.matcher(value.getTextValue());
-        boolean b = matcher.find();
-        if (!b) {
-            return null;
-        }
-
-        return new OMTParamTypeReference(value, TextRange.create(matcher.start(1), matcher.end(1)));
-    }
-
-    @Override
     public PsiReference @NotNull [] getReferences() {
-        return OMTYamlDelegate.super.getReferences();
+        String textValue = value.getTextValue();
+        if (URI_PATTERN.matcher(textValue).find()) {
+            // a URI pattern only has a reference to the Ontology
+            return new PsiReference[]{
+                    new OMTTTLSubjectReference(value, PatternUtil.getTextRange(textValue, URI_PATTERN, 1)
+                            .orElse(TextRange.EMPTY_RANGE))
+            };
+        } else if (CURIE_PATTERN.matcher(textValue).find()) {
+            // a Curie pattern has a reference to the Prefix and the Ontology
+            return new PsiReference[]{
+                    new OMTParamTypePrefixReference(value, PatternUtil.getTextRange(textValue, CURIE_PATTERN, 1)
+                            .orElse(TextRange.EMPTY_RANGE)),
+                    new OMTTTLSubjectReference(value, PatternUtil.getTextRange(textValue, CURIE_PATTERN, 2)
+                            .orElse(TextRange.EMPTY_RANGE))
+            };
+        } else {
+            return PsiReference.EMPTY_ARRAY;
+        }
     }
 }

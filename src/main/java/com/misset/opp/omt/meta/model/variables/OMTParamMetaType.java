@@ -4,10 +4,12 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
+import com.misset.opp.omt.meta.OMTOntologyTypeProvider;
 import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
 import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
-import com.misset.opp.omt.psi.references.OMTParamTypeReference;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -15,26 +17,40 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OMTParamMetaType extends OMTMetaShorthandType implements OMTNamedVariableMetaType {
+import static com.misset.opp.omt.util.PatternUtil.getTextRange;
+
+public class OMTParamMetaType extends OMTMetaShorthandType implements
+        OMTOntologyTypeProvider,
+        OMTNamedVariableMetaType {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    /*
+     * RegEx with capturing group that is able to extract the parameter name (group 1) and type (group 3)
+     */
+    private static final Pattern SHORTHAND = Pattern.compile("^(\\$\\w+)\\s*(\\(([^)]+)\\))?$");
+
+    /*
+     * RegEx with capturing group that is able to extract the parameter name (group 1) and prefix:localname (group 3 and 4)
+     */
+    public static final Pattern SHORTHAND_PREFIX_TYPED = Pattern.compile("^(\\$\\w+)\\s*(\\(([A-z0-9]+):([A-z0-9]+)\\))?$");
+
+    /*
+     * RegEx with capturing group that is able to extract the parameter name (group 1) and the qualified uri (group 2)
+     */
+    public static final Pattern SHORTHAND_URI_TYPED = Pattern.compile("^(\\$\\w+)\\s*\\((<\\S+>)\\)$");
+
+
+    protected static final String SYNTAX_ERROR = "Invalid syntax for parameter shorthand, use: '$name (type)' OR '$name'";
 
     static {
         features.put("name", OMTVariableNameMetaType::new);
         features.put("type", OMTParamTypeType::new);
     }
 
-    private static final Pattern SHORTHAND = Pattern.compile("^(\\$\\w+)\\s*(\\(([^)]+)\\))?$");
-    public static final Pattern SHORTHAND_TYPED = Pattern.compile("^(\\$\\w+)\\s*(\\(([A-z0-9]+):([A-z0-9]+)\\))?$");
-    protected static final String SYNTAX_ERROR = "Invalid syntax for parameter shorthand, use: '$name (type)' OR '$name'";
 
     public OMTParamMetaType() {
         super("OMT Parameter");
@@ -57,16 +73,14 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTNamedVa
 
     @Override
     public Set<OntResource> getType(YAMLValue value) {
-        if(value instanceof YAMLMapping) {
+        if (value instanceof YAMLMapping) {
             return getTypeFromDestructed((YAMLMapping) value);
         }
-
-        final Matcher matcher = SHORTHAND.matcher(value.getText());
-        final boolean b = matcher.find();
-        if (!b || matcher.group(3) == null) {
-            return Collections.emptySet();
-        } // no type provided
-        return OMTParamTypeType.resolveType(value, matcher.group(3));
+        String text = value.getText();
+        TextRange textRange = getTextRange(text, SHORTHAND_URI_TYPED, 2)
+                .or(() -> getTextRange(text, SHORTHAND, 3))
+                .orElse(TextRange.EMPTY_RANGE);
+        return OMTParamTypeType.resolveType(value, textRange.substring(text));
     }
 
     @Override
@@ -85,25 +99,44 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements OMTNamedVa
                     .map(PsiElement::getText)
                     .orElse(null);
         } else if (value instanceof YAMLPlainTextImpl) {
-            final Matcher matcher = SHORTHAND.matcher(value.getText());
-            final boolean b = matcher.find();
-            return b ? matcher.group(1) : null;
+            return getTextRange(value.getText(), SHORTHAND, 1)
+                    .orElse(TextRange.EMPTY_RANGE)
+                    .substring(value.getText());
         }
         return null;
     }
 
     @Override
     public TextRange getNameTextRange(YAMLValue value) {
-        final Matcher matcher = SHORTHAND.matcher(value.getText());
-        if (matcher.find() && matcher.group(1) != null) {
-            return new TextRange(matcher.start(1), matcher.end(1));
-        }
-        return TextRange.EMPTY_RANGE;
+        return getTextRange(value.getText(), SHORTHAND, 1)
+                .orElse(TextRange.EMPTY_RANGE);
     }
 
     @Override
     public void validateValue(@NotNull YAMLValue value, @NotNull ProblemsHolder problemsHolder) {
         super.validateValue(value, problemsHolder);
-        OMTParamTypeType.validatePrefixReference((OMTParamTypeReference) value.getReference(), problemsHolder);
+        OMTParamTypeType.validatePrefixReference(value, problemsHolder);
     }
+
+    @Override
+    public String getFullyQualifiedURI(YAMLPlainTextImpl value) {
+        return getType(value)
+                .stream()
+                .map(OppModel.INSTANCE::toClass)
+                .distinct()
+                .map(Resource::getURI)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public TextRange getOntologyTypeTextRange(YAMLPlainTextImpl value) {
+        String text = value.getText();
+        return getTextRange(text, SHORTHAND_PREFIX_TYPED, 4)
+                .or(() -> getTextRange(text, SHORTHAND_URI_TYPED, 2))
+                .orElse(TextRange.EMPTY_RANGE);
+    }
+
+
 }

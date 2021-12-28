@@ -7,14 +7,10 @@ import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-public class OMTParamTypeReference extends OMTPlainTextReference {
-    public OMTParamTypeReference(@NotNull YAMLPlainTextImpl element) {
-        super(element);
-    }
-
-    public OMTParamTypeReference(@NotNull YAMLPlainTextImpl element,
-                                 @NotNull
-                                         TextRange textRange) {
+public class OMTParamTypePrefixReference extends OMTPlainTextReference {
+    public OMTParamTypePrefixReference(@NotNull YAMLPlainTextImpl element,
+                                       @NotNull
+                                               TextRange textRange) {
         super(element, textRange);
     }
 

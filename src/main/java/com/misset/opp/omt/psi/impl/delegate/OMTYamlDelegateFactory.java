@@ -79,8 +79,10 @@ public class OMTYamlDelegateFactory {
     private static OMTYamlDelegate createPlainTextDelegate(YAMLPlainTextImpl yamlPlainText) {
         final OMTMetaTypeProvider instance = OMTMetaTypeProvider.getInstance(yamlPlainText.getProject());
         final YamlMetaType metaType = instance.getResolvedMetaType(yamlPlainText);
-        if (metaType instanceof OMTNamedVariableMetaType) {
-            return new OMTYamlVariableDelegate(yamlPlainText, metaType instanceof OMTParamMetaType);
+        if (metaType instanceof OMTParamMetaType) {
+            return new OMTYamlParameterDelegate(yamlPlainText);
+        } else if (metaType instanceof OMTNamedVariableMetaType) {
+            return new OMTYamlVariableDelegate(yamlPlainText);
         } else if (metaType instanceof OMTImportMemberMetaType) {
             return new OMTYamlImportMemberDelegate(yamlPlainText);
         } else if (metaType instanceof OMTExportMemberMetaType) {
