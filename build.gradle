@@ -56,7 +56,7 @@ buildSearchableOptions.enabled = false
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 
 patchPluginXml {
-    sinceBuild = '211'
+    sinceBuild = '212'
 
     changeNotes = """
         <h1>OMT / ODT plugin 5.0</h1>
