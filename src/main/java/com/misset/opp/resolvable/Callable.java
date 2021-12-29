@@ -1,10 +1,9 @@
 package com.misset.opp.resolvable;
 
-import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiElement;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.resolvable.util.CallableUtil;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
@@ -107,29 +106,10 @@ public interface Callable extends ContextResolvable {
         LoggerUtil.runWithLogger(LOGGER,
                 "Validation of call " + call.getCallId(),
                 () -> {
-                    validateCallArguments(call, holder);
-                    validateCallFlag(call, holder);
+                    CallableUtil.validateCallArguments(this, call, holder);
+                    CallableUtil.validateCallFlag(this, call, holder);
                 });
 
-    }
-
-    private void validateCallArguments(PsiCall call, ProblemsHolder holder) {
-        final int numberOfArguments = call.getNumberOfArguments();
-        if (!passesMinArguments(numberOfArguments) || !passesMaxArguments(numberOfArguments)) {
-            PsiElement callSignatureElement = call.getCallSignatureElement();
-            holder.registerProblem(callSignatureElement != null ? callSignatureElement : call,
-                    "Expects " + getExpectedArgumentsMessage() + " arguments. Call has " + numberOfArguments + " arguments",
-                    ProblemHighlightType.ERROR);
-        }
-    }
-
-    private void validateCallFlag(PsiCall call, ProblemsHolder holder) {
-        String flag = call.getFlag();
-        if (flag != null && !getFlags().contains(flag)) {
-            holder.registerProblem(call.getFlagElement(),
-                    "Illegal flag, options are: " + String.join(", ", getFlags()),
-                    ProblemHighlightType.ERROR);
-        }
     }
 
     /**
@@ -159,31 +139,6 @@ public interface Callable extends ContextResolvable {
      */
     default Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
-    }
-
-    private boolean passesMinArguments(int numberOfArguments) {
-        return numberOfArguments >= minNumberOfArguments();
-    }
-
-    private boolean passesMaxArguments(int numberOfArguments) {
-        return maxNumberOfArguments() >= numberOfArguments || maxNumberOfArguments() == -1;
-    }
-
-    private String getExpectedArgumentsMessage() {
-        if (minNumberOfArguments() == 0) {
-            if (maxNumberOfArguments() > -1) {
-                return "at most " + maxNumberOfArguments() + " arguments";
-            } else {
-                return "no arguments";
-            }
-        } else if (minNumberOfArguments() > 0) {
-            if (maxNumberOfArguments() == -1) {
-                return "at least " + minNumberOfArguments() + " arguments";
-            } else {
-                return "between " + minNumberOfArguments() + " and " + maxNumberOfArguments() + " arguments";
-            }
-        }
-        return null;
     }
 
     default HashMap<Integer, Set<OntResource>> mapCallableParameters(List<Set<OntResource>> resources) {
