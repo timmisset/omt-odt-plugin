@@ -65,7 +65,10 @@ statement ::=                               declareVariable | variableAssignment
                                             collectionStatement | returnStatement | queryStatement | defineQueryStatement
 
 commandBlock ::=                            CURLY_OPEN script? CURLY_CLOSED
-queryStatement ::=                          query { extends=statement }
+queryStatement ::=                          query {
+    extends=statement
+    mixin="com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryStatement"
+}
 
 // DEFINED MEMBERS
 // ODT Members are Operator and Commands, both can be created by a DEFINE statement

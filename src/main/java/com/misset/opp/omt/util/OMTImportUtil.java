@@ -36,6 +36,10 @@ public class OMTImportUtil {
      * Returns IntentionActions to import the given PsiCall as PsiCallable from anywhere in the project
      */
     public static IntentionAction[] getImportIntentions(OMTFile importingFile, PsiCall call) {
+        if (importingFile == null) {
+            return IntentionAction.EMPTY_ARRAY;
+        }
+
         Project project = importingFile.getProject();
         PsiSearchHelper psiSearchHelper = PsiSearchHelper.getInstance(project);
         // limit the search scope to only OMT files, but within the entire project

@@ -194,7 +194,11 @@
                          language="ODT" displayName="Inspect variable assignment" groupPath="ODT"
                          groupName="Variables" enabledByDefault="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTVariableAssignmentInspection"/>
-
+        <!-- Intentions  -->
+        <intentionAction>
+            <className>com.misset.opp.odt.intentions.IntroduceLocalVariableIntention</className>
+            <category>OMT/Refactorings</category>
+        </intentionAction>
 
         <!-- TTL -->
         <postStartupActivity implementation="com.misset.opp.ttl.LoadOntologyStartupActivity"/>

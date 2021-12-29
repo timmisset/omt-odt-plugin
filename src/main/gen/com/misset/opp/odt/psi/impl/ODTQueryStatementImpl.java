@@ -6,15 +6,15 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryStatement;
 import com.misset.opp.odt.psi.ODTVisitor;
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryStatement;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTQueryStatementImpl extends ODTStatementImpl implements ODTQueryStatement {
+public class ODTQueryStatementImpl extends ODTResolvableQueryStatement implements ODTQueryStatement {
 
   public ODTQueryStatementImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ODTVisitor visitor) {
     visitor.visitQueryStatement(this);
   }
