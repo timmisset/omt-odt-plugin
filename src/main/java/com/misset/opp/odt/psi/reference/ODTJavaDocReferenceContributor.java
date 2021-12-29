@@ -25,7 +25,8 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
  * @see PsiDocTagImpl#getReferences()
  */
 public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
-    private static final Pattern TYPE_EXPRESSION = Pattern.compile("\\(([^:]*):[^)]*\\)");
+    private static final Pattern PREFIX = Pattern.compile("\\(([^:]*):[^)]*\\)");
+    private static final Pattern ONTOLOGY = Pattern.compile("\\([^:]*:([^)]*)\\)");
 
     @Override
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
@@ -34,14 +35,18 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
             public PsiReference @NotNull [] getReferencesByElement(@NotNull PsiElement element,
                                                                    @NotNull ProcessingContext context) {
                 final PsiDocTag docTag = (PsiDocTag) element;
-                if(!(element.getContainingFile() instanceof ODTFile)) { return PsiReference.EMPTY_ARRAY; }
+                if (!(element.getContainingFile() instanceof ODTFile)) {
+                    return PsiReference.EMPTY_ARRAY;
+                }
 
                 List<PsiReference> referenceList = new ArrayList<>();
                 if (docTag.getName().equals("param") && docTag.getValueElement() != null) {
                     Optional.ofNullable(getParamReference(docTag)).ifPresent(referenceList::add);
-                    Optional.ofNullable(getTypeReference(docTag, 1)).ifPresent(referenceList::add);
+                    Optional.ofNullable(getTypePrefixReference(docTag, 1)).ifPresent(referenceList::add);
+                    Optional.ofNullable(getTypeOntologyReference(docTag, 1)).ifPresent(referenceList::add);
                 } else if (docTag.getName().equals("base") && docTag.getValueElement() != null) {
-                    Optional.ofNullable(getTypeReference(docTag, 0)).ifPresent(referenceList::add);
+                    Optional.ofNullable(getTypePrefixReference(docTag, 0)).ifPresent(referenceList::add);
+                    Optional.ofNullable(getTypeOntologyReference(docTag, 0)).ifPresent(referenceList::add);
                 }
                 return referenceList.toArray(PsiReference[]::new);
             }
@@ -55,7 +60,7 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
                         .orElse(null);
             }
 
-            private PsiReference getTypeReference(PsiDocTag docTag, int position) {
+            private PsiReference getTypePrefixReference(PsiDocTag docTag, int position) {
                 if (docTag.getDataElements().length > position) {
                     final PsiElement dataElement = docTag.getDataElements()[position];
                     // @param $param (ont:Class)
@@ -64,12 +69,32 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
 
                     // only when the dataElement contains a prefix a reference will be created
                     // for primitives there is no reference
-                    final Matcher matcher = TYPE_EXPRESSION.matcher(dataElement.getText());
+                    final Matcher matcher = PREFIX.matcher(dataElement.getText());
                     if (matcher.find()) {
                         // valid match
-                        return new ODTTypeAnnotationReference(docTag,
+                        return new ODTTypePrefixAnnotationReference(docTag,
                                 TextRange.create(matcher.start(1), matcher.end(1))
                                         .shiftRight(dataElement.getStartOffsetInParent()));
+                    }
+                }
+                return null;
+            }
+
+            private PsiReference getTypeOntologyReference(PsiDocTag docTag, int position) {
+                if (docTag.getDataElements().length > position) {
+                    final PsiElement dataElement = docTag.getDataElements()[position];
+                    // @param $param (ont:Class)
+                    // the dataElement == (ont:Class)
+                    // Use the RegEx to determine the from-to range within the dataElement to cutOut: Class
+
+                    // only when the dataElement contains a prefix a reference will be created
+                    // for primitives there is no reference
+                    final Matcher matcher = ONTOLOGY.matcher(dataElement.getText());
+                    if (matcher.find()) {
+                        // valid match
+                        return new ODTJavaDocTTLSubjectReference(docTag,
+                                TextRange.create(matcher.start(1), matcher.end(1))
+                                        .shiftRight(dataElement.getStartOffsetInParent()), position);
                     }
                 }
                 return null;

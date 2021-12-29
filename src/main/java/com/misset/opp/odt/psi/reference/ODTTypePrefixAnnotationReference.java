@@ -7,11 +7,11 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTTypeAnnotationReference extends ODTPolyReferenceBase<PsiElement> {
+public class ODTTypePrefixAnnotationReference extends ODTPolyReferenceBase<PsiElement> {
     final TextRange textRange;
 
-    public ODTTypeAnnotationReference(PsiElement psiElement,
-                                      TextRange textRange) {
+    public ODTTypePrefixAnnotationReference(PsiElement psiElement,
+                                            TextRange textRange) {
         super(psiElement, textRange, false);
         this.textRange = textRange;
     }

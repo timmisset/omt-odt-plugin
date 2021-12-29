@@ -75,8 +75,11 @@ public class OppModel {
     HashMap<OntResource, Set<Property>> listPredicatesCache = new HashMap<>();
     HashMap<OntResource, Set<Statement>> listPredicateObjectsCache = new HashMap<>();
     HashMap<String, Set<Individual>> classIndividualsCache = new HashMap<>();
-    HashMap<String, OntResource> mappedResources = new HashMap<>();
-    HashMap<String, Individual> mappedIndividuals = new HashMap<>();
+    HashMap<OntResource, Set<OntClass>> listOntClassesCache = new HashMap<>();
+    HashMap<OntResource, Set<OntResource>> toIndividualCache = new HashMap<>();
+    HashMap<OntResource, OntClass> toClassCache = new HashMap<>();
+    HashMap<String, OntResource> mappedResourcesCache = new HashMap<>();
+    HashMap<String, Individual> mappedIndividualsCache = new HashMap<>();
 
     // contain information from the SHACL model about the cardinality of the predicates
     HashMap<OntClass, List<Property>> required = new HashMap<>();
@@ -122,8 +125,11 @@ public class OppModel {
         listPredicatesCache.clear();
         classIndividualsCache.clear();
         listPredicateObjectsCache.clear();
-        mappedResources.clear();
-        mappedIndividuals.clear();
+        mappedResourcesCache.clear();
+        mappedIndividualsCache.clear();
+        listOntClassesCache.clear();
+        toIndividualCache.clear();
+        toClassCache.clear();
     }
 
     private void clearCardinality() {
@@ -450,10 +456,18 @@ public class OppModel {
     }
 
     public OntClass toClass(OntResource resource) {
-        if (resource.isIndividual()) {
-            return resource.asIndividual().getOntClass();
+        if (toClassCache.containsKey(resource)) {
+            return toClassCache.get(resource);
+        } else {
+            final OntClass ontClass;
+            if (resource.isIndividual()) {
+                ontClass = resource.asIndividual().getOntClass();
+            } else {
+                ontClass = resource.asClass();
+            }
+            toClassCache.put(resource, ontClass);
+            return ontClass;
         }
-        return resource.asClass();
     }
 
     private boolean hasAnyPredicate(OntResource subject,
@@ -554,11 +568,16 @@ public class OppModel {
         reasoner using the rdf:type instead of directly accessing known superclasses of the Class
      */
     public Set<OntClass> listOntClasses(OntResource resource) {
-        final OntClass ontClass = toClass(resource);
-        final HashSet<OntClass> classes = new HashSet<>();
-        classes.add(ontClass);
-        classes.addAll(ontClass.listSuperClasses().toSet());
-        return classes;
+        if (listOntClassesCache.containsKey(resource)) {
+            return listOntClassesCache.get(resource);
+        } else {
+            final OntClass ontClass = toClass(resource);
+            final HashSet<OntClass> classes = new HashSet<>();
+            classes.add(ontClass);
+            classes.addAll(ontClass.listSuperClasses().toSet());
+            listOntClassesCache.put(resource, classes);
+            return classes;
+        }
     }
 
     private Set<OntResource> listObjectsForClass(OntClass subject,
@@ -580,10 +599,18 @@ public class OppModel {
     }
 
     private Set<OntResource> toIndividual(OntResource resource) {
-        if (resource.isClass()) {
-            return resource.asClass().listInstances().mapWith(OntResource.class::cast).toSet();
+        if (toIndividualCache.containsKey(resource)) {
+            return toIndividualCache.get(resource);
+        } else {
+            Set<OntResource> individuals;
+            if (resource.isClass()) {
+                individuals = resource.asClass().listInstances().mapWith(OntResource.class::cast).toSet();
+            } else {
+                individuals = Collections.singleton(resource);
+            }
+            toIndividualCache.put(resource, individuals);
+            return individuals;
         }
-        return Collections.singleton(resource);
     }
 
     public Set<Property> listPredicates(Set<OntResource> classSubjects) {
@@ -642,11 +669,11 @@ public class OppModel {
                 () -> {
                     // Retrieving by string is a rather slow process in Jena,
                     // since it's safe to cache in this case, let's do it!
-                    if (mappedResources.containsKey(uri)) {
-                        return mappedResources.get(uri);
+                    if (mappedResourcesCache.containsKey(uri)) {
+                        return mappedResourcesCache.get(uri);
                     } else {
                         OntResource ontResource = model.getOntResource(uri);
-                        mappedResources.put(uri, ontResource);
+                        mappedResourcesCache.put(uri, ontResource);
                         return ontResource;
                     }
                 });
@@ -659,11 +686,11 @@ public class OppModel {
                 () -> {
                     // Retrieving by string is a rather slow process in Jena,
                     // since it's safe to cache in this case, let's do it!
-                    if (mappedIndividuals.containsKey(uri)) {
-                        return mappedIndividuals.get(uri);
+                    if (mappedIndividualsCache.containsKey(uri)) {
+                        return mappedIndividualsCache.get(uri);
                     } else {
                         Individual individual = model.getIndividual(uri);
-                        mappedIndividuals.put(uri, individual);
+                        mappedIndividualsCache.put(uri, individual);
                         return individual;
                     }
                 });
@@ -693,17 +720,10 @@ public class OppModel {
 
     public Set<OntResource> toIndividuals(Set<OntResource> resources) {
         return resources.stream().map(
-                        resource -> resource.isIndividual() ? Set.of(resource) : OppModel.INSTANCE.getClassIndividuals(resource.getURI())
+                        resource -> resource.isIndividual() ? Set.of(resource) : getClassIndividuals(resource.getURI())
                 ).flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
-
-    public Set<OntResource> toClasses(Set<OntResource> resources) {
-        return resources.stream().map(
-                resource -> resource.isIndividual() ? resource.asIndividual().getOntClass(true) : resource
-        ).collect(Collectors.toSet());
-    }
-
 
     public OntClass getClass(Resource resource) {
         return model.getOntClass(resource.getURI());
@@ -777,30 +797,43 @@ public class OppModel {
     @Nullable
     public OntResource getOntResource(String uri,
                                       Project project) {
-        final OntResource resource = model.getOntResource(uri);
-        if (resource != null) {
-            return resource;
-        }
+        if (mappedResourcesCache.containsKey(uri)) {
+            return mappedResourcesCache.get(uri);
+        } else {
+            final OntResource resource = model.getOntResource(uri);
+            if (resource != null) {
+                mappedResourcesCache.put(uri, resource);
+                return resource;
+            }
 
-        // try via known Iris:
-        final Map<String, String> modelInstanceMapping = SettingsState.getInstance(project).modelInstanceMapping;
-        return modelInstanceMapping.keySet()
-                .stream()
-                .filter(regEx -> Pattern.compile(regEx).matcher(uri).matches())
-                .map(modelInstanceMapping::get)
-                .map(model::getOntClass)
-                .filter(Objects::nonNull)
-                .map(ontClass -> ontClass.createIndividual(uri))
-                .peek(individual -> {
-                    NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
-                            .createNotification(
-                                    "Added " + individual.getURI() + " as " + individual.getOntClass(true),
-                                    NotificationType.INFORMATION)
-                            .setIcon(OMTFileType.INSTANCE.getIcon())
-                            .notify(project);
-                })
-                .findFirst()
-                .orElse(null);
+            // try via known Iris:
+            final Map<String, String> modelInstanceMapping = SettingsState.getInstance(project).modelInstanceMapping;
+            Individual individual = modelInstanceMapping.keySet()
+                    .stream()
+                    .filter(regEx -> Pattern.compile(regEx).matcher(uri).matches())
+                    .map(modelInstanceMapping::get)
+                    .map(model::getOntClass)
+                    .filter(Objects::nonNull)
+                    .map(ontClass -> addIndividual(ontClass, uri, project))
+                    .findFirst()
+                    .orElse(null);
+            mappedResourcesCache.put(uri, individual);
+            return individual;
+        }
+    }
+
+    private Individual addIndividual(OntClass ontClass, String uri, Project project) {
+        isUpdating = true;
+        Individual individual = ontClass.createIndividual(uri);
+        NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
+                .createNotification(
+                        "Added " + individual.getURI() + " as " + individual.getOntClass(true),
+                        NotificationType.INFORMATION)
+                .setIcon(OMTFileType.INSTANCE.getIcon())
+                .notify(project);
+        incrementModificationCount();
+        isUpdating = false;
+        return individual;
     }
 
     public boolean areCompatible(Set<OntResource> resourcesA,

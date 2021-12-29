@@ -7,7 +7,8 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.*;
+import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
@@ -164,20 +165,23 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     public @NotNull Set<OntResource> resolve() {
         return LoggerUtil.computeWithLogger(LOGGER, "Resolving " + getText(), () -> {
             if (getQueryStep() != null) {
-                if (isPartOfFilter()) {
-                    // Filters are evaluated more often to determine which of the input resources
-                    // survive the filter. Therefore, caching the outcome of one would mean they
-                    // all either pass or fail.
-                    return filter(getQueryStep().resolve());
-                } else {
-
-                    return CachedValuesManager.getCachedValue(this,
-                            RESOLVED_VALUE,
-                            () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()),
-                                    PsiModificationTracker.MODIFICATION_COUNT,
-                                    getContainingFile().getHostFile() == null ? getContainingFile() : getContainingFile().getHostFile(),
-                                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
-                }
+                // todo:
+                // caching is disabled, at this point there are too many occurrences of idem-potency errors
+//                if (isPartOfFilter()) {
+//                    // Filters are evaluated more often to determine which of the input resources
+//                    // survive the filter. Therefore, caching the outcome of one would mean they
+//                    // all either pass or fail.
+//                    return filter(getQueryStep().resolve());
+//                } else {
+//
+//                    return CachedValuesManager.getCachedValue(this,
+//                            RESOLVED_VALUE,
+//                            () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()),
+//                                    PsiModificationTracker.MODIFICATION_COUNT,
+//                                    getContainingFile().getHostFile() == null ? getContainingFile() : getContainingFile().getHostFile(),
+//                                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
+//                }
+                return filter(getQueryStep().resolve());
             } else {
                 return Collections.emptySet();
             }
@@ -187,9 +191,10 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     @Override
     public @NotNull Set<OntResource> resolve(Set<OntResource> resources,
                                              PsiCall call) {
-        return Optional.ofNullable(getQueryStep())
-                .map(queryStep -> queryStep.resolve(resources, call))
-                .orElse(Collections.emptySet());
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolving with resources" + getText(),
+                () -> Optional.ofNullable(getQueryStep())
+                        .map(queryStep -> queryStep.resolve(resources, call))
+                        .orElse(Collections.emptySet()));
     }
 
     @Override

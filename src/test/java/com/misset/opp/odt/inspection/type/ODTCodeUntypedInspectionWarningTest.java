@@ -75,6 +75,39 @@ class ODTCodeUntypedInspectionWarningTest extends OMTInspectionTestCase {
     }
 
     @Test
+    void testAddsJavaDocForScalarList() {
+        configureByText("queries: |\n" +
+                "   DEFINE QUERY query($param) => '';\n");
+        invokeQuickFixIntention(ODTCodeUntypedInspectionWarning.ANNOTATE_PARAMETER_WITH_TYPE);
+        Assertions.assertEquals("queries: |\n" +
+                "  /**\n" +
+                "   * @param $param (TypeOrClass)\n" +
+                "   */\n" +
+                "  DEFINE QUERY query($param) => '';\n", getFile().getText());
+    }
+
+    @Test
+    void testAddsJavaDocForScalarListWithOtherContent() {
+        configureByText("queries: |\n" +
+                "  /**\n" +
+                "   * @param $param (string)\n" +
+                "   */\n" +
+                "   DEFINE QUERY aQuery($param) => '';\n" +
+                "   DEFINE QUERY query($param) => '';\n"
+        );
+        invokeQuickFixIntention(ODTCodeUntypedInspectionWarning.ANNOTATE_PARAMETER_WITH_TYPE);
+        Assertions.assertEquals("queries: |\n" +
+                "  /**\n" +
+                "   * @param $param (string)\n" +
+                "   */\n" +
+                "  DEFINE QUERY aQuery($param) => '';\n" +
+                "  /**\n" +
+                "   * @param $param (TypeOrClass)\n" +
+                "   */\n" +
+                "  DEFINE QUERY query($param) => '';\n", getFile().getText());
+    }
+
+    @Test
     void testAddsJavaDocPersistComment() {
         configureByText("queries:\n" +
                 "  /**\n" +

@@ -62,28 +62,31 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalar,
                                        @NotNull ProblemsHolder holder) {
-        if (URI_PATTERN.matcher(scalar.getTextValue()).find()) {
-            validateUriPattern(scalar, holder);
-        } else if (CURIE_PATTERN.matcher(scalar.getTextValue()).find()) {
-            validateCuriePattern(scalar, holder);
-        } else if (PRIMITIVE_PATTERN.matcher(scalar.getTextValue()).find()) {
-            validatePrimitivePattern(scalar, holder);
+        validateType(scalar, scalar.getTextValue(), holder);
+    }
+
+    public static void validateType(PsiElement element, String text, ProblemsHolder holder) {
+        if (URI_PATTERN.matcher(text).find()) {
+            validateUriPattern(element, text, holder);
+        } else if (CURIE_PATTERN.matcher(text).find()) {
+            validateCuriePattern(element, text, holder);
+        } else if (PRIMITIVE_PATTERN.matcher(text).find()) {
+            validatePrimitivePattern(element, text, holder);
         } else {
-            holder.registerProblem(scalar, "Syntax error, match either: " + CURIE_PATTERN.pattern() + " or " + URI_PATTERN.pattern() + " or " + PRIMITIVE_PATTERN.pattern(), ProblemHighlightType.ERROR);
+            holder.registerProblem(element, "Syntax error, match either: " + CURIE_PATTERN.pattern() + " or " + URI_PATTERN.pattern() + " or " + PRIMITIVE_PATTERN.pattern(), ProblemHighlightType.ERROR);
         }
     }
 
-    private void validateUriPattern(YAMLScalar scalar, ProblemsHolder holder) {
+    private static void validateUriPattern(PsiElement element, String text, ProblemsHolder holder) {
         // create a resource to extract the namespace and localName. The resource doesn't have to exist
         // at this point, only be a valid URI pattern.
-        String text = scalar.getText();
         String uri = PatternUtil.getText(text, URI_PATTERN, 1);
 
-        Resource resource = ResourceFactory.createResource(scalar.getTextValue());
+        Resource resource = ResourceFactory.createResource(text);
         String namespace = resource.getNameSpace();
         String localName = resource.getLocalName();
         if (namespace == null || localName == null) {
-            holder.registerProblem(scalar,
+            holder.registerProblem(element,
                     "Syntax error, not a valid URI",
                     ProblemHighlightType.ERROR);
             return;
@@ -92,22 +95,21 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
         // the fully qualified notation to a prefix notation
         List<String> prefixes = OMTPrefixIndex.getPrefixes(namespace);
         if (!prefixes.isEmpty()) {
-            holder.registerProblem(scalar, "Using fully qualified URI",
+            holder.registerProblem(element, "Using fully qualified URI",
                     ProblemHighlightType.WARNING,
                     prefixes.stream()
                             .map(prefix -> getQuickFix(prefix, namespace, localName))
                             .toArray(LocalQuickFix[]::new));
         }
         // finally, validate that the resource is part of the model and a class or type
-        validateResource(uri, scalar, holder);
+        validateResource(uri, element, holder);
     }
 
-    private void validateCuriePattern(YAMLScalar scalar, ProblemsHolder holder) {
-        OMTFile containingFile = (OMTFile) scalar.getContainingFile();
-        Map<String, String> availableNamespaces = containingFile.getAvailableNamespaces(scalar);
-        String textValue = scalar.getTextValue();
-        String prefix = PatternUtil.getText(textValue, CURIE_PATTERN, 1);
-        String localName = PatternUtil.getText(textValue, CURIE_PATTERN, 2);
+    private static void validateCuriePattern(PsiElement element, String text, ProblemsHolder holder) {
+        OMTFile containingFile = (OMTFile) element.getContainingFile();
+        Map<String, String> availableNamespaces = containingFile.getAvailableNamespaces(element);
+        String prefix = PatternUtil.getText(text, CURIE_PATTERN, 1);
+        String localName = PatternUtil.getText(text, CURIE_PATTERN, 2);
         String namespace = availableNamespaces.entrySet()
                 .stream()
                 .filter(stringStringEntry -> stringStringEntry.getValue().equals(prefix))
@@ -115,21 +117,21 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
                 .findFirst()
                 .orElse(null);
         if (namespace == null) {
-            validatePrefixReference(scalar, holder);
+            validatePrefixReference(element, holder);
         } else {
-            validateResource(namespace + localName, scalar, holder);
+            validateResource(namespace + localName, element, holder);
         }
     }
 
-    private void validatePrimitivePattern(YAMLScalar scalar, ProblemsHolder holder) {
-        OntClass ontClass = TTLValueParserUtil.parsePrimitiveClass(scalar.getTextValue());
+    private static void validatePrimitivePattern(PsiElement element, String text, ProblemsHolder holder) {
+        OntClass ontClass = TTLValueParserUtil.parsePrimitiveClass(text);
         if (ontClass == null) {
-            holder.registerProblem(scalar, "Unknown primitive type");
+            holder.registerProblem(element, "Unknown primitive type");
         }
     }
 
-    public static void validatePrefixReference(YAMLValue scalar, ProblemsHolder holder) {
-        PsiReference[] references = scalar.getReferences();
+    public static void validatePrefixReference(PsiElement element, ProblemsHolder holder) {
+        PsiReference[] references = element.getReferences();
         OMTParamTypePrefixReference reference = Arrays.stream(references)
                 .filter(OMTParamTypePrefixReference.class::isInstance)
                 .map(OMTParamTypePrefixReference.class::cast)
@@ -138,22 +140,22 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
         if (reference == null || reference.resolve() != null) {
             return;
         }
-        YAMLPlainTextImpl element = reference.getElement();
-        String text = element.getText();
+        YAMLPlainTextImpl plainText = reference.getElement();
+        String text = plainText.getText();
         String prefix = reference.getRangeInElement().substring(text);
 
         LocalQuickFix[] localQuickFixes = OMTPrefixIndex.getNamespaces(prefix).stream()
                 .map(iri -> new OMTRegisterPrefixLocalQuickFix(prefix, iri))
                 .toArray(LocalQuickFix[]::new);
         holder.registerProblem(
-                element,
+                plainText,
                 UNKNOWN_PREFIX,
                 ProblemHighlightType.ERROR,
                 reference.getRangeInElement(),
                 localQuickFixes);
     }
 
-    private void validateResource(String uri, PsiElement element, ProblemsHolder holder) {
+    public static void validateResource(String uri, PsiElement element, ProblemsHolder holder) {
         OntResource ontResource = OppModel.INSTANCE.getOntResource(uri, holder.getProject());
         if (ontResource == null) {
             holder.registerProblem(element, "Could not find resource <" + uri + "> in the Opp Model", ProblemHighlightType.ERROR);
@@ -208,7 +210,7 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
         });
     }
 
-    private static String getQualifiedUri(PsiElement element, String type) {
+    public static String getQualifiedUri(PsiElement element, String type) {
         return resolveTypeFromURI(type)
                 .or(() -> resolveTypeFromCurie(element, type))
                 .or(() -> resolveTypeFromPrimitive(type))
@@ -235,7 +237,7 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
                 .map(Resource::getURI);
     }
 
-    private LocalQuickFix getQuickFix(String prefix, String namespace, String localName) {
+    private static LocalQuickFix getQuickFix(String prefix, String namespace, String localName) {
         return new LocalQuickFix() {
             @Override
             public @IntentionFamilyName @NotNull String getFamilyName() {

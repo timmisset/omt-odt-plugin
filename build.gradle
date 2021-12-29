@@ -61,8 +61,8 @@ patchPluginXml {
     changeNotes = """
         <h1>OMT / ODT plugin 5.0</h1>
         Completely re-written OMT / ODT plugin</br>
-        It is now fully backed by the native IntelliJ Yaml plugin for the OMT/YAML Structure</br>
-        All ODT fragments are injected as code snippets. This makes it a bit slower but much more stable. You might notice that starting up intelliJ will take a bit longer (about 5 seconds), this is because IntelliJ doesn't index injected fragments which requires the plugin to index all OMT files itself at start-up. I'm working on improving this performance.</br>
+        It is now fully backed by the native IntelliJ YAML plugin for the OMT/YAML Structure</br>
+        All ODT fragments are injected as code snippets. This makes it a bit slower but much more stable.</br>
         </br>
         <a href="https://github.com/timmisset/omt-odt-plugin/blob/master/README.md">It is strongly advised to read the documentation</a>
         <h2>New features</h2>

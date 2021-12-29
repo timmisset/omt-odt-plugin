@@ -7,9 +7,8 @@ import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.OMTOntologyTypeProvider;
 import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
 import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.omt.util.PatternUtil;
 import org.apache.jena.ontology.OntResource;
-import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -17,7 +16,10 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -116,17 +118,24 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
     public void validateValue(@NotNull YAMLValue value, @NotNull ProblemsHolder problemsHolder) {
         super.validateValue(value, problemsHolder);
         OMTParamTypeType.validatePrefixReference(value, problemsHolder);
+
+        String typeText = getTypeText(value);
+        if (typeText != null) {
+            OMTParamTypeType.validateType(value, typeText, problemsHolder);
+        }
     }
 
     @Override
     public String getFullyQualifiedURI(YAMLPlainTextImpl value) {
-        return getType(value)
-                .stream()
-                .map(OppModel.INSTANCE::toClass)
-                .distinct()
-                .map(Resource::getURI)
-                .filter(Objects::nonNull)
-                .findFirst()
+        return Optional.ofNullable(getTypeText(value))
+                .map(type -> OMTParamTypeType.getQualifiedUri(value, type))
+                .orElse(null);
+    }
+
+    private String getTypeText(@NotNull YAMLValue value) {
+        String textValue = value.getText();
+        return PatternUtil.getTextRange(textValue, SHORTHAND, 3)
+                .map(textRange -> textRange.substring(textValue))
                 .orElse(null);
     }
 
