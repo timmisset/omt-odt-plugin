@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.0'
+version '5.1'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
