@@ -254,4 +254,28 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
                 .findFirst()
                 .orElse(-1);
     }
+
+    @Override
+    public void removeArgument(int index) {
+        ODTSignature signature = getSignature();
+        if (signature == null) {
+            return;
+        }
+        List<ODTSignatureArgument> signatureArgumentList = signature.getSignatureArgumentList();
+        String[] filteredArguments = signatureArgumentList.stream().filter(
+                        signatureArgument -> signatureArgumentList.indexOf(signatureArgument) != index
+                ).map(PsiElement::getText)
+                .toArray(String[]::new);
+        if (filteredArguments.length == 0) {
+            signature.delete();
+            return;
+        }
+
+        ODTCall call = ODTElementGenerator.getInstance(getProject()).createCall("Call", null, filteredArguments);
+        if (call != null && call.getSignature() != null) {
+            signature.replace(call.getSignature());
+        }
+    }
+
+    protected abstract void removeAllSignatureArguments();
 }

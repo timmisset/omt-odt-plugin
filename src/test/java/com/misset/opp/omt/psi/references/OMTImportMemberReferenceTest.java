@@ -59,7 +59,7 @@ class OMTImportMemberReferenceTest extends OMTTestCase {
                 "commands:\n" +
                 "   DEFINE COMMAND comm<caret>and => { }");
 
-        withProgress(() -> ReadAction.run(() -> {
+        underProgress(() -> ReadAction.run(() -> {
             final PsiCallable callable = (PsiCallable) myFixture.getElementAtCaret();
             final Collection<UsageInfo> usages = myFixture.findUsages(callable);
             Assertions.assertEquals(1, usages.size());

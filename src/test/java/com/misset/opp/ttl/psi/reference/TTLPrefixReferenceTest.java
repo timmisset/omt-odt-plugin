@@ -39,7 +39,7 @@ class TTLPrefixReferenceTest extends TTLTestCase {
                 "  owl:versionInfo \"Created manually\" ;\n" +
                 ".";
         configureByText(content);
-        withProgress(() -> ReadAction.run(() -> {
+        underProgress(() -> ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Collection<PsiReference> all = ReferencesSearch.search(elementAtCaret)
                     .findAll();
@@ -57,7 +57,7 @@ class TTLPrefixReferenceTest extends TTLTestCase {
                 "  :versionInfo \"Created manually\" ;\n" +
                 ".";
         configureByText(content);
-        withProgress(() -> ReadAction.run(() -> {
+        underProgress(() -> ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Collection<PsiReference> all = ReferencesSearch.search(elementAtCaret)
                     .filtering(psiReference -> psiReference.isReferenceTo(elementAtCaret))

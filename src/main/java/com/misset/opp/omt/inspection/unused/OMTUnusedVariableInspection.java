@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
+import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlBindingParameterDelegate;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlVariableDelegate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
@@ -27,11 +28,12 @@ public class OMTUnusedVariableInspection extends LocalInspectionTool {
                 final OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
                 if (delegate instanceof OMTYamlVariableDelegate) {
                     if (ReferencesSearch.search(element, element.getUseScope()).findFirst() == null) {
-                        holder.registerProblem(
-                                element,
-                                delegate.getName() + " is never used",
-                                LIKE_UNUSED_SYMBOL
-                        );
+                        String warning = delegate.getName() + " is never used.";
+                        if (delegate instanceof OMTYamlBindingParameterDelegate) {
+                            warning += " When removing this parameter, you must also remove it from the Typescript component and all " +
+                                    "HTML instances of the component.";
+                        }
+                        holder.registerProblem(element, warning, LIKE_UNUSED_SYMBOL);
                     }
                 }
             }

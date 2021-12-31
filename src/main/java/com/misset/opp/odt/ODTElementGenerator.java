@@ -53,6 +53,15 @@ public final class ODTElementGenerator {
         return fromFile("@" + name, ODTCallName.class);
     }
 
+    public ODTCall createNoArgsCall(String name, boolean withSignature) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(name);
+        if (withSignature) {
+            stringBuilder.append("()");
+        }
+        return fromFile(stringBuilder.toString(), ODTCall.class);
+    }
+
     public ODTCall createCall(String name,
                               @Nullable String flag,
                               String... arguments) {

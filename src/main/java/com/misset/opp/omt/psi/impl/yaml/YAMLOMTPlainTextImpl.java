@@ -76,4 +76,9 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
     public InjectableContentType getInjectableContentType() {
         return YAMLInjectableUtil.getContentType(this);
     }
+
+    @Override
+    public void delete() throws IncorrectOperationException {
+        getDelegate().delete();
+    }
 }

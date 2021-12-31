@@ -36,6 +36,9 @@
 
         <lang.findUsagesProvider language="yaml" order="before yamlFindUsagesProvider"
                                  implementationClass="com.misset.opp.omt.OMTFindUsageProvider"/>
+        <lang.refactoringSupport language="yaml"
+                                 order="first"
+                                 implementationClass="com.misset.opp.omt.OMTRefactoringSupport"/>
 
         <postStartupActivity id="reasons" implementation="com.misset.opp.omt.startup.LoadReasonsStartupActivity"/>
         <postStartupActivity id="importedMembers"

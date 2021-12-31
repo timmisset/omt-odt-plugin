@@ -107,7 +107,7 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
         return file;
     }
 
-    protected void withProgress(Runnable runnable) {
+    protected void underProgress(Runnable runnable) {
         ProgressManager.getInstance().runProcessWithProgressSynchronously(
                 runnable, "Test", false, getProject()
         );

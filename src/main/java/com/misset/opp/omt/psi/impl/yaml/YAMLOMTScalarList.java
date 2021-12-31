@@ -60,7 +60,18 @@ public class YAMLOMTScalarList extends YAMLScalarListImpl implements InjectionHo
         String prefix = originalRowPrefix.replaceAll("\n" + indentString, "\n");
         String suffix = text.substring(text.length() - commonSuffixLength).replaceAll("\n" + indentString, "\n");
 
-        String result = prefix + text.substring(commonPrefixLength, text.length() - commonSuffixLength) + suffix;
+        String result = cleanUp(prefix, text, suffix, commonPrefixLength, commonSuffixLength);
         return super.updateText(result);
+    }
+
+    private String cleanUp(String prefix, String text, String suffix, int commonPrefixLength, int commonSuffixLength) {
+        // a known bug in the commonSuffix/Prefix implementation of the YamlScalarList
+        // identical tokens can cause an oversized overlap which will throw an error
+        int oversizedOverlap = commonPrefixLength - (text.length() - commonSuffixLength);
+        if (oversizedOverlap > 0) {
+            return prefix.substring(0, prefix.length() - oversizedOverlap) + text.substring(commonPrefixLength, text.length() - commonSuffixLength + oversizedOverlap) + suffix;
+        } else {
+            return prefix + text.substring(commonPrefixLength, text.length() - commonSuffixLength) + suffix;
+        }
     }
 }

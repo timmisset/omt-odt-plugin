@@ -9,7 +9,7 @@ import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
-import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
+import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiResolvable;
@@ -35,7 +35,7 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("base", OMTVariableNameMetaType::new);
+        features.put("base", OMTBaseParameterMetaType::new);
         features.put("params", OMTParamsArrayMetaType::new);
         features.put("graphs", OMTGraphSelectionMetaType::new);
         features.put("prefixes", OMTPrefixesMetaType::new);

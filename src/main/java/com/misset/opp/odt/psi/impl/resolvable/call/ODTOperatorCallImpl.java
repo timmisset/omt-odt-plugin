@@ -3,6 +3,7 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTOperatorCall;
+import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -34,5 +35,13 @@ public abstract class ODTOperatorCallImpl extends ODTResolvableCall implements O
         return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTResolvableQueryOperationStep.class))
                 .map(ODTResolvableQueryOperationStep::resolvePreviousStep)
                 .orElse(Collections.emptySet());
+    }
+
+    @Override
+    protected void removeAllSignatureArguments() {
+        ODTSignature signature = getSignature();
+        if (signature != null) {
+            signature.delete();
+        }
     }
 }

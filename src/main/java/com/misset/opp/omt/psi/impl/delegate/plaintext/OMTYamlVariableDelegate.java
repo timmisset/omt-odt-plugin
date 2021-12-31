@@ -3,15 +3,23 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
+import org.jetbrains.yaml.YAMLElementTypes;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
+import org.jetbrains.yaml.psi.YAMLSequence;
+import org.jetbrains.yaml.psi.YAMLSequenceItem;
 import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
@@ -28,7 +36,10 @@ import java.util.function.BiFunction;
  * The MetaTypes are Psi-less classes which require to be called with the actual PsiElement they
  * represent in order to provide the information
  */
-public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements OMTVariable, OMTYamlDelegate {
+public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements
+        OMTVariable,
+        OMTYamlDelegate,
+        OMTSupportsSafeDelete {
     YAMLPlainTextImpl value;
 
     public OMTYamlVariableDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
@@ -96,5 +107,37 @@ public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements OMTVar
     @Override
     public PsiReference @NotNull [] getReferences() {
         return PsiReference.EMPTY_ARRAY;
+    }
+
+    @Override
+    public boolean isUnused() {
+        return ReferencesSearch.search(value, value.getUseScope()).findFirst() == null;
+    }
+
+    protected void removeFromSequence() {
+        YAMLSequenceItem sequenceItem = PsiTreeUtil.getParentOfType(value, YAMLSequenceItem.class);
+        YAMLSequence sequence = PsiTreeUtil.getParentOfType(value, YAMLSequence.class);
+        if (sequence == null || sequenceItem == null) {
+            return;
+        }
+        if (sequence.getItems().size() == 1) {
+            // only 1 parameter, remove entire block
+            YAMLKeyValue sequenceContainer = PsiTreeUtil.getParentOfType(sequence, YAMLKeyValue.class);
+            if (sequenceContainer != null) {
+                sequenceContainer.delete();
+            }
+        } else {
+            // remove the parameter
+            PsiElement nextLeaf = PsiTreeUtil.nextLeaf(sequenceItem);
+            if (nextLeaf != null && YAMLElementTypes.EOL_ELEMENTS.contains(PsiUtilCore.getElementType(nextLeaf))) {
+                nextLeaf.delete();
+            }
+            sequenceItem.delete();
+        }
+    }
+
+    @Override
+    public void delete() throws IncorrectOperationException {
+        removeFromSequence();
     }
 }

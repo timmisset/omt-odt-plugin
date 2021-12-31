@@ -6,6 +6,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.misset.opp.odt.psi.ODTQueryStatement;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,6 +20,11 @@ public abstract class ODTResolvableQueryStatement extends ODTASTWrapperPsiElemen
     @Override
     public @NotNull Set<OntResource> resolve() {
         return getQuery().resolve();
+    }
+
+    @Override
+    public @NotNull Set<OntResource> resolve(Set<OntResource> inputResources, PsiCall call) {
+        return getQuery().resolve(inputResources, call);
     }
 
     @Override

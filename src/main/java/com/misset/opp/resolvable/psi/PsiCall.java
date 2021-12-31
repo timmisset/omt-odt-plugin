@@ -131,4 +131,10 @@ public interface PsiCall extends PsiResolvable {
      */
     Set<OntResource> resolveCallInput();
 
+    /**
+     * Used for Refactoring safe-delete. When the Callable (as PsiElement) is not using a parameter, it can remove it
+     * and remove all parameters from calls made to the Callable also.
+     */
+    void removeArgument(int index);
+
 }

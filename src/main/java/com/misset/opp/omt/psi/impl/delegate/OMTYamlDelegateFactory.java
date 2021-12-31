@@ -10,10 +10,12 @@ import com.misset.opp.omt.meta.OMTExportMemberMetaType;
 import com.misset.opp.omt.meta.OMTImportMemberMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
+import com.misset.opp.omt.meta.model.variables.OMTBindingParameterMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.meta.module.OMTDeclaredInterfaceMetaType;
 import com.misset.opp.omt.meta.module.OMTDeclaredModuleMetaType;
+import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.OMTIriMetaType;
 import com.misset.opp.omt.meta.scalars.OMTOntologyPrefixMetaType;
 import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
@@ -81,6 +83,10 @@ public class OMTYamlDelegateFactory {
         final YamlMetaType metaType = instance.getResolvedMetaType(yamlPlainText);
         if (metaType instanceof OMTParamMetaType) {
             return new OMTYamlParameterDelegate(yamlPlainText);
+        } else if (metaType instanceof OMTBindingParameterMetaType) {
+            return new OMTYamlBindingParameterDelegate(yamlPlainText);
+        } else if (metaType instanceof OMTBaseParameterMetaType) {
+            return new OMTYamlBaseParameterDelegate(yamlPlainText);
         } else if (metaType instanceof OMTNamedVariableMetaType) {
             return new OMTYamlVariableDelegate(yamlPlainText);
         } else if (metaType instanceof OMTImportMemberMetaType) {

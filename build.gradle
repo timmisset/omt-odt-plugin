@@ -61,6 +61,12 @@ patchPluginXml {
     changeNotes = """
         <h1>Update 5.1</h1>
         Added the 'Introduce local variable' intention</br>
+        Added 'Safe Delete' (part of refactoring) for:<br>
+        <ul>
+            <li>OMT Variables</li>
+            <li>OMT Input parameters</li>
+            <li>OMT Base parameters</li>
+        </ul>
         
         <h1>OMT / ODT plugin 5.0</h1>
         Completely re-written OMT / ODT plugin</br>
