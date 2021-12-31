@@ -12,6 +12,7 @@ import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
 import com.misset.opp.omt.psi.references.OMTParamTypePrefixReference;
 import com.misset.opp.omt.psi.references.OMTTTLSubjectReference;
+import com.misset.opp.omt.util.OMTRefactorUtil;
 import com.misset.opp.omt.util.PatternUtil;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +76,7 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
                     .findAll()
                     .forEach(psiReference -> removeParameterFromCall(psiReference, parameterIndex));
         }
-        removeFromSequence();
+        OMTRefactorUtil.removeFromSequence(value);
     }
 
     private int getParameterIndex() {
@@ -95,5 +96,8 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
         }
     }
 
-
+    @Override
+    public String getType() {
+        return "parameter";
+    }
 }

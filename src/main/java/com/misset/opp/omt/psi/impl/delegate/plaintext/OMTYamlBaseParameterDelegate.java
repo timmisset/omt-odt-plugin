@@ -27,4 +27,10 @@ public class OMTYamlBaseParameterDelegate extends OMTYamlVariableDelegate implem
             keyValue.delete();
         }
     }
+
+
+    @Override
+    public String getType() {
+        return "base parameter";
+    }
 }

@@ -6,9 +6,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
+import com.misset.opp.omt.util.OMTRefactorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -20,7 +24,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate {
+public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate,
+        OMTSupportsSafeDelete {
 
     private final YAMLKeyValue keyValue;
     private YAMLMapping mapping = null;
@@ -64,5 +69,16 @@ public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYam
         final List<VirtualFile> targetFiles = psiFiles.stream().map(PsiFile::getVirtualFile)
                 .filter(Objects::nonNull).collect(Collectors.toList());
         return GlobalSearchScope.filesScope(getProject(), targetFiles);
+    }
+
+    @Override
+    public boolean isUnused() {
+        return !isCallable() || ReferencesSearch.search(keyValue, keyValue.getUseScope()).findFirst() == null;
+    }
+
+    @Override
+    public void delete() throws IncorrectOperationException {
+        OMTRefactorUtil.removeEOLToken(keyValue);
+        super.delete();
     }
 }

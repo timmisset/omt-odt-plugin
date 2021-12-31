@@ -33,4 +33,10 @@ public class OMTYamlBindingParameterDelegate extends OMTYamlVariableDelegate imp
     public boolean isUnused() {
         return false;
     }
+
+
+    @Override
+    public String getType() {
+        return "binding parameter";
+    }
 }

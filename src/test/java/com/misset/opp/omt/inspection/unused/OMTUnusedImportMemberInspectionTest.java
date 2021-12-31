@@ -1,7 +1,11 @@
 package com.misset.opp.omt.inspection.unused;
 
+import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.misset.opp.testCase.OMTInspectionTestCase;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +35,34 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "   - memberA";
         configureByText(content);
         assertHasWarning("Import for memberA is never used");
+    }
+
+    @Test
+    void testRemoveUnusedImportRemovesOnlyImportAndImportPath() {
+        String content = "import:\n" +
+                "   ./importing.omt:\n" +
+                "   - memberA";
+        configureByText(content);
+        IntentionAction remove_prefix = getQuickFixIntention("Remove import member");
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> remove_prefix.invoke(getProject(), getEditor(), getFile()));
+        String contentAfterRemoval = ReadAction.compute(getFile()::getText);
+        Assertions.assertEquals("import:\n" +
+                "   ", contentAfterRemoval);
+    }
+
+    @Test
+    void testRemoveUnusedImportRemovesOnlyImport() {
+        String content = "import:\n" +
+                "   ./importing.omt:\n" +
+                "   - memberA\n" +
+                "   - memberB\n";
+        configureByText(content);
+        IntentionAction remove_prefix = getQuickFixIntention("Remove import member");
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> remove_prefix.invoke(getProject(), getEditor(), getFile()));
+        String contentAfterRemoval = ReadAction.compute(getFile()::getText);
+        Assertions.assertEquals("import:\n" +
+                "   ./importing.omt:\n" +
+                "     - memberB\n", contentAfterRemoval);
     }
 
     @Test

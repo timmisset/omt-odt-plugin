@@ -7,7 +7,6 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlPrefixIriDelegate;
@@ -30,11 +29,12 @@ public class OMTUnusedPrefixIriInspection extends LocalInspectionTool {
                 final OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
                 if (delegate instanceof OMTYamlPrefixIriDelegate) {
                     final OMTYamlPrefixIriDelegate prefixIriDelegate = (OMTYamlPrefixIriDelegate) delegate;
-                    if (ReferencesSearch.search(element, element.getUseScope()).findFirst() == null) {
+                    if (prefixIriDelegate.getKey() != null && ((OMTYamlPrefixIriDelegate) delegate).isUnused()) {
                         holder.registerProblem(
                                 prefixIriDelegate.getKey(),
                                 prefixIriDelegate.getName() + " is never used",
-                                LIKE_UNUSED_SYMBOL
+                                LIKE_UNUSED_SYMBOL,
+                                OMTRemoveQuickFix.getRemoveLocalQuickFix("prefix")
                         );
                     }
                 }

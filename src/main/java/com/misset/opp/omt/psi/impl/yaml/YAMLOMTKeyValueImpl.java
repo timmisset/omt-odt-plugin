@@ -3,6 +3,7 @@ package com.misset.opp.omt.psi.impl.yaml;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.OMTYamlReferenceContributor;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
@@ -49,5 +50,10 @@ public class YAMLOMTKeyValueImpl extends YAMLKeyValueImpl {
     @Override
     public @NotNull SearchScope getUseScope() {
         return getDelegate().getUseScope();
+    }
+
+    @Override
+    public void delete() throws IncorrectOperationException {
+        getDelegate().delete();
     }
 }

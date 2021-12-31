@@ -7,7 +7,6 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.search.searches.ReferencesSearch;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlModelItemDelegate;
@@ -32,11 +31,12 @@ public class OMTUnusedModelItemInspection extends LocalInspectionTool {
                     if (!modelItemDelegate.isCallable() || modelItemDelegate.getKey() == null) {
                         return;
                     }
-                    if (ReferencesSearch.search(element, element.getUseScope()).findFirst() == null) {
+                    if (((OMTYamlModelItemDelegate) delegate).isUnused()) {
                         holder.registerProblem(
                                 modelItemDelegate.getKey(),
                                 modelItemDelegate.getName() + " is never used",
-                                LIKE_UNUSED_SYMBOL
+                                LIKE_UNUSED_SYMBOL,
+                                OMTRemoveQuickFix.getRemoveLocalQuickFix(modelItemDelegate.getName())
                         );
                     }
                 }

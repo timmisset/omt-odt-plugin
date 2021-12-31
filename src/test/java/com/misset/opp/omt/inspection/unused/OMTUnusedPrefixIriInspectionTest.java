@@ -1,7 +1,11 @@
 package com.misset.opp.omt.inspection.unused;
 
+import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.misset.opp.testCase.OMTInspectionTestCase;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -31,5 +35,30 @@ class OMTUnusedPrefixIriInspectionTest extends OMTInspectionTestCase {
                 "";
         configureByText(content);
         assertNoWarning("ont is never used");
+    }
+
+    @Test
+    void testOMTPrefixUnusedRemoveViaLocalQuickFix() {
+        String content = "prefixes:\n" +
+                "   <caret>ont: <http://ontology/>";
+        configureByText(content);
+        IntentionAction remove_prefix = getQuickFixIntention("Remove prefix");
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> remove_prefix.invoke(getProject(), getEditor(), getFile()));
+        String contentAfterRemoval = ReadAction.compute(getFile()::getText);
+        Assertions.assertEquals("prefixes:\n" +
+                "   ", contentAfterRemoval);
+    }
+
+    @Test
+    void testOMTPrefixUnusedRemoveWithRemainingItemsViaLocalQuickFix() {
+        String content = "prefixes:\n" +
+                "   <caret>ont: <http://ontology/>\n" +
+                "   another: <http://ontology/>";
+        configureByText(content);
+        IntentionAction remove_prefix = getQuickFixIntention("Remove prefix");
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> remove_prefix.invoke(getProject(), getEditor(), getFile()));
+        String contentAfterRemoval = ReadAction.compute(getFile()::getText);
+        Assertions.assertEquals("prefixes:\n" +
+                "  another: <http://ontology/>", contentAfterRemoval);
     }
 }
