@@ -69,6 +69,9 @@ patchPluginXml {
             <li>OMT ModelItems</li>
             <li>OMT Prefix declarations</li>
             <li>OMT Import members</li>
+            <li>ODT Variable declarations</li>
+            <li>ODT Input parameters</li>
+            <li>ODT Define Statements</li>
         </ul>
         
         <h1>OMT / ODT plugin 5.0</h1>

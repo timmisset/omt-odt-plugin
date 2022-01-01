@@ -8,6 +8,7 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.prefix.PrefixUtil;
+import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.OntResource;
@@ -53,6 +54,33 @@ public class ODTDocumentationUtil {
         return psiElement;
     }
 
+    public static void removeDocTag(PsiDocTag docTag) {
+        PsiDocComment containingComment = docTag.getContainingComment();
+        docTag.delete();
+        if (isEmptyComment(containingComment)) {
+            removeComment(containingComment);
+        }
+    }
+
+    private static void removeComment(PsiDocComment comment) {
+        ODTRefactoringUtil.removeWhitespace(comment);
+        comment.delete();
+    }
+
+    private static boolean isEmptyComment(PsiDocComment comment) {
+        PsiDocTag[] tags = comment.getTags();
+        if (tags.length > 0) {
+            return false;
+        }
+        PsiElement[] descriptionElements = comment.getDescriptionElements();
+        if (descriptionElements.length == 0) {
+            return true;
+        }
+        return Arrays.stream(descriptionElements)
+                .map(PsiElement::getText)
+                .allMatch(String::isBlank);
+    }
+
     private static boolean isValidDocOwner(PsiElement element) {
         return element != null && validDocOwners.stream()
                 .anyMatch(docOwnerClass -> docOwnerClass.isAssignableFrom(element.getClass()));
@@ -60,7 +88,7 @@ public class ODTDocumentationUtil {
 
     private static final Pattern LOCAL_NAME = Pattern.compile("\\([^:]*:([^)]*)\\)");
 
-    public static Set<OntResource> getTypeFromDocTag(PsiDocTag docTag, int dataElementPosition) {
+    public static Set<OntResource> getTypeFromDocTag(@Nullable PsiDocTag docTag, int dataElementPosition) {
         if (docTag != null && docTag.getDataElements().length > dataElementPosition) {
             // we can retrieve the type from the DocTag:
             final PsiElement dataElement = docTag.getDataElements()[dataElementPosition];

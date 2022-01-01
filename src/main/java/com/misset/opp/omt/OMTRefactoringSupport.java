@@ -4,8 +4,8 @@ import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
-import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsRefactoring;
-import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
+import com.misset.opp.shared.refactoring.SupportsRefactoring;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
@@ -21,12 +21,12 @@ public class OMTRefactoringSupport extends RefactoringSupportProvider {
 
     @Override
     public boolean isAvailable(@NotNull PsiElement context) {
-        return getDelegate(context) instanceof OMTSupportsRefactoring;
+        return getDelegate(context) instanceof SupportsRefactoring;
     }
 
     @Override
     public boolean isSafeDeleteAvailable(@NotNull PsiElement element) {
         OMTYamlDelegate delegate = getDelegate(element);
-        return delegate instanceof OMTSupportsSafeDelete && ((OMTSupportsSafeDelete) delegate).isUnused();
+        return delegate instanceof SupportsSafeDelete && ((SupportsSafeDelete) delegate).isUnused();
     }
 }

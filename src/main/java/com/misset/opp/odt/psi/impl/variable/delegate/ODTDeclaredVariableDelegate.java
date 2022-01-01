@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.variable.delegate;
 
 import com.intellij.psi.PsiReference;
 import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -29,5 +30,10 @@ public class ODTDeclaredVariableDelegate extends ODTBaseVariableDelegate {
     @Override
     public Set<OntResource> resolve() {
         return Collections.emptySet();
+    }
+
+    @Override
+    public void delete() {
+        ODTRefactoringUtil.removeScriptline(element);
     }
 }

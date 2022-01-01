@@ -9,7 +9,7 @@ import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 
-import static com.misset.opp.omt.util.OMTRefactorUtil.removeFromSequence;
+import static com.misset.opp.omt.util.OMTRefactoringUtil.removeFromSequence;
 
 /**
  * Serves as a proxy between the OMTNamedVariableMetaType types and the PsiElement.
@@ -36,7 +36,7 @@ import static com.misset.opp.omt.util.OMTRefactorUtil.removeFromSequence;
 public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements
         OMTVariable,
         OMTYamlDelegate,
-        OMTSupportsSafeDelete {
+        SupportsSafeDelete {
     YAMLPlainTextImpl value;
 
     public OMTYamlVariableDelegate(@NotNull YAMLPlainTextImpl yamlValue) {

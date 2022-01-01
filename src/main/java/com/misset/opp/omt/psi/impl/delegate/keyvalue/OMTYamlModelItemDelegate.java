@@ -11,8 +11,8 @@ import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
-import com.misset.opp.omt.util.OMTRefactorUtil;
+import com.misset.opp.omt.util.OMTRefactoringUtil;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate,
-        OMTSupportsSafeDelete {
+        SupportsSafeDelete {
 
     private final YAMLKeyValue keyValue;
     private YAMLMapping mapping = null;
@@ -78,7 +78,7 @@ public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYam
 
     @Override
     public void delete() throws IncorrectOperationException {
-        OMTRefactorUtil.removeEOLToken(keyValue);
+        OMTRefactoringUtil.removeEOLToken(keyValue);
         super.delete();
     }
 }

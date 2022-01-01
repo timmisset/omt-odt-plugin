@@ -9,6 +9,7 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
@@ -18,6 +19,7 @@ import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +33,11 @@ import java.util.Set;
  * to their implementation.
  * Overlapping logic is confined in this base class
  */
-public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements ODTVariable, ODTVariableWrapper {
+public abstract class ODTBaseVariable
+        extends ODTASTWrapperPsiElement
+        implements ODTVariable,
+        ODTVariableWrapper,
+        SupportsSafeDelete {
     private final ODTVariableDelegate delegate;
     protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
     protected static final Key<CachedValue<Set<OntResource>>> VARIABLE_TYPE = new Key<>("VARIABLE_TYPE");
@@ -159,5 +165,22 @@ public abstract class ODTBaseVariable extends ODTASTWrapperPsiElement implements
     @Override
     public @NotNull SearchScope getUseScope() {
         return new LocalSearchScope(getContainingFile());
+    }
+
+    @Override
+    public boolean isUnused() {
+        return isDeclaredVariable() &&
+                "$_".equals(getName()) &&
+                ReferencesSearch.search(this, getUseScope()).findFirst() == null;
+    }
+
+    @Override
+    public void delete() throws IncorrectOperationException {
+        getDelegate().delete();
+    }
+
+    @Override
+    public PsiElement getHighlightingTarget() {
+        return this;
     }
 }

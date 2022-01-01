@@ -9,9 +9,9 @@ import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
 import com.misset.opp.omt.psi.references.OMTImportMemberReference;
-import com.misset.opp.omt.util.OMTRefactorUtil;
+import com.misset.opp.omt.util.OMTRefactoringUtil;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements OMTYamlDelegate,
-        OMTSupportsSafeDelete {
+        SupportsSafeDelete {
     YAMLPlainTextImpl value;
 
     public OMTYamlImportMemberDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
@@ -55,7 +55,7 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements OM
 
     @Override
     public void delete() throws IncorrectOperationException {
-        OMTRefactorUtil.removeFromSequence(this);
+        OMTRefactoringUtil.removeFromSequence(this);
     }
 
     @Override

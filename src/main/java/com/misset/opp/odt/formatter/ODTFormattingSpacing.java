@@ -43,6 +43,12 @@ public class ODTFormattingSpacing {
                 .aroundInside(ODTTypes.ROOT_INDICATOR, ODTTypes.QUERY_PATH).spaces(0)
                 .before(ODTTokenSets.CHOOSE_BLOCKS).spacing(0, 0, 1, false, 1)
 
+                // define param
+                .between(ODTTypes.COMMA, ODTTypes.VARIABLE).spaces(1)
+                .between(ODTTypes.VARIABLE, ODTTypes.COMMA).spaces(0)
+                .between(ODTTypes.PARENTHESES_OPEN, ODTTypes.VARIABLE).spaces(0)
+                .between(ODTTypes.VARIABLE, ODTTypes.PARENTHESES_CLOSE).spaces(0)
+
                 // signature
                 .between(ODTTypes.COMMA, ODTTypes.SIGNATURE_ARGUMENT).spaces(1)
                 .between(ODTTypes.SIGNATURE_ARGUMENT, ODTTypes.COMMA).spaces(0)

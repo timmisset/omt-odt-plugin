@@ -19,4 +19,6 @@ public interface ODTVariableDelegate {
     Set<OntResource> resolve();
 
     Variable getDeclared();
+
+    void delete();
 }

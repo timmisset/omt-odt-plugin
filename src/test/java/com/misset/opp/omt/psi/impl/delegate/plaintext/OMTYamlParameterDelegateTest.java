@@ -3,7 +3,7 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import com.misset.opp.testCase.OMTDelegateTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,8 @@ class OMTYamlParameterDelegateTest extends OMTDelegateTestCase {
         configureByText(content);
         OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
         underProgress(() -> ReadAction.run(() -> {
-            Assertions.assertTrue(delegateAtCaret instanceof OMTSupportsSafeDelete);
-            Assertions.assertTrue(((OMTSupportsSafeDelete) delegateAtCaret).isUnused());
+            Assertions.assertTrue(delegateAtCaret instanceof SupportsSafeDelete);
+            Assertions.assertTrue(((SupportsSafeDelete) delegateAtCaret).isUnused());
         }));
     }
 
@@ -31,8 +31,8 @@ class OMTYamlParameterDelegateTest extends OMTDelegateTestCase {
         configureByText(content);
         OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
         underProgress(() -> ReadAction.run(() -> {
-            Assertions.assertTrue(delegateAtCaret instanceof OMTSupportsSafeDelete);
-            Assertions.assertFalse(((OMTSupportsSafeDelete) delegateAtCaret).isUnused());
+            Assertions.assertTrue(delegateAtCaret instanceof SupportsSafeDelete);
+            Assertions.assertFalse(((SupportsSafeDelete) delegateAtCaret).isUnused());
         }));
     }
 

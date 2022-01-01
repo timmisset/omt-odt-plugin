@@ -7,15 +7,15 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
-import com.misset.opp.omt.util.OMTRefactorUtil;
+import com.misset.opp.omt.util.OMTRefactoringUtil;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 
 public class OMTYamlPrefixIriDelegate extends YAMLKeyValueImpl implements
         OMTYamlDelegate,
-        OMTSupportsSafeDelete {
+        SupportsSafeDelete {
     private final YAMLKeyValue keyValue;
 
     public OMTYamlPrefixIriDelegate(YAMLKeyValue keyValue) {
@@ -44,7 +44,7 @@ public class OMTYamlPrefixIriDelegate extends YAMLKeyValueImpl implements
 
     @Override
     public void delete() throws IncorrectOperationException {
-        OMTRefactorUtil.removeEOLToken(keyValue);
+        OMTRefactoringUtil.removeEOLToken(keyValue);
         super.delete();
     }
 }

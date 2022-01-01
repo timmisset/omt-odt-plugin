@@ -50,4 +50,9 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
                 element.isDeclaredVariable() &&
                 PsiRelationshipUtil.canBeRelatedElement(element, variable);
     }
+
+    @Override
+    public void delete() {
+
+    }
 }

@@ -9,6 +9,7 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
@@ -21,9 +22,11 @@ import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
+import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.settings.SettingsState;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +37,7 @@ import java.util.stream.IntStream;
 
 public abstract class ODTDefineStatement extends PsiCallable implements
         PsiNameIdentifierOwner,
+        SupportsSafeDelete,
         PsiJavaDocumentedElement {
     private static final Key<CachedValue<HashMap<Integer, Set<OntResource>>>> PARAMETER_TYPES = new Key<>("PARAMETER_TYPES");
 
@@ -158,5 +162,20 @@ public abstract class ODTDefineStatement extends PsiCallable implements
         return Optional.ofNullable(variables.get(index))
                 .map(PsiNamedElement::getName)
                 .orElse("$param" + index);
+    }
+
+    @Override
+    public boolean isUnused() {
+        return ReferencesSearch.search(this, getUseScope()).findFirst() == null;
+    }
+
+    @Override
+    public void delete() throws IncorrectOperationException {
+        ODTRefactoringUtil.removeScriptline(this);
+    }
+
+    @Override
+    public PsiElement getHighlightingTarget() {
+        return getDefineName();
     }
 }

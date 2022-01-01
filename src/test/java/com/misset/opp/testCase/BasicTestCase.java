@@ -91,7 +91,7 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
             fail("Fixture is not defined, call super.setUp()");
         }
         final PsiFile psiFile = myFixture.configureByText(fileName, content);
-        if (!acceptErrorElements && PsiTreeUtil.hasErrorElements(psiFile)) {
+        if (!acceptErrorElements && ReadAction.compute(() -> PsiTreeUtil.hasErrorElements(psiFile))) {
             String errorMessage = ReadAction.compute(() -> PsiTreeUtil.findChildrenOfType(psiFile,
                             PsiErrorElement.class)
                     .stream()

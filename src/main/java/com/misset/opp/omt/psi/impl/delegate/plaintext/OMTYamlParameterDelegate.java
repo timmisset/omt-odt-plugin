@@ -1,7 +1,6 @@
 package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -9,12 +8,12 @@ import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
-import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
 import com.misset.opp.omt.psi.references.OMTParamTypePrefixReference;
 import com.misset.opp.omt.psi.references.OMTTTLSubjectReference;
-import com.misset.opp.omt.util.OMTRefactorUtil;
+import com.misset.opp.omt.util.OMTRefactoringUtil;
 import com.misset.opp.omt.util.PatternUtil;
-import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.shared.refactoring.RefactoringUtil;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -26,7 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements OMTSupportsSafeDelete {
+public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements SupportsSafeDelete {
     YAMLPlainTextImpl value;
 
     public OMTYamlParameterDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
@@ -74,9 +73,9 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
             }
             ReferencesSearch.search(callable, callable.getUseScope())
                     .findAll()
-                    .forEach(psiReference -> removeParameterFromCall(psiReference, parameterIndex));
+                    .forEach(psiReference -> RefactoringUtil.removeParameterFromCall(psiReference, parameterIndex));
         }
-        OMTRefactorUtil.removeFromSequence(value);
+        OMTRefactoringUtil.removeFromSequence(value);
     }
 
     private int getParameterIndex() {
@@ -86,14 +85,6 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
             return -1;
         }
         return sequence.getItems().indexOf(sequenceItem);
-    }
-
-    private void removeParameterFromCall(PsiReference reference, int index) {
-        PsiElement element = reference.getElement();
-        if (element instanceof PsiCall) {
-            PsiCall call = (PsiCall) element;
-            call.removeArgument(index);
-        }
     }
 
     @Override

@@ -1,11 +1,11 @@
 package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.psi.impl.refactoring.OMTSupportsSafeDelete;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-public class OMTYamlBindingParameterDelegate extends OMTYamlVariableDelegate implements OMTSupportsSafeDelete {
+public class OMTYamlBindingParameterDelegate extends OMTYamlVariableDelegate implements SupportsSafeDelete {
     YAMLPlainTextImpl value;
 
     public OMTYamlBindingParameterDelegate(@NotNull YAMLPlainTextImpl yamlValue) {

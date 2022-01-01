@@ -1,25 +1,28 @@
 package com.misset.opp.odt.inspection;
 
 import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.codeInspection.LocalQuickFix;
+import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.codeInspection.util.IntentionFamilyName;
+import com.intellij.codeInspection.util.IntentionName;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBOL;
-import static com.misset.opp.odt.ODTFindUsagesProvider.CHECK_CAN_FIND_USAGES;
 
 public class ODTUnusedInspection extends LocalInspectionTool {
 
     @Override
     public @Nullable @Nls String getStaticDescription() {
-        return "Inspect named elements that are not references by any element";
+        return "Inspect declared elements in the ODT language that are not used anywhere.\n" +
+                "For example, DEFINE statements, DEFINE parameters, VAR variable declarations";
     }
 
     @Override
@@ -28,35 +31,45 @@ public class ODTUnusedInspection extends LocalInspectionTool {
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (!CHECK_CAN_FIND_USAGES.test(element)) {
+                if (!(element instanceof SupportsSafeDelete)) {
                     return;
                 }
-                if (!(element instanceof PsiNamedElement)) {
-                    return;
-                }
-                // don't gray-out the entire element but only the name, for example, the DEFINE QUERY query => ''
-                // only 'query' should be gray
-                PsiElement targetElement = element instanceof PsiNameIdentifierOwner ?
-                        ((PsiNameIdentifierOwner) element).getIdentifyingElement() :
-                        element;
+                SupportsSafeDelete safeDeleteElement = (SupportsSafeDelete) element;
 
                 final PsiNamedElement namedElement = (PsiNamedElement) element;
-                if (!isException(element) && ReferencesSearch.search(element, element.getUseScope())
-                        .allowParallelProcessing().findFirst() == null) {
+                if ((safeDeleteElement).isUnused()) {
                     holder.registerProblem(
-                            targetElement,
+                            safeDeleteElement.getHighlightingTarget(),
                             namedElement.getName() + " is never used",
-                            LIKE_UNUSED_SYMBOL);
+                            LIKE_UNUSED_SYMBOL,
+                            getRemoveLocalQuickFix(namedElement.getName()));
                 }
             }
+
+            private LocalQuickFix getRemoveLocalQuickFix(String name) {
+                return new LocalQuickFix() {
+                    @Override
+                    public @IntentionFamilyName @NotNull String getFamilyName() {
+                        return "Remove";
+                    }
+
+                    @Override
+                    public @IntentionName @NotNull String getName() {
+                        return "Remove " + name;
+                    }
+
+                    @Override
+                    public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+                        PsiElement psiElement = descriptor.getPsiElement();
+                        while (psiElement != null && !(psiElement instanceof SupportsSafeDelete)) {
+                            psiElement = psiElement.getParent();
+                        }
+                        if (psiElement != null) {
+                            psiElement.delete();
+                        }
+                    }
+                };
+            }
         };
-    }
-
-    private boolean isException(PsiElement element) {
-        if(element instanceof ODTVariable) {
-            return "$_".equals(((ODTVariable) element).getName());
-        }
-
-        return false;
     }
 }

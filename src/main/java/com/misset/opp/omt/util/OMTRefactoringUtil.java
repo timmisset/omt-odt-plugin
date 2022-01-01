@@ -8,7 +8,7 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLSequence;
 import org.jetbrains.yaml.psi.YAMLSequenceItem;
 
-public class OMTRefactorUtil {
+public class OMTRefactoringUtil {
 
     public static void removeEOLToken(PsiElement element) {
         PsiElement nextLeaf = PsiTreeUtil.nextLeaf(element);
@@ -31,7 +31,7 @@ public class OMTRefactorUtil {
             }
         } else {
             // remove the parameter
-            OMTRefactorUtil.removeEOLToken(sequenceItem);
+            OMTRefactoringUtil.removeEOLToken(sequenceItem);
             sequenceItem.delete();
         }
     }
