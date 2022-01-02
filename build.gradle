@@ -74,6 +74,8 @@ patchPluginXml {
             <li>ODT Define Statements</li>
         </ul>
         
+        Fixed: Insert ODT DEFINE QUERY / COMMAND statement with proper indentation
+        
         <h1>OMT / ODT plugin 5.0</h1>
         Completely re-written OMT / ODT plugin</br>
         It is now fully backed by the native IntelliJ YAML plugin for the OMT/YAML Structure</br>

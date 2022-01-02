@@ -1,10 +1,12 @@
 package com.misset.opp.odt.completion;
 
+import com.google.common.base.Strings;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.odt.formatter.ODTHostFormattingUtil;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.shared.InjectableContentType;
@@ -23,7 +25,7 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
             "/**\n" +
             " * @param $param (string)\n" +
             " */\n" +
-            "DEFINE QUERY queryWithParameter($param) => LOG($param);";
+            "DEFINE QUERY queryWithParameter($param) => $param;";
     protected static final String QUERY_BASE_TEMPLATE = "" +
             "/**\n" +
             " * @base (string)\n" +
@@ -47,50 +49,56 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                 if (host != null) {
                     InjectableContentType injectableContentType = host.getInjectableContentType();
                     if (injectableContentType != InjectableContentType.None) {
-                        insertInjectableContentTypeCompletions(injectableContentType, parameters.getPosition(), result);
+                        insertInjectableContentTypeCompletions(injectableContentType, originalFile, parameters.getPosition(), result);
                     }
                 }
             }
 
             private void insertInjectableContentTypeCompletions(InjectableContentType injectableContentType,
+                                                                ODTFile containingFile,
                                                                 PsiElement element,
                                                                 CompletionResultSet resultSet) {
                 switch (injectableContentType) {
                     case Query:
-                        insertQueryTemplate(element, resultSet);
+                        insertQueryTemplate(element, containingFile, resultSet);
                         break;
                     case Command:
-                        insideCommandTemplate(element, resultSet);
+                        insideCommandTemplate(element, containingFile, resultSet);
                         break;
                 }
 
             }
 
-            private void insertQueryTemplate(PsiElement element, CompletionResultSet resultSet) {
+            private void insertQueryTemplate(PsiElement element, ODTFile containingFile, CompletionResultSet resultSet) {
                 if (OUTSIDE_STATEMENT.accepts(element)) {
-                    resultSet.addElement(LookupElementBuilder.create(QUERY_SIMPLE_TEMPLATE)
+                    resultSet.addElement(LookupElementBuilder.create(withIndentation(QUERY_SIMPLE_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE QUERY simpleQuery")
                             .withTypeText(CODE_SNIPPET));
-                    resultSet.addElement(LookupElementBuilder.create(QUERY_PARAMETER_TEMPLATE)
+                    resultSet.addElement(LookupElementBuilder.create(withIndentation(QUERY_PARAMETER_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE QUERY queryWithParameter($param)")
                             .withTypeText(CODE_SNIPPET));
-                    resultSet.addElement(LookupElementBuilder.create(QUERY_BASE_TEMPLATE)
+                    resultSet.addElement(LookupElementBuilder.create(withIndentation(QUERY_BASE_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE QUERY queryWithBase")
                             .withTypeText(CODE_SNIPPET));
                     resultSet.stopHere();
                 }
             }
 
-            private void insideCommandTemplate(PsiElement element, CompletionResultSet resultSet) {
+            private void insideCommandTemplate(PsiElement element, ODTFile containingFile, CompletionResultSet resultSet) {
                 if (OUTSIDE_STATEMENT.accepts(element)) {
-                    resultSet.addElement(LookupElementBuilder.create(COMMAND_SIMPLE_TEMPLATE)
+                    resultSet.addElement(LookupElementBuilder.create(withIndentation(COMMAND_SIMPLE_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE COMMAND simpleCommand")
                             .withTypeText(CODE_SNIPPET));
-                    resultSet.addElement(LookupElementBuilder.create(COMMAND_PARAMETER_TEMPLATE)
+                    resultSet.addElement(LookupElementBuilder.create(withIndentation(COMMAND_PARAMETER_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE COMMAND commandWithParameter($param)")
                             .withTypeText(CODE_SNIPPET));
                     resultSet.stopHere();
                 }
+            }
+
+            private String withIndentation(String template, ODTFile containingFile) {
+                String indent = Strings.repeat(" ", ODTHostFormattingUtil.getMinimalLineOffset(containingFile));
+                return template.replace("\n", "\n" + indent);
             }
         });
     }

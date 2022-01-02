@@ -165,6 +165,17 @@ class ODTVariableReferenceTest extends OMTTestCase {
         });
     }
 
+    @Test
+    void testRefactorRenameODTVariable() {
+        String content = "queries:\n" +
+                "  DEFINE QUERY query($<caret>param) => $param;";
+        OMTFile omtFile = configureByText(content);
+        WriteCommandAction.runWriteCommandAction(getProject(), () -> myFixture.renameElementAtCaret("$newName"));
+        String contentAfterRename = ReadAction.compute(omtFile::getText);
+        Assertions.assertEquals("queries:\n" +
+                "  DEFINE QUERY query($newName) => $newName;", contentAfterRename);
+    }
+
     private void assertNoResolvableReference() {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();

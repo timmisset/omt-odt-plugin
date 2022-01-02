@@ -2,6 +2,7 @@ package com.misset.opp.omt.psi.impl.yaml;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.shared.InjectableContentType;
 import com.misset.opp.shared.InjectionHost;
@@ -39,7 +40,8 @@ public class YAMLOMTScalarList extends YAMLScalarListImpl implements InjectionHo
 
     @Override
     public PsiLanguageInjectionHost updateText(@NotNull String text) {
-        return super.updateText(trimIndents(text));
+        String trimmedContent = trimIndents(text);
+        return ElementManipulators.handleContentChange(this, trimmedContent);
     }
 
     private String trimIndents(String text) {

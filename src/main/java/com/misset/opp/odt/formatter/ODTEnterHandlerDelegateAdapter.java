@@ -10,19 +10,14 @@ import com.intellij.openapi.editor.actionSystem.EditorActionHandler;
 import com.intellij.openapi.editor.impl.CaretImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTIgnored;
-import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.yaml.psi.impl.YAMLScalarListImpl;
 
-import java.util.List;
 import java.util.Optional;
 
 public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter {
@@ -48,7 +43,7 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
             insert(file.getProject(), editor, "* \n */", caretOffset.get());
             moveCaretAfterInsert = 3;
         }
-        minimalLineOffset = getMinimalLineOffset(file);
+        minimalLineOffset = ODTHostFormattingUtil.getMinimalLineOffset(file);
         return Result.Continue;
     }
 
@@ -63,7 +58,7 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
                     CaretImpl currentCaret = (CaretImpl) caret;
                     if (currentCaret.getVisualPosition().column == 0) {
                         // known issue with continuation indent when injected
-                        Document hostDocument = getHostDocument(file);
+                        Document hostDocument = ODTHostFormattingUtil.getHostDocument(file);
                         int indentSize = minimalLineOffset + 4; // + 4 is fixed size for continuation indent
                         insert(file.getProject(),
                                 hostDocument,
@@ -74,35 +69,6 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
             }
         }
         return Result.Continue;
-    }
-
-    private int getMinimalLineOffset(@NotNull PsiFile file) {
-        PsiLanguageInjectionHost host = ((ODTFileImpl) file).getHost();
-        if (host == null) {
-            return 0;
-        }
-        int textOffset = getInjectionStart(host);
-        Document hostDocument = getHostDocument(file);
-        if (hostDocument == null) {
-            return 0;
-        }
-        int lineNumber = hostDocument.getLineNumber(textOffset);
-        return textOffset - hostDocument.getLineStartOffset(lineNumber);
-    }
-
-    private int getInjectionStart(PsiLanguageInjectionHost host) {
-        if (host instanceof YAMLScalarListImpl) {
-            List<TextRange> contentRanges = ((YAMLScalarListImpl) host).getTextEvaluator().getContentRanges();
-            if (contentRanges.size() > 0) {
-                return host.getTextOffset() + contentRanges.get(0).getStartOffset();
-            }
-        }
-        return host.getTextOffset();
-    }
-
-    private Document getHostDocument(@NotNull PsiFile file) {
-        PsiLanguageInjectionHost host = ((ODTFileImpl) file).getHost();
-        return PsiDocumentManager.getInstance(file.getProject()).getDocument(host.getContainingFile());
     }
 
     @Override

@@ -170,7 +170,7 @@ public abstract class ODTBaseVariable
     @Override
     public boolean isUnused() {
         return isDeclaredVariable() &&
-                "$_".equals(getName()) &&
+                !"$_".equals(getName()) &&
                 ReferencesSearch.search(this, getUseScope()).findFirst() == null;
     }
 
