@@ -59,8 +59,6 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.2</h1>
-        
         <h1>Update 5.1</h1>
         Added the 'Introduce local variable' intention</br>
         Added 'Safe Delete' (part of refactoring) and 'Remove' quickfix for:</br>
