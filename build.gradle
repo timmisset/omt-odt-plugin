@@ -59,6 +59,8 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        <h1>Update 5.2</h1>
+        
         <h1>Update 5.1</h1>
         Added the 'Introduce local variable' intention</br>
         Added 'Safe Delete' (part of refactoring) and 'Remove' quickfix for:</br>
@@ -74,7 +76,9 @@ patchPluginXml {
             <li>ODT Define Statements</li>
         </ul>
         
-        Fixed: Insert ODT DEFINE QUERY / COMMAND statement with proper indentation
+        Resolves DEFINE COMMAND callables by resolving all possible RETURN statements</br>
+        Fixed: Insert ODT DEFINE QUERY / COMMAND statement with proper indentation</br>
+        Fixed: owl:Class resolves correctly to any Class, not instances of owl:Class</br>
         
         <h1>OMT / ODT plugin 5.0</h1>
         Completely re-written OMT / ODT plugin</br>

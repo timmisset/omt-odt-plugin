@@ -74,7 +74,7 @@ public class OppModel {
     HashMap<OntResource, HashMap<Property, Set<OntResource>>> listObjectsCache = new HashMap<>();
     HashMap<OntResource, Set<Property>> listPredicatesCache = new HashMap<>();
     HashMap<OntResource, Set<Statement>> listPredicateObjectsCache = new HashMap<>();
-    HashMap<String, Set<Individual>> classIndividualsCache = new HashMap<>();
+    HashMap<String, Set<OntResource>> classIndividualsCache = new HashMap<>();
     HashMap<OntResource, Set<OntClass>> listOntClassesCache = new HashMap<>();
     HashMap<OntResource, Set<OntResource>> toIndividualCache = new HashMap<>();
     HashMap<OntResource, OntClass> toClassCache = new HashMap<>();
@@ -696,18 +696,21 @@ public class OppModel {
                 });
     }
 
-    public Set<Individual> getClassIndividuals(String classUri) {
+    public Set<OntResource> getClassIndividuals(String classUri) {
         if (classIndividualsCache.containsKey(classUri)) {
             return classIndividualsCache.get(classUri);
         }
-        Set<Individual> individuals = calculateClassIndividuals(classUri);
+        Set<OntResource> individuals = calculateClassIndividuals(classUri);
         classIndividualsCache.put(classUri, individuals);
         return individuals;
     }
 
-    private Set<Individual> calculateClassIndividuals(String classUri) {
+    private Set<OntResource> calculateClassIndividuals(String classUri) {
         if (classUri == null || classUri.equals(OWL_THING_CLASS.getURI())) {
             return Set.of(OWL_THING_INSTANCE);
+        }
+        if (classUri.equals(OWL_CLASS.getURI())) {
+            return Set.of(OWL_CLASS);
         }
         return Optional.ofNullable(getClass(classUri))
                 .map(ontClass -> ontClass.listInstances(true).toList())
