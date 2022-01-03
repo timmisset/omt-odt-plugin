@@ -60,6 +60,7 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.1</h1>
+        New</br>
         Added the 'Introduce local variable' intention</br>
         Added 'Safe Delete' (part of refactoring) and 'Remove' quickfix for:</br>
         <ul>
@@ -73,8 +74,9 @@ patchPluginXml {
             <li>ODT Input parameters</li>
             <li>ODT Define Statements</li>
         </ul>
-        
         Resolves DEFINE COMMAND callables by resolving all possible RETURN statements</br>
+        Refactor-rename provides suggestions for variable names</br>
+        </br>
         Fixed: Insert ODT DEFINE QUERY / COMMAND statement with proper indentation</br>
         Fixed: owl:Class resolves correctly to any Class, not instances of owl:Class</br>
         

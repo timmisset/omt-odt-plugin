@@ -46,8 +46,8 @@ public class OppModel {
     public Property RDF_TYPE;
     public List<Property> classModelProperties;
 
-    protected OntClass OWL_CLASS;
-    protected OntClass OWL_THING_CLASS;
+    public OntClass OWL_CLASS;
+    public OntClass OWL_THING_CLASS;
     public Individual OWL_THING_INSTANCE;
     public OntClass OPP_CLASS;
     public OntClass GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;

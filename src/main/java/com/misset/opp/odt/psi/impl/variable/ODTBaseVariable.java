@@ -5,6 +5,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.LocalSearchScope;
@@ -23,6 +24,7 @@ import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -37,6 +39,7 @@ public abstract class ODTBaseVariable
         extends ODTASTWrapperPsiElement
         implements ODTVariable,
         ODTVariableWrapper,
+        PsiNameIdentifierOwner,
         SupportsSafeDelete {
     private final ODTVariableDelegate delegate;
     protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
@@ -181,6 +184,11 @@ public abstract class ODTBaseVariable
 
     @Override
     public PsiElement getHighlightingTarget() {
+        return this;
+    }
+
+    @Override
+    public @Nullable PsiElement getNameIdentifier() {
         return this;
     }
 }
