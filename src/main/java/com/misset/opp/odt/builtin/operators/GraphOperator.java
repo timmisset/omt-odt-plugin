@@ -27,6 +27,6 @@ public class GraphOperator extends BuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateInstances(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateInstances(call.resolvePreviousStep(), holder, call);
     }
 }

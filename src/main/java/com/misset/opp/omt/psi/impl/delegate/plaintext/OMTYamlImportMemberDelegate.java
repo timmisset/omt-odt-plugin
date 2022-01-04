@@ -64,12 +64,12 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements OM
         return Optional.ofNullable(getReference())
                 .map(PsiReference::resolve)
                 .map(targetElement -> isNeverUsed(targetElement, value, containingFile))
-                .isEmpty();
+                .orElse(true);
     }
 
-    private PsiReference isNeverUsed(PsiElement targetElement,
-                                     PsiElement importElement,
-                                     PsiFile containingFile) {
+    private boolean isNeverUsed(PsiElement targetElement,
+                                PsiElement importElement,
+                                PsiFile containingFile) {
         // all files that import this file are also part of the scope:
         List<OMTFile> importingFiles = OMTImportedMembersIndex.getImportingFiles(importElement.getText());
         List<PsiElement> placesToSearch = ReferencesSearch.search(containingFile, new LocalSearchScope(importingFiles.toArray(PsiFile[]::new)))
@@ -81,6 +81,6 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements OM
 
         return ReferencesSearch.search(targetElement, new LocalSearchScope(placesToSearch.toArray(PsiElement[]::new)))
                 .filtering(psiReference -> psiReference.getElement() != importElement)
-                .findFirst();
+                .findFirst() == null;
     }
 }

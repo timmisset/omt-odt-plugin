@@ -20,7 +20,7 @@ public class DateFormatOperator extends BuiltInStringOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateDateTime(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateDateTime(call.resolvePreviousStep(), holder, call);
         validateStringArgument(0, call, holder);
     }
 

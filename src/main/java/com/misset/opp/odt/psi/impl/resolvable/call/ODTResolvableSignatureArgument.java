@@ -8,7 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
+import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Resolvable;
@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public abstract class ODTResolvableSignatureArgument extends ODTASTWrapperPsiElement
+public abstract class ODTResolvableSignatureArgument extends ODTBaseResolvable
         implements ODTSignatureArgument, ODTTypeFilterProvider {
     public ODTResolvableSignatureArgument(@NotNull ASTNode node) {
         super(node);

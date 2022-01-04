@@ -21,8 +21,8 @@ public class OMTBindingParameterMetaType extends OMTMetaShorthandType implements
 
     static {
         features.put("bindTo", OMTVariableNameMetaType::new);
-        features.put("input", () -> new YamlBooleanType("input"));
-        features.put("output", () -> new YamlBooleanType("output"));
+        features.put("input", YamlBooleanType::getSharedInstance);
+        features.put("output", YamlBooleanType::getSharedInstance);
         features.put("onChange", OMTScriptMetaType::new);
     }
 

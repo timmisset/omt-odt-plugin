@@ -73,10 +73,47 @@ class ODTVariableReferenceTest extends OMTTestCase {
     }
 
     @Test
-    void testODTReferenceToOMT() {
+    void testODTReferenceToOMTActivityVariable() {
         String content = insideActivityWithPrefixes(
                 "variables:\n" +
                         "- $test\n" +
+                        "payload:\n" +
+                        "   test: $<caret>test\n"
+        );
+        configureByText(content);
+        ReadAction.run(() -> {
+            // the getElementAtCaret method returns the result of resolving the reference of the element at the caret
+            // in this case, it should return OMT variable: $test declared in the variables block
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            // is resolved to the OMT variable
+            Assertions.assertTrue(elementAtCaret instanceof YAMLPlainTextImpl);
+        });
+    }
+
+    @Test
+    void testODTReferenceToOMTComponentBindingParameter() {
+        String content = insideComponentWithPrefixes(
+                "bindings:\n" +
+                        "   test: $test\n" +
+                        "payload:\n" +
+                        "   test: $<caret>test\n"
+        );
+        configureByText(content);
+        ReadAction.run(() -> {
+            // the getElementAtCaret method returns the result of resolving the reference of the element at the caret
+            // in this case, it should return OMT variable: $test declared in the variables block
+            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            // is resolved to the OMT variable
+            Assertions.assertTrue(elementAtCaret instanceof YAMLPlainTextImpl);
+        });
+    }
+
+    @Test
+    void testODTReferenceToOMTComponentDestructedBindingParameter() {
+        String content = insideComponentWithPrefixes(
+                "bindings:\n" +
+                        "   test:\n" +
+                        "       bindTo: $test\n" +
                         "payload:\n" +
                         "   test: $<caret>test\n"
         );

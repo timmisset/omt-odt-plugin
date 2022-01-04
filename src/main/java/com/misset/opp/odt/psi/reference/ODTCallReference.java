@@ -1,5 +1,6 @@
 package com.misset.opp.odt.psi.reference;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
@@ -11,20 +12,25 @@ import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
 
 public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> {
+    private static final Logger LOGGER = Logger.getInstance(ODTCallReference.class);
+
     public ODTCallReference(@NotNull ODTResolvableCall element,
                             TextRange rangeInElement) {
         super(element, rangeInElement, false);
     }
 
     public PsiElement resolve(boolean resolveToOriginalElement) {
-        ResolveResult[] resolveResults = multiResolveToOriginal(resolveToOriginalElement);
-        return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolving ODTCallReference " + myElement.getCallId(), () -> {
+            ResolveResult[] resolveResults = multiResolveToOriginal(resolveToOriginalElement);
+            return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+        });
     }
 
     public ResolveResult @NotNull [] multiResolveToOriginal(boolean resolveToOriginalElement) {

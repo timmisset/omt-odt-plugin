@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
@@ -89,7 +90,9 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
                                         Set<OntResource> expectedResources,
                                         Set<OntResource>... callArguments) {
         final PsiCall call = getCall(callArguments);
-        final Set<OntResource> resources = builtin.resolve(inputResources, call);
+        doReturn(inputResources).when(call).resolvePreviousStep();
+        Context context = Context.fromCall(call);
+        final Set<OntResource> resources = builtin.resolve(context);
         assertEquals(expectedResources.size(), resources.size());
         assertTrue(resources.containsAll(expectedResources));
     }
@@ -143,7 +146,7 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
     protected void testValidInput(Builtin builtin,
                                   OntResource input) {
         PsiCall call = getCall();
-        doReturn(Set.of(input)).when(call).resolveCallInput();
+        doReturn(Set.of(input)).when(call).resolvePreviousStep();
         builtin.validate(call, holder);
         verify(holder, never()).registerProblem(eq(call), anyString(), any(ProblemHighlightType.class));
     }
@@ -152,7 +155,7 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
                                     OntResource input,
                                     String errorMessage) {
         PsiCall call = getCall();
-        doReturn(Set.of(input)).when(call).resolveCallInput();
+        doReturn(Set.of(input)).when(call).resolvePreviousStep();
         builtin.validate(call, holder);
         verify(holder).registerProblem(eq(call), startsWith(errorMessage), any(ProblemHighlightType.class));
     }

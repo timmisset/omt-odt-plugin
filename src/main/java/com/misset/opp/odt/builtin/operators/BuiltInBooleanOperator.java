@@ -9,4 +9,9 @@ public abstract class BuiltInBooleanOperator extends BuiltInOperator {
     public OntResource resolveSingle() {
         return OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE;
     }
+
+    @Override
+    protected boolean hasFixedReturnType() {
+        return true;
+    }
 }

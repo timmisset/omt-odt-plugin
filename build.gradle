@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.1'
+version '5.1.1'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,6 +59,14 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        <h1>Update 5.1.1</h1>
+        Some minor performance improvements</br>
+        Fixed #1: <a href="https://github.com/timmisset/omt-odt-plugin/issues/1">Suspicious assignment: maxCount == 1</a></br>
+        Fixed #2: <a href="https://github.com/timmisset/omt-odt-plugin/issues/2">PayloadItem: query reference</a></br>
+        Fixed #4: <a href="https://github.com/timmisset/omt-odt-plugin/issues/4">annotate with base for root curies</a></br>
+        Fixed #5: <a href="https://github.com/timmisset/omt-odt-plugin/issues/5">Component doesn't provide callables</a></br>
+        Fixed #6: <a href="https://github.com/timmisset/omt-odt-plugin/issues/6">Binding destructed notation</a></br>
+        
         <h1>Update 5.1</h1>
         New</br>
         Added the 'Introduce local variable' intention</br>

@@ -29,7 +29,7 @@ public class NotOperator extends BuiltInBooleanOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateBoolean(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateBoolean(call.resolvePreviousStep(), holder, call);
         validateBooleanArgument(0, call, holder);
     }
 

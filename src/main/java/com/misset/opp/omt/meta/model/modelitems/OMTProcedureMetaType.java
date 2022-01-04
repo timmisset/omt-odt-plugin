@@ -12,10 +12,10 @@ import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTReasonMetaType;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.local.Commit;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.resolvable.local.Rollback;
-import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -91,7 +91,7 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
     }
 
     @Override
-    public Set<OntResource> resolve(YAMLMapping mapping, Set<OntResource> resources, PsiCall call) {
+    public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
         return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
     }
 

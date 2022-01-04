@@ -31,7 +31,7 @@ public class TimesOperator extends BuiltinMathOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            TTLValidationUtil.validateNumber(call.resolveCallInput(), holder, call);
+            TTLValidationUtil.validateNumber(call.resolvePreviousStep(), holder, call);
         }
         validateAllArguments(call, holder, this::validateNumberArgument);
     }

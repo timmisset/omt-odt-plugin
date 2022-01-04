@@ -31,7 +31,7 @@ public class SumOperator extends BuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateNumber(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateNumber(call.resolvePreviousStep(), holder, call);
     }
 
     @Override

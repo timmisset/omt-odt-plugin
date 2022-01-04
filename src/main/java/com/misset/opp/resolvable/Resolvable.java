@@ -39,5 +39,4 @@ public interface Resolvable {
     default boolean isMultiple() {
         return false;
     }
-
 }

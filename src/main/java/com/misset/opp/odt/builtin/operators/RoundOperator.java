@@ -44,7 +44,7 @@ public class RoundOperator extends BuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        Set<OntResource> callInputType = call.resolveCallInput();
+        Set<OntResource> callInputType = call.resolvePreviousStep();
         TTLValidationUtil.validateNumber(callInputType, holder, call);
         validateNumberArgument(0, call, holder);
 

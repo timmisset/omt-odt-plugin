@@ -13,7 +13,7 @@ import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep;
-import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
@@ -38,10 +38,9 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Set<OntResource> resources,
-                                             PsiCall call) {
-        return LoggerUtil.computeWithLogger(LOGGER, "Resolve with resources: " + getText(), () -> Optional.ofNullable(getLastOperation())
-                .map(lastStep -> lastStep.resolve(resources, call))
+    public @NotNull Set<OntResource> resolve(Context context) {
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolving with resources: " + getText(), () -> Optional.ofNullable(getLastOperation())
+                .map(lastStep -> lastStep.resolve(context))
                 .orElse(Collections.emptySet()));
     }
 

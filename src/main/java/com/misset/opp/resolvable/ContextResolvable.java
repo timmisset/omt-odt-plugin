@@ -1,6 +1,5 @@
 package com.misset.opp.resolvable;
 
-import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +14,7 @@ public interface ContextResolvable extends Resolvable {
      * Resolve with inputResources and the Call
      * Returns an empty Set when no resolve type can be determined
      */
-    default @NotNull Set<OntResource> resolve(Set<OntResource> inputResources, PsiCall call) {
+    default @NotNull Set<OntResource> resolve(Context context) {
         return resolve();
     }
 }

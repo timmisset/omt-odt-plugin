@@ -24,7 +24,7 @@ public class LengthOperator extends BuiltInIntegerOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateString(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
     }
 
     @Override

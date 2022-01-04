@@ -35,7 +35,7 @@ public class EqualsOperator extends BuiltInBooleanOperator {
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return call.resolveCallInput();
+            return call.resolvePreviousStep();
         } else if (index == 1) {
             return call.resolveSignatureArgument(0);
         }

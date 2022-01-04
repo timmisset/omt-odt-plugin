@@ -31,7 +31,7 @@ public class MaxOperator extends BuiltInCollectionOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         Set<OntClass> acceptableTypes = Set.of(OppModel.INSTANCE.XSD_NUMBER, OppModel.INSTANCE.XSD_DATETIME);
-        TTLValidationUtil.validateHasOntClass(call.resolveCallInput(),
+        TTLValidationUtil.validateHasOntClass(call.resolvePreviousStep(),
                 holder,
                 call,
                 acceptableTypes);

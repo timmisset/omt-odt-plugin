@@ -31,7 +31,7 @@ public class FloorOperator extends BuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateDecimal(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateDecimal(call.resolvePreviousStep(), holder, call);
     }
 
     @Override

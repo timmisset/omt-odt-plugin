@@ -9,4 +9,9 @@ public abstract class BuiltInIntegerOperator extends BuiltInOperator {
     public OntResource resolveSingle() {
         return OppModel.INSTANCE.XSD_INTEGER_INSTANCE;
     }
+
+    @Override
+    protected boolean hasFixedReturnType() {
+        return true;
+    }
 }

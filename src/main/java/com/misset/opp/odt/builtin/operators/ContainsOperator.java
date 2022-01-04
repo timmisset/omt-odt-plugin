@@ -30,7 +30,7 @@ public class ContainsOperator extends BuiltInBooleanOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateString(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
         validateStringArgument(0, call, holder);
         validateBooleanArgument(1, call, holder);
         validateIgnoreCaseFlagUsage(1, call, holder);

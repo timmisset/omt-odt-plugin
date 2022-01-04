@@ -19,7 +19,7 @@ public class TruncOperator extends BuiltInCollectionOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateDateTime(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateDateTime(call.resolvePreviousStep(), holder, call);
         validateStringArgument(0, call, holder);
 
     }

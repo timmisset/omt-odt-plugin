@@ -1,18 +1,17 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTEquationStatement;
 import com.misset.opp.odt.psi.ODTQuery;
+import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.ttl.OppModel;
-import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -47,32 +46,24 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public void annotate(AnnotationHolder holder) {
+        if (getParent() instanceof ODTQueryFilter) {
+            // report the outcome of the filter
+
+        }
+    }
+
     private boolean traverseResource(OntResource resource,
                                      ODTResolvableQueryPath left,
                                      ODTResolvableQueryPath right) {
+        // to pass the filter, resolve the filter left-hand and right-hand and
+        // make sure at least 1 item overlaps
         final Set<OntResource> fromSet = Set.of(resource);
-        final Set<OntResource> intersect = new HashSet<>(toClass(left.resolveFromSet(fromSet)));
-        intersect.retainAll(toClass(right.resolveFromSet(fromSet)));
-        return !intersect.isEmpty();
+        Set<OntResource> rightSide = right.resolveFromSet(fromSet);
+        return left.resolveFromSet(fromSet)
+                .stream().anyMatch(rightSide::contains);
     }
-
-    private Set<OntClass> toClass(Set<OntResource> resources) {
-        return resources.stream()
-                .map(this::toClass)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
-
-    private OntClass toClass(OntResource resource) {
-        if (resource.isClass()) {
-            return resource.asClass();
-        }
-        if (resource.isIndividual()) {
-            return resource.asIndividual().getOntClass();
-        }
-        return null;
-    }
-
 
     @Override
     public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {

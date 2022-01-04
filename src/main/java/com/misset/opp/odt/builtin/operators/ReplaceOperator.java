@@ -29,7 +29,7 @@ public class ReplaceOperator extends BuiltInStringOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateString(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
         validateAllArguments(call, holder, this::validateStringArgument);
     }
 

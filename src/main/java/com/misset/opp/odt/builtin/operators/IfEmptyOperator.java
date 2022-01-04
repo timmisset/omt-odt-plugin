@@ -32,13 +32,13 @@ public class IfEmptyOperator extends BuiltInOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            Pair<Set<OntResource>, Set<OntResource>> possibilities = Pair.create(call.resolveCallInput(), call.resolveSignatureArgument(0));
+            Pair<Set<OntResource>, Set<OntResource>> possibilities = Pair.create(call.resolvePreviousStep(), call.resolveSignatureArgument(0));
             validateCompatibleOutcomePossibilities(possibilities, call, holder);
         }
     }
 
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        return call.resolveCallInput();
+        return call.resolvePreviousStep();
     }
 }

@@ -18,8 +18,8 @@ import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTReasonMetaType;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.local.*;
-import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -113,7 +113,7 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
     }
 
     @Override
-    public Set<OntResource> resolve(YAMLMapping mapping, Set<OntResource> resources, PsiCall call) {
+    public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
         // todo:
         // calculate the possible outcomes from the Activity, can be done if the activity has a 'returns' field
         return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);

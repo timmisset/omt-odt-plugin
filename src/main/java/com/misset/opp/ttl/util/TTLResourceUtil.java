@@ -8,38 +8,66 @@ import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class TTLResourceUtil {
+    private static final HashMap<OntResource, String> descriptions = new HashMap<>();
+    private static final HashMap<OntResource, Boolean> isType = new HashMap<>();
+    private static final HashMap<OntResource, Boolean> isValue = new HashMap<>();
+    private static final HashMap<OntResource, Boolean> isXSDType = new HashMap<>();
+    private static final HashMap<OntResource, Boolean> isClass = new HashMap<>();
+
+    private static boolean is(OntResource resource, HashMap<OntResource, Boolean> cache, Supplier<Boolean> orElse) {
+        if (cache.containsKey(resource)) {
+            return cache.get(resource);
+        }
+        Boolean result = orElse.get();
+        cache.put(resource, result);
+        return result;
+    }
+
     public static boolean isType(OntResource resource) {
-        return resource.isClass() && isXSDType(resource);
+        return is(resource, isType, () -> resource.isClass() && isXSDType(resource));
     }
 
     public static boolean isValue(OntResource resource) {
-        return resource instanceof Individual && isXSDType(((Individual) resource).getOntClass());
+        return is(resource, isValue, () -> resource instanceof Individual && isXSDType(((Individual) resource).getOntClass()));
     }
 
     public static boolean isXSDType(OntResource resource) {
-        return resource.getNameSpace().equals(OppModel.XSD);
+        return is(resource, isXSDType, () -> resource.getNameSpace().equals(OppModel.XSD));
     }
 
     public static boolean isClass(OntResource resource) {
-        return !isType(resource) && resource.isClass();
+        return is(resource, isClass, () -> !isType(resource) && resource.isClass());
     }
 
     public static String describeUrisJoined(Set<OntResource> resources) {
         return String.join(", ", describeUris(resources));
     }
+
     public static List<String> describeUris(Set<OntResource> resources) {
         return resources.stream()
                 .map(TTLResourceUtil::describeUri)
                 .sorted()
                 .collect(Collectors.toList());
     }
+
     public static String describeUri(OntResource resource) {
+        if (descriptions.containsKey(resource)) {
+            return descriptions.get(resource);
+        }
+        String describedUri = doDescribeUri(resource);
+        descriptions.put(resource, describedUri);
+        return describedUri;
+    }
+
+    private static String doDescribeUri(OntResource resource) {
         if (resource.isClass()) {
             if (resource.getNameSpace().equals(OppModel.XSD)) {
                 return resource.getURI() + " (TYPE)";
@@ -52,7 +80,9 @@ public class TTLResourceUtil {
             } else if (individual.getOntClass().equals(OppModel.INSTANCE.OPP_CLASS)) {
                 // Specific OPP_CLASS instances that describe non-ontology values such as JSON_OBJECT, ERROR etc
                 return individual.getURI();
-            } else if (individual.getNameSpace() != null && !individual.getNameSpace().endsWith("_INSTANCE")) {
+            } else if (individual.getNameSpace() != null &&
+                    individual.getLocalName() != null &&
+                    !individual.getLocalName().endsWith("_INSTANCE")) {
                 return individual.getURI();
             }
             return individual.getOntClass().getURI() + " (INSTANCE)";
@@ -128,7 +158,7 @@ public class TTLResourceUtil {
         String typeText = isType(resource) ? "Type" : "Class";
         return LookupElementBuilder.create(lookupText)
                 .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
-                .withTypeText("Type", Icons.TTLFile, false)
+                .withTypeText(typeText, Icons.TTLFile, false)
                 .withIcon(Icons.TTLFile)
                 .withPresentableText(lookupText);
     }

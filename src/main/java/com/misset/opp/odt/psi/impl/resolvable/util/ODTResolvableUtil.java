@@ -3,43 +3,52 @@ package com.misset.opp.odt.psi.impl.resolvable.util;
 import com.intellij.lang.annotation.AnnotationBuilder;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.syntax.ODTSyntaxHighlighter;
 import com.misset.opp.ttl.util.TTLResourceUtil;
+import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ODTResolvableUtil {
 
+    private static final Logger LOGGER = Logger.getInstance(ODTResolvableUtil.class);
+
     public static void annotateResolved(Set<OntResource> resources,
                                         AnnotationHolder holder,
                                         PsiElement range,
                                         boolean applyTextAttributes) {
-        if (resources == null || holder == null || resources.isEmpty()) {
-            return;
-        }
-        AnnotationBuilder builder = holder.newAnnotation(HighlightSeverity.INFORMATION, "")
-                .tooltip(
-                        resources.stream()
-                                .sorted(Comparator.comparing(Resource::toString))
-                                .map(TTLResourceUtil::describeUri)
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.joining("<br>")))
-                .range(range);
+        LoggerUtil.runWithLogger(LOGGER,
+                "Annotation resolved resources, n=" + Optional.ofNullable(resources).map(Set::size).orElse(0),
+                () -> {
+                    if (resources == null || holder == null || resources.isEmpty()) {
+                        return;
+                    }
+                    AnnotationBuilder builder = holder.newAnnotation(HighlightSeverity.INFORMATION, "")
+                            .tooltip(
+                                    resources.stream()
+                                            .sorted(Comparator.comparing(Resource::toString))
+                                            .map(TTLResourceUtil::describeUri)
+                                            .filter(Objects::nonNull)
+                                            .collect(Collectors.joining("<br>")))
+                            .range(range);
 
-        if(applyTextAttributes) {
-            final TextAttributesKey ontologyTextAttributesKey = getOntologyTextAttributesKey(resources);
-            if (ontologyTextAttributesKey != null) {
-                builder = builder.textAttributes(ontologyTextAttributesKey);
-            }
-        }
-        builder.create();
+                    if (applyTextAttributes) {
+                        final TextAttributesKey ontologyTextAttributesKey = getOntologyTextAttributesKey(resources);
+                        if (ontologyTextAttributesKey != null) {
+                            builder = builder.textAttributes(ontologyTextAttributesKey);
+                        }
+                    }
+                    builder.create();
+                });
     }
 
     private static TextAttributesKey getOntologyTextAttributesKey(Set<OntResource> resources) {

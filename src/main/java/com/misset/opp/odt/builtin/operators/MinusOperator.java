@@ -29,7 +29,7 @@ public class MinusOperator extends BuiltinMathOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            TTLValidationUtil.validateRequiredTypes(validInputs, call.resolveCallInput(), holder, call);
+            TTLValidationUtil.validateRequiredTypes(validInputs, call.resolvePreviousStep(), holder, call);
         }
         validateAllArguments(call, holder, validator);
     }

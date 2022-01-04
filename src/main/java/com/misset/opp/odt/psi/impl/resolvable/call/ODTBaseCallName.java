@@ -1,12 +1,11 @@
 package com.misset.opp.odt.psi.impl.resolvable.call;
 
-import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTCallName;
-import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
+import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil;
 import com.misset.opp.resolvable.Callable;
@@ -15,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public abstract class ODTBaseCallName extends ODTASTWrapperPsiElement implements
+public abstract class ODTBaseCallName extends ODTBaseResolvable implements
         ODTCallName,
         ODTDocumented,
         ODTResolvable {
@@ -45,11 +44,6 @@ public abstract class ODTBaseCallName extends ODTASTWrapperPsiElement implements
     }
 
     @Override
-    public void inspect(ProblemsHolder holder) {
-
-    }
-
-    @Override
     public @NotNull Set<OntResource> resolve() {
         return getParent().resolve();
     }
@@ -58,6 +52,4 @@ public abstract class ODTBaseCallName extends ODTASTWrapperPsiElement implements
     public PsiElement getDocumentationElement() {
         return this;
     }
-
-
 }

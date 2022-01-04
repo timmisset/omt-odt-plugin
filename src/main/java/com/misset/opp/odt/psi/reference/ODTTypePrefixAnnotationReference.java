@@ -1,14 +1,17 @@
 package com.misset.opp.odt.psi.reference;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
+import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTTypePrefixAnnotationReference extends ODTPolyReferenceBase<PsiElement> {
     final TextRange textRange;
+    Logger LOGGER = Logger.getInstance(ODTTTLSubjectPredicateReference.class);
 
     public ODTTypePrefixAnnotationReference(PsiElement psiElement,
                                             TextRange textRange) {
@@ -18,12 +21,14 @@ public class ODTTypePrefixAnnotationReference extends ODTPolyReferenceBase<PsiEl
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        final ODTFile containingFile = (ODTFile) myElement.getContainingFile();
-        return containingFile.resolveInOMT(OMTPrefixProvider.class,
-                        OMTPrefixProvider.KEY,
-                        textRange.substring(myElement.getText()),
-                        OMTPrefixProvider::getPrefixMap)
-                .map(this::toResults)
-                .orElse(ResolveResult.EMPTY_ARRAY);
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolving ODTTypePrefixAnnotationReference", () -> {
+            final ODTFile containingFile = (ODTFile) myElement.getContainingFile();
+            return containingFile.resolveInOMT(OMTPrefixProvider.class,
+                            OMTPrefixProvider.KEY,
+                            textRange.substring(myElement.getText()),
+                            OMTPrefixProvider::getPrefixMap)
+                    .map(this::toResults)
+                    .orElse(ResolveResult.EMPTY_ARRAY);
+        });
     }
 }

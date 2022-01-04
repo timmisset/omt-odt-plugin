@@ -125,16 +125,14 @@ public interface PsiCall extends PsiResolvable {
     @Nullable Pair<Set<OntResource>, Property> getSignatureLeadingInformation(int signatureArgument);
 
     /**
-     * Operators are applied within a path where it behaves as a pipe, taking in a value, operates on it and
-     * returns a value. The getCallInputType provides the input type for the operator. It's equal to the
-     * outcome of the previous step in the path being resolved
-     */
-    Set<OntResource> resolveCallInput();
-
-    /**
      * Used for Refactoring safe-delete. When the Callable (as PsiElement) is not using a parameter, it can remove it
      * and remove all parameters from calls made to the Callable also.
      */
     void removeArgument(int index);
 
+    /**
+     * Operators are applied within a path where it behaves as a pipe, taking in a value, operates on it and
+     * returns a value. The getCallInputType provides the input type for the operator.
+     */
+    Set<OntResource> resolvePreviousStep();
 }

@@ -1,23 +1,23 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
-import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTSignature;
-import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement;
+import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.settings.SettingsState;
 import com.misset.opp.ttl.OppModel;
@@ -35,7 +35,7 @@ import java.util.Set;
  * The ODTQueryOperation is the container of a ODTQueryStep and one or more filters
  * It is the class that should be used to resolve the query step since it contains the filter
  */
-public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiElement implements ODTQueryOperationStep, ODTResolvable {
+public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable implements ODTQueryOperationStep, ODTResolvable {
     public ODTResolvableQueryOperationStep(@NotNull ASTNode node) {
         super(node);
     }
@@ -43,7 +43,14 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED_VALUE = new Key<>("RESOLVED_VALUE");
     private static final Logger LOGGER = Logger.getInstance(ODTResolvableQueryOperationStep.class);
 
-    private final SettingsState settingsState = ReadAction.compute(() -> SettingsState.getInstance(getProject()));
+    private SettingsState settingsState;
+
+    private SettingsState getSettingState() {
+        if (settingsState == null) {
+            settingsState = SettingsState.getInstance(getProject()).getState();
+        }
+        return settingsState;
+    }
 
     @Override
     public ODTResolvableQueryPath getParent() {
@@ -135,21 +142,23 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
 
     private Set<OntResource> filter(Set<OntResource> resources,
                                     ODTQueryFilter filter) {
-        // range selection filtering has no impact on the performance and
-        // can be done without the settings check
-        if (filter.getRangeSelection() != null) {
+        return LoggerUtil.computeWithLogger(LOGGER, "Filtering resources", () -> {
+            // range selection filtering has no impact on the performance and
+            // can be done without the settings check
+            if (filter.getRangeSelection() != null) {
+                return resources;
+            }
+
+            if (!getSettingState().applyQueryStepFilter) {
+                return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
+            }
+
+            final ODTQuery query = filter.getQuery();
+            if (query instanceof ODTResolvableQuery) {
+                return query.filter(resources);
+            }
             return resources;
-        }
-
-        if (!settingsState.applyQueryStepFilter) {
-            return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
-        }
-
-        final ODTQuery query = filter.getQuery();
-        if (query instanceof ODTResolvableQuery) {
-            return query.filter(resources);
-        }
-        return resources;
+        });
     }
 
     private boolean isPartOfFilter() {
@@ -165,23 +174,18 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     public @NotNull Set<OntResource> resolve() {
         return LoggerUtil.computeWithLogger(LOGGER, "Resolving " + getText(), () -> {
             if (getQueryStep() != null) {
-                // todo:
-                // caching is disabled, at this point there are too many occurrences of idem-potency errors
-//                if (isPartOfFilter()) {
-//                    // Filters are evaluated more often to determine which of the input resources
-//                    // survive the filter. Therefore, caching the outcome of one would mean they
-//                    // all either pass or fail.
-//                    return filter(getQueryStep().resolve());
-//                } else {
-//
-//                    return CachedValuesManager.getCachedValue(this,
-//                            RESOLVED_VALUE,
-//                            () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()),
-//                                    PsiModificationTracker.MODIFICATION_COUNT,
-//                                    getContainingFile().getHostFile() == null ? getContainingFile() : getContainingFile().getHostFile(),
-//                                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
-//                }
-                return filter(getQueryStep().resolve());
+                if (isPartOfFilter()) {
+                    // Filters are evaluated more often to determine which of the input resources
+                    // survive the filter. Therefore, caching the outcome of one would mean they
+                    // all either pass or fail.
+                    return filter(getQueryStep().resolve());
+                } else {
+                    return CachedValuesManager.getCachedValue(this,
+                            RESOLVED_VALUE,
+                            () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()),
+                                    getContainingFile().getHostFile() == null ? getContainingFile() : getContainingFile().getHostFile(),
+                                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
+                }
             } else {
                 return Collections.emptySet();
             }
@@ -189,25 +193,10 @@ public abstract class ODTResolvableQueryOperationStep extends ODTASTWrapperPsiEl
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Set<OntResource> resources,
-                                             PsiCall call) {
-        return LoggerUtil.computeWithLogger(LOGGER, "Resolving with resources" + getText(),
+    public @NotNull Set<OntResource> resolve(Context context) {
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolving with resources: " + getText(),
                 () -> Optional.ofNullable(getQueryStep())
-                        .map(queryStep -> queryStep.resolve(resources, call))
+                        .map(queryStep -> queryStep.resolve(context))
                         .orElse(Collections.emptySet()));
-    }
-
-    @Override
-    public void inspect(ProblemsHolder holder) {
-        /*
-         * Inspection should visit the QueryStep directly
-         */
-    }
-
-    @Override
-    public void annotate(AnnotationHolder holder) {
-        /*
-         * Annotator should visit the QueryStep directly
-         */
     }
 }

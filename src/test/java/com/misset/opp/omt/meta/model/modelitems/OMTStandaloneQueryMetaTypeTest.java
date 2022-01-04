@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
@@ -63,7 +64,9 @@ class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
                     .map(YAMLMapping.class::cast)
                     .findFirst()
                     .orElse(null);
-            final Set<OntResource> resolved = new OMTStandaloneQueryMetaType().resolve(mapping, resources, call);
+            doReturn(resources).when(call).resolvePreviousStep();
+            Context context = Context.fromCall(call);
+            final Set<OntResource> resolved = new OMTStandaloneQueryMetaType().resolve(mapping, context);
             assertContainsElements(resolved, resource);
         });
     }

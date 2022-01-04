@@ -1,13 +1,12 @@
 package com.misset.opp.odt.psi.impl.resolvable.call;
 
-import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
@@ -16,12 +15,14 @@ import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.builtin.commands.BuiltinCommands;
 import com.misset.opp.odt.builtin.operators.BuiltinOperators;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
+import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.util.LoggerUtil;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 
 import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectLocalCommandProviders;
 
-public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implements ODTCall, ODTResolvable {
+public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODTCall, ODTResolvable {
     public ODTResolvableCall(@NotNull ASTNode node) {
         super(node);
     }
@@ -125,13 +126,18 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
 
     @Override
     public @NotNull Set<OntResource> resolve() {
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolving " + getCallId(), this::doResolve);
+    }
+
+    private Set<OntResource> doResolve() {
         return CachedValuesManager.getCachedValue(this, RESOLVED, () -> {
+            Context context = Context.fromCall(this);
             final Set<OntResource> resources = Optional.ofNullable(getCallable())
-                    .map(callable -> callable.resolve(resolvePreviousStep(), this))
+                    .map(callable -> callable.resolve(context))
                     .orElse(Collections.emptySet());
+            PsiFile[] files = context.getFilesInScope().toArray(PsiFile[]::new);
             return new CachedValueProvider.Result<>(resources,
-                    getContainingFile(),
-                    PsiModificationTracker.MODIFICATION_COUNT,
+                    files,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }
@@ -159,16 +165,6 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
         return Optional.ofNullable(getSignatureArgument(index))
                 .map(ODTSignatureArgument::resolve)
                 .orElse(Collections.emptySet());
-    }
-
-    @Override
-    public void inspect(ProblemsHolder holder) {
-
-    }
-
-    @Override
-    public void annotate(AnnotationHolder holder) {
-
     }
 
     @Override
@@ -242,11 +238,6 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     }
 
     @Override
-    public Set<OntResource> resolveCallInput() {
-        return resolvePreviousStep();
-    }
-
-    @Override
     public int getArgumentIndexOf(PsiElement element) {
         return getSignatureArguments().stream()
                 .filter(argument -> PsiTreeUtil.isAncestor(argument, element, true))
@@ -278,4 +269,14 @@ public abstract class ODTResolvableCall extends ODTASTWrapperPsiElement implemen
     }
 
     protected abstract void removeAllSignatureArguments();
+
+
+    @Override
+    public Set<OntResource> resolvePreviousStep() {
+        return Optional.of(getParent())
+                .filter(ODTResolvableQueryOperationStep.class::isInstance)
+                .map(ODTResolvableQueryOperationStep.class::cast)
+                .map(ODTResolvableQueryOperationStep::resolvePreviousStep)
+                .orElse(Collections.emptySet());
+    }
 }

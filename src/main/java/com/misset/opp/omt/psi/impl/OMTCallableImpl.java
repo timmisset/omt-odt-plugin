@@ -15,7 +15,7 @@ import com.misset.opp.omt.meta.model.modelitems.OMTModelItemDelegateMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.OMTCallable;
 import com.misset.opp.resolvable.Callable;
-import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
@@ -193,10 +193,9 @@ public class OMTCallableImpl extends PsiCallable implements OMTCallable {
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Set<OntResource> inputResources,
-                                             PsiCall call) {
+    public @NotNull Set<OntResource> resolve(Context context) {
         return computeFromMeta(OMTMetaCallable.class,
-                omtMetaCallable -> omtMetaCallable.resolve(mapping, inputResources, call),
+                omtMetaCallable -> omtMetaCallable.resolve(mapping, context),
                 Collections.emptySet());
     }
 

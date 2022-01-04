@@ -24,7 +24,7 @@ public class CeilOperator extends BuiltInIntegerOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateDecimal(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateDecimal(call.resolvePreviousStep(), holder, call);
     }
 
     @Override

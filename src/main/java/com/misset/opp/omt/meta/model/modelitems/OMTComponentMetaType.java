@@ -1,9 +1,11 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTWatchersArrayMetaType;
 import com.misset.opp.omt.meta.model.*;
+import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
@@ -11,23 +13,32 @@ import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLValue;
+import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
+import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addInjectedCallablesToMap;
 import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 
-public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implements OMTVariableProvider, OMTPrefixProvider {
+public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implements
+        OMTVariableProvider,
+        OMTCallableProvider,
+        OMTPrefixProvider {
     protected OMTComponentMetaType() {
         super("OMT Component");
     }
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+
     static {
         features.put("title", OMTInterpolatedStringMetaType::new);
         features.put("bindings", OMTBindingMetaType::new);
@@ -64,10 +75,22 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
                     .getKeyValues()
                     .stream()
                     .map(YAMLKeyValue::getValue)
-                    .forEach(value -> addToGroupedMap(OMTVariableProviderUtil.getVariableName(value, "bindTo"), value, variableMap));
+                    .forEach(value -> addToGroupedMap(OMTVariableProviderUtil.getVariableName(value, "bindTo"), getBindToValue(value), variableMap));
         }
 
         return variableMap;
+    }
+
+    private YAMLValue getBindToValue(YAMLValue value) {
+        if (value instanceof YAMLPlainTextImpl) {
+            return value;
+        }
+        return Optional.of(value)
+                .filter(YAMLMapping.class::isInstance)
+                .map(YAMLMapping.class::cast)
+                .map(mapping -> mapping.getKeyValueByKey("bindTo"))
+                .map(YAMLKeyValue::getValue)
+                .orElse(null);
     }
 
     @Override
@@ -78,5 +101,13 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
     @Override
     public String getType() {
         return "Component";
+    }
+
+    @Override
+    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping, PsiLanguageInjectionHost host) {
+        HashMap<String, List<PsiCallable>> map = new HashMap<>();
+        addInjectedCallablesToMap(yamlMapping, "commands", map, host);
+        addInjectedCallablesToMap(yamlMapping, "queries", map, host);
+        return map;
     }
 }

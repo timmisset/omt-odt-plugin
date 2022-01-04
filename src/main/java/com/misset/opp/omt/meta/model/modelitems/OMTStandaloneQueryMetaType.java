@@ -11,6 +11,7 @@ import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiResolvable;
 import org.apache.jena.ontology.OntResource;
@@ -68,10 +69,10 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
     }
 
     @Override
-    public Set<OntResource> resolve(YAMLMapping mapping,
-                                    Set<OntResource> resources,
-                                    PsiCall call) {
+    public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
 
+        PsiCall call = context.getCall();
+        Set<OntResource> resources = call.resolvePreviousStep();
         // intercept the call and provide context for the parameters (if any)
         final YAMLKeyValue base = mapping.getKeyValueByKey("base");
         // the parameter entered at the base is populated with the leading resources of the call
@@ -93,7 +94,7 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
                 .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvable.class))
                 .stream()
                 .flatMap(Collection::stream)
-                .map(psiResolvable -> psiResolvable.resolve(resources, call))
+                .map(psiResolvable -> psiResolvable.resolve(context))
                 .findFirst()
                 .orElse(Collections.emptySet());
     }

@@ -25,7 +25,7 @@ public class AndOperator extends BuiltInBooleanOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            TTLValidationUtil.validateBoolean(call.resolveCallInput(), holder, call);
+            TTLValidationUtil.validateBoolean(call.resolvePreviousStep(), holder, call);
         }
         validateAllArguments(call, holder, this::validateBooleanArgument);
     }

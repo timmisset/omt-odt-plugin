@@ -2,7 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.lang.ASTNode;
 import com.misset.opp.odt.psi.ODTVariableStep;
-import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.resolvable.Context;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,9 +14,8 @@ public abstract class ODTResolvableVariableStep extends ODTResolvableQueryStepBa
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Set<OntResource> resources,
-                                             PsiCall call) {
-        final Set<OntResource> paramType = call.getParamType(getVariable().getName());
+    public @NotNull Set<OntResource> resolve(Context context) {
+        final Set<OntResource> paramType = context.getCall().getParamType(getVariable().getName());
         if (paramType.isEmpty()) {
             return resolve();
         }

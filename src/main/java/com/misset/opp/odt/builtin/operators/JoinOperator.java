@@ -29,7 +29,7 @@ public class JoinOperator extends BuiltInStringOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateString(call.resolveCallInput(), holder, call);
+        TTLValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
         validateStringArgument(0, call, holder);
     }
 

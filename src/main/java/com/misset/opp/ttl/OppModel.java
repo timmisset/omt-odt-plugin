@@ -307,7 +307,7 @@ public class OppModel {
 
         // cardinality:
         int min = getShaclPropertyInteger(shaclPropertyShape, SHACL_MINCOUNT);
-        int max = getShaclPropertyInteger(shaclPropertyShape, SHACL_MINCOUNT);
+        int max = getShaclPropertyInteger(shaclPropertyShape, SHACL_MAXCOUNT);
         if (min == 1) {
             addToMapCollection(required, subject, predicate);
         }

@@ -71,6 +71,6 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
 
     @Override
     public PsiReference getReference() {
-        return !isDeclaredVariable() ? new ODTVariableReference(element) : null;
+        return !isDeclaredVariable() ? ODTVariableReference.forVariable(element) : null;
     }
 }

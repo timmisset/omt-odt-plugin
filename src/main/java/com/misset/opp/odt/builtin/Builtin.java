@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.util.TriConsumer;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
@@ -69,8 +70,12 @@ public abstract class Builtin implements Callable {
     }
 
     @Override
-    public final @NotNull Set<OntResource> resolve(Set<OntResource> inputResources,
-                                                   PsiCall call) {
+    public final @NotNull Set<OntResource> resolve(Context context) {
+        if (hasFixedReturnType()) {
+            return resolve();
+        }
+        PsiCall call = context.getCall();
+        Set<OntResource> inputResources = call.resolvePreviousStep();
         if (hasError(inputResources)) {
             return resolveError(inputResources, call);
         }
@@ -201,7 +206,7 @@ public abstract class Builtin implements Callable {
                                                   ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
             TTLValidationUtil.validateCompatibleTypes(
-                    call.resolveCallInput(), call.resolveSignatureArgument(0),
+                    call.resolvePreviousStep(), call.resolveSignatureArgument(0),
                     holder, call);
         } else if (call.getNumberOfArguments() >= 2) {
             Set<OntResource> ontResources = call.resolveSignatureArgument(0);
@@ -237,5 +242,13 @@ public abstract class Builtin implements Callable {
     @Override
     public Map<Integer, String> getParameterNames() {
         return new HashMap<>();
+    }
+
+    /**
+     * Checks if the Builtin member always returns the same output, for example, boolean operators
+     * always return a boolean, regardless of the input, and should override this method with true;
+     */
+    protected boolean hasFixedReturnType() {
+        return false;
     }
 }

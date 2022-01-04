@@ -71,10 +71,11 @@ public class ODTCodeUntypedInspectionWarning extends LocalInspectionTool {
                     if (queryStep != null &&
                             queryStep.resolvePreviousStep().isEmpty() &&
                             query.resolve().isEmpty() &&
+                            PsiTreeUtil.getDeepestFirst(queryStep).equals(PsiTreeUtil.getDeepestFirst(query)) &&
                             canBeBaseAnnotated(queryStep)) {
                         // a @base annotation is applicable
                         holder.registerProblem(
-                                element,
+                                queryStatement.getDefineName(),
                                 ANNOTATE_BASE_WITH_TYPE,
                                 getBaseAnnotationBlockQuickFix()
                         );

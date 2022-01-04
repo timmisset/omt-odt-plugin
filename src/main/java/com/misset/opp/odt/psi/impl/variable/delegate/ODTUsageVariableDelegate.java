@@ -38,7 +38,7 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
         if (isDeclaredVariable()) {
             return null;
         }
-        return new ODTVariableReference(element);
+        return ODTVariableReference.forVariable(element);
     }
 
     /**

@@ -6,7 +6,6 @@ import com.misset.opp.odt.psi.ODTPsiElement;
 import com.misset.opp.resolvable.psi.PsiResolvable;
 import org.apache.jena.ontology.OntResource;
 
-import java.util.Collections;
 import java.util.Set;
 
 public interface ODTResolvable extends PsiResolvable, ODTPsiElement {
@@ -15,9 +14,7 @@ public interface ODTResolvable extends PsiResolvable, ODTPsiElement {
         return resources;
     }
 
-    default Set<OntResource> resolvePreviousStep() {
-        return Collections.emptySet();
-    }
+    Set<OntResource> resolvePreviousStep();
 
     void inspect(ProblemsHolder holder);
 
