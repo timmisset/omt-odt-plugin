@@ -2,6 +2,7 @@ package com.misset.opp.resolvable.psi;
 
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.resolvable.Callable;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
@@ -135,4 +136,6 @@ public interface PsiCall extends PsiResolvable {
      * returns a value. The getCallInputType provides the input type for the operator.
      */
     Set<OntResource> resolvePreviousStep();
+
+    Callable getCallable();
 }

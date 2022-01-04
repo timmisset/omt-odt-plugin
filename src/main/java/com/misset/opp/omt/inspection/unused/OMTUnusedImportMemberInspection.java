@@ -2,17 +2,21 @@ package com.misset.opp.omt.inspection.unused;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlImportMemberDelegate;
+import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
 import static com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBOL;
 
 public class OMTUnusedImportMemberInspection extends LocalInspectionTool {
+
+    private static final Logger LOGGER = Logger.getInstance(OMTUnusedImportMemberInspection.class);
 
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
@@ -25,12 +29,14 @@ public class OMTUnusedImportMemberInspection extends LocalInspectionTool {
                 }
                 final OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
                 if (delegate instanceof OMTYamlImportMemberDelegate) {
-                    if (((OMTYamlImportMemberDelegate) delegate).isUnused()) {
-                        holder.registerProblem(element,
-                                "Import for " + element.getText() + " is never used",
-                                LIKE_UNUSED_SYMBOL,
-                                OMTRemoveQuickFix.getRemoveLocalQuickFix("import member"));
-                    }
+                    LoggerUtil.runWithLogger(LOGGER, "Inspection of " + element.getText(), () -> {
+                        if (((OMTYamlImportMemberDelegate) delegate).isUnused()) {
+                            holder.registerProblem(element,
+                                    "Import for " + element.getText() + " is never used",
+                                    LIKE_UNUSED_SYMBOL,
+                                    OMTRemoveQuickFix.getRemoveLocalQuickFix("import member"));
+                        }
+                    });
                 }
             }
         };

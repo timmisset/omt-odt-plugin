@@ -60,65 +60,12 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.1.1</h1>
-        Some minor performance improvements</br>
+        Major performance improvements</br>
         Fixed #1: <a href="https://github.com/timmisset/omt-odt-plugin/issues/1">Suspicious assignment: maxCount == 1</a></br>
         Fixed #2: <a href="https://github.com/timmisset/omt-odt-plugin/issues/2">PayloadItem: query reference</a></br>
         Fixed #4: <a href="https://github.com/timmisset/omt-odt-plugin/issues/4">annotate with base for root curies</a></br>
         Fixed #5: <a href="https://github.com/timmisset/omt-odt-plugin/issues/5">Component doesn't provide callables</a></br>
         Fixed #6: <a href="https://github.com/timmisset/omt-odt-plugin/issues/6">Binding destructed notation</a></br>
-        
-        <h1>Update 5.1</h1>
-        New</br>
-        Added the 'Introduce local variable' intention</br>
-        Added 'Safe Delete' (part of refactoring) and 'Remove' quickfix for:</br>
-        <ul>
-            <li>OMT Variables</li>
-            <li>OMT Input parameters</li>
-            <li>OMT Base parameters</li>
-            <li>OMT ModelItems</li>
-            <li>OMT Prefix declarations</li>
-            <li>OMT Import members</li>
-            <li>ODT Variable declarations</li>
-            <li>ODT Input parameters</li>
-            <li>ODT Define Statements</li>
-        </ul>
-        Resolves DEFINE COMMAND callables by resolving all possible RETURN statements</br>
-        Refactor-rename provides suggestions for variable names</br>
-        </br>
-        Fixed: Insert ODT DEFINE QUERY / COMMAND statement with proper indentation</br>
-        Fixed: owl:Class resolves correctly to any Class, not instances of owl:Class</br>
-        
-        <h1>OMT / ODT plugin 5.0</h1>
-        Completely re-written OMT / ODT plugin</br>
-        It is now fully backed by the native IntelliJ YAML plugin for the OMT/YAML Structure</br>
-        All ODT fragments are injected as code snippets. This makes it a bit slower but much more stable.</br>
-        </br>
-        <a href="https://github.com/timmisset/omt-odt-plugin/blob/master/README.md">It is strongly advised to read the documentation</a>
-        <h2>New features</h2>
-        Aside from the refactoring, some new features were also introduced
-        <h2>ODT</h2>
-        <ul>
-        <li>ODT files can be processed stand-alone</li>
-        <li>Syntax highlighting by resolved type</li>
-        <li>Reasoning now includes NamedGraphs and GraphShapes</li>
-        <li>Validation includes minCount and maxCount as specified in the model</li>
-        </ul>
-        <h2>OMT</h2>
-        <ul>
-        <li>Added support for declared imports (module:import)</li>
-        <li>The mapping structure of project domains is configurable</li>
-        </ul>
-        
-        </br>
-        Since the plugin was basically recreated from scratch, there migt be some features missing or not working
-        anymore, please report them at github.</br>
-
-        <h2>Removed features</h2>
-        Some features were not working correctly in the old version and have been removed. These might be re-introduced in the future upon demand.
-        <ul>
-        <li>Refactor-rename from the TTL model to the OMT / ODT usage. This was not used and required heavy re-index when the model was updated.</li>
-        <li>Introduce local variable. Action was not triggered properly, will return in the future.</li>
-        </ul>
       """
 }
 tasks {

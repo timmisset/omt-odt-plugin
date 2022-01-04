@@ -27,27 +27,34 @@ public class ODTResolvableUtil {
                                         PsiElement range,
                                         boolean applyTextAttributes) {
         LoggerUtil.runWithLogger(LOGGER,
-                "Annotation resolved resources, n=" + Optional.ofNullable(resources).map(Set::size).orElse(0),
+                "Annotating resolved resources, n=" + Optional.ofNullable(resources).map(Set::size).orElse(0),
                 () -> {
                     if (resources == null || holder == null || resources.isEmpty()) {
                         return;
                     }
-                    AnnotationBuilder builder = holder.newAnnotation(HighlightSeverity.INFORMATION, "")
-                            .tooltip(
-                                    resources.stream()
-                                            .sorted(Comparator.comparing(Resource::toString))
-                                            .map(TTLResourceUtil::describeUri)
-                                            .filter(Objects::nonNull)
-                                            .collect(Collectors.joining("<br>")))
-                            .range(range);
+                    final AnnotationBuilder builder = LoggerUtil.computeWithLogger(LOGGER,
+                            "Annotating resolved resources, building annotation",
+                            () -> holder.newAnnotation(HighlightSeverity.INFORMATION, "")
+                                    .tooltip(
+                                            resources.stream()
+                                                    .sorted(Comparator.comparing(Resource::toString))
+                                                    .map(TTLResourceUtil::describeUri)
+                                                    .filter(Objects::nonNull)
+                                                    .collect(Collectors.joining("<br>")))
+                                    .range(range));
 
-                    if (applyTextAttributes) {
-                        final TextAttributesKey ontologyTextAttributesKey = getOntologyTextAttributesKey(resources);
-                        if (ontologyTextAttributesKey != null) {
-                            builder = builder.textAttributes(ontologyTextAttributesKey);
+                    LoggerUtil.runWithLogger(LOGGER, "Annotating resolved resources, setting text attributes", () -> {
+                        if (applyTextAttributes) {
+                            final TextAttributesKey ontologyTextAttributesKey = getOntologyTextAttributesKey(resources);
+                            if (ontologyTextAttributesKey != null) {
+                                // not ignored, it is not required to use the returned value
+                                // we cannot use it because builder has to remain final
+                                builder.textAttributes(ontologyTextAttributesKey);
+                            }
                         }
-                    }
-                    builder.create();
+                        builder.create();
+                    });
+
                 });
     }
 
@@ -55,7 +62,7 @@ public class ODTResolvableUtil {
         if (resources.stream().allMatch(TTLResourceUtil::isValue)) {
             return ODTSyntaxHighlighter.OntologyValueAttributesKey;
         }
-        if (resources.stream().allMatch(OntResource::isIndividual)) {
+        if (resources.stream().allMatch(TTLResourceUtil::isIndividual)) {
             return ODTSyntaxHighlighter.OntologyInstanceAttributesKey;
         }
         if (resources.stream().allMatch(TTLResourceUtil::isType)) {

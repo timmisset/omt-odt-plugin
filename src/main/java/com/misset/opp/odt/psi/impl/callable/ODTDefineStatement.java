@@ -23,6 +23,7 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
+import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.settings.SettingsState;
@@ -166,6 +167,21 @@ public abstract class ODTDefineStatement extends PsiCallable implements
 
     @Override
     public boolean isUnused() {
+        // check if used in file:
+        OMTFile hostFile = getContainingFile().getHostFile();
+        if (hostFile != null) {
+            if (hostFile.getAllInjectedPsiCalls()
+                    .getOrDefault(getName(), new ArrayList<>())
+                    .stream()
+                    .anyMatch(call -> call.getCallable() == this)) {
+                // target of a call / namedReference in the host file
+                return false;
+            }
+        }
+
+        // otherwise, check using references, this is a bit slow
+        // if the statement is not hosted in an OMT File the search will be very fast
+        // since the scope is very narrow
         return ReferencesSearch.search(this, getUseScope()).findFirst() == null;
     }
 
@@ -174,8 +190,4 @@ public abstract class ODTDefineStatement extends PsiCallable implements
         ODTRefactoringUtil.removeScriptline(this);
     }
 
-    @Override
-    public PsiElement getHighlightingTarget() {
-        return getDefineName();
-    }
 }

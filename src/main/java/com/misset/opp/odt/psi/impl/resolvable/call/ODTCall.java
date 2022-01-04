@@ -6,7 +6,6 @@ import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.ODTFlagSignature;
 import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
-import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -16,9 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface ODTCall extends PsiCall, PsiNamedElement, ODTResolvable {
-    @Nullable
-    Callable getCallable();
-
     @NotNull
     ODTCallName getCallName();
 

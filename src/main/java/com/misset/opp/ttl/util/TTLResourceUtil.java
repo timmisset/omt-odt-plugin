@@ -21,6 +21,7 @@ public class TTLResourceUtil {
     private static final HashMap<OntResource, Boolean> isValue = new HashMap<>();
     private static final HashMap<OntResource, Boolean> isXSDType = new HashMap<>();
     private static final HashMap<OntResource, Boolean> isClass = new HashMap<>();
+    private static final HashMap<OntResource, Boolean> isIndividual = new HashMap<>();
 
     private static boolean is(OntResource resource, HashMap<OntResource, Boolean> cache, Supplier<Boolean> orElse) {
         if (cache.containsKey(resource)) {
@@ -45,6 +46,10 @@ public class TTLResourceUtil {
 
     public static boolean isClass(OntResource resource) {
         return is(resource, isClass, () -> !isType(resource) && resource.isClass());
+    }
+
+    public static boolean isIndividual(OntResource resource) {
+        return is(resource, isIndividual, resource::isIndividual);
     }
 
     public static String describeUrisJoined(Set<OntResource> resources) {

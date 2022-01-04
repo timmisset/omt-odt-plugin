@@ -25,6 +25,11 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
         addFileToProject("importing.omt", "" +
                 "queries: |\n" +
                 "   DEFINE QUERY memberA => 'memberA';\n" +
+                "commands: |\n" +
+                "   DEFINE COMMAND commandA => { }\n" +
+                "model:\n" +
+                "   ModelItem: !Activity\n" +
+                "       title: ModelItem\n" +
                 "");
     }
 
@@ -79,32 +84,43 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
     }
 
     @Test
+    void testNoWarningForUsedCommandImport() {
+        String content = "import:\n" +
+                "   ./importing.omt:\n" +
+                "   - commandA\n" +
+                "\n" +
+                "commands: |\n" +
+                "   DEFINE COMMAND command => { @commandA(); }\n" +
+                "";
+        configureByText(content);
+        assertNoWarning("Import for commandA is never used");
+    }
+
+    @Test
+    void testNoWarningForUsedModelItemImport() {
+        String content = "import:\n" +
+                "   ./importing.omt:\n" +
+                "   - ModelItem\n" +
+                "\n" +
+                "commands: |\n" +
+                "   DEFINE COMMAND command => { @ModelItem(); }\n" +
+                "";
+        configureByText(content);
+        assertNoWarning("Import for ModelItem is never used");
+    }
+
+    @Test
     void testNoWarningForDeferredImport() {
+        String content = "import:\n" +
+                "   ./importing.omt:\n" +
+                "   - memberA";
+        configureByText("index.omt", content);
+
         addFileToProject("deferredImport.omt", "" +
                 "import: \n" +
                 "   ./index.omt:\n" +
                 "   - memberA");
-        String content = "import:\n" +
-                "   ./importing.omt:\n" +
-                "   - memberA";
-        configureByText("index.omt", content);
-        assertNoWarning("Import for memberA is never used");
-    }
 
-    @Test
-    void testWarningForNonUsedDeferredImport() {
-        // the memberA is not used from the index.omt import
-        // therefore, the import of memberA in index.omt is still unused
-        addFileToProject("deferredImport.omt", "" +
-                "import: \n" +
-                "   ./index.omt:\n" +
-                "   - memberB\n" +
-                "   ./importing.omt:\n" +
-                "   - memberA\n");
-        String content = "import:\n" +
-                "   ./importing.omt:\n" +
-                "   - memberA";
-        configureByText("index.omt", content);
-        assertHasWarning("Import for memberA is never used");
+        assertNoWarning("Import for memberA is never used");
     }
 }

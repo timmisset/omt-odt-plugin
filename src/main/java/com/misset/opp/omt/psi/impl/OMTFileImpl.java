@@ -1,5 +1,6 @@
 package com.misset.opp.omt.psi.impl;
 
+import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
@@ -20,7 +21,9 @@ import com.misset.opp.omt.meta.OMTFileMetaType;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.shared.InjectionHost;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLDocument;
@@ -35,6 +38,9 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     private static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> EXPORTING_MEMBERS = new Key<>("EXPORTING_MEMBERS");
     private static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> EXPORTING_DECLARED_MEMBERS = new Key<>(
             "EXPORTING_DECLARED_MEMBERS");
+    private static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> IMPORTING_MEMBERS = new Key<>(
+            "IMPORTING_MEMBERS");
+    private static final Key<CachedValue<Map<String, List<PsiCall>>>> PSI_CALLS = new Key<>("PSI_CALLS");
 
     Logger LOGGER = Logger.getInstance(OMTFileImpl.class);
 
@@ -54,6 +60,31 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
                         .map(yamlDocument -> PsiTreeUtil.findChildOfType(yamlDocument, YAMLMapping.class))
                         .orElse(null)));
 
+    }
+
+    @Override
+    public Map<String, List<PsiCall>> getAllInjectedPsiCalls() {
+        return CachedValuesManager.getCachedValue(
+                this,
+                PSI_CALLS,
+                () -> new CachedValueProvider.Result<>(calculateAllInjectedPsiCalls(), this));
+    }
+
+    private Map<String, List<PsiCall>> calculateAllInjectedPsiCalls() {
+        InjectedLanguageManager languageManager = InjectedLanguageManager.getInstance(getProject());
+        return PsiTreeUtil.findChildrenOfType(this, InjectionHost.class)
+                .stream()
+                .map(languageManager::getInjectedPsiFiles)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .map(pair -> pair.getFirst())
+                .map(this::getCallsFromInjectedFragment)
+                .flatMap(Collection::stream)
+                .collect(Collectors.groupingBy(PsiCall::getName));
+    }
+
+    private Collection<PsiCall> getCallsFromInjectedFragment(PsiElement injectedFragment) {
+        return PsiTreeUtil.findChildrenOfType(injectedFragment, PsiCall.class);
     }
 
     /**
@@ -97,6 +128,24 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     private HashMap<String, List<PsiCallable>> getDeclaredExportingMembersMap(YAMLMapping yamlMapping) {
         return LoggerUtil.computeWithLogger(LOGGER, "getExportingMembersMap", () ->
                 ReadAction.compute(() -> OMTFileMetaType.getDeclaredCallableMap(yamlMapping, null)));
+    }
+
+    /**
+     * Returns the exportable members that are declared in this file
+     */
+    @Override
+    public HashMap<String, List<PsiCallable>> getImportingMembersMap() {
+        return CachedValuesManager.getCachedValue(this, IMPORTING_MEMBERS, () -> {
+            final HashMap<String, List<PsiCallable>> map = Optional.ofNullable(getRootMapping())
+                    .map(this::getImportingMembersMap)
+                    .orElse(new HashMap<>());
+            return new CachedValueProvider.Result<>(map, this);
+        });
+    }
+
+    private HashMap<String, List<PsiCallable>> getImportingMembersMap(YAMLMapping yamlMapping) {
+        return LoggerUtil.computeWithLogger(LOGGER, "getImportingMembersMap", () ->
+                ReadAction.compute(() -> OMTFileMetaType.getImportingMembers(yamlMapping)));
     }
 
     @Override

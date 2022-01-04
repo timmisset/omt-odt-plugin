@@ -183,11 +183,6 @@ public abstract class ODTBaseVariable
     }
 
     @Override
-    public PsiElement getHighlightingTarget() {
-        return this;
-    }
-
-    @Override
     public @Nullable PsiElement getNameIdentifier() {
         return this;
     }

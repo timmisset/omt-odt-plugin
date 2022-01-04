@@ -4,8 +4,4 @@ import com.intellij.psi.PsiElement;
 
 public interface SupportsRefactoring extends PsiElement {
 
-    default PsiElement getHighlightingTarget() {
-        return this;
-    }
-
 }

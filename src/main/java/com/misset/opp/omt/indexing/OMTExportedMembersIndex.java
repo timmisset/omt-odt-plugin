@@ -21,12 +21,14 @@ public class OMTExportedMembersIndex {
     private static final Logger LOGGER = Logger.getInstance(OMTExportedMembersIndex.class);
 
     public static HashMap<String, List<PsiCallable>> getExportedMembers(OMTFile file) {
-        if (exportedMembers.containsKey(file)) {
-            return exportedMembers.get(file);
-        } else {
-            analyse(file);
-            return exportedMembers.getOrDefault(file, new HashMap<>());
-        }
+        return LoggerUtil.computeWithLogger(LOGGER, "Retrieving exporting members of " + file.getName(), () -> {
+            if (exportedMembers.containsKey(file)) {
+                return exportedMembers.get(file);
+            } else {
+                analyse(file);
+                return exportedMembers.getOrDefault(file, new HashMap<>());
+            }
+        });
     }
 
     public static void removeFromIndex(OMTFile file) {

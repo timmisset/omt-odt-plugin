@@ -138,9 +138,12 @@
         <localInspection displayName="Unnecessary Identifier operator" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryIdentifierOperator"/>
-        <localInspection displayName="Unused" groupName="Redundancy" language="ODT" groupPath="ODT"
+        <localInspection displayName="Unused DEFINE statements" groupName="Redundancy" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.ODTUnusedInspection"/>
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTUnusedDefineStatementsInspection"/>
+        <localInspection displayName="Unused variables" groupName="Redundancy" language="ODT" groupPath="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTUnusedVariablesInspection"/>
         <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTResolvableInspection"/>
