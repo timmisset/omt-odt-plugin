@@ -10,21 +10,23 @@ import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTReasonMetaType;
 import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.Commit;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.resolvable.local.Rollback;
+import com.misset.opp.resolvable.psi.PsiResolvable;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
+import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil.addPrefixesToMap;
@@ -92,7 +94,14 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
 
     @Override
     public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
-        return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
+        return Optional.ofNullable(mapping.getKeyValueByKey("onRun"))
+                .map(YAMLKeyValue::getValue)
+                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvable.class))
+                .stream()
+                .flatMap(Collection::stream)
+                .map(Resolvable::resolve)
+                .findFirst()
+                .orElse(Collections.emptySet());
     }
 
     @Override

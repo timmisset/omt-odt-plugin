@@ -198,7 +198,7 @@ public class ODTVisitor extends PsiElementVisitor {
   }
 
   public void visitScript(@NotNull ODTScript o) {
-    visitPsiElement(o);
+    visitResolvable(o);
   }
 
   public void visitScriptLine(@NotNull ODTScriptLine o) {

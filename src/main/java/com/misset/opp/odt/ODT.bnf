@@ -51,7 +51,10 @@ variable ::=                                VARIABLE_NAME {
 // an ODT (script) block is always started by a Yaml scalar node
 // it can start on the same line and be restricted to that line (not required) or it can be started by the
 // literal indentifier, the "|" in Yaml. In which case it should be followed by an empty line and and 
-script ::=                                  scriptLine+
+script ::=                                  scriptLine+ {
+    extends="com.misset.opp.odt.psi.impl.resolvable.ODTResolvableScript"
+    implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
+}
 // a scriptline is contained by the addition of the semicolon at the end
 // The DOC_COMMENT is borrowed from Java
 // this requires a workaround for now since this is outside the scope of the Parser Generation process
