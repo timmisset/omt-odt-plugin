@@ -71,4 +71,26 @@ class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
         Assertions.assertTrue(resources.contains(oppModel.XSD_BOOLEAN_INSTANCE));
     }
 
+    @Test
+    void testSubqueryWithoutPath() {
+        final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / (ont:booleanPredicate)*");
+        Assertions.assertTrue(resources.contains(oppModel.XSD_BOOLEAN_INSTANCE));
+    }
+
+    @Test
+    void testSubqueryWithPath() {
+        final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / (ont:booleanPredicate / ^ont:booleanPredicate)*");
+        Assertions.assertTrue(resources.stream().anyMatch(
+                resource -> isIndividualOfClass(resource, createClass("ClassA"))
+        ));
+    }
+
+    @Test
+    void testSubqueryWithPathAndFilter() {
+        final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / (ont:booleanPredicate / ^ont:booleanPredicate[rdf:type == /ont:ClassA])*");
+        Assertions.assertTrue(resources.stream().anyMatch(
+                resource -> isIndividualOfClass(resource, createClass("ClassA"))
+        ));
+    }
+
 }
