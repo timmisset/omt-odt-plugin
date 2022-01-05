@@ -17,6 +17,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
+import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTFile;
@@ -39,6 +40,7 @@ import java.util.stream.IntStream;
 public abstract class ODTDefineStatement extends PsiCallable implements
         PsiNameIdentifierOwner,
         SupportsSafeDelete,
+        ODTDocumented,
         PsiJavaDocumentedElement {
     private static final Key<CachedValue<HashMap<Integer, Set<OntResource>>>> PARAMETER_TYPES = new Key<>("PARAMETER_TYPES");
 
@@ -66,6 +68,11 @@ public abstract class ODTDefineStatement extends PsiCallable implements
     public String getDescription(String context) {
         String javaDocComment = ODTDocumentationUtil.getJavaDocCommentDescription(this);
         return javaDocComment == null || javaDocComment.replace("<br>", "\n").isBlank() ? super.getDescription(context) : javaDocComment;
+    }
+
+    @Override
+    public String getDocumentation() {
+        return getDescription(null);
     }
 
     @Override

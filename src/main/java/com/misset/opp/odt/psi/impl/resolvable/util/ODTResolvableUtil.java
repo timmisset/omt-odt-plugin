@@ -22,6 +22,24 @@ public class ODTResolvableUtil {
 
     private static final Logger LOGGER = Logger.getInstance(ODTResolvableUtil.class);
 
+    public static String getDocumentation(Set<OntResource> resources) {
+        return getDocumentation(resources, true);
+    }
+
+    public static String getDocumentation(Set<OntResource> resources, boolean asHtmlList) {
+        String prefix = asHtmlList ? "<ul><li>" : "";
+        String suffix = asHtmlList ? "</li></ul>" : "";
+        String joining = asHtmlList ? "</li><li>" : "<br>";
+        if (resources.isEmpty()) {
+            return "Unknown";
+        }
+        return prefix + resources.stream()
+                .sorted(Comparator.comparing(Resource::toString))
+                .map(TTLResourceUtil::describeUri)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining(joining)) + suffix;
+    }
+
     public static void annotateResolved(Set<OntResource> resources,
                                         AnnotationHolder holder,
                                         PsiElement range,
@@ -34,13 +52,7 @@ public class ODTResolvableUtil {
                     }
                     final AnnotationBuilder builder = LoggerUtil.computeWithLogger(LOGGER,
                             "Annotating resolved resources, building annotation",
-                            () -> holder.newAnnotation(HighlightSeverity.INFORMATION, "")
-                                    .tooltip(
-                                            resources.stream()
-                                                    .sorted(Comparator.comparing(Resource::toString))
-                                                    .map(TTLResourceUtil::describeUri)
-                                                    .filter(Objects::nonNull)
-                                                    .collect(Collectors.joining("<br>")))
+                            () -> holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                                     .range(range));
 
                     LoggerUtil.runWithLogger(LOGGER, "Annotating resolved resources, setting text attributes", () -> {

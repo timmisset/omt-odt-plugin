@@ -52,11 +52,18 @@ public abstract class ODTResolvableQueryStepBase extends ODTASTWrapperPsiElement
     public void annotate(AnnotationHolder holder) {
         ODTResolvableUtil.annotateResolved(getResolvableParent().filter(resolve()), holder, getAnnotationRange(), applyTextAttributes());
     }
+
     protected PsiElement getAnnotationRange() {
         return this;
     }
+
     protected boolean applyTextAttributes() {
         return true;
+    }
+
+    @Override
+    public String getDocumentation() {
+        return ODTResolvableUtil.getDocumentation(getResolvableParent().filter(resolve()));
     }
 
     @Override

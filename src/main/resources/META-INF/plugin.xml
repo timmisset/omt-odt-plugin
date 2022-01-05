@@ -101,6 +101,8 @@
         <lang.refactoringSupport language="ODT"
                                  implementationClass="com.misset.opp.odt.refactoring.ODTRefactoringSupport"/>
         <nameSuggestionProvider implementation="com.misset.opp.odt.refactoring.ODTNameSuggestionProvider"/>
+        <lang.documentationProvider language="ODT"
+                                    implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
         <!-- Completions -->
         <completion.contributor language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.ODTTraverseCompletion"/>

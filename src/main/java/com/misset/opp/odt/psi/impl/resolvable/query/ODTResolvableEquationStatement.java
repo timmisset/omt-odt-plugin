@@ -1,12 +1,10 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTEquationStatement;
 import com.misset.opp.odt.psi.ODTQuery;
-import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -44,14 +42,6 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
                         (ODTResolvableQueryPath) leftHand,
                         (ODTResolvableQueryPath) rightHand))
                 .collect(Collectors.toSet());
-    }
-
-    @Override
-    public void annotate(AnnotationHolder holder) {
-        if (getParent() instanceof ODTQueryFilter) {
-            // report the outcome of the filter
-
-        }
     }
 
     private boolean traverseResource(OntResource resource,

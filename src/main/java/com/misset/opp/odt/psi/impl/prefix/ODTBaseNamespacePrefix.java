@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTDefinePrefix;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
@@ -16,7 +17,10 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.util.Optional;
 
-public abstract class ODTBaseNamespacePrefix extends ODTASTWrapperPsiElement implements ODTNamespacePrefix, PsiNamespacePrefix {
+public abstract class ODTBaseNamespacePrefix extends ODTASTWrapperPsiElement implements
+        ODTNamespacePrefix,
+        PsiNamespacePrefix,
+        ODTDocumented {
     public ODTBaseNamespacePrefix(@NotNull ASTNode node) {
         super(node);
     }
@@ -34,8 +38,15 @@ public abstract class ODTBaseNamespacePrefix extends ODTASTWrapperPsiElement imp
 
     @Override
     public PsiReference getReference() {
-        if(getParent() instanceof ODTDefinePrefix) { return null; }
+        if (getParent() instanceof ODTDefinePrefix) {
+            return null;
+        }
         return new ODTNamespacePrefixReference(this);
+    }
+
+    @Override
+    public String getDocumentation() {
+        return "Prefix " + getName() + " for namespace " + getFullyQualifiedUri("");
     }
 
     /**

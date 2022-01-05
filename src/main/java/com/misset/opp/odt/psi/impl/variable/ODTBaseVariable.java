@@ -14,9 +14,11 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
+import com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
@@ -40,6 +42,7 @@ public abstract class ODTBaseVariable
         implements ODTVariable,
         ODTVariableWrapper,
         PsiNameIdentifierOwner,
+        ODTDocumented,
         SupportsSafeDelete {
     private final ODTVariableDelegate delegate;
     protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
@@ -145,6 +148,29 @@ public abstract class ODTBaseVariable
                     ODTCodeUntypedInspectionWarning.PARAM_ANNOTATION,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
+    }
+
+    @Override
+    public String getDocumentation() {
+        Variable declared = isGlobal() ? GlobalVariable.getVariable(getName()) : getDeclared();
+        Set<OntResource> resolve = resolve();
+        if (declared == null) {
+            if (!resolve.isEmpty()) {
+                // can only be a local variable:
+                return String.format("%s is available as Local variable with type(s)<br>%s",
+                        getName(),
+                        ODTResolvableUtil.getDocumentation(resolve, resolve.size() > 1));
+            }
+            return null;
+        }
+        return String.format("<h3>%s</h3>" +
+                        "readonly: %s<br>" +
+                        "global: %s<br>" +
+                        "type(s): %s<br>",
+                getName(),
+                declared.isReadonly(),
+                declared.isGlobal(),
+                ODTResolvableUtil.getDocumentation(resolve, resolve.size() > 1));
     }
 
     @Override

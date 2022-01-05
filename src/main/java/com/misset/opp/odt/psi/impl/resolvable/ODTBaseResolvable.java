@@ -32,4 +32,8 @@ public abstract class ODTBaseResolvable extends ODTASTWrapperPsiElement implemen
 
     }
 
+    @Override
+    public String getDocumentation() {
+        return null;
+    }
 }
