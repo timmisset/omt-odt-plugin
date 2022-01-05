@@ -137,7 +137,9 @@ public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODT
                     .orElse(Collections.emptySet());
             PsiFile[] files = context.getFilesInScope().toArray(PsiFile[]::new);
             return new CachedValueProvider.Result<>(resources,
-                    files,
+                    // if resolved, only depend on the included files, otherwise stay safe with the entire PsiModificationTracker
+                    // this is required to dump the cache after a broken import link is repaired (for example)
+                    !resources.isEmpty() ? files : PsiModificationTracker.MODIFICATION_COUNT,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }
