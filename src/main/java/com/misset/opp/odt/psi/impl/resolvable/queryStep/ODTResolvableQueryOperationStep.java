@@ -82,7 +82,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
             // for example:
             // /ont:ClassA / ^rdf:type[rdf:type == /ont:ClassA]
             // the rdf:type in the filter should return the outcome of the ^rdf:type
-            return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTQueryFilter.class, ODTSignature.class, ODTBaseDefineQueryStatement.class))
+            return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTQueryFilter.class, ODTSignature.class, ODTResolvableSubQueryStep.class, ODTBaseDefineQueryStatement.class))
                     .map(container -> resolvePreviousStep(container, resources, call))
                     .orElse(Collections.emptySet());
         } else {

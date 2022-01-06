@@ -123,4 +123,15 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
 
         assertNoWarning("Import for memberA is never used");
     }
+
+    @Test
+    void testNoWarningForExportedImport() {
+        String content = "import:\n" +
+                "   ./importing.omt:\n" +
+                "   - memberA\n" +
+                "export:\n" +
+                "- memberA";
+        configureByText("myModule.module.omt", content);
+        assertNoWarning("Import for memberA is never used");
+    }
 }

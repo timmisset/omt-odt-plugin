@@ -106,6 +106,10 @@ public abstract class ODTDefineStatement extends PsiCallable implements
 
     @Override
     public HashMap<Integer, Set<OntResource>> getParameterTypes() {
+        ODTFile containingFile = getContainingFile();
+        if (containingFile == null) {
+            return new HashMap<>();
+        }
         return CachedValuesManager.getCachedValue(this, PARAMETER_TYPES, () -> {
             List<Set<OntResource>> types = Optional.ofNullable(getDefineParam())
                     .map(ODTDefineParam::getVariableList)
@@ -113,7 +117,7 @@ public abstract class ODTDefineStatement extends PsiCallable implements
                     .flatMap(Collection::stream)
                     .map(ODTVariableDelegate::resolve)
                     .collect(Collectors.toList());
-            return new CachedValueProvider.Result<>(mapCallableParameters(types), getContainingFile());
+            return new CachedValueProvider.Result<>(mapCallableParameters(types), containingFile);
         });
     }
 

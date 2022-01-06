@@ -78,7 +78,7 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements OM
                                 PsiElement importElement,
                                 OMTFile containingFile) {
         String name = targetElement instanceof PsiNamedElement ? ((PsiNamedElement) targetElement).getName() : targetElement.getText();
-        boolean local = isUsedInLocalScope(targetElement, importElement, Set.of(containingFile), name);
+        boolean local = isUsedInLocalScope(targetElement, importElement, containingFile, name);
         if (local) {
             return false;
         }
@@ -90,11 +90,11 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements OM
 
     private boolean isUsedInLocalScope(PsiElement targetElement,
                                        PsiElement importElement,
-                                       Set<OMTFile> placesToSearch,
+                                       OMTFile file,
                                        String name) {
         return LoggerUtil.computeWithLogger(LOGGER,
                 "LOCAL Call search for " + importElement.getText(),
-                () -> placesToSearch.stream().anyMatch(file -> isUsedInFile(file, targetElement, name)));
+                () -> isUsedInFile(file, importElement, targetElement, name));
     }
 
     private boolean isUsedInGlobalScope(Set<OMTFile> placesToSearch, PsiElement target, String name) {
@@ -109,7 +109,7 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements OM
                 .anyMatch(targetElement::equals);
     }
 
-    private boolean isUsedInFile(OMTFile file, PsiElement targetElement, String name) {
+    private boolean isUsedInFile(OMTFile file, PsiElement importElement, PsiElement targetElement, String name) {
 
         return Optional.ofNullable(file.getAllInjectedPsiCalls()
                         .get(name))
@@ -120,7 +120,9 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements OM
                 .filter(PsiElement.class::isInstance)
                 .map(PsiElement.class::cast)
                 .map(PsiElement::getOriginalElement)
-                .anyMatch(targetElement::equals);
+                .anyMatch(targetElement::equals) ||
+                ReferencesSearch.search(targetElement, new LocalSearchScope(file))
+                        .anyMatch(reference -> reference.getElement() != importElement);
     }
 
     private Set<OMTFile> getPlacesToSearch(OMTFile containingFile, PsiElement importElement) {
