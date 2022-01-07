@@ -933,4 +933,36 @@ public class OppModel {
         }
         return isCardinality(map, superClass, property);
     }
+
+    /**
+     * Only use this for documentation purposes
+     */
+    public List<OntClass> listOrderedSuperClasses(OntClass ontClass) {
+        if (ontClass == null || ontClass == OWL_THING_CLASS) {
+            return Collections.emptyList();
+        }
+        List<OntClass> superClasses = new ArrayList<>();
+        while (!ontClass.equals(OWL_THING_CLASS)) {
+            ontClass = ontClass.getSuperClass();
+            superClasses.add(ontClass);
+        }
+        return superClasses;
+    }
+
+    /**
+     * Only use this for documentation purposes
+     */
+    public List<OntClass> listOrderedSubClasses(OntClass ontClass) {
+        if (ontClass == null || ontClass.equals(OWL_THING_CLASS)) {
+            return Collections.emptyList();
+        }
+        List<OntClass> subClasses = new ArrayList<>();
+        OntClass subClass = ontClass.getSubClass();
+        while (!subClass.equals(ontClass)) {
+            subClasses.add(subClass);
+            ontClass = subClass;
+            subClass = ontClass.getSubClass();
+        }
+        return subClasses;
+    }
 }

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 public class TTLResourceUtil {
     private static final HashMap<OntResource, String> descriptions = new HashMap<>();
+    private static final HashMap<OntResource, String> descriptionsWithType = new HashMap<>();
     private static final HashMap<OntResource, Boolean> isType = new HashMap<>();
     private static final HashMap<OntResource, Boolean> isValue = new HashMap<>();
     private static final HashMap<OntResource, Boolean> isXSDType = new HashMap<>();
@@ -53,39 +54,48 @@ public class TTLResourceUtil {
     }
 
     public static String describeUrisJoined(Set<OntResource> resources) {
-        return describeUrisJoined(resources, ", ");
+        return describeUrisJoined(resources, ", ", true);
     }
 
-    public static String describeUrisJoined(Set<OntResource> resources, String delimiter) {
-        return String.join(delimiter, describeUris(resources));
+    public static String describeUrisJoined(Set<? extends OntResource> resources, String delimiter) {
+        return String.join(delimiter, describeUris(resources, true));
     }
 
-    public static List<String> describeUris(Set<OntResource> resources) {
+    public static String describeUrisJoined(Set<? extends OntResource> resources, String delimiter, boolean withType) {
+        return String.join(delimiter, describeUris(resources, withType));
+    }
+
+    public static List<String> describeUris(Set<? extends OntResource> resources, boolean withType) {
         return resources.stream()
-                .map(TTLResourceUtil::describeUri)
+                .map(resource -> describeUri(resource, withType))
                 .sorted()
                 .collect(Collectors.toList());
     }
 
     public static String describeUri(OntResource resource) {
-        if (descriptions.containsKey(resource)) {
-            return descriptions.get(resource);
+        return describeUri(resource, true);
+    }
+
+    public static String describeUri(OntResource resource, boolean withType) {
+        HashMap<OntResource, String> cache = withType ? descriptionsWithType : descriptions;
+        if (cache.containsKey(resource)) {
+            return cache.get(resource);
         }
-        String describedUri = doDescribeUri(resource);
-        descriptions.put(resource, describedUri);
+        String describedUri = doDescribeUri(resource, withType);
+        cache.put(resource, describedUri);
         return describedUri;
     }
 
-    private static String doDescribeUri(OntResource resource) {
+    private static String doDescribeUri(OntResource resource, boolean withType) {
         if (resource.isClass()) {
             if (resource.getNameSpace().equals(OppModel.XSD)) {
-                return resource.getURI() + " (TYPE)";
+                return resource.getURI() + (withType ? " (TYPE)" : "");
             }
-            return resource.getURI() + " (CLASS)";
+            return resource.getURI() + (withType ? " (CLASS)" : "");
         } else if (resource instanceof Individual) {
             final Individual individual = (Individual) resource;
             if (isXSDType(individual.getOntClass())) {
-                return individual.getOntClass().getURI();
+                return individual.getOntClass().getURI() + (withType ? " (VALUE)" : "");
             } else if (individual.getOntClass().equals(OppModel.INSTANCE.OPP_CLASS)) {
                 // Specific OPP_CLASS instances that describe non-ontology values such as JSON_OBJECT, ERROR etc
                 return individual.getURI();
@@ -94,7 +104,7 @@ public class TTLResourceUtil {
                     !individual.getLocalName().endsWith("_INSTANCE")) {
                 return individual.getURI();
             }
-            return individual.getOntClass().getURI();
+            return individual.getOntClass().getURI() + (withType ? " (INSTANCE)" : "");
         } else {
             return resource.getURI();
         }
@@ -108,11 +118,15 @@ public class TTLResourceUtil {
     }
 
 
-    public static String describeUrisForLookupJoined(Set<OntResource> resources) {
-        return String.join(", ", describeUrisLookup(resources));
+    public static String describeUrisForLookupJoined(Set<? extends OntResource> resources) {
+        return describeUrisForLookupJoined(resources, ", ");
     }
 
-    public static List<String> describeUrisLookup(Set<OntResource> resources) {
+    public static String describeUrisForLookupJoined(Set<? extends OntResource> resources, String delimiter) {
+        return String.join(delimiter, describeUrisLookup(resources));
+    }
+
+    public static List<String> describeUrisLookup(Set<? extends OntResource> resources) {
         return resources.stream()
                 .map(TTLResourceUtil::describeUriForLookup)
                 .distinct()

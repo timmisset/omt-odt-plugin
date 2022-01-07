@@ -2,10 +2,12 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.util.TTLResourceUtil;
 import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntResource;
@@ -50,13 +52,23 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
     }
 
     @Override
+    public String getDocumentation() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(DocumentationMarkup.DEFINITION_START);
+        sb.append("Constant<br>");
+        sb.append(TTLResourceUtil.describeUrisJoined(resolve(), "<br>", false));
+        sb.append(DocumentationMarkup.DEFINITION_END);
+        return sb.toString();
+    }
+
+    @Override
     protected boolean applyTextAttributes() {
         return false;
     }
 
     @Override
     public void annotate(AnnotationHolder holder) {
-        if(getNode().getFirstChildNode().getElementType() == ODTTypes.INTERPOLATED_STRING) {
+        if (getNode().getFirstChildNode().getElementType() == ODTTypes.INTERPOLATED_STRING) {
             // don't annotate the interpolated string, it probably contains child elements
             // that should be annotated instead
             return;
