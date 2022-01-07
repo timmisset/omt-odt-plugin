@@ -55,4 +55,5 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
     public void delete() {
 
     }
+
 }

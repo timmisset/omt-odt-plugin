@@ -55,6 +55,12 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
                 .orElse(resolveFromContext());
     }
 
+
+    private Optional<Variable> getUndeclaredVariable() {
+        return getFromOMTLocalVariable()
+                .or(this::getFromGlobalVariable);
+    }
+
     private Set<OntResource> resolveFromContext() {
         // combine the type assignments up to this point
         // and potentially set by the declaration (OMT or ODT)
@@ -155,10 +161,16 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
 
     @Override
     public Variable getDeclared() {
+        return getDeclaredFromReference()
+                .or(this::getUndeclaredVariable)
+                .or(this::getDeclaredFromCallContext)
+                .orElse(null);
+    }
+
+    private Optional<Variable> getDeclaredFromReference() {
         return Optional.ofNullable(getReference())
                 .map(PsiReference::resolve)
-                .map(this::getWrapper)
-                .orElse(null);
+                .map(this::getWrapper);
     }
 
     private Optional<Set<OntResource>> getTypeFromDeclaration() {
@@ -168,6 +180,12 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
 
 
     private Optional<Set<OntResource>> resolveFromOMTLocalVariable() {
+        return getFromOMTLocalVariable().map(Variable::resolve);
+    }
+
+    private Optional<Variable> getFromOMTLocalVariable() {
+        // resolve the type from the local variable
+        // the type is set by OMTLocalVariableTypeProvider corresponding with the OMTLocalVariableProvider
         return element.getContainingFile()
                 .getProviders(YAMLValue.class, OMTLocalVariableProvider.class, OMTLocalVariableProvider.KEY)
                 .entrySet()
@@ -175,26 +193,35 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
                 // map the Provider and YamlPsiElement (mapping) to resolve to set of local variables that are present
                 .map(entry -> entry.getValue().getLocalVariableMap(entry.getKey()).get(element.getName()))
                 .filter(Objects::nonNull)
-                // resolve the type from the local variable
-                // the type is set by OMTLocalVariableTypeProvider corresponding with the OMTLocalVariableProvider
-                .map(Variable::resolve)
+                .map(Variable.class::cast)
                 .findFirst();
     }
 
     private Optional<Set<OntResource>> resolveFromGlobalVariable() {
-        return Optional.ofNullable(GlobalVariable.getVariable(element.getName()))
-                .map(Variable::resolve);
+        return getFromGlobalVariable().map(Variable::resolve);
     }
 
+    private Optional<Variable> getFromGlobalVariable() {
+        return Optional.ofNullable(GlobalVariable.getVariable(element.getName()));
+    }
 
     private Optional<Set<OntResource>> resolveFromCallContext() {
+        return getCallableLocalVariableTypeProvider()
+                .map(pair -> pair.second.resolve(element.getName(), pair.first, pair.first.getArgumentIndexOf(element)))
+                .filter(ontResources -> !ontResources.isEmpty());
+    }
+
+    private Optional<Variable> getDeclaredFromCallContext() {
+        return getCallableLocalVariableTypeProvider()
+                .map(pair -> pair.second.getLocalVariable(element.getName(), pair.first, pair.first.getArgumentIndexOf(element)));
+    }
+
+    private Optional<Pair<ODTCall, CallableLocalVariableTypeProvider>> getCallableLocalVariableTypeProvider() {
         return PsiTreeUtil.collectParents(element, ODTCall.class, false, Objects::isNull)
                 .stream()
                 .map(call -> new Pair<>(call, call.getCallable()))
                 .filter(pair -> pair.second instanceof CallableLocalVariableTypeProvider)
-                .map(pair -> ((CallableLocalVariableTypeProvider) pair.second)
-                        .resolve(element.getName(), pair.first, pair.first.getArgumentIndexOf(element)))
-                .filter(ontResources -> !ontResources.isEmpty())
+                .map(pair -> new Pair<>(pair.first, (CallableLocalVariableTypeProvider) pair.second))
                 .findFirst();
     }
 }

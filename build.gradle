@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.1.2'
+version '5.2'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,6 +59,12 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        <h1>Update 5.2</h1>
+        <p>The Information annotations for most of the ODT language have been replaced with an implementation
+        of the IntelliJ DocumentationProvider. There is now more detailed information available, make sure to enable the
+        QuickDocumentation at File | Settings | Editor | Code Editing.</p>
+        
+        
         <h1>Update 5.1.2</h1>
         Enhancement #7: <a href="https://github.com/timmisset/omt-odt-plugin/issues/7">Resolve subquery</a><br>
         Fixed #8: <a href="https://github.com/timmisset/omt-odt-plugin/issues/8">Export member not counted as usage for import member in module</a><br>

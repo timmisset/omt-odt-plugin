@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.prefix;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -46,7 +47,12 @@ public abstract class ODTBaseNamespacePrefix extends ODTASTWrapperPsiElement imp
 
     @Override
     public String getDocumentation() {
-        return "Prefix " + getName() + " for namespace " + getFullyQualifiedUri("");
+        return DocumentationMarkup.DEFINITION_START +
+                "Namespace" +
+                DocumentationMarkup.DEFINITION_END +
+                DocumentationMarkup.SECTIONS_START +
+                getFullyQualifiedUri("") +
+                DocumentationMarkup.SECTIONS_END;
     }
 
     /**

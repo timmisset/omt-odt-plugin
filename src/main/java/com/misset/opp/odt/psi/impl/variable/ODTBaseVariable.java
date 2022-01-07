@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.variable;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
@@ -14,16 +15,17 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.documentation.ODTDocumentationProvider;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
-import com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
 import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -152,25 +154,31 @@ public abstract class ODTBaseVariable
 
     @Override
     public String getDocumentation() {
-        Variable declared = isGlobal() ? GlobalVariable.getVariable(getName()) : getDeclared();
-        Set<OntResource> resolve = resolve();
+        Variable declared = getDeclared();
         if (declared == null) {
-            if (!resolve.isEmpty()) {
-                // can only be a local variable:
-                return String.format("%s is available as Local variable with type(s)<br>%s",
-                        getName(),
-                        ODTResolvableUtil.getDocumentation(resolve, resolve.size() > 1));
-            }
             return null;
         }
-        return String.format("<h3>%s</h3>" +
-                        "readonly: %s<br>" +
-                        "global: %s<br>" +
-                        "type(s): %s<br>",
-                getName(),
-                declared.isReadonly(),
-                declared.isGlobal(),
-                ODTResolvableUtil.getDocumentation(resolve, resolve.size() > 1));
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(DocumentationMarkup.DEFINITION_START);
+        sb.append(getName());
+        sb.append(DocumentationMarkup.DEFINITION_END);
+
+        String description = declared.getDescription();
+        if (!description.equals(getName())) {
+            sb.append(DocumentationMarkup.CONTENT_START);
+            sb.append(description);
+            sb.append(DocumentationMarkup.CONTENT_END);
+        }
+
+        Set<OntResource> resolve = resolve();
+        sb.append(DocumentationMarkup.SECTIONS_START);
+        String typeLabel = resolve.size() == 1 ? "Type:" : "Types:";
+        ODTDocumentationProvider.addKeyValueSection(typeLabel, resolve.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(resolve), sb);
+        ODTDocumentationProvider.addKeyValueSection("Scope:", isGlobal() ? "Global" : "Local", sb);
+        ODTDocumentationProvider.addKeyValueSection("Readonly:", isGlobal() || isReadonly() ? "Yes" : "No", sb);
+        sb.append(DocumentationMarkup.SECTIONS_END);
+        return sb.toString();
     }
 
     @Override

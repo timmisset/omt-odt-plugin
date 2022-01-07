@@ -63,7 +63,7 @@ public abstract class ODTResolvableQueryStepBase extends ODTASTWrapperPsiElement
 
     @Override
     public String getDocumentation() {
-        return ODTResolvableUtil.getDocumentation(getResolvableParent().filter(resolve()));
+        return null;
     }
 
     @Override

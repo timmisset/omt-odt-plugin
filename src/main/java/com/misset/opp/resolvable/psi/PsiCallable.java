@@ -6,15 +6,11 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.resolvable.Callable;
-import com.misset.opp.ttl.OppModel;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -55,24 +51,6 @@ public abstract class PsiCallable extends ASTWrapperPsiElement implements Callab
 
     @Override
     public String getDescription(String context) {
-        Map<Integer, String> parameterNames = getParameterNames();
-        HashMap<Integer, Set<OntResource>> parameterTypes = getParameterTypes();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder
-                .append(getName()).append("<br>")
-                .append("type: ").append(getType()).append("<br>");
-        if (maxNumberOfArguments() > 0) {
-            stringBuilder.append("params:<br>");
-        }
-        for (int i = 0; i < maxNumberOfArguments(); i++) {
-            String name = parameterNames.getOrDefault(i, "$param" + i);
-            String type = TTLResourceUtil.describeUrisForLookupJoined(parameterTypes.getOrDefault(i, Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE)));
-            stringBuilder.append("- ").append(name);
-            if (!type.isBlank()) {
-                stringBuilder.append(" (").append(type).append(")");
-            }
-            stringBuilder.append("<br>");
-        }
-        return stringBuilder.toString();
+        return null;
     }
 }

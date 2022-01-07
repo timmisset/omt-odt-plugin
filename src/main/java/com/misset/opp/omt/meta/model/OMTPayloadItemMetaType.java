@@ -74,8 +74,8 @@ public class OMTPayloadItemMetaType extends OMTMetaType implements
     public List<LocalVariable> getLocalVariables(YAMLMapping mapping) {
         Set<OntResource> type = getType(mapping);
         return List.of(
-                new LocalVariable("$newValue", "New value for the variable", type),
-                new LocalVariable("$oldValue", "Old value for the variable", type)
+                new LocalVariable("$newValue", "New value for the payload item", type),
+                new LocalVariable("$oldValue", "Old value for the payload item", type)
         );
     }
 

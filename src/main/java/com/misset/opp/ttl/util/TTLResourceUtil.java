@@ -53,7 +53,11 @@ public class TTLResourceUtil {
     }
 
     public static String describeUrisJoined(Set<OntResource> resources) {
-        return String.join(", ", describeUris(resources));
+        return describeUrisJoined(resources, ", ");
+    }
+
+    public static String describeUrisJoined(Set<OntResource> resources, String delimiter) {
+        return String.join(delimiter, describeUris(resources));
     }
 
     public static List<String> describeUris(Set<OntResource> resources) {
@@ -81,7 +85,7 @@ public class TTLResourceUtil {
         } else if (resource instanceof Individual) {
             final Individual individual = (Individual) resource;
             if (isXSDType(individual.getOntClass())) {
-                return individual.getOntClass().getURI() + " (VALUE)";
+                return individual.getOntClass().getURI();
             } else if (individual.getOntClass().equals(OppModel.INSTANCE.OPP_CLASS)) {
                 // Specific OPP_CLASS instances that describe non-ontology values such as JSON_OBJECT, ERROR etc
                 return individual.getURI();
@@ -90,7 +94,7 @@ public class TTLResourceUtil {
                     !individual.getLocalName().endsWith("_INSTANCE")) {
                 return individual.getURI();
             }
-            return individual.getOntClass().getURI() + " (INSTANCE)";
+            return individual.getOntClass().getURI();
         } else {
             return resource.getURI();
         }
@@ -111,6 +115,7 @@ public class TTLResourceUtil {
     public static List<String> describeUrisLookup(Set<OntResource> resources) {
         return resources.stream()
                 .map(TTLResourceUtil::describeUriForLookup)
+                .distinct()
                 .sorted()
                 .collect(Collectors.toList());
     }

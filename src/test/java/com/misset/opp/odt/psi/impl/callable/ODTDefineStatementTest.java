@@ -24,23 +24,6 @@ class ODTDefineStatementTest extends ODTTestCase {
     }
 
     @Test
-    void testGetDescription() {
-        String content = "/**\n" +
-                " * @param $paramA (string)\n" +
-                " */\n" +
-                "DEFINE QUERY <caret>query($paramA) => '';\n";
-        configureByText(content);
-        ReadAction.run(() -> {
-            ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
-            String description = defineStatement.getDescription(null);
-            Assertions.assertEquals("query<br>" +
-                    "type: DEFINE QUERY<br>" +
-                    "params:<br>" +
-                    "- $paramA (string)<br>", description);
-        });
-    }
-
-    @Test
     void testGetNumberOfArguments() {
         String content = "/**\n" +
                 " * @param $paramA (string)\n" +
