@@ -65,6 +65,7 @@ patchPluginXml {
         QuickDocumentation at File | Settings | Editor | Code Editing.</p>
         <br>
         Fixed #12: <https://github.com/timmisset/omt-odt-plugin/issues/12>Invalid element</a><br>
+        Fixed #13: <https://github.com/timmisset/omt-odt-plugin/issues/13>Class cast exception for non-OMT yaml file</a><br>
         
         
         

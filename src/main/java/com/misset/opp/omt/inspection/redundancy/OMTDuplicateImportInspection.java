@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.omt.inspection.OMTMetaTypeInspectionBase;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
+import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -41,6 +42,9 @@ public class OMTDuplicateImportInspection extends OMTMetaTypeInspectionBase {
 
         @Override
         protected void visitYAMLMapping(@NotNull YAMLMapping mapping) {
+            if (!(mapping.getContainingFile() instanceof OMTFile)) {
+                return;
+            }
             final YamlMetaTypeProvider.MetaTypeProxy meta = yamlMetaTypeProvider.getMetaTypeProxy(mapping);
             if (meta == null) {
                 return;

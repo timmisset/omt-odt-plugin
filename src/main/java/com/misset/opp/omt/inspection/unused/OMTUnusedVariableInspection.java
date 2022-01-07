@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlBindingParameterDelegate;
@@ -21,7 +22,7 @@ public class OMTUnusedVariableInspection extends LocalInspectionTool {
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (!(element instanceof YAMLPsiElement)) {
+                if (!(element instanceof YAMLPsiElement) || !(element.getContainingFile() instanceof OMTFile)) {
                     return;
                 }
                 final OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);

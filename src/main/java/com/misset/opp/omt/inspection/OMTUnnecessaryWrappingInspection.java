@@ -11,6 +11,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.omt.meta.OMTImportMetaType;
+import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +59,9 @@ public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase 
 
         @Override
         public void visitElement(@NotNull PsiElement element) {
+            if (!(element.getContainingFile() instanceof OMTFile)) {
+                return;
+            }
             if (element instanceof YAMLKeyValue) {
                 visitYAMLKeyValue((YAMLKeyValue) element);
             }
@@ -65,6 +69,9 @@ public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase 
 
         @Override
         protected void visitYAMLKeyValue(@NotNull YAMLKeyValue keyValue) {
+            if (!(keyValue.getContainingFile() instanceof OMTFile)) {
+                return;
+            }
             visitMetaTypeProxy(keyValue,
                     myMetaTypeProvider,
                     OMTImportMetaType.class,
