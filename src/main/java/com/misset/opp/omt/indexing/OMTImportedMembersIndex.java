@@ -1,6 +1,7 @@
 package com.misset.opp.omt.indexing;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.util.LoggerUtil;
@@ -8,6 +9,7 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLSequenceItem;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Index that holds the PsiCallable names and which files import them. This is used to reduce
@@ -21,7 +23,10 @@ public class OMTImportedMembersIndex {
     private static final Logger LOGGER = Logger.getInstance(OMTImportedMembersIndex.class);
 
     public static List<OMTFile> getImportingFiles(String callableName) {
-        return importedMembers.getOrDefault(callableName, Collections.emptyList());
+        return importedMembers.getOrDefault(callableName, Collections.emptyList())
+                .stream()
+                .filter(PsiElement::isValid)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public static void removeFromIndex(OMTFile omtFile) {
@@ -30,12 +35,8 @@ public class OMTImportedMembersIndex {
 
     private static void removeFromIndex(String key,
                                         OMTFile omtFile) {
-        final List<OMTFile> omtFiles = new ArrayList<>();
-        for (OMTFile file : getImportingFiles(key)) {
-            if (file != omtFile) {
-                omtFiles.add(file);
-            }
-        }
+        final List<OMTFile> omtFiles = new ArrayList<>(getImportingFiles(key));
+        omtFiles.removeIf(omtFile::equals);
         importedMembers.put(key, Collections.unmodifiableList(omtFiles));
     }
 
@@ -45,6 +46,9 @@ public class OMTImportedMembersIndex {
     }
 
     public static void analyse(OMTFile file) {
+        if (!file.isValid()) {
+            return;
+        }
         LoggerUtil.runWithLogger(LOGGER, "Analysis of " + file.getName(), () -> {
             if (containedFiles.contains(file)) {
                 removeFromIndex(file);
@@ -64,6 +68,9 @@ public class OMTImportedMembersIndex {
 
     private static void addToIndex(String name,
                                    OMTFile file) {
+        if (!file.isValid()) {
+            return;
+        }
         final ArrayList<OMTFile> filesImportingByName = new ArrayList<>(importedMembers.getOrDefault(name,
                 Collections.emptyList()));
         filesImportingByName.add(file);

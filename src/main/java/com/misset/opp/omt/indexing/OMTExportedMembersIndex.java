@@ -5,6 +5,8 @@ import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,14 +23,27 @@ public class OMTExportedMembersIndex {
     private static final Logger LOGGER = Logger.getInstance(OMTExportedMembersIndex.class);
 
     public static HashMap<String, List<PsiCallable>> getExportedMembers(OMTFile file) {
+        if (!file.isValid()) {
+            return new HashMap<>();
+        }
         return LoggerUtil.computeWithLogger(LOGGER, "Retrieving exporting members of " + file.getName(), () -> {
             if (exportedMembers.containsKey(file)) {
-                return exportedMembers.get(file);
+                return getCleanedExportedMembers(exportedMembers.get(file));
             } else {
                 analyse(file);
                 return exportedMembers.getOrDefault(file, new HashMap<>());
             }
         });
+    }
+
+    // Remove any non-valid PsiElements from the collection
+    private static HashMap<String, List<PsiCallable>> getCleanedExportedMembers(HashMap<String, List<PsiCallable>> map) {
+        for (String key : map.keySet()) {
+            ArrayList<PsiCallable> psiCallables = new ArrayList<>(map.get(key));
+            psiCallables.removeIf(psiCallable -> !psiCallable.isValid());
+            map.put(key, Collections.unmodifiableList(psiCallables));
+        }
+        return map;
     }
 
     public static void removeFromIndex(OMTFile file) {

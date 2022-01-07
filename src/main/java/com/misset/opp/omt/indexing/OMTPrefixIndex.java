@@ -29,6 +29,9 @@ public class OMTPrefixIndex {
      * Call orderIndexByFrequency() when all files are processed to sort the index by frequency
      */
     public static void analyse(OMTFile file) {
+        if (!file.isValid()) {
+            return;
+        }
         PsiTreeUtil.findChildrenOfType(file, YAMLKeyValue.class)
                 .stream()
                 .filter(keyValue -> keyValue.getKeyText().equals("prefixes"))

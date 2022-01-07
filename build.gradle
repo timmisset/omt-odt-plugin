@@ -63,6 +63,10 @@ patchPluginXml {
         <p>The Information annotations for most of the ODT language have been replaced with an implementation
         of the IntelliJ DocumentationProvider. There is now more detailed information available, make sure to enable the
         QuickDocumentation at File | Settings | Editor | Code Editing.</p>
+        <br>
+        Fixed #12: <https://github.com/timmisset/omt-odt-plugin/issues/12>Invalid element</a><br>
+        
+        
         
         
         <h1>Update 5.1.2</h1>
