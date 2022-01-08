@@ -14,5 +14,7 @@ public interface ODTVariableWrapper extends PsiNamedElement, ODTVariableDelegate
 
     boolean sameNameAs(ODTVariable variable);
 
+    ODTVariableDelegate getDelegate();
+
     boolean canBeAnnotated();
 }

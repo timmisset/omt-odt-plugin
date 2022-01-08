@@ -14,6 +14,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -343,14 +344,14 @@ public class OppModel {
     }
 
     public Set<OntClass> listClasses() {
-        return model.listClasses().toSet();
+        return updateSafeCalculation(() -> model.listClasses().toSet(), Collections.emptySet());
     }
 
     /**
      * Returns the list with all predicate-objects for the provided subject
      */
     public Set<Statement> listPredicateObjects(OntResource subject) {
-        return LoggerUtil.computeWithLogger(LOGGER, "listPredicateObjects for " + subject.getURI(), () -> {
+        return updateSafeCalculation(() -> LoggerUtil.computeWithLogger(LOGGER, "listPredicateObjects for " + subject.getURI(), () -> {
             if (!listPredicateObjectsCache.containsKey(subject)) {
                 final HashSet<Statement> hashSet;
                 if (subject.isIndividual()) {
@@ -368,7 +369,7 @@ public class OppModel {
                 return hashSet;
             }
             return listPredicateObjectsCache.get(subject);
-        });
+        }), Collections.emptySet());
     }
 
     private Set<Statement> listPredicateObjectsForIndividual(Individual individual) {
@@ -379,43 +380,47 @@ public class OppModel {
             semantically correct, it's not how the rdf:type call in the ODT should work.
             In ODT the rdf:type works like getting the direct type.
          */
-        final Set<Statement> statements = listPredicateObjectsForClass(individual.getOntClass())
-                .stream()
-                .filter(statement -> !classModelProperties.contains(statement.getPredicate()))
-                .collect(Collectors.toSet());
-        statements.addAll(individual.listProperties().toSet());
-        return statements;
+        return updateSafeCalculation(() -> {
+            final Set<Statement> statements = listPredicateObjectsForClass(individual.getOntClass())
+                    .stream()
+                    .filter(statement -> !classModelProperties.contains(statement.getPredicate()))
+                    .collect(Collectors.toSet());
+            statements.addAll(individual.listProperties().toSet());
+            return statements;
+        }, Collections.emptySet());
     }
 
     private Set<Statement> listPredicateObjectsForClass(OntClass ontClass) {
-        final HashSet<Statement> hashSet = new HashSet<>(ontClass.listProperties().toSet());
-        ontClass.listSuperClasses().forEach(
-                superClass -> hashSet.addAll(superClass.listProperties().toSet())
-        );
-        return hashSet;
+        return updateSafeCalculation(() -> {
+            final HashSet<Statement> hashSet = new HashSet<>(ontClass.listProperties().toSet());
+            ontClass.listSuperClasses().forEach(
+                    superClass -> hashSet.addAll(superClass.listProperties().toSet())
+            );
+            return hashSet;
+        }, Collections.emptySet());
     }
 
     public Set<OntResource> listSubjects(Property predicate,
                                          Set<OntResource> objects) {
-        return LoggerUtil.computeWithLogger(LOGGER, "listSubjects for predicate " + predicate.getURI(), () -> {
+        return updateSafeCalculation(() -> LoggerUtil.computeWithLogger(LOGGER, "listSubjects for predicate " + predicate.getURI(), () -> {
             if (objects.contains(OWL_THING_INSTANCE)) {
-            /*
-                 This is the equivalent of using an Object class.
-                 Anything can be an Object so there is no way to resolve
-                 to anything in particular
-             */
+        /*
+             This is the equivalent of using an Object class.
+             Anything can be an Object so there is no way to resolve
+             to anything in particular
+         */
                 return Set.of(OWL_THING_INSTANCE);
             }
             return objects.stream()
                     .map(classObject -> listSubjects(predicate, classObject))
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
-        });
+        }), Collections.emptySet());
     }
 
     public Set<OntResource> listSubjects(Property predicate,
                                          OntResource object) {
-        return LoggerUtil.computeWithLogger(LOGGER, "listSubjects for predicate " + predicate.getURI() + " object " + object.getURI(), () -> {
+        return updateSafeCalculation(() -> LoggerUtil.computeWithLogger(LOGGER, "listSubjects for predicate " + predicate.getURI() + " object " + object.getURI(), () -> {
             final Set<OntResource> cachedResources = listSubjectsCache.getOrDefault(object, new HashMap<>()).get(predicate);
             if (cachedResources == null) {
                 final Set<OntResource> resources;
@@ -435,59 +440,64 @@ public class OppModel {
                 return resources;
             }
             return cachedResources;
-        });
+        }), Collections.emptySet());
     }
 
     public Set<OntResource> filterSubjects(Set<OntResource> subjects,
                                            Set<OntResource> predicates) {
-        return LoggerUtil.computeWithLogger(LOGGER, "Filtering " + subjects.size() + " subjects for " + predicates.size() + " predicates", () -> subjects.stream()
+        return updateSafeCalculation(() -> LoggerUtil.computeWithLogger(LOGGER, "Filtering " + subjects.size() + " subjects for " + predicates.size() + " predicates", () -> subjects.stream()
                 .filter(subject -> hasAnyPredicate(subject, predicates))
-                .collect(Collectors.toSet()));
+                .collect(Collectors.toSet())), Collections.emptySet());
     }
 
     public Set<OntResource> filterSubjects(Set<OntResource> subjects,
                                            Set<OntResource> predicates,
                                            Set<OntResource> objects) {
-        return LoggerUtil.computeWithLogger(LOGGER,
+        return updateSafeCalculation(() -> LoggerUtil.computeWithLogger(LOGGER,
                 "Filtering " + subjects.size() + " subjects for " +
                         predicates.size() + " predicates" +
                         objects.size() + " objects",
                 () -> subjects.stream()
                         .filter(subject -> hasAnyPredicateObject(subject, predicates, objects))
-                        .collect(Collectors.toSet()));
-
+                        .collect(Collectors.toSet())), Collections.emptySet());
     }
 
-    public OntClass toClass(OntResource resource) {
+    public @Nullable OntClass toClass(OntResource resource) {
         if (resource == null) {
             return null;
         }
         if (toClassCache.containsKey(resource)) {
             return toClassCache.get(resource);
         } else {
-            final OntClass ontClass;
-            if (resource.isIndividual()) {
-                ontClass = resource.asIndividual().getOntClass();
-            } else {
-                ontClass = resource.asClass();
-            }
-            toClassCache.put(resource, ontClass);
-            return ontClass;
+            return updateSafeCalculation(() -> {
+                final OntClass ontClass;
+                if (resource.isIndividual()) {
+                    ontClass = resource.asIndividual().getOntClass();
+                } else {
+                    ontClass = resource.asClass();
+                }
+                toClassCache.put(resource, ontClass);
+
+                return ontClass;
+            }, null);
         }
     }
 
     public Set<OntClass> toClasses(Set<OntResource> resources) {
-        return resources.stream().map(this::toClass).collect(Collectors.toSet());
+        return updateSafeCalculation(() ->
+                resources.stream().map(this::toClass).collect(Collectors.toSet()), Collections.emptySet());
     }
 
     public Set<OntClass> getSuperClasses(OntClass ontClass) {
-        if (superClassesCache.containsKey(ontClass)) {
-            return superClassesCache.get(ontClass);
-        } else {
-            Set<OntClass> superClasses = ontClass.listSuperClasses().toSet();
-            superClassesCache.put(ontClass, superClasses);
-            return superClasses;
-        }
+        return updateSafeCalculation(() -> {
+            if (superClassesCache.containsKey(ontClass)) {
+                return superClassesCache.get(ontClass);
+            } else {
+                Set<OntClass> superClasses = ontClass.listSuperClasses().toSet();
+                superClassesCache.put(ontClass, superClasses);
+                return superClasses;
+            }
+        }, Collections.emptySet());
     }
 
     private boolean hasAnyPredicate(OntResource subject,
@@ -509,81 +519,95 @@ public class OppModel {
 
     private boolean hasPredicate(OntResource subject,
                                  Property predicate) {
-        return toClass(subject).listProperties(predicate).hasNext();
+        OntClass ontClass = toClass(subject);
+        if (ontClass == null) {
+            return false;
+        }
+        return ontClass.listProperties(predicate).hasNext();
     }
 
     private boolean hasPredicateObjects(OntResource subject,
                                         Property predicate,
                                         Set<OntResource> objects) {
-        return toClass(subject).listProperties(predicate)
+        OntClass ontClass = toClass(subject);
+        if (ontClass == null) {
+            return false;
+        }
+        return ontClass.listProperties(predicate)
                 .filterKeep(statement -> objects.stream().anyMatch(statement.getObject()::equals)).hasNext();
     }
 
     public Set<OntResource> listObjects(Set<OntResource> classSubjects,
                                         Property predicate) {
-        if (classSubjects.contains(OWL_THING_INSTANCE)) {
+        return updateSafeCalculation(() -> {
+            if (classSubjects.contains(OWL_THING_INSTANCE)) {
             /*
                  This is the equivalent of using an Object class.
                  Anything can be an Object so there is no way to resolve
                  to anything in particular
              */
-            return Set.of(OWL_THING_INSTANCE);
-        }
-        return classSubjects.stream()
-                .map(subject -> listObjects(subject, predicate))
-                .flatMap(Collection::stream)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+                return Set.of(OWL_THING_INSTANCE);
+            }
+            return classSubjects.stream()
+                    .map(subject -> listObjects(subject, predicate))
+                    .flatMap(Collection::stream)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+        }, Collections.emptySet());
     }
 
     public Set<OntResource> listObjects(OntResource subject,
                                         Property predicate) {
-        final Set<OntResource> cachedResources = listObjectsCache.getOrDefault(subject, new HashMap<>()).get(predicate);
-        if (cachedResources == null) {
-            final Set<OntResource> resources;
-            if (subject.isIndividual()) {
-                resources = listObjectsForIndividual(subject.asIndividual(), predicate);
-            } else {
-                if (!subject.isClass()) {
-                    resources = Collections.emptySet(); // no a valid class
+        return updateSafeCalculation(() -> {
+            final Set<OntResource> cachedResources = listObjectsCache.getOrDefault(subject, new HashMap<>()).get(predicate);
+            if (cachedResources == null) {
+                final Set<OntResource> resources;
+                if (subject.isIndividual()) {
+                    resources = listObjectsForIndividual(subject.asIndividual(), predicate);
                 } else {
-                    resources = listObjectsForClass(subject.asClass(), predicate);
+                    if (!subject.isClass()) {
+                        resources = Collections.emptySet(); // no a valid class
+                    } else {
+                        resources = listObjectsForClass(subject.asClass(), predicate);
+                    }
                 }
+                final HashMap<Property, Set<OntResource>> bySubject = listObjectsCache.getOrDefault(subject,
+                        new HashMap<>());
+                bySubject.put(predicate, resources);
+                listObjectsCache.put(subject, bySubject);
+                return resources;
             }
-            final HashMap<Property, Set<OntResource>> bySubject = listObjectsCache.getOrDefault(subject,
-                    new HashMap<>());
-            bySubject.put(predicate, resources);
-            listObjectsCache.put(subject, bySubject);
-            return resources;
-        }
-        return cachedResources;
+            return cachedResources;
+        }, Collections.emptySet());
     }
 
     private Set<OntResource> listObjectsForIndividual(Individual subject,
                                                       Property predicate) {
-        if (subject == null) {
-            return null;
-        }
-        if (predicate.equals(RDF_TYPE)) {
-            // when rdf:type is called on the individual, the actual class is requested
-            // although this can be resolved via listProperties(predicate), this would also return any of the superclasses
-            // and which would lead to [someInstance] / rdf:type / ^rdf:type always returning all classes
-            return Set.of(subject.getOntClass());
-        } else {
-            // an instance has all the properties of it's direct class and all superclasses
-            return listOntClasses(subject)
-                    .stream()
-                    .map(ontClass -> ontClass.listProperties(predicate).toList())
-                    .filter(statements -> !statements.isEmpty())
-                    .flatMap(Collection::stream)
-                    .map(Statement::getObject)
-                    .map(RDFNode::asResource)
-                    .map(model::getOntResource)
-                    // since the subject is an instance, traversing it should also return an instance
-                    .map(this::toIndividual)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toSet());
-        }
+        return updateSafeCalculation(() -> {
+            if (subject == null) {
+                return null;
+            }
+            if (predicate.equals(RDF_TYPE)) {
+                // when rdf:type is called on the individual, the actual class is requested
+                // although this can be resolved via listProperties(predicate), this would also return any of the superclasses
+                // and which would lead to [someInstance] / rdf:type / ^rdf:type always returning all classes
+                return Set.of(subject.getOntClass());
+            } else {
+                // an instance has all the properties of it's direct class and all superclasses
+                return listOntClasses(subject)
+                        .stream()
+                        .map(ontClass -> ontClass.listProperties(predicate).toList())
+                        .filter(statements -> !statements.isEmpty())
+                        .flatMap(Collection::stream)
+                        .map(Statement::getObject)
+                        .map(RDFNode::asResource)
+                        .map(model::getOntResource)
+                        // since the subject is an instance, traversing it should also return an instance
+                        .map(this::toIndividual)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toSet());
+            }
+        }, Collections.emptySet());
     }
 
     /*
@@ -595,90 +619,106 @@ public class OppModel {
         if (listOntClassesCache.containsKey(resource)) {
             return listOntClassesCache.get(resource);
         } else {
-            final OntClass ontClass = toClass(resource);
-            final HashSet<OntClass> classes = new HashSet<>();
-            classes.add(ontClass);
-            classes.addAll(ontClass.listSuperClasses().toSet());
-            listOntClassesCache.put(resource, classes);
-            return classes;
+            return updateSafeCalculation(() -> {
+                final OntClass ontClass = toClass(resource);
+                if (ontClass == null) {
+                    return Collections.emptySet();
+                }
+                final HashSet<OntClass> classes = new HashSet<>();
+                classes.add(ontClass);
+                classes.addAll(ontClass.listSuperClasses().toSet());
+                listOntClassesCache.put(resource, classes);
+                return classes;
+            }, Collections.emptySet());
         }
     }
 
     private Set<OntResource> listObjectsForClass(OntClass subject,
                                                  Property predicate) {
-        // listing properties on the Class doesn't automatically include the properties
-        // on the super-class. This might be an issue with the rdf reasoning (todo)
-        final Set<OntResource> objects = subject.listSuperClasses()
-                .mapWith(ontClass -> listObjectsForClass(ontClass, predicate))
-                .toSet()
-                .stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+        return updateSafeCalculation(() -> {
+            // listing properties on the Class doesn't automatically include the properties
+            // on the super-class. This might be an issue with the rdf reasoning (todo)
+            final Set<OntResource> objects = subject.listSuperClasses()
+                    .mapWith(ontClass -> listObjectsForClass(ontClass, predicate))
+                    .toSet()
+                    .stream()
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
 
-        objects.addAll(subject.listProperties(predicate)
-                .mapWith(Statement::getObject)
-                .mapWith(rdfNode -> model.getOntResource(rdfNode.asResource()))
-                .toSet());
-        return objects;
+            objects.addAll(subject.listProperties(predicate)
+                    .mapWith(Statement::getObject)
+                    .mapWith(rdfNode -> model.getOntResource(rdfNode.asResource()))
+                    .toSet());
+            return objects;
+        }, Collections.emptySet());
     }
 
     private Set<OntResource> toIndividual(OntResource resource) {
         if (toIndividualCache.containsKey(resource)) {
             return toIndividualCache.get(resource);
         } else {
-            Set<OntResource> individuals;
-            if (resource.isClass()) {
-                individuals = resource.asClass().listInstances().mapWith(OntResource.class::cast).toSet();
-            } else {
-                individuals = Collections.singleton(resource);
-            }
-            toIndividualCache.put(resource, individuals);
-            return individuals;
+            return updateSafeCalculation(() -> {
+                Set<OntResource> individuals;
+                if (resource.isClass()) {
+                    individuals = resource.asClass().listInstances().mapWith(OntResource.class::cast).toSet();
+                } else {
+                    individuals = Collections.singleton(resource);
+                }
+                toIndividualCache.put(resource, individuals);
+                return individuals;
+            }, Collections.emptySet());
         }
     }
 
     public Set<Property> listPredicates(Set<OntResource> classSubjects) {
-        return classSubjects.stream()
+        return updateSafeCalculation(() -> classSubjects.stream()
                 .map(this::listPredicates)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()), Collections.emptySet());
     }
 
     public Set<Property> listPredicates(OntResource classSubject) {
-        final Set<Property> cachedResources = listPredicatesCache.get(classSubject);
-        if (cachedResources == null) {
-            final Set<Property> predicates = listPredicateObjects(classSubject)
-                    .stream()
-                    .map(Statement::getPredicate)
-                    .collect(Collectors.toSet());
-            listPredicatesCache.put(classSubject, predicates);
-            return predicates;
-        }
-        return cachedResources;
+        return updateSafeCalculation(() -> {
+            final Set<Property> cachedResources = listPredicatesCache.get(classSubject);
+            if (cachedResources == null) {
+                if (isUpdating) {
+                    return Collections.emptySet();
+                }
+                final Set<Property> predicates = listPredicateObjects(classSubject)
+                        .stream()
+                        .map(Statement::getPredicate)
+                        .collect(Collectors.toSet());
+                listPredicatesCache.put(classSubject, predicates);
+                return predicates;
+            }
+            return cachedResources;
+        }, Collections.emptySet());
     }
 
     public Set<Property> listReversePredicates(Set<OntResource> classSubjects) {
-        return classSubjects.stream()
+        return updateSafeCalculation(() -> classSubjects.stream()
                 .map(this::listReversePredicates)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()), Collections.emptySet());
     }
 
     /**
      * List any predicate that can point to this subject
      */
     public Set<Property> listReversePredicates(OntResource classSubject) {
-        final OntClass subjectAsObject = toClass(classSubject);
-        final Set<Property> properties = model.listStatements().toList()
-                .stream()
-                .filter(statement -> statement.getObject().equals(subjectAsObject))
-                .map(Statement::getPredicate)
-                .filter(property -> !classModelProperties.contains(property))
-                .collect(Collectors.toCollection(HashSet::new));
-        if (classSubject.isClass()) {
-            properties.addAll(classModelProperties);
-        }
-        return properties;
+        return updateSafeCalculation(() -> {
+            final OntClass subjectAsObject = toClass(classSubject);
+            final Set<Property> properties = model.listStatements().toList()
+                    .stream()
+                    .filter(statement -> statement.getObject().equals(subjectAsObject))
+                    .map(Statement::getPredicate)
+                    .filter(property -> !classModelProperties.contains(property))
+                    .collect(Collectors.toCollection(HashSet::new));
+            if (classSubject.isClass()) {
+                properties.addAll(classModelProperties);
+            }
+            return properties;
+        }, Collections.emptySet());
     }
 
     public OntResource getResource(Resource resource) {
@@ -705,35 +745,39 @@ public class OppModel {
     }
 
     public Set<OntResource> getClassIndividuals(String classUri) {
-        if (classIndividualsCache.containsKey(classUri)) {
-            return classIndividualsCache.get(classUri);
-        }
-        Set<OntResource> individuals = calculateClassIndividuals(classUri);
-        classIndividualsCache.put(classUri, individuals);
-        return individuals;
+        return updateSafeCalculation(() -> {
+            if (classIndividualsCache.containsKey(classUri)) {
+                return classIndividualsCache.get(classUri);
+            }
+            Set<OntResource> individuals = calculateClassIndividuals(classUri);
+            classIndividualsCache.put(classUri, individuals);
+            return individuals;
+        }, Collections.emptySet());
     }
 
     private Set<OntResource> calculateClassIndividuals(String classUri) {
-        if (classUri == null || classUri.equals(OWL_THING_CLASS.getURI())) {
-            return Set.of(OWL_THING_INSTANCE);
-        }
-        if (classUri.equals(OWL_CLASS.getURI())) {
-            return Set.of(OWL_CLASS);
-        }
-        return Optional.ofNullable(getClass(classUri))
-                .map(ontClass -> ontClass.listInstances(true).toList())
-                .stream()
-                .flatMap(Collection::stream)
-                .filter(OntResource::isIndividual)
-                .map(Individual.class::cast)
-                .collect(Collectors.toSet());
+        return updateSafeCalculation(() -> {
+            if (classUri == null || classUri.equals(OWL_THING_CLASS.getURI())) {
+                return Set.of(OWL_THING_INSTANCE);
+            }
+            if (classUri.equals(OWL_CLASS.getURI())) {
+                return Set.of(OWL_CLASS);
+            }
+            return Optional.ofNullable(getClass(classUri))
+                    .map(ontClass -> ontClass.listInstances(true).toList())
+                    .stream()
+                    .flatMap(Collection::stream)
+                    .filter(OntResource::isIndividual)
+                    .map(Individual.class::cast)
+                    .collect(Collectors.toSet());
+        }, Collections.emptySet());
     }
 
     public Set<OntResource> toIndividuals(Set<? extends OntResource> resources) {
-        return resources.stream().map(
+        return updateSafeCalculation(() -> resources.stream().map(
                         resource -> resource.isIndividual() ? Set.of(resource) : getClassIndividuals(resource.getURI())
                 ).flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()), Collections.emptySet());
     }
 
     public OntClass getClass(Resource resource) {
@@ -766,39 +810,43 @@ public class OppModel {
 
     private Set<Resource> listSubjectsWithProperty(Property property,
                                                    OntClass ontClass) {
-        // Include the superclasses
-        // for example, if ClassB has ClassA as superclass and ClassA has propertyA. Then ClassC can point
-        // to an instance of ClassB with propertyA also.
-        List<OntClass> allClasses = new ArrayList<>(ontClass.listSuperClasses().toList());
-        allClasses.add(ontClass);
+        return updateSafeCalculation(() -> {
+            // Include the superclasses
+            // for example, if ClassB has ClassA as superclass and ClassA has propertyA. Then ClassC can point
+            // to an instance of ClassB with propertyA also.
+            List<OntClass> allClasses = new ArrayList<>(ontClass.listSuperClasses().toList());
+            allClasses.add(ontClass);
 
-        return allClasses
-                .stream()
-                .map(_ontClass -> model.listSubjectsWithProperty(property, _ontClass))
-                .map(ExtendedIterator::toSet)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+            return allClasses
+                    .stream()
+                    .map(_ontClass -> model.listSubjectsWithProperty(property, _ontClass))
+                    .map(ExtendedIterator::toSet)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
+        }, Collections.emptySet());
     }
 
     private Set<OntResource> listSubjectsForClass(Property predicate,
                                                   OntClass object) {
-        if (predicate.equals(RDF_TYPE)) {
-            // called /^rdf:type on a class, return all instances:
-            final Set<? extends OntResource> ontResources = object.listInstances(true).toSet();
-            return ontResources
+        return updateSafeCalculation(() -> {
+            if (predicate.equals(RDF_TYPE)) {
+                // called /^rdf:type on a class, return all instances:
+                final Set<? extends OntResource> ontResources = object.listInstances(true).toSet();
+                return ontResources
+                        .stream()
+                        .map(model::getOntResource)
+                        .collect(Collectors.toSet());
+            }
+            return listSubjectsWithProperty(predicate, object)
                     .stream()
                     .map(model::getOntResource)
                     .collect(Collectors.toSet());
-        }
-        return listSubjectsWithProperty(predicate, object)
-                .stream()
-                .map(model::getOntResource)
-                .collect(Collectors.toSet());
+        }, Collections.emptySet());
     }
 
     private Set<OntResource> listSubjectsForIndividual(Property predicate,
                                                        Individual object) {
-        return listSubjectsWithProperty(predicate, object.getOntClass())
+        return updateSafeCalculation(() -> listSubjectsWithProperty(predicate, object.getOntClass())
                 .stream()
                 .map(model::getOntResource)
                 .filter(Objects::nonNull)
@@ -806,7 +854,7 @@ public class OppModel {
                 .map(OntResource::asClass)
                 .map(ontClass -> ontClass.listInstances().toSet())
                 .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()), Collections.emptySet());
     }
 
     /**
@@ -959,31 +1007,57 @@ public class OppModel {
      * Only use this for documentation purposes
      */
     public List<OntClass> listOrderedSuperClasses(OntClass ontClass) {
-        if (ontClass == null || ontClass == OWL_THING_CLASS) {
-            return Collections.emptyList();
-        }
-        List<OntClass> superClasses = new ArrayList<>();
-        while (!ontClass.equals(OWL_THING_CLASS)) {
-            ontClass = ontClass.getSuperClass();
-            superClasses.add(ontClass);
-        }
-        return superClasses;
+        return updateSafeCalculation(() -> {
+            // make effectively final for lambda
+            OntClass ontologyClass = ontClass;
+            if (ontologyClass == null || ontologyClass == OWL_THING_CLASS) {
+                return Collections.emptyList();
+            }
+            List<OntClass> superClasses = new ArrayList<>();
+            while (!ontologyClass.equals(OWL_THING_CLASS)) {
+                ontologyClass = ontologyClass.getSuperClass();
+                superClasses.add(ontologyClass);
+            }
+            return superClasses;
+        }, Collections.emptyList());
     }
 
     /**
      * Only use this for documentation purposes
      */
     public List<OntClass> listOrderedSubClasses(OntClass ontClass) {
-        if (ontClass == null || ontClass.equals(OWL_THING_CLASS)) {
-            return Collections.emptyList();
+        return updateSafeCalculation(() -> {
+            // make effectively final for lambda
+            OntClass ontologyClass = ontClass;
+            if (ontologyClass == null || ontologyClass.equals(OWL_THING_CLASS)) {
+                return Collections.emptyList();
+            }
+            List<OntClass> subClasses = new ArrayList<>();
+            OntClass subClass = ontologyClass.getSubClass();
+            while (!subClass.equals(ontologyClass)) {
+                subClasses.add(subClass);
+                ontologyClass = subClass;
+                subClass = ontologyClass.getSubClass();
+            }
+            return subClasses;
+        }, Collections.emptyList());
+
+    }
+
+    /**
+     * If the model is updating, it shouldn't be queried since the Apache Jena
+     * model is not safe from concurrent modification access. This method will
+     * make sure it's safe to access the model and, if not, return a placeholder.
+     * For example, an empty Set when the calculation should return a Set.
+     */
+    private <T> T updateSafeCalculation(Supplier<T> isSafe, T ifUpdating) {
+        if (isUpdating) {
+            return ifUpdating;
         }
-        List<OntClass> subClasses = new ArrayList<>();
-        OntClass subClass = ontClass.getSubClass();
-        while (!subClass.equals(ontClass)) {
-            subClasses.add(subClass);
-            ontClass = subClass;
-            subClass = ontClass.getSubClass();
+        try {
+            return isSafe.get();
+        } catch (ConcurrentModificationException concurrentModificationException) {
+            return ifUpdating;
         }
-        return subClasses;
     }
 }

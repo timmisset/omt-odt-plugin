@@ -12,6 +12,8 @@ public interface ODTVariableDelegate {
 
     boolean canBeDeclaredVariable(ODTVariable variable);
 
+    ODTVariable getElement();
+
     boolean isAssignedVariable();
 
     PsiReference getReference();

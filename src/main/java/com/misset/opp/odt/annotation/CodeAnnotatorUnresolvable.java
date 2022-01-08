@@ -32,7 +32,7 @@ public class CodeAnnotatorUnresolvable implements Annotator {
 
     private void inspectVariable(@NotNull AnnotationHolder holder,
                                  @NotNull ODTVariable variable) {
-        if (!variable.isDeclaredVariable() && variable.resolve().isEmpty()) {
+        if (!variable.isDeclaredVariable() && variable.getDeclared() == null) {
             validateReference(holder, variable, String.format("%s is not declared", variable.getText()));
         }
     }

@@ -146,6 +146,12 @@
         <localInspection displayName="Unused variables" groupName="Redundancy" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTUnusedVariablesInspection"/>
+        <localInspection displayName="Unused variable assignment" groupName="Redundancy" language="ODT" groupPath="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTUnusedVariableAssignmentInspection"/>
+        <localInspection displayName="Unassigned variable usage" groupName="Redundancy" language="ODT" groupPath="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTUnassignedVariableAssignmentInspection"/>
         <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTResolvableInspection"/>
@@ -226,7 +232,6 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
-
 
     </extensions>
     <depends>com.intellij.java</depends>

@@ -13,6 +13,10 @@ public class PsiRelationshipUtil {
      * into consideration.
      */
     public static boolean canBeRelatedElement(PsiElement declaringElement, PsiElement usageElement) {
+        if (usageElement.getTextOffset() < declaringElement.getTextOffset()) {
+            return false;
+        }
+
         // The comments use a variable relationship between declaration and usage as example
         final PsiElement commonParent = PsiTreeUtil.findCommonParent(declaringElement, usageElement);
         // DEFINE COMMAND command($variable) => { $variable } <-- same common parent as ODTDefineStatement OK

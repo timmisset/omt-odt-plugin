@@ -61,7 +61,13 @@ public abstract class ODTBaseVariable
         return getName();
     }
 
-    private ODTVariableDelegate getDelegate() {
+    @Override
+    public ODTVariable getElement() {
+        return this;
+    }
+
+    @Override
+    public ODTVariableDelegate getDelegate() {
         return ReadAction.compute(() -> {
             /*
                 VAR $variable;                          // wrapped in DECLARE_VARIABLE

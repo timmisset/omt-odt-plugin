@@ -63,6 +63,8 @@ patchPluginXml {
         <p>The Information annotations for most of the ODT language have been replaced with an implementation
         of the IntelliJ DocumentationProvider. There is now more detailed information available, make sure to enable the
         QuickDocumentation at File | Settings | Editor | Code Editing.</p>
+        <p>Added usage inspection for variable assignments, throws warning when an assigned value is never used. Also a warning
+        when a variable is used before it's assigned.</p>
         <br>
         Fixed #12: <https://github.com/timmisset/omt-odt-plugin/issues/12>Invalid element</a><br>
         Fixed #13: <https://github.com/timmisset/omt-odt-plugin/issues/13>Class cast exception for non-OMT yaml file</a><br>

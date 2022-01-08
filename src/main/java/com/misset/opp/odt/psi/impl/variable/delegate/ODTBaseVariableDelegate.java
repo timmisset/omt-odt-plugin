@@ -18,6 +18,11 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
         this.element = element;
     }
 
+    @Override
+    public ODTVariable getElement() {
+        return element;
+    }
+
     protected boolean isAssignmentPart() {
         return PsiTreeUtil.getParentOfType(element,
                 ODTVariableAssignment.class,

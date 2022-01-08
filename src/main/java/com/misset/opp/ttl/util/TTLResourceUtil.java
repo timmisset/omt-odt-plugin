@@ -25,6 +25,9 @@ public class TTLResourceUtil {
     private static final HashMap<OntResource, Boolean> isIndividual = new HashMap<>();
 
     private static boolean is(OntResource resource, HashMap<OntResource, Boolean> cache, Supplier<Boolean> orElse) {
+        if (OppModel.INSTANCE.isUpdating()) {
+            return false;
+        }
         if (cache.containsKey(resource)) {
             return cache.get(resource);
         }

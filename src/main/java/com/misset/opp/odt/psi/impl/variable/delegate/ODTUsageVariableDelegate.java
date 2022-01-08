@@ -95,8 +95,8 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
                 .collect(Collectors.toSet()));
     }
 
-    private List<ODTVariable> getVariablesFromAssignments(@Nullable ODTScriptLine scriptLine,
-                                                          PsiElement target) {
+    public List<ODTVariable> getVariablesFromAssignments(@Nullable ODTScriptLine scriptLine,
+                                                         PsiElement target) {
         List<ODTVariable> assignmentVariables = new ArrayList<>();
         if (scriptLine == null) {
             return assignmentVariables;
@@ -135,10 +135,7 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
         // }
         // @LOG($variable); <-- and again both string at number at this point
         final ODTScriptLine parentScriptline = PsiTreeUtil.getParentOfType(script, ODTScriptLine.class);
-        final ODTScriptLine precedingScriptline = Optional.ofNullable(parentScriptline)
-                .map(parent -> PsiTreeUtil.getPrevSiblingOfType(parent, ODTScriptLine.class))
-                .orElse(null);
-        assignmentVariables.addAll(getVariablesFromAssignments(precedingScriptline, target));
+        assignmentVariables.addAll(getVariablesFromAssignments(parentScriptline, target));
         return assignmentVariables;
     }
 

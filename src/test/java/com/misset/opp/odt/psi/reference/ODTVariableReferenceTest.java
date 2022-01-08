@@ -34,10 +34,29 @@ class ODTVariableReferenceTest extends OMTTestCase {
     }
 
     @Test
-    void testODTReferenceCannotResolve() {
+    void testODTReferenceCannotResolveWrongName() {
         String content = insideProcedureRunWithPrefixes(
                 "VAR $variableA = 'test';\n" +
                         "@LOG($<caret>variableB)"
+        );
+        configureByText(content);
+        assertNoResolvableReference();
+    }
+
+    @Test
+    void testODTReferenceCannotResolveWrongOrder() {
+        String content = insideProcedureRunWithPrefixes(
+                "@LOG($<caret>variable)\n" +
+                        "VAR $variable = 'test';\n"
+        );
+        configureByText(content);
+        assertNoResolvableReference();
+    }
+
+    @Test
+    void testODTAssignmentReferenceCannotResolve() {
+        String content = insideProcedureRunWithPrefixes(
+                "<caret>$variableA = 'test';"
         );
         configureByText(content);
         assertNoResolvableReference();
