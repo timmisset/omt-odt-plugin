@@ -1,11 +1,12 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQuery;
@@ -41,6 +42,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
     }
 
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED_VALUE = new Key<>("RESOLVED_VALUE");
+    private static final Key<CachedValue<Set<OntResource>>> RESOLVED_WITHOUT_FILTER_VALUE = new Key<>("RESOLVED_WITHOUT_FILTER_VALUE");
     private static final Logger LOGGER = Logger.getInstance(ODTResolvableQueryOperationStep.class);
 
     private SettingsState settingsState;
@@ -119,9 +121,25 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
     }
 
     public Set<OntResource> resolveWithoutFilter() {
-        return Optional.ofNullable(getQueryStep())
-                .map(ODTResolvable::resolve)
-                .orElse(Collections.emptySet());
+        return CachedValuesManager.getCachedValue(this, RESOLVED_WITHOUT_FILTER_VALUE, () -> {
+            Set<OntResource> resources = Optional.ofNullable(getQueryStep())
+                    .map(ODTResolvable::resolve)
+                    .orElse(Collections.emptySet());
+            return getContainingFile()
+                    .getCachedValue(resources,
+                            OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
+        });
+    }
+
+    @Override
+    public void inspect(ProblemsHolder holder) {
+        super.inspect(holder);
+        Set<OntResource> resolve = resolve();
+        Set<OntResource> withoutFilter = resolveWithoutFilter();
+        if (resolve.isEmpty() && !withoutFilter.isEmpty()) {
+            // the filter removed all input:
+            holder.registerProblem(this, "No items left after filtering", ProblemHighlightType.WARNING);
+        }
     }
 
     /**
@@ -182,9 +200,9 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
                 } else {
                     return CachedValuesManager.getCachedValue(this,
                             RESOLVED_VALUE,
-                            () -> new CachedValueProvider.Result<>(filter(getQueryStep().resolve()),
-                                    getContainingFile().getHostFile() == null ? getContainingFile() : getContainingFile().getHostFile(),
-                                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
+                            () -> getContainingFile()
+                                    .getCachedValue(filter(getQueryStep().resolve()),
+                                            OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
                 }
             } else {
                 return Collections.emptySet();

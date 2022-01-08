@@ -67,9 +67,6 @@ patchPluginXml {
         Fixed #12: <https://github.com/timmisset/omt-odt-plugin/issues/12>Invalid element</a><br>
         Fixed #13: <https://github.com/timmisset/omt-odt-plugin/issues/13>Class cast exception for non-OMT yaml file</a><br>
         
-        
-        
-        
         <h1>Update 5.1.2</h1>
         Enhancement #7: <a href="https://github.com/timmisset/omt-odt-plugin/issues/7">Resolve subquery</a><br>
         Fixed #8: <a href="https://github.com/timmisset/omt-odt-plugin/issues/8">Export member not counted as usage for import member in module</a><br>

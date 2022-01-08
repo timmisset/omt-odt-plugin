@@ -186,6 +186,6 @@ class OppModelTest extends OMTOntologyTestCase {
 
     private boolean areCompatible(String resourceA,
                                   String resourceB) {
-        return oppModel.areCompatible(oppModel.getResource(resourceA), oppModel.getResource(resourceB));
+        return oppModel.areCompatible(oppModel.getOntResource(resourceA, getProject()), oppModel.getOntResource(resourceB, getProject()));
     }
 }

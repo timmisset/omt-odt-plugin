@@ -56,6 +56,7 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
     public void inspect(ProblemsHolder holder) {
         inspectIri(holder);
         if (!isPartOfReverseStep()) {
+            super.inspect(holder);
             inspectResolved(holder, "FORWARD");
         }
     }
@@ -154,17 +155,18 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
 
         ODTDocumentationProvider.addKeyValueSection("Direction:", isReversed ? "Reverse" : "Forward", sb);
 
-        Set<OntResource> previousStep = resolvePreviousStep();
-        if (!previousStep.isEmpty()) {
-            String label = isReversed ? "Object:" : "Subject:";
-            ODTDocumentationProvider.addKeyValueSection(label, TTLResourceUtil.describeUrisJoined(previousStep, "<br>", false), sb);
-        }
         if (OppModel.INSTANCE.getProperty(fullyQualifiedUri) != null) {
-            String label = isReversed ? "Subject:" : "Object:";
-            ODTDocumentationProvider.addKeyValueSection(label, TTLResourceUtil.describeUrisJoined(filtered, "<br>", false), sb);
+            String label = isReversed ? "Subject(s)" : "Object(s)";
+            ODTDocumentationProvider.addKeyValueSection("Result", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(filtered, "<br>", false), sb);
             if (unfiltered.size() != filtered.size()) {
                 ODTDocumentationProvider.addKeyValueSection("Unfiltered:", TTLResourceUtil.describeUrisJoined(unfiltered, "<br>", false), sb);
             }
+        }
+
+        Set<OntResource> previousStep = resolvePreviousStep();
+        if (!previousStep.isEmpty()) {
+            String label = isReversed ? "Object(s)" : "Subject(s)";
+            ODTDocumentationProvider.addKeyValueSection("Previous step", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(previousStep, "<br>", false), sb);
         }
 
 

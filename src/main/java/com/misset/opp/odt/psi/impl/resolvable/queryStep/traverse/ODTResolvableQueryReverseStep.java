@@ -45,6 +45,7 @@ public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQuerySt
 
     @Override
     public void inspect(ProblemsHolder holder) {
+        super.inspect(holder);
         if (getQueryStep() instanceof ODTResolvableQueryForwardStep) {
             inspectResolved(holder, "REVERSE");
         }

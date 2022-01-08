@@ -78,8 +78,10 @@ public class OppModel {
     HashMap<OntResource, Set<OntClass>> listOntClassesCache = new HashMap<>();
     HashMap<OntResource, Set<OntResource>> toIndividualCache = new HashMap<>();
     HashMap<OntResource, OntClass> toClassCache = new HashMap<>();
+    HashMap<OntClass, Set<OntClass>> superClassesCache = new HashMap<>();
     HashMap<String, OntResource> mappedResourcesCache = new HashMap<>();
     HashMap<String, Individual> mappedIndividualsCache = new HashMap<>();
+    HashMap<String, OntClass> mappedClassesCache = new HashMap<>();
 
     // contain information from the SHACL model about the cardinality of the predicates
     HashMap<OntClass, List<Property>> required = new HashMap<>();
@@ -127,6 +129,7 @@ public class OppModel {
         listPredicateObjectsCache.clear();
         mappedResourcesCache.clear();
         mappedIndividualsCache.clear();
+        mappedClassesCache.clear();
         listOntClassesCache.clear();
         toIndividualCache.clear();
         toClassCache.clear();
@@ -456,6 +459,9 @@ public class OppModel {
     }
 
     public OntClass toClass(OntResource resource) {
+        if (resource == null) {
+            return null;
+        }
         if (toClassCache.containsKey(resource)) {
             return toClassCache.get(resource);
         } else {
@@ -467,6 +473,20 @@ public class OppModel {
             }
             toClassCache.put(resource, ontClass);
             return ontClass;
+        }
+    }
+
+    public Set<OntClass> toClasses(Set<OntResource> resources) {
+        return resources.stream().map(this::toClass).collect(Collectors.toSet());
+    }
+
+    public Set<OntClass> getSuperClasses(OntClass ontClass) {
+        if (superClassesCache.containsKey(ontClass)) {
+            return superClassesCache.get(ontClass);
+        } else {
+            Set<OntClass> superClasses = ontClass.listSuperClasses().toSet();
+            superClassesCache.put(ontClass, superClasses);
+            return superClasses;
         }
     }
 
@@ -512,6 +532,7 @@ public class OppModel {
         return classSubjects.stream()
                 .map(subject -> listObjects(subject, predicate))
                 .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
@@ -540,6 +561,9 @@ public class OppModel {
 
     private Set<OntResource> listObjectsForIndividual(Individual subject,
                                                       Property predicate) {
+        if (subject == null) {
+            return null;
+        }
         if (predicate.equals(RDF_TYPE)) {
             // when rdf:type is called on the individual, the actual class is requested
             // although this can be resolved via listProperties(predicate), this would also return any of the superclasses
@@ -663,22 +687,6 @@ public class OppModel {
                 () -> model.getOntResource(resource));
     }
 
-    public OntResource getResource(String uri) {
-        return LoggerUtil.computeWithLogger(LOGGER,
-                "Retrieve " + uri + " as string from model",
-                () -> {
-                    // Retrieving by string is a rather slow process in Jena,
-                    // since it's safe to cache in this case, let's do it!
-                    if (mappedResourcesCache.containsKey(uri)) {
-                        return mappedResourcesCache.get(uri);
-                    } else {
-                        OntResource ontResource = model.getOntResource(uri);
-                        mappedResourcesCache.put(uri, ontResource);
-                        return ontResource;
-                    }
-                });
-    }
-
     @Nullable
     public Individual getIndividual(@Nullable String uri) {
         return uri == null ? null : LoggerUtil.computeWithLogger(LOGGER,
@@ -721,7 +729,7 @@ public class OppModel {
                 .collect(Collectors.toSet());
     }
 
-    public Set<OntResource> toIndividuals(Set<OntResource> resources) {
+    public Set<OntResource> toIndividuals(Set<? extends OntResource> resources) {
         return resources.stream().map(
                         resource -> resource.isIndividual() ? Set.of(resource) : getClassIndividuals(resource.getURI())
                 ).flatMap(Collection::stream)
@@ -729,12 +737,22 @@ public class OppModel {
     }
 
     public OntClass getClass(Resource resource) {
-        return model.getOntClass(resource.getURI());
+        return getClass(resource.getURI());
     }
 
     @Nullable
     public OntClass getClass(@Nullable String uri) {
-        return uri == null ? null : model.getOntClass(uri);
+        if (uri == null) {
+            return null;
+        }
+        if (!mappedClassesCache.containsKey(uri)) {
+            mappedClassesCache.put(uri, model.getOntClass(uri));
+        }
+        return mappedClassesCache.get(uri);
+    }
+
+    public Boolean isClass(OntResource resource) {
+        return getClass(resource) != null;
     }
 
     public Property getProperty(Resource resource) {

@@ -49,6 +49,7 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
 
     @Override
     public void inspect(ProblemsHolder holder) {
+        super.inspect(holder);
         if (getFullyQualifiedUri() == null) {
             final PsiElement prefix = getNamespacePrefix().getFirstChild();
             boolean injectedInOMT = ODTInjectionUtil.getInjectionHost(holder.getFile()) != null;
@@ -61,7 +62,6 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
                             .toArray(LocalQuickFix[]::new)
             );
         }
-        super.inspect(holder);
     }
     private LocalQuickFix getLocalQuikFix(boolean injectedInOMT, String prefix, String namespace) {
         if(injectedInOMT) {

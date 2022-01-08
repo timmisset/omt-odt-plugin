@@ -20,6 +20,7 @@ import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableVariableStep;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
@@ -159,6 +160,11 @@ public abstract class ODTBaseVariable
             return null;
         }
 
+        ODTResolvableVariableStep variableStep = null;
+        if (getParent() instanceof ODTVariableStep) {
+            variableStep = (ODTResolvableVariableStep) getParent();
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
         sb.append(getName());
@@ -171,10 +177,14 @@ public abstract class ODTBaseVariable
             sb.append(DocumentationMarkup.CONTENT_END);
         }
 
-        Set<OntResource> resolve = resolve();
+        Set<OntResource> unfiltered = resolve();
+        Set<OntResource> filtered = variableStep != null ? variableStep.getResolvableParent().filter(unfiltered) : unfiltered;
         sb.append(DocumentationMarkup.SECTIONS_START);
-        String typeLabel = resolve.size() == 1 ? "Type:" : "Types:";
-        ODTDocumentationProvider.addKeyValueSection(typeLabel, resolve.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(resolve), sb);
+        String typeLabel = filtered.size() == 1 ? "Type:" : "Types:";
+        ODTDocumentationProvider.addKeyValueSection(typeLabel, filtered.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(filtered), sb);
+        if (!unfiltered.equals(filtered)) {
+            ODTDocumentationProvider.addKeyValueSection("Unfiltered:", TTLResourceUtil.describeUrisForLookupJoined(unfiltered, "<br>"), sb);
+        }
         ODTDocumentationProvider.addKeyValueSection("Scope:", isGlobal() ? "Global" : "Local", sb);
         ODTDocumentationProvider.addKeyValueSection("Readonly:", isGlobal() || isReadonly() ? "Yes" : "No", sb);
         sb.append(DocumentationMarkup.SECTIONS_END);
