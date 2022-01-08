@@ -828,6 +828,9 @@ public class OppModel {
             }
 
             // try via known Iris:
+            if (project == null) {
+                return null;
+            }
             final Map<String, String> modelInstanceMapping = SettingsState.getInstance(project).modelInstanceMapping;
             Individual individual = modelInstanceMapping.keySet()
                     .stream()
