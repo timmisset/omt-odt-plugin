@@ -39,7 +39,7 @@ public class ODTUnassignedVariableAssignmentInspection extends LocalInspectionTo
                 ODTVariableDelegate variableDelegate = variable.getDelegate();
                 if (variableDelegate instanceof ODTUsageVariableDelegate) {
                     Variable declared = variable.getDeclared();
-                    if (!(declared instanceof ODTVariable)) {
+                    if (!(declared instanceof ODTVariable) || declared.isParameter()) {
                         return;
                     }
                     ODTScriptLine scriptLine = PsiTreeUtil.getParentOfType(

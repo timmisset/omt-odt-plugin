@@ -38,6 +38,13 @@ class ODTUnassignedVariableAssignmentInspectionTest extends OMTInspectionTestCas
     }
 
     @Test
+    void testHasNoWarningForInputParameter() {
+        String content = insideProcedureRunWithPrefixes("DEFINE QUERY query($param) => $param;");
+        configureByText(content);
+        assertNoWarning("$param is used before it is assigned a value");
+    }
+
+    @Test
     void testHasNoWarningWhenOMTVariable() {
         String content = insideActivityWithPrefixes(
                 "variables:\n" +

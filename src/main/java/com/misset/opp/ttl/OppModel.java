@@ -98,8 +98,32 @@ public class OppModel {
 
     private boolean isUpdating;
 
+    /**
+     * Returns true if the model is currently being loaded or updated.
+     * No querying methods should be called on the OppModel class while updating to prevent Concurrency issues
+     * with the Apache Jena model behind it. Unfortunately, the Apache Jena model is not a threat-safe or
+     * concurrent-safe implementation, which requires all methods accessing it to either check this boolean
+     * or wrap the entire calculation/query inside: updateSafeCalculation
+     */
     public boolean isUpdating() {
         return isUpdating;
+    }
+
+    /**
+     * If the model is updating, it shouldn't be queried since the Apache Jena
+     * model is not safe from concurrent modification access. This method will
+     * make sure it's safe to access the model and, if not, return a placeholder.
+     * For example, an empty Set when the calculation should return a Set.
+     */
+    private <T> T updateSafeCalculation(Supplier<T> isSafe, T ifUpdating) {
+        if (isUpdating) {
+            return ifUpdating;
+        }
+        try {
+            return isSafe.get();
+        } catch (ConcurrentModificationException concurrentModificationException) {
+            return ifUpdating;
+        }
     }
 
     public OppModel(OntModel shaclModel) {
@@ -908,6 +932,10 @@ public class OppModel {
         return individual;
     }
 
+    /**
+     * Validate that 2 resources are compatible by the criteria that
+     * resourceB is compatible to resourceA when resourceB is resourceA or any of the subclasses of resourceA.
+     */
     public boolean areCompatible(Set<OntResource> resourcesA,
                                  Set<OntResource> resourcesB) {
         return resourcesB.stream()
@@ -920,12 +948,8 @@ public class OppModel {
                 .anyMatch(resourceA -> areCompatible(resourceA, resourceB));
     }
 
-    /**
-     * Validate that 2 resources are compatible by the criteria that
-     * resourceB is compatible to resourceA when resourceB is resourceA or any of the subclasses of resourceA.
-     */
-    public boolean areCompatible(OntResource resourceA,
-                                 OntResource resourceB) {
+    private boolean areCompatible(OntResource resourceA,
+                                  OntResource resourceB) {
         if (resourceA.equals(resourceB) ||
                 resourceA.equals(OWL_THING_INSTANCE) ||
                 resourceB.equals(OWL_THING_INSTANCE)) {
@@ -1044,20 +1068,5 @@ public class OppModel {
 
     }
 
-    /**
-     * If the model is updating, it shouldn't be queried since the Apache Jena
-     * model is not safe from concurrent modification access. This method will
-     * make sure it's safe to access the model and, if not, return a placeholder.
-     * For example, an empty Set when the calculation should return a Set.
-     */
-    private <T> T updateSafeCalculation(Supplier<T> isSafe, T ifUpdating) {
-        if (isUpdating) {
-            return ifUpdating;
-        }
-        try {
-            return isSafe.get();
-        } catch (ConcurrentModificationException concurrentModificationException) {
-            return ifUpdating;
-        }
-    }
+
 }

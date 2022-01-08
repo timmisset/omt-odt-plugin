@@ -10,6 +10,7 @@ import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -33,7 +34,7 @@ public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery i
          */
         final List<ODTResolvableQuery> queryList = getQueryList().stream().map(ODTResolvableQuery.class::cast).collect(
                 Collectors.toList());
-        Set<OntResource> filteredResources = queryList.get(0).filter(resources);
+        Set<OntResource> filteredResources = new HashSet<>(queryList.get(0).filter(resources));
         for (ODTResolvableQuery query : queryList.subList(1, queryList.size() - 1)) {
             final PsiElement psiElement = PsiTreeUtil.prevVisibleLeaf(query);
             if(psiElement != null && psiElement.getNode().getElementType() == ODTTypes.BOOLEAN_OPERATOR) {
@@ -46,7 +47,7 @@ public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery i
                 }
             }
         }
-        return resources;
+        return filteredResources;
     }
 
     @Override

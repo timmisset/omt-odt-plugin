@@ -3,6 +3,7 @@ package com.misset.opp.omt.meta;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
@@ -92,11 +93,15 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
     }
 
     public static @NotNull HashMap<String, List<PsiCallable>> getImportingMembers(YAMLMapping yamlMapping) {
-        final OMTFile containingFile = (OMTFile) yamlMapping.getContainingFile();
+        PsiFile containingFile = yamlMapping.getContainingFile();
+        if (!(containingFile instanceof OMTFile)) {
+            return new HashMap<>();
+        }
+        final OMTFile omtFile = (OMTFile) containingFile;
         return LoggerUtil.computeWithLogger(LOGGER, "getImportingMembers " + getFilename(yamlMapping),
-                () -> CachedValuesManager.getCachedValue(containingFile,
+                () -> CachedValuesManager.getCachedValue(omtFile,
                         IMPORTED,
-                        () -> new CachedValueProvider.Result<>(getImportingMembers(containingFile), containingFile)));
+                        () -> new CachedValueProvider.Result<>(getImportingMembers(omtFile), omtFile)));
     }
 
     private static HashMap<String, List<PsiCallable>> getImportingMembers(OMTFile containingFile) {

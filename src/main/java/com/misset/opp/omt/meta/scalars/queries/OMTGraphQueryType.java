@@ -14,6 +14,9 @@ public class OMTGraphQueryType extends OMTQueryMetaType {
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,
                                        @NotNull ProblemsHolder holder) {
         final Set<OntResource> resolve = resolve(scalarValue);
+        if (OppModel.INSTANCE.isUpdating()) {
+            return;
+        }
         if (resolve.isEmpty() || resolve.stream()
                 .allMatch(resource -> resource != null &&
                         resource.isIndividual() &&

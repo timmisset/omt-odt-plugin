@@ -106,6 +106,9 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
     }
 
     private static void validateCuriePattern(PsiElement element, String text, ProblemsHolder holder) {
+        if (!(element.getContainingFile() instanceof OMTFile)) {
+            return;
+        }
         OMTFile containingFile = (OMTFile) element.getContainingFile();
         Map<String, String> availableNamespaces = containingFile.getAvailableNamespaces(element);
         String prefix = PatternUtil.getText(text, CURIE_PATTERN, 1);

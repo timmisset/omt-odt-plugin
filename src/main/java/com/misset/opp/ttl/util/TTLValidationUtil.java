@@ -30,6 +30,9 @@ public class TTLValidationUtil {
                                                Set<OntResource> resourcesB,
                                                ProblemsHolder holder,
                                                PsiElement element) {
+        if (OppModel.INSTANCE.isUpdating()) {
+            return;
+        }
         if (resourcesA == null || resourcesB == null || resourcesA.isEmpty() || resourcesB.isEmpty()) {
             // don't register problem
             return;
@@ -45,6 +48,9 @@ public class TTLValidationUtil {
                                              Set<OntResource> provided,
                                              ProblemsHolder holder,
                                              PsiElement element) {
+        if (OppModel.INSTANCE.isUpdating()) {
+            return;
+        }
         if (required == null || provided == null || required.isEmpty() || provided.isEmpty()) {
             // don't register problem
             return;

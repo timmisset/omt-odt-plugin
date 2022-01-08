@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiFile;
 import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
 import com.misset.opp.omt.meta.arrays.OMTImportPathMetaType;
 import com.misset.opp.omt.psi.OMTFile;
@@ -53,7 +54,11 @@ public class OMTImportMetaType extends OMTMetaMapType {
     }
 
     public static String resolveToPath(YAMLKeyValue keyValue) {
-        return OMTImportUtil.resolveToPath(keyValue.getProject(), (OMTFile) keyValue.getContainingFile(), keyValue.getKeyText());
+        PsiFile containingFile = keyValue.getContainingFile();
+        if (!(containingFile instanceof OMTFile)) {
+            return null;
+        }
+        return OMTImportUtil.resolveToPath(keyValue.getProject(), (OMTFile) containingFile, keyValue.getKeyText());
     }
 
     @Override

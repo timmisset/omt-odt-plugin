@@ -58,6 +58,9 @@ public abstract class ODTResolvableSignatureArgument extends ODTBaseResolvable
 
     @Override
     public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {
+        if (OppModel.INSTANCE.isUpdating()) {
+            return resources -> false;
+        }
         ODTCall call = PsiTreeUtil.getParentOfType(element, ODTCall.class, true);
         if (call == null) {
             return ODTTypeFilterProvider.ACCEPT_ALL;
