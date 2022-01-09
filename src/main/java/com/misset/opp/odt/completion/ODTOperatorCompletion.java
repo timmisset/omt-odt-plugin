@@ -34,9 +34,6 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
             protected void addCompletions(@NotNull CompletionParameters parameters,
                                           @NotNull ProcessingContext context,
                                           @NotNull CompletionResultSet result) {
-                if (OppModel.INSTANCE.isUpdating()) {
-                    return;
-                }
                 PsiElement position = parameters.getPosition();
                 Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
                 Predicate<Set<OntResource>> precedingFilter;

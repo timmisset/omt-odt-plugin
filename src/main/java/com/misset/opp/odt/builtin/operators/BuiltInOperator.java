@@ -102,9 +102,6 @@ public abstract class BuiltInOperator extends Builtin {
     protected void validateCompatibleOutcomePossibilities(Pair<Set<OntResource>, Set<OntResource>> possibilities,
                                                           PsiCall call,
                                                           ProblemsHolder holder) {
-        if (OppModel.INSTANCE.isUpdating()) {
-            return;
-        }
         if (possibilities.getFirst().isEmpty() || possibilities.getSecond().isEmpty()) {
             return;
         }

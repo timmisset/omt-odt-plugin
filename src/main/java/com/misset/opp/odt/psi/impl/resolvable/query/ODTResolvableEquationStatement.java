@@ -100,9 +100,6 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
 
     @Override
     public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {
-        if (OppModel.INSTANCE.isUpdating()) {
-            return resources -> false;
-        }
         ODTQuery leftSide = getQueryList().get(0);
         ODTQuery rightSide = getQueryList().get(1);
         ODTQuery opposite = PsiTreeUtil.isAncestor(leftSide, element, true) ? leftSide : rightSide;
