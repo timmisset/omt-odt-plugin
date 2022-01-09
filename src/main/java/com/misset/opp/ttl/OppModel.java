@@ -97,21 +97,21 @@ public class OppModel {
 
     private boolean isUpdating;
 
-
     public OppModel(OntModel shaclModel) {
         this.shaclModel = shaclModel;
-        model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
+        OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
 
         LoggerUtil.runWithLogger(LOGGER, "Loading OppModel from Shacl", () -> {
             isUpdating = true;
             clearCardinality();
             // the OWL_DL restricts types, a resource can only be either a class, a property or an instance, not multiple at the same time
             // the RDFS_INF inferencing provides the support for sub/superclass logic
-            setProperties();
-            setPrimitives();
-            loadSimpleModel();
+            setProperties(ontologyModel);
+            setPrimitives(ontologyModel);
+            loadSimpleModel(ontologyModel);
             incrementModificationCount();
             INSTANCE = this;
+            this.model = ontologyModel;
             isUpdating = false;
         });
     }
@@ -136,7 +136,6 @@ public class OppModel {
         listOntClassesCache.clear();
         toIndividualCache.clear();
         toClassCache.clear();
-        clearCardinality();
     }
 
     private void clearCardinality() {
@@ -152,11 +151,11 @@ public class OppModel {
                 .toSet();
     }
 
-    private Set<Individual> listShaclIndividuals() {
+    private Set<Individual> listShaclIndividuals(OntModel ontologyModel) {
         return shaclModel
                 .listStatements()
                 .filterKeep(statement -> statement.getPredicate()
-                        .equals(RDF_TYPE) && model.getOntClass(statement.getObject().asResource().getURI()) != null)
+                        .equals(RDF_TYPE) && ontologyModel.getOntClass(statement.getObject().asResource().getURI()) != null)
                 .mapWith(statement -> shaclModel.getIndividual(statement.getSubject().getURI()))
                 .filterKeep(OntResource::isIndividual)
                 .toSet();
@@ -179,32 +178,32 @@ public class OppModel {
         return model;
     }
 
-    private void setProperties() {
-        SHACL_PATH = model.createProperty(SHACL + "path");
-        SHACL_CLASS = model.createProperty(SHACL + "class");
-        SHACL_DATATYPE = model.createProperty(SHACL + "datatype");
-        SHACL_MINCOUNT = model.createProperty(SHACL + "minCount");
-        SHACL_MAXCOUNT = model.createProperty(SHACL + "maxCount");
-        SHACL_PROPERTY = model.createProperty(SHACL + "property");
-        SHACL_PROPERYSHAPE = model.createProperty(SHACL + "PropertyShape");
+    private void setProperties(OntModel ontologyModel) {
+        SHACL_PATH = ontologyModel.createProperty(SHACL + "path");
+        SHACL_CLASS = ontologyModel.createProperty(SHACL + "class");
+        SHACL_DATATYPE = ontologyModel.createProperty(SHACL + "datatype");
+        SHACL_MINCOUNT = ontologyModel.createProperty(SHACL + "minCount");
+        SHACL_MAXCOUNT = ontologyModel.createProperty(SHACL + "maxCount");
+        SHACL_PROPERTY = ontologyModel.createProperty(SHACL + "property");
+        SHACL_PROPERYSHAPE = ontologyModel.createProperty(SHACL + "PropertyShape");
 
-        RDFS_SUBCLASS_OF = model.createProperty(RDFS + "subClassOf");
+        RDFS_SUBCLASS_OF = ontologyModel.createProperty(RDFS + "subClassOf");
 
-        RDF_TYPE = model.createProperty(RDF + "type");
+        RDF_TYPE = ontologyModel.createProperty(RDF + "type");
 
-        OWL_CLASS = model.createClass(OWL + "Class");
-        OWL_THING_CLASS = model.createClass(OWL + "Thing");
+        OWL_CLASS = ontologyModel.createClass(OWL + "Class");
+        OWL_THING_CLASS = ontologyModel.createClass(OWL + "Thing");
         OWL_THING_INSTANCE = OWL_THING_CLASS.createIndividual(OWL + "Thing_INSTANCE");
 
-        OPP_CLASS = model.createClass(OPP + "Class");
+        OPP_CLASS = ontologyModel.createClass(OPP + "Class");
         JSON_OBJECT = OPP_CLASS.createIndividual(OPP + "JSON_OBJECT");
         IRI = OPP_CLASS.createIndividual(OPP + "IRI");
         ERROR = OPP_CLASS.createIndividual(OPP + "ERROR");
 
-        GRAPH_CLASS = model.createClass(PLATFORM + "Graph");
-        NAMED_GRAPH_CLASS = model.createClass(PLATFORM + "NamedGraph");
-        GRAPH_SHAPE = model.createClass(PLATFORM + "GraphShape");
-        TRANSIENT_GRAPH_CLASS = model.createClass("http://ontologie.politie.nl/internal/transient#TransientNamedGraph");
+        GRAPH_CLASS = ontologyModel.createClass(PLATFORM + "Graph");
+        NAMED_GRAPH_CLASS = ontologyModel.createClass(PLATFORM + "NamedGraph");
+        GRAPH_SHAPE = ontologyModel.createClass(PLATFORM + "GraphShape");
+        TRANSIENT_GRAPH_CLASS = ontologyModel.createClass("http://ontologie.politie.nl/internal/transient#TransientNamedGraph");
         NAMED_GRAPH = NAMED_GRAPH_CLASS.createIndividual(NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
         MEDEWERKER_GRAPH = NAMED_GRAPH_CLASS.createIndividual(NAMED_GRAPH_CLASS.getURI() + "_MEDEWERKERGRAPH");
         TRANSIENT_GRAPH = TRANSIENT_GRAPH_CLASS.createIndividual(TRANSIENT_GRAPH_CLASS.getURI() + "_INSTANCE");
@@ -212,42 +211,42 @@ public class OppModel {
         classModelProperties = List.of(RDFS_SUBCLASS_OF, RDF_TYPE);
     }
 
-    private void setPrimitives() {
-        XSD_BOOLEAN = model.createClass(XSD + "boolean");
-        XSD_BOOLEAN_INSTANCE = model.createIndividual(XSD_BOOLEAN);
-        XSD_STRING = model.createClass(XSD + "string");
-        XSD_STRING_INSTANCE = model.createIndividual(XSD_STRING);
-        XSD_NUMBER = model.createClass(XSD + "number");
-        XSD_NUMBER_INSTANCE = model.createIndividual(XSD_NUMBER);
-        XSD_DECIMAL = model.createClass(XSD + "decimal");
+    private void setPrimitives(OntModel ontologyModel) {
+        XSD_BOOLEAN = ontologyModel.createClass(XSD + "boolean");
+        XSD_BOOLEAN_INSTANCE = ontologyModel.createIndividual(XSD_BOOLEAN);
+        XSD_STRING = ontologyModel.createClass(XSD + "string");
+        XSD_STRING_INSTANCE = ontologyModel.createIndividual(XSD_STRING);
+        XSD_NUMBER = ontologyModel.createClass(XSD + "number");
+        XSD_NUMBER_INSTANCE = ontologyModel.createIndividual(XSD_NUMBER);
+        XSD_DECIMAL = ontologyModel.createClass(XSD + "decimal");
         XSD_DECIMAL.addSuperClass(XSD_NUMBER);
-        XSD_DECIMAL_INSTANCE = model.createIndividual(XSD_DECIMAL);
-        XSD_INTEGER = model.createClass(XSD + "integer");
+        XSD_DECIMAL_INSTANCE = ontologyModel.createIndividual(XSD_DECIMAL);
+        XSD_INTEGER = ontologyModel.createClass(XSD + "integer");
         // by making XSD_INTEGER a subclass of XSD_DECIMAL, it will allow type checking
         // to accept an integer at a decimal position, but not the other way around
         XSD_INTEGER.addSuperClass(XSD_DECIMAL);
-        XSD_INTEGER_INSTANCE = model.createIndividual(XSD_INTEGER);
-        XSD_DATETIME = model.createClass(XSD + "dateTime");
-        XSD_DATETIME_INSTANCE = model.createIndividual(XSD_DATETIME);
-        XSD_DATE = model.createClass(XSD + "date");
+        XSD_INTEGER_INSTANCE = ontologyModel.createIndividual(XSD_INTEGER);
+        XSD_DATETIME = ontologyModel.createClass(XSD + "dateTime");
+        XSD_DATETIME_INSTANCE = ontologyModel.createIndividual(XSD_DATETIME);
+        XSD_DATE = ontologyModel.createClass(XSD + "date");
         // by making XSD_DATE a subclass of XSD_DATETIME, it will allow type checking
         // to accept a date at a datetime position, but not the other way around
         XSD_DATE.addSuperClass(XSD_DATETIME);
-        XSD_DATE_INSTANCE = model.createIndividual(XSD_DATE);
+        XSD_DATE_INSTANCE = ontologyModel.createIndividual(XSD_DATE);
 
-        XSD_DURATION = model.createClass(XSD + "duration");
-        XSD_DURATION_INSTANCE = model.createIndividual(XSD_DURATION);
+        XSD_DURATION = ontologyModel.createClass(XSD + "duration");
+        XSD_DURATION_INSTANCE = ontologyModel.createIndividual(XSD_DURATION);
     }
 
-    private void loadSimpleModel() {
-        listShaclClasses().forEach(this::loadSimpleModelClass);
-        listShaclIndividuals().forEach(this::loadSimpleModelIndividual);
-        listGraphshapes().forEach(this::loadGraphShapes);
+    private void loadSimpleModel(OntModel ontologyModel) {
+        listShaclClasses().forEach(ontClass -> loadSimpleModelClass(ontologyModel, ontClass));
+        listShaclIndividuals(ontologyModel).forEach(individual -> loadSimpleModelIndividual(ontologyModel, individual));
+        listGraphshapes().forEach(resource -> loadGraphShapes(ontologyModel, resource));
     }
 
-    private void loadSimpleModelClass(OntClass ontClass) {
+    private void loadSimpleModelClass(OntModel ontologyModel, OntClass ontClass) {
         // create a simple class instance and inherit the superclass(es)
-        final OntClass simpleModelClass = model.createClass(ontClass.getURI());
+        final OntClass simpleModelClass = ontologyModel.createClass(ontClass.getURI());
         // create one individual per class, this is used as a mock when traversing the paths
         // and discriminate between classes and instances of the class being visited.
         final List<Statement> superClasses = ontClass.listProperties(RDFS_SUBCLASS_OF).toList();
@@ -263,16 +262,16 @@ public class OppModel {
                 .mapWith(Statement::getObject)
                 .mapWith(RDFNode::asResource)
                 .filterKeep(resource -> resource.getProperty(RDF_TYPE).getObject().equals(SHACL_PROPERYSHAPE))
-                .forEach((shaclPropertyShape) -> getSimpleResourceStatement(simpleModelClass, shaclPropertyShape));
+                .forEach((shaclPropertyShape) -> getSimpleResourceStatement(ontologyModel, simpleModelClass, shaclPropertyShape));
 
         simpleModelClass.createIndividual(simpleModelClass.getURI() + "_INSTANCE");
     }
 
-    private void loadSimpleModelIndividual(Individual individual) {
+    private void loadSimpleModelIndividual(OntModel ontologyModel, Individual individual) {
         try {
-            if (model.getOntResource(individual.getURI()) == null) {
-                model.createIndividual(individual.getURI(), individual.getOntClass());
-                model.add(individual.listProperties());
+            if (ontologyModel.getOntResource(individual.getURI()) == null) {
+                ontologyModel.createIndividual(individual.getURI(), individual.getOntClass());
+                ontologyModel.add(individual.listProperties());
             }
         } catch (ConversionException conversionException) {
             // do nothing, there might be an input issue in the ontology or some other reason
@@ -282,21 +281,22 @@ public class OppModel {
         }
     }
 
-    private void loadGraphShapes(Resource resource) {
-        if (model.getOntResource(resource.getURI()) == null) {
-            model.createIndividual(resource.getURI(), GRAPH_SHAPE);
-            model.add(resource.listProperties());
+    private void loadGraphShapes(OntModel ontologyModel, Resource resource) {
+        if (ontologyModel.getOntResource(resource.getURI()) == null) {
+            ontologyModel.createIndividual(resource.getURI(), GRAPH_SHAPE);
+            ontologyModel.add(resource.listProperties());
         }
     }
 
-    private void getSimpleResourceStatement(OntClass subject,
+    private void getSimpleResourceStatement(OntModel ontologyModel,
+                                            OntClass subject,
                                             Resource shaclPropertyShape) {
         if (!shaclPropertyShape.hasProperty(SHACL_PATH)) {
             return;
         }
 
         // the predicate is extracted from the SHACL PATH and translated into a model property
-        final Property predicate = model.createProperty(shaclPropertyShape.getProperty(SHACL_PATH)
+        final Property predicate = ontologyModel.createProperty(shaclPropertyShape.getProperty(SHACL_PATH)
                 .getObject()
                 .asResource()
                 .getURI());
@@ -347,7 +347,7 @@ public class OppModel {
     }
 
     public Set<OntClass> listClasses() {
-        return model.listClasses().toSet();
+        return getModel().listClasses().toSet();
     }
 
     /**
@@ -493,7 +493,7 @@ public class OppModel {
                                     Set<OntResource> predicates) {
         return predicates.stream()
                 .map(Resource::getURI)
-                .map(model::getOntProperty)
+                .map(getModel()::getOntProperty)
                 .anyMatch(predicate -> hasPredicate(subject, predicate));
     }
 
@@ -502,7 +502,7 @@ public class OppModel {
                                           Set<OntResource> objects) {
         return predicates.stream()
                 .map(Resource::getURI)
-                .map(model::getOntProperty)
+                .map(getModel()::getOntProperty)
                 .anyMatch(predicate -> hasPredicateObjects(subject, predicate, objects));
     }
 
@@ -585,7 +585,7 @@ public class OppModel {
                     .flatMap(Collection::stream)
                     .map(Statement::getObject)
                     .map(RDFNode::asResource)
-                    .map(model::getOntResource)
+                    .map(getModel()::getOntResource)
                     // since the subject is an instance, traversing it should also return an instance
                     .map(this::toIndividual)
                     .flatMap(Collection::stream)
@@ -627,7 +627,7 @@ public class OppModel {
 
         objects.addAll(subject.listProperties(predicate)
                 .mapWith(Statement::getObject)
-                .mapWith(rdfNode -> model.getOntResource(rdfNode.asResource()))
+                .mapWith(rdfNode -> getModel().getOntResource(rdfNode.asResource()))
                 .toSet());
         return objects;
     }
@@ -682,7 +682,7 @@ public class OppModel {
      */
     public Set<Property> listReversePredicates(OntResource classSubject) {
         final OntClass subjectAsObject = toClass(classSubject);
-        final Set<Property> properties = model.listStatements().toList()
+        final Set<Property> properties = getModel().listStatements().toList()
                 .stream()
                 .filter(statement -> statement.getObject().equals(subjectAsObject))
                 .map(Statement::getPredicate)
@@ -697,7 +697,7 @@ public class OppModel {
     public OntResource getResource(Resource resource) {
         return LoggerUtil.computeWithLogger(LOGGER,
                 "Retrieve " + resource.getURI() + " as resource from model",
-                () -> model.getOntResource(resource));
+                () -> getModel().getOntResource(resource));
     }
 
     @Nullable
@@ -710,7 +710,7 @@ public class OppModel {
                     if (mappedIndividualsCache.containsKey(uri)) {
                         return mappedIndividualsCache.get(uri);
                     } else {
-                        Individual individual = model.getIndividual(uri);
+                        Individual individual = getModel().getIndividual(uri);
                         mappedIndividualsCache.put(uri, individual);
                         return individual;
                     }
@@ -759,7 +759,7 @@ public class OppModel {
             return null;
         }
         if (!mappedClassesCache.containsKey(uri)) {
-            mappedClassesCache.put(uri, model.getOntClass(uri));
+            mappedClassesCache.put(uri, getModel().getOntClass(uri));
         }
         return mappedClassesCache.get(uri);
     }
@@ -769,12 +769,12 @@ public class OppModel {
     }
 
     public Property getProperty(Resource resource) {
-        return model.getProperty(resource.getURI());
+        return getModel().getProperty(resource.getURI());
     }
 
     @Nullable
     public Property getProperty(@Nullable String uri) {
-        return uri == null ? null : model.getProperty(uri);
+        return uri == null ? null : getModel().getProperty(uri);
     }
 
     private Set<Resource> listSubjectsWithProperty(Property property,
@@ -787,7 +787,7 @@ public class OppModel {
 
         return allClasses
                 .stream()
-                .map(_ontClass -> model.listSubjectsWithProperty(property, _ontClass))
+                .map(_ontClass -> getModel().listSubjectsWithProperty(property, _ontClass))
                 .map(ExtendedIterator::toSet)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
@@ -801,12 +801,12 @@ public class OppModel {
             final Set<? extends OntResource> ontResources = object.listInstances(true).toSet();
             return ontResources
                     .stream()
-                    .map(model::getOntResource)
+                    .map(getModel()::getOntResource)
                     .collect(Collectors.toSet());
         }
         return listSubjectsWithProperty(predicate, object)
                 .stream()
-                .map(model::getOntResource)
+                .map(getModel()::getOntResource)
                 .collect(Collectors.toSet());
     }
 
@@ -814,7 +814,7 @@ public class OppModel {
                                                        Individual object) {
         return listSubjectsWithProperty(predicate, object.getOntClass())
                 .stream()
-                .map(model::getOntResource)
+                .map(getModel()::getOntResource)
                 .filter(Objects::nonNull)
                 .filter(OntResource::isClass)
                 .map(OntResource::asClass)
@@ -835,7 +835,7 @@ public class OppModel {
         if (mappedResourcesCache.containsKey(uri)) {
             return mappedResourcesCache.get(uri);
         } else {
-            final OntResource resource = model.getOntResource(uri);
+            final OntResource resource = getModel().getOntResource(uri);
             if (resource != null) {
                 mappedResourcesCache.put(uri, resource);
                 return resource;
@@ -850,7 +850,7 @@ public class OppModel {
                     .stream()
                     .filter(regEx -> Pattern.compile(regEx).matcher(uri).matches())
                     .map(modelInstanceMapping::get)
-                    .map(model::getOntClass)
+                    .map(getModel()::getOntClass)
                     .filter(Objects::nonNull)
                     .map(ontClass -> addIndividual(ontClass, uri, project))
                     .findFirst()
