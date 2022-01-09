@@ -3,8 +3,11 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.misset.opp.odt.psi.ODTSchemalessIriStep;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * The Schemaless or default: schema step uses the subject's namespace/schema to traverse the graph
@@ -22,7 +25,8 @@ public abstract class ODTResolvableSchemalessIriStep extends ODTResolvableQueryF
         // we require the preceding step to resolve the current IRI
         String localName = getText();
         return resolvePreviousStep().stream()
-                .map(resource -> resource.isIndividual() ? resource.asIndividual().getOntClass() : resource)
+                .map(OppModel.INSTANCE::toClass)
+                .filter(Objects::nonNull)
                 .map(Resource::getNameSpace)
                 .map(nameSpace -> nameSpace + localName.substring(1, localName.length() - 1))
                 // if more than 1 namespace is discovered, an Inspection should indicate this.

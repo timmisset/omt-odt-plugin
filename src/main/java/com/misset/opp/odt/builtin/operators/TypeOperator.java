@@ -29,7 +29,7 @@ public class TypeOperator extends BuiltInOperator {
     private OntResource mapToType(OntResource resource) {
         OntClass ontClass = OppModel.INSTANCE.toClass(resource);
         if (TTLResourceUtil.isType(ontClass)) {
-            return resource.asIndividual().getOntClass();
+            return ontClass;
         } else {
             return OppModel.INSTANCE.IRI;
         }

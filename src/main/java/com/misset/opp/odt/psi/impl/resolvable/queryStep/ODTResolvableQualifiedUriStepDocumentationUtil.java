@@ -33,7 +33,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         if (individual == null) {
             return null;
         }
-        OntClass ontClass = individual.getOntClass();
+        OntClass ontClass = OppModel.INSTANCE.toClass(individual);
 
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);

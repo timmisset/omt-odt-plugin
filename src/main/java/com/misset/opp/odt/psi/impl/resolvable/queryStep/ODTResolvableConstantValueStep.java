@@ -41,7 +41,7 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
             result = null; // returns an emptySet which is the ODT equivalent of null
         } else if (elementType == ODTTypes.PRIMITIVE) {
             final Individual individual = TTLValueParserUtil.parsePrimitive(getText());
-            result = individual != null ? individual.getOntClass() : null;
+            result = individual != null ? OppModel.INSTANCE.toClass(individual) : null;
         } else {
             result = oppModel.OWL_THING_INSTANCE;
         }

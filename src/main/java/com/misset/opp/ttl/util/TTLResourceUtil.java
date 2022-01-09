@@ -5,13 +5,11 @@ import com.misset.opp.odt.completion.ODTTraverseCompletion;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.util.Icons;
 import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -38,7 +36,7 @@ public class TTLResourceUtil {
     }
 
     public static boolean isValue(OntResource resource) {
-        return is(resource, isValue, () -> resource instanceof Individual && isXSDType(((Individual) resource).getOntClass()));
+        return is(resource, isValue, () -> resource instanceof Individual && isXSDType(OppModel.INSTANCE.toClass(resource)));
     }
 
     public static boolean isXSDType(OntResource resource) {
@@ -94,9 +92,13 @@ public class TTLResourceUtil {
             return resource.getURI() + (withType ? " (CLASS)" : "");
         } else if (resource instanceof Individual) {
             final Individual individual = (Individual) resource;
-            if (isXSDType(individual.getOntClass())) {
-                return individual.getOntClass().getURI() + (withType ? " (VALUE)" : "");
-            } else if (individual.getOntClass().equals(OppModel.INSTANCE.OPP_CLASS)) {
+            OntClass ontClass = OppModel.INSTANCE.toClass(individual);
+            if (ontClass == null) {
+                return null;
+            }
+            if (isXSDType(ontClass)) {
+                return ontClass.getURI() + (withType ? " (VALUE)" : "");
+            } else if (ontClass.equals(OppModel.INSTANCE.OPP_CLASS)) {
                 // Specific OPP_CLASS instances that describe non-ontology values such as JSON_OBJECT, ERROR etc
                 return individual.getURI();
             } else if (individual.getNameSpace() != null &&
@@ -104,7 +106,7 @@ public class TTLResourceUtil {
                     !individual.getLocalName().endsWith("_INSTANCE")) {
                 return individual.getURI();
             }
-            return individual.getOntClass().getURI() + (withType ? " (INSTANCE)" : "");
+            return ontClass.getURI() + (withType ? " (INSTANCE)" : "");
         } else {
             return resource.getURI();
         }
@@ -135,10 +137,9 @@ public class TTLResourceUtil {
     }
 
     public static String describeUriForLookup(OntResource resource) {
-        if (resource instanceof Individual) {
-            return ((Individual) resource).getOntClass().getLocalName();
-        }
-        return resource.getLocalName();
+        return Optional.ofNullable(OppModel.INSTANCE.toClass(resource))
+                .map(Resource::getLocalName)
+                .orElse("Ontology class could not be found in the model");
     }
 
 

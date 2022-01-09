@@ -466,7 +466,7 @@ public class OppModel {
         } else {
             final OntClass ontClass;
             if (resource.isIndividual()) {
-                ontClass = resource.asIndividual().getOntClass();
+                ontClass = resource.asIndividual().listOntClasses(true).next();
             } else {
                 ontClass = resource.asClass();
             }
@@ -575,7 +575,7 @@ public class OppModel {
             // when rdf:type is called on the individual, the actual class is requested
             // although this can be resolved via listProperties(predicate), this would also return any of the superclasses
             // and which would lead to [someInstance] / rdf:type / ^rdf:type always returning all classes
-            return Set.of(subject.getOntClass());
+            return Optional.ofNullable((OntResource) toClass(subject)).map(Set::of).orElse(Collections.emptySet());
         } else {
             // an instance has all the properties of it's direct class and all superclasses
             return listOntClasses(subject)
@@ -812,7 +812,11 @@ public class OppModel {
 
     private Set<OntResource> listSubjectsForIndividual(Property predicate,
                                                        Individual object) {
-        return listSubjectsWithProperty(predicate, object.getOntClass())
+        OntClass individualClass = toClass(object);
+        if (individualClass == null) {
+            return Collections.emptySet();
+        }
+        return listSubjectsWithProperty(predicate, individualClass)
                 .stream()
                 .map(getModel()::getOntResource)
                 .filter(Objects::nonNull)
@@ -867,7 +871,7 @@ public class OppModel {
         Individual individual = ontClass.createIndividual(uri);
         NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
                 .createNotification(
-                        "Added " + individual.getURI() + " as " + individual.getOntClass(true),
+                        "Added " + individual.getURI() + " as " + OppModel.INSTANCE.toClass(individual),
                         NotificationType.INFORMATION)
                 .setIcon(OMTFileType.INSTANCE.getIcon())
                 .notify(project);
@@ -907,7 +911,7 @@ public class OppModel {
                 // for 2 individuals, check if classA is part of the classes for B
                 return resourceB.asIndividual().listOntClasses(false)
                         .toList()
-                        .contains(resourceA.asIndividual().getOntClass());
+                        .contains(OppModel.INSTANCE.toClass(resourceA));
             }
         }
         if (resourceA.isProperty() || resourceB.isProperty()) {
