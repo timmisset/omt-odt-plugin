@@ -4,7 +4,7 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsContexts;
 import com.misset.opp.omt.startup.LoadReasonsStartupActivity;
-import com.misset.opp.ttl.LoadOntologyStartupActivity;
+import com.misset.opp.ttl.startup.LoadOntologyStartupActivity;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;

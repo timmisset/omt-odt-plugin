@@ -1,4 +1,4 @@
-package com.misset.opp.ttl;
+package com.misset.opp.ttl.startup;
 
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
@@ -12,12 +12,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.newvfs.BulkFileListener;
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.psi.search.FilenameIndex;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.settings.SettingsState;
+import com.misset.opp.ttl.OppModelLoader;
+import com.misset.opp.ttl.util.TTLScopeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 public class LoadOntologyStartupActivity implements StartupActivity {
@@ -87,6 +92,24 @@ public class LoadOntologyStartupActivity implements StartupActivity {
                 } else {
                     showNotification();
                 }
+
+                // subscribe to TTL file changes, this should reload the model
+                project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
+                    @Override
+                    public void after(@NotNull List<? extends @NotNull VFileEvent> events) {
+                        List<VirtualFile> ttlVirtualFiles = TTLScopeUtil.getTTLVirtualFiles();
+                        if (events.stream().anyMatch(vFileEvent -> ttlVirtualFiles.contains(vFileEvent.getFile()))) {
+                            // reload the model
+                            NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
+                                    .createNotification(
+                                            "Change detected in TTL file that is part of the current model, entire model will be reloaded",
+                                            NotificationType.INFORMATION)
+                                    .setIcon(OMTFileType.INSTANCE.getIcon())
+                                    .notify(project);
+                            getBackgroundableTask(project).run(indicator);
+                        }
+                    }
+                });
             }
 
             private void loadOntology(VirtualFile rootFile) {
