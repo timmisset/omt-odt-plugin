@@ -149,12 +149,6 @@
         <localInspection displayName="Unused variable assignment" groupName="Redundancy" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTUnusedVariableAssignmentInspection"/>
-        <localInspection displayName="Unassigned variable usage" groupName="Redundancy" language="ODT" groupPath="ODT"
-                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTUnassignedVariableAssignmentInspection"/>
-        <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT" groupPath="ODT"
-                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.ODTResolvableInspection"/>
         <localInspection displayName="Unreachable code" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionUnreachable"/>
@@ -164,6 +158,16 @@
         <localInspection displayName="Fully qualified URI" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTQualifiedURIInspection"/>
+        <!--        Resolvable -->
+        <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT" groupPath="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.resolvable.ODTResolvableInspection"/>
+        <localInspection displayName="Unassigned variable usage" groupName="Resolvable" language="ODT" groupPath="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.resolvable.ODTUnassignedVariableAssignmentInspection"/>
+        <localInspection displayName="Ignored return value" groupName="Resolvable" language="ODT" groupPath="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true"
+                         implementationClass="com.misset.opp.odt.inspection.resolvable.ODTIgnoredReturnValueInspection"/>
         <!-- Types -->
         <localInspection displayName="Boolean value" groupName="Types" language="ODT"
                          enabledByDefault="true" level="ERROR" hasStaticDescription="true" groupPath="ODT"
@@ -232,6 +236,7 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
+
 
     </extensions>
     <depends>com.intellij.java</depends>
