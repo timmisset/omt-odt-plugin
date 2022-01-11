@@ -28,8 +28,6 @@ public class OMTModuleFileType extends OMTFileMetaType {
     static {
         // include all features from the root
         features.putAll(OMTFileMetaType.features);
-        features.remove("model");
-
         features.put("moduleName", YamlStringType::new);
         features.put("graphs", OMTGraphSelectionMetaType::new);
         features.put("onSessionStart", OMTScriptMetaType::new);
