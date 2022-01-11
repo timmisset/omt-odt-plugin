@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection.redundancy;
+package com.misset.opp.odt.inspection.resolvable;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.OMTInspectionTestCase;
