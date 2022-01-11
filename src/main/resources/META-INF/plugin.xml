@@ -233,6 +233,7 @@
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
 
+
     </extensions>
     <depends>com.intellij.java</depends>
 
