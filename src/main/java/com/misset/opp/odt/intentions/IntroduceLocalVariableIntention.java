@@ -80,7 +80,7 @@ public class IntroduceLocalVariableIntention implements IntentionAction {
 
     private PsiElement getElementAtCaret(PsiFile file, int offset) {
         PsiElement elementAt = file.findElementAt(offset);
-        while (elementAt != null && LOOKBACK.contains(PsiUtilCore.getElementType(elementAt))) {
+        while (offset > 0 && elementAt != null && LOOKBACK.contains(PsiUtilCore.getElementType(elementAt))) {
             offset -= 1;
             elementAt = file.findElementAt(offset);
         }
