@@ -22,11 +22,11 @@ class ODTResolvableScriptTest extends OMTOntologyTestCase {
     }
 
     @Test
-    void testResolvesQueryStatement() {
+    void testDoesntResolvesQueryStatement() {
         String content = insideStandaloneQueryWithPrefixes("query: '<caret>'");
         configureByText(content);
         Set<OntResource> resources = ReadAction.compute(() -> ((ODTScript) myFixture.getFile().getFirstChild()).resolve());
-        assertContainsElements(resources, OppModel.INSTANCE.XSD_STRING_INSTANCE);
+        assertDoesntContain(resources, OppModel.INSTANCE.XSD_STRING_INSTANCE);
     }
 
 }

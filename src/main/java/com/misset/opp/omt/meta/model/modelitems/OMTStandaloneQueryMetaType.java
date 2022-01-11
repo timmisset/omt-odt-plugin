@@ -13,7 +13,7 @@ import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.resolvable.psi.PsiResolvable;
+import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -91,7 +91,7 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
 
         return Optional.ofNullable(mapping.getKeyValueByKey("query"))
                 .map(YAMLKeyValue::getValue)
-                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvable.class))
+                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableQuery.class))
                 .stream()
                 .flatMap(Collection::stream)
                 .map(psiResolvable -> psiResolvable.resolve(context))

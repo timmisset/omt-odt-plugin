@@ -18,7 +18,7 @@ import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.Commit;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.resolvable.local.Rollback;
-import com.misset.opp.resolvable.psi.PsiResolvable;
+import com.misset.opp.resolvable.psi.PsiResolvableScript;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -96,7 +96,7 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
     public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
         return Optional.ofNullable(mapping.getKeyValueByKey("onRun"))
                 .map(YAMLKeyValue::getValue)
-                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvable.class))
+                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableScript.class))
                 .stream()
                 .flatMap(Collection::stream)
                 .map(Resolvable::resolve)

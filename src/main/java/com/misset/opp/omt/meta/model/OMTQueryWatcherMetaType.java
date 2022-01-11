@@ -7,7 +7,7 @@ import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTOnChangeScriptMetaType;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.LocalVariable;
-import com.misset.opp.resolvable.psi.PsiResolvable;
+import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -48,7 +48,7 @@ public class OMTQueryWatcherMetaType extends OMTMetaType implements
     private Set<OntResource> getType(YAMLMapping mapping) {
         final YAMLValue yamlValue = getTypeProviderMap(mapping);
         return Optional.ofNullable(yamlValue)
-                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvable.class))
+                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableQuery.class))
                 .orElse(Collections.emptySet())
                 .stream()
                 .map(Resolvable::resolve)

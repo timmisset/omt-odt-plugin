@@ -4,7 +4,7 @@ import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.resolvable.Resolvable;
-import com.misset.opp.resolvable.psi.PsiResolvable;
+import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlScalarType;
@@ -20,7 +20,7 @@ public class OMTQueryMetaType extends YamlScalarType implements OMTMetaInjectabl
     }
 
     protected Set<OntResource> resolve(@NotNull YAMLScalar scalarValue) {
-        return OMTProviderUtil.getInjectedContent(scalarValue, PsiResolvable.class)
+        return OMTProviderUtil.getInjectedContent(scalarValue, PsiResolvableQuery.class)
                 .stream()
                 .map(Resolvable::resolve)
                 .findFirst()

@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta;
 
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.resolvable.psi.PsiResolvable;
+import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -69,8 +70,8 @@ public abstract class OMTMetaType extends YamlMetaType {
     }
 
     public Set<OntResource> resolveValue(YAMLValue value) {
-        final Collection<PsiResolvable> injectedContent = OMTProviderUtil.getInjectedContent(value,
-                PsiResolvable.class);
+        final Collection<PsiResolvableQuery> injectedContent = OMTProviderUtil.getInjectedContent(value,
+                PsiResolvableQuery.class);
         if (injectedContent.isEmpty()) {
             return Collections.emptySet();
         } else {
