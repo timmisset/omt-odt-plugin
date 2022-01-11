@@ -93,4 +93,20 @@ public class ODTHostedFormattingNestedTest extends OMTTestCase {
                 "      VAR $variableC;", text);
     }
 
+    @Test
+    void testSpacing() {
+        OMTFile omtFile = configureByText("model:\n" +
+                "  Procedure: !Procedure\n" +
+                "    onRun: |\n" +
+                "      @SomeCallWithSpacesBetweenParenthesis(   $arg1, $arg2   )");
+
+        ODTFormattingTestCase.doFormat(myFixture, getProject(), getFile());
+
+        String text = ReadAction.compute(omtFile::getText);
+        Assertions.assertEquals("model:\n" +
+                "  Procedure: !Procedure\n" +
+                "    onRun: |\n" +
+                "      @SomeCallWithSpacesBetweenParenthesis($arg1, $arg2)", text);
+    }
+
 }

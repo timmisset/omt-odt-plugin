@@ -11,8 +11,6 @@ import com.misset.opp.odt.psi.ODTTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Method;
-
 public class ODTFormattingSpacing {
 
     private final SpacingBuilder spacingBuilder;
@@ -74,15 +72,16 @@ public class ODTFormattingSpacing {
     }
 
     public Block unwrap(Block block) {
-        if (block instanceof ODTFormattingBlock) {
-            return block;
-        }
-        try {
-            Method getOriginal = block.getClass().getDeclaredMethod("getOriginal");
-            getOriginal.setAccessible(true);
-            return (Block) getOriginal.invoke(block);
-        } catch (Exception e) {
-            return block;
-        }
+//        if (block instanceof ODTFormattingBlock) {
+//            return block;
+//        }
+//        try {
+//            Method getOriginal = block.getClass().getDeclaredMethod("getOriginal");
+//            getOriginal.setAccessible(true);
+//            return (Block) getOriginal.invoke(block);
+//        } catch (Exception e) {
+//            return block;
+//        }
+        return block;
     }
 }
