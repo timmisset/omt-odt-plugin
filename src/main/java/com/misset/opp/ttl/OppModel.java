@@ -56,6 +56,8 @@ public class OppModel {
     public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE,
             XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE, XSD_DURATION_INSTANCE;
 
+    private OntClass RDFS_RESOURCE;
+
     private static final Logger LOGGER = Logger.getInstance(OppModel.class);
     /*
         The modification count whenever the model is loaded
@@ -188,7 +190,7 @@ public class OppModel {
         SHACL_PROPERYSHAPE = ontologyModel.createProperty(SHACL + "PropertyShape");
 
         RDFS_SUBCLASS_OF = ontologyModel.createProperty(RDFS + "subClassOf");
-
+        RDFS_RESOURCE = ontologyModel.createClass(RDFS + "Resource");
         RDF_TYPE = ontologyModel.createProperty(RDF + "type");
 
         OWL_CLASS = ontologyModel.createClass(OWL + "Class");
@@ -985,8 +987,12 @@ public class OppModel {
             return Collections.emptyList();
         }
         List<OntClass> superClasses = new ArrayList<>();
-        while (!ontologyClass.equals(OWL_THING_CLASS)) {
-            ontologyClass = ontologyClass.getSuperClass();
+        while (!ontologyClass.equals(OWL_THING_CLASS) && !ontologyClass.equals(RDFS_RESOURCE)) {
+            OntClass superClass = ontologyClass.getSuperClass();
+            if (superClass == ontologyClass) {
+                break;
+            }
+            ontologyClass = superClass;
             superClasses.add(ontologyClass);
         }
         return superClasses;
