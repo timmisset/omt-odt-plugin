@@ -17,7 +17,9 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.meta.model.YamlStringType;
 import org.jetbrains.yaml.psi.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvider {
@@ -41,11 +43,6 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
     public OMTActionMetaType(boolean mapped) {
         super("Action");
         this.mapped = mapped;
-    }
-
-    @Override
-    public @NotNull List<String> computeMissingFields(@NotNull Set<String> existingFields) {
-        return !mapped && !existingFields.contains("id") ? List.of("id") : Collections.emptyList();
     }
 
     @Override

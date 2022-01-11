@@ -22,7 +22,6 @@ class OMTActionMetaTypeTest extends OMTInspectionTestCase {
 
     @Test
     void testGetVariableMap() {
-
         String content = insideActivityWithPrefixes("actions:\n" +
                 "   myAction:\n" +
                 "       params:\n" +
@@ -35,15 +34,6 @@ class OMTActionMetaTypeTest extends OMTInspectionTestCase {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof YAMLPlainTextImpl);
         });
-
-    }
-
-    @Test
-    void testMissingId() {
-        configureByText("test.module.omt", "actions:\n" +
-                "    notifications:\n" +
-                "    - icon: test");
-        assertHasError("Missing required key(s): 'id'");
     }
 
     @Test
