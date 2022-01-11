@@ -47,6 +47,15 @@ class ODTIgnoredReturnValueInspectionTest extends OMTInspectionTestCase {
     }
 
     @Test
+    void testHasNoWarningForSimpleInjectableCommandCall() {
+        String content = insideActivityWithPrefixes("" +
+                "watchers:\n" +
+                "   - query: true;");
+        configureByText(content);
+        assertNoWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    }
+
+    @Test
     void testHasWarningForVariableAssignment() {
         String content = insideProcedureRunWithPrefixes("VAR $x = 12;");
         configureByText(content);
