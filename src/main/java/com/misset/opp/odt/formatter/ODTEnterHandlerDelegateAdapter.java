@@ -49,6 +49,9 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
 
     @Override
     public Result postProcessEnter(@NotNull PsiFile file, @NotNull Editor editor, @NotNull DataContext dataContext) {
+        if (!(file instanceof ODTFile)) {
+            return Result.Continue;
+        }
         if (moveCaretAfterInsert > 0) {
             editor.getCaretModel().getCurrentCaret().moveCaretRelatively(moveCaretAfterInsert, 0, false, true);
         } else {
