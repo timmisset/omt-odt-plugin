@@ -61,8 +61,12 @@ patchPluginXml {
     changeNotes = """
         <h1>Update 5.3</h1>
         <p>
-        Added: <u>ignored return value inspection</u>. 
+        Added: <u>Ignored return value inspection</u>. 
         Sets a weak warning when a statement resolves to a value which is not used or assigned to a variable<br>
+        </p>  
+        <p>
+        Reintroduced: <u>Unnecessary parenthesis</u>. 
+        Sets a warning when an operator call or DEFINE COMMAND / QUERY definition contains unnecessary parenthesis<br>
         </p>       
         <h1>Update 5.2.2</h1>
         Fixed #17: <https://github.com/timmisset/omt-odt-plugin/issues/17>getHostDocument ClassCastException</a><br>

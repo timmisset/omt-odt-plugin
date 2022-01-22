@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection;
+package com.misset.opp.odt.inspection.redundancy;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.OMTInspectionTestCase;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.ODTStyleInspectionUnnecessaryWrappingSubquery.WARNING;
+import static com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryWrappingSubquery.WARNING;
 
 class ODTStyleInspectionUnnecessaryWrappingSubqueryTest extends OMTInspectionTestCase {
 

@@ -1,23 +1,13 @@
-package com.misset.opp.odt.inspection;
+package com.misset.opp.odt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.codeInspection.*;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTInjectionUtil;
-import com.misset.opp.odt.psi.ODTBooleanStatement;
-import com.misset.opp.odt.psi.ODTNegatedStep;
-import com.misset.opp.odt.psi.ODTQuery;
-import com.misset.opp.odt.psi.ODTQueryArray;
-import com.misset.opp.odt.psi.ODTQueryOperationStep;
-import com.misset.opp.odt.psi.ODTQueryStep;
-import com.misset.opp.odt.psi.ODTSubQuery;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTSubQueryImpl;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import org.jetbrains.annotations.Nls;
