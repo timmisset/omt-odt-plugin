@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.2.1'
+version '5.2.2'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,6 +59,11 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        Fixed #17: <https://github.com/timmisset/omt-odt-plugin/issues/17>getHostDocument ClassCastException</a><br>
+        Improved filter, when owl:Thing (unspecified) type enters a type filter, the outcome resolves to the checked type<br>
+        Issue with recursion in super/subclass lookups fixed, this caused the IDE to hang after a while. Might fix the issue
+        alltogether or it might be part of the solution. Please report such behavior on the github issues page.<br>
+        
         <h1>Update 5.2.1</h1>
         Fixed #14: <a href="https://github.com/timmisset/omt-odt-plugin/issues/14">Model in module structure</a><br>
         Fixed #15: <a href="https://github.com/timmisset/omt-odt-plugin/issues/15">Id for action is not required</a><br>

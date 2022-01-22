@@ -987,13 +987,11 @@ public class OppModel {
             return Collections.emptyList();
         }
         List<OntClass> superClasses = new ArrayList<>();
-        while (!ontologyClass.equals(OWL_THING_CLASS) && !ontologyClass.equals(RDFS_RESOURCE)) {
-            OntClass superClass = ontologyClass.getSuperClass();
-            if (superClass == ontologyClass) {
-                break;
-            }
-            ontologyClass = superClass;
+        OntClass superClass = ontologyClass.getSuperClass();
+        while (!superClass.equals(ontologyClass)) {
             superClasses.add(ontologyClass);
+            ontologyClass = superClass;
+            superClass = ontologyClass.getSuperClass();
         }
         return superClasses;
     }
@@ -1015,5 +1013,21 @@ public class OppModel {
             subClass = ontologyClass.getSubClass();
         }
         return subClasses;
+    }
+
+    /**
+     * Returns the list matched to the type of the template
+     * If the list contains ontClass and the template is an Individual, it will return
+     * the instances of the classes. If the list contains Individuals and the template
+     * is a class it will return the Classes.
+     */
+    public Set<OntResource> toType(Set<OntResource> resources, OntResource template) {
+        if (template instanceof Individual) {
+            return toIndividuals(resources);
+        } else if (template instanceof OntClass) {
+            return toClasses(resources).stream().map(OntResource.class::cast).collect(Collectors.toSet());
+        } else {
+            return resources;
+        }
     }
 }

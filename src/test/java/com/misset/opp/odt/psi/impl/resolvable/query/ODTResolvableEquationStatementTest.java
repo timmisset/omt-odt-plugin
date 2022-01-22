@@ -42,6 +42,14 @@ class ODTResolvableEquationStatementTest extends OMTOntologyTestCase {
     }
 
     @Test
+    void testFilterOwlThing() {
+        final Set<OntResource> resources = resolveQueryStatement(
+                "/owl:Thing / ^rdf:type[/ont:ClassBSub == rdf:type]");
+        Assertions.assertEquals(1, resources.size());
+        Assertions.assertTrue(resources.stream().anyMatch(resource -> resource.asIndividual().hasOntClass(createClass("ClassBSub"))));
+    }
+
+    @Test
     void testFilterByValue() {
         final OntResource resource = resolveQueryStatementToSingleResult(
                 "/ont:ClassA / ^rdf:type[ont:booleanPredicate == true]");

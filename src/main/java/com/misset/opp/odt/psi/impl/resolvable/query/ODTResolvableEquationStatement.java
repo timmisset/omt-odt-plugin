@@ -63,17 +63,20 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
             return Set.of(resource);
         }
 
+        // check if owl:Thing is part of the equation
+        if (leftSide.stream().anyMatch(OppModel.INSTANCE.OWL_THING_INSTANCE::equals)) {
+            return OppModel.INSTANCE.toType(rightSide, resource);
+        } else if (rightSide.stream().anyMatch(OppModel.INSTANCE.OWL_THING_INSTANCE::equals)) {
+            return OppModel.INSTANCE.toType(leftSide, resource);
+        }
+
         // not a direct match, there might be match based on class types. If the left-side is a subclass of the right-side
         // or the other way around, this is also acceptable. It is similar to 'Class instance X' and then casting it to the more
         // specific class rather than the generic super class type it had before the filter
         if (leftSide.stream().allMatch(OppModel.INSTANCE::isClass) &&
                 rightSide.stream().allMatch(OppModel.INSTANCE::isClass)) {
             Set<OntClass> ontClasses = intersectBothSideSuperClasses(OppModel.INSTANCE.toClasses(leftSide), OppModel.INSTANCE.toClasses(rightSide));
-            if (resource.isIndividual()) {
-                return OppModel.INSTANCE.toIndividuals(ontClasses);
-            } else {
-                return Collections.unmodifiableSet(ontClasses);
-            }
+            return OppModel.INSTANCE.toType(ontClasses.stream().map(OntResource.class::cast).collect(Collectors.toSet()), resource);
         }
         return Collections.emptySet();
     }
