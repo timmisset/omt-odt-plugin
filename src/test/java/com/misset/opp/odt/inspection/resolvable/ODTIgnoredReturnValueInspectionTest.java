@@ -18,7 +18,7 @@ class ODTIgnoredReturnValueInspectionTest extends OMTInspectionTestCase {
     void testHasWarningWhenIgnoredQuery() {
         String content = insideProcedureRunWithPrefixes("true;");
         configureByText(content);
-        assertHasWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+        assertHasWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 
     @Test
@@ -27,7 +27,7 @@ class ODTIgnoredReturnValueInspectionTest extends OMTInspectionTestCase {
                 "DEFINE COMMAND command => { RETURN true; }\n" +
                 "@command();");
         configureByText(content);
-        assertHasWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+        assertHasWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 
     @Test
@@ -36,14 +36,14 @@ class ODTIgnoredReturnValueInspectionTest extends OMTInspectionTestCase {
                 "DEFINE COMMAND command => { @LOG('test'); }\n" +
                 "@command();");
         configureByText(content);
-        assertNoWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 
     @Test
     void testHasNoWarningForVoidCommandCall() {
         String content = insideProcedureRunWithPrefixes("@LOG('test');");
         configureByText(content);
-        assertNoWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 
     @Test
@@ -52,13 +52,38 @@ class ODTIgnoredReturnValueInspectionTest extends OMTInspectionTestCase {
                 "watchers:\n" +
                 "   - query: true;");
         configureByText(content);
-        assertNoWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 
     @Test
-    void testHasWarningForVariableAssignment() {
+    void testHasNoWarningForVariableAssignment() {
         String content = insideProcedureRunWithPrefixes("VAR $x = 12;");
         configureByText(content);
-        assertNoWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    }
+
+    @Test
+    void testHasWarningForActivityWithReturnValue() {
+        String content = "model:\n" +
+                "   Activity: !Activity\n" +
+                "       returns: true\n" +
+                "   Procedure: !Procedure\n" +
+                "       onRun: |\n" +
+                "           @Activity();";
+        configureByText(content);
+        assertHasWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    }
+
+    @Test
+    void testNoWarningForActivityWithoutReturnValue() {
+        String content = "model:\n" +
+                "   Activity: !Activity\n" +
+                "       onStart: |\n" +
+                "           @LOG(true);\n" +
+                "   Procedure: !Procedure\n" +
+                "       onRun: |\n" +
+                "           @Activity();";
+        configureByText(content);
+        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 }

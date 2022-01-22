@@ -9,8 +9,7 @@ import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTQueryStatement;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTVariableValue;
-import com.misset.opp.omt.meta.model.SimpleInjectable;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +18,7 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.Set;
 
-import static com.intellij.codeInspection.ProblemHighlightType.WARNING;
+import static com.intellij.codeInspection.ProblemHighlightType.WEAK_WARNING;
 
 public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
 
@@ -47,9 +46,7 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
                 }
 
                 final YamlMetaType injectionMetaType = ODTInjectionUtil.getInjectionMetaType(element);
-                if (injectionMetaType.getClass()
-                        .isAnnotationPresent(SimpleInjectable.class)) {
-                    // SimpleInjectables are directly assigned to the host
+                if (injectionMetaType != null && !(injectionMetaType instanceof OMTScriptMetaType)) {
                     return;
                 }
 
@@ -61,9 +58,9 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
                     resolved = ((ODTQueryStatement) element).getQuery().resolve();
                 }
 
-                if (!resolved.isEmpty() && !resolved.stream().allMatch(OppModel.INSTANCE.OWL_THING_INSTANCE::equals)) {
+                if (!resolved.isEmpty()) {
                     // something is being returned, show warning:
-                    holder.registerProblem(element, RESULT_IS_IGNORED, WARNING);
+                    holder.registerProblem(element, RESULT_IS_IGNORED, WEAK_WARNING);
                 }
             }
 

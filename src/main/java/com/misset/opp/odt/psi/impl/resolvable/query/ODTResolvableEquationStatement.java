@@ -63,6 +63,13 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
             return Set.of(resource);
         }
 
+        // check if any of both sides are unresolvable by themselves, in that case just return the known
+        // input. Most likely, there is an unresolvable variable used or a bad predicate. In any case, it
+        // will be covered by inspections but should not indicate that the value is filtered out
+        if (rightSide.isEmpty() || leftSide.isEmpty()) {
+            return Set.of(resource);
+        }
+
         // check if owl:Thing is part of the equation
         if (leftSide.stream().anyMatch(OppModel.INSTANCE.OWL_THING_INSTANCE::equals)) {
             return OppModel.INSTANCE.toType(rightSide, resource);

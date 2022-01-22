@@ -12,6 +12,7 @@ import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
@@ -19,17 +20,18 @@ import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTReasonMetaType;
 import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.*;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
+import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addInjectedCallablesToMap;
@@ -114,9 +116,19 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
 
     @Override
     public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
-        // todo:
-        // calculate the possible outcomes from the Activity, can be done if the activity has a 'returns' field
-        return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
+        if (isVoid(mapping)) {
+            return Collections.emptySet();
+        } else {
+            return Optional.ofNullable(mapping.getKeyValueByKey("returns"))
+                    .map(YAMLKeyValue::getValue)
+                    .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableQuery.class))
+                    .stream()
+                    .flatMap(Collection::stream)
+                    .map(Resolvable::resolve)
+                    .filter(resources -> !resources.isEmpty())
+                    .findFirst()
+                    .orElse(Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE));
+        }
     }
 
     @Override
