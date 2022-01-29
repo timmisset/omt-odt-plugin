@@ -24,21 +24,21 @@ public class CodeAnnotatorUnresolvable implements Annotator {
     public void annotate(@NotNull PsiElement element,
                          @NotNull AnnotationHolder holder) {
         if (element instanceof ODTVariable) {
-            inspectVariable(holder, (ODTVariable) element);
+            annotateVariable(holder, (ODTVariable) element);
         } else if (element instanceof ODTResolvableCall) {
-            inspectCall(holder, (ODTResolvableCall) element);
+            annotateCall(holder, (ODTResolvableCall) element);
         }
     }
 
-    private void inspectVariable(@NotNull AnnotationHolder holder,
-                                 @NotNull ODTVariable variable) {
+    private void annotateVariable(@NotNull AnnotationHolder holder,
+                                  @NotNull ODTVariable variable) {
         if (!variable.isDeclaredVariable() && variable.getDeclared() == null) {
             validateReference(holder, variable, String.format("%s is not declared", variable.getText()));
         }
     }
 
-    private void inspectCall(@NotNull AnnotationHolder holder,
-                             @NotNull ODTResolvableCall call) {
+    private void annotateCall(@NotNull AnnotationHolder holder,
+                              @NotNull ODTResolvableCall call) {
         final Callable callable = call.getCallable();
         if (callable == null) {
             OMTFile hostFile = call.getContainingFile().getHostFile();

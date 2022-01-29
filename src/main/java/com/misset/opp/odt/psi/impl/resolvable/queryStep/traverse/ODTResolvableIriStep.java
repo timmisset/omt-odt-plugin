@@ -24,9 +24,4 @@ public abstract class ODTResolvableIriStep extends ODTResolvableQueryForwardStep
     protected TextRange getModelReferenceTextRange() {
         return TextRange.create(1, getTextLength() - 1);
     }
-
-    @Override
-    public boolean applyTextAttributes() {
-        return false;
-    }
 }

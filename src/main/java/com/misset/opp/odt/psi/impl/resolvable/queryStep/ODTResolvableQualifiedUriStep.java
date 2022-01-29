@@ -2,7 +2,6 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
@@ -67,13 +66,6 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
                         "Could not find resource <" + fullyQualifiedUri + "> in the Opp Model"
                 );
             }
-        }
-    }
-
-    @Override
-    public void annotate(AnnotationHolder holder) {
-        if (!isPartOfReverseStep()) {
-            super.annotate(holder);
         }
     }
 

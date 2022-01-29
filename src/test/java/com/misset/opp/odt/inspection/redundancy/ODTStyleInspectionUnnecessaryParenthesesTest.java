@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryParenthesis.WARNING;
+import static com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryParentheses.WARNING;
 
-class ODTStyleInspectionUnnecessaryParenthesisTest extends OMTInspectionTestCase {
+class ODTStyleInspectionUnnecessaryParenthesesTest extends OMTInspectionTestCase {
 
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTStyleInspectionUnnecessaryParenthesis.class);
+        return Collections.singleton(ODTStyleInspectionUnnecessaryParentheses.class);
     }
 
     @Test
@@ -26,10 +26,10 @@ class ODTStyleInspectionUnnecessaryParenthesisTest extends OMTInspectionTestCase
     }
 
     @Test
-    void testRemovesParenthesis() {
+    void testRemovesParentheses() {
         String content = insideProcedureRunWithPrefixes("LOG();");
         configureByText(content);
-        invokeQuickFixIntention("Remove parenthesis");
+        invokeQuickFixIntention("Remove parentheses");
         Assertions.assertFalse(getFile().getText().contains("LOG();"));
         Assertions.assertTrue(getFile().getText().contains("LOG;"));
     }
@@ -56,10 +56,10 @@ class ODTStyleInspectionUnnecessaryParenthesisTest extends OMTInspectionTestCase
     }
 
     @Test
-    void testRemovesParenthesisForDefineQueryStatement() {
+    void testRemovesParenthesesForDefineQueryStatement() {
         String content = insideProcedureRunWithPrefixes("DEFINE QUERY query() => '';");
         configureByText(content);
-        invokeQuickFixIntention("Remove parenthesis");
+        invokeQuickFixIntention("Remove parentheses");
         Assertions.assertFalse(getFile().getText().contains("DEFINE QUERY query() => '';"));
         Assertions.assertTrue(getFile().getText().contains("DEFINE QUERY query => '';"));
     }
@@ -75,7 +75,7 @@ class ODTStyleInspectionUnnecessaryParenthesisTest extends OMTInspectionTestCase
     void testRemovesParenthesisForDefineCommandStatement() {
         String content = insideProcedureRunWithPrefixes("DEFINE COMMAND command() => { }");
         configureByText(content);
-        invokeQuickFixIntention("Remove parenthesis");
+        invokeQuickFixIntention("Remove parentheses");
         Assertions.assertFalse(getFile().getText().contains("DEFINE COMMAND command() => { }"));
         Assertions.assertTrue(getFile().getText().contains("DEFINE COMMAND command => { }"));
     }

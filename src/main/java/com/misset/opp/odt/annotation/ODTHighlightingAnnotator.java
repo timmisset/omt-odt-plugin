@@ -5,9 +5,9 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.psi.ODTCallName;
-import com.misset.opp.odt.psi.ODTDefineName;
-import com.misset.opp.odt.syntax.ODTSyntaxHighlighter;
+import com.misset.opp.odt.ODTSyntaxHighlighter;
+import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.resolvable.Variable;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -19,10 +19,21 @@ public class ODTHighlightingAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull PsiElement element,
                          @NotNull AnnotationHolder holder) {
-        if(element instanceof ODTCallName) {
-            setHighlightingAnnotation(holder, ODTSyntaxHighlighter.BaseCallAttributesKey);
-        } else if (element instanceof ODTDefineName) {
-            setHighlightingAnnotation(holder, ODTSyntaxHighlighter.DefineAttributesKey);
+        if (element instanceof ODTVariable) {
+            ODTVariable variable = (ODTVariable) element;
+            Variable declared = variable.getDeclared();
+            if (declared == null) {
+                return;
+            }
+            if (declared.isReadonly()) {
+                setHighlightingAnnotation(holder, ODTSyntaxHighlighter.ReadonlyVariable);
+            }
+            if (declared.isGlobal()) {
+                setHighlightingAnnotation(holder, ODTSyntaxHighlighter.GlobalVariable);
+            }
+            if (declared.isParameter()) {
+                setHighlightingAnnotation(holder, ODTSyntaxHighlighter.Parameter);
+            }
         }
     }
 

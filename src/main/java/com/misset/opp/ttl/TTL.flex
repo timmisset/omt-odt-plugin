@@ -65,8 +65,8 @@ SEMICOLON                               =   ";"
 COMMA                                   =   ","
 BRACKET_OPEN                            =   "["
 BRACKET_CLOSE                           =   "]"
-PARENTHESIS_OPEN                        =   "("
-PARENTHESIS_CLOSE                       =   ")"
+PARENTHESES_OPEN                        =   "("
+PARENTHESES_CLOSE                       =   ")"
 DATATYPE_LEADING                        =   "^^"
 TRUE                                    =   "true"
 FALSE                                   =   "false"
@@ -96,8 +96,8 @@ FALSE                                   =   "false"
     {COMMA}                             { return TTLTypes.COMMA; }
     {BRACKET_OPEN}                      { return TTLTypes.BRACKET_OPEN; }
     {BRACKET_CLOSE}                     { return TTLTypes.BRACKET_CLOSE; }
-    {PARENTHESIS_OPEN}                  { return TTLTypes.PARENTHESIS_OPEN; }
-    {PARENTHESIS_CLOSE}                 { return TTLTypes.PARENTHESIS_CLOSE; }
+    {PARENTHESES_OPEN}                  { return TTLTypes.PARENTHESES_OPEN; }
+    {PARENTHESES_CLOSE}                 { return TTLTypes.PARENTHESES_CLOSE; }
     {DATATYPE_LEADING}                  { return TTLTypes.DATATYPE_LEADING; }
     {TRUE}                              { return TTLTypes.TRUE; }
     {FALSE}                             { return TTLTypes.FALSE; }

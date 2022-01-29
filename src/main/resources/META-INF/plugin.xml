@@ -90,7 +90,7 @@
         <lang.parserDefinition language="ODT"
                                implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
         <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
-        <lang.syntaxHighlighter language="ODT" implementationClass="com.misset.opp.odt.syntax.ODTSyntaxHighlighter"/>
+        <lang.syntaxHighlighter language="ODT" implementationClass="com.misset.opp.odt.ODTSyntaxHighlighter"/>
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
         <postStartupActivity implementation="com.misset.opp.odt.builtin.LoadDocumentationStartupActivity"/>
         <lang.formatter language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTFormattingModelBuilder"/>
@@ -125,11 +125,9 @@
                                 implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionNew"/>
 
         <!-- Annotations -->
-        <annotator implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator" language="ODT"/>
-        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTResolvableAnnotator"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.CodeAnnotatorUnresolvable"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTSemicolonAnnotator"/>
-        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTDocumentationAnnotator"/>
+        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator"/>
 
         <!-- Inspections -->
         <!-- Redudancy -->
@@ -158,9 +156,9 @@
         <localInspection displayName="Fully qualified URI" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTQualifiedURIInspection"/>
-        <localInspection displayName="Unnecessary empty parenthesis" groupName="Redundancy" language="ODT"
+        <localInspection displayName="Unnecessary empty parentheses" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
-                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryParenthesis"/>
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryParentheses"/>
         <!--        Resolvable -->
         <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"

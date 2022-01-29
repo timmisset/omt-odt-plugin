@@ -1,14 +1,12 @@
 package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.misset.opp.odt.documentation.ODTDocumentationProvider;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
-import com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.ttl.util.TTLResourceUtil;
@@ -80,11 +78,6 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
         sb.append(DocumentationMarkup.SECTIONS_END);
 
         return sb.toString();
-    }
-
-    @Override
-    public void annotate(AnnotationHolder holder) {
-        ODTResolvableUtil.annotateResolved(resolve(), holder, this, false);
     }
 
     @Override

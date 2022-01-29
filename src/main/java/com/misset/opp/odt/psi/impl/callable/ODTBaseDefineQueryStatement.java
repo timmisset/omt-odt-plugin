@@ -2,7 +2,6 @@ package com.misset.opp.odt.psi.impl.callable;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
@@ -48,11 +47,6 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
 
     @Override
     public void inspect(ProblemsHolder holder) {
-
-    }
-
-    @Override
-    public void annotate(AnnotationHolder holder) {
 
     }
 

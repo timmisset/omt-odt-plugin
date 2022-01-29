@@ -193,7 +193,7 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
     /**
      * Resolves the type that is present as string
      *
-     * @param type    the type part of the declaration (the part between parenthesis if shorthanded, otherwise the value from the type key)
+     * @param type    the type part of the declaration (the part between parentheses if shorthanded, otherwise the value from the type key)
      *                examples:
      *                ont:ClassA
      *                <http://ontologyClassA>

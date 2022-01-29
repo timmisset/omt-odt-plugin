@@ -51,10 +51,12 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
      * after which the fromSet reset
      */
     public Set<OntResource> resolveFromSet(Set<OntResource> fromSet) {
-        this.fromSet = fromSet;
-        final Set<OntResource> resolve = resolve();
-        this.fromSet = null;
-        return resolve;
+        return LoggerUtil.computeWithLogger(LOGGER, "Resolving " + getText() + " from set", () -> {
+            this.fromSet = fromSet;
+            final Set<OntResource> resolve = resolve();
+            this.fromSet = null;
+            return resolve;
+        });
     }
 
     public Set<OntResource> getFromSet() {

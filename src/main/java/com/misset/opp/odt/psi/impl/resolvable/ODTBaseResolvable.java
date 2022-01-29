@@ -2,7 +2,6 @@ package com.misset.opp.odt.psi.impl.resolvable;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -24,11 +23,6 @@ public abstract class ODTBaseResolvable extends ODTASTWrapperPsiElement implemen
 
     @Override
     public void inspect(ProblemsHolder holder) {
-
-    }
-
-    @Override
-    public void annotate(AnnotationHolder holder) {
 
     }
 

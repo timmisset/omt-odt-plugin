@@ -18,15 +18,15 @@ import java.util.Optional;
 /**
  * Code inspection for all unused declarations
  */
-public class ODTStyleInspectionUnnecessaryParenthesis extends LocalInspectionTool {
+public class ODTStyleInspectionUnnecessaryParentheses extends LocalInspectionTool {
 
-    protected static final String WARNING = "Unnecessary parenthesis";
+    protected static final String WARNING = "Unnecessary parentheses";
 
     @Override
     @Nullable
     @Nls
     public String getStaticDescription() {
-        return "Inspects code for unnecessary use of parenthesis";
+        return "Inspects code for unnecessary use of parentheses";
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ODTStyleInspectionUnnecessaryParenthesis extends LocalInspectionToo
         return new LocalQuickFix() {
             @Override
             public @IntentionFamilyName @NotNull String getFamilyName() {
-                return "Remove parenthesis";
+                return "Remove parentheses";
             }
 
             @Override

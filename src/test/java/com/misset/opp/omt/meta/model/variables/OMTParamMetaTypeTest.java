@@ -41,7 +41,7 @@ class OMTParamMetaTypeTest extends OMTInspectionTestCase {
     }
 
     @Test
-    void inspectParameterShorthandNoTypeParenthesis() {
+    void inspectParameterShorthandNoTypeParentheses() {
         String content = "model:\n" +
                 "   Activiteit: !Activity\n" +
                 "       params:\n" +

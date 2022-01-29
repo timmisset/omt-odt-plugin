@@ -1,7 +1,6 @@
 package com.misset.opp.odt.psi.impl.resolvable;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTPsiElement;
 import com.misset.opp.resolvable.psi.PsiResolvable;
@@ -18,6 +17,4 @@ public interface ODTResolvable extends PsiResolvable, ODTPsiElement, ODTDocument
     Set<OntResource> resolvePreviousStep();
 
     void inspect(ProblemsHolder holder);
-
-    void annotate(AnnotationHolder holder);
 }

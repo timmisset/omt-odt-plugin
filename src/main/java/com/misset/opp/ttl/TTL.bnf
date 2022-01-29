@@ -47,7 +47,7 @@ object	                ::=	iri | blankNode | collection | blankNodePropertyList 
 }
 literal	                ::=	rdfLiteral | numericLiteral | booleanLiteral
 blankNodePropertyList	::=	BRACKET_OPEN predicateObjectList BRACKET_CLOSE
-collection	            ::=	PARENTHESIS_OPEN object* PARENTHESIS_CLOSE
+collection	            ::=	PARENTHESES_OPEN object* PARENTHESES_CLOSE
 numericLiteral	        ::=	INTEGER | DECIMAL | DOUBLE
 rdfLiteral	            ::=	string (LANGTAG | DATATYPE_LEADING iri)?
 booleanLiteral	        ::=	TRUE | FALSE

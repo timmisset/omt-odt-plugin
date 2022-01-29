@@ -640,7 +640,7 @@ public class OppModel {
         } else {
             Set<OntResource> individuals;
             if (resource.isClass()) {
-                individuals = resource.asClass().listInstances().mapWith(OntResource.class::cast).toSet();
+                individuals = resource.asClass().listInstances(true).mapWith(OntResource.class::cast).toSet();
             } else {
                 individuals = Collections.singleton(resource);
             }
@@ -745,9 +745,9 @@ public class OppModel {
     }
 
     public Set<OntResource> toIndividuals(Set<? extends OntResource> resources) {
-        return resources.stream().map(
-                        resource -> resource.isIndividual() ? Set.of(resource) : getClassIndividuals(resource.getURI())
-                ).flatMap(Collection::stream)
+        return resources.stream()
+                .map(this::toIndividual)
+                .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
 
@@ -988,7 +988,7 @@ public class OppModel {
         }
         List<OntClass> superClasses = new ArrayList<>();
         OntClass superClass = ontologyClass.getSuperClass();
-        while (!superClass.equals(ontologyClass)) {
+        while (superClass != null && !superClass.equals(ontologyClass)) {
             superClasses.add(ontologyClass);
             ontologyClass = superClass;
             superClass = ontologyClass.getSuperClass();
@@ -1007,7 +1007,7 @@ public class OppModel {
         }
         List<OntClass> subClasses = new ArrayList<>();
         OntClass subClass = ontologyClass.getSubClass();
-        while (!subClass.equals(ontologyClass)) {
+        while (subClass != null && !subClass.equals(ontologyClass)) {
             subClasses.add(subClass);
             ontologyClass = subClass;
             subClass = ontologyClass.getSubClass();
@@ -1022,12 +1022,14 @@ public class OppModel {
      * is a class it will return the Classes.
      */
     public Set<OntResource> toType(Set<OntResource> resources, OntResource template) {
-        if (template instanceof Individual) {
-            return toIndividuals(resources);
-        } else if (template instanceof OntClass) {
-            return toClasses(resources).stream().map(OntResource.class::cast).collect(Collectors.toSet());
-        } else {
-            return resources;
-        }
+        return LoggerUtil.computeWithLogger(LOGGER, "Parsing set to " + template.toString(), () -> {
+            if (template instanceof Individual) {
+                return toIndividuals(resources);
+            } else if (template instanceof OntClass) {
+                return toClasses(resources).stream().map(OntResource.class::cast).collect(Collectors.toSet());
+            } else {
+                return resources;
+            }
+        });
     }
 }

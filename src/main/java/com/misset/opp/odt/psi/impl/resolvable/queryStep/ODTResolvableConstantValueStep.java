@@ -1,7 +1,6 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTConstantValue;
@@ -59,20 +58,5 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
         sb.append(TTLResourceUtil.describeUrisJoined(resolve(), "<br>", false));
         sb.append(DocumentationMarkup.DEFINITION_END);
         return sb.toString();
-    }
-
-    @Override
-    protected boolean applyTextAttributes() {
-        return false;
-    }
-
-    @Override
-    public void annotate(AnnotationHolder holder) {
-        if (getNode().getFirstChildNode().getElementType() == ODTTypes.INTERPOLATED_STRING) {
-            // don't annotate the interpolated string, it probably contains child elements
-            // that should be annotated instead
-            return;
-        }
-        super.annotate(holder);
     }
 }

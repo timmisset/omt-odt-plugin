@@ -2,7 +2,6 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTConstantValue;
@@ -49,11 +48,6 @@ public abstract class ODTResolvableSignatureArgument extends ODTBaseResolvable
     @Override
     public void inspect(ProblemsHolder holder) {
         /* Inspection is performed on the content of the Signature argument */
-    }
-
-    @Override
-    public void annotate(AnnotationHolder holder) {
-        /* Annotation is performed on the content of the Signature argument */
     }
 
     @Override

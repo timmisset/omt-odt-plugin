@@ -2,14 +2,12 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableQueryReverseStep;
-import com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,17 +46,8 @@ public abstract class ODTResolvableQueryStepBase extends ODTASTWrapperPsiElement
                 .orElse(Collections.emptySet());
     }
 
-    @Override
-    public void annotate(AnnotationHolder holder) {
-        ODTResolvableUtil.annotateResolved(getResolvableParent().filter(resolve()), holder, getAnnotationRange(), applyTextAttributes());
-    }
-
     protected PsiElement getAnnotationRange() {
         return this;
-    }
-
-    protected boolean applyTextAttributes() {
-        return true;
     }
 
     @Override

@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.3'
+version '5.4'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,14 +59,19 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        <h1>Update 5.4</h1>
+        Color settings have been extended. Color coding based ontology type (owl:Class, instance etc) was too heavy for
+        the highlighting parser. Replaced with highlighting settings that closely resemble the Java color settings.<br>
+        <br>
+        Fixed #22: <a href="https://github.com/timmisset/omt-odt-plugin/issues/22">Nullpointer in listOrderedSuperClasses</a>
         <h1>Update 5.3</h1>
         <p>
         Added: <u>Ignored return value inspection</u>. 
         Sets a weak warning when a statement resolves to a value which is not used or assigned to a variable<br>
         </p>  
         <p>
-        Reintroduced: <u>Unnecessary parenthesis</u>. 
-        Sets a warning when an operator call or DEFINE COMMAND / QUERY definition contains unnecessary parenthesis<br>
+        Reintroduced: <u>Unnecessary parentheses</u>. 
+        Sets a warning when an operator call or DEFINE COMMAND / QUERY definition contains unnecessary parentheses<br>
         </p>       
         <h1>Update 5.2.2</h1>
         Fixed #17: <https://github.com/timmisset/omt-odt-plugin/issues/17>getHostDocument ClassCastException</a><br>

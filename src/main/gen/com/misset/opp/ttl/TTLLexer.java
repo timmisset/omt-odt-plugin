@@ -729,13 +729,13 @@ class TTLLexer implements FlexLexer {
           case 44:
             break;
           case 12: {
-            return TTLTypes.PARENTHESIS_OPEN;
+            return TTLTypes.PARENTHESES_OPEN;
           }
           // fall through
           case 45:
             break;
           case 13: {
-            return TTLTypes.PARENTHESIS_CLOSE;
+              return TTLTypes.PARENTHESES_CLOSE;
           }
           // fall through
           case 46:

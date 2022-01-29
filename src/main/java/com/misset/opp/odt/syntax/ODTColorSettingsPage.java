@@ -6,6 +6,7 @@ import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.intellij.openapi.util.NlsContexts;
+import com.misset.opp.odt.ODTSyntaxHighlighter;
 import com.misset.opp.omt.OMTFileType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -13,27 +14,19 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.BaseCallAttributesKey;
-import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.DefineAttributesKey;
-import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.OntologyClassAttributesKey;
-import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.OntologyInstanceAttributesKey;
-import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.OntologyTypeAttributesKey;
-import static com.misset.opp.odt.syntax.ODTSyntaxHighlighter.OntologyValueAttributesKey;
+import static com.misset.opp.odt.ODTSyntaxHighlighter.*;
 
 public class ODTColorSettingsPage implements ColorSettingsPage {
-    private static final List<TextAttributesKey> enforcedAttributes = new ArrayList<>();
 
+    private static final HashMap<String, TextAttributesKey> tags = new HashMap<>();
     static {
-        enforcedAttributes.add(BaseCallAttributesKey);
-        enforcedAttributes.add(DefineAttributesKey);
-        enforcedAttributes.add(OntologyClassAttributesKey);
-        enforcedAttributes.add(OntologyTypeAttributesKey);
-        enforcedAttributes.add(OntologyInstanceAttributesKey);
-        enforcedAttributes.add(OntologyValueAttributesKey);
+        tags.put("global", GlobalVariable);
+        tags.put("readonly", ODTSyntaxHighlighter.ReadonlyVariable);
+        tags.put("param", ODTSyntaxHighlighter.Parameter);
     }
 
     @Override
@@ -49,26 +42,45 @@ public class ODTColorSettingsPage implements ColorSettingsPage {
     @Override
     public @NonNls @NotNull String getDemoText() {
         return
-                "DEFINE QUERY <" + DefineAttributesKey.getExternalName() + ">query</\" + DefineAttributesKey.getExternalName() + \">" +
-                        "($param) => $param / ont:property / <" + BaseCallAttributesKey.getExternalName() + ">call</" + BaseCallAttributesKey.getExternalName() + ">;\n" +
-                        "/ont:<" + OntologyClassAttributesKey.getExternalName() + ">Class</" + OntologyClassAttributesKey.getExternalName() + ">" +
-                        " / ^rdf:<" + OntologyInstanceAttributesKey.getExternalName() + ">type</" + OntologyInstanceAttributesKey.getExternalName() + ">" +
-                        " / ont:<" + OntologyValueAttributesKey.getExternalName() + ">stringPredicate</" + OntologyValueAttributesKey.getExternalName() + ">\n";
+                "/**\n" +
+                        " * @param $param (ont:Class)\n" +
+                        " */\n" +
+                        "DEFINE QUERY query(<param>$param</param>) => <param>$param</param> / ont:property / call;\n" +
+                        "\n" +
+                        "/*\n" +
+                        " * A multiline comment\n" +
+                        " */\n" +
+                        "VAR $boolean = true; // line comment\n" +
+                        "VAR $integer = 1;\n" +
+                        "VAR $decimal = 1.1;\n" +
+                        "@LOG(<global><readonly>$username</readonly></global>);\n" +
+                        "@LOG(<readonly>$declaredReadonlyInOMT</readonly>);\n" +
+                        "\n" +
+                        "IF true {\n" +
+                        "   RETURN myQuery[0, 2] / operatorCall('foo') / . / ^ont:property;\n" +
+                        "} ELSE {\n" +
+                        "   $subject / ont:property = null;\n" +
+                        "   RETURN @commandCall();\n" +
+                        "}";
     }
 
     @Override
     public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-        return enforcedAttributes.stream()
-                .collect(Collectors.toMap(TextAttributesKey::getExternalName, textAttributesKey -> textAttributesKey));
+        return tags;
     }
 
     @Override
     public AttributesDescriptor @NotNull [] getAttributeDescriptors() {
-        return ODTSyntaxHighlighter.getAttributes()
+        ArrayList<AttributesDescriptor> descriptors = ODTSyntaxHighlighter.getAttributes()
                 .stream()
                 .map(textAttributesKey -> new AttributesDescriptor(getPresentableName(textAttributesKey.getExternalName()),
                         textAttributesKey))
-                .toArray(AttributesDescriptor[]::new);
+                .collect(Collectors.toCollection(ArrayList::new));
+        descriptors.add(new AttributesDescriptor(getPresentableName(GlobalVariable.getExternalName()), GlobalVariable));
+        descriptors.add(new AttributesDescriptor(getPresentableName(ReadonlyVariable.getExternalName()), ReadonlyVariable));
+        descriptors.add(new AttributesDescriptor(getPresentableName(Parameter.getExternalName()), Parameter));
+        descriptors.add(new AttributesDescriptor(getPresentableName(Braces.getExternalName()), Braces));
+        return descriptors.toArray(AttributesDescriptor[]::new);
     }
 
     private String getPresentableName(String externalName) {

@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 /**
- * Semicolon usage is not caught by the Lexer on design. This would mean having to insert
+ * Semicolon usage is not caught by the Lexer by design. This would mean having to insert
  * it anywhere where completion is triggered to generate a valid completion PsiFile
  */
 public class ODTSemicolonAnnotator implements Annotator {

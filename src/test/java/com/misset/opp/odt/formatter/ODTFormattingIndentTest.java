@@ -32,7 +32,7 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
     }
 
     @Test
-    void testHasIndentOnNestedParenthesisNewLine() {
+    void testHasIndentOnNestedParenthesesNewLine() {
         configureByText("IF (<caret>\n");
         enter();
         Assertions.assertEquals(getIndentedText("IF (\n" +
@@ -156,7 +156,7 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
     }
 
     @Test
-    void testMultilineScriptLineInsideParenthesis() {
+    void testMultilineScriptLineInsideParentheses() {
         assertCorrectFormatting("@CALL(\n" +
                 "<indent>true\n" +
                 ")");

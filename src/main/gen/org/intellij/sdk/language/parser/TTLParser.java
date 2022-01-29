@@ -135,16 +135,16 @@ public class TTLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARENTHESIS_OPEN object* PARENTHESIS_CLOSE
+  // PARENTHESES_OPEN object* PARENTHESES_CLOSE
   public static boolean collection(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "collection")) return false;
-    if (!nextTokenIs(b, PARENTHESIS_OPEN)) return false;
+      if (!recursion_guard_(b, l, "collection")) return false;
+      if (!nextTokenIs(b, PARENTHESES_OPEN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, PARENTHESIS_OPEN);
-    r = r && collection_1(b, l + 1);
-    r = r && consumeToken(b, PARENTHESIS_CLOSE);
-    exit_section_(b, m, COLLECTION, r);
+      r = consumeToken(b, PARENTHESES_OPEN);
+      r = r && collection_1(b, l + 1);
+      r = r && consumeToken(b, PARENTHESES_CLOSE);
+      exit_section_(b, m, COLLECTION, r);
     return r;
   }
 
