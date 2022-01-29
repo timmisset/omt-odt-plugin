@@ -15,7 +15,7 @@ class OMTDeclareMetaTypeTest extends OMTCompletionTestCase {
     void testShowsSuggestionForDeclared() {
         myFixture.addFileToProject("some.module.omt", "moduleName: SomeModule");
         myFixture.addFileToProject("another.module.omt", "moduleName: AnotherModule");
-        configureByText("current.module.omt", "moduleName: CurrentModule\n" +
+        configureByText("current.interface.omt",
                 "<caret>\n");
         List<String> lookupStrings = getLookupStrings();
         assertContainsElements(lookupStrings, "declare");
@@ -25,9 +25,9 @@ class OMTDeclareMetaTypeTest extends OMTCompletionTestCase {
     void testShowsCompletionsForModules() {
         myFixture.addFileToProject("some.module.omt", "moduleName: SomeModule");
         myFixture.addFileToProject("another.module.omt", "moduleName: AnotherModule");
-        configureByText("current.module.omt", "moduleName: CurrentModule\n" +
+        configureByText("current.interface.omt",
                 "declare:\n" +
-                "   <caret>");
+                        "   <caret>");
         List<String> lookupStrings = getLookupStrings();
         assertContainsElements(lookupStrings, "SomeModule", "AnotherModule");
         assertDoesntContain(lookupStrings, "CurrentModule");
@@ -39,10 +39,10 @@ class OMTDeclareMetaTypeTest extends OMTCompletionTestCase {
                 "exports:\n" +
                 "- memberA\n" +
                 "- memberB\n");
-        configureByText("current.module.omt", "moduleName: CurrentModule\n" +
+        configureByText("current.interface.omt",
                 "declare:\n" +
-                "   <caret>SomeModule:\n" +
-                "");
+                        "   <caret>SomeModule:\n" +
+                        "");
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof OMTFile);
@@ -55,10 +55,10 @@ class OMTDeclareMetaTypeTest extends OMTCompletionTestCase {
                 "exports:\n" +
                 "- memberA\n" +
                 "- memberB\n");
-        configureByText("current.module.omt", "moduleName: CurrentModule\n" +
+        configureByText("current.interface.omt",
                 "declare:\n" +
-                "   <caret>SomeModule:\n" +
-                "");
+                        "   <caret>SomeModule:\n" +
+                        "");
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof OMTFile);

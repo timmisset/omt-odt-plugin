@@ -89,11 +89,29 @@ public abstract class GlobalVariable implements Variable {
         }
     };
 
+    private static final GlobalVariable ACTIVITY_CONFIG = new GlobalVariable() {
+        @Override
+        public String getName() {
+            return "$activityConfig";
+        }
+
+        @Override
+        public String getDescription() {
+            return "Returns specific activity configuration based on the context";
+        }
+
+        @Override
+        public @NotNull Set<OntResource> resolve() {
+            return Set.of(OppModel.INSTANCE.JSON_OBJECT);
+        }
+    };
+
     static {
         globalVariableHashMap.put(MEDEWERKER_GRAPH.getName(), MEDEWERKER_GRAPH);
         globalVariableHashMap.put(USERNAME.getName(), USERNAME);
         globalVariableHashMap.put(OFFLINE.getName(), OFFLINE);
         globalVariableHashMap.put(HEEFT_PREVIEW_ROL.getName(), HEEFT_PREVIEW_ROL);
+        globalVariableHashMap.put(ACTIVITY_CONFIG.getName(), ACTIVITY_CONFIG);
     }
 
     public static GlobalVariable getVariable(String name) {

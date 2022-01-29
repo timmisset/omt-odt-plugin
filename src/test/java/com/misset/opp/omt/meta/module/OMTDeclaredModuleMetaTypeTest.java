@@ -20,10 +20,10 @@ class OMTDeclaredModuleMetaTypeTest extends OMTCompletionTestCase {
                 "export:\n" +
                 "- memberA\n" +
                 "- memberB\n");
-        configureByText("current.module.omt", "moduleName: CurrentModule\n" +
+        configureByText("current.interface.omt",
                 "declare:\n" +
-                "   SomeModule:\n" +
-                "       <caret>");
+                        "   SomeModule:\n" +
+                        "       <caret>");
         List<String> lookupStrings = getLookupStrings();
         assertContainsElements(lookupStrings, "memberA", "memberB");
     }
@@ -34,11 +34,11 @@ class OMTDeclaredModuleMetaTypeTest extends OMTCompletionTestCase {
                 "export:\n" +
                 "- memberA\n" +
                 "- memberB\n");
-        configureByText("current.module.omt", "moduleName: CurrentModule\n" +
+        configureByText("current.interface.omt",
                 "declare:\n" +
-                "   SomeModule:\n" +
-                "       <caret>memberA:\n" +
-                "");
+                        "   SomeModule:\n" +
+                        "       <caret>memberA:\n" +
+                        "");
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof YAMLValue);
@@ -56,11 +56,11 @@ class OMTDeclaredModuleMetaTypeTest extends OMTCompletionTestCase {
                 "export:\n" +
                 "- memberA\n" +
                 "- memberB\n");
-        configureByText("current.module.omt", "moduleName: CurrentModule\n" +
+        configureByText("current.interface.omt",
                 "declare:\n" +
-                "   SomeModule:\n" +
-                "       <caret>memberA:\n" +
-                "");
+                        "   SomeModule:\n" +
+                        "       <caret>memberA:\n" +
+                        "");
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             ResolveResult[] resolveResults = ((OMTDeclaredInterfaceReference) elementAtCaret.getReference()).multiResolve(false);
