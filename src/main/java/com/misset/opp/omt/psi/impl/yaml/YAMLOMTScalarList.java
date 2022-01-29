@@ -1,11 +1,13 @@
 package com.misset.opp.omt.psi.impl.yaml;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.shared.InjectableContentType;
 import com.misset.opp.shared.InjectionHost;
+import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.impl.YAMLScalarListImpl;
 
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class YAMLOMTScalarList extends YAMLScalarListImpl implements InjectionHost {
+    private static final Logger LOGGER = Logger.getInstance(YAMLOMTScalarList.class);
     public YAMLOMTScalarList(@NotNull ASTNode node) {
         super(node);
     }
@@ -40,8 +43,10 @@ public class YAMLOMTScalarList extends YAMLScalarListImpl implements InjectionHo
 
     @Override
     public PsiLanguageInjectionHost updateText(@NotNull String text) {
-        String trimmedContent = trimIndents(text);
-        return ElementManipulators.handleContentChange(this, trimmedContent);
+        return LoggerUtil.computeWithLogger(LOGGER, "handleContentChange", () -> {
+            String trimmedContent = trimIndents(text);
+            return ElementManipulators.handleContentChange(this, trimmedContent);
+        });
     }
 
     private String trimIndents(String text) {

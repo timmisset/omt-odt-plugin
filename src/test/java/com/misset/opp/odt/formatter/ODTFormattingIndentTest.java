@@ -14,6 +14,22 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
     }
 
     @Test
+    void testNoIndentOnNewLineWithTrailing() {
+        configureByText("VAR $test;<caret>\n" +
+                "VAR $test2;");
+        enter();
+        Assertions.assertEquals("VAR $test;\n\nVAR $test2;", getDocumentText());
+    }
+
+    @Test
+    void testIndentOnNewLineWithTrailingWhenIncomplete() {
+        configureByText("VAR $test = <caret>'test';\n" +
+                "VAR $test2;");
+        enter();
+        Assertions.assertEquals(getIndentedText("VAR $test = \n<indent>'test';\nVAR $test2;"), getDocumentText());
+    }
+
+    @Test
     void testHasIndentOnNestedNewLine() {
         configureByText("IF true {<caret>\n" +
                 "}");

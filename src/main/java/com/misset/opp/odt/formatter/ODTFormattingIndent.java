@@ -48,7 +48,7 @@ public class ODTFormattingIndent {
             return null;
         }
         IElementType elementType = node.getElementType();
-        if (elementType == ODTParserDefinition.ODTFileElementType) {
+        if (elementType == ODTParserDefinition.ODTFileElementType || elementType == ODTTypes.SCRIPT) {
             return Indent.getNoneIndent();
         }
         return null;

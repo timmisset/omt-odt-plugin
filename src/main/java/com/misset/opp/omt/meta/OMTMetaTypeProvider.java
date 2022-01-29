@@ -39,7 +39,14 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
         String title = Optional.ofNullable(document.getContainingFile())
                 .map(PsiFileSystemItem::getName)
                 .orElse("an-omt-file");
-        YamlMetaType root = title.endsWith("module.omt") ? new OMTModuleFileType(title) : new OMTFileMetaType(title);
+        final YamlMetaType root;
+        if (title.endsWith(".module.omt")) {
+            root = new OMTModuleFileType(title);
+        } else if (title.endsWith(".interface.omt")) {
+            root = new OMTInterfaceFileType(title);
+        } else {
+            root = new OMTFileMetaType(title);
+        }
         return new Field(title, root);
     };
 
