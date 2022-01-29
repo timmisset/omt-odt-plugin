@@ -63,6 +63,9 @@ patchPluginXml {
         ODT Color settings is replaced. Color coding based ontology type (owl:Class, instance etc) was too heavy for
         the highlighting parser and is removed. Replaced with highlighting settings that closely resemble the Java color settings.<br>
         <br>
+        Replaced the copy-on-write mechanism in the OppModel class with a ReentrantReadWriteLock for a bit better performance when
+        URIs are identified as entries for the OppModel.<br>
+        <br>
         Added #18: <a href="https://github.com/timmisset/omt-odt-plugin/issues/18">\$activityConfig global variable</a><br>
         Adapted #20: <a href="https://github.com/timmisset/omt-odt-plugin/issues/20">Declared from interface</a><br>
         Fixed #22: <a href="https://github.com/timmisset/omt-odt-plugin/issues/22">Nullpointer in listOrderedSuperClasses</a><br>

@@ -68,9 +68,9 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
         sb.append(DocumentationMarkup.SECTIONS_START);
         setClassInfo(ontClass, sb);
-        Set<? extends OntResource> instances = ontClass.listInstances().toSet().stream()
+        Set<? extends OntResource> instances = OppModel.INSTANCE.computeWithReadLock(() -> ontClass.listInstances().toSet().stream()
                 .filter(resource -> !resource.getURI().endsWith("_INSTANCE"))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
         if (!instances.isEmpty()) {
             ODTDocumentationProvider.addKeyValueSection("Instances:",
                     TTLResourceUtil.describeUrisJoined(instances, "<br>", false)

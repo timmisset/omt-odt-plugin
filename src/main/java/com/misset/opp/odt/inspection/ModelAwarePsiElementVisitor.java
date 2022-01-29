@@ -13,9 +13,6 @@ public class ModelAwarePsiElementVisitor extends PsiElementVisitor {
 
     @Override
     public void visitFile(@NotNull PsiFile file) {
-        if (OppModel.INSTANCE.isUpdating()) {
-            return;
-        }
-        super.visitFile(file);
+        OppModel.INSTANCE.runWithReadLock(() -> super.visitFile(file));
     }
 }
