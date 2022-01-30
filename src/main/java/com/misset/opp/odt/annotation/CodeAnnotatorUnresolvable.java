@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.AnnotationBuilder;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
@@ -42,14 +43,23 @@ public class CodeAnnotatorUnresolvable implements Annotator {
         final Callable callable = call.getCallable();
         if (callable == null) {
             OMTFile hostFile = call.getContainingFile().getHostFile();
-            IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(hostFile, call);
-
-            AnnotationBuilder annotationBuilder = holder.newAnnotation(HighlightSeverity.ERROR, String.format("%s is not declared", call.getName()))
-                    .range(call.getCallName());
-            Arrays.stream(importIntentions)
-                    .filter(Objects::nonNull)
-                    .forEach(annotationBuilder::withFix);
-            annotationBuilder.create();
+            String error = String.format("%s is not declared", call.getName());
+            try {
+                IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(hostFile, call);
+                AnnotationBuilder annotationBuilder = holder.newAnnotation(HighlightSeverity.ERROR, error)
+                        .range(call.getCallName());
+                if (importIntentions != null) {
+                    Arrays.stream(importIntentions)
+                            .filter(Objects::nonNull)
+                            .forEach(annotationBuilder::withFix);
+                }
+                annotationBuilder.create();
+            } catch (ProcessCanceledException canceledException) {
+                // searching took too long, still show as error:
+                error += "<br>Searching for imports took too long, process was aborted";
+                holder.newAnnotation(HighlightSeverity.ERROR, error)
+                        .range(call.getCallName()).create();
+            }
         }
     }
 

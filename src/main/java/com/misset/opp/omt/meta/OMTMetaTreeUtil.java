@@ -58,15 +58,6 @@ public class OMTMetaTreeUtil {
             final HashMap<String, List<U>> map = mapFunction.apply(provider, mapping);
             if (map.containsKey(key)) {
                 return Optional.ofNullable(map.get(key));
-//                final PsiElement element = map.get(key).get(0);
-//                if (element == null) {
-//                    return Optional.empty();
-//                }
-//                ResolveResult[] results = map.get(key).stream()
-//                        .filter(Objects::nonNull)
-//                        .map(PsiElementResolveResult::new)
-//                        .toArray(ResolveResult[]::new);
-//                return Optional.of(results);
             }
         }
 

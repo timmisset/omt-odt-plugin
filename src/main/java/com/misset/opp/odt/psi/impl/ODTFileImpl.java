@@ -198,13 +198,20 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         });
     }
 
-    private HashMap<String, List<PsiElement>> hostPrefixNamespaces = new HashMap<>();
+    private long hostModificationStamp = -1;
+    private final HashMap<String, List<PsiElement>> hostPrefixNamespaces = new HashMap<>();
 
     @Override
     public List<PsiElement> getHostPrefixNamespace(String key) {
-        if (getHost() == null) {
+        OMTFile hostFile = getHostFile();
+        if (hostFile == null) {
             return Collections.emptyList();
         }
+        long modificationStamp = hostFile.getModificationStamp();
+        if (hostModificationStamp != modificationStamp) {
+            hostPrefixNamespaces.clear();
+        }
+
         if (hostPrefixNamespaces.containsKey(key)) {
             return hostPrefixNamespaces.get(key);
         }
@@ -215,6 +222,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                 OMTPrefixProvider::getPrefixMap)
                 .orElse(Collections.emptyList());
         hostPrefixNamespaces.put(key, psiElements);
+        hostModificationStamp = modificationStamp;
         return psiElements;
     }
 }
