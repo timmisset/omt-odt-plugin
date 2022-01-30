@@ -20,6 +20,7 @@ import com.misset.opp.omt.meta.scalars.OMTIriMetaType;
 import com.misset.opp.omt.meta.scalars.OMTOntologyPrefixMetaType;
 import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
 import com.misset.opp.omt.meta.scalars.references.OMTPayloadQueryReferenceMetaType;
+import com.misset.opp.omt.meta.scalars.values.OMTFileReferenceMetaType;
 import com.misset.opp.omt.psi.impl.delegate.keyvalue.*;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.*;
 import org.jetbrains.annotations.NotNull;
@@ -100,6 +101,8 @@ public class OMTYamlDelegateFactory {
             return new OMTYamlOntologyPrefixDelegate(yamlPlainText);
         } else if (metaType instanceof OMTParamTypeType) {
             return new OMTYamlParamTypeDelegate(yamlPlainText);
+        } else if (metaType instanceof OMTFileReferenceMetaType) {
+            return new OMTYamlFileReferenceDelegate(yamlPlainText);
         }
         return null;
     }

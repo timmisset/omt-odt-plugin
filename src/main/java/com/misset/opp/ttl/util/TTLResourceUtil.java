@@ -138,6 +138,7 @@ public class TTLResourceUtil {
 
     public static String describeUriForLookup(OntResource resource) {
         return Optional.ofNullable(OppModel.INSTANCE.toClass(resource))
+                .map(ontClass -> ontClass.equals(OppModel.INSTANCE.OPP_CLASS) ? resource : ontClass)
                 .map(Resource::getLocalName)
                 .orElse("Ontology class could not be found in the model");
     }

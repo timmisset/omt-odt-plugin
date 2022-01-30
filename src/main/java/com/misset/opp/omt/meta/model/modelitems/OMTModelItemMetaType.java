@@ -21,6 +21,7 @@ public class OMTModelItemMetaType extends OMTMetaTaggedType<OMTModelItemDelegate
     private static final HashMap<String, Supplier<OMTModelItemDelegateMetaType>> taggedTypes = new HashMap<>();
     static {
         taggedTypes.put("!Activity", OMTActivityMetaType::new);
+        taggedTypes.put("!Loadable", OMTLoadableMetaType::new);
         taggedTypes.put("!Component", OMTComponentMetaType::new);
         taggedTypes.put("!Ontology", OMTOntologyMetaType::new);
         taggedTypes.put("!Procedure", OMTProcedureMetaType::new);

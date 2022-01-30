@@ -44,8 +44,8 @@ class OMTImportPathReferenceTest extends OMTTestCase {
         WriteAction.runAndWait(() -> {
             final VirtualFile subfolder = importedFile.getVirtualFile().getParent().createChildDirectory(this, "subfolder");
             final PsiDirectory to = PsiManager.getInstance(getProject()).findDirectory(subfolder);
-            new MoveFilesOrDirectoriesProcessor(getProject(), new PsiElement[]{ importedFile }, to, false, true, null, null).run();
-            assertTrue(getEditor().getDocument().getText().contains("./unit-test-success/myFile.omt"));
+            new MoveFilesOrDirectoriesProcessor(getProject(), new PsiElement[]{importedFile}, to, false, true, null, null).run();
+            assertTrue(getEditor().getDocument().getText().contains("./subfolder/importedFile.omt"));
         });
     }
 }

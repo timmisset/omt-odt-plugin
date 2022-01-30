@@ -57,7 +57,7 @@ public class ODTColorSettingsPage implements ColorSettingsPage {
                         "@LOG(<readonly>$declaredReadonlyInOMT</readonly>);\n" +
                         "\n" +
                         "IF true {\n" +
-                        "   RETURN myQuery[0, 2] / operatorCall('foo') / . / ^ont:property;\n" +
+                        "   RETURN myQuery[0, 2] / operatorCall!flag('foo') / . / ^ont:property;\n" +
                         "} ELSE {\n" +
                         "   $subject / ont:property = null;\n" +
                         "   RETURN @commandCall();\n" +
