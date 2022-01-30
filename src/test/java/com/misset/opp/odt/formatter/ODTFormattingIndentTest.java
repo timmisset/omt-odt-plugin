@@ -30,6 +30,15 @@ class ODTFormattingIndentTest extends ODTFormattingTestCase {
     }
 
     @Test
+    void testNoIndentOnDefineCommandWithTrailingWhenIncomplete() {
+        configureByText("DEFINE COMMAND command => { }<caret>\n" +
+                "DEFINE COMMAND command2 => {}");
+        enter();
+        Assertions.assertEquals(getIndentedText("DEFINE COMMAND command => { }\n\n" +
+                "DEFINE COMMAND command2 => {}"), getDocumentText());
+    }
+
+    @Test
     void testHasIndentOnNestedNewLine() {
         configureByText("IF true {<caret>\n" +
                 "}");
