@@ -65,7 +65,7 @@ public class OMTPrefixIndex {
         // moves up the list. Then the list is filtered (distinct)
         for (Map.Entry<String, List<String>> entry : map.entrySet()) {
             final List<String> list = entry.getValue();
-            list.sort(Comparator.comparing(i -> Collections.frequency(list, i)).reversed());
+            list.sort(Comparator.comparingInt(value -> Collections.frequency(list, value)).reversed());
             final List<String> orderedList = list.stream().distinct().collect(Collectors.toList());
             entry.setValue(orderedList);
         }

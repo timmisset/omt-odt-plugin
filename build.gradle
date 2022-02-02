@@ -60,6 +60,7 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.4.1</h1>
+        Fixed #25: <a href="https://github.com/timmisset/omt-odt-plugin/issues/25">Sorting OMTPrefixes by frequency</a><br>
         Fixed #27: <a href="https://github.com/timmisset/omt-odt-plugin/issues/27">No error on multiple missing imports</a><br>
         Fixed #30: <a href="https://github.com/timmisset/omt-odt-plugin/issues/30">ODTResolvableQualifiedUriStepDocumentationUtil nullpointer</a><br>
         <h1>Update 5.4</h1>
