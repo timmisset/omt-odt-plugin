@@ -94,8 +94,6 @@
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
         <postStartupActivity implementation="com.misset.opp.odt.builtin.LoadDocumentationStartupActivity"/>
         <lang.formatter language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTFormattingModelBuilder"/>
-        <codeInsight.unresolvedReferenceQuickFixProvider
-                implementation="com.misset.opp.odt.ODTUnresolvedReferenceQuickFixProvider"/>
         <enterHandlerDelegate implementation="com.misset.opp.odt.formatter.ODTEnterHandlerDelegateAdapter"/>
         <lang.braceMatcher language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTPairedBraceMatcher"/>
         <lang.refactoringSupport language="ODT"

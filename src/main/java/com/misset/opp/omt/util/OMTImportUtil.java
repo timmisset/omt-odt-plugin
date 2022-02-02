@@ -17,6 +17,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
+import com.misset.opp.omt.intention.ImportMemberIntention;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
@@ -75,7 +76,7 @@ public class OMTImportUtil {
         if (exportedMembers.containsKey(callId)) {
             List<PsiCallable> psiCallables = exportedMembers.get(callId);
             psiCallables.stream()
-                    .map(psiCallable -> getIntentionAction(importingFile, psiCallable))
+                    .map(psiCallable -> new ImportMemberIntention(importingFile, psiCallable))
                     .forEach(actions::add);
         }
         // return true to the processor, we always want to search all applicable files
@@ -115,7 +116,7 @@ public class OMTImportUtil {
         return getImportedFile(containingFile);
     }
 
-    private static OMTFile getImportedFile(PsiFile injectedFile) {
+    public static OMTFile getImportedFile(PsiFile injectedFile) {
         if (injectedFile instanceof OMTFile) {
             return (OMTFile) injectedFile;
         }
