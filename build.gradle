@@ -60,7 +60,8 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.4.1</h1>
-        Fixed #27: <a href="https://github.com/timmisset/omt-odt-plugin/issues/27">No error on multiple missing imports</a>
+        Fixed #27: <a href="https://github.com/timmisset/omt-odt-plugin/issues/27">No error on multiple missing imports</a><br>
+        Fixed #30: <a href="https://github.com/timmisset/omt-odt-plugin/issues/30">ODTResolvableQualifiedUriStepDocumentationUtil nullpointer</a><br>
         <h1>Update 5.4</h1>
         ODT Color settings is replaced. Color coding based ontology type (owl:Class, instance etc) was too heavy for
         the highlighting parser and is removed. Replaced with highlighting settings that closely resemble the Java color settings.<br>
