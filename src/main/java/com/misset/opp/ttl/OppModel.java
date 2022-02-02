@@ -711,6 +711,9 @@ public class OppModel {
                 return toIndividualCache.get(resource);
             } else {
                 Set<OntResource> individuals;
+                if (resource.equals(OWL_CLASS)) {
+                    return Collections.emptySet();
+                }
                 if (resource.isClass()) {
                     individuals = resource.asClass().listInstances(true).mapWith(OntResource.class::cast).toSet();
                 } else {
