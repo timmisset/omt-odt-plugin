@@ -62,6 +62,9 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
                     if (currentCaret.getVisualPosition().column == 0) {
                         // known issue with continuation indent when injected
                         Document hostDocument = ODTHostFormattingUtil.getHostDocument(file);
+                        if (hostDocument == null) {
+                            return Result.Continue;
+                        }
                         int indentSize = minimalLineOffset + 4; // + 4 is fixed size for continuation indent
                         insert(file.getProject(),
                                 hostDocument,

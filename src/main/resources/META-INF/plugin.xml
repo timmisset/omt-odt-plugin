@@ -101,6 +101,7 @@
         <nameSuggestionProvider implementation="com.misset.opp.odt.refactoring.ODTNameSuggestionProvider"/>
         <lang.documentationProvider language="ODT"
                                     implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
+        <lang.commenter language="ODT" implementationClass="com.misset.opp.odt.ODTCommenter"/>
         <!-- Completions -->
         <completion.contributor language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.ODTTraverseCompletion"/>

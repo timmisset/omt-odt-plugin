@@ -1,6 +1,8 @@
 package com.misset.opp.omt.indexing;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.wm.StatusBar;
+import com.intellij.openapi.wm.WindowManager;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
@@ -52,10 +54,13 @@ public class OMTExportedMembersIndex {
 
     public static void analyse(OMTFile file) {
         LoggerUtil.runWithLogger(LOGGER, "Analysis of " + file.getName(), () -> {
+            StatusBar statusBar = WindowManager.getInstance().getStatusBar(file.getProject());
             if (file.getVirtualFile() == null) {
                 return;
             }
+            statusBar.setInfo("Starting analysis of exportables for OMT File: " + file.getName());
             exportedMembers.put(file, file.getExportingMembersMap());
+            statusBar.setInfo("Finished analysis of exportables for OMT File: \" + file.getName()");
         });
     }
 

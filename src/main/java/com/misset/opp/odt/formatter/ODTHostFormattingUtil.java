@@ -38,6 +38,9 @@ public class ODTHostFormattingUtil {
 
     static Document getHostDocument(@NotNull PsiFile file) {
         PsiLanguageInjectionHost host = ((ODTFileImpl) file).getHost();
+        if (host == null) {
+            return null;
+        }
         return PsiDocumentManager.getInstance(file.getProject()).getDocument(host.getContainingFile());
     }
 }
