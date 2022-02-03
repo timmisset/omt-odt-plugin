@@ -152,10 +152,11 @@
         <localInspection displayName="Unnecessary wrapping" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryWrappingSubquery"/>
-        <localInspection displayName="Fully qualified URI" groupName="Redundancy" language="ODT"
+        <localInspection displayName="Fully qualified URI" groupName="Redundancy" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTQualifiedURIInspection"/>
         <localInspection displayName="Unnecessary empty parentheses" groupName="Redundancy" language="ODT"
+                         groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryParentheses"/>
         <!--        Resolvable -->
@@ -217,7 +218,7 @@
         <!-- Intentions  -->
         <intentionAction>
             <className>com.misset.opp.odt.intentions.IntroduceLocalVariableIntention</className>
-            <category>OMT/Refactorings</category>
+            <category>ODT/Refactorings</category>
         </intentionAction>
 
         <!-- TTL -->

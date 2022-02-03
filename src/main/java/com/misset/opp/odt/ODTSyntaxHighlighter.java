@@ -44,7 +44,7 @@ public class ODTSyntaxHighlighter implements SyntaxHighlighter {
         addToMap(ODTTypes.NULL, "ODT_Literals//Null", DefaultLanguageHighlighterColors.CONSTANT);
         addToMap(ODTHighlightingTypes.OPERATOR_SIGN, "ODT_Braces and Operators//Operator Sign", DefaultLanguageHighlighterColors.OPERATION_SIGN);
         addToMap(ODTHighlightingTypes.KEYWORD, "ODT_Keyword", DefaultLanguageHighlighterColors.KEYWORD);
-        addToMap(ODTTypes.TAG, "ODT_FLAG", DefaultLanguageHighlighterColors.METADATA);
+        addToMap(ODTTypes.TAG, "ODT_Flag", DefaultLanguageHighlighterColors.METADATA);
         addToMap(ODTHighlightingTypes.OPERATOR_CALLNAME, "ODT_Operator Call", DefaultLanguageHighlighterColors.FUNCTION_CALL);
         addToMap(ODTHighlightingTypes.COMMAND_CALLNAME, "ODT_Command Call", DefaultLanguageHighlighterColors.FUNCTION_CALL);
         addToMap(ODTTypes.SEMICOLON, "ODT_Braces and Operators//Semicolon", DefaultLanguageHighlighterColors.SEMICOLON);

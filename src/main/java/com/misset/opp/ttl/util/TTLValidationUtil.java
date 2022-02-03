@@ -81,17 +81,19 @@ public class TTLValidationUtil {
             Set<OntResource> acceptableIndividuals = classes.stream().map(ontClass -> OppModel.INSTANCE.getClassIndividuals(ontClass.getURI()))
                     .flatMap(Collection::stream)
                     .filter(Objects::nonNull)
-                    .map(individual -> (OntResource) individual)
                     .collect(Collectors.toSet());
             String message = "Acceptable types: " + TTLResourceUtil.describeUrisJoined(acceptableIndividuals);
             holder.registerProblem(element, message, ProblemHighlightType.ERROR);
         }
     }
+
     private static boolean hasOntClass(OntResource resource,
                                        Set<OntClass> classes) {
-        List<OntClass> ontClasses = resource.isIndividual() ?
-                resource.asIndividual().listOntClasses(false).toList() : Collections.emptyList();
-        return ontClasses.stream().anyMatch(classes::contains);
+        return OppModel.INSTANCE.computeWithReadLock(() -> {
+            List<OntClass> ontClasses = resource.isIndividual() ?
+                    resource.asIndividual().listOntClasses(false).toList() : Collections.emptyList();
+            return ontClasses.stream().anyMatch(classes::contains);
+        });
     }
 
     private static boolean validate(Set<OntResource> resources,
@@ -99,11 +101,13 @@ public class TTLValidationUtil {
                                     PsiElement element,
                                     Predicate<OntResource> condition,
                                     String error) {
-        if (!resources.isEmpty() && !resources.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) && !resources.stream().allMatch(condition)) {
-            holder.registerProblem(element, error, ProblemHighlightType.ERROR);
-            return false;
-        }
-        return true;
+        return OppModel.INSTANCE.computeWithReadLock(() -> {
+            if (!resources.isEmpty() && !resources.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) && !resources.stream().allMatch(condition)) {
+                holder.registerProblem(element, error, ProblemHighlightType.ERROR);
+                return false;
+            }
+            return true;
+        });
     }
 
     public static void validateNamedGraph(Set<OntResource> resources,

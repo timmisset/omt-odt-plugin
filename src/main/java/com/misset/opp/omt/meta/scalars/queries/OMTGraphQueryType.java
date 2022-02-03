@@ -6,6 +6,7 @@ import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLScalar;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class OMTGraphQueryType extends OMTQueryMetaType {
@@ -16,9 +17,10 @@ public class OMTGraphQueryType extends OMTQueryMetaType {
         final Set<OntResource> resolve = resolve(scalarValue);
         if (resolve.isEmpty() || resolve.stream()
                 .allMatch(resource -> resource != null &&
-                        resource.isIndividual() &&
-                        OppModel.INSTANCE.toClass(resource) != null &&
-                        OppModel.INSTANCE.toClass(resource).equals(OppModel.INSTANCE.NAMED_GRAPH_CLASS))) {
+                        OppModel.INSTANCE.computeWithReadLock(resource::isIndividual) &&
+                        Optional.ofNullable(OppModel.INSTANCE.toClass(resource))
+                                .map(OppModel.INSTANCE.NAMED_GRAPH_CLASS::equals)
+                                .orElse(false))) {
             return;
         }
         holder.registerProblem(scalarValue, "Expected a query that resolves to a graph");
