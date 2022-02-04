@@ -523,6 +523,8 @@ public class OppModel {
                 final OntClass ontClass;
                 if (resource.isIndividual()) {
                     ontClass = resource.asIndividual().listOntClasses(true).next();
+                } else if (isPredicate(resource)) {
+                    ontClass = null;
                 } else {
                     ontClass = resource.asClass();
                 }

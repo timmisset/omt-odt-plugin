@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBOL;
+import static com.intellij.codeInspection.ProblemHighlightType.WARNING;
 
 public class ODTUnusedVariableAssignmentInspection extends LocalInspectionTool {
 
@@ -67,7 +67,7 @@ public class ODTUnusedVariableAssignmentInspection extends LocalInspectionTool {
                                 holder.registerProblem(
                                         assignedVariable,
                                         name + " is assigned but it's value is never read",
-                                        LIKE_UNUSED_SYMBOL);
+                                        WARNING);
                             }
                         });
             }

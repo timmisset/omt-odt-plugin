@@ -62,6 +62,10 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
                                @NotNull ODTCall call) {
         if (call.getNumberOfArguments() >= 3 && call.getNumberOfArguments() % 2 != 0) {
             final Set<OntResource> subject = call.resolveSignatureArgument(0);
+            if (subject.isEmpty() || subject.contains(OppModel.INSTANCE.OWL_THING_INSTANCE)) {
+                return;
+            }
+
             for (int i = 1; i < call.getNumberOfArguments(); i = i + 2) {
 
                 final ODTResolvableSignatureArgument predicateArgument = call.getSignatureArgument(i);
