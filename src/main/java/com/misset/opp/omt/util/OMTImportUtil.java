@@ -1,34 +1,29 @@
 package com.misset.opp.omt.util;
 
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInspection.util.IntentionFamilyName;
-import com.intellij.codeInspection.util.IntentionName;
+import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiSearchHelper;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.odt.inspection.quikfix.ODTImportMemberLocalQuickFix;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
-import com.misset.opp.omt.intention.ImportMemberIntention;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.settings.SettingsState;
 import com.misset.opp.util.ImportUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.*;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class OMTImportUtil {
     private static final String MODULE = "module:";
@@ -36,9 +31,9 @@ public class OMTImportUtil {
     /**
      * Returns IntentionActions to import the given PsiCall as PsiCallable from anywhere in the project
      */
-    public static IntentionAction[] getImportIntentions(OMTFile importingFile, PsiCall call) {
+    public static List<LocalQuickFix> getImportQuickFixes(OMTFile importingFile, PsiCall call) {
         if (importingFile == null) {
-            return IntentionAction.EMPTY_ARRAY;
+            return Collections.emptyList();
         }
 
         Project project = importingFile.getProject();
@@ -47,7 +42,6 @@ public class OMTImportUtil {
         GlobalSearchScope scope = GlobalSearchScope.getScopeRestrictedByFileTypes(
                 GlobalSearchScope.projectScope(project),
                 OMTFileType.INSTANCE);
-        List<IntentionAction> intentionActions = new ArrayList<>();
         Set<PsiFile> filesInScope = new HashSet<>();
 
         // The callable can be present in the OMT Language (host) as exportable
@@ -62,25 +56,25 @@ public class OMTImportUtil {
             filesInScope.add(file);
             return true;
         });
-        filesInScope
+        return filesInScope
                 .stream()
                 .filter(OMTFile.class::isInstance)
                 .map(OMTFile.class::cast)
-                .forEach(file -> addIntentionToList(file, importingFile, call, intentionActions));
-        return intentionActions.toArray(new IntentionAction[0]);
+                .map(file -> getImportQuickFixes(file, importingFile, call))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
-    private static boolean addIntentionToList(OMTFile importedFile, OMTFile importingFile, PsiCall call, List<IntentionAction> actions) {
+    private static List<LocalQuickFix> getImportQuickFixes(OMTFile importedFile, OMTFile importingFile, PsiCall call) {
         HashMap<String, List<PsiCallable>> exportedMembers = OMTExportedMembersIndex.getExportedMembers(importedFile);
         String callId = call.getCallId();
         if (exportedMembers.containsKey(callId)) {
             List<PsiCallable> psiCallables = exportedMembers.get(callId);
-            psiCallables.stream()
-                    .map(psiCallable -> new ImportMemberIntention(importingFile, psiCallable))
-                    .forEach(actions::add);
+            return psiCallables.stream()
+                    .map(psiCallable -> new ODTImportMemberLocalQuickFix(importingFile, psiCallable))
+                    .collect(Collectors.toList());
         }
-        // return true to the processor, we always want to search all applicable files
-        return true;
+        return Collections.emptyList();
     }
 
     /**
@@ -172,7 +166,7 @@ public class OMTImportUtil {
         return ApplicationManager.getApplication().isUnitTestMode() ? "/src" : project.getBasePath();
     }
 
-    public static void addImport(OMTFile importingFile, Project project, Editor editor, String importPath, String memberName) {
+    public static void addImport(OMTFile importingFile, Project project, String importPath, String memberName) {
         YAMLKeyValue newImport = YAMLElementGenerator.getInstance(project).createYamlKeyValue(importPath, "- " + memberName);
         YAMLMapping rootMapping = importingFile.getRootMapping();
         YAMLKeyValue importMap = rootMapping != null ? rootMapping.getKeyValueByKey("import") : null;
@@ -183,7 +177,6 @@ public class OMTImportUtil {
             PsiElement insertedImportMap = rootMapping.addBefore(createNewImport(newImport, project), rootMapping.getFirstChild());
             PsiElement newLine = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
             rootMapping.addAfter(newLine, insertedImportMap);
-            reformatYaml(project, editor, insertedImportMap);
         } else {
             YAMLValue importMapValue = importMap.getValue();
             if (importMapValue instanceof YAMLMapping) {
@@ -211,58 +204,12 @@ public class OMTImportUtil {
                         value.addBefore(newLine, insertedSequenceItem);
                     }
                 }
-                reformatYaml(project, editor, importMap);
             }
         }
-    }
-
-    private static void reformatYaml(Project project, Editor editor, PsiElement element) {
-        CodeStyleManager codeStyleManager = CodeStyleManager.getInstance(project);
-        PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
-        codeStyleManager.reformat(element);
     }
 
     private static YAMLKeyValue createNewImport(YAMLKeyValue importEntry, Project project) {
         return YAMLElementGenerator.getInstance(project).createYamlKeyValue("import", importEntry.getText());
-    }
-
-    private static IntentionAction getIntentionAction(OMTFile omtFile, PsiCallable callable) {
-        String importPath = getImportPath(omtFile, callable);
-        if (importPath == null) {
-            return null;
-        }
-
-        return new IntentionAction() {
-            @Override
-            public @IntentionName @NotNull String getText() {
-                return "Import as " + callable.getType() + " from " + importPath;
-            }
-
-            @Override
-            public @NotNull @IntentionFamilyName String getFamilyName() {
-                return "Import";
-            }
-
-            @Override
-            public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-                return true;
-            }
-
-            @Override
-            public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-                OMTFile importedFile = getImportedFile(file);
-                if (importedFile == null) {
-                    return;
-                }
-                addImport(importedFile, project, editor, importPath, callable.getName());
-            }
-
-            @Override
-            public boolean startInWriteAction() {
-                return true;
-            }
-
-        };
     }
 
     private static String trimPath(Project project, String path) {

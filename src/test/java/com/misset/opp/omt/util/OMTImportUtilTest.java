@@ -1,22 +1,26 @@
 package com.misset.opp.omt.util;
 
 import com.intellij.application.options.CodeStyle;
-import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.command.WriteCommandAction;
+import com.misset.opp.odt.inspection.ODTCodeInspectionUnresolvableReference;
 import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.settings.SettingsState;
-import com.misset.opp.testCase.OMTTestCase;
+import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.jetbrains.yaml.formatter.YAMLCodeStyleSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
-class OMTImportUtilTest extends OMTTestCase {
+class OMTImportUtilTest extends OMTInspectionTestCase {
 
     private void setYamlIndentation(OMTFile file) {
         YAMLCodeStyleSettings yamlCodeStyleSettings = CodeStyle.getCustomSettings(file, YAMLCodeStyleSettings.class);
@@ -98,9 +102,9 @@ class OMTImportUtilTest extends OMTTestCase {
 
         ReadAction.run(() -> {
             PsiCall call = (PsiCall) myFixture.getElementAtCaret();
-            IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(importingFile, call);
-            Assertions.assertEquals(1, importIntentions.length);
-            Assertions.assertEquals("Import as DEFINE QUERY from ./importedFile.omt", importIntentions[0].getText());
+            List<LocalQuickFix> quickFixes = OMTImportUtil.getImportQuickFixes(importingFile, call);
+            Assertions.assertEquals(1, quickFixes.size());
+            Assertions.assertEquals("Import as DEFINE QUERY from ./importedFile.omt", quickFixes.get(0).getName());
         });
     }
 
@@ -118,9 +122,9 @@ class OMTImportUtilTest extends OMTTestCase {
 
         ReadAction.run(() -> {
             PsiCall call = (PsiCall) myFixture.getElementAtCaret();
-            IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(importingFile, call);
-            Assertions.assertEquals(1, importIntentions.length);
-            Assertions.assertEquals("Import as StandaloneQuery from ./importedFile.omt", importIntentions[0].getText());
+            List<LocalQuickFix> quickFixes = OMTImportUtil.getImportQuickFixes(importingFile, call);
+            Assertions.assertEquals(1, quickFixes.size());
+            Assertions.assertEquals("Import as StandaloneQuery from ./importedFile.omt", quickFixes.get(0).getName());
         });
     }
 
@@ -131,22 +135,16 @@ class OMTImportUtilTest extends OMTTestCase {
                 "   DEFINE QUERY queryB => '';");
         OMTExportedMembersIndex.analyse(importedFile);
         OMTFile importingFile = configureByText("importingFile.omt", "queries:\n" +
-                "   DEFINE QUERY queryA => <caret>queryB;");
+                "   DEFINE QUERY queryA => queryB;");
 
-        setYamlIndentation(importedFile);
+        setYamlIndentation(importingFile);
+        invokeQuickFixIntention("Import as DEFINE QUERY from ./importedFile.omt");
 
-        WriteCommandAction.runWriteCommandAction(getProject(), () -> {
-            PsiCall call = (PsiCall) myFixture.getElementAtCaret();
-            IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(importingFile, call);
-            Assertions.assertEquals(1, importIntentions.length);
-            Assertions.assertEquals("Import as DEFINE QUERY from ./importedFile.omt", importIntentions[0].getText());
-            importIntentions[0].invoke(getProject(), getEditor(), importingFile);
-            Assertions.assertEquals("import:\n" +
-                    "  ./importedFile.omt:\n" +
-                    "  - queryB\n" +
-                    "queries:\n" +
-                    "   DEFINE QUERY queryA => queryB;", importingFile.getText());
-        });
+        ReadAction.run(() -> Assertions.assertEquals("import:\n" +
+                "  ./importedFile.omt:\n" +
+                "  - queryB\n" +
+                "queries:\n" +
+                "   DEFINE QUERY queryA => queryB;", importingFile.getText()));
     }
 
     @Test
@@ -160,23 +158,17 @@ class OMTImportUtilTest extends OMTTestCase {
                 "  ./importedFile.omt:\n" +
                 "    - fakeImport\n" +
                 "queries:\n" +
-                "   DEFINE QUERY queryA => <caret>queryB;");
+                "   DEFINE QUERY queryA => queryB;");
 
-        setYamlIndentation(importedFile);
+        setYamlIndentation(importingFile);
+        invokeQuickFixIntention("Import as DEFINE QUERY from ./importedFile.omt");
 
-        WriteCommandAction.runWriteCommandAction(getProject(), () -> {
-            PsiCall call = (PsiCall) myFixture.getElementAtCaret();
-            IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(importingFile, call);
-            Assertions.assertEquals(1, importIntentions.length);
-            Assertions.assertEquals("Import as DEFINE QUERY from ./importedFile.omt", importIntentions[0].getText());
-            importIntentions[0].invoke(getProject(), getEditor(), importingFile);
-            Assertions.assertEquals("import:\n" +
-                    "  ./importedFile.omt:\n" +
-                    "  - fakeImport\n" +
-                    "  - queryB\n" +
-                    "queries:\n" +
-                    "   DEFINE QUERY queryA => queryB;", importingFile.getText());
-        });
+        ReadAction.run(() -> Assertions.assertEquals("import:\n" +
+                "  ./importedFile.omt:\n" +
+                "  - fakeImport\n" +
+                "  - queryB\n" +
+                "queries:\n" +
+                "   DEFINE QUERY queryA => queryB;", importingFile.getText()));
     }
 
     @Test
@@ -187,27 +179,25 @@ class OMTImportUtilTest extends OMTTestCase {
         OMTExportedMembersIndex.analyse(importedFile);
         OMTFile importingFile = configureByText("importingFile.omt", "import:\n" +
                 "  ./fakeFile.omt:\n" +
-                "    - fakeImport\n" +
+                "  - fakeImport\n" +
                 "queries:\n" +
-                "   DEFINE QUERY queryA => <caret>queryB;");
+                "   DEFINE QUERY queryA => queryB;");
 
-        setYamlIndentation(importedFile);
+        setYamlIndentation(importingFile);
+        invokeQuickFixIntention("Import as DEFINE QUERY from ./importedFile.omt");
 
-        WriteCommandAction.runWriteCommandAction(getProject(), () -> {
-            PsiCall call = (PsiCall) myFixture.getElementAtCaret();
-            IntentionAction[] importIntentions = OMTImportUtil.getImportIntentions(importingFile, call);
-            Assertions.assertEquals(1, importIntentions.length);
-            Assertions.assertEquals("Import as DEFINE QUERY from ./importedFile.omt", importIntentions[0].getText());
-            importIntentions[0].invoke(getProject(), getEditor(), importingFile);
-            Assertions.assertEquals("import:\n" +
-                    "  ./fakeFile.omt:\n" +
-                    "  - fakeImport\n" +
-                    "  ./importedFile.omt:\n" +
-                    "  - queryB\n" +
-                    "queries:\n" +
-                    "   DEFINE QUERY queryA => queryB;", importingFile.getText());
-        });
+        ReadAction.run(() -> Assertions.assertEquals("import:\n" +
+                "  ./fakeFile.omt:\n" +
+                "  - fakeImport\n" +
+                "  ./importedFile.omt:\n" +
+                "  - queryB\n" +
+                "queries:\n" +
+                "   DEFINE QUERY queryA => queryB;", importingFile.getText()));
     }
 
 
+    @Override
+    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
+        return Collections.singleton(ODTCodeInspectionUnresolvableReference.class);
+    }
 }

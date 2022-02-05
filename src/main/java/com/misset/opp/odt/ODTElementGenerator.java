@@ -84,6 +84,10 @@ public final class ODTElementGenerator {
         return fromFile(name, ODTVariable.class);
     }
 
+    public ODTScriptLine createVariableDeclaration(String name) {
+        return fromFile("VAR " + name + ";\n", ODTScriptLine.class);
+    }
+
     public PsiDocComment createJavaDocs(List<String> description, List<PsiDocTag> tags) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("/**\n");

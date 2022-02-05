@@ -120,7 +120,6 @@
                                 implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionNew"/>
 
         <!-- Annotations -->
-        <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.CodeAnnotatorUnresolvable"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTSemicolonAnnotator"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator"/>
 
@@ -211,6 +210,13 @@
                          language="ODT" displayName="Inspect variable assignment" groupPath="ODT"
                          groupName="Variables" enabledByDefault="true"
                          implementationClass="com.misset.opp.odt.inspection.ODTVariableAssignmentInspection"/>
+
+        <localInspection shortName="ODTCodeInspectionUnresolvableReference" hasStaticDescription="true"
+                         language="ODT" displayName="Inspect references" groupPath="ODT"
+                         groupName="References" enabledByDefault="true"
+                         implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionUnresolvableReference"/>
+
+
         <!-- Intentions  -->
         <intentionAction>
             <className>com.misset.opp.odt.intentions.IntroduceLocalVariableIntention</className>

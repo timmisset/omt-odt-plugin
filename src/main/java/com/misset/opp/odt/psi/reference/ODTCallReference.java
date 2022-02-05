@@ -1,5 +1,9 @@
 package com.misset.opp.odt.psi.reference;
 
+import com.intellij.codeInsight.daemon.EmptyResolveMessageProvider;
+import com.intellij.codeInspection.LocalQuickFix;
+import com.intellij.codeInspection.LocalQuickFixProvider;
+import com.intellij.codeInspection.util.InspectionMessage;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -7,18 +11,23 @@ import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
+import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.omt.util.OMTImportUtil;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> {
+public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> implements LocalQuickFixProvider, EmptyResolveMessageProvider {
     private static final Logger LOGGER = Logger.getInstance(ODTCallReference.class);
 
     public ODTCallReference(@NotNull ODTResolvableCall element,
@@ -84,5 +93,30 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> {
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         return multiResolveToOriginal(true);
+    }
+
+    @Override
+    public LocalQuickFix @Nullable [] getQuickFixes() {
+        ODTResolvableCall call = getElement();
+        ODTFile containingFile = call.getContainingFile();
+        if (containingFile == null) {
+            return LocalQuickFix.EMPTY_ARRAY;
+        }
+
+        OMTFile hostFile = containingFile.getHostFile();
+        List<LocalQuickFix> importQuickFixes = new ArrayList<>();
+        if (hostFile != null) {
+            // inside an OMT file, check for possible imports:
+            importQuickFixes.addAll(OMTImportUtil.getImportQuickFixes(hostFile, call));
+        }
+
+        // todo:
+        // create new ODT Command / Query
+        return importQuickFixes.toArray(LocalQuickFix[]::new);
+    }
+
+    @Override
+    public @InspectionMessage @NotNull String getUnresolvedMessagePattern() {
+        return "Cannot resolve call '" + getElement().getName() + "'";
     }
 }
