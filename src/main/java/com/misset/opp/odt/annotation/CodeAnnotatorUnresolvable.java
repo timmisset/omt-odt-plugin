@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.AnnotationBuilder;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTVariable;
@@ -12,6 +13,7 @@ import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.util.OMTImportUtil;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -21,13 +23,14 @@ import java.util.Objects;
  * Code annotator for all unused declarations
  */
 public class CodeAnnotatorUnresolvable implements Annotator {
+    private static final Logger LOGGER = Logger.getInstance(CodeAnnotatorUnresolvable.class);
     @Override
     public void annotate(@NotNull PsiElement element,
                          @NotNull AnnotationHolder holder) {
         if (element instanceof ODTVariable) {
-            annotateVariable(holder, (ODTVariable) element);
+            LoggerUtil.runWithLogger(LOGGER, "annotate variable " + ((ODTVariable) element).getName(), () -> annotateVariable(holder, (ODTVariable) element));
         } else if (element instanceof ODTResolvableCall) {
-            annotateCall(holder, (ODTResolvableCall) element);
+            LoggerUtil.runWithLogger(LOGGER, "annotate call " + ((ODTResolvableCall) element).getName(), () -> annotateCall(holder, (ODTResolvableCall) element));
         }
     }
 

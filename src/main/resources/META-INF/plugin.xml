@@ -25,10 +25,6 @@
         <psi.referenceContributor language="yaml" implementation="com.misset.opp.omt.OMTYamlReferenceContributor"/>
         <codeInsight.parameterNameHints language="yaml" implementationClass="com.misset.opp.omt.OMTParameterNameHints"/>
 
-        <!-- Annotations -->
-        <annotator language="yaml" implementationClass="com.misset.opp.omt.annotations.OMTTaggedTypeAnnotator"/>
-
-
         <!-- OMT -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>

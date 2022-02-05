@@ -5,9 +5,11 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.model.OMTModelMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
@@ -15,6 +17,8 @@ import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.omt.psi.references.OMTDeclaredInterfaceReference;
+import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NonNls;
@@ -23,9 +27,9 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.*;
 
@@ -59,14 +63,33 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
     @Override
     public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping,
                                                                       PsiLanguageInjectionHost host) {
+        String filename = getFilename(yamlMapping);
         return LoggerUtil.computeWithLogger(LOGGER,
-                "getCallableMap " + getFilename(yamlMapping),
+                "getCallableMap " + filename,
                 () -> {
                     final HashMap<String, List<PsiCallable>> map = new HashMap<>();
-                    map.putAll(getDeclaredCallableMap(yamlMapping, host));
-                    map.putAll(getImportingMembers(yamlMapping));
+                    if (filename.endsWith(".interface.omt")) {
+                        map.putAll(getInterfaceMap(yamlMapping));
+                    } else {
+                        map.putAll(getDeclaredCallableMap(yamlMapping, host));
+                        map.putAll(getImportingMembers(yamlMapping));
+                    }
                     return map;
                 });
+    }
+
+    private Map<String, List<PsiCallable>> getInterfaceMap(YAMLMapping mapping) {
+        return PsiTreeUtil.findChildrenOfType(mapping, YAMLKeyValue.class)
+                .stream()
+                .map(PsiElement::getReference)
+                .filter(OMTDeclaredInterfaceReference.class::isInstance)
+                .map(reference -> ((OMTDeclaredInterfaceReference) reference).multiResolve(false))
+                .map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .map(ResolveResult::getElement)
+                .filter(PsiCallable.class::isInstance)
+                .map(PsiCallable.class::cast)
+                .collect(Collectors.groupingBy(Callable::getCallId));
     }
 
     private static String getFilename(PsiElement element) {
