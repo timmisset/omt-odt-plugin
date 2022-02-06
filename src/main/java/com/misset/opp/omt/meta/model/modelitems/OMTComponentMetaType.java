@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTWatchersArrayMetaType;
 import com.misset.opp.omt.meta.model.*;
@@ -32,7 +33,8 @@ import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implements
         OMTVariableProvider,
         OMTCallableProvider,
-        OMTPrefixProvider {
+        OMTPrefixProvider,
+        OMTDocumented {
     protected OMTComponentMetaType() {
         super("OMT Component");
     }
@@ -109,5 +111,10 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
         addInjectedCallablesToMap(yamlMapping, "commands", map, host);
         addInjectedCallablesToMap(yamlMapping, "queries", map, host);
         return map;
+    }
+
+    @Override
+    public String getDocumentationClass() {
+        return "Component";
     }
 }

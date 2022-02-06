@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.4.3'
+version '5.5'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,35 +59,16 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.4.3</h1>
+        <h1>Update 5.5</h1>
+        Added #36: <a href="https://github.com/timmisset/omt-odt-plugin/issues/36">DocumentationProvider for OMT</a><br>
+        The DocumentationProvider (hover-mouse or View - Quick Documentation) includes the OMT API markdown information<br>
+        The documentation consists of classes and attributes, if classes are available, they are displayed, otherwise the attribute
+        documentation. For example, when hovering the payload: key in an Activity, it will show the information for the PayloadProperty class<br>
+        <br>
+        The location of the API.md is currently not configurable, the API.md must be located in a folder named 'omt'.<br>
+        <br>
         Fixed #34: <a href="https://github.com/timmisset/omt-odt-plugin/issues/34">interface member not exported correctly</a><br>
         Fixed #35: <a href="https://github.com/timmisset/omt-odt-plugin/issues/35">Refactor unresolvable from annotation to inspection</a><br>
-        
-        <h1>Update 5.4.2</h1>
-        Fixed #31: <a href="https://github.com/timmisset/omt-odt-plugin/issues/31">boolean statement not recognized inside Builtin boolean operators</a><br> 
-        Fixed #32: <a href="https://github.com/timmisset/omt-odt-plugin/issues/32">Predicate as class</a><br>
-        Fixed #33: <a herf="https://github.com/timmisset/omt-odt-plugin/issues/33">Unused return value</a><br> 
-        <h1>Update 5.4.1</h1>
-        Fixed #25: <a href="https://github.com/timmisset/omt-odt-plugin/issues/25">Sorting OMTPrefixes by frequency</a><br>
-        Fixed #27: <a href="https://github.com/timmisset/omt-odt-plugin/issues/27">No error on multiple missing imports</a><br>
-        Fixed #30: <a href="https://github.com/timmisset/omt-odt-plugin/issues/30">ODTResolvableQualifiedUriStepDocumentationUtil nullpointer</a><br>
-        Re-added #29: <a href="https://github.com/timmisset/omt-odt-plugin/issues/29">Commenter</a><br>
-        Create a line comment using ctrl+slash or block comment using ctrl+shift+slash<br>
-        <br>
-        <h1>Update 5.4</h1>
-        ODT Color settings is replaced. Color coding based ontology type (owl:Class, instance etc) was too heavy for
-        the highlighting parser and is removed. Replaced with highlighting settings that closely resemble the Java color settings.<br>
-        <br>
-        Added #21: <a href="https://github.com/timmisset/omt-odt-plugin/issues/21">Loadable</a><br>
-        First implementation of !Loadable is supported:<br>
-        - Shows suggestion for json files to import, automatically resolves to relative path<br>
-        - Binds to Json, meaning if the Json is moved the path reference is automatically updated<br>
-        - Validates the paths are to existing .json files<br>
-        <br>
-        Added #18: <a href="https://github.com/timmisset/omt-odt-plugin/issues/18">\$activityConfig global variable</a><br>
-        Adapted #20: <a href="https://github.com/timmisset/omt-odt-plugin/issues/20">Declared from interface</a><br>
-        Fixed #22: <a href="https://github.com/timmisset/omt-odt-plugin/issues/22">Nullpointer in listOrderedSuperClasses</a><br>
-        Fixed #23: <a href="https://github.com/timmisset/omt-odt-plugin/issues/23">New line indentation</a><br>
         """
 }
 tasks {

@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.handlers;
 
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTPredicateQueryType;
@@ -11,10 +12,11 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class OMTMergeListsMetaType extends OMTMetaType {
+public class OMTMergeListsMetaType extends OMTMetaType implements OMTDocumented {
     private static final Set<String> requiredFeatures = Set.of("subjects", "predicates");
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+
     static {
         features.put("subjects", OMTSubjectQueryType::new);
         features.put("predicates", OMTPredicateQueryType::new);
@@ -35,5 +37,10 @@ public class OMTMergeListsMetaType extends OMTMetaType {
     @Override
     protected Set<String> getRequiredFields() {
         return requiredFeatures;
+    }
+
+    @Override
+    public String getDocumentationClass() {
+        return "MergeLists";
     }
 }

@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.scalars.values.OMTLoadablePathMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTLoadableSchemaMetaType;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements OMTMetaCallable {
+public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements OMTMetaCallable, OMTDocumented {
     protected OMTLoadableMetaType() {
         super("OMT Loadable");
     }
@@ -66,6 +67,11 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
 
     @Override
     public String getType() {
+        return "Loadable";
+    }
+
+    @Override
+    public String getDocumentationClass() {
         return "Loadable";
     }
 }

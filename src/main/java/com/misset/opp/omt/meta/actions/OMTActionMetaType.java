@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvider {
+public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvider, OMTDocumented {
     private final boolean mapped;
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
@@ -93,5 +94,10 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
                     .findFirst()
                     .ifPresent(s -> problemsHolder.registerProblem(id, "Duplicate", ProblemHighlightType.ERROR));
         }
+    }
+
+    @Override
+    public String getDocumentationClass() {
+        return "Action";
     }
 }

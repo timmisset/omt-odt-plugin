@@ -21,11 +21,6 @@ public class ODTDocumentationProvider extends AbstractDocumentationProvider impl
     }
 
     @Override
-    public @Nullable @Nls String generateHoverDoc(@NotNull PsiElement element, @Nullable PsiElement originalElement) {
-        return generateDoc(element, originalElement);
-    }
-
-    @Override
     public @Nullable PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement, int targetOffset) {
         if (contextElement == null) {
             return null;

@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems.ontology;
 
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.arrays.OMTOntologyClassesArrayMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemDelegateMetaType;
 import com.misset.opp.omt.meta.scalars.OMTOntologyPrefixMetaType;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class OMTOntologyMetaType extends OMTModelItemDelegateMetaType {
+public class OMTOntologyMetaType extends OMTModelItemDelegateMetaType implements OMTDocumented {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     private static final Set<String> requiredFields = Set.of("prefix", "classes");
 
@@ -39,6 +40,11 @@ public class OMTOntologyMetaType extends OMTModelItemDelegateMetaType {
 
     @Override
     public String getType() {
+        return "Ontology";
+    }
+
+    @Override
+    public String getDocumentationClass() {
         return "Ontology";
     }
 }

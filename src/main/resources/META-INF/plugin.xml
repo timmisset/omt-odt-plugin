@@ -35,7 +35,8 @@
         <lang.refactoringSupport language="yaml"
                                  order="first"
                                  implementationClass="com.misset.opp.omt.OMTRefactoringSupport"/>
-
+        <lang.documentationProvider language="OMT"
+                                    implementationClass="com.misset.opp.omt.documentation.OMTDocumentationProvider"/>
         <postStartupActivity id="reasons" implementation="com.misset.opp.omt.startup.LoadReasonsStartupActivity"/>
         <postStartupActivity id="importedMembers"
                              implementation="com.misset.opp.omt.startup.IndexOMTStartupActivity"/>

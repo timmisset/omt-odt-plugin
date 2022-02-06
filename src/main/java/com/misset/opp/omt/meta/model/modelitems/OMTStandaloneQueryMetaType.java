@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
@@ -28,7 +29,8 @@ import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType implements
         OMTVariableProvider,
         OMTPrefixProvider,
-        OMTMetaCallable {
+        OMTMetaCallable,
+        OMTDocumented {
     protected OMTStandaloneQueryMetaType() {
         super("OMT StandaloneQuery");
     }
@@ -116,6 +118,11 @@ public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType imp
 
     @Override
     public String getType() {
+        return "StandaloneQuery";
+    }
+
+    @Override
+    public String getDocumentationClass() {
         return "StandaloneQuery";
     }
 }

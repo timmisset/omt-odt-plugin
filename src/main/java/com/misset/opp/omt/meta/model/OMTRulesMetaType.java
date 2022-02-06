@@ -1,10 +1,11 @@
 package com.misset.opp.omt.meta.model;
 
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaMapType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 
-public class OMTRulesMetaType extends OMTMetaMapType {
+public class OMTRulesMetaType extends OMTMetaMapType implements OMTDocumented {
 
     public OMTRulesMetaType() {
         super("OMTRules");
@@ -15,4 +16,8 @@ public class OMTRulesMetaType extends OMTMetaMapType {
         return new OMTRuleMetaType();
     }
 
+    @Override
+    public String getDocumentationClass() {
+        return "Rules";
+    }
 }

@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.handlers;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTPredicateQueryType;
@@ -19,12 +20,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class OMTMergePredicatesMetaType extends OMTMetaType {
+public class OMTMergePredicatesMetaType extends OMTMetaType implements OMTDocumented {
     private static final Set<String> requiredFeatures = Set.of("subjects", "predicates");
     protected static final String USE_IS_REQUIRED = "'use' is required when 'from' is 'both'";
     protected static final String USE_IS_ONLY_AVAILABLE = "'use' is only available when 'from' is 'both'";
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+
     static {
         features.put("subjects", OMTSubjectQueryType::new);
         features.put("predicates", OMTPredicateQueryType::new);
@@ -66,13 +68,20 @@ public class OMTMergePredicatesMetaType extends OMTMetaType {
             problemsHolder.registerProblem(mapping, USE_IS_ONLY_AVAILABLE);
         }
     }
+
     private boolean isFromBoth(YAMLMapping mapping) {
         return Optional.ofNullable(mapping.getKeyValueByKey("from"))
                 .map(YAMLKeyValue::getValueText)
                 .map(s -> s.equals("both"))
                 .orElse(false);
     }
+
     private boolean isUseSpecified(YAMLMapping mapping) {
         return mapping.getKeyValueByKey("use") != null;
+    }
+
+    @Override
+    public String getDocumentationClass() {
+        return "MergePredicates";
     }
 }

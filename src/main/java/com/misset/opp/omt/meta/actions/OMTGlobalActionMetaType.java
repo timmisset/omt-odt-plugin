@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.actions;
 
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTActionsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTDossierActionsArrayMetaType;
@@ -9,8 +10,9 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-public class OMTGlobalActionMetaType extends OMTMetaType {
+public class OMTGlobalActionMetaType extends OMTMetaType implements OMTDocumented {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+
     static {
         features.put("notifications", OMTActionsArrayMetaType::new);
         features.put("bottomNavigation", OMTActionsArrayMetaType::new);
@@ -19,6 +21,7 @@ public class OMTGlobalActionMetaType extends OMTMetaType {
         features.put("fixed", OMTActionsArrayMetaType::new);
         features.put("entitybar", OMTEntityBarActionsArrayMetaType::new);
     }
+
     public OMTGlobalActionMetaType() {
         super("Global Action");
     }
@@ -28,4 +31,8 @@ public class OMTGlobalActionMetaType extends OMTMetaType {
         return features;
     }
 
+    @Override
+    public String getDocumentationClass() {
+        return "GlobalAction";
+    }
 }

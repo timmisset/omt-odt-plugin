@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
@@ -42,7 +43,8 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
         OMTCallableProvider,
         OMTPrefixProvider,
         OMTLocalCommandProvider,
-        OMTMetaCallable {
+        OMTMetaCallable,
+        OMTDocumented {
     protected OMTActivityMetaType() {
         super("OMT Activity");
     }
@@ -150,5 +152,10 @@ public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
     @Override
     public List<String> getFlags() {
         return List.of("!nested", "!sibling", "!siblingCommit", "!autonomous", "!dialog");
+    }
+
+    @Override
+    public String getDocumentationClass() {
+        return "Activity";
     }
 }

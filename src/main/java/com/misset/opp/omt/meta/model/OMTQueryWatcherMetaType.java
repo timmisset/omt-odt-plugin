@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model;
 
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
@@ -19,7 +20,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class OMTQueryWatcherMetaType extends OMTMetaType implements
-        OMTLocalVariableTypeProvider {
+        OMTLocalVariableTypeProvider,
+        OMTDocumented {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
@@ -60,5 +62,10 @@ public class OMTQueryWatcherMetaType extends OMTMetaType implements
         return Optional.ofNullable(mapping.getKeyValueByKey("query"))
                 .map(YAMLKeyValue::getValue)
                 .orElse(null);
+    }
+
+    @Override
+    public String getDocumentationClass() {
+        return "QueryWatcher";
     }
 }

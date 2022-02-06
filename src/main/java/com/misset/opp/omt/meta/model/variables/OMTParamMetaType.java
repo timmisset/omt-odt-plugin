@@ -3,6 +3,7 @@ package com.misset.opp.omt.meta.model.variables;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.OMTOntologyTypeProvider;
 import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
@@ -27,7 +28,8 @@ import static com.misset.opp.omt.util.PatternUtil.getTextRange;
 
 public class OMTParamMetaType extends OMTMetaShorthandType implements
         OMTOntologyTypeProvider,
-        OMTNamedVariableMetaType {
+        OMTNamedVariableMetaType,
+        OMTDocumented {
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     /*
@@ -148,4 +150,8 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
     }
 
 
+    @Override
+    public String getDocumentationClass() {
+        return "Param";
+    }
 }

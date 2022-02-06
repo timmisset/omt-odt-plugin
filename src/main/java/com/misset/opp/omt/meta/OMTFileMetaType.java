@@ -10,6 +10,7 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.model.OMTModelMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
@@ -37,7 +38,7 @@ import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.*;
  * The OMTFileMetaType is the root for all OMT features
  * Any .omt file that is analysed can contain these features
  */
-public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider, OMTPrefixProvider {
+public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider, OMTPrefixProvider, OMTDocumented {
     private static final Logger LOGGER = Logger.getInstance(OMTFileMetaType.class);
     public static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> IMPORTED = new Key<>("IMPORTED");
 
@@ -136,4 +137,13 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
         return map;
     }
 
+    @Override
+    public String getDocumentationClass() {
+        return "Document constructs";
+    }
+
+    @Override
+    public String getLevel1Header() {
+        return "Documents";
+    }
 }

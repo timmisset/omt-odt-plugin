@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiElement;
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
@@ -36,7 +37,8 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
         OMTVariableProvider,
         OMTPrefixProvider,
         OMTLocalCommandProvider,
-        OMTMetaCallable {
+        OMTMetaCallable,
+        OMTDocumented {
     protected OMTProcedureMetaType() {
         super("OMT Procedure");
     }
@@ -123,5 +125,11 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
     @Override
     public List<String> getFlags() {
         return List.of("!nested", "!sibling", "!siblingCommit", "!autonomous");
+    }
+
+
+    @Override
+    public String getDocumentationClass() {
+        return "Procedure";
     }
 }

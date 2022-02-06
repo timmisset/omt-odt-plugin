@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.openapi.util.TextRange;
+import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
@@ -29,7 +30,8 @@ import java.util.regex.Pattern;
 public class OMTVariableMetaType extends OMTMetaShorthandType implements
         OMTNamedVariableMetaType,
         OMTLocalVariableTypeProvider,
-        OMTMetaInjectable {
+        OMTMetaInjectable,
+        OMTDocumented {
 
     private static final Set<String> requiredFeatures = Set.of("name");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
@@ -130,5 +132,10 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements
                 new LocalVariable("$newValue", "New value for the variable", type),
                 new LocalVariable("$oldValue", "Old value for the variable", type)
         );
+    }
+
+    @Override
+    public String getDocumentationClass() {
+        return "VariableDeclaration";
     }
 }
