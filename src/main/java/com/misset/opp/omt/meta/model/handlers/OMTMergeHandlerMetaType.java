@@ -12,6 +12,7 @@ public class OMTMergeHandlerMetaType extends OMTMetaTaggedType<YamlMetaType> {
         taggedTypes.put("!MergePredicates", OMTMergePredicatesMetaType::new);
         taggedTypes.put("!MergeLists", OMTMergeListsMetaType::new);
         taggedTypes.put("!MergeValidation", OMTMergeValidationMetaType::new);
+        taggedTypes.put("!ForbiddenPredicates", OMTForbiddenPredicatesMetaType::new);
     }
 
     public OMTMergeHandlerMetaType() {

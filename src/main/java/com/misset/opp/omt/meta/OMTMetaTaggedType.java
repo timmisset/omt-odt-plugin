@@ -16,11 +16,7 @@ import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.YAMLSequenceItem;
 import org.jetbrains.yaml.psi.YAMLValue;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -64,7 +60,8 @@ public abstract class OMTMetaTaggedType<T extends YamlMetaType> extends OMTMetaT
     public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar,
                                                                   @Nullable CompletionContext completionContext) {
         if (suggestFeatures(insertedScalar)) {
-            // for a sequence, the value completion the value completion is triggered even when there is already a tag:
+            // for a sequence, the value completion the value completion is triggered even when there is already a tag
+            // therefore, show the available attributes instead
             return Optional.ofNullable(PsiTreeUtil.prevVisibleLeaf(insertedScalar))
                     .map(PsiElement::getText)
                     .filter(this::isValidTag)
@@ -75,8 +72,7 @@ public abstract class OMTMetaTaggedType<T extends YamlMetaType> extends OMTMetaT
                     .map(this::getFeatureLookup)
                     .collect(Collectors.toList());
         } else {
-            final HashMap<String, Supplier<T>> taggedTypes = getTaggedTypes();
-            return taggedTypes.keySet().stream()
+            return getAvailableTags().stream()
                     .map(this::getTagLookup)
                     .collect(Collectors.toList());
         }

@@ -67,6 +67,10 @@ patchPluginXml {
         <br>
         The location of the API.md is currently not configurable, the API.md must be located in a folder named 'omt'.<br>
         <br>
+        Added #39: <a href="https://github.com/timmisset/omt-odt-plugin/issues/39">Add ForbiddenPredicates to OMT Structure</a><br>
+        !ForbiddenPredicates has been added as a MergeHandler type that can be used in any part of the OMT structure that
+        allows for handlers: (!Activity, !GraphShapeHandlers)<br>
+        <br>
         Added #40: <a href="https://github.com/timmisset/omt-odt-plugin/issues/40">Add GraphShapeHandlers to OMT structure</a><br>
         !GraphShapeHandlers are added to the OMT structure. The handlers defined in a module reference to the declared or imported
         GraphShapeHandlers; this will allow for refactor-rename handling. The 'shape:' attribute allows for GraphShape URIs only, 
