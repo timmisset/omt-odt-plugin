@@ -5,10 +5,7 @@ import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
-import com.misset.opp.omt.meta.model.modelitems.OMTLoadableMetaType;
-import com.misset.opp.omt.meta.model.modelitems.OMTProcedureMetaType;
-import com.misset.opp.omt.meta.model.modelitems.OMTStandaloneQueryMetaType;
+import com.misset.opp.omt.meta.model.modelitems.*;
 import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyMetaType;
 import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import com.misset.opp.resolvable.psi.PsiCallable;
@@ -96,11 +93,13 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
                                 final YamlMetaType metaType = valueMetaType.getMetaType();
                                 if (metaType instanceof OMTActivityMetaType || metaType instanceof OMTProcedureMetaType) {
                                     addToGroupedMap("@" + keyValue.getKeyText(), new OMTCallableImpl(keyValue), map);
-                                } else if (metaType instanceof OMTStandaloneQueryMetaType || metaType instanceof OMTOntologyMetaType || metaType instanceof OMTLoadableMetaType) {
+                                } else if (metaType instanceof OMTStandaloneQueryMetaType ||
+                                        metaType instanceof OMTOntologyMetaType ||
+                                        metaType instanceof OMTLoadableMetaType ||
+                                        metaType instanceof OMTGraphShapeHandlerMetaType) {
                                     addToGroupedMap(keyValue.getKeyText(), new OMTCallableImpl(keyValue), map);
                                 }
                             }
-
                         }
                 );
 

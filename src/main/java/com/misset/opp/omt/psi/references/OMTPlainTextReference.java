@@ -3,11 +3,14 @@ package com.misset.opp.omt.psi.references;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,4 +53,26 @@ public abstract class OMTPlainTextReference extends PsiReferenceBase.Poly<YAMLPl
         return toResults(resolvedElements, true);
     }
 
+    /**
+     * Resolve a reference that can be found anywhere within the containing file
+     * This can be an imported member or an exportable member which is declared here
+     */
+    protected ResolveResult[] resolveExportableMemberReference() {
+        YAMLPlainTextImpl element = getElement();
+        PsiFile containingFile = element.getContainingFile();
+        if (!(containingFile instanceof OMTFile)) {
+            return ResolveResult.EMPTY_ARRAY;
+        } else {
+            HashMap<String, List<PsiCallable>> exportingMembersMap = ((OMTFile) containingFile).getExportingMembersMap();
+            String name = element.getName();
+            return fromExportableMembersMap(exportingMembersMap, name, true);
+        }
+    }
+
+    protected ResolveResult[] fromExportableMembersMap(HashMap<String, List<PsiCallable>> map, String name, boolean resolveToOriginalElement) {
+        return Optional.ofNullable(map.get(name))
+                .or(() -> Optional.ofNullable(map.get("@" + name)))
+                .map(psiCallables -> toResults(psiCallables, resolveToOriginalElement))
+                .orElse(ResolveResult.EMPTY_ARRAY);
+    }
 }

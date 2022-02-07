@@ -6,6 +6,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph;
 import com.misset.opp.odt.formatter.ODTHostFormattingUtil;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
@@ -49,24 +50,20 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                 if (host != null) {
                     InjectableContentType injectableContentType = host.getInjectableContentType();
                     if (injectableContentType != InjectableContentType.None) {
-                        insertInjectableContentTypeCompletions(injectableContentType, originalFile, parameters.getPosition(), result);
+                        PsiElement element = parameters.getPosition();
+                        switch (injectableContentType) {
+                            case Query:
+                                insertQueryTemplate(element, originalFile, result);
+                                break;
+                            case Command:
+                                insideCommandTemplate(element, originalFile, result);
+                                break;
+                            case GraphShapeQuery:
+                                ODTCommandCompletionNewGraph.addShapeCompletions(parameters, result);
+                                break;
+                        }
                     }
                 }
-            }
-
-            private void insertInjectableContentTypeCompletions(InjectableContentType injectableContentType,
-                                                                ODTFile containingFile,
-                                                                PsiElement element,
-                                                                CompletionResultSet resultSet) {
-                switch (injectableContentType) {
-                    case Query:
-                        insertQueryTemplate(element, containingFile, resultSet);
-                        break;
-                    case Command:
-                        insideCommandTemplate(element, containingFile, resultSet);
-                        break;
-                }
-
             }
 
             private void insertQueryTemplate(PsiElement element, ODTFile containingFile, CompletionResultSet resultSet) {

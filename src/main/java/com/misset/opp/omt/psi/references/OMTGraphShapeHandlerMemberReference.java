@@ -4,9 +4,9 @@ import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-public class OMTExportMemberReference extends OMTPlainTextReference {
+public class OMTGraphShapeHandlerMemberReference extends OMTPlainTextReference {
 
-    public OMTExportMemberReference(@NotNull YAMLPlainTextImpl element) {
+    public OMTGraphShapeHandlerMemberReference(@NotNull YAMLPlainTextImpl element) {
         super(element);
     }
 

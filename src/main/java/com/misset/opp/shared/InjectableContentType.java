@@ -15,6 +15,11 @@ public enum InjectableContentType {
      */
     Command,
 
+    /**
+     * Position that expects a query that returns a graphShape
+     */
+    GraphShapeQuery,
+
     None
 
 }

@@ -31,19 +31,22 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
 
                 int argumentIndexOf = newGraphCommand.getArgumentIndexOf(element);
                 if (argumentIndexOf == 0) {
-                    ODTFile file = (ODTFile) parameters.getOriginalFile();
-                    Map<String, String> availableNamespaces = file.getAvailableNamespaces();
-
-                    // show all graphshape instances:
-                    OppModel.INSTANCE.runWithReadLock(() -> OppModel.INSTANCE.GRAPH_SHAPE.listInstances().mapWith(
-                                    resource -> TTLResourceUtil
-                                            .getRootLookupElement(resource, "Graphshape", availableNamespaces))
-                            .forEachRemaining(result::addElement));
-
-
-                    result.stopHere();
+                    addShapeCompletions(parameters, result);
                 }
             }
         });
+    }
+
+    public static void addShapeCompletions(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
+        ODTFile file = (ODTFile) parameters.getOriginalFile();
+        Map<String, String> availableNamespaces = file.getAvailableNamespaces();
+
+        // show all graphshape instances:
+        OppModel.INSTANCE.runWithReadLock(() -> OppModel.INSTANCE.GRAPH_SHAPE.listInstances().mapWith(
+                        resource -> TTLResourceUtil
+                                .getRootLookupElement(resource, "Graphshape", availableNamespaces))
+                .forEachRemaining(result::addElement));
+
+        result.stopHere();
     }
 }

@@ -11,7 +11,6 @@ import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 public class OMTImportMemberReference extends OMTPlainTextReference {
 
@@ -22,14 +21,14 @@ public class OMTImportMemberReference extends OMTPlainTextReference {
     public ResolveResult @NotNull [] multiResolveToOriginal(boolean resolveToOriginalElement) {
         final YAMLPlainTextImpl element = getElement();
         final YAMLKeyValue keyValue = PsiTreeUtil.getParentOfType(element, YAMLKeyValue.class);
+        if (keyValue == null) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
 
         String name = element.getText();
         final HashMap<String, List<PsiCallable>> exportingMembersMap = OMTImportMetaType.getExportedMembersFromOMTFile(
                 keyValue);
-        return Optional.ofNullable(exportingMembersMap.get(name))
-                .or(() -> Optional.ofNullable(exportingMembersMap.get("@" + name)))
-                .map(psiCallables -> toResults(psiCallables, resolveToOriginalElement))
-                .orElse(ResolveResult.EMPTY_ARRAY);
+        return fromExportableMembersMap(exportingMembersMap, name, resolveToOriginalElement);
     }
 
     public PsiElement resolve(boolean resolveToOriginalElement) {

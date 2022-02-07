@@ -10,6 +10,7 @@ import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -21,8 +22,9 @@ public class OMTModelItemMetaType extends OMTMetaTaggedType<OMTModelItemDelegate
     private static final HashMap<String, Supplier<OMTModelItemDelegateMetaType>> taggedTypes = new HashMap<>();
     static {
         taggedTypes.put("!Activity", OMTActivityMetaType::new);
-        taggedTypes.put("!Loadable", OMTLoadableMetaType::new);
         taggedTypes.put("!Component", OMTComponentMetaType::new);
+        taggedTypes.put("!GraphShapeHandlers", OMTGraphShapeHandlerMetaType::new);
+        taggedTypes.put("!Loadable", OMTLoadableMetaType::new);
         taggedTypes.put("!Ontology", OMTOntologyMetaType::new);
         taggedTypes.put("!Procedure", OMTProcedureMetaType::new);
         taggedTypes.put("!StandaloneQuery", OMTStandaloneQueryMetaType::new);
@@ -30,6 +32,10 @@ public class OMTModelItemMetaType extends OMTMetaTaggedType<OMTModelItemDelegate
 
     public OMTModelItemMetaType(@NonNls @NotNull String name) {
         super(name);
+    }
+
+    public static Set<String> getTypes() {
+        return taggedTypes.keySet();
     }
 
     @Override
@@ -45,5 +51,4 @@ public class OMTModelItemMetaType extends OMTMetaTaggedType<OMTModelItemDelegate
                 .map(OMTModelItemDelegateMetaType::isCallable)
                 .orElse(false);
     }
-
 }

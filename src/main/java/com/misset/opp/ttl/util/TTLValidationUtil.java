@@ -212,7 +212,7 @@ public class TTLValidationUtil {
                 .contains(OppModel.INSTANCE.NAMED_GRAPH_CLASS);
     }
 
-    private static boolean isGraphshapeInstance(OntResource resource) {
+    public static boolean isGraphshapeInstance(OntResource resource) {
         return resource.isIndividual() && resource.asIndividual()
                 .listOntClasses(false)
                 .toList()

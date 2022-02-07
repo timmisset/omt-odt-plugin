@@ -67,8 +67,14 @@ patchPluginXml {
         <br>
         The location of the API.md is currently not configurable, the API.md must be located in a folder named 'omt'.<br>
         <br>
+        Added #40: <a href="https://github.com/timmisset/omt-odt-plugin/issues/40">Add GraphShapeHandlers to OMT structure</a><br>
+        !GraphShapeHandlers are added to the OMT structure. The handlers defined in a module reference to the declared or imported
+        GraphShapeHandlers; this will allow for refactor-rename handling. The 'shape:' attribute allows for GraphShape URIs only, 
+        completion will show all known shapes in the model.<br>
+        <br>
         Fixed #34: <a href="https://github.com/timmisset/omt-odt-plugin/issues/34">interface member not exported correctly</a><br>
         Fixed #35: <a href="https://github.com/timmisset/omt-odt-plugin/issues/35">Refactor unresolvable from annotation to inspection</a><br>
+        Fixed #41: <a href="https://github.com/timmisset/omt-odt-plugin/issues/41">Refactor-rename export member</a><br>
         """
 }
 tasks {

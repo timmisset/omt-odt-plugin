@@ -7,6 +7,7 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.meta.OMTExportMemberMetaType;
+import com.misset.opp.omt.meta.OMTGraphShapeHandlerMemberMetaType;
 import com.misset.opp.omt.meta.OMTImportMemberMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
@@ -103,6 +104,8 @@ public class OMTYamlDelegateFactory {
             return new OMTYamlParamTypeDelegate(yamlPlainText);
         } else if (metaType instanceof OMTFileReferenceMetaType) {
             return new OMTYamlFileReferenceDelegate(yamlPlainText);
+        } else if (metaType instanceof OMTGraphShapeHandlerMemberMetaType) {
+            return new OMTYamlGraphShapeHandlerMemberDelegate(yamlPlainText);
         }
         return null;
     }
