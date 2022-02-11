@@ -80,6 +80,8 @@ public class ODTColorSettingsPage implements ColorSettingsPage {
         descriptors.add(new AttributesDescriptor(getPresentableName(ReadonlyVariable.getExternalName()), ReadonlyVariable));
         descriptors.add(new AttributesDescriptor(getPresentableName(Parameter.getExternalName()), Parameter));
         descriptors.add(new AttributesDescriptor(getPresentableName(Braces.getExternalName()), Braces));
+        descriptors.add(new AttributesDescriptor(getPresentableName(Brackets.getExternalName()), Brackets));
+        descriptors.add(new AttributesDescriptor(getPresentableName(Parentheses.getExternalName()), Parentheses));
         return descriptors.toArray(AttributesDescriptor[]::new);
     }
 

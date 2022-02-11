@@ -7,6 +7,7 @@ import com.misset.opp.odt.syntax.ODTHighlightingTypes;
 import com.misset.opp.odt.psi.ODTIgnored;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.impl.source.tree.JavaDocElementType;
+import com.intellij.lexer.FlexLexer;
 
 %%
 
@@ -142,10 +143,10 @@ RESERVED_NAME=                  "IF"
     "/"                                                             { return ODTHighlightingTypes.PATH_DELIMITER; }
     "^"                                                             { return ODTTypes.CARET; }
     "\."                                                            { return ODTHighlightingTypes.IDENTIFIER; }
-    "["                                                             { return ODTHighlightingTypes.BRACKETS; }
-    "]"                                                             { return ODTHighlightingTypes.BRACKETS; }
-    "("                                                             { return ODTHighlightingTypes.PARENTHESES; }
-    ")"                                                             { return ODTHighlightingTypes.PARENTHESES; }
+    "["                                                             { return ODTTypes.BRACKET_OPEN; }
+    "]"                                                             { return ODTTypes.BRACKET_CLOSED; }
+    "("                                                             { return ODTTypes.PARENTHESES_OPEN; }
+    ")"                                                             { return ODTTypes.PARENTHESES_CLOSE; }
     "+"                                                             { return ODTHighlightingTypes.OPERATOR_SIGN; }
     "+="                                                            { return ODTHighlightingTypes.OPERATOR_SIGN; }
     "-="                                                            { return ODTHighlightingTypes.OPERATOR_SIGN; }

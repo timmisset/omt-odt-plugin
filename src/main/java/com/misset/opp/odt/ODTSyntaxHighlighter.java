@@ -33,6 +33,10 @@ public class ODTSyntaxHighlighter implements SyntaxHighlighter {
             Variable);
     public static final TextAttributesKey Braces = createTextAttributesKey("ODT_Braces and Operators//Braces",
             DefaultLanguageHighlighterColors.BRACES);
+    public static final TextAttributesKey Brackets = createTextAttributesKey("ODT_Braces and Operators//Brackets",
+            DefaultLanguageHighlighterColors.BRACKETS);
+    public static final TextAttributesKey Parentheses = createTextAttributesKey("ODT_Braces and Operators//Parentheses",
+            DefaultLanguageHighlighterColors.PARENTHESES);
 
     private static final HashMap<IElementType, TextAttributesKey> highlightingMap = new HashMap<>();
     private static final HashMap<IElementType, TextAttributesKey> nonDisplayedHighlightingMap = new HashMap<>();
@@ -50,9 +54,6 @@ public class ODTSyntaxHighlighter implements SyntaxHighlighter {
         addToMap(ODTTypes.SEMICOLON, "ODT_Braces and Operators//Semicolon", DefaultLanguageHighlighterColors.SEMICOLON);
         addToMap(ODTTypes.COMMA, "ODT_Braces and Operators//Comma", DefaultLanguageHighlighterColors.COMMA);
         addToMap(ODTTypes.LAMBDA, "ODT_Braces and Operators//Lambda", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-        addToMap(ODTHighlightingTypes.BRACKETS, "ODT_Braces and Operators//Brackets", DefaultLanguageHighlighterColors.BRACKETS);
-        addToMap(ODTHighlightingTypes.PARENTHESES, "ODT_Braces and Operators//Parentheses", DefaultLanguageHighlighterColors.PARENTHESES);
-        addToMap(ODTTypes.LAMBDA, "ODT_Braces and Operators//Lambda", DefaultLanguageHighlighterColors.OPERATION_SIGN);
         addToMap(ODTIgnored.MULTILINE, "ODT_Comments//Block", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
         addToMap(JavaDocElementType.DOC_COMMENT, "ODT_Comments//Doc", DefaultLanguageHighlighterColors.DOC_COMMENT);
         addToMap(ODTIgnored.END_OF_LINE_COMMENT, "ODT_Comments//Line", DefaultLanguageHighlighterColors.LINE_COMMENT);
@@ -67,6 +68,10 @@ public class ODTSyntaxHighlighter implements SyntaxHighlighter {
         highlightingMap.put(ODTTypes.VARIABLE_NAME, Variable);
         nonDisplayedHighlightingMap.put(ODTTypes.CURLY_OPEN, Braces);
         nonDisplayedHighlightingMap.put(ODTTypes.CURLY_CLOSED, Braces);
+        nonDisplayedHighlightingMap.put(ODTTypes.BRACKET_OPEN, Brackets);
+        nonDisplayedHighlightingMap.put(ODTTypes.BRACKET_CLOSED, Brackets);
+        nonDisplayedHighlightingMap.put(ODTTypes.PARENTHESES_OPEN, Parentheses);
+        nonDisplayedHighlightingMap.put(ODTTypes.PARENTHESES_CLOSE, Parentheses);
     }
 
     private static void addToMap(IElementType type, String name, TextAttributesKey fallback) {

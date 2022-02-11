@@ -23,6 +23,8 @@ public class ODTPairedBraceMatcher implements PairedBraceMatcher {
 
     private static final BracePair[] pairs = new BracePair[]{
             new BracePair(ODTTypes.CURLY_OPEN, ODTTypes.CURLY_CLOSED, true),
+            new BracePair(ODTTypes.BRACKET_OPEN, ODTTypes.BRACKET_CLOSED, true),
+            new BracePair(ODTTypes.PARENTHESES_OPEN, ODTTypes.PARENTHESES_CLOSE, true),
     };
 
     @Override

@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.5'
+version '5.5.1'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,6 +59,10 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        <h1>Update 5.5.1</h1>
+        Added #42: <a href="https://github.com/timmisset/omt-odt-plugin/issues/42">Boolean validation for query filter</a><br>
+        Added #43: <a href="https://github.com/timmisset/omt-odt-plugin/issues/43">Paired matcher for brackets and parentheses</a><br>
+        
         <h1>Update 5.5</h1>
         Added #36: <a href="https://github.com/timmisset/omt-odt-plugin/issues/36">DocumentationProvider for OMT</a><br>
         The DocumentationProvider (hover-mouse or View - Quick Documentation) includes the OMT API markdown information<br>
