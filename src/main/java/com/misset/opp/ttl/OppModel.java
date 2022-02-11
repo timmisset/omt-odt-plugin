@@ -707,7 +707,7 @@ public class OppModel {
         });
     }
 
-    private Set<OntResource> toIndividual(OntResource resource) {
+    public Set<OntResource> toIndividual(OntResource resource) {
         return computeWithReadLock(() -> {
             if (toIndividualCache.containsKey(resource)) {
                 return toIndividualCache.get(resource);
@@ -851,6 +851,14 @@ public class OppModel {
 
     public Boolean isClass(OntResource resource) {
         return getClass(resource) != null;
+    }
+
+    public Boolean isIndividual(OntResource resource) {
+        String uri = resource.getURI();
+        if (uri == null) {
+            return false;
+        }
+        return getIndividual(uri) != null;
     }
 
     public Boolean isPredicate(OntResource resource) {
@@ -1086,45 +1094,24 @@ public class OppModel {
     }
 
     /**
-     * Only use this for documentation purposes
+     * Only use this for documentation / completion purposes
      */
-    public List<OntClass> listOrderedSuperClasses(OntClass ontClass) {
-        return computeWithReadLock(() -> {
-            // make effectively final for lambda
-            OntClass ontologyClass = ontClass;
-            if (ontologyClass == null || ontologyClass == OWL_THING_CLASS) {
-                return Collections.emptyList();
-            }
-            List<OntClass> superClasses = new ArrayList<>();
-            OntClass superClass = ontologyClass.getSuperClass();
-            while (superClass != null && !superClass.equals(ontologyClass)) {
-                superClasses.add(ontologyClass);
-                ontologyClass = superClass;
-                superClass = ontologyClass.getSuperClass();
-            }
-            return superClasses;
-        });
+    public List<OntClass> listSuperClasses(OntClass ontClass) {
+        return computeWithReadLock(() -> ontClass.listSuperClasses(false).toList());
     }
 
     /**
-     * Only use this for documentation purposes
+     * Only use this for documentation / completion purposes
      */
-    public List<OntClass> listOrderedSubClasses(OntClass ontClass) {
-        return computeWithReadLock(() -> {
-            // make effectively final for lambda
-            OntClass ontologyClass = ontClass;
-            if (ontologyClass == null || ontologyClass.equals(OWL_THING_CLASS)) {
-                return Collections.emptyList();
-            }
-            List<OntClass> subClasses = new ArrayList<>();
-            OntClass subClass = ontologyClass.getSubClass();
-            while (subClass != null && !subClass.equals(ontologyClass)) {
-                subClasses.add(subClass);
-                ontologyClass = subClass;
-                subClass = ontologyClass.getSubClass();
-            }
-            return subClasses;
-        });
+    public List<OntClass> listSubclasses(OntClass ontClass) {
+        return computeWithReadLock(() -> ontClass.listSubClasses(false).toList());
+    }
+
+    public Collection<? extends OntClass> listSubclasses(Set<OntClass> classes) {
+        return classes.stream()
+                .map(this::listSubclasses)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -1145,4 +1132,6 @@ public class OppModel {
         }));
 
     }
+
+
 }

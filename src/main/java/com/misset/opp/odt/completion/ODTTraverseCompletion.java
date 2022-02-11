@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.patterns.StandardPatterns.or;
 import static com.misset.opp.odt.completion.CompletionPatterns.*;
+import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.Traverse;
 
 public class ODTTraverseCompletion extends CompletionContributor {
     ElementPattern<PsiElement> TRAVERSE =
@@ -85,6 +86,7 @@ public class ODTTraverseCompletion extends CompletionContributor {
                         direction,
                         availableNamespaces))
                 .filter(Objects::nonNull)
+                .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, Traverse.getValue()))
                 .forEach(result::addElement);
     }
 

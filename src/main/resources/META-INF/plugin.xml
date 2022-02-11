@@ -100,14 +100,16 @@
                                     implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
         <lang.commenter language="ODT" implementationClass="com.misset.opp.odt.ODTCommenter"/>
         <!-- Completions -->
-        <completion.contributor language="ODT"
+        <completion.contributor language="ODT" order="after ODTEquationStatementCompletion" id="ODTTraverseCompletion"
                                 implementationClass="com.misset.opp.odt.completion.ODTTraverseCompletion"/>
-        <completion.contributor language="ODT"
+        <completion.contributor language="ODT" order="after ODTTraverseCompletion"
                                 implementationClass="com.misset.opp.odt.completion.ODTOperatorCompletion"/>
-        <completion.contributor language="ODT"
+        <completion.contributor language="ODT" order="after ODTTraverseCompletion"
                                 implementationClass="com.misset.opp.odt.completion.ODTVariableCompletion"/>
-        <completion.contributor language="ODT"
+        <completion.contributor language="ODT" order="after ODTTraverseCompletion"
                                 implementationClass="com.misset.opp.odt.completion.ODTCommandCompletion"/>
+        <completion.contributor language="ODT" order="first" id="ODTEquationStatementCompletion"
+                                implementationClass="com.misset.opp.odt.completion.ODTEquationStatementCompletion"/>
 
 
         <!-- Specific completions that should run first and stop the completion when applicable -->

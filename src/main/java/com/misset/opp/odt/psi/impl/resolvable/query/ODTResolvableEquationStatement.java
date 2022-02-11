@@ -11,10 +11,7 @@ import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -33,8 +30,13 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
     public Set<OntResource> filter(Set<OntResource> resources) {
         // possibility: $input[rdf:type == /ont:ClassA] or $input[/ont:ClassA == rdf:type]
         // more complexity is not supported
-        final ODTQuery leftHand = getQueryList().get(0);
-        final ODTQuery rightHand = getQueryList().get(1);
+        List<ODTQuery> queryList = getQueryList();
+        if (queryList.size() < 2) {
+            return resources;
+        }
+
+        final ODTQuery leftHand = queryList.get(0);
+        final ODTQuery rightHand = queryList.get(1);
 
         // only an equation statement with 2 query paths can be analysed
         if (!(leftHand instanceof ODTResolvableQueryPath && rightHand instanceof ODTResolvableQueryPath)) {
@@ -112,7 +114,7 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
     public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {
         ODTQuery leftSide = getQueryList().get(0);
         ODTQuery rightSide = getQueryList().get(1);
-        ODTQuery opposite = PsiTreeUtil.isAncestor(leftSide, element, true) ? leftSide : rightSide;
+        ODTQuery opposite = PsiTreeUtil.isAncestor(leftSide, element, true) ? rightSide : leftSide;
         Set<OntResource> oppositeResources = opposite.resolve();
 
         return resources -> resources.isEmpty() || oppositeResources.isEmpty() ||

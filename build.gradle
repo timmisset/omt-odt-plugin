@@ -60,6 +60,12 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.5.1</h1>
+        Added #38: <a href="https://github.com/timmisset/omt-odt-plugin/issues/38">Improve completion suggestion for equation statement</a><br>
+        Completion for equation statements will take the left-side query into consideration and provide suggestions based on the instance or class<br>
+        For example<br>
+        \$variableWithTypeClassA / rdf:type == <caret> will suggest /ont:ClassA and all subclasses for ClassA.<br>
+        \$variableWithTypeClassA == <caret> will suggest all possible instances for ClassA.<br>
+        <br>
         Added #42: <a href="https://github.com/timmisset/omt-odt-plugin/issues/42">Boolean validation for query filter</a><br>
         Added #43: <a href="https://github.com/timmisset/omt-odt-plugin/issues/43">Paired matcher for brackets and parentheses</a><br>
         

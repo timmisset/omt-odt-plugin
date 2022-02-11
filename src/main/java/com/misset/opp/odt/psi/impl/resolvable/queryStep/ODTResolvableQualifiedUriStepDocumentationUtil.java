@@ -82,7 +82,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
     private static void setClassInfo(OntClass ontClass, StringBuilder sb) {
         // the order is important for super and subclasses, use list instead of set
-        List<OntClass> superClasses = OppModel.INSTANCE.listOrderedSuperClasses(ontClass);
+        List<OntClass> superClasses = OppModel.INSTANCE.listSuperClasses(ontClass);
         if (!superClasses.isEmpty()) {
             ODTDocumentationProvider.addKeyValueSection("Superclasses:",
                     superClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))
@@ -92,7 +92,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         }
 
 
-        List<OntClass> subClasses = OppModel.INSTANCE.listOrderedSubClasses(ontClass);
+        List<OntClass> subClasses = OppModel.INSTANCE.listSubclasses(ontClass);
         if (!subClasses.isEmpty()) {
             ODTDocumentationProvider.addKeyValueSection("Subclasses:",
                     subClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))

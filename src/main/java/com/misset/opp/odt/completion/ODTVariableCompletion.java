@@ -74,6 +74,7 @@ public class ODTVariableCompletion extends CompletionContributor {
                 variables.stream()
                         .filter(variable -> typeFilter.test(variable.resolve()))
                         .map(this::getLookupElement)
+                        .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, CompletionPatterns.COMPLETION_PRIORITY.Variable.getValue()))
                         .forEach(result::addElement);
             }
 

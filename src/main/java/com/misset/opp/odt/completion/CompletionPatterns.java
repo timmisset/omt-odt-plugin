@@ -15,10 +15,27 @@ import static com.intellij.patterns.PsiJavaPatterns.psiElement;
 
 public interface CompletionPatterns {
 
+    enum COMPLETION_PRIORITY {
+        Callable(0),
+        Variable(1),
+        Traverse(2),
+        RootElement(3);
+
+        private final int value;
+
+        COMPLETION_PRIORITY(final int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 
     PsiJavaElementPattern.Capture<PsiElement> QUERY_STEP = psiElement().inside(ODTQueryStep.class);
     PsiJavaElementPattern.Capture<PsiElement> INSIDE_DEFINED_QUERY = psiElement().inside(ODTDefineQueryStatement.class);
     PsiJavaElementPattern.Capture<PsiElement> INSIDE_QUERY_FILTER = psiElement().inside(ODTQueryFilter.class);
+    PsiJavaElementPattern.Capture<PsiElement> INSIDE_EQUATION_STATEMENT = psiElement().inside(ODTEquationStatement.class);
     PsiJavaElementPattern.Capture<PsiElement> FIRST_QUERY_STEP = QUERY_STEP.atStartOf(
             psiElement(ODTQueryPath.class)
     );

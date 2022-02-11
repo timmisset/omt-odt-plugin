@@ -2,6 +2,7 @@ package com.misset.opp.odt.completion;
 
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
@@ -20,6 +21,8 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.Callable;
 
 public abstract class ODTCallCompletion extends CompletionContributor {
 
@@ -102,6 +105,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                     return resolve.isEmpty() || typeFilter.test(resolve);
                 })
                 .map(this::getLookupElement)
+                .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, Callable.getValue()))
                 .forEach(result::addElement);
     }
 }
