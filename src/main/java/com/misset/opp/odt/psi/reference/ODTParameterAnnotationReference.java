@@ -53,6 +53,9 @@ public class ODTParameterAnnotationReference extends PsiReferenceBase.Poly<PsiDo
 
     @Override
     public @InspectionMessage @NotNull String getUnresolvedMessagePattern() {
-        return "Cannot resolve parameter '$" + getElement().getName() + "'";
+        String name = Optional.ofNullable(getElement().getValueElement())
+                .map(PsiElement::getText)
+                .orElse("");
+        return "Cannot resolve parameter '" + name + "'";
     }
 }
