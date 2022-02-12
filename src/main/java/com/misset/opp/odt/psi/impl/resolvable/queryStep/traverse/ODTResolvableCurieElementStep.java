@@ -1,19 +1,12 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.ODTInjectionUtil;
-import com.misset.opp.odt.inspection.quikfix.ODTRegisterPrefixLocalQuickFix;
 import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.impl.ODTNamespacePrefixImpl;
-import com.misset.opp.omt.indexing.OMTPrefixIndex;
-import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,29 +38,5 @@ public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryFo
     @Override
     protected TextRange getModelReferenceTextRange() {
         return getLastChild().getTextRangeInParent();
-    }
-
-    @Override
-    public void inspect(ProblemsHolder holder) {
-        super.inspect(holder);
-        if (getFullyQualifiedUri() == null) {
-            final PsiElement prefix = getNamespacePrefix().getFirstChild();
-            boolean injectedInOMT = ODTInjectionUtil.getInjectionHost(holder.getFile()) != null;
-            holder.registerProblem(prefix,
-                    "Could not resolve prefix",
-                    ProblemHighlightType.ERROR,
-                    OMTPrefixIndex.getNamespaces(prefix.getText())
-                            .stream()
-                            .map(namespace -> getLocalQuikFix(injectedInOMT, prefix.getText(), namespace))
-                            .toArray(LocalQuickFix[]::new)
-            );
-        }
-    }
-    private LocalQuickFix getLocalQuikFix(boolean injectedInOMT, String prefix, String namespace) {
-        if(injectedInOMT) {
-            return new OMTRegisterPrefixLocalQuickFix(prefix, namespace);
-        } else {
-            return new ODTRegisterPrefixLocalQuickFix(prefix, namespace);
-        }
     }
 }

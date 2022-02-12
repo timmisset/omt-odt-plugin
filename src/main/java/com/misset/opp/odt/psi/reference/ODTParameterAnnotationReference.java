@@ -1,5 +1,7 @@
 package com.misset.opp.odt.psi.reference;
 
+import com.intellij.codeInsight.daemon.EmptyResolveMessageProvider;
+import com.intellij.codeInspection.util.InspectionMessage;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
@@ -16,7 +18,9 @@ import java.util.Optional;
 
 import static com.misset.opp.odt.documentation.ODTDocumentationUtil.getDocOwner;
 
-public class ODTParameterAnnotationReference extends PsiReferenceBase.Poly<PsiDocTag> implements PsiPolyVariantReference {
+public class ODTParameterAnnotationReference extends PsiReferenceBase.Poly<PsiDocTag> implements
+        PsiPolyVariantReference,
+        EmptyResolveMessageProvider {
     Logger LOGGER = Logger.getInstance(ODTTTLSubjectPredicateReference.class);
 
     public ODTParameterAnnotationReference(PsiDocTag psiDogTag, TextRange textRange) {
@@ -45,5 +49,10 @@ public class ODTParameterAnnotationReference extends PsiReferenceBase.Poly<PsiDo
                 .findFirst()
                 .map(PsiElementResolveResult::createResults)
                 .orElse(ResolveResult.EMPTY_ARRAY);
+    }
+
+    @Override
+    public @InspectionMessage @NotNull String getUnresolvedMessagePattern() {
+        return "Cannot resolve parameter '$" + getElement().getName() + "'";
     }
 }

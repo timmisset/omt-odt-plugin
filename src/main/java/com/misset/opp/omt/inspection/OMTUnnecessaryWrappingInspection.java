@@ -12,7 +12,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.psi.OMTFile;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +23,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-@ApiStatus.Internal
 public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase {
 
     private static final Pattern WRAPPED_IMPORT = Pattern.compile("['\"]\\.[^'\"]+['\"]");

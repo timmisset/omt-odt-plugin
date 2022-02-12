@@ -216,7 +216,7 @@
 
         <localInspection shortName="ODTCodeInspectionUnresolvableReference" hasStaticDescription="true"
                          language="ODT" displayName="Inspect references" groupPath="ODT"
-                         groupName="References" enabledByDefault="true"
+                         groupName="References" enabledByDefault="true" level="ERROR"
                          implementationClass="com.misset.opp.odt.inspection.ODTCodeInspectionUnresolvableReference"/>
 
 

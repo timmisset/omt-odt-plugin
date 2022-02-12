@@ -59,7 +59,8 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.5.1</h1>
+        <h1>Update 5.6</h1>
+        Fixed #26: <a href="https://github.com/timmisset/omt-odt-plugin/issues/26">No error or quickfix when using an undefined prefix in a javadoc parameter annotation</a>
         Added #38: <a href="https://github.com/timmisset/omt-odt-plugin/issues/38">Improve completion suggestion for equation statement</a><br>
         Completion for equation statements will take the left-side query into consideration and provide suggestions based on the instance or class<br>
         For example<br>
@@ -68,6 +69,7 @@ patchPluginXml {
         <br>
         Added #42: <a href="https://github.com/timmisset/omt-odt-plugin/issues/42">Boolean validation for query filter</a><br>
         Added #43: <a href="https://github.com/timmisset/omt-odt-plugin/issues/43">Paired matcher for brackets and parentheses</a><br>
+        Fixed #44: <a href="https://github.com/timmisset/omt-odt-plugin/issues/44">Refactor-rename prefix in annotation and usage</a>
         
         <h1>Update 5.5</h1>
         Added #36: <a href="https://github.com/timmisset/omt-odt-plugin/issues/36">DocumentationProvider for OMT</a><br>
@@ -96,7 +98,7 @@ tasks {
         jvmArgs("-Xmx2000m")
     }
     runPluginVerifier {
-        ideVersions = ["IC-2021.1", "IC-2021.2"]
+        ideVersions = ["IC-2021.2", "IC-2021.3"]
     }
 
 
