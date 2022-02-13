@@ -11,9 +11,7 @@ import com.misset.opp.resolvable.Variable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Highlighting for the resolved types is set by the
- *
- * @see com.misset.opp.odt.psi.impl.resolvable.util.ODTResolvableUtil
+ * Highlighting for the resolved types is set by the*
  */
 public class ODTHighlightingAnnotator implements Annotator {
     @Override

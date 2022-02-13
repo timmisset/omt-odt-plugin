@@ -38,7 +38,7 @@
         <lang.documentationProvider language="OMT"
                                     implementationClass="com.misset.opp.omt.documentation.OMTDocumentationProvider"/>
         <postStartupActivity id="reasons" implementation="com.misset.opp.omt.startup.LoadReasonsStartupActivity"/>
-        <postStartupActivity id="importedMembers"
+        <postStartupActivity id="indexOMT"
                              implementation="com.misset.opp.omt.startup.IndexOMTStartupActivity"/>
 
         <!-- Inspections -->

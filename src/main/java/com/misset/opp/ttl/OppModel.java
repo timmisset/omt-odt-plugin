@@ -83,6 +83,7 @@ public class OppModel {
     HashMap<OntClass, Set<OntClass>> superClassesCache = new HashMap<>();
     HashMap<String, OntResource> mappedResourcesCache = new HashMap<>();
     HashMap<String, Individual> mappedIndividualsCache = new HashMap<>();
+    HashMap<OntResource, Boolean> isIndividualCache = new HashMap<>();
     HashMap<String, OntClass> mappedClassesCache = new HashMap<>();
 
     // contain information from the SHACL model about the cardinality of the predicates
@@ -130,6 +131,7 @@ public class OppModel {
         listOntClassesCache.clear();
         toIndividualCache.clear();
         toClassCache.clear();
+        isIndividualCache.clear();
     }
 
     private void clearCardinality() {
@@ -403,12 +405,12 @@ public class OppModel {
             if (!listPredicateObjectsCache.containsKey(subject)) {
                 return computeWithReadLock(() -> {
                     final HashSet<Statement> hashSet;
-                    if (subject.isIndividual()) {
+                    if (isIndividual(subject)) {
                         hashSet = new HashSet<>(listPredicateObjectsForIndividual(subject.asIndividual()));
-                    } else if (!subject.isClass()) {
+                    } else if (!isClass(subject)) {
                         hashSet = new HashSet<>();
                     } else {
-                        OntClass ontClass = subject.asClass();
+                        OntClass ontClass = toClass(subject);
                         hashSet = new HashSet<>(ontClass.listProperties().toSet());
                         ontClass.listSuperClasses().forEach(
                                 superClass -> hashSet.addAll(superClass.listProperties().toSet())
@@ -474,12 +476,12 @@ public class OppModel {
             final Set<OntResource> cachedResources = listSubjectsCache.getOrDefault(object, new HashMap<>()).get(predicate);
             if (cachedResources == null) {
                 final Set<OntResource> resources;
-                if (object.isIndividual()) {
+                if (isIndividual(object)) {
                     // the returned subjects should also be the instances of the classes that point to
                     // the ontClass of the Individual
                     resources = listSubjectsForIndividual(predicate, object.asIndividual());
-                } else if (object.isClass()) {
-                    resources = listSubjectsForClass(predicate, object.asClass());
+                } else if (isClass(object)) {
+                    resources = listSubjectsForClass(predicate, toClass(object));
                 } else {
                     resources = Collections.emptySet();
                 }
@@ -622,7 +624,7 @@ public class OppModel {
                     if (!subject.isClass()) {
                         resources = Collections.emptySet(); // no a valid class
                     } else {
-                        resources = listObjectsForClass(subject.asClass(), predicate);
+                        resources = listObjectsForClass(toClass(subject), predicate);
                     }
                 }
                 final HashMap<Property, Set<OntResource>> bySubject = listObjectsCache.getOrDefault(subject,
@@ -717,7 +719,12 @@ public class OppModel {
                     return Collections.emptySet();
                 }
                 if (resource.isClass()) {
-                    individuals = resource.asClass().listInstances(true).mapWith(OntResource.class::cast).toSet();
+                    OntClass ontClass = toClass(resource);
+                    if (ontClass != null) {
+                        individuals = ontClass.listInstances(true).mapWith(OntResource.class::cast).toSet();
+                    } else {
+                        individuals = Collections.emptySet();
+                    }
                 } else {
                     individuals = Collections.singleton(resource);
                 }
@@ -854,11 +861,13 @@ public class OppModel {
     }
 
     public Boolean isIndividual(OntResource resource) {
-        String uri = resource.getURI();
-        if (uri == null) {
-            return false;
+        if (isIndividualCache.containsKey(resource)) {
+            return isIndividualCache.get(resource);
+        } else {
+            Boolean isIndividual = computeWithReadLock(resource::isIndividual);
+            isIndividualCache.put(resource, isIndividual);
+            return isIndividual;
         }
-        return getIndividual(uri) != null;
     }
 
     public Boolean isPredicate(OntResource resource) {
@@ -866,8 +875,11 @@ public class OppModel {
     }
 
     public Property getProperty(Resource resource) {
-        return computeWithReadLock(() -> getModel().getProperty(resource.getURI()));
-
+        String uri = resource.getURI();
+        if (uri == null) {
+            return null;
+        }
+        return computeWithReadLock(() -> getModel().getProperty(uri));
     }
 
     @Nullable
@@ -1017,27 +1029,26 @@ public class OppModel {
                     resourceB.equals(OWL_THING_INSTANCE)) {
                 return true;
             }
-            if (resourceA.isIndividual()) {
+            if (isIndividual(resourceA)) {
                 // compare individuals by their classes
-                if (!resourceB.isIndividual()) {
+                if (!isIndividual(resourceB)) {
                     return false;
                 } else {
                     // for 2 individuals, check if classA is part of the classes for B
-                    return resourceB.asIndividual().listOntClasses(false)
-                            .toList()
-                            .contains(OppModel.INSTANCE.toClass(resourceA));
+                    return listOntClasses(resourceB)
+                            .contains(toClass(resourceA));
                 }
             }
-            if (resourceA.isProperty() || resourceB.isProperty()) {
+            if (isPredicate(resourceA) || isPredicate(resourceB)) {
                 // properties are only compatible when equal
                 return resourceA.equals(resourceB);
             }
-            if (resourceA.isClass()) {
-                if (!resourceB.isClass()) {
+            if (isClass(resourceA)) {
+                if (!isClass(resourceB)) {
                     return false;
                 } else {
                     return resourceB.equals(resourceA) ||
-                            resourceB.asClass().listSuperClasses().toList().contains(resourceA.asClass());
+                            getSuperClasses(getClass(resourceB)).contains(getClass(resourceA));
                 }
             }
             return false;

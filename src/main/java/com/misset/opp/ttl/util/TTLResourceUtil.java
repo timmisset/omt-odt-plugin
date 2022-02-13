@@ -10,53 +10,38 @@ import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 
 import java.util.*;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Helper class that is particularly to describe resources for documentation, completion and error/warning messages
+ * Not used for validation, resolving etc.
+ */
 public class TTLResourceUtil {
     private static final HashMap<OntResource, String> descriptions = new HashMap<>();
     private static final HashMap<OntResource, String> descriptionsWithType = new HashMap<>();
     private static final HashMap<OntResource, Boolean> isType = new HashMap<>();
-    private static final HashMap<OntResource, Boolean> isValue = new HashMap<>();
     private static final HashMap<OntResource, Boolean> isXSDType = new HashMap<>();
-    private static final HashMap<OntResource, Boolean> isClass = new HashMap<>();
-    private static final HashMap<OntResource, Boolean> isIndividual = new HashMap<>();
 
-    private static boolean is(OntResource resource, HashMap<OntResource, Boolean> cache, Supplier<Boolean> orElse) {
+    private static boolean is(OntResource resource, HashMap<OntResource, Boolean> cache, Function<OntResource, Boolean> orElse) {
         if (cache.containsKey(resource)) {
             return cache.get(resource);
         }
-        Boolean result = orElse.get();
+        Boolean result = orElse.apply(resource);
         cache.put(resource, result);
         return result;
     }
 
     public static boolean isType(OntResource resource) {
-        return is(resource, isType, () -> resource.isClass() && isXSDType(resource));
-    }
-
-    public static boolean isValue(OntResource resource) {
-        return is(resource, isValue, () -> resource instanceof Individual && isXSDType(OppModel.INSTANCE.toClass(resource)));
+        return is(resource, isType, _resource -> OppModel.INSTANCE.isClass(_resource) && isXSDType(_resource));
     }
 
     public static boolean isXSDType(OntResource resource) {
-        return is(resource, isXSDType, () -> resource.getNameSpace().equals(OppModel.XSD));
-    }
-
-    public static boolean isClass(OntResource resource) {
-        return is(resource, isClass, () -> !isType(resource) && resource.isClass());
-    }
-
-    public static boolean isIndividual(OntResource resource) {
-        return is(resource, isIndividual, resource::isIndividual);
+        return is(resource, isXSDType, _resource -> _resource.getNameSpace().equals(OppModel.XSD));
     }
 
     public static String describeUrisJoined(Set<OntResource> resources) {
         return describeUrisJoined(resources, ", ", true);
-    }
-
-    public static String describeUrisJoined(Set<? extends OntResource> resources, String delimiter) {
-        return String.join(delimiter, describeUris(resources, true));
     }
 
     public static String describeUrisJoined(Set<? extends OntResource> resources, String delimiter, boolean withType) {
@@ -68,10 +53,6 @@ public class TTLResourceUtil {
                 .map(resource -> describeUri(resource, withType))
                 .sorted()
                 .collect(Collectors.toList());
-    }
-
-    public static String describeUri(OntResource resource) {
-        return describeUri(resource, true);
     }
 
     public static String describeUri(OntResource resource, boolean withType) {

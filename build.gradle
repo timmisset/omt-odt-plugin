@@ -70,6 +70,10 @@ patchPluginXml {
         Added #42: <a href="https://github.com/timmisset/omt-odt-plugin/issues/42">Boolean validation for query filter</a><br>
         Added #43: <a href="https://github.com/timmisset/omt-odt-plugin/issues/43">Paired matcher for brackets and parentheses</a><br>
         Fixed #44: <a href="https://github.com/timmisset/omt-odt-plugin/issues/44">Refactor-rename prefix in annotation and usage</a>
+        Added #45: <a href="https://github.com/timmisset/omt-odt-plugin/issues/45">PostStartup Indexing</a><br>
+        Indexing of all OMT and injected ODT files now happens post startup in a non-ui-blocking thread.<br>
+        The regular indexer of IntelliJ cannot be used (see issue) for injected languages which is why a seperate mechanism is required.<br>
+        You will see a progress indicator showing 'Indexing OMT' which will take about 10-15 seconds.<br>
         
         <h1>Update 5.5</h1>
         Added #36: <a href="https://github.com/timmisset/omt-odt-plugin/issues/36">DocumentationProvider for OMT</a><br>

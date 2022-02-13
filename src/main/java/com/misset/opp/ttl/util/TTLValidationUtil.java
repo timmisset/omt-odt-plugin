@@ -8,7 +8,9 @@ import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -89,11 +91,9 @@ public class TTLValidationUtil {
 
     private static boolean hasOntClass(OntResource resource,
                                        Set<OntClass> classes) {
-        return OppModel.INSTANCE.computeWithReadLock(() -> {
-            List<OntClass> ontClasses = resource.isIndividual() ?
-                    resource.asIndividual().listOntClasses(false).toList() : Collections.emptyList();
-            return ontClasses.stream().anyMatch(classes::contains);
-        });
+        return OppModel.INSTANCE.computeWithReadLock(() ->
+                OppModel.INSTANCE.isIndividual(resource) &&
+                        OppModel.INSTANCE.listOntClasses(resource).stream().anyMatch(classes::contains));
     }
 
     private static boolean validate(Set<OntResource> resources,
@@ -102,7 +102,9 @@ public class TTLValidationUtil {
                                     Predicate<OntResource> condition,
                                     String error) {
         return OppModel.INSTANCE.computeWithReadLock(() -> {
-            if (!resources.isEmpty() && !resources.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) && !resources.stream().allMatch(condition)) {
+            if (!resources.isEmpty() &&
+                    !resources.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) &&
+                    !resources.stream().allMatch(condition)) {
                 holder.registerProblem(element, error, ProblemHighlightType.ERROR);
                 return false;
             }
@@ -119,7 +121,7 @@ public class TTLValidationUtil {
     public static void validateInstances(Set<OntResource> resources,
                                          ProblemsHolder holder,
                                          PsiElement element) {
-        validate(resources, holder, element, OntResource::isIndividual, ERROR_MESSAGE_INSTANCES);
+        validate(resources, holder, element, OppModel.INSTANCE::isIndividual, ERROR_MESSAGE_INSTANCES);
     }
 
     public static boolean validateBoolean(Set<OntResource> resources,
@@ -154,15 +156,8 @@ public class TTLValidationUtil {
     public static void validateNumber(Set<OntResource> resources,
                                       ProblemsHolder holder,
                                       PsiElement element) {
-        validate(resources,
-                holder,
-                element,
-                ontResource ->
-                        ontResource.isIndividual() &&
-                                ontResource.asIndividual()
-                                        .listOntClasses(false)
-                                        .toList()
-                                        .contains(OppModel.INSTANCE.XSD_NUMBER),
+        validate(resources, holder, element,
+                resource -> isIndividualOfType(resource, OppModel.INSTANCE.XSD_NUMBER),
                 ERROR_MESSAGE_NUMBER);
     }
 
@@ -185,7 +180,7 @@ public class TTLValidationUtil {
     public static void validateClassName(Set<OntResource> resources,
                                          ProblemsHolder holder,
                                          PsiElement element) {
-        validate(resources, holder, element, OntResource::isClass, ERROR_MESSAGE_CLASSNAME);
+        validate(resources, holder, element, OppModel.INSTANCE::isClass, ERROR_MESSAGE_CLASSNAME);
     }
 
     public static void validateGraphShape(Set<OntResource> resources,
@@ -196,27 +191,22 @@ public class TTLValidationUtil {
 
     public static void validateDateTime(Set<OntResource> resources, ProblemsHolder holder, PsiElement element) {
         validate(resources, holder, element,
-                ontResource ->
-                        ontResource.isIndividual() &&
-                                ontResource.asIndividual()
-                                        .listOntClasses(false)
-                                        .toList()
-                                        .contains(OppModel.INSTANCE.XSD_DATETIME),
+                resource ->
+                        isIndividualOfType(resource, OppModel.INSTANCE.XSD_DATETIME),
                 ERROR_MESSAGE_DATE_TIME);
     }
 
     private static boolean isNamedGraphInstance(OntResource resource) {
-        return resource.isIndividual() && resource.asIndividual()
-                .listOntClasses(false)
-                .toList()
-                .contains(OppModel.INSTANCE.NAMED_GRAPH_CLASS);
+        return isIndividualOfType(resource, OppModel.INSTANCE.NAMED_GRAPH_CLASS);
     }
 
     public static boolean isGraphshapeInstance(OntResource resource) {
-        return resource.isIndividual() && resource.asIndividual()
-                .listOntClasses(false)
-                .toList()
-                .contains(OppModel.INSTANCE.GRAPH_SHAPE);
+        return isIndividualOfType(resource, OppModel.INSTANCE.GRAPH_SHAPE);
+    }
+
+    private static boolean isIndividualOfType(OntResource resource, OntClass type) {
+        return OppModel.INSTANCE.isIndividual(resource) &&
+                OppModel.INSTANCE.listOntClasses(resource).contains(type);
     }
 
     private static String createIncompatibleTypesWarning(Set<OntResource> resourcesA,

@@ -162,7 +162,7 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
         OntResource ontResource = OppModel.INSTANCE.getOntResource(uri, holder.getProject());
         if (ontResource == null) {
             holder.registerProblem(element, "Could not find resource <" + uri + "> in the Opp Model", ProblemHighlightType.ERROR);
-        } else if (!TTLResourceUtil.isType(ontResource) && !TTLResourceUtil.isClass(ontResource)) {
+        } else if (!TTLResourceUtil.isType(ontResource) && !OppModel.INSTANCE.isClass(ontResource)) {
             holder.registerProblem(element, "Expected a class or type", ProblemHighlightType.ERROR);
         }
     }
