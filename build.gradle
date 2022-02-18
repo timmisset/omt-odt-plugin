@@ -71,6 +71,10 @@ patchPluginXml {
         IF some / path / to / a / property { <-- replaced<br>
             @LOG(some / path / to / a / property); <-- replaced<br>
         }<br>
+        <br>
+        The introducer will use the resolved type of the statement and (if applicable) the callname to create a list of suggested names
+        for the new variable to choose from. It will use super-class suggestions. If a statement can resolve to multiple types, all types
+        and their superclasses are included<br>
         """
 }
 tasks {
