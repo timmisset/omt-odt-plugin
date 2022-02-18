@@ -7,6 +7,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
@@ -64,7 +65,9 @@ public class ODTVariableAssignmentInspection extends LocalInspectionTool {
             }
 
             private boolean inspectCallHasSecondArgumentResponse(ODTVariableAssignment variableAssignment, ODTVariable variable) {
-                return Optional.ofNullable(variableAssignment.getVariableValue().getCommandCall())
+                return Optional.of(variableAssignment.getVariableValue().getStatement())
+                        .filter(ODTCommandCall.class::isInstance)
+                        .map(ODTCommandCall.class::cast)
                         .map(ODTCall::getCallable)
                         .map(Callable::getSecondReturnArgument)
                         .map(resources -> !resources.isEmpty())

@@ -1,14 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package com.misset.opp.odt.psi;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public interface ODTVariableValue extends ODTPsiElement {
 
-  @Nullable
-  ODTCommandCall getCommandCall();
-
-  @Nullable
-  ODTQuery getQuery();
+  @NotNull
+  ODTStatement getStatement();
 
 }

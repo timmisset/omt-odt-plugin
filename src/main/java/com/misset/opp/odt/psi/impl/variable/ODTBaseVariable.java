@@ -97,7 +97,7 @@ public abstract class ODTBaseVariable
         return CachedValuesManager.getCachedValue(this,
                 IS_DECLARED_VARIABLE,
                 () -> new CachedValueProvider.Result<>(delegate.isDeclaredVariable(),
-                        getContainingFile(),
+                        getODTFile(),
                         PsiModificationTracker.MODIFICATION_COUNT));
     }
 
@@ -152,7 +152,7 @@ public abstract class ODTBaseVariable
         return CachedValuesManager.getCachedValue(this, VARIABLE_TYPE, () -> {
             final Set<OntResource> type = delegate.resolve();
             return new CachedValueProvider.Result<>(type,
-                    getContainingFile(),
+                    getODTFile(),
                     PsiModificationTracker.MODIFICATION_COUNT,
                     ODTCodeUntypedInspectionWarning.PARAM_ANNOTATION,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
@@ -217,7 +217,7 @@ public abstract class ODTBaseVariable
 
     @Override
     public @NotNull SearchScope getUseScope() {
-        return new LocalSearchScope(getContainingFile());
+        return new LocalSearchScope(getODTFile());
     }
 
     @Override

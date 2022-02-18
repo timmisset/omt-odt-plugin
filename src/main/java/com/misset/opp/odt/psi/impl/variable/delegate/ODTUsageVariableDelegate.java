@@ -183,7 +183,7 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
     private Optional<Variable> getFromOMTLocalVariable() {
         // resolve the type from the local variable
         // the type is set by OMTLocalVariableTypeProvider corresponding with the OMTLocalVariableProvider
-        return element.getContainingFile()
+        return element.getODTFile()
                 .getProviders(YAMLValue.class, OMTLocalVariableProvider.class, OMTLocalVariableProvider.KEY)
                 .entrySet()
                 .stream()

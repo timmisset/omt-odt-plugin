@@ -58,11 +58,11 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
     }
 
     private Optional<ResolveResult[]> resolveFromProvider(boolean resolveToOriginalElement) {
-        Optional<List<PsiCallable>> psiElements = myElement.getContainingFile()
+        Optional<List<PsiCallable>> psiElements = myElement.getODTFile()
                 .resolveInOMT(OMTCallableProvider.class,
                         OMTCallableProvider.KEY,
                         myElement.getCallId(),
-                        (provider, mapping) -> provider.getCallableMap(mapping, myElement.getContainingFile().getHost()));
+                        (provider, mapping) -> provider.getCallableMap(mapping, myElement.getODTFile().getHost()));
 
         return psiElements.map(psiCallables -> toResults(psiCallables, resolveToOriginalElement));
     }
@@ -98,7 +98,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
     @Override
     public LocalQuickFix @Nullable [] getQuickFixes() {
         ODTResolvableCall call = getElement();
-        ODTFile containingFile = call.getContainingFile();
+        ODTFile containingFile = call.getODTFile();
         if (containingFile == null) {
             return LocalQuickFix.EMPTY_ARRAY;
         }

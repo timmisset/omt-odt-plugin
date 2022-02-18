@@ -95,18 +95,18 @@ public abstract class ODTDefineStatement extends PsiCallable implements
 
     @Override
     public @NotNull SearchScope getUseScope() {
-        final ODTFile containingFile = getContainingFile();
+        final ODTFile containingFile = getODTFile();
         return containingFile.getExportingMemberUseScope(getName());
     }
 
     @Override
-    public ODTFile getContainingFile() {
+    public ODTFile getODTFile() {
         return (ODTFile) super.getContainingFile();
     }
 
     @Override
     public HashMap<Integer, Set<OntResource>> getParameterTypes() {
-        ODTFile containingFile = getContainingFile();
+        ODTFile containingFile = getODTFile();
         if (containingFile == null) {
             return new HashMap<>();
         }
@@ -179,7 +179,7 @@ public abstract class ODTDefineStatement extends PsiCallable implements
     @Override
     public boolean isUnused() {
         // check if used in file:
-        OMTFile hostFile = getContainingFile().getHostFile();
+        OMTFile hostFile = getODTFile().getHostFile();
         if (hostFile != null) {
             if (hostFile.getAllInjectedPsiCalls()
                     .getOrDefault(getName(), new ArrayList<>())

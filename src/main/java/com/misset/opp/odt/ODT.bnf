@@ -35,13 +35,14 @@ interpolation ::=                           INTERPOLATION_START script? INTERPOL
 // or can be VAR $a = 1, $b = 2 etc.
 declareVariable ::=                         DECLARE_VAR (variableAssignment | variable) (COMMA (variableAssignment | variable))* {
     extends=statement
+    mixin="com.misset.opp.odt.psi.impl.variable.ODTBaseDeclaredVariable"
 }
 // a variable assignment is $var = 1234
 variableAssignment::=                       variable (COMMA variable)* EQUALS variableValue {
                                                                                                 extends=statement
                                                                                             }
 // a variable can be assigned with anything
-variableValue ::=                           query | commandCall
+variableValue ::=                           queryStatement | commandCall
 variable ::=                                VARIABLE_NAME {
     extends="com.misset.opp.odt.psi.impl.variable.ODTBaseVariable"
     implements="com.misset.opp.odt.psi.impl.variable.ODTVariableWrapper"

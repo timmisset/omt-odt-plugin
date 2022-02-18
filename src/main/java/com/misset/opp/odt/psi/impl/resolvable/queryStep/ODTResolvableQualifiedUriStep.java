@@ -37,7 +37,7 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
         return CachedValuesManager.getCachedValue(this,
                 FULLY_QUALIFIED_URI,
                 () -> new CachedValueProvider.Result<>(calculateFullyQualifiedUri(),
-                        getContainingFile(),
+                        getODTFile(),
                         PsiModificationTracker.MODIFICATION_COUNT));
     }
 

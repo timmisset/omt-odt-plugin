@@ -223,7 +223,7 @@
         <!-- Intentions  -->
         <intentionAction>
             <className>com.misset.opp.odt.intentions.IntroduceLocalVariableIntention</className>
-            <category>ODT/Refactorings</category>
+            <category>ODT/Refactoring</category>
         </intentionAction>
 
         <!-- TTL -->

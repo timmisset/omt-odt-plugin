@@ -4,6 +4,6 @@ import com.intellij.psi.PsiElement;
 
 public interface ODTPsiElement extends PsiElement {
 
-    ODTFile getContainingFile();
+    ODTFile getODTFile();
 
 }

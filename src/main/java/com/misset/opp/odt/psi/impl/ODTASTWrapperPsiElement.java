@@ -11,8 +11,7 @@ public class ODTASTWrapperPsiElement extends ASTWrapperPsiElement implements ODT
         super(node);
     }
 
-    @Override
-    public ODTFile getContainingFile() {
+    public ODTFile getODTFile() {
         return (ODTFile) super.getContainingFile();
     }
 }

@@ -40,7 +40,7 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
 
     @Override
     public @NotNull Set<OntResource> resolve(Context context) {
-        context.getFilesInScope().add(getContainingFile());
+        context.getFilesInScope().add(getODTFile());
         decorateCall(context.getCall());
         return getQuery().resolve(context);
     }

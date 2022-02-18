@@ -34,12 +34,12 @@ public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTBaseNam
     }
 
     private Optional<ResolveResult[]> resolveFromProvider() {
-        return Optional.of(toResults(myElement.getContainingFile()
+        return Optional.of(toResults(myElement.getODTFile()
                 .getHostPrefixNamespace(myElement.getName())));
     }
 
     private Optional<ResolveResult[]> resolveInODT() {
-        ODTFile containingFile = myElement.getContainingFile();
+        ODTFile containingFile = myElement.getODTFile();
         return containingFile.getLocalNamespacePrefixes()
                 .stream()
                 // must have the same name

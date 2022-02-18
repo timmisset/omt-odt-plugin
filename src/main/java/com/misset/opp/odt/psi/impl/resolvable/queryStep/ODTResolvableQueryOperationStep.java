@@ -125,7 +125,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
             Set<OntResource> resources = Optional.ofNullable(getQueryStep())
                     .map(ODTResolvable::resolve)
                     .orElse(Collections.emptySet());
-            return getContainingFile()
+            return getODTFile()
                     .getCachedValue(resources,
                             OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
@@ -200,7 +200,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
                 } else {
                     return CachedValuesManager.getCachedValue(this,
                             RESOLVED_VALUE,
-                            () -> getContainingFile()
+                            () -> getODTFile()
                                     .getCachedValue(filter(getQueryStep().resolve()),
                                             OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
                 }

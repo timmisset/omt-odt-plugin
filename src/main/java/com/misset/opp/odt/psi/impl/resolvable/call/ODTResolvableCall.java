@@ -64,7 +64,7 @@ public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODT
 
     public Callable getCallable() {
         return CachedValuesManager.getCachedValue(this, CALLABLE, () -> new CachedValueProvider.Result<>(calculateCallable(),
-                getContainingFile(),
+                getODTFile(),
                 PsiModificationTracker.MODIFICATION_COUNT));
     }
 

@@ -4,6 +4,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
@@ -27,7 +28,9 @@ public class IndexOMTStartupActivity implements StartupActivity.Background, Dumb
         DumbService.getInstance(project).runWhenSmart(() -> {
             Task.Backgroundable task = getIndexingTask(project);
 
-            ProgressManager.getInstance().run(task);
+            ProgressManager.getInstance().runProcessWithProgressAsynchronously(
+                    task,
+                    new BackgroundableProcessIndicator(task));
         });
     }
 
@@ -48,6 +51,7 @@ public class IndexOMTStartupActivity implements StartupActivity.Background, Dumb
         final PsiManager psiManager = PsiManager.getInstance(project);
         if (indicator != null) {
             indicator.setText("Indexing OMT Files");
+            indicator.setIndeterminate(false);
         }
         Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, "omt");
         AtomicInteger counter = new AtomicInteger();

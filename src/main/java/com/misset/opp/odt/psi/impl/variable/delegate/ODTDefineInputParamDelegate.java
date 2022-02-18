@@ -40,7 +40,7 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
     public Set<OntResource> resolve() {
         return CachedValuesManager.getCachedValue(element, ONT_TYPE, () ->
                 new CachedValueProvider.Result<>(calculateType(),
-                        element.getContainingFile(),
+                        element.getODTFile(),
                         OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
     }
 

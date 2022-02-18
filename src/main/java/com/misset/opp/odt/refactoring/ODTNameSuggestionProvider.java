@@ -5,8 +5,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.rename.NameSuggestionProvider;
+import com.misset.opp.odt.ODTLanguage;
 import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntClass;
@@ -22,10 +26,31 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
     public @Nullable SuggestedNameInfo getSuggestedNames(@NotNull PsiElement element,
                                                          @Nullable PsiElement nameSuggestionContext,
                                                          @NotNull Set<String> result) {
+        if (!element.getLanguage().isKindOf(ODTLanguage.INSTANCE)) {
+            return null;
+        }
+
         List<String> suggestions = new ArrayList<>();
         if (element instanceof ODTVariable) {
             suggestions.addAll(getVariableNameSuggestions((ODTVariable) element));
+        }
+        if (element instanceof ODTResolvable) {
             suggestions.addAll(forVariables(getTypeSuggestions((Resolvable) element)));
+        }
+        if (element instanceof ODTQueryStatement && element.getFirstChild() instanceof ODTResolvableQueryPath) {
+            List<ODTResolvableQueryOperationStep> operationStepList = ((ODTResolvableQueryPath) element.getFirstChild()).getResolvableQueryOperationStepList();
+            if (!operationStepList.isEmpty()) {
+                ODTResolvableQueryOperationStep operationStep = operationStepList.get(operationStepList.size() - 1);
+                ODTQueryStep queryStep = operationStep.getQueryStep();
+                if (queryStep instanceof ODTCall) {
+                    ODTCall call = (ODTCall) queryStep;
+                    suggestions.addAll(forVariables(Collections.singletonList(call.getName())));
+                }
+            }
+        }
+        if (element instanceof ODTCommandCall) {
+            ODTCall call = (ODTCall) element;
+            suggestions.addAll(forVariables(Collections.singletonList(call.getName())));
         }
         suggestions = suggestions.stream().filter(s -> !s.isBlank()).collect(Collectors.toList());
 
@@ -47,26 +72,28 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
         return Optional.ofNullable(PsiTreeUtil.getParentOfType(variable, ODTVariableAssignment.class))
                 .filter(variableAssignment -> variableAssignment.getVariableList().indexOf(variable) == 0)
                 .map(ODTVariableAssignment::getVariableValue)
-                .map(this::getVariableNameSuggestions)
+                .map(ODTVariableValue::getStatement)
+                .map(this::getNameSuggestions)
                 .orElse(Collections.emptyList());
 
     }
 
-    private List<String> getVariableNameSuggestions(ODTVariableValue variableValue) {
-        if (variableValue.getQuery() != null) {
-            getNameSuggestions(variableValue.getQuery());
-            return forVariables(getNameSuggestions(variableValue.getQuery()));
-        } else if (variableValue.getCommandCall() != null) {
-            return forVariables(getNameSuggestions(variableValue.getCommandCall()));
-        }
-        return Collections.emptyList();
-    }
 
     private List<String> forVariables(List<String> names) {
         return names.stream()
                 .filter(s -> !s.isBlank())
                 .map(s -> s.startsWith("$") ? s : "$" + s)
                 .collect(Collectors.toList());
+    }
+
+    private List<String> getNameSuggestions(ODTStatement statement) {
+        if (statement instanceof ODTQuery) {
+            return getNameSuggestions((ODTQuery) statement);
+        } else if (statement instanceof ODTCommandCall) {
+            return getNameSuggestions((ODTCommandCall) statement);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private List<String> getNameSuggestions(ODTQuery query) {

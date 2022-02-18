@@ -57,7 +57,7 @@ public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> impl
     private ResolveResult @NotNull [] getCachedResultOrResolve() {
         return CachedValuesManager.getCachedValue(getElement(), RESULT, () -> {
             ResolveResult[] calculate = calculate();
-            return getElement().getContainingFile().getCachedValue(calculate);
+            return getElement().getODTFile().getCachedValue(calculate);
         });
     }
 
@@ -71,7 +71,7 @@ public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> impl
     }
 
     private Optional<ResolveResult[]> resolveFromProvider() {
-        return getElement().getContainingFile()
+        return getElement().getODTFile()
                 .resolveInOMT(OMTVariableProvider.class,
                         OMTVariableProvider.KEY,
                         getElement().getName(),

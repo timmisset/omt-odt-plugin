@@ -8,11 +8,12 @@ import com.misset.opp.odt.psi.ODTDeclareVariable;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.ODTVisitor;
+import com.misset.opp.odt.psi.impl.variable.ODTBaseDeclaredVariable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ODTDeclareVariableImpl extends ODTStatementImpl implements ODTDeclareVariable {
+public class ODTDeclareVariableImpl extends ODTBaseDeclaredVariable implements ODTDeclareVariable {
 
   public ODTDeclareVariableImpl(@NotNull ASTNode node) {
     super(node);

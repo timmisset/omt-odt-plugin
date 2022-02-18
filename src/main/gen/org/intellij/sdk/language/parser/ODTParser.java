@@ -1180,12 +1180,12 @@ public class ODTParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // query | commandCall
+  // queryStatement | commandCall
   public static boolean variableValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variableValue")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, VARIABLE_VALUE, "<variable value>");
-    r = query(b, l + 1, -1);
+    r = queryStatement(b, l + 1);
     if (!r) r = commandCall(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;

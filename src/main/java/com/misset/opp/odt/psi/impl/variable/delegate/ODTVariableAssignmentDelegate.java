@@ -2,10 +2,8 @@ package com.misset.opp.odt.psi.impl.variable.delegate;
 
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.psi.ODTDeclareVariable;
-import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.ODTVariableAssignment;
-import com.misset.opp.odt.psi.ODTVariableValue;
+import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.resolvable.Callable;
@@ -55,13 +53,14 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
         final int i = variableList.indexOf(element);
         final ODTVariableValue variableValue = variableAssignment.getVariableValue();
         if (i == 0) {
-            if (variableValue.getQuery() != null) {
-                return variableValue.getQuery().resolve();
-            } else if (variableValue.getCommandCall() != null) {
-                return variableValue.getCommandCall().resolve();
+            ODTStatement statement = variableValue.getStatement();
+            if (statement instanceof ODTResolvable) {
+                return ((ODTResolvable) statement).resolve();
             }
         } else if (i == 1) {
-            return Optional.ofNullable(variableValue.getCommandCall())
+            return Optional.of(variableValue.getStatement())
+                    .filter(ODTCommandCall.class::isInstance)
+                    .map(ODTCommandCall.class::cast)
                     .map(ODTCall::getCallable)
                     .map(Callable::getSecondReturnArgument)
                     .orElse(Collections.emptySet());

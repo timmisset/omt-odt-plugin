@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.6'
+version '5.7'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,42 +59,18 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.6</h1>
-        Fixed #26: <a href="https://github.com/timmisset/omt-odt-plugin/issues/26">No error or quickfix when using an undefined prefix in a javadoc parameter annotation</a>
-        Added #38: <a href="https://github.com/timmisset/omt-odt-plugin/issues/38">Improve completion suggestion for equation statement</a><br>
-        Completion for equation statements will take the left-side query into consideration and provide suggestions based on the instance or class<br>
-        For example<br>
-        \$variableWithTypeClassA / rdf:type == <caret> will suggest /ont:ClassA and all subclasses for ClassA.<br>
-        \$variableWithTypeClassA == <caret> will suggest all possible instances for ClassA.<br>
+        <h1>Update 5.7</h1>
+        Added #46: <a href="https://github.com/timmisset/omt-odt-plugin/issues/46">Introduce local variable with refactoring</a><br>
+        Introducing a local variable for an ODT statement now contains finding matching statements to also be replaced within
+        the scope of the newly created variable.<br>
+        Just as with the native Introduce methods for Java, you can choose to replace only the current or all occurrences.<br>
+        Triggering the Introduce intention only works from a statement but it will look for the same pattern in other elements<br>
         <br>
-        Added #42: <a href="https://github.com/timmisset/omt-odt-plugin/issues/42">Boolean validation for query filter</a><br>
-        Added #43: <a href="https://github.com/timmisset/omt-odt-plugin/issues/43">Paired matcher for brackets and parentheses</a><br>
-        Fixed #44: <a href="https://github.com/timmisset/omt-odt-plugin/issues/44">Refactor-rename prefix in annotation and usage</a>
-        Added #45: <a href="https://github.com/timmisset/omt-odt-plugin/issues/45">PostStartup Indexing</a><br>
-        Indexing of all OMT and injected ODT files now happens post startup in a non-ui-blocking thread.<br>
-        The regular indexer of IntelliJ cannot be used (see issue) for injected languages which is why a seperate mechanism is required.<br>
-        You will see a progress indicator showing 'Indexing OMT' which will take about 10-15 seconds.<br>
-        
-        <h1>Update 5.5</h1>
-        Added #36: <a href="https://github.com/timmisset/omt-odt-plugin/issues/36">DocumentationProvider for OMT</a><br>
-        The DocumentationProvider (hover-mouse or View - Quick Documentation) includes the OMT API markdown information<br>
-        The documentation consists of classes and attributes, if classes are available, they are displayed, otherwise the attribute
-        documentation. For example, when hovering the payload: key in an Activity, it will show the information for the PayloadProperty class<br>
-        <br>
-        The location of the API.md is currently not configurable, the API.md must be located in a folder named 'omt'.<br>
-        <br>
-        Added #39: <a href="https://github.com/timmisset/omt-odt-plugin/issues/39">Add ForbiddenPredicates to OMT Structure</a><br>
-        !ForbiddenPredicates has been added as a MergeHandler type that can be used in any part of the OMT structure that
-        allows for handlers: (!Activity, !GraphShapeHandlers)<br>
-        <br>
-        Added #40: <a href="https://github.com/timmisset/omt-odt-plugin/issues/40">Add GraphShapeHandlers to OMT structure</a><br>
-        !GraphShapeHandlers are added to the OMT structure. The handlers defined in a module reference to the declared or imported
-        GraphShapeHandlers; this will allow for refactor-rename handling. The 'shape:' attribute allows for GraphShape URIs only, 
-        completion will show all known shapes in the model.<br>
-        <br>
-        Fixed #34: <a href="https://github.com/timmisset/omt-odt-plugin/issues/34">interface member not exported correctly</a><br>
-        Fixed #35: <a href="https://github.com/timmisset/omt-odt-plugin/issues/35">Refactor unresolvable from annotation to inspection</a><br>
-        Fixed #41: <a href="https://github.com/timmisset/omt-odt-plugin/issues/41">Refactor-rename export member</a><br>
+        For example:<br>
+        some / path / to / a / property; <-- introduce here<br>
+        IF some / path / to / a / property { <-- replaced<br>
+            @LOG(some / path / to / a / property); <-- replaced<br>
+        }<br>
         """
 }
 tasks {

@@ -3,12 +3,10 @@ package com.misset.opp.odt.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.psi.ODTCommandCall;
-import com.misset.opp.odt.psi.ODTQuery;
+import com.misset.opp.odt.psi.ODTStatement;
 import com.misset.opp.odt.psi.ODTVariableValue;
 import com.misset.opp.odt.psi.ODTVisitor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ODTVariableValueImpl extends ODTASTWrapperPsiElement implements ODTVariableValue {
 
@@ -27,15 +25,9 @@ public class ODTVariableValueImpl extends ODTASTWrapperPsiElement implements ODT
   }
 
   @Override
-  @Nullable
-  public ODTCommandCall getCommandCall() {
-    return findChildByClass(ODTCommandCall.class);
-  }
-
-  @Override
-  @Nullable
-  public ODTQuery getQuery() {
-    return findChildByClass(ODTQuery.class);
+  @NotNull
+  public ODTStatement getStatement() {
+    return findNotNullChildByClass(ODTStatement.class);
   }
 
 }
