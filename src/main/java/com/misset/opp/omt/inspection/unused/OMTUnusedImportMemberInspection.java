@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.misset.opp.omt.OMTImportOptimizer;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
@@ -35,7 +36,8 @@ public class OMTUnusedImportMemberInspection extends LocalInspectionTool {
                             holder.registerProblem(element,
                                     "Import for " + element.getText() + " is never used",
                                     LIKE_UNUSED_SYMBOL,
-                                    OMTRemoveQuickFix.getRemoveLocalQuickFix("import member"));
+                                    OMTRemoveQuickFix.getRemoveLocalQuickFix("import member"),
+                                    OMTImportOptimizer.asQuickfix());
                         }
                     });
                 }

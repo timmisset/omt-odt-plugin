@@ -60,6 +60,7 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.7</h1>
+        <h2>Introduce local variable</h2>
         Added #46: <a href="https://github.com/timmisset/omt-odt-plugin/issues/46">Introduce local variable with refactoring</a><br>
         Introducing a local variable for an ODT statement now contains finding matching statements to also be replaced within
         the scope of the newly created variable.<br>
@@ -75,6 +76,14 @@ patchPluginXml {
         The introducer will use the resolved type of the statement and (if applicable) the callname to create a list of suggested names
         for the new variable to choose from. It will use super-class suggestions. If a statement can resolve to multiple types, all types
         and their superclasses are included<br>
+        <h2>Optimize imports</h2>
+        Added #47: <a href="https://github.com/timmisset/omt-odt-plugin/issues/47">Optimize imports</a><br>
+        Optimize imports is available for OMT files. It is integrated in the native flow of IntelliJ i.e.:<br>
+        <ul>
+            <li>Statically available via Code -> Optimize imports / Ctrl + Alt + O</li>
+            <li>Dynamically available via QuickFix</li>
+            <li>If enabled, it runs on save. Setting available at File | Settings | Tools | Actions on Save</li>
+        </ul>
         """
 }
 tasks {

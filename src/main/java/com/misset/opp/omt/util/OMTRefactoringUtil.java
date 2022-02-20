@@ -30,7 +30,7 @@ public class OMTRefactoringUtil {
                 sequenceContainer.delete();
             }
         } else {
-            // remove the parameter
+            // remove the sequence item
             OMTRefactoringUtil.removeEOLToken(sequenceItem);
             sequenceItem.delete();
         }

@@ -43,7 +43,13 @@ public class OMTParameterNameHints implements InlayParameterHintsProvider {
     }
 
     @Override
+    public @NotNull String getInlayPresentation(@NotNull String inlayText) {
+        return inlayText;
+    }
+
+    @Override
     public @NotNull Set<String> getDefaultBlackList() {
         return Collections.emptySet();
     }
+
 }
