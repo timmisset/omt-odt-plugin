@@ -11,11 +11,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
-import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlImportPathDelegate;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlImportMemberDelegate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLSequenceItem;
-import org.jetbrains.yaml.psi.YAMLValue;
 
 public class OMTImportOptimizer implements ImportOptimizer {
     @Override
@@ -36,11 +34,6 @@ public class OMTImportOptimizer implements ImportOptimizer {
                     .filter(OMTYamlImportMemberDelegate::isUnused)
                     .forEach(OMTYamlImportMemberDelegate::delete);
         };
-    }
-
-    private boolean emptyImportPath(OMTYamlImportPathDelegate pathDelegate) {
-        YAMLValue value = pathDelegate.getValue();
-        return value == null || value.getText().isBlank();
     }
 
     public static LocalQuickFix asQuickfix() {
