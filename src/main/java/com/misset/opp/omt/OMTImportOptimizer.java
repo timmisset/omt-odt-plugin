@@ -16,26 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLSequenceItem;
 
 public class OMTImportOptimizer implements ImportOptimizer {
-    @Override
-    public boolean supports(@NotNull PsiFile file) {
-        return file instanceof OMTFile;
-    }
-
-    @Override
-    public @NotNull Runnable processFile(@NotNull PsiFile file) {
-        return () -> {
-            // the delegate can determine its own usage and makes sure that an empty import is also removed
-            PsiTreeUtil.findChildrenOfType(file, YAMLSequenceItem.class)
-                    .stream()
-                    .map(YAMLSequenceItem::getValue)
-                    .map(OMTYamlDelegateFactory::createDelegate)
-                    .filter(OMTYamlImportMemberDelegate.class::isInstance)
-                    .map(OMTYamlImportMemberDelegate.class::cast)
-                    .filter(OMTYamlImportMemberDelegate::isUnused)
-                    .forEach(OMTYamlImportMemberDelegate::delete);
-        };
-    }
-
     public static LocalQuickFix asQuickfix() {
         return new LocalQuickFix() {
             @Override
@@ -55,6 +35,26 @@ public class OMTImportOptimizer implements ImportOptimizer {
             public boolean startInWriteAction() {
                 return false;
             }
+        };
+    }
+
+    @Override
+    public boolean supports(@NotNull PsiFile file) {
+        return file instanceof OMTFile;
+    }
+
+    @Override
+    public @NotNull Runnable processFile(@NotNull PsiFile file) {
+        return () -> {
+            // the delegate can determine its own usage and makes sure that an empty import is also removed
+            PsiTreeUtil.findChildrenOfType(file, YAMLSequenceItem.class)
+                    .stream()
+                    .map(YAMLSequenceItem::getValue)
+                    .map(OMTYamlDelegateFactory::createDelegate)
+                    .filter(OMTYamlImportMemberDelegate.class::isInstance)
+                    .map(OMTYamlImportMemberDelegate.class::cast)
+                    .filter(OMTYamlImportMemberDelegate::isUnused)
+                    .forEach(OMTYamlImportMemberDelegate::delete);
         };
     }
 }
