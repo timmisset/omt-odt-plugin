@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.psi.ODTCommandBlock;
+import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTReturnStatement;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import org.jetbrains.annotations.Nls;
@@ -31,25 +31,31 @@ public class ODTCodeInspectionUnreachable extends LocalInspectionTool {
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (element instanceof ODTScriptLine) {
-                    inspectScriptLine(holder, (ODTScriptLine) element);
+                if (element instanceof ODTReturnStatement) {
+                    inspectScriptline(holder, element);
+                } else if (element instanceof ODTCommandCall) {
+                    inspectCall(holder, (ODTCommandCall) element);
                 }
             }
         };
     }
 
-    private void inspectScriptLine(@NotNull ProblemsHolder holder,
-                                   @NotNull ODTScriptLine scriptLine) {
-        ODTScriptLine previousScriptline = PsiTreeUtil.getPrevSiblingOfType(scriptLine, ODTScriptLine.class);
-        while (previousScriptline != null) {
-            if (PsiTreeUtil.findChildOfType(previousScriptline,
-                    ODTReturnStatement.class,
-                    true,
-                    ODTCommandBlock.class) != null) {
-                holder.registerProblem(scriptLine, WARNING_MESSAGE, ProblemHighlightType.WARNING);
-                return;
-            }
-            previousScriptline = PsiTreeUtil.getPrevSiblingOfType(previousScriptline, ODTScriptLine.class);
+    private void inspectCall(@NotNull ProblemsHolder holder,
+                             @NotNull ODTCommandCall commandCall) {
+        if (commandCall.getName().equals("DONE") || commandCall.getName().equals("CANCEL")) {
+            inspectScriptline(holder, commandCall);
         }
+    }
+
+    private void inspectScriptline(@NotNull ProblemsHolder holder,
+                                   @Nullable PsiElement element) {
+        ODTScriptLine scriptLine = PsiTreeUtil.getParentOfType(element, ODTScriptLine.class);
+        if (scriptLine == null) {
+            return;
+        }
+        PsiTreeUtil.findChildrenOfType(scriptLine.getParent(), ODTScriptLine.class)
+                .stream()
+                .filter(sibling -> sibling.getTextOffset() > scriptLine.getTextOffset())
+                .forEach(sibling -> holder.registerProblem(sibling, WARNING_MESSAGE, ProblemHighlightType.WARNING));
     }
 }

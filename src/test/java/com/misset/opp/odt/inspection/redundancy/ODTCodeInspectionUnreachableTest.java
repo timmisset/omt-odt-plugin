@@ -17,14 +17,38 @@ class ODTCodeInspectionUnreachableTest extends OMTInspectionTestCase {
     }
 
     @Test
-    void testHasWarningOnUnreachableCode() {
+    void testHasWarningOnUnreachableCodeReturn() {
         configureByText(insideProcedureRunWithPrefixes("RETURN 1; @LOG('test');"));
         assertHasWarning(WARNING_MESSAGE);
     }
 
     @Test
-    void testHasNoWarningOnUnreachableCode() {
+    void testHasWarningOnUnreachableCodeDone() {
+        configureByText(insideProcedureRunWithPrefixes("@DONE(); @LOG('test');"));
+        assertHasWarning(WARNING_MESSAGE);
+    }
+
+    @Test
+    void testHasWarningOnUnreachableCodeCancel() {
+        configureByText(insideProcedureRunWithPrefixes("@CANCEL(); @LOG('test');"));
+        assertHasWarning(WARNING_MESSAGE);
+    }
+
+    @Test
+    void testHasNoWarningOnUnreachableCodeReturn() {
         configureByText(insideProcedureRunWithPrefixes("@LOG('test'); RETURN 1;"));
+        assertNoWarning(WARNING_MESSAGE);
+    }
+
+    @Test
+    void testHasNoWarningOnUnreachableCodeDone() {
+        configureByText(insideProcedureRunWithPrefixes("@LOG('test'); DONE();"));
+        assertNoWarning(WARNING_MESSAGE);
+    }
+
+    @Test
+    void testHasNoWarningOnUnreachableCodeCancel() {
+        configureByText(insideProcedureRunWithPrefixes("@LOG('test'); CANCEL();"));
         assertNoWarning(WARNING_MESSAGE);
     }
 }

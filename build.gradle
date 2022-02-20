@@ -84,6 +84,8 @@ patchPluginXml {
             <li>Dynamically available via QuickFix</li>
             <li>If enabled, it runs on save. Setting available at File | Settings | Tools | Actions on Save</li>
         </ul>
+        <h2>Other</h2>
+        Added #48: <a href="https://github.com/timmisset/omt-odt-plugin/issues/48">Extend Unreachable code to include @CANCEL / @DONE commands</a><br>
         """
 }
 tasks {
