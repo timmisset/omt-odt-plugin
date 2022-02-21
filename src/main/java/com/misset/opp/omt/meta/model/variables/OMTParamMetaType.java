@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.variables;
 
+import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -124,6 +125,8 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
         String typeText = getTypeText(value);
         if (typeText != null) {
             OMTParamTypeType.validateType(value, typeText, problemsHolder);
+        } else {
+            problemsHolder.registerProblem(value, "Annotate parameter with a type", ProblemHighlightType.WARNING);
         }
     }
 
