@@ -86,6 +86,8 @@ patchPluginXml {
         </ul>
         <h2>Other</h2>
         Added #48: <a href="https://github.com/timmisset/omt-odt-plugin/issues/48">Extend Unreachable code to include @CANCEL / @DONE commands</a><br>
+        Fixed #49: <a href="https://github.com/timmisset/omt-odt-plugin/issues/49">Variable reference range</a><br>
+        Added #50: <a href="https://github.com/timmisset/omt-odt-plugin/issues/50">Unnecessary (double) negation inspection</a><br>
         """
 }
 tasks {

@@ -160,6 +160,9 @@
                          groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryParentheses"/>
+        <localInspection displayName="Double negation operators" groupName="Redundancy" language="ODT"
+                         groupPath="ODT" enabledByDefault="true" level="WARNING"
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionDoubleNegationOperator"/>
         <!--        Resolvable -->
         <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
@@ -245,6 +248,7 @@
 
         <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
                                  implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
+
 
     </extensions>
     <depends>com.intellij.java</depends>

@@ -11,6 +11,7 @@ public interface ODTTokenSets {
     TokenSet ASSIGNMENT_OPERATORS = TokenSet.create(
             ODTTypes.EQUALS, ODTTypes.ADD, ODTTypes.REMOVE
     );
+    TokenSet RELATIONAL_OPERATORS = TokenSet.orSet(ASSIGNMENT_OPERATORS, TokenSet.create(ODTTypes.CONDITIONAL_OPERATOR));
     TokenSet CHOOSE_BLOCKS = TokenSet.create(ODTTypes.CHOOSE_BLOCK, ODTTypes.WHEN_PATH,
             ODTTypes.OTHERWISE_PATH, ODTTypes.END_PATH);
     TokenSet CHOOSE_INDENTED_OPERATORS = TokenSet.create(ODTTypes.WHEN_OPERATOR, ODTTypes.OTHERWISE_OPERATOR);

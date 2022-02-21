@@ -51,7 +51,7 @@ public class ODTTraverseCompletion extends CompletionContributor {
                 Set<Property> forwardPredicates;
                 Set<Property> reversePredicates;
                 if (subjects.isEmpty()) {
-                    // cannot establish base, only show the rdf:type predicates
+                    // cannot establish subject, only show the rdf:type predicates
                     forwardPredicates = Set.of(OppModel.INSTANCE.RDF_TYPE);
                     reversePredicates = Set.of(OppModel.INSTANCE.RDF_TYPE);
                 } else {

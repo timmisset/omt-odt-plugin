@@ -73,9 +73,39 @@ class ODTFormattingSpacingTest extends ODTFormattingTestCase {
     }
 
     @Test
+    void testSignatureArgumentQueryAddsSpaces() {
+        assertFormatting("Call($variableA,$variableB);",
+                "Call($variableA, $variableB);");
+    }
+
+    @Test
     void testSignatureArgumentRemovesSpaces() {
         assertFormatting("Call( 'hi' , 'bye' );",
                 "Call('hi', 'bye');");
+    }
+
+    @Test
+    void testSignatureArgumentQueryRemovesSpaces() {
+        assertFormatting("Call( $variableA , $variableB );",
+                "Call($variableA, $variableB);");
+    }
+
+    @Test
+    void testSignatureFlagAndParentheses() {
+        assertFormatting("Call!flag ($variableA);",
+                "Call!flag($variableA);");
+    }
+
+    @Test
+    void testCallnameAndFlag() {
+        assertFormatting("Call !flag($variableA);",
+                "Call!flag($variableA);");
+    }
+
+    @Test
+    void testCallSymbolAndName() {
+        assertFormatting("@ Call($variableA);",
+                "@Call($variableA);");
     }
 
     @Test
@@ -88,6 +118,12 @@ class ODTFormattingSpacingTest extends ODTFormattingTestCase {
     void testAddToOperator() {
         assertFormatting("$variable+='hi';",
                 "$variable += 'hi';");
+    }
+
+    @Test
+    void testEqualsOperator() {
+        assertFormatting("$variable=='hi';",
+                "$variable == 'hi';");
     }
 
     @Test
