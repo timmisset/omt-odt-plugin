@@ -59,14 +59,6 @@ class ODTStyleInspectionNegationOperatorTest extends OMTInspectionTestCase {
     }
 
     @Test
-    void testReplaceKeywordEXISTS() {
-        String content = insideProcedureRunWithPrefixes("IF $variable / NOT EXISTS { }");
-        configureByText(content);
-        invokeQuickFixIntention(ODTStyleInspectionNegationOperator.REPLACE);
-        ReadAction.run(() -> Assertions.assertTrue(myFixture.getFile().getText().contains("IF $variable / EMPTY { }")));
-    }
-
-    @Test
     void testReplaceLeadingNegation() {
         String content = insideProcedureRunWithPrefixes("IF $variable / NOT EMPTY { }");
         configureByText(content);

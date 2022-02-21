@@ -45,6 +45,10 @@ public class ODTStyleInspectionNegationOperator extends LocalInspectionTool {
 
     private void inspectOperatorCall(@NotNull ProblemsHolder holder,
                                      @NotNull ODTOperatorCall operatorCall) {
+        ODTQuery query = PsiTreeUtil.getParentOfType(operatorCall, ODTQuery.class);
+        if (query == null) {
+            return;
+        }
         String name = operatorCall.getName();
         if (name.equals(ExistsOperator.INSTANCE.getName()) || name.equals(EmptyOperator.INSTANCE.getName())) {
             ODTQueryOperationStep queryOperationStep = PsiTreeUtil.getParentOfType(operatorCall, ODTQueryOperationStep.class);
@@ -53,14 +57,14 @@ public class ODTStyleInspectionNegationOperator extends LocalInspectionTool {
             }
             // LEADING_NEGATION
             if (PsiTreeUtil.getParentOfType(queryOperationStep, ODTNegatedStep.class, ODTQueryOperationStep.class) instanceof ODTNegatedStep) {
-                holder.registerProblem(operatorCall, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.LEADING_NEGATION));
+                holder.registerProblem(query, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.LEADING_NEGATION, operatorCall));
                 return;
             }
 
             // INSIDE_NEGATION
             ODTResolvable parentOfType = PsiTreeUtil.getParentOfType(queryOperationStep, ODTScript.class, ODTCall.class);
             if (parentOfType instanceof ODTCall && ((ODTCall) parentOfType).getName().equals(NotOperator.INSTANCE.getName())) {
-                holder.registerProblem(operatorCall, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.INSIDE_NEGATION));
+                holder.registerProblem(query, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.INSIDE_NEGATION, operatorCall));
                 return;
             }
 
@@ -71,12 +75,12 @@ public class ODTStyleInspectionNegationOperator extends LocalInspectionTool {
             }
             PsiElement leafElement = PsiTreeUtil.getDeepestFirst(siblingOperationStep);
             if (PsiUtilCore.getElementType(leafElement) == ODTTypes.NOT_OPERATOR) {
-                holder.registerProblem(operatorCall, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.TRAILING_NEGATION));
+                holder.registerProblem(query, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.TRAILING_NEGATION, operatorCall));
             }
         }
     }
 
-    private LocalQuickFix getQuickFix(CodeStyle codeStyle) {
+    private LocalQuickFix getQuickFix(CodeStyle codeStyle, ODTOperatorCall call) {
 
         return new LocalQuickFix() {
             @Override
@@ -87,17 +91,12 @@ public class ODTStyleInspectionNegationOperator extends LocalInspectionTool {
             @Override
             public void applyFix(@NotNull Project project,
                                  @NotNull ProblemDescriptor descriptor) {
-                PsiElement psiElement = descriptor.getPsiElement();
-                if (psiElement instanceof ODTOperatorCall) {
-                    ODTOperatorCall call = (ODTOperatorCall) psiElement;
-                    if (codeStyle == CodeStyle.INSIDE_NEGATION) {
-                        replaceOperator(project, call);
-                    } else if (codeStyle == CodeStyle.LEADING_NEGATION) {
-                        replaceKeyword(project, call);
-                    } else if (codeStyle == CodeStyle.TRAILING_NEGATION) {
-                        removeTrailing(project, call);
-                    }
-
+                if (codeStyle == CodeStyle.INSIDE_NEGATION) {
+                    replaceOperator(project, call);
+                } else if (codeStyle == CodeStyle.LEADING_NEGATION) {
+                    replaceKeyword(project, call);
+                } else if (codeStyle == CodeStyle.TRAILING_NEGATION) {
+                    removeTrailing(project, call);
                 }
             }
 
