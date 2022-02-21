@@ -162,7 +162,7 @@
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryParentheses"/>
         <localInspection displayName="Double negation operators" groupName="Redundancy" language="ODT"
                          groupPath="ODT" enabledByDefault="true" level="WARNING"
-                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionDoubleNegationOperator"/>
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionNegationOperator"/>
         <!--        Resolvable -->
         <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"

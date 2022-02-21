@@ -9,60 +9,60 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Collections;
 
-class ODTStyleInspectionDoubleNegationOperatorTest extends OMTInspectionTestCase {
+class ODTStyleInspectionNegationOperatorTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTStyleInspectionDoubleNegationOperator.class);
+        return Collections.singleton(ODTStyleInspectionNegationOperator.class);
     }
 
     @Test
     void testHasWarningEXISTS() {
         String content = insideProcedureRunWithPrefixes("IF $variable / NOT EXISTS { }");
         configureByText(content);
-        assertHasWeakWarning(ODTStyleInspectionDoubleNegationOperator.WARNING);
+        assertHasWeakWarning(ODTStyleInspectionNegationOperator.WARNING);
     }
 
     @Test
     void testHasWarningEMPTY() {
         String content = insideProcedureRunWithPrefixes("IF $variable / NOT EMPTY { }");
         configureByText(content);
-        assertHasWeakWarning(ODTStyleInspectionDoubleNegationOperator.WARNING);
+        assertHasWeakWarning(ODTStyleInspectionNegationOperator.WARNING);
     }
 
     @Test
     void testHasWarningEXISTSTrailing() {
         String content = insideProcedureRunWithPrefixes("IF $variable / EXISTS / NOT { }");
         configureByText(content);
-        assertHasWeakWarning(ODTStyleInspectionDoubleNegationOperator.WARNING);
+        assertHasWeakWarning(ODTStyleInspectionNegationOperator.WARNING);
     }
 
     @Test
     void testHasNoWarningEXISTS() {
         String content = insideProcedureRunWithPrefixes("IF $variable / EXISTS { }");
         configureByText(content);
-        assertNoWeakWarning(ODTStyleInspectionDoubleNegationOperator.WARNING);
+        assertNoWeakWarning(ODTStyleInspectionNegationOperator.WARNING);
     }
 
     @Test
     void testHasWarningNotOperator() {
         String content = insideProcedureRunWithPrefixes("IF NOT($variable / EXISTS) { }");
         configureByText(content);
-        assertHasWeakWarning(ODTStyleInspectionDoubleNegationOperator.WARNING);
+        assertHasWeakWarning(ODTStyleInspectionNegationOperator.WARNING);
     }
 
     @Test
     void testHasNoWarningEMPTY() {
         String content = insideProcedureRunWithPrefixes("IF $variable / EMPTY { }");
         configureByText(content);
-        assertNoWeakWarning(ODTStyleInspectionDoubleNegationOperator.WARNING);
+        assertNoWeakWarning(ODTStyleInspectionNegationOperator.WARNING);
     }
 
     @Test
     void testReplaceKeywordEXISTS() {
         String content = insideProcedureRunWithPrefixes("IF $variable / NOT EXISTS { }");
         configureByText(content);
-        invokeQuickFixIntention(ODTStyleInspectionDoubleNegationOperator.REPLACE);
+        invokeQuickFixIntention(ODTStyleInspectionNegationOperator.REPLACE);
         ReadAction.run(() -> Assertions.assertTrue(myFixture.getFile().getText().contains("IF $variable / EMPTY { }")));
     }
 
@@ -70,7 +70,7 @@ class ODTStyleInspectionDoubleNegationOperatorTest extends OMTInspectionTestCase
     void testReplaceLeadingNegation() {
         String content = insideProcedureRunWithPrefixes("IF $variable / NOT EMPTY { }");
         configureByText(content);
-        invokeQuickFixIntention(ODTStyleInspectionDoubleNegationOperator.REPLACE);
+        invokeQuickFixIntention(ODTStyleInspectionNegationOperator.REPLACE);
         ReadAction.run(() -> Assertions.assertTrue(myFixture.getFile().getText().contains("IF $variable / EXISTS { }")));
     }
 
@@ -78,7 +78,7 @@ class ODTStyleInspectionDoubleNegationOperatorTest extends OMTInspectionTestCase
     void testReplaceInsideNegation() {
         String content = insideProcedureRunWithPrefixes("IF NOT($variable / EMPTY) { }");
         configureByText(content);
-        invokeQuickFixIntention(ODTStyleInspectionDoubleNegationOperator.REPLACE);
+        invokeQuickFixIntention(ODTStyleInspectionNegationOperator.REPLACE);
         ReadAction.run(() -> Assertions.assertTrue(myFixture.getFile().getText().contains("IF $variable / EXISTS { }")));
     }
 
@@ -86,7 +86,7 @@ class ODTStyleInspectionDoubleNegationOperatorTest extends OMTInspectionTestCase
     void testReplaceTrailingNegation() {
         String content = insideProcedureRunWithPrefixes("IF $variable / EMPTY / NOT { }");
         configureByText(content);
-        invokeQuickFixIntention(ODTStyleInspectionDoubleNegationOperator.REPLACE);
+        invokeQuickFixIntention(ODTStyleInspectionNegationOperator.REPLACE);
         ReadAction.run(() -> Assertions.assertTrue(myFixture.getFile().getText().contains("IF $variable / EXISTS { }")));
     }
 }

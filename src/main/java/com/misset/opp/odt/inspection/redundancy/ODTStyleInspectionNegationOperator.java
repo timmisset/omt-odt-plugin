@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Code inspection for all unused declarations
  */
-public class ODTStyleInspectionDoubleNegationOperator extends LocalInspectionTool {
+public class ODTStyleInspectionNegationOperator extends LocalInspectionTool {
 
-    protected static final String WARNING = "Unnecessary (double) negation";
+    protected static final String WARNING = "Unnecessary negation";
     protected static final String REPLACE = "Replace with positive assertion";
 
     private enum CodeStyle {
