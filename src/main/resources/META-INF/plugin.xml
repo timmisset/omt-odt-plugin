@@ -41,7 +41,8 @@
         <postStartupActivity id="indexOMT"
                              implementation="com.misset.opp.omt.startup.IndexOMTStartupActivity"/>
         <lang.importOptimizer language="OMT" implementationClass="com.misset.opp.omt.OMTImportOptimizer"/>
-
+        <lang.foldingBuilder language="OMT" order="after YAMLFoldingBuilder"
+                             implementationClass="com.misset.opp.omt.OMTFoldingBuilder"/>
         <!-- Inspections -->
         <!-- Unused-->
         <localInspection displayName="Unused model items" groupPath="OMT" language="OMT"
@@ -101,7 +102,7 @@
                                     implementationClass="com.misset.opp.odt.documentation.ODTDocumentationProvider"/>
         <lang.commenter language="ODT" implementationClass="com.misset.opp.odt.ODTCommenter"/>
         <codeInsight.parameterNameHints language="ODT" implementationClass="com.misset.opp.odt.ODTParameterNameHints"/>
-
+        <lang.foldingBuilder language="ODT" implementationClass="com.misset.opp.odt.ODTFoldingBuilder"/>
         <!-- Completions -->
         <completion.contributor language="ODT" order="after ODTEquationStatementCompletion" id="ODTTraverseCompletion"
                                 implementationClass="com.misset.opp.odt.completion.ODTTraverseCompletion"/>
