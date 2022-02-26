@@ -29,22 +29,26 @@ public class OMTFoldingBuilder extends YAMLFoldingBuilder {
         Collection<InjectionHost> injectionHosts = PsiTreeUtil.findChildrenOfType(root, InjectionHost.class);
         ODTFoldingBuilder odtFoldingBuilder = new ODTFoldingBuilder();
 
+        // workaround for:
+        // https://youtrack.jetbrains.com/issue/IDEA-289722
         for (InjectionHost injectionHost : injectionHosts) {
             List<Pair<PsiElement, TextRange>> injectedPsiFiles = instance.getInjectedPsiFiles(injectionHost);
             if (injectedPsiFiles != null) {
                 injectedPsiFiles.forEach(
-                        pair -> appendInjectedFoldings(odtFoldingBuilder, pair, descriptors)
+                        pair -> addInjectedFoldingDescriptors(odtFoldingBuilder, pair, descriptors, injectionHost.getTextOffset())
                 );
             }
         }
     }
 
-    private void appendInjectedFoldings(ODTFoldingBuilder odtFoldingBuilder,
-                                        Pair<PsiElement, TextRange> psiElementTextRangePair,
-                                        @NotNull List<FoldingDescriptor> descriptors) {
+    private void addInjectedFoldingDescriptors(ODTFoldingBuilder odtFoldingBuilder,
+                                               Pair<PsiElement, TextRange> psiElementTextRangePair,
+                                               @NotNull List<FoldingDescriptor> descriptors,
+                                               int hostOffset) {
         PsiElement element = psiElementTextRangePair.first;
         int startOffset = psiElementTextRangePair.second.getStartOffset();
-        startOffset += element.getTextOffset();
+        startOffset += hostOffset;
+
 
         descriptors.addAll(Arrays.asList(odtFoldingBuilder
                 .buildFoldRegionsWithOffset(element, startOffset)));
