@@ -1,5 +1,6 @@
 package com.misset.opp.odt;
 
+import com.intellij.codeInsight.folding.JavaCodeFoldingSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.application.ReadAction;
@@ -8,6 +9,8 @@ import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.testCase.ODTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ODTFoldingBuilderTest extends ODTTestCase {
 
@@ -131,4 +134,55 @@ class ODTFoldingBuilderTest extends ODTTestCase {
         });
     }
 
+    @ParameterizedTest()
+    @ValueSource(booleans = {true, false})
+    void testDEFINECommandBlockIsCollapsedByDefault(boolean collapsedByDefault) {
+        String content = "DEFINE COMMAND command => {\n" +
+                "   @LOG('testing with a large block');\n" +
+                "}";
+        ODTFile odtFile = configureByText(content);
+        ReadAction.run(() -> {
+            FoldingDescriptor[] foldingDescriptors = foldingBuilder.buildFoldRegions(odtFile.getNode(), getEditor().getDocument());
+            Assertions.assertEquals(1, foldingDescriptors.length);
+            FoldingDescriptor foldingDescriptor = foldingDescriptors[0];
+
+            final JavaCodeFoldingSettings settings = JavaCodeFoldingSettings.getInstance();
+            settings.setCollapseMethods(collapsedByDefault);
+            Assertions.assertEquals(collapsedByDefault, foldingBuilder.isCollapsedByDefault(foldingDescriptor.getElement()));
+        });
+    }
+
+    @ParameterizedTest()
+    @ValueSource(booleans = {true, false})
+    void testCommandBlockIsNeverCollapsedByDefault(boolean collapsedByDefault) {
+        String content = "IF true {\n" +
+                "   @LOG('testing with a large block');\n" +
+                "}";
+        ODTFile odtFile = configureByText(content);
+        ReadAction.run(() -> {
+            FoldingDescriptor[] foldingDescriptors = foldingBuilder.buildFoldRegions(odtFile.getNode(), getEditor().getDocument());
+            Assertions.assertEquals(1, foldingDescriptors.length);
+            FoldingDescriptor foldingDescriptor = foldingDescriptors[0];
+
+            final JavaCodeFoldingSettings settings = JavaCodeFoldingSettings.getInstance();
+            settings.setCollapseMethods(collapsedByDefault);
+            Assertions.assertFalse(foldingBuilder.isCollapsedByDefault(foldingDescriptor.getElement()));
+        });
+    }
+
+    @ParameterizedTest()
+    @ValueSource(booleans = {true, false})
+    void testQueryIsCollapsedByDefault(boolean collapsedByDefault) {
+        String content = "DEFINE QUERY query => true == false;";
+        ODTFile odtFile = configureByText(content);
+        ReadAction.run(() -> {
+            FoldingDescriptor[] foldingDescriptors = foldingBuilder.buildFoldRegions(odtFile.getNode(), getEditor().getDocument());
+            Assertions.assertEquals(1, foldingDescriptors.length);
+            FoldingDescriptor foldingDescriptor = foldingDescriptors[0];
+
+            final JavaCodeFoldingSettings settings = JavaCodeFoldingSettings.getInstance();
+            settings.setCollapseMethods(collapsedByDefault);
+            Assertions.assertEquals(collapsedByDefault, foldingBuilder.isCollapsedByDefault(foldingDescriptor.getElement()));
+        });
+    }
 }

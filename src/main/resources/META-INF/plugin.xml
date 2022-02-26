@@ -41,7 +41,7 @@
         <postStartupActivity id="indexOMT"
                              implementation="com.misset.opp.omt.startup.IndexOMTStartupActivity"/>
         <lang.importOptimizer language="OMT" implementationClass="com.misset.opp.omt.OMTImportOptimizer"/>
-        <lang.foldingBuilder language="OMT" order="after YAMLFoldingBuilder"
+        <lang.foldingBuilder language="OMT" order="before YAMLFoldingBuilder"
                              implementationClass="com.misset.opp.omt.OMTFoldingBuilder"/>
         <!-- Inspections -->
         <!-- Unused-->
@@ -161,7 +161,7 @@
                          groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryParentheses"/>
-        <localInspection displayName="Double negation operators" groupName="Redundancy" language="ODT"
+        <localInspection displayName="Unnecessary NOT operator" groupName="Redundancy" language="ODT"
                          groupPath="ODT" enabledByDefault="true" level="WARNING"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionNegationOperator"/>
         <!--        Resolvable -->

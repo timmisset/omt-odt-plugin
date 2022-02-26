@@ -1,5 +1,6 @@
 package com.misset.opp.omt;
 
+import com.intellij.codeInsight.folding.JavaCodeFoldingSettings;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.psi.ODTTypes;
@@ -8,14 +9,9 @@ import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.YAMLElementTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-/**
- * The necessity for the OMTFoldingBuilder is due to the bug reported at:
- * https://youtrack.jetbrains.com/issue/IDEA-289722
- * <p>
- * Once this bug is fixed the OMTFolding, which should be agnostic to the language of the injected fragment
- * can be removed. For now, it will force additional folding regions from injected fragments
- */
 class OMTFoldingBuilderTest extends OMTTestCase {
 
     @Test
@@ -37,6 +33,26 @@ class OMTFoldingBuilderTest extends OMTTestCase {
             Assertions.assertEquals(ODTTypes.COMMAND_BLOCK, odtFolding.getElement().getElementType());
 
             Assertions.assertTrue(yamlFolding.getRange().contains(odtFolding.getRange()));
+        });
+    }
+
+    @ParameterizedTest()
+    @ValueSource(booleans = {true, false})
+    void testImportBlockIsCollapsedByDefault(boolean collapseImports) {
+        OMTFoldingBuilder foldingBuilder = new OMTFoldingBuilder();
+
+        String content = "import: \n" +
+                "   myPath:\n" +
+                "   - member";
+        OMTFile omtFile = configureByText(content);
+        ReadAction.run(() -> {
+            FoldingDescriptor[] foldingDescriptors = foldingBuilder.buildFoldRegions(omtFile.getNode(), getEditor().getDocument());
+            Assertions.assertEquals(3, foldingDescriptors.length);
+            FoldingDescriptor foldingDescriptor = foldingDescriptors[0];
+
+            final JavaCodeFoldingSettings settings = JavaCodeFoldingSettings.getInstance();
+            settings.setCollapseImports(collapseImports);
+            Assertions.assertEquals(collapseImports, foldingBuilder.isRegionCollapsedByDefault(foldingDescriptor));
         });
     }
 }

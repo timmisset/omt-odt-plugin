@@ -59,35 +59,21 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.7</h1>
-        <h2>Introduce local variable</h2>
-        Added #46: <a href="https://github.com/timmisset/omt-odt-plugin/issues/46">Introduce local variable with refactoring</a><br>
-        Introducing a local variable for an ODT statement now contains finding matching statements to also be replaced within
-        the scope of the newly created variable.<br>
-        Just as with the native Introduce methods for Java, you can choose to replace only the current or all occurrences.<br>
-        Triggering the Introduce intention only works from a statement but it will look for the same pattern in other elements<br>
-        <br>
-        For example:<br>
-        some / path / to / a / property; <-- introduce here<br>
-        IF some / path / to / a / property { <-- replaced<br>
-            @LOG(some / path / to / a / property); <-- replaced<br>
-        }<br>
-        <br>
-        The introducer will use the resolved type of the statement and (if applicable) the callname to create a list of suggested names
-        for the new variable to choose from. It will use super-class suggestions. If a statement can resolve to multiple types, all types
-        and their superclasses are included<br>
-        <h2>Optimize imports</h2>
-        Added #47: <a href="https://github.com/timmisset/omt-odt-plugin/issues/47">Optimize imports</a><br>
-        Optimize imports is available for OMT files. It is integrated in the native flow of IntelliJ i.e.:<br>
+        <h1>Update 5.8</h1>
+        <h2>Folding ODT blocks</h2>
+        Added #51: <a href="https://github.com/timmisset/omt-odt-plugin/issues/51">Make commands collapsible</a><br>
+        Added ODT folding regions:<br>
         <ul>
-            <li>Statically available via Code -> Optimize imports / Ctrl + Alt + O</li>
-            <li>Dynamically available via QuickFix</li>
-            <li>If enabled, it runs on save. Setting available at File | Settings | Tools | Actions on Save</li>
+            <li>Command blocks, i.e. anything between braces { and }. This includes code blocks that are declared
+                by DEFINE COMMAND statements</li>
+            <li>Queries of DEFINE QUERY statements</li>
         </ul>
-        <h2>Other</h2>
-        Added #48: <a href="https://github.com/timmisset/omt-odt-plugin/issues/48">Extend Unreachable code to include @CANCEL / @DONE commands</a><br>
-        Fixed #49: <a href="https://github.com/timmisset/omt-odt-plugin/issues/49">Variable reference range</a><br>
-        Added #50: <a href="https://github.com/timmisset/omt-odt-plugin/issues/50">Unnecessary negation inspection</a><br>
+        Command blocks of DEFINE COMMAND statements and Queries of DEFINE QUERY statements are considered method bodies
+        and can be automatically folded when checked in setting: File | Settings | Editor | General | Code Folding
+        
+        OMT folding regions:<br>
+        This is covered by the YAML bundled plugin, however, additional behavior is added for default folding.<br>
+        Import blocks are automatically folded when checked in setting: File | Settings | Editor | General | Code Folding<br>
         """
 }
 tasks {
