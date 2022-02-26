@@ -84,7 +84,7 @@ public class ODTFoldingBuilder extends FoldingBuilderEx implements DumbAware {
         }
 
         ASTNode child = children[0];
-        if (child != null && child.getText().length() < 10) {
+        if (child != null && child.getText().length() < 15) {
             return "{ " + child.getText() + " }";
         } else {
             return "{...}";
