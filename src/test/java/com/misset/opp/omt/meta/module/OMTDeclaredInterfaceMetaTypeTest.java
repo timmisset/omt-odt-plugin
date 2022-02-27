@@ -6,6 +6,7 @@ import com.intellij.psi.ResolveResult;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.references.OMTDeclaredInterfaceReference;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.PsiCallableImpl;
 import com.misset.opp.testCase.OMTCompletionTestCase;
 import org.jetbrains.yaml.psi.YAMLValue;
 import org.junit.jupiter.api.Assertions;
@@ -68,7 +69,7 @@ class OMTDeclaredInterfaceMetaTypeTest extends OMTCompletionTestCase {
             ResolveResult[] resolveResults = ((OMTDeclaredInterfaceReference) elementAtCaret.getReference()).multiResolve(false);
             Assertions.assertEquals(2, resolveResults.length);
             Assertions.assertTrue(Arrays.stream(resolveResults).anyMatch(resolveResult -> resolveResult.getElement() instanceof YAMLValue));
-            Assertions.assertTrue(Arrays.stream(resolveResults).anyMatch(resolveResult -> resolveResult.getElement() instanceof PsiCallable));
+            Assertions.assertTrue(Arrays.stream(resolveResults).anyMatch(resolveResult -> resolveResult.getElement() instanceof PsiCallableImpl));
         });
     }
 

@@ -26,7 +26,7 @@ import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.PsiCallableImpl;
 import com.misset.opp.settings.SettingsState;
 import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.apache.jena.ontology.OntResource;
@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public abstract class ODTDefineStatement extends PsiCallable implements
+public abstract class ODTDefineStatement extends PsiCallableImpl implements
         PsiNameIdentifierOwner,
         SupportsSafeDelete,
         ODTDocumented,

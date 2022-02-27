@@ -53,7 +53,7 @@ class OMTImportMemberReferenceTest extends OMTTestCase {
         configureByText("" +
                 "import:\n" +
                 "   ./importedFile.omt:\n" +
-                "   - co<caret>mmand\n" +
+                "   - command\n" +
                 "");
         configureByText("importedFile.omt", "" +
                 "commands:\n" +

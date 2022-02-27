@@ -14,4 +14,6 @@ public class OMTGraphShapeHandlerMemberReference extends OMTPlainTextReference {
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         return resolveExportableMemberReference();
     }
+
+
 }

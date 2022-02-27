@@ -37,7 +37,7 @@ public class OMTGraphShapeHandlerMetaType extends OMTModelItemDelegateMetaType i
 
     @Override
     public boolean isCallable() {
-        return false;
+        return true;
     }
 
     @Override

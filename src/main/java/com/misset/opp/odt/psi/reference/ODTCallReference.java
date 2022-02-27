@@ -17,6 +17,7 @@ import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlImportMemberDelegate;
 import com.misset.opp.omt.util.OMTImportUtil;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
@@ -36,13 +37,17 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
     }
 
     public PsiElement resolve(boolean resolveToOriginalElement) {
+        return resolve(resolveToOriginalElement, true);
+    }
+
+    public PsiElement resolve(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
         return LoggerUtil.computeWithLogger(LOGGER, "Resolving ODTCallReference " + myElement.getCallId(), () -> {
-            ResolveResult[] resolveResults = multiResolveToOriginal(resolveToOriginalElement);
+            ResolveResult[] resolveResults = multiResolveToOriginal(resolveToOriginalElement, resolveToFinalElement);
             return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
         });
     }
 
-    public ResolveResult @NotNull [] multiResolveToOriginal(boolean resolveToOriginalElement) {
+    private ResolveResult @NotNull [] multiResolveToOriginal(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
         // An ODT call is made to either an OMT Callable element such as an Activity, Procedure within the host OMT file
         // or directly to a built-in command-call or operator
 
@@ -53,18 +58,18 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
         // - host -> OMTFile.queries || OMTFile.commands
         // - host -> OMTFile.import
         return resolveInODT(resolveToOriginalElement)
-                .or(() -> resolveFromProvider(resolveToOriginalElement))
+                .or(() -> resolveFromProvider(resolveToOriginalElement, resolveToFinalElement))
                 .orElse(ResolveResult.EMPTY_ARRAY);
     }
 
-    private Optional<ResolveResult[]> resolveFromProvider(boolean resolveToOriginalElement) {
+    private Optional<ResolveResult[]> resolveFromProvider(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
         Optional<List<PsiCallable>> psiElements = myElement.getODTFile()
                 .resolveInOMT(OMTCallableProvider.class,
                         OMTCallableProvider.KEY,
-                        myElement.getCallId(),
+                        myElement.getName(),
                         (provider, mapping) -> provider.getCallableMap(mapping, myElement.getODTFile().getHost()));
 
-        return psiElements.map(psiCallables -> toResults(psiCallables, resolveToOriginalElement));
+        return psiElements.map(psiCallables -> toResults(psiCallables, resolveToOriginalElement, resolveToFinalElement));
     }
 
     private Optional<ResolveResult[]> resolveInODT(boolean resolveToOriginalElement) {
@@ -92,7 +97,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        return multiResolveToOriginal(true);
+        return multiResolveToOriginal(true, true);
     }
 
     @Override
@@ -118,5 +123,13 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
     @Override
     public @InspectionMessage @NotNull String getUnresolvedMessagePattern() {
         return "Cannot resolve call '" + getElement().getName() + "'";
+    }
+
+    @Override
+    public boolean isReferenceTo(@NotNull PsiElement element) {
+        boolean resolveToFinalElement = !(element instanceof OMTYamlImportMemberDelegate);
+        return Optional.ofNullable(resolve(true, resolveToFinalElement))
+                .map(element.getOriginalElement()::equals)
+                .orElse(false);
     }
 }

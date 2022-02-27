@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlImportMemberDelegate;
 
 import java.util.List;
 
@@ -19,14 +20,22 @@ public abstract class ODTPolyReferenceBase<T extends PsiElement> extends PsiRefe
         super(element, rangeInElement, soft);
     }
 
-    protected ResolveResult[] toResults(List<? extends PsiElement> resolvedElements, boolean resolveToOriginalElement) {
+    protected ResolveResult[] toResults(List<? extends PsiElement> resolvedElements,
+                                        boolean resolveToOriginalElement,
+                                        boolean resolveToFinalElement) {
         return resolvedElements.stream()
-                .map(psiCallable -> resolveToOriginalElement ? psiCallable.getOriginalElement() : psiCallable)
+                .map(psiElement -> {
+                    PsiElement element = psiElement;
+                    if (psiElement instanceof OMTYamlImportMemberDelegate && resolveToFinalElement) {
+                        element = ((OMTYamlImportMemberDelegate) psiElement).getFinalElement();
+                    }
+                    return resolveToOriginalElement ? element.getOriginalElement() : element;
+                })
                 .map(PsiElementResolveResult::new)
                 .toArray(ResolveResult[]::new);
     }
 
     protected ResolveResult[] toResults(List<? extends PsiElement> resolvedElements) {
-        return toResults(resolvedElements, true);
+        return toResults(resolvedElements, true, true);
     }
 }

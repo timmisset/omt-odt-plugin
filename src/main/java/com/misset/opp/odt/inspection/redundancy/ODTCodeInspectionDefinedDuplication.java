@@ -50,7 +50,7 @@ public class ODTCodeInspectionDefinedDuplication extends LocalInspectionTool {
                         List<PsiCallable> callables = ((ODTFile) file).resolveInOMT(
                                         OMTCallableProvider.class,
                                         OMTCallableProvider.KEY,
-                                        defineStatement.getCallId(),
+                                        defineStatement.getName(),
                                         (provider, mapping) -> provider.getCallableMap(mapping, ((ODTFile) file).getHost()))
                                 .orElse(Collections.emptyList());
                         // Either declared in the OMT file or imported:

@@ -53,6 +53,25 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
     }
 
     @Test
+    void testODTReferenceCanResolveToImportedModelItem() {
+        addFileToProject("importedFile.omt",
+                "model:\n" +
+                        "   MyActivity: !Activity\n" +
+                        "       title: MijnActiviteit");
+        String content = "" +
+                "import:\n" +
+                "   ./importedFile.omt:\n" +
+                "   - MyActivity\n" +
+                "model:\n" +
+                "   MyOtherActivity: !Activity\n" +
+                "       onStart: |\n" +
+                "           @<caret>MyActivity();\n" +
+                "";
+        configureByText(content);
+        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof YAMLKeyValue));
+    }
+
+    @Test
     void testRefactorRenameCall() {
         String content = "model:\n" +
                 "   MyActivity: !Activity\n" +

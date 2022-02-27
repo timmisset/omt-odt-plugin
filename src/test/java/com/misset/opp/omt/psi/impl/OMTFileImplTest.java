@@ -37,10 +37,10 @@ class OMTFileImplTest extends OMTTestCase {
         final OMTFile omtFile = configureByText(content);
         final HashMap<String, List<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
         assertNotEmpty(exportingMembersMap.keySet());
-        Assertions.assertTrue(exportingMembersMap.containsKey("@MyActivity"));
-        Assertions.assertTrue(exportingMembersMap.containsKey("@exportedCommand"));
+        Assertions.assertTrue(exportingMembersMap.containsKey("MyActivity"));
+        Assertions.assertTrue(exportingMembersMap.containsKey("exportedCommand"));
         Assertions.assertTrue(exportingMembersMap.containsKey("exportedQuery"));
-        Assertions.assertFalse(exportingMembersMap.containsKey("@notExportedCommand"));
+        Assertions.assertFalse(exportingMembersMap.containsKey("notExportedCommand"));
     }
 
     @Test
@@ -63,9 +63,9 @@ class OMTFileImplTest extends OMTTestCase {
                 "";
         final OMTFile omtFile = configureByText(importingFile);
         final HashMap<String, List<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
-        Assertions.assertTrue(exportingMembersMap.containsKey("@MyActivity"));
+        Assertions.assertTrue(exportingMembersMap.containsKey("MyActivity"));
         Assertions.assertTrue(exportingMembersMap.containsKey("query"));
-        Assertions.assertNotNull(exportingMembersMap.get("@MyActivity"));
+        Assertions.assertNotNull(exportingMembersMap.get("MyActivity"));
     }
 
     @Test

@@ -58,9 +58,9 @@ public class OMTExportedMembersIndex {
             if (file.getVirtualFile() == null) {
                 return;
             }
-            statusBar.setInfo("Starting analysis of exportables for OMT File: " + file.getName());
+            statusBar.setInfo("Starting analysis of exportable members for OMT File: " + file.getName());
             exportedMembers.put(file, file.getExportingMembersMap());
-            statusBar.setInfo("Finished analysis of exportables for OMT File: " + file.getName());
+            statusBar.setInfo("Finished analysis of exportable members for OMT File: " + file.getName());
         });
     }
 

@@ -16,7 +16,7 @@ import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.OMTCallable;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
-import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.PsiCallableImpl;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * with a YAMLMapping element on method that requires information specific an instance of the MetaType in the
  * PsiTree. Therefore, the OTMCallableImpl is basically a proxy between the PsiCallable and OMTMetaTypes
  */
-public class OMTCallableImpl extends PsiCallable implements OMTCallable {
+public class OMTCallableImpl extends PsiCallableImpl implements OMTCallable {
     private static final Key<CachedValue<HashMap<Integer, Set<OntResource>>>> PARAMETER_TYPES = new Key<>("PARAMETER_TYPES");
     private final YAMLMapping mapping;
     private final YAMLKeyValue keyValue;
