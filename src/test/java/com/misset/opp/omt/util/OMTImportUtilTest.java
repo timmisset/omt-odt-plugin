@@ -5,7 +5,6 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.inspection.ODTCodeInspectionUnresolvableReference;
-import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
@@ -95,7 +94,6 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
         myFixture.addFileToProject("moduleA.module.omt", "moduleName: ModuleA");
         OMTFile importedFile = (OMTFile) myFixture.addFileToProject("importedFile.omt", "queries:\n" +
                 "   DEFINE QUERY queryB => '';");
-        OMTExportedMembersIndex.analyse(importedFile);
         OMTFile importingFile = configureByText("importingFile.omt", "queries:\n" +
                 "   DEFINE QUERY queryA => <caret>queryB;");
 
@@ -115,7 +113,6 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
                 "   queryB: !StandaloneQuery\n" +
                 "       query: ''\n" +
                 "");
-        OMTExportedMembersIndex.analyse(importedFile);
         OMTFile importingFile = configureByText("importingFile.omt", "queries:\n" +
                 "   DEFINE QUERY queryA => <caret>queryB;");
 
@@ -131,9 +128,8 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
     @Test
     void testAddsImportToImportingFile() {
         myFixture.addFileToProject("moduleA.module.omt", "moduleName: ModuleA");
-        OMTFile importedFile = (OMTFile) myFixture.addFileToProject("importedFile.omt", "queries:\n" +
+        myFixture.addFileToProject("importedFile.omt", "queries:\n" +
                 "   DEFINE QUERY queryB => '';");
-        OMTExportedMembersIndex.analyse(importedFile);
         OMTFile importingFile = configureByText("importingFile.omt", "queries:\n" +
                 "   DEFINE QUERY queryA => queryB;");
 
@@ -151,9 +147,8 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
     void testAddsImportToExistingImportedFile() {
 
         myFixture.addFileToProject("moduleA.module.omt", "moduleName: ModuleA");
-        OMTFile importedFile = (OMTFile) myFixture.addFileToProject("importedFile.omt", "queries:\n" +
+        myFixture.addFileToProject("importedFile.omt", "queries:\n" +
                 "   DEFINE QUERY queryB => '';\n");
-        OMTExportedMembersIndex.analyse(importedFile);
         OMTFile importingFile = configureByText("importingFile.omt", "import:\n" +
                 "  ./importedFile.omt:\n" +
                 "    - fakeImport\n" +
@@ -174,9 +169,8 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
     @Test
     void testAddsNewImportToExistingImportBlock() {
         myFixture.addFileToProject("moduleA.module.omt", "moduleName: ModuleA");
-        OMTFile importedFile = (OMTFile) myFixture.addFileToProject("importedFile.omt", "queries:\n" +
+        myFixture.addFileToProject("importedFile.omt", "queries:\n" +
                 "   DEFINE QUERY queryB => '';\n");
-        OMTExportedMembersIndex.analyse(importedFile);
         OMTFile importingFile = configureByText("importingFile.omt", "import:\n" +
                 "  ./fakeFile.omt:\n" +
                 "  - fakeImport\n" +

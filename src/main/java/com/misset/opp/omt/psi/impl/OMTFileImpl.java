@@ -15,8 +15,6 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.OMTFileType;
-import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
-import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.meta.OMTFileMetaType;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
@@ -103,13 +101,6 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     private HashMap<String, List<PsiCallable>> getExportingMembersMap(YAMLMapping yamlMapping) {
         return LoggerUtil.computeWithLogger(LOGGER, "getExportingMembersMap", () ->
                 ReadAction.compute(() -> new OMTFileMetaType("OMTFile").getCallableMap(yamlMapping)));
-    }
-
-    @Override
-    public void clearCaches() {
-        super.clearCaches();
-        OMTExportedMembersIndex.removeFromIndex(this);
-        OMTImportedMembersIndex.analyse(this);
     }
 
     /**

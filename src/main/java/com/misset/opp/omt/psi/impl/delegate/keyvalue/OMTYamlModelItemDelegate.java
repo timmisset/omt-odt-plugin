@@ -65,7 +65,7 @@ public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYam
     public @NotNull SearchScope getUseScope() {
         final ArrayList<PsiFile> psiFiles = new ArrayList<>();
         psiFiles.add(keyValue.getContainingFile());
-        psiFiles.addAll(OMTImportedMembersIndex.getImportingFiles(getName()));
+        psiFiles.addAll(OMTImportedMembersIndex.getImportingFiles(getProject(), getName()));
         final List<VirtualFile> targetFiles = psiFiles.stream().map(PsiFile::getVirtualFile)
                 .filter(Objects::nonNull).collect(Collectors.toList());
         return GlobalSearchScope.filesScope(getProject(), targetFiles);

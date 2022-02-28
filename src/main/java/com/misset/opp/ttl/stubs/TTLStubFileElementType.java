@@ -11,8 +11,6 @@ import com.misset.opp.ttl.TTLLanguage;
 import com.misset.opp.ttl.psi.TTLFile;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 public class TTLStubFileElementType extends IStubFileElementType<TTLFileStub> {
     public TTLStubFileElementType() {
         super("TTLStubFile", TTLLanguage.INSTANCE);
@@ -41,13 +39,13 @@ public class TTLStubFileElementType extends IStubFileElementType<TTLFileStub> {
 
     @Override
     public void serialize(TTLFileStub stub,
-                          @NotNull StubOutputStream dataStream) throws IOException {
+                          @NotNull StubOutputStream dataStream) {
     }
 
     @NotNull
     @Override
     public TTLFileStub deserialize(@NotNull StubInputStream dataStream,
-                                   StubElement parentStub) throws IOException {
+                                   StubElement parentStub) {
         return new TTLFileStub(null);
     }
 

@@ -3,7 +3,6 @@ package com.misset.opp.omt.meta;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiFile;
-import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
 import com.misset.opp.omt.meta.arrays.OMTImportPathMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.util.OMTImportUtil;
@@ -39,7 +38,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
         }
         return Optional.ofNullable(resolveToPath(keyValue))
                 .map(path -> OMTImportUtil.getOMTFile(path, keyValue.getProject()))
-                .map(OMTExportedMembersIndex::getExportedMembers)
+                .map(OMTFile::getExportingMembersMap)
                 .orElse(new HashMap<>());
     }
 

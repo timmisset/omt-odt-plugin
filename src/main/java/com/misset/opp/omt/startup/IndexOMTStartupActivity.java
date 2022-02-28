@@ -12,8 +12,6 @@ import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
-import com.misset.opp.omt.indexing.OMTExportedMembersIndex;
-import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
@@ -67,8 +65,6 @@ public class IndexOMTStartupActivity implements StartupActivity.Background, Dumb
                         indicator.setFraction(counter.incrementAndGet() / (double) files.size());
                     }
                     OMTPrefixIndex.analyse(omtFile);
-                    OMTImportedMembersIndex.analyse(omtFile);
-                    OMTExportedMembersIndex.analyse(omtFile);
                 });
         OMTPrefixIndex.orderIndexByFrequency();
     }

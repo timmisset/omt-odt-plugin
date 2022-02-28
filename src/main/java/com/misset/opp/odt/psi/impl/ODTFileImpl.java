@@ -76,7 +76,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         final ArrayList<PsiFile> psiFiles = new ArrayList<>();
         psiFiles.add(getToplevelFile());
         if (isExportable()) {
-            psiFiles.addAll(OMTImportedMembersIndex.getImportingFiles(name));
+            psiFiles.addAll(OMTImportedMembersIndex.getImportingFiles(getProject(), name));
         }
         final List<VirtualFile> targetFiles = psiFiles.stream()
                 .map(PsiFile::getVirtualFile)
