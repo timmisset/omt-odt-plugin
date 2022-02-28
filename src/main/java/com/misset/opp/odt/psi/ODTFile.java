@@ -10,6 +10,7 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.shared.InjectionHost;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
@@ -25,8 +26,10 @@ public interface ODTFile extends PsiFile {
 
     /**
      * Returns the containing OMT File that contains the Yaml Host element where this ODT file is injected into
+     *
+     * @return
      */
-    OMTFile getHostFile();
+    @Nullable OMTFile getHostFile();
 
     /**
      * Returns the exporting member use-scope for this ODT file

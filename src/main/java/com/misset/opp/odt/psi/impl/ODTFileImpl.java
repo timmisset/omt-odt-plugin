@@ -9,11 +9,13 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.*;
+import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTFileType;
 import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.ODTLanguage;
@@ -41,8 +43,6 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class ODTFileImpl extends PsiFileBase implements ODTFile {
-    private static final Key<CachedValue<InjectionHost>> HOST = new Key<>("HOST");
-    private static final Key<CachedValue<OMTFile>> HOST_FILE = new Key<>("HOST_FILE");
     private static final Key<CachedValue<Boolean>> IS_EXPORTABLE = new Key<>("IS_EXPORTABLE");
     private static final Key<CachedValue<Map<String, String>>> NAMESPACES = new Key<>("NAMESPACES");
     private static final Key<CachedValue<List<ODTNamespacePrefix>>> PREFIXES = new Key<>("PREFIXES");
@@ -56,43 +56,25 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
         return ODTFileType.INSTANCE;
     }
 
-    public InjectionHost getHost() {
-        return CachedValuesManager.getCachedValue(this, HOST, () -> {
-            final InjectedLanguageManager instance = InjectedLanguageManager.getInstance(getProject());
-            final PsiLanguageInjectionHost injectionHost = instance.getInjectionHost(this);
-            if (!(injectionHost instanceof InjectionHost)) {
-                return new CachedValueProvider.Result<>(null,
-                        this,
-                        PsiModificationTracker.MODIFICATION_COUNT);
-            }
-            return new CachedValueProvider.Result<>((InjectionHost) injectionHost,
-                    injectionHost.getContainingFile(),
-                    PsiModificationTracker.MODIFICATION_COUNT);
-        });
+    public @Nullable InjectionHost getHost() {
+        return (InjectionHost) InjectedLanguageManager.getInstance(getProject()).getInjectionHost(this);
     }
 
     public @Nullable OMTFile getHostFile() {
-        return CachedValuesManager.getCachedValue(this, HOST_FILE, () -> {
-            final OMTFile omtFile = Optional.ofNullable(getHost())
-                    .map(PsiElement::getContainingFile)
-                    .filter(OMTFile.class::isInstance)
-                    .map(OMTFile.class::cast)
-                    .orElse(null);
-            return new CachedValueProvider.Result<>(omtFile,
-                    omtFile == null ? this : omtFile,
-                    PsiModificationTracker.MODIFICATION_COUNT);
-        });
+        return Optional.ofNullable(getHost())
+                .map(PsiElement::getContainingFile)
+                .filter(OMTFile.class::isInstance)
+                .map(OMTFile.class::cast)
+                .orElse(null);
     }
 
-    public PsiFile getHostOrContaining() {
-        return Optional.ofNullable(getHostFile())
-                .map(PsiFile.class::cast)
-                .orElse(getContainingFile());
+    private PsiFile getToplevelFile() {
+        return InjectedLanguageManager.getInstance(getProject()).getTopLevelFile(this);
     }
 
     public SearchScope getExportingMemberUseScope(String name) {
         final ArrayList<PsiFile> psiFiles = new ArrayList<>();
-        psiFiles.add(getHostOrContaining());
+        psiFiles.add(getToplevelFile());
         if (isExportable()) {
             psiFiles.addAll(OMTImportedMembersIndex.getImportingFiles(name));
         }
@@ -182,9 +164,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     @Override
     public <T> CachedValueProvider.Result<T> getCachedValue(T result,
                                                             ModificationTracker... additionalTrackers) {
-        final OMTFile hostFile = getHostFile();
-        return hostFile != null ? new CachedValueProvider.Result<>(result, hostFile, this, additionalTrackers) :
-                new CachedValueProvider.Result<>(result, this, additionalTrackers);
+        return new CachedValueProvider.Result<>(result, getToplevelFile(), additionalTrackers);
     }
 
     @Override
