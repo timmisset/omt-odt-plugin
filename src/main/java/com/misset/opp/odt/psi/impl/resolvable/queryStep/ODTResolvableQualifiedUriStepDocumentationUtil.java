@@ -7,15 +7,21 @@ import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
-import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ODTResolvableQualifiedUriStepDocumentationUtil {
+
+    private static final Pattern pattern = Pattern.compile("\"(.*)\"");
 
     public static String getDocumentation(ODTResolvableQualifiedUriStep step) {
         if (isClassUri(step)) {
@@ -46,6 +52,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
         sb.append(DocumentationMarkup.SECTIONS_START);
         setClassInfo(ontClass, sb);
+        setPredicateInfo(individual, "Values", sb);
         sb.append(DocumentationMarkup.SECTIONS_END);
         return sb.toString();
     }
@@ -80,6 +87,69 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         return sb.toString();
     }
 
+    private static void setPredicateInfo(OntResource resource, String header, StringBuilder sb) {
+        Set<Property> properties = getProperties(resource);
+        if (properties.isEmpty()) {
+            return;
+        }
+        StringBuilder predicatesTable = new StringBuilder();
+        predicatesTable.append("<table>");
+        boolean hasValues = false;
+        for (Property property : properties) {
+            if (!property.equals(OppModel.INSTANCE.RDF_TYPE)) {
+                RDFNode propertyValue = resource.getPropertyValue(property);
+                if (propertyValue == null && resource instanceof OntClass) {
+                    propertyValue = getFromSuperclass((OntClass) resource, property);
+                }
+                if (propertyValue != null) {
+                    String value = null;
+                    if (propertyValue.isLiteral()) {
+                        value = propertyValue.asLiteral().getValue().toString();
+                    } else if (propertyValue.isResource()) {
+                        value = propertyValue.asResource().getLocalName();
+                    }
+                    if (value != null) {
+                        hasValues = true;
+                        predicatesTable.append("<tr><td style=\"padding-right: 5px\">")
+                                .append(property.getLocalName())
+                                .append("</td><td>")
+                                .append(extractValue(value))
+                                .append("</td></tr>");
+                    }
+                }
+            }
+        }
+        predicatesTable.append("</table>");
+        if (hasValues) {
+            ODTDocumentationProvider.addKeyValueSection(header, predicatesTable.toString(), sb);
+        }
+    }
+
+    private static RDFNode getFromSuperclass(OntClass ontClass, Property property) {
+        return OppModel.INSTANCE.listSuperClasses(ontClass)
+                .stream()
+                .map(superClass -> superClass.getPropertyValue(property))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static String extractValue(String fullyQualifiedLiteral) {
+        Matcher matcher = pattern.matcher(fullyQualifiedLiteral);
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return fullyQualifiedLiteral;
+        }
+    }
+
+    private static Set<Property> getProperties(OntResource resource) {
+        return OppModel.INSTANCE.listPredicates(OppModel.INSTANCE.toClass(resource))
+                .stream()
+                .filter(property -> !OppModel.INSTANCE.classModelProperties.contains(property))
+                .collect(Collectors.toSet());
+    }
+
     private static void setClassInfo(OntClass ontClass, StringBuilder sb) {
         // the order is important for super and subclasses, use list instead of set
         List<OntClass> superClasses = OppModel.INSTANCE.listSuperClasses(ontClass);
@@ -91,7 +161,6 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
                     , sb);
         }
 
-
         List<OntClass> subClasses = OppModel.INSTANCE.listSubclasses(ontClass);
         if (!subClasses.isEmpty()) {
             ODTDocumentationProvider.addKeyValueSection("Subclasses:",
@@ -101,17 +170,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
                     , sb);
         }
 
-        Set<OntProperty> properties = OppModel.INSTANCE.listPredicates(ontClass)
-                .stream()
-                .filter(OntProperty.class::isInstance)
-                .map(OntProperty.class::cast)
-                .collect(Collectors.toSet());
-        if (!properties.isEmpty()) {
-            ODTDocumentationProvider.addKeyValueSection("Predicates:",
-                    TTLResourceUtil.describeUrisJoined(properties, "<br>", false)
-                    , sb);
-        }
-
+        setPredicateInfo(ontClass, "Predicates", sb);
     }
 
     private static String getTraverseDocumentation(ODTResolvableQualifiedUriStep step) {

@@ -1,5 +1,9 @@
 package com.misset.opp.ttl.startup;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.intellij.json.JsonFileType;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ReadAction;
@@ -14,38 +18,57 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
+import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.settings.SettingsState;
+import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.OppModelLoader;
 import com.misset.opp.ttl.util.TTLScopeUtil;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.FileReader;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class LoadOntologyStartupActivity implements StartupActivity {
+public class LoadOntologyStartupActivity implements StartupActivity.RequiredForSmartMode {
     @Override
     public void runActivity(@NotNull Project project) {
         loadOntology(project);
     }
 
     public static void loadOntology(@NotNull Project project) {
-        DumbService.getInstance(project).runWhenSmart(() -> {
-            // A slow task, such as loading the ontology should not claim the UI thread
-            // instead, it should be run as background task
-
-            final Task.Backgroundable task = getBackgroundableTask(project);
-            ProgressManager.getInstance().runProcessWithProgressAsynchronously(
-                    task, new BackgroundableProcessIndicator(task)
-            );
-        });
+        final Task.Backgroundable task = getBackgroundableTask(project);
+        ProgressManager.getInstance().runProcessWithProgressAsynchronously(
+                task, new BackgroundableProcessIndicator(task)
+        );
     }
 
     private static Task.Backgroundable getBackgroundableTask(Project project) {
-        return new Task.Backgroundable(project, "Loading OPP ontology") {
+        return new Task.Backgroundable(project, "Loading OPP Model") {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                indicator.setText("Loading OPP Ontology");
+                getLoadOntologyTask(project).run(indicator);
+                indicator.setText("Loading OPP References");
+                getLoadReferencesTask(project).run(indicator);
+            }
+        };
+    }
+
+    private static Task.Backgroundable getLoadOntologyTask(Project project) {
+        return new Task.Backgroundable(project, "Loading OPP Ontology") {
             private VirtualFile getFileFromIndex(SettingsState state) {
+                if (DumbService.isDumb(project)) {
+                    return null;
+                }
                 return ReadAction.compute(() ->
                         FilenameIndex.getAllFilesByExt(project, "ttl")
                                 .stream()
@@ -118,4 +141,64 @@ public class LoadOntologyStartupActivity implements StartupActivity {
         };
     }
 
+
+    protected static Task.Backgroundable getLoadReferencesTask(Project project) {
+        return new Task.Backgroundable(project, "Loading OPP References") {
+            @Override
+            public void run(@Nullable ProgressIndicator indicator) {
+                ReadAction.run(() -> loadReferences(project, indicator));
+            }
+
+            private void loadReferences(Project project, ProgressIndicator indicator) {
+                JsonObject references = new JsonObject();
+                getReferenceFiles(project)
+                        .forEach(file -> processJson(file, references));
+                SettingsState instance = SettingsState.getInstance(project);
+                OppModel.INSTANCE.addFromJson(references, indicator, instance.referenceDetails);
+            }
+
+            private Collection<File> getReferenceFiles(Project project) {
+                return getReferencesFolder(project).or(() -> findReferencesFolder(project))
+                        .filter(VirtualFile::exists)
+                        .map(VirtualFile::toNioPath)
+                        .map(Path::toFile)
+                        .map(folder -> FileUtils.listFiles(folder, new String[]{"json"}, true))
+                        .orElse(Collections.emptyList());
+            }
+
+            private Optional<VirtualFile> getReferencesFolder(Project project) {
+                return Optional.of(SettingsState.getInstance(project).referencesFolder)
+                        .filter(s -> !s.isBlank())
+                        .map(Path::of)
+                        .map(VirtualFileManager.getInstance()::findFileByNioPath);
+            }
+
+            private Optional<VirtualFile> findReferencesFolder(Project project) {
+                if (DumbService.isDumb(project)) {
+                    return Optional.empty();
+                }
+                return FileTypeIndex
+                        .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.projectScope(project))
+                        .stream()
+                        .filter(virtualFile -> virtualFile.getPath().contains("/referentielijsten/"))
+                        .map(VirtualFile::getParent)
+                        .findFirst();
+            }
+
+            private void processJson(File file, JsonObject references) {
+                try {
+                    final JsonElement jsonElement = JsonParser.parseReader(new FileReader(file));
+                    if (!jsonElement.isJsonObject()) {
+                        return;
+                    }
+                    JsonObject jsonObject = jsonElement.getAsJsonObject();
+                    if (jsonObject.has("type") && jsonObject.has("triples")) {
+                        String type = jsonObject.get("type").getAsString();
+                        references.add(type, jsonObject.get("triples"));
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        };
+    }
 }

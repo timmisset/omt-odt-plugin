@@ -234,7 +234,9 @@
         </intentionAction>
 
         <!-- TTL -->
-        <postStartupActivity implementation="com.misset.opp.ttl.startup.LoadOntologyStartupActivity"/>
+        <requiredForSmartModeStartupActivity
+                id="loadOntology"
+                implementation="com.misset.opp.ttl.startup.LoadOntologyStartupActivity"/>
         <notificationGroup id="Update Ontology" displayType="BALLOON"/>
         <fileType name="Turtle File" implementationClass="com.misset.opp.ttl.TTLFileType" fieldName="INSTANCE"
                   language="Turtle" extensions="ttl"/>

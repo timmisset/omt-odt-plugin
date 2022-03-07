@@ -39,7 +39,6 @@ public class ODTDocumentationProvider extends AbstractDocumentationProvider impl
         sb.append(DocumentationMarkup.SECTION_HEADER_START);
         sb.append(key);
         sb.append(DocumentationMarkup.SECTION_SEPARATOR);
-        sb.append("<p>");
         sb.append(value);
         sb.append(DocumentationMarkup.SECTION_END);
     }

@@ -56,7 +56,12 @@ public class PluginConfigurable implements Configurable {
         state.ontologyModelRootPath = project.getBasePath() + "/model/ttl/root.ttl";
 
         // default path to the reasons folder
-        state.reasonsFolder = project.getBasePath() + "/reasons";
+        state.reasonsFolder = "";
+
+        // default path to the references folder
+        state.referencesFolder = project.getBasePath() + "/frontend/apps/app/src/assets/referentielijsten";
+
+        state.referenceDetails = true;
 
         // some generic mappings
         final HashMap<String, String> pathMapping = new HashMap<>();
@@ -78,8 +83,6 @@ public class PluginConfigurable implements Configurable {
                 "http://ontologie.politie.nl/def/platform#NamedGraph");
         state.modelInstanceMapping = modelInstanceMapping;
 
-        state.applyQueryStepFilter = true;
-        state.resolveCallSignatures = true;
     }
 
     @Override
@@ -91,11 +94,11 @@ public class PluginConfigurable implements Configurable {
     public boolean isModified() {
         SettingsState settingsState = getState();
         boolean modified = !settingsComponent.getOntologyModelRootPath().equals(settingsState.ontologyModelRootPath);
-        modified |= settingsComponent.getApplyQueryStepFilter() != settingsState.applyQueryStepFilter;
-        modified |= settingsComponent.getResolveCallSignature() != settingsState.resolveCallSignatures;
         modified |= isMappingPathsModified(settingsState);
         modified |= isModelInstanceMappingModified(settingsState);
         modified |= !settingsComponent.getReasonsRoot().equals(settingsState.reasonsFolder);
+        modified |= !settingsComponent.getReferencesRoot().equals(settingsState.referencesFolder);
+        modified |= settingsComponent.getReferenceDetails() != settingsState.referenceDetails;
         return modified;
     }
 
@@ -126,19 +129,34 @@ public class PluginConfigurable implements Configurable {
     @Override
     public void apply() {
         SettingsState settingsState = getState();
-        saveOntologyState(settingsState);
+        saveOntologyAndReferencesState(settingsState);
         saveReasonsState(settingsState);
         saveMappingState(settingsState);
         saveModelInstanceMappingState(settingsState);
-        settingsState.resolveCallSignatures = settingsComponent.getResolveCallSignature();
-        settingsState.applyQueryStepFilter = settingsComponent.getApplyQueryStepFilter();
     }
 
-    private void saveOntologyState(SettingsState settingsState) {
+    /**
+     * Since both a change in the model path and the references path require a full model reload
+     * this method should run combined
+     */
+    private void saveOntologyAndReferencesState(SettingsState settingsState) {
+        boolean reloadOntology = false;
         if (!settingsState.ontologyModelRootPath.equals(settingsComponent.getOntologyModelRootPath())) {
+            reloadOntology = true;
+        }
+        if (!settingsState.referencesFolder.equals(settingsComponent.getReferencesRoot())) {
+            reloadOntology = true;
+        }
+        if (settingsState.referenceDetails != settingsComponent.getReferenceDetails() &&
+                settingsComponent.getReferenceDetails()) {
+            reloadOntology = true;
+        }
+        if (reloadOntology) {
             LoadOntologyStartupActivity.loadOntology(project);
         }
+        settingsState.referencesFolder = settingsComponent.getReferencesRoot();
         settingsState.ontologyModelRootPath = settingsComponent.getOntologyModelRootPath();
+        settingsState.referenceDetails = settingsComponent.getReferenceDetails();
     }
 
     private void saveReasonsState(SettingsState settingsState) {
@@ -175,10 +193,10 @@ public class PluginConfigurable implements Configurable {
         SettingsState settingsState = getState();
         settingsComponent.setOntologyModelRootPath(settingsState.ontologyModelRootPath);
         settingsComponent.setReasonsRoot(settingsState.reasonsFolder);
+        settingsComponent.setReferencesRoot(settingsState.referencesFolder);
         settingsComponent.setPathMapper(settingsState.mappingPaths);
         settingsComponent.setModelInstanceMapper(settingsState.modelInstanceMapping);
-        settingsComponent.setApplyQueryStepFilter(settingsState.applyQueryStepFilter);
-        settingsComponent.setResolveCallSignature(settingsState.resolveCallSignatures);
+        settingsComponent.setReferenceDetails(settingsState.referenceDetails);
     }
 
     @Override

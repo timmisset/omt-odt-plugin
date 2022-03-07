@@ -1,8 +1,12 @@
 package com.misset.opp.ttl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SimpleModificationTracker;
 import com.misset.opp.omt.OMTFileType;
@@ -192,49 +196,49 @@ public class OppModel {
 
         OWL_CLASS = ontologyModel.createClass(OWL + "Class");
         OWL_THING_CLASS = ontologyModel.createClass(OWL + "Thing");
-        OWL_THING_INSTANCE = OWL_THING_CLASS.createIndividual(OWL + "Thing_INSTANCE");
+        OWL_THING_INSTANCE = createIndividual(OWL_THING_CLASS, OWL + "Thing_INSTANCE");
 
         OPP_CLASS = ontologyModel.createClass(OPP + "Class");
-        JSON_OBJECT = OPP_CLASS.createIndividual(OPP + "JSON_OBJECT");
-        IRI = OPP_CLASS.createIndividual(OPP + "IRI");
-        ERROR = OPP_CLASS.createIndividual(OPP + "ERROR");
+        JSON_OBJECT = createIndividual(OPP_CLASS, OPP + "JSON_OBJECT");
+        IRI = createIndividual(OPP_CLASS, OPP + "IRI");
+        ERROR = createIndividual(OPP_CLASS, OPP + "ERROR");
 
         GRAPH_CLASS = ontologyModel.createClass(PLATFORM + "Graph");
         NAMED_GRAPH_CLASS = ontologyModel.createClass(PLATFORM + "NamedGraph");
         GRAPH_SHAPE = ontologyModel.createClass(PLATFORM + "GraphShape");
         TRANSIENT_GRAPH_CLASS = ontologyModel.createClass("http://ontologie.politie.nl/internal/transient#TransientNamedGraph");
-        NAMED_GRAPH = NAMED_GRAPH_CLASS.createIndividual(NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
-        MEDEWERKER_GRAPH = NAMED_GRAPH_CLASS.createIndividual(NAMED_GRAPH_CLASS.getURI() + "_MEDEWERKERGRAPH");
-        TRANSIENT_GRAPH = TRANSIENT_GRAPH_CLASS.createIndividual(TRANSIENT_GRAPH_CLASS.getURI() + "_INSTANCE");
+        NAMED_GRAPH = createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
+        MEDEWERKER_GRAPH = createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_MEDEWERKERGRAPH");
+        TRANSIENT_GRAPH = createIndividual(TRANSIENT_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS.getURI() + "_INSTANCE");
 
         classModelProperties = List.of(RDFS_SUBCLASS_OF, RDF_TYPE);
     }
 
     private void setPrimitives(OntModel ontologyModel) {
         XSD_BOOLEAN = ontologyModel.createClass(XSD + "boolean");
-        XSD_BOOLEAN_INSTANCE = ontologyModel.createIndividual(XSD_BOOLEAN);
+        XSD_BOOLEAN_INSTANCE = createIndividual(XSD_BOOLEAN);
         XSD_STRING = ontologyModel.createClass(XSD + "string");
-        XSD_STRING_INSTANCE = ontologyModel.createIndividual(XSD_STRING);
+        XSD_STRING_INSTANCE = createIndividual(XSD_STRING);
         XSD_NUMBER = ontologyModel.createClass(XSD + "number");
-        XSD_NUMBER_INSTANCE = ontologyModel.createIndividual(XSD_NUMBER);
+        XSD_NUMBER_INSTANCE = createIndividual(XSD_NUMBER);
         XSD_DECIMAL = ontologyModel.createClass(XSD + "decimal");
         XSD_DECIMAL.addSuperClass(XSD_NUMBER);
-        XSD_DECIMAL_INSTANCE = ontologyModel.createIndividual(XSD_DECIMAL);
+        XSD_DECIMAL_INSTANCE = createIndividual(XSD_DECIMAL);
         XSD_INTEGER = ontologyModel.createClass(XSD + "integer");
         // by making XSD_INTEGER a subclass of XSD_DECIMAL, it will allow type checking
         // to accept an integer at a decimal position, but not the other way around
         XSD_INTEGER.addSuperClass(XSD_DECIMAL);
-        XSD_INTEGER_INSTANCE = ontologyModel.createIndividual(XSD_INTEGER);
+        XSD_INTEGER_INSTANCE = createIndividual(XSD_INTEGER);
         XSD_DATETIME = ontologyModel.createClass(XSD + "dateTime");
-        XSD_DATETIME_INSTANCE = ontologyModel.createIndividual(XSD_DATETIME);
+        XSD_DATETIME_INSTANCE = createIndividual(XSD_DATETIME);
         XSD_DATE = ontologyModel.createClass(XSD + "date");
         // by making XSD_DATE a subclass of XSD_DATETIME, it will allow type checking
         // to accept a date at a datetime position, but not the other way around
         XSD_DATE.addSuperClass(XSD_DATETIME);
-        XSD_DATE_INSTANCE = ontologyModel.createIndividual(XSD_DATE);
+        XSD_DATE_INSTANCE = createIndividual(XSD_DATE);
 
         XSD_DURATION = ontologyModel.createClass(XSD + "duration");
-        XSD_DURATION_INSTANCE = ontologyModel.createIndividual(XSD_DURATION);
+        XSD_DURATION_INSTANCE = createIndividual(XSD_DURATION);
     }
 
     private void loadSimpleModel(OntModel ontologyModel) {
@@ -263,13 +267,13 @@ public class OppModel {
                 .filterKeep(resource -> resource.getProperty(RDF_TYPE).getObject().equals(SHACL_PROPERYSHAPE))
                 .forEach((shaclPropertyShape) -> getSimpleResourceStatement(ontologyModel, simpleModelClass, shaclPropertyShape));
 
-        simpleModelClass.createIndividual(simpleModelClass.getURI() + "_INSTANCE");
+        createIndividual(simpleModelClass, simpleModelClass.getURI() + "_INSTANCE");
     }
 
     private void loadSimpleModelIndividual(OntModel ontologyModel, Individual individual) {
         try {
             if (ontologyModel.getOntResource(individual.getURI()) == null) {
-                ontologyModel.createIndividual(individual.getURI(), individual.getOntClass());
+                createIndividual(individual.getOntClass(), individual.getURI());
                 ontologyModel.add(individual.listProperties());
             }
         } catch (ConversionException conversionException) {
@@ -282,7 +286,7 @@ public class OppModel {
 
     private void loadGraphShapes(OntModel ontologyModel, Resource resource) {
         if (ontologyModel.getOntResource(resource.getURI()) == null) {
-            ontologyModel.createIndividual(resource.getURI(), GRAPH_SHAPE);
+            createIndividual(GRAPH_SHAPE, resource.getURI());
             ontologyModel.add(resource.listProperties());
         }
     }
@@ -792,17 +796,19 @@ public class OppModel {
     public Individual getIndividual(@Nullable String uri) {
         return computeWithReadLock(() -> uri == null ? null : LoggerUtil.computeWithLogger(LOGGER,
                 "Retrieve " + uri + " as string from model",
-                () -> {
-                    // Retrieving by string is a rather slow process in Jena,
-                    // since it's safe to cache in this case, let's do it!
-                    if (mappedIndividualsCache.containsKey(uri)) {
-                        return mappedIndividualsCache.get(uri);
-                    } else {
-                        Individual individual = getModel().getIndividual(uri);
-                        mappedIndividualsCache.put(uri, individual);
-                        return individual;
-                    }
-                }));
+                () -> doGetIndividual(uri)));
+    }
+
+    private Individual doGetIndividual(String uri) {
+        // Retrieving by string is a rather slow process in Jena,
+        // since it's safe to cache in this case, let's do it!
+        if (mappedIndividualsCache.containsKey(uri)) {
+            return mappedIndividualsCache.get(uri);
+        } else {
+            Individual individual = getModel().getIndividual(uri);
+            mappedIndividualsCache.put(uri, individual);
+            return individual;
+        }
     }
 
     public Set<OntResource> getClassIndividuals(String classUri) {
@@ -993,7 +999,7 @@ public class OppModel {
                 // to add this Individual as write thread.
                 return (Individual) mappedResourcesCache.get(uri);
             }
-            final Individual individual = ontClass.createIndividual(uri);
+            final Individual individual = createIndividual(ontClass, uri);
             NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
                     .createNotification(
                             "Added " + individual.getURI() + " as " + OppModel.INSTANCE.toClass(individual),
@@ -1003,6 +1009,19 @@ public class OppModel {
             mappedResourcesCache.put(uri, individual);
             return individual;
         });
+    }
+
+    private Individual createIndividual(OntClass ontClass) {
+        return createIndividual(ontClass, null);
+    }
+
+    private Individual createIndividual(OntClass ontClass, @Nullable String uri) {
+        final Individual individual = uri == null ? ontClass.createIndividual() : ontClass.createIndividual(uri);
+        String ontClassURI = ontClass.getURI();
+        Set<OntResource> individuals = classIndividualsCache.getOrDefault(ontClassURI, new HashSet<>());
+        individuals.add(individual);
+        classIndividualsCache.put(ontClassURI, individuals);
+        return individual;
     }
 
     /**
@@ -1144,5 +1163,67 @@ public class OppModel {
 
     }
 
+    public void addFromJson(JsonObject references, ProgressIndicator indicator, boolean referenceDetails) {
+        runWithWriteLock(() -> {
+            Set<String> strings = references.keySet();
+            int total = strings.size();
+            int processed = 0;
+            indicator.setIndeterminate(false);
+            indicator.setFraction(0d);
+            for (String classType : strings) {
+                indicator.setText(classType);
+                OntClass ontClass = getClass(classType);
+                if (ontClass == null) {
+                    return;
+                }
+
+                JsonElement jsonElement = references.get(classType);
+                if (jsonElement.isJsonArray()) {
+                    Set<String> individuals = new HashSet<>();
+                    JsonArray jsonArray = jsonElement.getAsJsonArray();
+                    jsonArray.forEach(element -> individuals.add(getSubject(element)));
+                    individuals.forEach(uri -> {
+                        Individual individual = createIndividual(ontClass, uri);
+                        if (referenceDetails) {
+                            addReferenceDetails(jsonArray, individual);
+                        }
+                    });
+                }
+                processed++;
+                indicator.setFraction((double) processed / total);
+            }
+        });
+    }
+
+    private String getSubject(JsonElement element) {
+        if (element == null || !element.isJsonObject()) {
+            return null;
+        }
+        JsonObject jsonStatement = element.getAsJsonObject();
+        if (jsonStatement.has("s")) {
+            return jsonStatement.get("s").getAsString();
+        }
+        return null;
+    }
+
+    private void addReferenceDetails(JsonArray array, Individual individual) {
+        array.forEach(element -> {
+            if (element != null && element.isJsonObject()) {
+                JsonObject jsonStatement = element.getAsJsonObject();
+                if (jsonStatement.has("s") && jsonStatement.has("p") && jsonStatement.has("o")) {
+                    String subject = jsonStatement.get("s").getAsString();
+                    if (subject.equals(individual.getURI())) {
+                        String propertyIri = jsonStatement.get("p").getAsString();
+                        String object = jsonStatement.get("o").getAsString();
+                        Property property = getModel().getProperty(propertyIri);
+                        // the individual is already added to a class, no need to add the rdf_type predicate again
+                        if (!property.equals(RDF_TYPE)) {
+                            individual.addProperty(property, object);
+                        }
+                    }
+                }
+            }
+        });
+    }
 
 }

@@ -27,7 +27,6 @@ import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallableImpl;
-import com.misset.opp.settings.SettingsState;
 import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -141,9 +140,7 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
             if (parameterTypes.containsKey(i) && !parameterTypes.get(i).isEmpty()) {
                 call.setParamType(variables.get(i).getName(), parameterTypes.get(i));
             } else {
-                if (SettingsState.getInstance(call.getProject()).resolveCallSignatures) {
-                    call.setParamType(variables.get(i).getName(), call.resolveSignatureArgument(i));
-                }
+                call.setParamType(variables.get(i).getName(), call.resolveSignatureArgument(i));
             }
         }
     }

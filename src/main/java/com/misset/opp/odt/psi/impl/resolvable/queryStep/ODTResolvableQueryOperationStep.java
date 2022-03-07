@@ -167,10 +167,6 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
                 return resources;
             }
 
-            if (!getSettingState().applyQueryStepFilter) {
-                return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
-            }
-
             final ODTQuery query = filter.getQuery();
             if (query instanceof ODTResolvableQuery) {
                 return query.filter(resources);

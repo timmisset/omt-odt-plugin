@@ -7,7 +7,9 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.util.ui.FormBuilder;
+import com.intellij.util.ui.UIUtil;
 import com.misset.opp.settings.components.ModelInstanceMapperTable;
 import com.misset.opp.settings.components.PathMapperTable;
 import org.jdesktop.swingx.JXTitledSeparator;
@@ -24,36 +26,58 @@ public class SettingsComponent {
     private final JPanel myMainPanel;
     private final TextFieldWithBrowseButton ontologyModelRootPath = getFileLocationSetting("root.ttl");
     private final TextFieldWithBrowseButton reasonsRoot = getFolderLocationSetting();
+    private final TextFieldWithBrowseButton referencesRoot = getFolderLocationSetting();
     private final PathMapperTable pathMapperTable = new PathMapperTable();
     private final ModelInstanceMapperTable modelInstanceMapperTable = new ModelInstanceMapperTable();
-    private final JBCheckBox resolveCallSignature = new JBCheckBox("Resolve call signature when input parameter is not typed");
-    private final JBCheckBox applyQueryStepFilter = new JBCheckBox("Apply query step filter, disabled means all filters resolve to owl:Thing");
+    private final JBCheckBox referenceDetails = new JBCheckBox("Include reference data");
 
     public SettingsComponent() {
-        myMainPanel = FormBuilder.createFormBuilder()
-                .addComponent(new JXTitledSeparator("Heavy features"))
-                .addComponent(new JBLabel("Certain features can seriously impact the performance of the plugin"))
-                .addComponent(resolveCallSignature)
-                .addComponent(applyQueryStepFilter)
-                .addComponent(new JXTitledSeparator("Ontology"))
-                .addComponent(new JBLabel("Specify the root file of the OPP model"))
-                .addComponent(new JBLabel("All ttl files in the same folder and subfolders are also read"))
-                .addComponent(new JBLabel(
-                        "The owl:imports in the root.ttl and all importing files will determine how the final ontology is loaded"))
+        JBLabel ontologyRootLabel = new JBLabel("Specify the root file of the OPP model.<br>" +
+                "All ttl files in the same folder and subfolders are also read. " +
+                "The owl:imports in the root.ttl and all importing files will determine how the final ontology is loaded.")
+                .setAllowAutoWrapping(true)
+                .setCopyable(true);
+        JBLabel references = new JBLabel("Reference lists (instance data) can be included in the in-memory OPP model that the plugin uses. " +
+                "This will allow completion and model validation to understand explicitly used instances of the model in ODT " +
+                "queries or statements. By including the reference details, all the values are also loaded which is noticeable " +
+                "when the IDE starts. The values are displayed in the quick-documentation when you hover instance URIs.")
+                .setAllowAutoWrapping(true)
+                .setCopyable(true);
+        JBLabel regexInstances = new JBLabel("Additional instances can be registered in the in-memory OPP model based on a Regular Expression. " +
+                "When an URI is not recognized it will be matched against the RegEx and added as known instance for as long as the IDE running.")
+                .setAllowAutoWrapping(true)
+                .setCopyable(true);
+
+        JPanel model = FormBuilder.createFormBuilder()
+                .addComponent(ontologyRootLabel)
                 .addComponent(ontologyModelRootPath)
+                .addComponent(new JXTitledSeparator("References"))
+                .addComponent(references)
+                .addComponent(new JBLabel("Select the root folder that contains .json files with references"))
+                .addComponent(referencesRoot)
+                .addComponent(referenceDetails)
                 .addComponent(new JBLabel("Known instances:"))
-                .addComponent(new JBLabel(
-                        "Add Regular expressions to register known IRIs as instances of specific model classes"))
-                .addComponent(modelInstanceMapperTable.getComponent())
-                .addComponent(new JXTitledSeparator("Mapping"))
-                .addComponent(new JBLabel(
-                        "Add mapped imports to specific locations in the project. Make sure to also add these in the tsconfig.json file"))
-                .addComponent(pathMapperTable.getComponent())
-                .addComponent(new JBLabel(
-                        "The paths are evaluated on longest-first. The sorting by name in this table is for your convenience."))
-                .addComponent(new JXTitledSeparator("Reasons"))
-                .addComponent(reasonsRoot)
+                .addComponent(regexInstances)
+                .addComponentFillVertically(modelInstanceMapperTable.getComponent(), UIUtil.DEFAULT_VGAP)
                 .getPanel();
+
+
+        JBLabel mapping = new JBLabel(
+                "Add mapped imports to specific locations in the project. Make sure to also add these in the tsconfig.json file. " +
+                        "The paths are evaluated on longest-first. The sorting by name in this table is for your convenience.")
+                .setAllowAutoWrapping(true)
+                .setCopyable(true);
+
+        JPanel general = FormBuilder.createFormBuilder()
+                .addComponent(mapping)
+                .addComponentFillVertically(pathMapperTable.getComponent(), UIUtil.DEFAULT_VGAP)
+                .getPanel();
+
+        JBTabbedPane tabbedPane = new JBTabbedPane(SwingConstants.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+        tabbedPane.insertTab("Model", null, model, "Ontology and instance data settings", 0);
+        tabbedPane.insertTab("Project Mapping", null, general, "Project mapping", 1);
+        myMainPanel = FormBuilder.createFormBuilder()
+                .addComponentFillVertically(tabbedPane, UIUtil.DEFAULT_VGAP).getPanel();
     }
 
     private TextFieldWithBrowseButton getFileLocationSetting(String name) {
@@ -100,6 +124,15 @@ public class SettingsComponent {
     }
 
     @NotNull
+    public String getReferencesRoot() {
+        return referencesRoot.getText();
+    }
+
+    public void setReferencesRoot(@NotNull String newText) {
+        referencesRoot.setText(newText);
+    }
+
+    @NotNull
     public Map<String, String> getPathMapper() {
         return pathMapperTable.getTableView()
                 .getItems()
@@ -139,20 +172,11 @@ public class SettingsComponent {
         modelInstanceMapperTable.setValues(values);
     }
 
-    public void setApplyQueryStepFilter(boolean selected) {
-        this.applyQueryStepFilter.setSelected(selected);
+    public boolean getReferenceDetails() {
+        return referenceDetails.isSelected();
     }
 
-    public boolean getApplyQueryStepFilter() {
-        return applyQueryStepFilter.isSelected();
+    public void setReferenceDetails(boolean selected) {
+        referenceDetails.setSelected(selected);
     }
-
-    public void setResolveCallSignature(boolean selected) {
-        this.resolveCallSignature.setSelected(selected);
-    }
-
-    public boolean getResolveCallSignature() {
-        return resolveCallSignature.isSelected();
-    }
-
 }

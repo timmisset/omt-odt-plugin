@@ -1,5 +1,8 @@
 package com.misset.opp.ttl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -13,6 +16,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+
+import static org.mockito.Mockito.mock;
 
 class OppModelTest extends OMTOntologyTestCase {
     private OntClass CLASS_A;
@@ -182,6 +187,36 @@ class OppModelTest extends OMTOntologyTestCase {
                 "http://www.w3.org/2001/XMLSchema#date"));
         Assertions.assertFalse(areCompatible("http://www.w3.org/2001/XMLSchema#date",
                 "http://www.w3.org/2001/XMLSchema#dateTime"));
+    }
+
+    @Test
+    void addFromJson() {
+        JsonArray array = new JsonArray();
+        JsonObject typeTriple = new JsonObject();
+        typeTriple.addProperty("s", "http://ontology/ClassA_InstanceZ");
+        typeTriple.addProperty("p", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+        typeTriple.addProperty("o", "http://ontology/ClassA");
+        JsonObject valueTriple = new JsonObject();
+        typeTriple.addProperty("s", "http://ontology/ClassA_InstanceZ");
+        typeTriple.addProperty("p", "http://ontology/booleanPredicate");
+        typeTriple.addProperty("o", "\"true\"^^xsd:boolean");
+
+        array.add(typeTriple);
+        array.add(valueTriple);
+
+        JsonObject references = new JsonObject();
+        references.add(CLASS_A.getURI(), array);
+
+        ProgressIndicator progressIndicator = mock(ProgressIndicator.class);
+        oppModel.addFromJson(references, progressIndicator, true);
+
+        OntResource ontResource = CLASS_A.listInstances(true).filterKeep(resource -> resource.getURI() != null && resource.getURI().equals("http://ontology/ClassA_InstanceZ"))
+                .toList()
+                .get(0);
+        Assertions.assertNotNull(ontResource);
+        Assertions.assertTrue(ontResource.hasProperty(oppModel.getProperty("http://ontology/booleanPredicate")));
+        Assertions.assertTrue(ontResource.isIndividual());
+        Assertions.assertTrue(ontResource.asIndividual().hasOntClass(CLASS_A, true));
     }
 
     private boolean areCompatible(String resourceA,

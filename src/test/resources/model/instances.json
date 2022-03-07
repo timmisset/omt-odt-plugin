@@ -1,0 +1,15 @@
+{
+  "type": "http://ontology/ClassA",
+  "triples": [
+    {
+      "s": "http://ontology/ClassA_InstanceB",
+      "p": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "o": "http://ontology/ClassA"
+    },
+    {
+      "s": "http://ontology/ClassA_InstanceB",
+      "p": "http://ontology/booleanPredicate",
+      "o": "\"true\"^^xsd:boolean"
+    }
+  ]
+}
