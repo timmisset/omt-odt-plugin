@@ -33,17 +33,17 @@ public class SettingsComponent {
 
     public SettingsComponent() {
         JBLabel ontologyRootLabel = new JBLabel("Specify the root file of the OPP model.<br>" +
-                "All ttl files in the same folder and subfolders are also read. " +
+                "All ttl files in the same folder and subfolders are also read.<br>" +
                 "The owl:imports in the root.ttl and all importing files will determine how the final ontology is loaded.")
                 .setAllowAutoWrapping(true)
                 .setCopyable(true);
-        JBLabel references = new JBLabel("Reference lists (instance data) can be included in the in-memory OPP model that the plugin uses. " +
+        JBLabel references = new JBLabel("Reference lists (instance data) can be included in the in-memory OPP model that the plugin uses.<br>" +
                 "This will allow completion and model validation to understand explicitly used instances of the model in ODT " +
-                "queries or statements. By including the reference details, all the values are also loaded which is noticeable " +
-                "when the IDE starts. The values are displayed in the quick-documentation when you hover instance URIs.")
+                "queries or statements.<br>By including the reference details, all the values are also loaded which is noticeable " +
+                "when the IDE starts.<br>The values are displayed in the quick-documentation when you hover instance URIs.")
                 .setAllowAutoWrapping(true)
                 .setCopyable(true);
-        JBLabel regexInstances = new JBLabel("Additional instances can be registered in the in-memory OPP model based on a Regular Expression. " +
+        JBLabel regexInstances = new JBLabel("Additional instances can be registered in the in-memory OPP model based on a Regular Expression.<br>" +
                 "When an URI is not recognized it will be matched against the RegEx and added as known instance for as long as the IDE running.")
                 .setAllowAutoWrapping(true)
                 .setCopyable(true);

@@ -43,11 +43,20 @@ public class PluginConfigurable implements Configurable {
         final SettingsState state = getState();
         if (state.useDefaultSettings()) {
             initWithDefaults();
+        } else {
+            initDefaultForNulls();
         }
         reset();
         final JPanel panel = settingsComponent.getPanel();
         panel.setAlignmentY(Component.TOP_ALIGNMENT);
         return panel;
+    }
+
+    private void initDefaultForNulls() {
+        final SettingsState state = getState();
+        if (state.referencesFolder.isBlank()) {
+            state.referencesFolder = project.getBasePath() + "/frontend/apps/app/src/assets/referentielijsten";
+        }
     }
 
     private void initWithDefaults() {

@@ -33,7 +33,15 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
     private boolean useDefaultSettings = false;
 
     public static SettingsState getInstance(Project project) {
-        return project.getService(SettingsState.class);
+        SettingsState settingsState = project.getService(SettingsState.class);
+        initDefaultForNulls(settingsState, project);
+        return settingsState;
+    }
+
+    private static void initDefaultForNulls(SettingsState settingsState, Project project) {
+        if (settingsState.referencesFolder.isBlank()) {
+            settingsState.referencesFolder = project.getBasePath() + "/frontend/apps/app/src/assets/referentielijsten";
+        }
     }
 
     @Nullable

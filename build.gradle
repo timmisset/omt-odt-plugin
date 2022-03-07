@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.8.1'
+version '5.9'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,25 +59,14 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.8.1</h1>
-        Fixed #53: <a href="https://github.com/timmisset/omt-odt-plugin/issues/53">Error after upgrade from 5.6 to 5.8</a><br>
-        Added #54: <a href="https://github.com/timmisset/omt-odt-plugin/issues/54">Deferred references</a><br>
-        
-        <h1>Update 5.8</h1>
-        <h2>Folding ODT blocks</h2>
-        Added #51: <a href="https://github.com/timmisset/omt-odt-plugin/issues/51">Make commands collapsible</a><br>
-        Added ODT folding regions:<br>
-        <ul>
-            <li>Command blocks, i.e. anything between braces { and }. This includes code blocks that are declared
-                by DEFINE COMMAND statements</li>
-            <li>Queries of DEFINE QUERY statements</li>
-        </ul>
-        Command blocks of DEFINE COMMAND statements and Queries of DEFINE QUERY statements are considered method bodies
-        and can be automatically folded when checked in setting: File | Settings | Editor | General | Code Folding
-        
-        OMT folding regions:<br>
-        This is covered by the YAML bundled plugin, however, additional behavior is added for default folding.<br>
-        Import blocks are automatically folded when checked in setting: File | Settings | Editor | General | Code Folding<br>
+        <h1>Update 5.9</h1>
+        Added #55: <a href="https://github.com/timmisset/omt-odt-plugin/issues/55">Referencelists add instance data</a><br>
+        Instance data from reference lists are now included, the folder with lists is expected in the assets folder but is
+        configurable. Optionally the data for references lists can also be loaded. This will be displayed in the quick documentation
+        window as 'values' when hovering a reference item URI.<br>
+        <br>
+        Fixed #56: <a href="https://github.com/timmisset/omt-odt-plugin/issues/56">Lookup element builder </a><br>
+        Fixed #57: <a href="https://github.com/timmisset/omt-odt-plugin/issues/57">Multiline comments on single lines</a><br>
         """
 }
 tasks {
