@@ -34,7 +34,11 @@ public abstract class ODTCallCompletion extends CompletionContributor {
 
     protected LookupElement getLookupElement(Callable callable) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(callable.getCallId());
+        String callId = callable.getCallId();
+        if (callId == null) {
+            return null;
+        }
+        stringBuilder.append(callId);
 
         if (callable.minNumberOfArguments() > 0) {
             stringBuilder.append("(");
@@ -51,8 +55,8 @@ public abstract class ODTCallCompletion extends CompletionContributor {
             }
         }
         return LookupElementBuilder.create(stringBuilder.toString())
-                .withLookupString(callable.getCallId())
-                .withLookupString(callable.getCallId().toLowerCase())
+                .withLookupString(callId)
+                .withLookupString(callId.toLowerCase())
                 .withLookupString(callable.getName())
                 .withLookupString(callable.getName().toLowerCase())
                 .withIcon(PlatformIcons.METHOD_ICON)
@@ -105,6 +109,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                     return resolve.isEmpty() || typeFilter.test(resolve);
                 })
                 .map(this::getLookupElement)
+                .filter(Objects::nonNull)
                 .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, Callable.getValue()))
                 .forEach(result::addElement);
     }
