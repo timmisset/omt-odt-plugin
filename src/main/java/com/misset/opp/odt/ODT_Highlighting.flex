@@ -55,8 +55,8 @@ VARIABLENAME=                   "$"{SYMBOL}
 
 // ignored
 END_OF_LINE_COMMENT=            ("#" | "\/\/")[^\r\n]*
-JAVADOCS=                        \/\*\*\s*\n([^\*]|(\*[^\/]))+\*\/
-MULTILINECOMMENT=                \/\*\s*\n([^\*]|(\*[^\/]))+\*\/
+JAVADOCS=                        \/\*\*\s*([^\*]|(\*[^\/]))+\*\/
+MULTILINECOMMENT=                \/\*\s*([^\*]|(\*[^\/]))+\*\/
 
 // YYINITIAL state can only have a limited selection of tokens that can trigger indentation
 RESERVED_NAME=                  "IF"
