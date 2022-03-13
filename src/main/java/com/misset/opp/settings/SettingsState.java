@@ -11,6 +11,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.misset.opp.omt.OMTFileType;
+import com.misset.opp.ttl.OppModel;
 import net.minidev.json.JSONArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,13 +37,13 @@ import java.util.stream.Collectors;
 @Service
 public final class SettingsState implements PersistentStateComponent<SettingsState> {
 
+    public static final String NAMED_GRAPH_URI_PREFIX = "http:\\/\\/data\\.politie\\.nl\\/19000000000000_\\S*";
     public String ontologyModelRootPath = "";
     public String reasonsFolder = "";
     public String referencesFolder = "";
     public String tsConfigPath = "";
     public Map<String, String> modelInstanceMapping = new HashMap<>();
-    public boolean referenceDetails = true;
-    private boolean useDefaultSettings = false;
+    public boolean referenceDetails = false;
     private Project project;
 
     public static SettingsState getInstance(Project project) {
@@ -63,6 +64,13 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
 
         if (settingsState.tsConfigPath.isBlank()) {
             settingsState.tsConfigPath = project.getBasePath() + "/frontend/tsconfig.base.json";
+        }
+
+        if (!settingsState.modelInstanceMapping.containsKey(NAMED_GRAPH_URI_PREFIX)) {
+            settingsState.modelInstanceMapping.put(
+                    NAMED_GRAPH_URI_PREFIX,
+                    OppModel.INSTANCE.NAMED_GRAPH_CLASS.getURI()
+            );
         }
     }
 
@@ -132,15 +140,6 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
     @Override
     public void loadState(@NotNull SettingsState state) {
         XmlSerializerUtil.copyBean(state, this);
-    }
-
-    @Override
-    public void noStateLoaded() {
-        useDefaultSettings = true;
-    }
-
-    public boolean useDefaultSettings() {
-        return useDefaultSettings;
     }
 
     @Override

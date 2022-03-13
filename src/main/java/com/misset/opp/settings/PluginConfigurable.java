@@ -40,37 +40,10 @@ public class PluginConfigurable implements Configurable {
     @Override
     public JComponent createComponent() {
         settingsComponent = new SettingsComponent();
-        final SettingsState state = getState();
-        if (state.useDefaultSettings()) {
-            initWithDefaults();
-        } else {
-            initDefaultForNulls();
-        }
         reset();
         final JPanel panel = settingsComponent.getPanel();
         panel.setAlignmentY(Component.TOP_ALIGNMENT);
         return panel;
-    }
-
-    private void initDefaultForNulls() {
-        final SettingsState state = getState();
-        if (state.referencesFolder.isBlank()) {
-            state.referencesFolder = project.getBasePath() + "/frontend/apps/app/src/assets/referentielijsten";
-        }
-    }
-
-    private void initWithDefaults() {
-        final SettingsState state = getState();
-        // default path to the model
-        state.ontologyModelRootPath = project.getBasePath() + "/model/ttl/root.ttl";
-
-        // default path to the reasons folder
-        state.reasonsFolder = "";
-
-        // default path to the references folder
-        state.referencesFolder = project.getBasePath() + "/frontend/apps/app/src/assets/referentielijsten";
-
-        state.referenceDetails = false;
     }
 
     @Override
