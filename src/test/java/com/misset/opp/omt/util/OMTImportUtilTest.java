@@ -13,11 +13,16 @@ import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.jetbrains.yaml.formatter.YAMLCodeStyleSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 class OMTImportUtilTest extends OMTInspectionTestCase {
 
@@ -56,38 +61,52 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
 
     @Test
     void testGetImportPathReturnsShorthandPathForDifferentModules() {
-        Map<String, String> mappingPaths = SettingsState.getInstance(getProject()).mappingPaths;
-        mappingPaths.put("@A", "folderA");
-        mappingPaths.put("@B", "folderB");
+        try (MockedStatic<SettingsState> settingsState = Mockito.mockStatic(SettingsState.class)) {
+            SettingsState state = mock(SettingsState.class);
+            settingsState.when(() -> SettingsState.getInstance(getProject()))
+                    .thenReturn(state);
 
-        myFixture.addFileToProject("folderA/moduleA.module.omt", "moduleName: ModuleA");
-        OMTFile importingFile = (OMTFile) myFixture.addFileToProject("folderA/importingFile.omt", "");
-        myFixture.addFileToProject("folderB/moduleB.module.omt", "moduleName: ModuleB");
-        OMTFile importedFile = (OMTFile) myFixture.addFileToProject("folderB/importedFile.omt", "queries:\n" +
-                "   DEFINE QUERY query => '';");
+            doReturn("@B/importedFile.omt").when(state).getShorthandPath(anyString());
 
-        ReadAction.run(() -> {
-            PsiCallable callable = importedFile.getExportingMembersMap().get("query").get(0);
-            String importPath = OMTImportUtil.getImportPath(importingFile, callable);
-            Assertions.assertEquals("'@B/importedFile.omt'", importPath);
-        });
+            myFixture.addFileToProject("folderA/moduleA.module.omt", "moduleName: ModuleA");
+            OMTFile importingFile = (OMTFile) myFixture.addFileToProject("folderA/importingFile.omt", "");
+            myFixture.addFileToProject("folderB/moduleB.module.omt", "moduleName: ModuleB");
+            OMTFile importedFile = (OMTFile) myFixture.addFileToProject("folderB/importedFile.omt", "queries:\n" +
+                    "   DEFINE QUERY query => '';");
+
+            ReadAction.run(() -> {
+                PsiCallable callable = importedFile.getExportingMembersMap().get("query").get(0);
+                String importPath = OMTImportUtil.getImportPath(importingFile, callable);
+                Assertions.assertEquals("'@B/importedFile.omt'", importPath);
+            });
+        }
     }
 
     @Test
     void testGetImportPathFallsBackToRelativePathIfNoShorthandAvailable() {
+        try (MockedStatic<SettingsState> settingsState = Mockito.mockStatic(SettingsState.class)) {
+            SettingsState state = mock(SettingsState.class);
+            settingsState.when(() -> SettingsState.getInstance(getProject()))
+                    .thenReturn(state);
 
-        myFixture.addFileToProject("folderA/moduleA.module.omt", "moduleName: ModuleA");
-        OMTFile importingFile = (OMTFile) myFixture.addFileToProject("folderA/importingFile.omt", "");
-        myFixture.addFileToProject("folderB/moduleB.module.omt", "moduleName: ModuleB");
-        OMTFile importedFile = (OMTFile) myFixture.addFileToProject("folderB/importedFile.omt", "queries:\n" +
-                "   DEFINE QUERY query => '';");
+            doReturn(null).when(state).getShorthandPath(anyString());
 
-        ReadAction.run(() -> {
-            PsiCallable callable = importedFile.getExportingMembersMap().get("query").get(0);
-            String importPath = OMTImportUtil.getImportPath(importingFile, callable);
-            Assertions.assertEquals("'@B/importedFile.omt'", importPath);
-        });
+            myFixture.addFileToProject("folderA/moduleA.module.omt", "moduleName: ModuleA");
+            OMTFile importingFile = (OMTFile) myFixture.addFileToProject("folderA/importingFile.omt", "");
+            myFixture.addFileToProject("folderB/moduleB.module.omt", "moduleName: ModuleB");
+            OMTFile importedFile = (OMTFile) myFixture.addFileToProject("folderB/importedFile.omt", "queries:\n" +
+                    "   DEFINE QUERY query => '';");
+
+            ReadAction.run(() -> {
+                PsiCallable callable = importedFile.getExportingMembersMap().get("query").get(0);
+                String importPath = OMTImportUtil.getImportPath(importingFile, callable);
+                Assertions.assertEquals("../folderB/importedFile.omt", importPath);
+            });
+
+        }
+
     }
+
 
     @Test
     void testGetImportIntentionsFromInjected() {

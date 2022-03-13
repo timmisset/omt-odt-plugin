@@ -28,6 +28,7 @@
         <!-- OMT -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
                   language="OMT" extensions="omt"/>
+        <notificationGroup id="Import mapping" displayType="BALLOON"/>
         <lang.parserDefinition language="OMT" implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
 
         <lang.findUsagesProvider language="yaml" order="before yamlFindUsagesProvider"

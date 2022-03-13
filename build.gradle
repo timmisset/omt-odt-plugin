@@ -67,6 +67,9 @@ patchPluginXml {
         <br>
         Fixed #56: <a href="https://github.com/timmisset/omt-odt-plugin/issues/56">Lookup element builder </a><br>
         Fixed #57: <a href="https://github.com/timmisset/omt-odt-plugin/issues/57">Multiline comments on single lines</a><br>
+        Added #58: <a href="https://github.com/timmisset/omt-odt-plugin/issues/55">Replace import mapping with tsconfig information</a><br>
+        The mapping for @domain imports is extracted from the tsconfig.base.json information given that the setting points to the correct
+        file. It is expected to exist in the project/frontend folder. If you open the frontend folder itself as project you should change this setting<br>
         """
 }
 tasks {

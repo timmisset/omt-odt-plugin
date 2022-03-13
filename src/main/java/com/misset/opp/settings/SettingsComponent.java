@@ -7,11 +7,9 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.UIUtil;
 import com.misset.opp.settings.components.ModelInstanceMapperTable;
-import com.misset.opp.settings.components.PathMapperTable;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,8 +25,8 @@ public class SettingsComponent {
     private final TextFieldWithBrowseButton ontologyModelRootPath = getFileLocationSetting("root.ttl");
     private final TextFieldWithBrowseButton reasonsRoot = getFolderLocationSetting();
     private final TextFieldWithBrowseButton referencesRoot = getFolderLocationSetting();
-    private final PathMapperTable pathMapperTable = new PathMapperTable();
     private final ModelInstanceMapperTable modelInstanceMapperTable = new ModelInstanceMapperTable();
+    private final TextFieldWithBrowseButton tsconfig = getFileLocationSetting("*.json");
     private final JBCheckBox referenceDetails = new JBCheckBox("Include reference data");
 
     public SettingsComponent() {
@@ -48,7 +46,9 @@ public class SettingsComponent {
                 .setAllowAutoWrapping(true)
                 .setCopyable(true);
 
-        JPanel model = FormBuilder.createFormBuilder()
+        JPanel panel = FormBuilder.createFormBuilder()
+                .addComponent(new JBLabel("TSConfig file that contains path mappings:"))
+                .addComponent(tsconfig)
                 .addComponent(ontologyRootLabel)
                 .addComponent(ontologyModelRootPath)
                 .addComponent(new JXTitledSeparator("References"))
@@ -61,23 +61,8 @@ public class SettingsComponent {
                 .addComponentFillVertically(modelInstanceMapperTable.getComponent(), UIUtil.DEFAULT_VGAP)
                 .getPanel();
 
-
-        JBLabel mapping = new JBLabel(
-                "Add mapped imports to specific locations in the project. Make sure to also add these in the tsconfig.json file. " +
-                        "The paths are evaluated on longest-first. The sorting by name in this table is for your convenience.")
-                .setAllowAutoWrapping(true)
-                .setCopyable(true);
-
-        JPanel general = FormBuilder.createFormBuilder()
-                .addComponent(mapping)
-                .addComponentFillVertically(pathMapperTable.getComponent(), UIUtil.DEFAULT_VGAP)
-                .getPanel();
-
-        JBTabbedPane tabbedPane = new JBTabbedPane(SwingConstants.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
-        tabbedPane.insertTab("Model", null, model, "Ontology and instance data settings", 0);
-        tabbedPane.insertTab("Project Mapping", null, general, "Project mapping", 1);
         myMainPanel = FormBuilder.createFormBuilder()
-                .addComponentFillVertically(tabbedPane, UIUtil.DEFAULT_VGAP).getPanel();
+                .addComponentFillVertically(panel, UIUtil.DEFAULT_VGAP).getPanel();
     }
 
     private TextFieldWithBrowseButton getFileLocationSetting(String name) {
@@ -133,23 +118,12 @@ public class SettingsComponent {
     }
 
     @NotNull
-    public Map<String, String> getPathMapper() {
-        return pathMapperTable.getTableView()
-                .getItems()
-                .stream()
-                .collect(Collectors.toMap(
-                        PathMapperTable.Item::getName,
-                        PathMapperTable.Item::getPath
-                ));
+    public String getTsConfigPath() {
+        return tsconfig.getText();
     }
 
-    public void setPathMapper(Map<String, String> entries) {
-        final List<PathMapperTable.Item> values = entries.entrySet().stream().map(
-                        entry -> new PathMapperTable.Item(entry.getKey(), entry.getValue())
-                )
-                .sorted(Comparator.comparing(PathMapperTable.Item::getName))
-                .collect(Collectors.toList());
-        pathMapperTable.setValues(values);
+    public void setTsConfigPath(@NotNull String newText) {
+        tsconfig.setText(newText);
     }
 
     @NotNull

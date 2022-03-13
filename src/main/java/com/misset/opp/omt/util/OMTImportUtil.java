@@ -4,7 +4,6 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -140,29 +139,8 @@ public class OMTImportUtil {
 
     private static String getShorthandImport(OMTFile importedFile) {
         final SettingsState settingsState = SettingsState.getInstance(importedFile.getProject());
-        return settingsState.mappingPaths.entrySet()
-                .stream()
-                .filter(entry -> isShorthand(entry, importedFile))
-                .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
-                .map(entry -> createShorthandImport(entry, importedFile))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private static boolean isShorthand(Map.Entry<String, String> entry, OMTFile importedFile) {
-        String filePath = importedFile.getVirtualFile().getPath();
-        String shorthandPath = getBasePath(importedFile.getProject()) + "/" + entry.getValue();
-        return filePath.startsWith(shorthandPath);
-    }
-
-    private static String createShorthandImport(Map.Entry<String, String> entry, OMTFile importedFile) {
-        String filePath = importedFile.getVirtualFile().getPath();
-        String shorthandPath = getBasePath(importedFile.getProject()) + "/" + entry.getValue();
-        return entry.getKey() + filePath.substring(shorthandPath.length());
-    }
-
-    private static String getBasePath(Project project) {
-        return ApplicationManager.getApplication().isUnitTestMode() ? "/src" : project.getBasePath();
+        Path path = Path.of(importedFile.getVirtualFile().getPath());
+        return settingsState.getShorthandPath(path.toAbsolutePath().toString());
     }
 
     public static void addImport(OMTFile importingFile, Project project, String importPath, String memberName) {
@@ -221,7 +199,6 @@ public class OMTImportUtil {
 
     public static String resolveToPath(Project project, OMTFile containingFile, String path) {
         final SettingsState settingsState = SettingsState.getInstance(project);
-        final Collection<String> keySet = settingsState.mappingPaths.keySet();
 
         // trim any quotes that might be present
         String trimmedPath = trimPath(project, path);
@@ -230,18 +207,8 @@ public class OMTImportUtil {
             String moduleName = trimmedPath.substring(MODULE.length());
             OMTFile module = OMTModuleUtil.getModule(project, moduleName);
             return module != null ? module.getVirtualFile().getPath() : null;
-        } else if (keySet.stream().anyMatch(trimmedPath::startsWith)) {
-            final Pair<String, String> mapEntry = keySet.stream().sorted(Comparator.reverseOrder())
-                    .filter(trimmedPath::startsWith)
-                    .map(key -> new Pair<>(key, settingsState.mappingPaths.get(key)))
-                    .findFirst()
-                    .orElse(null);
-            if (mapEntry == null) {
-                return trimmedPath;
-            }
-            String basePath = project.getBasePath();
-            String mapped = trimmedPath.replace(mapEntry.getFirst(), mapEntry.getSecond());
-            return String.format("%s/%s", basePath, mapped);
+        } else if (trimmedPath.startsWith("@")) {
+            return settingsState.getMappingPath(trimmedPath);
         } else {
             return Optional.ofNullable(containingFile)
                     .map(PsiFile::getVirtualFile)

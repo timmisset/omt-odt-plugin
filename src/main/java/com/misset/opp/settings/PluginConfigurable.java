@@ -70,28 +70,7 @@ public class PluginConfigurable implements Configurable {
         // default path to the references folder
         state.referencesFolder = project.getBasePath() + "/frontend/apps/app/src/assets/referentielijsten";
 
-        state.referenceDetails = true;
-
-        // some generic mappings
-        final HashMap<String, String> pathMapping = new HashMap<>();
-        pathMapping.put("@client", "frontend/libs");
-        pathMapping.put("@activiteit", "frontend/libs/activiteit-domain");
-        pathMapping.put("@forensische-opsporing", "frontend/libs/forensische-opsporing-domain");
-        pathMapping.put("@generiek", "frontend/libs/generiek-domain");
-        pathMapping.put("@handeling", "frontend/libs/handeling-domain");
-        pathMapping.put("@main", "frontend/libs/main-domain");
-        pathMapping.put("@mpg", "frontend/libs/mpg-domain");
-        pathMapping.put("@registratie", "frontend/libs/registratie-domain");
-        pathMapping.put("@shared", "frontend/libs/shared-domain");
-        pathMapping.put("@signalering", "frontend/libs/signalering-domain");
-        pathMapping.put("@werkopdracht", "frontend/libs/werkopdracht-domain");
-        state.mappingPaths = pathMapping;
-
-        final HashMap<String, String> modelInstanceMapping = new HashMap<>();
-        modelInstanceMapping.put("http://data\\.politie\\.nl/19000000000000_\\S+",
-                "http://ontologie.politie.nl/def/platform#NamedGraph");
-        state.modelInstanceMapping = modelInstanceMapping;
-
+        state.referenceDetails = false;
     }
 
     @Override
@@ -103,24 +82,12 @@ public class PluginConfigurable implements Configurable {
     public boolean isModified() {
         SettingsState settingsState = getState();
         boolean modified = !settingsComponent.getOntologyModelRootPath().equals(settingsState.ontologyModelRootPath);
-        modified |= isMappingPathsModified(settingsState);
         modified |= isModelInstanceMappingModified(settingsState);
         modified |= !settingsComponent.getReasonsRoot().equals(settingsState.reasonsFolder);
         modified |= !settingsComponent.getReferencesRoot().equals(settingsState.referencesFolder);
+        modified |= !settingsComponent.getTsConfigPath().equals(settingsState.tsConfigPath);
         modified |= settingsComponent.getReferenceDetails() != settingsState.referenceDetails;
         return modified;
-    }
-
-    private boolean isMappingPathsModified(SettingsState settingsState) {
-        final Map<String, String> mappingPaths = settingsState.mappingPaths;
-        if (settingsComponent.getPathMapper().size() != mappingPaths.size()) {
-            return true;
-        }
-        return settingsComponent.getPathMapper().entrySet()
-                .stream()
-                .anyMatch(entry ->
-                        !mappingPaths.containsKey(entry.getKey()) || !mappingPaths.get(entry.getKey())
-                                .equals(entry.getValue()));
     }
 
     private boolean isModelInstanceMappingModified(SettingsState settingsState) {
@@ -140,9 +107,10 @@ public class PluginConfigurable implements Configurable {
         SettingsState settingsState = getState();
         saveOntologyAndReferencesState(settingsState);
         saveReasonsState(settingsState);
-        saveMappingState(settingsState);
+        saveTsConfigPath(settingsState);
         saveModelInstanceMappingState(settingsState);
     }
+
 
     /**
      * Since both a change in the model path and the references path require a full model reload
@@ -160,30 +128,25 @@ public class PluginConfigurable implements Configurable {
                 settingsComponent.getReferenceDetails()) {
             reloadOntology = true;
         }
-        if (reloadOntology) {
-            LoadOntologyStartupActivity.loadOntology(project);
-        }
         settingsState.referencesFolder = settingsComponent.getReferencesRoot();
         settingsState.ontologyModelRootPath = settingsComponent.getOntologyModelRootPath();
         settingsState.referenceDetails = settingsComponent.getReferenceDetails();
+        if (reloadOntology) {
+            LoadOntologyStartupActivity.loadOntology(project);
+        }
     }
 
     private void saveReasonsState(SettingsState settingsState) {
-        if (!settingsState.reasonsFolder.equals(settingsComponent.getReasonsRoot())) {
+        boolean reload = !settingsState.reasonsFolder.equals(settingsComponent.getReasonsRoot());
+        settingsState.reasonsFolder = settingsComponent.getReasonsRoot();
+
+        if (reload) {
             LoadReasonsStartupActivity.loadReasons(project);
         }
-        settingsState.reasonsFolder = settingsComponent.getReasonsRoot();
     }
 
-    private void saveMappingState(SettingsState settingsState) {
-        final HashMap<String, String> mapping = new HashMap<>();
-        for (Map.Entry<String, String> entry : settingsComponent.getPathMapper().entrySet()) {
-            if (!entry.getKey().isBlank() && !entry.getValue().isBlank()) {
-                mapping.put(entry.getKey(), entry.getValue());
-            }
-        }
-        settingsComponent.setPathMapper(mapping);
-        settingsState.mappingPaths = mapping;
+    private void saveTsConfigPath(SettingsState settingsState) {
+        settingsState.tsConfigPath = settingsComponent.getTsConfigPath();
     }
 
     private void saveModelInstanceMappingState(SettingsState settingsState) {
@@ -203,9 +166,9 @@ public class PluginConfigurable implements Configurable {
         settingsComponent.setOntologyModelRootPath(settingsState.ontologyModelRootPath);
         settingsComponent.setReasonsRoot(settingsState.reasonsFolder);
         settingsComponent.setReferencesRoot(settingsState.referencesFolder);
-        settingsComponent.setPathMapper(settingsState.mappingPaths);
         settingsComponent.setModelInstanceMapper(settingsState.modelInstanceMapping);
         settingsComponent.setReferenceDetails(settingsState.referenceDetails);
+        settingsComponent.setTsConfigPath(settingsState.tsConfigPath);
     }
 
     @Override
