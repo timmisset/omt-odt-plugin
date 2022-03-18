@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.9'
+version '5.9.1'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,6 +59,8 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        <h1>Update 5.9.1</h1>
+        Fixed #59: <a href="https://github.com/timmisset/omt-odt-plugin/issues/59">Git checkout freezes IDE</a><br>
         <h1>Update 5.9</h1>
         Added #55: <a href="https://github.com/timmisset/omt-odt-plugin/issues/55">Referencelists add instance data</a><br>
         Instance data from reference lists are now included, the folder with lists is expected in the assets folder but is

@@ -402,9 +402,7 @@ class TTLLexer implements FlexLexer {
    */
   private boolean zzAtEOF;
 
-  /**
-   * denotes if the user-EOF-code has already been executed
-   */
+  /** denotes if the user-EOF-code has already been executed */
   private boolean zzEOFDone;
 
 
@@ -451,7 +449,7 @@ class TTLLexer implements FlexLexer {
   public void reset(CharSequence buffer, int start, int end, int initialState) {
     zzBuffer = buffer;
     zzCurrentPos = zzMarkedPos = zzStartRead = start;
-    zzAtEOF = false;
+    zzAtEOF  = false;
     zzAtBOL = true;
     zzEndRead = end;
     yybegin(initialState);
@@ -507,7 +505,7 @@ class TTLLexer implements FlexLexer {
    * @return the character at position pos
    */
   public final char yycharat(int pos) {
-    return zzBuffer.charAt(zzStartRead + pos);
+    return zzBuffer.charAt(zzStartRead+ pos);
   }
 
 
@@ -515,7 +513,7 @@ class TTLLexer implements FlexLexer {
    * Returns the length of the matched text region.
    */
   public final int yylength() {
-    return zzMarkedPos - zzStartRead;
+    return zzMarkedPos-zzStartRead;
   }
 
 
@@ -548,11 +546,11 @@ class TTLLexer implements FlexLexer {
 
   /**
    * Pushes the specified amount of characters back into the input stream.
-   * <p>
+   *
    * They will be read again by then next call of the scanning method
    *
-   * @param number the number of characters to be read again.
-   *               This number must not be greater than yylength()!
+   * @param number  the number of characters to be read again.
+   *                This number must not be greater than yylength()!
    */
   public void yypushback(int number)  {
     if ( number > yylength() )
@@ -639,7 +637,7 @@ class TTLLexer implements FlexLexer {
               zzCurrentPosL += Character.charCount(zzInput);
             }
           }
-          int zzNext = zzTransL[ zzRowMapL[zzState] + ZZ_CMAP(zzInput)];
+          int zzNext = zzTransL[ zzRowMapL[zzState] + ZZ_CMAP(zzInput) ];
           if (zzNext == -1) break zzForAction;
           zzState = zzNext;
 
@@ -647,7 +645,7 @@ class TTLLexer implements FlexLexer {
           if ((zzAttributes & 1) == 1) {
             zzAction = zzState;
             zzMarkedPosL = zzCurrentPosL;
-            if ( (zzAttributes & 8) == 8) break zzForAction;
+            if ( (zzAttributes & 8) == 8 ) break zzForAction;
           }
 
         }
@@ -735,7 +733,7 @@ class TTLLexer implements FlexLexer {
           case 45:
             break;
           case 13: {
-              return TTLTypes.PARENTHESES_CLOSE;
+            return TTLTypes.PARENTHESES_CLOSE;
           }
           // fall through
           case 46:
@@ -856,8 +854,8 @@ class TTLLexer implements FlexLexer {
             break;
           case 33: {
             return TTLTypes.IMPORT_URI;
-            } 
-            // fall through
+          }
+          // fall through
           case 66: break;
           default:
             zzScanError(ZZ_NO_MATCH);

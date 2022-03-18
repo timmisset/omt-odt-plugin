@@ -33,12 +33,40 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class LoadOntologyStartupActivity implements StartupActivity.RequiredForSmartMode {
+    private static Timer timer;
+
+    /**
+     * File change events can occur many times when a git branch is checked out
+     * To prevent duplicate triggers of loading the model a git checkout receives a 5-second delay
+     * to allow for more changes to be fetched in meantime
+     */
+    private static void scheduleTask(Task.Backgroundable task,
+                                     ProgressIndicator progressIndicator,
+                                     Project project) {
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
+                        .createNotification(
+                                "Change detected in TTL file that is part of the current model, entire model will be reloaded",
+                                NotificationType.INFORMATION)
+                        .setIcon(OMTFileType.INSTANCE.getIcon())
+                        .notify(project);
+
+                task.run(progressIndicator);
+                timer.cancel();
+            }
+        }, 5000);
+    }
+
     @Override
     public void runActivity(@NotNull Project project) {
         loadOntology(project);
@@ -100,7 +128,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
 
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                final SettingsState state = Optional.ofNullable(SettingsState.getInstance(project))
+                final SettingsState state = Optional.of(SettingsState.getInstance(project))
                         .map(SettingsState::getState)
                         .orElse(null);
                 if (state == null) {
@@ -123,13 +151,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                         List<VirtualFile> ttlVirtualFiles = TTLScopeUtil.getTTLVirtualFiles();
                         if (events.stream().anyMatch(vFileEvent -> ttlVirtualFiles.contains(vFileEvent.getFile()))) {
                             // reload the model
-                            NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
-                                    .createNotification(
-                                            "Change detected in TTL file that is part of the current model, entire model will be reloaded",
-                                            NotificationType.INFORMATION)
-                                    .setIcon(OMTFileType.INSTANCE.getIcon())
-                                    .notify(project);
-                            getBackgroundableTask(project).run(indicator);
+                            scheduleTask(getBackgroundableTask(project), indicator, project);
                         }
                     }
                 });
@@ -140,7 +162,6 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
             }
         };
     }
-
 
     protected static Task.Backgroundable getLoadReferencesTask(Project project) {
         return new Task.Backgroundable(project, "Loading OPP References") {
