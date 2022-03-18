@@ -43,6 +43,7 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
     public String referencesFolder = "";
     public String tsConfigPath = "";
     public Map<String, String> modelInstanceMapping = new HashMap<>();
+    public HashMap<String, String> knownInstances = new HashMap<>();
     public boolean referenceDetails = false;
     private Project project;
 

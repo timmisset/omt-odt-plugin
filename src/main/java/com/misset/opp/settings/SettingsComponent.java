@@ -59,6 +59,8 @@ public class SettingsComponent {
                 .addComponent(new JBLabel("Known instances:"))
                 .addComponent(regexInstances)
                 .addComponentFillVertically(modelInstanceMapperTable.getComponent(), UIUtil.DEFAULT_VGAP)
+                .addComponent(new JBLabel("Once instances are added, they are persisted as project information."))
+                .addComponent(new JBLabel("If needed you can remove them from the ./idea/omt-odt-plugin-settings.xml"))
                 .getPanel();
 
         myMainPanel = FormBuilder.createFormBuilder()

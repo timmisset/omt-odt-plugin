@@ -1007,6 +1007,10 @@ public class OppModel {
                     .setIcon(OMTFileType.INSTANCE.getIcon())
                     .notify(project);
             mappedResourcesCache.put(uri, individual);
+
+            SettingsState.getInstance(project).knownInstances.put(
+                    uri, ontClass.getURI()
+            );
             return individual;
         });
     }

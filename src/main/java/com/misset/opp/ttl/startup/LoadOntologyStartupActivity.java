@@ -27,6 +27,7 @@ import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.OppModelLoader;
 import com.misset.opp.ttl.util.TTLScopeUtil;
 import org.apache.commons.io.FileUtils;
+import org.apache.jena.ontology.OntClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,6 +86,8 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
             public void run(@NotNull ProgressIndicator indicator) {
                 indicator.setText("Loading OPP Ontology");
                 getLoadOntologyTask(project).run(indicator);
+                indicator.setText("Loading known instances");
+                getKnownInstancesTask(project).run(indicator);
                 indicator.setText("Loading OPP References");
                 getLoadReferencesTask(project).run(indicator);
             }
@@ -159,6 +162,23 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
 
             private void loadOntology(VirtualFile rootFile) {
                 new OppModelLoader().read(rootFile.toNioPath().toFile());
+            }
+        };
+    }
+
+    protected static Task.Backgroundable getKnownInstancesTask(Project project) {
+        return new Task.Backgroundable(project, "Loading known instances") {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                SettingsState instance = SettingsState.getInstance(project);
+                instance.knownInstances.forEach(
+                        (instanceUri, typeUri) -> {
+                            OntClass ontClass = OppModel.INSTANCE.getClass(typeUri);
+                            if (ontClass != null) {
+                                ontClass.createIndividual(instanceUri);
+                            }
+                        }
+                );
             }
         };
     }
