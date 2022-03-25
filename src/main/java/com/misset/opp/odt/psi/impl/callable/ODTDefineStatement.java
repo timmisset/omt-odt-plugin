@@ -198,4 +198,11 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
         ODTRefactoringUtil.removeScriptline(this);
     }
 
+    public Set<OntResource> getReturnType() {
+        return Optional.ofNullable(ODTDocumentationUtil.getJavaDocComment(this))
+                .map(psiDocComment -> psiDocComment.findTagByName("return"))
+                .map(docTag -> ODTDocumentationUtil.getTypeFromDocTag(docTag, 0))
+                .orElse(null);
+    }
+
 }

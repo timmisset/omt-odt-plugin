@@ -21,6 +21,8 @@ public class TTLValueParserUtil {
             return OppModel.INSTANCE.XSD_DATETIME_INSTANCE;
         } else if ("date".equals(description)) {
             return OppModel.INSTANCE.XSD_DATE_INSTANCE;
+        } else if ("void".equals(description)) {
+            return OppModel.INSTANCE.VOID;
         }
         return null; // unknown
     }

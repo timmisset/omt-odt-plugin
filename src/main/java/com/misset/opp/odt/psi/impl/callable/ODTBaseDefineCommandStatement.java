@@ -33,6 +33,11 @@ public abstract class ODTBaseDefineCommandStatement extends ODTDefineStatement i
 
     @Override
     public @NotNull Set<OntResource> resolve() {
+        return Optional.ofNullable(getReturnType())
+                .orElseGet(this::doResolve);
+    }
+
+    private Set<OntResource> doResolve() {
         return Optional.of(getCommandBlock())
                 .map(ODTCommandBlock::getScript)
                 .map(Resolvable::resolve)

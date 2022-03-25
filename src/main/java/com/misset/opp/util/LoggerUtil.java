@@ -13,7 +13,7 @@ public class LoggerUtil {
         runnable.run();
         ZonedDateTime end = ZonedDateTime.now();
         long millis = Duration.between(start, end).toMillis();
-        if (millis > 10) {
+        if (millis > 100) {
             logger.info(methodName + " took " + millis + "ms");
         } else {
             logger.debug(methodName + " took " + millis + "ms");
@@ -25,7 +25,7 @@ public class LoggerUtil {
         T compute = computable.compute();
         ZonedDateTime end = ZonedDateTime.now();
         long millis = Duration.between(start, end).toMillis();
-        if (millis > 500) {
+        if (millis > 100) {
             logger.info(methodName + " took " + millis + "ms");
         } else {
             logger.debug(methodName + " took " + millis + "ms");

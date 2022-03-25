@@ -59,19 +59,13 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.9.1</h1>
-        Fixed #59: <a href="https://github.com/timmisset/omt-odt-plugin/issues/59">Git checkout freezes IDE</a><br>
-        <h1>Update 5.9</h1>
-        Added #55: <a href="https://github.com/timmisset/omt-odt-plugin/issues/55">Referencelists add instance data</a><br>
-        Instance data from reference lists are now included, the folder with lists is expected in the assets folder but is
-        configurable. Optionally the data for references lists can also be loaded. This will be displayed in the quick documentation
-        window as 'values' when hovering a reference item URI.<br>
+        <h1>Update 5.10</h1>
+        Added #62: <a href="https://github.com/timmisset/omt-odt-plugin/issues/62">Return tag for ODT DEFINE statements</a><br>
+        DEFINE statements can now be decorated with a @return tag (@param and @base were already an option).<br>
+        By adding this @return tag with a type, any call made to this method will return the provided type instead of calculating it
+        on the fly. This will improve the performance of the plugin significantly.<br>
         <br>
-        Fixed #56: <a href="https://github.com/timmisset/omt-odt-plugin/issues/56">Lookup element builder </a><br>
-        Fixed #57: <a href="https://github.com/timmisset/omt-odt-plugin/issues/57">Multiline comments on single lines</a><br>
-        Added #58: <a href="https://github.com/timmisset/omt-odt-plugin/issues/55">Replace import mapping with tsconfig information</a><br>
-        The mapping for @domain imports is extracted from the tsconfig.base.json information given that the setting points to the correct
-        file. It is expected to exist in the project/frontend folder. If you open the frontend folder itself as project you should change this setting<br>
+        Moreover, the inspection will check if the calculated type matches the specified type<br>
         """
 }
 tasks {

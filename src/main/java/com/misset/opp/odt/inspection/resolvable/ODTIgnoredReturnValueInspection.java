@@ -10,6 +10,7 @@ import com.misset.opp.odt.psi.ODTQueryStatement;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTVariableValue;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +59,7 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
                     resolved = ((ODTQueryStatement) element).getQuery().resolve();
                 }
 
-                if (!resolved.isEmpty()) {
+                if (!resolved.isEmpty() && !resolved.contains(OppModel.INSTANCE.VOID)) {
                     // something is being returned, show warning:
                     holder.registerProblem(element, RESULT_IS_IGNORED, WEAK_WARNING);
                 }

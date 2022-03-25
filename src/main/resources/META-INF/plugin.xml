@@ -185,7 +185,12 @@
         <localInspection displayName="Untyped warning" groupName="Types" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
                          implementationClass="com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning"/>
-
+        <localInspection displayName="Cardinality" groupName="Types" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
+                         implementationClass="com.misset.opp.odt.inspection.type.ODTCodeInspectionCardinality"/>
+        <localInspection displayName="DEFINE Return types" groupName="Types" language="ODT"
+                         enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
+                         implementationClass="com.misset.opp.odt.inspection.type.ODTCodeInspectionDefineStatementReturn"/>
         <!-- Calls -->
         <localInspection shortName="ODTCalls" hasStaticDescription="true"
                          language="ODT" displayName="Inspect all calls" groupPath="ODT"

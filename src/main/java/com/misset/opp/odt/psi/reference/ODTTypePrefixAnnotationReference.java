@@ -8,11 +8,10 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTTypePrefixAnnotationReference extends ODTPolyReferenceBase<PsiElement> {
+public class ODTTypePrefixAnnotationReference extends ODTPrefixReferenceBase<PsiElement> {
     final TextRange textRange;
     Logger LOGGER = Logger.getInstance(ODTTTLSubjectPredicateReference.class);
 
@@ -26,12 +25,9 @@ public class ODTTypePrefixAnnotationReference extends ODTPolyReferenceBase<PsiEl
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         return LoggerUtil.computeWithLogger(LOGGER, "Resolving ODTTypePrefixAnnotationReference", () -> {
             final ODTFile containingFile = (ODTFile) myElement.getContainingFile();
-            return containingFile.resolveInOMT(OMTPrefixProvider.class,
-                            OMTPrefixProvider.KEY,
-                            textRange.substring(myElement.getText()),
-                            OMTPrefixProvider::getPrefixMap)
-                    .map(this::toResults)
-                    .orElse(ResolveResult.EMPTY_ARRAY);
+            String prefix = textRange.substring(myElement.getText());
+            return resolveInODT(containingFile, prefix)
+                    .orElseGet(() -> resolveInOMT(containingFile, prefix));
         });
     }
 

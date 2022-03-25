@@ -6,6 +6,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.psi.ODTDefinePrefix;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.prefix.PrefixUtil;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
@@ -101,16 +102,20 @@ public class ODTDocumentationUtil {
                 // there is a reference available for the type, meaning we should try to resolve it to the prefix
                 // and generate a fully qualified URI from it:
                 final PsiElement prefix = curieReference.get().resolve();
-                if (prefix instanceof YAMLKeyValue) {
-                    final Matcher matcher = LOCAL_NAME.matcher(dataElement.getText());
-                    if (matcher.find()) {
-                        return Optional.ofNullable(PrefixUtil.getFullyQualifiedUri((YAMLKeyValue) prefix,
-                                        matcher.group(1)))
-                                .map(OppModel.INSTANCE::getClassIndividuals)
-                                .stream()
-                                .flatMap(Collection::stream)
-                                .collect(Collectors.toSet());
+                final Matcher matcher = LOCAL_NAME.matcher(dataElement.getText());
+                if (matcher.find()) {
+                    String localName = matcher.group(1);
+                    String uri = null;
+                    if (prefix instanceof YAMLKeyValue) {
+                        uri = PrefixUtil.getFullyQualifiedUri((YAMLKeyValue) prefix, localName);
+                    } else if (prefix != null && prefix.getParent() instanceof ODTDefinePrefix) {
+                        uri = PrefixUtil.getFullyQualifiedUri((ODTDefinePrefix) prefix.getParent(), localName);
                     }
+                    return Optional.ofNullable(uri)
+                            .map(OppModel.INSTANCE::getClassIndividuals)
+                            .stream()
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toSet());
                 }
             } else {
                 // no curie reference, probably a primitive type:

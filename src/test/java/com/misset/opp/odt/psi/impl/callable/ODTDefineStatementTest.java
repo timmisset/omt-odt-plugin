@@ -3,7 +3,9 @@ package com.misset.opp.odt.psi.impl.callable;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.misset.opp.testCase.ODTTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
+import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -82,4 +84,36 @@ class ODTDefineStatementTest extends ODTTestCase {
         Assertions.assertEquals("DEFINE QUERY queryB => '';", contentAfterDelete);
     }
 
+    @Test
+    void testReturnTypeReturnsTypedInsteadOfResolvable() {
+        String content = "/**\n" +
+                " * @param $paramA (string)\n" +
+                " * @return (integer)" +
+                " */\n" +
+                "DEFINE QUERY <caret>query($paramA) => '';\n";
+        configureByText(content);
+        ReadAction.run(() -> {
+            ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
+            Assertions.assertEquals(Set.of(OppModel.INSTANCE.XSD_INTEGER_INSTANCE), defineStatement.resolve());
+        });
+    }
+
+    @Test
+    void testReturnTypeReturnsUriType() {
+        OMTOntologyTestCase.initOntologyModel();
+
+        String content = "" +
+                "PREFIX ont: <http://ontology#>\n" +
+                "/**\n" +
+                " * @param $paramA (string)\n" +
+                " * @return (ont:ClassA)\n" +
+                " */\n" +
+                "DEFINE QUERY <caret>query($paramA) => '';\n";
+        configureByText(content);
+        ReadAction.run(() -> {
+            ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
+            Set<OntResource> resolve = defineStatement.resolve();
+            Assertions.assertEquals(OppModel.INSTANCE.getClassIndividuals("http://ontology#ClassA"), resolve);
+        });
+    }
 }

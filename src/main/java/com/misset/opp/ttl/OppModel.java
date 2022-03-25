@@ -57,7 +57,7 @@ public class OppModel {
     public Individual OWL_THING_INSTANCE;
     public OntClass OPP_CLASS;
     public OntClass GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
-    public Individual IRI, JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH;
+    public Individual IRI, JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH, VOID;
     public OntClass XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME, XSD_DURATION;
     public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE,
             XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE, XSD_DURATION_INSTANCE;
@@ -202,6 +202,7 @@ public class OppModel {
         JSON_OBJECT = createIndividual(OPP_CLASS, OPP + "JSON_OBJECT");
         IRI = createIndividual(OPP_CLASS, OPP + "IRI");
         ERROR = createIndividual(OPP_CLASS, OPP + "ERROR");
+        VOID = createIndividual(OPP_CLASS, OPP + "VOID");
 
         GRAPH_CLASS = ontologyModel.createClass(PLATFORM + "Graph");
         NAMED_GRAPH_CLASS = ontologyModel.createClass(PLATFORM + "NamedGraph");
@@ -1034,8 +1035,11 @@ public class OppModel {
      */
     public boolean areCompatible(Set<OntResource> resourcesA,
                                  Set<OntResource> resourcesB) {
-        return resourcesB.stream()
-                .anyMatch(resourceB -> areCompatible(resourcesA, resourceB));
+        return LoggerUtil.computeWithLogger(LOGGER, "Comparing compatibility between " +
+                        resourcesA + " and " + resourcesB,
+                () -> resourcesB.stream()
+                        .anyMatch(resourceB -> areCompatible(resourcesA, resourceB)));
+
     }
 
     private boolean areCompatible(Set<OntResource> resourcesA,

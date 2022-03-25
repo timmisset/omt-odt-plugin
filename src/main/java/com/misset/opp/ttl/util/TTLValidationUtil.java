@@ -32,7 +32,13 @@ public class TTLValidationUtil {
                                                Set<OntResource> resourcesB,
                                                ProblemsHolder holder,
                                                PsiElement element) {
-        if (resourcesA == null || resourcesB == null || resourcesA.isEmpty() || resourcesB.isEmpty()) {
+        if (resourcesA == null ||
+                resourcesB == null ||
+                resourcesA.isEmpty() ||
+                resourcesB.isEmpty() ||
+                resourcesA.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) ||
+                resourcesB.contains(OppModel.INSTANCE.OWL_THING_INSTANCE)
+        ) {
             // don't register problem
             return;
         }

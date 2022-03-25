@@ -13,7 +13,8 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement implements ODTDefineQueryStatement, ODTResolvable {
+public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement
+        implements ODTDefineQueryStatement, ODTResolvable {
     public ODTBaseDefineQueryStatement(@NotNull ASTNode node) {
         super(node);
     }
@@ -35,14 +36,16 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return getQuery().resolve();
+        return Optional.ofNullable(getReturnType())
+                .orElseGet(() -> getQuery().resolve());
     }
 
     @Override
     public @NotNull Set<OntResource> resolve(Context context) {
         context.getFilesInScope().add(getODTFile());
         decorateCall(context.getCall());
-        return getQuery().resolve(context);
+        return Optional.ofNullable(getReturnType())
+                .orElseGet(() -> getQuery().resolve(context));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaCallable;
@@ -44,6 +45,8 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
     }
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    private static final Key<Boolean> UNRESOLVABLE = new Key<>("Unresolvable");
+    private static final Key<Long> UNRESOLVABLE_TIMESTAMP = new Key<>("Timestamp");
 
     static {
         features.put("params", OMTParamsArrayMetaType::new);
@@ -96,7 +99,11 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
 
     @Override
     public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
-        return Optional.ofNullable(mapping.getKeyValueByKey("onRun"))
+        if (UNRESOLVABLE.get(mapping, false) && UNRESOLVABLE_TIMESTAMP.get(mapping, -1L).equals(
+                mapping.getContainingFile().getModificationStamp())) {
+            return Collections.emptySet();
+        }
+        Set<OntResource> resources = Optional.ofNullable(mapping.getKeyValueByKey("onRun"))
                 .map(YAMLKeyValue::getValue)
                 .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableScript.class))
                 .stream()
@@ -104,6 +111,11 @@ public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implement
                 .map(Resolvable::resolve)
                 .findFirst()
                 .orElse(Collections.emptySet());
+        if (resources.isEmpty()) {
+            UNRESOLVABLE.set(mapping, true);
+            UNRESOLVABLE_TIMESTAMP.set(mapping, mapping.getContainingFile().getModificationStamp());
+        }
+        return resources;
     }
 
     @Override
