@@ -58,13 +58,21 @@ public final class BuiltinDocumentationService {
             }
 
             private String parseMarkdownToHtml(VirtualFile virtualFile) {
-                String text = Optional.ofNullable(documentManager.getDocument(virtualFile))
-                        .map(Document::getText)
-                        .orElse(null);
-                if(text == null) { return null; }
+                try {
+                    String text = Optional.ofNullable(documentManager.getDocument(virtualFile))
+                            .map(Document::getText)
+                            .orElse(null);
+                    if (text == null) {
+                        return null;
+                    }
 
-                Node parse = parser.parse(text);
-                return renderer.render(parse);
+                    Node parse = parser.parse(text);
+                    return renderer.render(parse);
+                } catch (Exception e) {
+                    RuntimeException exception = new RuntimeException("Error parsing markdown file: " + virtualFile.getPath() + ", message: " + e.getMessage());
+                    exception.addSuppressed(e);
+                    throw exception;
+                }
             }
         };
     }
