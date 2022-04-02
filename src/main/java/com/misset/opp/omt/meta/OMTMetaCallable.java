@@ -1,12 +1,12 @@
 package com.misset.opp.omt.meta;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The OMTCallableImpl interface can be implemented on OMTMetaType classes
@@ -39,5 +39,23 @@ public interface OMTMetaCallable {
 
     default List<String> getFlags() {
         return Collections.emptyList();
+    }
+
+    default Set<String> getAcceptableValues(int index) {
+        return Collections.emptySet();
+    }
+
+    int minNumberOfArguments(YAMLMapping mapping);
+
+    int maxNumberOfArguments(YAMLMapping mapping);
+
+    Map<Integer, String> getParameterNames(YAMLMapping mapping);
+
+    HashMap<Integer, Set<OntResource>> getParameterTypes(YAMLMapping mapping);
+
+    default void validate(YAMLMapping mapping, PsiCall call, ProblemsHolder holder) {
+    }
+
+    default void validateValue(PsiCall call, ProblemsHolder holder, int i) {
     }
 }

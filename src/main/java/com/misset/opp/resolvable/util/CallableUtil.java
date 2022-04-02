@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiCall;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class CallableUtil {
@@ -49,8 +50,19 @@ public class CallableUtil {
     }
 
     public static void validateCallFlag(Callable callable, PsiCall call, ProblemsHolder holder) {
-        String flag = call.getFlag();
+        String flagSignature = call.getFlag();
+        if (flagSignature == null) {
+            return;
+        }
         List<String> flags = callable.getFlags();
+        Arrays.stream(flagSignature.split("!"))
+                .filter(flag -> !flag.isBlank())
+                .map(flag -> "!" + flag)
+                .forEach(flag -> validateCallFlag(flag, flags, call, holder));
+
+    }
+
+    private static void validateCallFlag(String flag, List<String> flags, PsiCall call, ProblemsHolder holder) {
         if (flag != null && !flags.contains(flag)) {
             holder.registerProblem(call.getFlagElement(),
                     "Illegal flag, options are: " + String.join(", ", flags),

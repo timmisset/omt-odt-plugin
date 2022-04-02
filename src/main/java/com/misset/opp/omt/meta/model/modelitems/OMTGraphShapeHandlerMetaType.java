@@ -15,7 +15,11 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class OMTGraphShapeHandlerMetaType extends OMTModelItemDelegateMetaType implements
+/**
+ * An OMTGraphShapeHandler is callable but never has any parameters. The OMTParameterizedModelItemMetaType will handle
+ * this to make sure it is considered a Callable with min/max parameters = 0.
+ */
+public class OMTGraphShapeHandlerMetaType extends OMTParameterizedModelItemMetaType implements
         OMTMetaCallable,
         OMTDocumented {
     protected OMTGraphShapeHandlerMetaType() {

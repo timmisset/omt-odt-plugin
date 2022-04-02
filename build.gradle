@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.10.1'
+version '5.11'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,6 +59,10 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        <h1>Update 5.11</h1>
+        Added #65: <a href="https://github.com/timmisset/omt-odt-plugin/issues/65">Add flags to calls made to a Loadable instance</a><br>
+        Aside from flag syntax, the combinations of flags is also checked. Moreover, the context selector value (omt, session etc) is validated
+        and is included in the completion contributor.<br>
         <h1>Update 5.10.1</h1>
         Added #63: <a href="https://github.com/timmisset/omt-odt-plugin/issues/63">Show markdown file location on parser error</a><br>
         <h1>Update 5.10</h1>

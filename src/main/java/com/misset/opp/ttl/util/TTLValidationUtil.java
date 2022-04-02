@@ -2,6 +2,7 @@ package com.misset.opp.ttl.util;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.util.text.Strings;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntClass;
@@ -233,4 +234,14 @@ public class TTLValidationUtil {
                 TTLResourceUtil.describeUrisJoined(provided);
     }
 
+    public static void validateValues(Set<String> paramValues, String argumentValue, ProblemsHolder holder, PsiElement signatureArgumentElement) {
+        if (paramValues.isEmpty() || argumentValue.isBlank() || paramValues.contains(argumentValue)) {
+            return;
+        }
+
+        holder.registerProblem(
+                signatureArgumentElement,
+                "Incompatible value, expected: " + Strings.join(paramValues, ", "),
+                ProblemHighlightType.ERROR);
+    }
 }

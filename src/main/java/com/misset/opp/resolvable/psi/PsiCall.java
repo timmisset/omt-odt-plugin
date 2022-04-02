@@ -138,4 +138,9 @@ public interface PsiCall extends PsiResolvable {
     Set<OntResource> resolvePreviousStep();
 
     Callable getCallable();
+
+    /**
+     * Returns true if the value of the argument at the index is a primitive
+     */
+    boolean isPrimitiveArgument(int index);
 }

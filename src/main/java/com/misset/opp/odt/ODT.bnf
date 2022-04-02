@@ -113,7 +113,7 @@ signatureArgument ::=                       resolvableValue | commandBlock {
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
     extends="com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgument"
 }
-flagSignature ::=                           TAG
+flagSignature ::=                           TAG+
 resolvableValue ::=                         query | commandCall {
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
     mixin="com.misset.opp.odt.psi.impl.resolvable.ODTResolvableValueBase"

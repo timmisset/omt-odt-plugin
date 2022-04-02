@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 import static com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil.addPrefixesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
-public class OMTProcedureMetaType extends OMTModelItemDelegateMetaType implements
+public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType implements
         OMTVariableProvider,
         OMTPrefixProvider,
         OMTLocalCommandProvider,

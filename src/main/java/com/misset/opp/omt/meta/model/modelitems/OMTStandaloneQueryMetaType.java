@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 
-public class OMTStandaloneQueryMetaType extends OMTModelItemDelegateMetaType implements
+public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaType implements
         OMTVariableProvider,
         OMTPrefixProvider,
         OMTMetaCallable,

@@ -272,7 +272,6 @@ public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODT
 
     protected abstract void removeAllSignatureArguments();
 
-
     @Override
     public Set<OntResource> resolvePreviousStep() {
         return Optional.of(getParent())
@@ -280,5 +279,12 @@ public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODT
                 .map(ODTResolvableQueryOperationStep.class::cast)
                 .map(ODTResolvableQueryOperationStep::resolvePreviousStep)
                 .orElse(Collections.emptySet());
+    }
+
+    @Override
+    public boolean isPrimitiveArgument(int index) {
+        return Optional.ofNullable(getSignatureArgument(index))
+                .map(ODTResolvableSignatureArgument::isPrimitiveArgument)
+                .orElse(false);
     }
 }

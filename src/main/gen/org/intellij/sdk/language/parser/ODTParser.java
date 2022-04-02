@@ -462,13 +462,18 @@ public class ODTParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TAG
+  // TAG+
   public static boolean flagSignature(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flagSignature")) return false;
     if (!nextTokenIs(b, TAG)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, TAG);
+    while (r) {
+      int c = current_position_(b);
+      if (!consumeToken(b, TAG)) break;
+      if (!empty_element_parsed_guard_(b, "flagSignature", c)) break;
+    }
     exit_section_(b, m, FLAG_SIGNATURE, r);
     return r;
   }

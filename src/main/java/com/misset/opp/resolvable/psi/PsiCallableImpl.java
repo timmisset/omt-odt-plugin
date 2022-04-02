@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiElement;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
@@ -29,20 +30,48 @@ public abstract class PsiCallableImpl extends ASTWrapperPsiElement implements Ps
                 "Validation of call " + call.getCallId(),
                 () -> {
                     for (int i = 0; i < call.getNumberOfArguments(); i++) {
-                        int finalI = i;
-                        Set<OntResource> argumentType = LoggerUtil.computeWithLogger(
-                                LOGGER,
-                                "Calculating signature argument " + i + " for " + call.getCallId(),
-                                () -> call.resolveSignatureArgument(finalI));
-                        Set<OntResource> paramType = LoggerUtil.computeWithLogger(
-                                LOGGER,
-                                "Calculating parameter " + i + " for " + getName(),
-                                () -> getParamType(finalI));
-                        if (paramType != null && !argumentType.isEmpty() && !paramType.isEmpty()) {
-                            TTLValidationUtil.validateCompatibleTypes(paramType, argumentType, holder, call.getCallSignatureArgumentElement(i));
-                        }
+                        validateType(call, holder, i);
+                        validateValue(call, holder, i);
                     }
                 });
+    }
+
+    private void validateType(PsiCall call, ProblemsHolder holder, int i) {
+        Set<OntResource> argumentType = LoggerUtil.computeWithLogger(
+                LOGGER,
+                "Calculating signature argument type " + i + " for " + call.getCallId(),
+                () -> call.resolveSignatureArgument(i));
+        Set<OntResource> paramType = LoggerUtil.computeWithLogger(
+                LOGGER,
+                "Calculating parameter " + i + " for " + getName(),
+                () -> getParamType(i));
+        if (paramType != null && !argumentType.isEmpty() && !paramType.isEmpty()) {
+            PsiElement signatureArgumentElement = call.getCallSignatureArgumentElement(i);
+            TTLValidationUtil.validateCompatibleTypes(paramType, argumentType, holder, signatureArgumentElement);
+        }
+    }
+
+    @Override
+    public void validateValue(PsiCall call, ProblemsHolder holder, int i) {
+        Set<String> paramValues = LoggerUtil.computeWithLogger(
+                LOGGER,
+                "Calculating parameter " + i + " for " + getName(),
+                () -> getParamValues(i));
+        if (paramValues.isEmpty()) {
+            return;
+        }
+
+        String argumentValue = LoggerUtil.computeWithLogger(
+                LOGGER,
+                "Calculating signature argument value " + i + " for " + call.getCallId(),
+                () -> call.getSignatureValue(i));
+        // strip the quotes before comparing
+        if (argumentValue != null) {
+            argumentValue = argumentValue.replaceAll("^['\"](.*)['\"]$", "$1");
+            PsiElement signatureArgumentElement = call.getCallSignatureArgumentElement(i);
+            TTLValidationUtil.validateValues(paramValues, argumentValue, holder, signatureArgumentElement);
+        }
+
     }
 
     @Override

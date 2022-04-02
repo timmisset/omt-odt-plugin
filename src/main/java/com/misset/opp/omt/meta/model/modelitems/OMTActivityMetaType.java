@@ -38,7 +38,7 @@ import java.util.function.Supplier;
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addInjectedCallablesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
-public class OMTActivityMetaType extends OMTModelItemDelegateMetaType implements
+public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType implements
         OMTVariableProvider,
         OMTCallableProvider,
         OMTPrefixProvider,

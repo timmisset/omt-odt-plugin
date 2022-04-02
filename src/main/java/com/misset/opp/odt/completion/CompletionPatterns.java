@@ -43,7 +43,6 @@ public interface CompletionPatterns {
     PsiJavaElementPattern.Capture<PsiElement> VARIABLE_ASSIGNMENT_VALUE = psiElement().inside(ODTVariableAssignment.class);
     PsiJavaElementPattern.Capture<PsiElement> SIGNATURE_ARGUMENT = psiElement().inside(ODTSignatureArgument.class);
 
-
     static ElementPattern<PsiElement> getInsideBuiltinCommandSignaturePattern(Builtin builtin) {
         return PlatformPatterns.psiElement().inside(ODTSignatureArgument.class).and(PlatformPatterns.psiElement().with(
                 new PatternCondition<>("Builtin member") {
