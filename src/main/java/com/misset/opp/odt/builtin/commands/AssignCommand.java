@@ -8,6 +8,9 @@ import org.apache.jena.ontology.OntResource;
 import java.util.Set;
 
 public class AssignCommand extends BuiltInCommand {
+
+    protected static final String EXPECTS_AN_UNEVEN_NUMBER_OF_ARGUMENTS = "Expects an uneven number of arguments";
+
     private AssignCommand() {
     }
 
@@ -16,6 +19,11 @@ public class AssignCommand extends BuiltInCommand {
     @Override
     public String getName() {
         return "ASSIGN";
+    }
+
+    @Override
+    public boolean isVoid() {
+        return false;
     }
 
     @Override
@@ -51,7 +59,7 @@ public class AssignCommand extends BuiltInCommand {
     public void specificValidation(PsiCall call,
                                    ProblemsHolder holder) {
         if (call.getNumberOfArguments() % 2 == 0) {
-            holder.registerProblem(call, "Expects an uneven number of arguments", ProblemHighlightType.ERROR);
+            holder.registerProblem(call, EXPECTS_AN_UNEVEN_NUMBER_OF_ARGUMENTS, ProblemHighlightType.ERROR);
         }
     }
 }

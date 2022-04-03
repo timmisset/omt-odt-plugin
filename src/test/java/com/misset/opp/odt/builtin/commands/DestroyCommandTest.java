@@ -5,6 +5,7 @@ import com.misset.opp.odt.builtin.BuiltInTest;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -38,5 +39,10 @@ class DestroyCommandTest extends BuiltInTest {
         verify(holder, never()).registerProblem(firstArgument,
                 TTLValidationUtil.ERROR_MESSAGE_INSTANCES,
                 ProblemHighlightType.ERROR);
+    }
+
+    @Test
+    void testName() {
+        Assertions.assertEquals("DESTROY", DestroyCommand.INSTANCE.getName());
     }
 }

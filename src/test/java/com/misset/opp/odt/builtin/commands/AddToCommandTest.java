@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.openapi.util.Pair;
 import com.misset.opp.odt.builtin.BuiltInTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -58,5 +59,23 @@ class AddToCommandTest extends BuiltInTest {
                 .contains(oppModel.XSD_STRING_INSTANCE));
         Assertions.assertFalse(AddToCommand.INSTANCE.getAcceptableArgumentType(1, call)
                 .contains(oppModel.XSD_BOOLEAN_INSTANCE));
+    }
+
+    @Test
+    void testGetAcceptableArgumentTypeWithContextReturnsNullForIndexOtherThan1() {
+        PsiCall call = mock(PsiCall.class);
+        Set<OntResource> resources = AddToCommand.INSTANCE.getAcceptableArgumentTypeWithContext(0, call);
+        Assertions.assertNull(resources);
+    }
+
+    @Test
+    void testName() {
+        Assertions.assertEquals("ADD_TO", AddToCommand.INSTANCE.getName());
+    }
+
+    @Test
+    void testNumberOfArguments() {
+        Assertions.assertEquals(2, AddToCommand.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(2, AddToCommand.INSTANCE.maxNumberOfArguments());
     }
 }

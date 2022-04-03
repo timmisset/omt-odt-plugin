@@ -3,12 +3,15 @@ package com.misset.opp.odt.annotation;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collection;
 import java.util.Collections;
 
 import static com.misset.opp.odt.annotation.ODTSemicolonAnnotator.*;
 
+@RunWith(MockitoJUnitRunner.class)
 class ODTSemicolonAnnotatorTest extends OMTInspectionTestCase {
 
     @Override
@@ -111,4 +114,19 @@ class ODTSemicolonAnnotatorTest extends OMTInspectionTestCase {
         assertNoError(SEMICOLON_ILLEGAL);
         assertHasWarning(SEMICOLON_UNNECESSARY);
     }
+
+    @Test
+    void testHasErrorWhenInterpolationWithUnnecessarySemicolon() {
+        configureByText(insideQueryWithPrefixesNoSemicolonEnding("`${12;}`;"));
+        assertNoError(SEMICOLON_REQUIRED);
+        assertHasError(SEMICOLON_ILLEGAL);
+    }
+
+    @Test
+    void testNoErrorWhenInterpolationWithoutUnnecessarySemicolon() {
+        configureByText(insideQueryWithPrefixesNoSemicolonEnding("`${12}`;"));
+        assertNoError(SEMICOLON_REQUIRED);
+        assertHasError(SEMICOLON_ILLEGAL);
+    }
+
 }
