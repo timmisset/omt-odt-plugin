@@ -31,6 +31,12 @@ class HttpCallCommandGetTest extends BuiltInTest {
     }
 
     @Test
+    void testNumberOfArguments() {
+        Assertions.assertEquals(1, HttpCallCommandGet.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(3, HttpCallCommandGet.INSTANCE.maxNumberOfArguments());
+    }
+
+    @Test
     protected void testReturnsSecondArgument() {
         final Set<OntResource> secondReturnArgument = HttpCallCommandGet.INSTANCE.getSecondReturnArgument();
         Assertions.assertEquals(1, secondReturnArgument.size());
@@ -62,7 +68,7 @@ class HttpCallCommandGetTest extends BuiltInTest {
     }
 
     @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsStringForIndex1() {
+    void testGetAcceptableArgumentTypeWithContextReturnsJsonForIndex1() {
         PsiCall call = mock(PsiCall.class);
         Set<OntResource> acceptableArgumentTypeWithContext = HttpCallCommandGet.INSTANCE.getAcceptableArgumentTypeWithContext(1, call);
         Assertions.assertEquals(1, acceptableArgumentTypeWithContext.size());
@@ -75,5 +81,12 @@ class HttpCallCommandGetTest extends BuiltInTest {
         Set<OntResource> acceptableArgumentTypeWithContext = HttpCallCommandGet.INSTANCE.getAcceptableArgumentTypeWithContext(2, call);
         Assertions.assertEquals(1, acceptableArgumentTypeWithContext.size());
         Assertions.assertEquals(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE, acceptableArgumentTypeWithContext.iterator().next());
+    }
+
+    @Test
+    void testGetAcceptableArgumentTypeWithContextReturnsNull() {
+        PsiCall call = mock(PsiCall.class);
+        Set<OntResource> acceptableArgumentTypeWithContext = HttpCallCommandGet.INSTANCE.getAcceptableArgumentTypeWithContext(3, call);
+        Assertions.assertNull(acceptableArgumentTypeWithContext);
     }
 }

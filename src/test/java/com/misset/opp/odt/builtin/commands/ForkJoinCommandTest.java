@@ -14,7 +14,7 @@ class ForkJoinCommandTest extends BuiltInTest {
 
     @Test
     void testName() {
-        Assertions.assertEquals("FORK_JOIN", ForkJoinCommand.INSTANCE.getName());
+        Assertions.assertEquals("FORKJOIN", ForkJoinCommand.INSTANCE.getName());
     }
 
     @Test

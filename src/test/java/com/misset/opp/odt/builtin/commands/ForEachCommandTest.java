@@ -20,7 +20,7 @@ class ForEachCommandTest extends BuiltInTest {
 
     @Test
     void testName() {
-        Assertions.assertEquals("FOR_EACH", ForEachCommand.INSTANCE.getName());
+        Assertions.assertEquals("FOREACH", ForEachCommand.INSTANCE.getName());
     }
 
     @Test
