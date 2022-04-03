@@ -55,8 +55,7 @@ public class OppModel {
     public OntClass OWL_CLASS;
     public OntClass OWL_THING_CLASS;
     public Individual OWL_THING_INSTANCE;
-    public OntClass OPP_CLASS;
-    public OntClass GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
+    public OntClass OPP_CLASS, JSON, GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
     public Individual IRI, JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH, VOID;
     public OntClass XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME, XSD_DURATION;
     public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE,
@@ -199,7 +198,8 @@ public class OppModel {
         OWL_THING_INSTANCE = createIndividual(OWL_THING_CLASS, OWL + "Thing_INSTANCE");
 
         OPP_CLASS = ontologyModel.createClass(OPP + "Class");
-        JSON_OBJECT = createIndividual(OPP_CLASS, OPP + "JSON_OBJECT");
+        JSON = ontologyModel.createClass(OPP + "JSON");
+        JSON_OBJECT = createIndividual(JSON, OPP + "JSON_OBJECT");
         IRI = createIndividual(OPP_CLASS, OPP + "IRI");
         ERROR = createIndividual(OPP_CLASS, OPP + "ERROR");
         VOID = createIndividual(OPP_CLASS, OPP + "VOID");

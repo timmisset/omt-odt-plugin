@@ -23,6 +23,8 @@ public class TTLValueParserUtil {
             return OppModel.INSTANCE.XSD_DATE_INSTANCE;
         } else if ("void".equals(description)) {
             return OppModel.INSTANCE.VOID;
+        } else if ("json".equals(description)) {
+            return OppModel.INSTANCE.JSON_OBJECT;
         }
         return null; // unknown
     }
@@ -42,6 +44,8 @@ public class TTLValueParserUtil {
             return OppModel.INSTANCE.XSD_DATETIME;
         } else if ("date".equals(description)) {
             return OppModel.INSTANCE.XSD_DATE;
+        } else if ("json".equals(description)) {
+            return OppModel.INSTANCE.JSON;
         }
         return null; // unknown
     }

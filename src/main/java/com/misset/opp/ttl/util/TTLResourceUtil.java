@@ -82,7 +82,7 @@ public class TTLResourceUtil {
             if (isXSDType(ontClass)) {
                 return ontClass.getURI() + (withType ? " (VALUE)" : "");
             } else if (ontClass.equals(OppModel.INSTANCE.OPP_CLASS)) {
-                // Specific OPP_CLASS instances that describe non-ontology values such as JSON_OBJECT, ERROR etc
+                // Specific OPP_CLASS instances that describe non-ontology values such as ERROR etc
                 return individual.getURI();
             } else if (individual.getNameSpace() != null &&
                     individual.getLocalName() != null &&
