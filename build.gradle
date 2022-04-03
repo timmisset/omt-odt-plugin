@@ -60,6 +60,7 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.11</h1>
+        Fixed #64: <a href="https://github.com/timmisset/omt-odt-plugin/issues/64">Json as primitive type</a><br>
         Added #65: <a href="https://github.com/timmisset/omt-odt-plugin/issues/65">Add flags to calls made to a Loadable instance</a><br>
         Aside from flag syntax, the combinations of flags is also checked. Moreover, the context selector value (omt, session etc) is validated
         and is included in the completion contributor.<br>
