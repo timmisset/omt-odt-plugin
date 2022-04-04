@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class BuiltInCommand extends Builtin {
+
+    protected static final String TYPE = "Builtin Command";
+
     @Override
     public boolean isCommand() {
         return true;
@@ -50,7 +53,7 @@ public abstract class BuiltInCommand extends Builtin {
 
     @Override
     public String getType() {
-        return "Builtin Command";
+        return TYPE;
     }
 
     @Override

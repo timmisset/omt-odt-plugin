@@ -1,7 +1,6 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.odt.builtin.BuiltInTest;
-import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
@@ -9,8 +8,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
-
-import static org.mockito.Mockito.mock;
 
 class HttpCallCommandGetTest extends BuiltInTest {
 
@@ -60,33 +57,10 @@ class HttpCallCommandGetTest extends BuiltInTest {
     }
 
     @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsStringForIndex0() {
-        PsiCall call = mock(PsiCall.class);
-        Set<OntResource> acceptableArgumentTypeWithContext = HttpCallCommandGet.INSTANCE.getAcceptableArgumentTypeWithContext(0, call);
-        Assertions.assertEquals(1, acceptableArgumentTypeWithContext.size());
-        Assertions.assertEquals(OppModel.INSTANCE.XSD_STRING_INSTANCE, acceptableArgumentTypeWithContext.iterator().next());
-    }
-
-    @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsJsonForIndex1() {
-        PsiCall call = mock(PsiCall.class);
-        Set<OntResource> acceptableArgumentTypeWithContext = HttpCallCommandGet.INSTANCE.getAcceptableArgumentTypeWithContext(1, call);
-        Assertions.assertEquals(1, acceptableArgumentTypeWithContext.size());
-        Assertions.assertEquals(OppModel.INSTANCE.JSON_OBJECT, acceptableArgumentTypeWithContext.iterator().next());
-    }
-
-    @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsBooleanForIndex2() {
-        PsiCall call = mock(PsiCall.class);
-        Set<OntResource> acceptableArgumentTypeWithContext = HttpCallCommandGet.INSTANCE.getAcceptableArgumentTypeWithContext(2, call);
-        Assertions.assertEquals(1, acceptableArgumentTypeWithContext.size());
-        Assertions.assertEquals(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE, acceptableArgumentTypeWithContext.iterator().next());
-    }
-
-    @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsNull() {
-        PsiCall call = mock(PsiCall.class);
-        Set<OntResource> acceptableArgumentTypeWithContext = HttpCallCommandGet.INSTANCE.getAcceptableArgumentTypeWithContext(3, call);
-        Assertions.assertNull(acceptableArgumentTypeWithContext);
+    void testGetAcceptableArgumentType() {
+        assertGetAcceptableArgumentType(HttpCallCommandGet.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(HttpCallCommandGet.INSTANCE, 1, oppModel.JSON_OBJECT);
+        assertGetAcceptableArgumentType(HttpCallCommandGet.INSTANCE, 2, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentTypeIsNull(HttpCallCommandGet.INSTANCE, 4);
     }
 }

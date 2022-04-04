@@ -9,6 +9,7 @@ import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
@@ -196,5 +197,25 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
 
         final PsiCall invalidCall = getCall(invalidArguments.toArray(Set[]::new));
         builtin.validate(invalidCall, holder);
+    }
+
+    protected void assertGetAcceptableArgumentTypeIsNull(Builtin builtin, int index) {
+        PsiCall call = mock(PsiCall.class);
+        Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
+        assertNull(acceptableArgumentTypeWithContext);
+    }
+
+    protected void assertGetAcceptableArgumentType(Builtin builtin, int index, OntResource exceptedType) {
+        assertGetAcceptableArgumentType(builtin, index, Set.of(exceptedType));
+    }
+
+    protected void assertGetAcceptableArgumentType(Builtin builtin, int index, Set<OntResource> exceptedTypes) {
+        PsiCall call = mock(PsiCall.class);
+        Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
+
+        assertNotNull(acceptableArgumentTypeWithContext);
+        Assertions.assertEquals(exceptedTypes.size(), acceptableArgumentTypeWithContext.size());
+
+        assertTrue(acceptableArgumentTypeWithContext.containsAll(exceptedTypes));
     }
 }

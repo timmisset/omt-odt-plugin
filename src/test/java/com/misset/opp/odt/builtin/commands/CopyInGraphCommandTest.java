@@ -1,16 +1,10 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.odt.builtin.BuiltInTest;
-import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
-import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import static org.mockito.Mockito.mock;
 
 class CopyInGraphCommandTest extends BuiltInTest {
 
@@ -45,26 +39,10 @@ class CopyInGraphCommandTest extends BuiltInTest {
     }
 
     @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsNamedGraphForIndex1() {
-        PsiCall call = mock(PsiCall.class);
-        Set<OntResource> acceptableArgumentTypeWithContext = CopyInGraphCommand.INSTANCE.getAcceptableArgumentTypeWithContext(1, call);
-        Assertions.assertEquals(1, acceptableArgumentTypeWithContext.size());
-        Assertions.assertEquals(OppModel.INSTANCE.NAMED_GRAPH, acceptableArgumentTypeWithContext.iterator().next());
-    }
-
-    @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsBooleanForIndex2() {
-        PsiCall call = mock(PsiCall.class);
-        Set<OntResource> acceptableArgumentTypeWithContext = CopyInGraphCommand.INSTANCE.getAcceptableArgumentTypeWithContext(2, call);
-        Assertions.assertEquals(1, acceptableArgumentTypeWithContext.size());
-        Assertions.assertEquals(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE, acceptableArgumentTypeWithContext.iterator().next());
-    }
-
-    @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsNullForIndexOtherThan1Or2() {
-        PsiCall call = mock(PsiCall.class);
-        Set<OntResource> acceptableArgumentTypeWithContext = CopyInGraphCommand.INSTANCE.getAcceptableArgumentTypeWithContext(0, call);
-        Assertions.assertNull(acceptableArgumentTypeWithContext);
+    void testGetAcceptableArgumentType() {
+        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 1, oppModel.NAMED_GRAPH);
+        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 2, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentTypeIsNull(CopyInGraphCommand.INSTANCE, 3);
     }
 
     @Test

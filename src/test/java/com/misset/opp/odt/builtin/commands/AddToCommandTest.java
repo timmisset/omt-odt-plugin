@@ -78,4 +78,12 @@ class AddToCommandTest extends BuiltInTest {
         Assertions.assertEquals(2, AddToCommand.INSTANCE.minNumberOfArguments());
         Assertions.assertEquals(2, AddToCommand.INSTANCE.maxNumberOfArguments());
     }
+
+    @Test
+    void testAbstractMethods() {
+        Assertions.assertEquals("@ADD_TO", AddToCommand.INSTANCE.getCallId());
+        Assertions.assertTrue(AddToCommand.INSTANCE.isCommand());
+        Assertions.assertEquals(BuiltInCommand.TYPE, AddToCommand.INSTANCE.getType());
+        Assertions.assertFalse(AddToCommand.INSTANCE.canBeAppliedTo(null));
+    }
 }

@@ -1,16 +1,10 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.odt.builtin.BuiltInTest;
-import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
-import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import static org.mockito.Mockito.mock;
 
 class ClearGraphCommandTest extends BuiltInTest {
 
@@ -39,18 +33,9 @@ class ClearGraphCommandTest extends BuiltInTest {
     }
 
     @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsNamedGraphForIndex0() {
-        PsiCall call = mock(PsiCall.class);
-        Set<OntResource> acceptableArgumentTypeWithContext = ClearGraphCommand.INSTANCE.getAcceptableArgumentTypeWithContext(0, call);
-        Assertions.assertEquals(1, acceptableArgumentTypeWithContext.size());
-        Assertions.assertEquals(OppModel.INSTANCE.NAMED_GRAPH, acceptableArgumentTypeWithContext.iterator().next());
-    }
-
-    @Test
-    void testGetAcceptableArgumentTypeWithContextReturnsNullForIndexOtherThan0() {
-        PsiCall call = mock(PsiCall.class);
-        Set<OntResource> acceptableArgumentTypeWithContext = ClearGraphCommand.INSTANCE.getAcceptableArgumentTypeWithContext(1, call);
-        Assertions.assertNull(acceptableArgumentTypeWithContext);
+    void testGetAcceptableArgumentType() {
+        assertGetAcceptableArgumentType(ClearGraphCommand.INSTANCE, 0, oppModel.NAMED_GRAPH);
+        assertGetAcceptableArgumentTypeIsNull(ClearGraphCommand.INSTANCE, 1);
     }
 
     @Test

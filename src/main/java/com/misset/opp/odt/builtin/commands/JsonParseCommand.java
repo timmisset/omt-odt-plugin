@@ -13,6 +13,9 @@ import java.util.Objects;
 import java.util.Set;
 
 public class JsonParseCommand extends BuiltInCommand {
+
+    protected static final String DESCRIPTION = "Parse a JSON object to an Ontology class";
+
     private JsonParseCommand() {
     }
 
@@ -20,7 +23,7 @@ public class JsonParseCommand extends BuiltInCommand {
 
     @Override
     public String getDescription(String context) {
-        return "Parse a JSON object to an Ontology class";
+        return DESCRIPTION;
     }
 
     @Override
