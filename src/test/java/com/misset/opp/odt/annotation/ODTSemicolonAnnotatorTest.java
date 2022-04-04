@@ -126,7 +126,7 @@ class ODTSemicolonAnnotatorTest extends OMTInspectionTestCase {
     void testNoErrorWhenInterpolationWithoutUnnecessarySemicolon() {
         configureByText(insideQueryWithPrefixesNoSemicolonEnding("`${12}`;"));
         assertNoError(SEMICOLON_REQUIRED);
-        assertHasError(SEMICOLON_ILLEGAL);
+        assertNoError(SEMICOLON_ILLEGAL);
     }
 
 }
