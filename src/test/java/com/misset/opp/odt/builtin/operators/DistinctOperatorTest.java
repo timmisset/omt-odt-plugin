@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BuiltInTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -29,5 +30,21 @@ class DistinctOperatorTest extends BuiltInTest {
         DistinctOperator.INSTANCE.specificValidation(call, holder);
         verify(holder).registerProblem(secondArgument, "Using both a flag and parameter", ProblemHighlightType.ERROR);
         verify(holder).registerProblem(secondArgument, "Use !ignoreCase flag instead", ProblemHighlightType.WEAK_WARNING);
+    }
+
+    @Test
+    void testName() {
+        Assertions.assertEquals("DISTINCT", DistinctOperator.INSTANCE.getName());
+    }
+
+    @Test
+    void testNumberOfArguments() {
+        Assertions.assertEquals(0, DistinctOperator.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(2, DistinctOperator.INSTANCE.maxNumberOfArguments());
+    }
+
+    @Test
+    void testGetFlags() {
+        Assertions.assertEquals(ContainsOperator.IGNORE_CASE_FLAG, DistinctOperator.INSTANCE.getFlags());
     }
 }

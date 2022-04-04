@@ -37,6 +37,11 @@ class AndOperatorTest extends BuiltInTest {
     }
 
     @Test
+    void testGetAcceptableInputType() {
+        assertGetAcceptableInputType(AndOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE);
+    }
+
+    @Test
     void testArgumentTypes() {
         testArgument(AndOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
         testArgument(AndOperator.INSTANCE, 1, oppModel.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
