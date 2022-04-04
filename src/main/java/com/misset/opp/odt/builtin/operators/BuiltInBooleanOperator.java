@@ -9,11 +9,13 @@ import org.apache.jena.ontology.OntResource;
 
 public abstract class BuiltInBooleanOperator extends BuiltInOperator {
 
+    protected static final String ERROR = "Requires previous step to be a boolean when there is only 1 argument";
+
     protected void validateSingleArgumentInputBoolean(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
             boolean b = TTLValidationUtil.validateBoolean(call.resolvePreviousStep(), holder, call);
             if (!b) {
-                holder.registerProblem(call, "Requires previous step to be a boolean when there is only 1 argument", ProblemHighlightType.ERROR);
+                holder.registerProblem(call, ERROR, ProblemHighlightType.ERROR);
             }
         }
     }

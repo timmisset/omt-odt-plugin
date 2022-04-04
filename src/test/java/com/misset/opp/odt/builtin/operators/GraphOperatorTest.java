@@ -14,7 +14,7 @@ class GraphOperatorTest extends BuiltInTest {
 
     @Test
     void testInputArgumentsRequiresInstances() {
-        testValidInput(GraphOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertValidInput(GraphOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
         testInvalidInput(GraphOperator.INSTANCE, oppModel.XSD_STRING, TTLValidationUtil.ERROR_MESSAGE_INSTANCES);
     }
 }

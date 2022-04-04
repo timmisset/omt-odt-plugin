@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BuiltInTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -15,5 +16,16 @@ class ConcatOperatorTest extends BuiltInTest {
                 Set.of(oppModel.XSD_INTEGER_INSTANCE),
                 Set.of(oppModel.XSD_STRING_INSTANCE),
                 Set.of(oppModel.XSD_STRING_INSTANCE));
+    }
+
+    @Test
+    void testName() {
+        Assertions.assertEquals("CONCAT", ConcatOperator.INSTANCE.getName());
+    }
+
+    @Test
+    void testNumberOfArguments() {
+        Assertions.assertEquals(1, ConcatOperator.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(-1, ConcatOperator.INSTANCE.maxNumberOfArguments());
     }
 }

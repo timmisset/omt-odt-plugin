@@ -14,7 +14,7 @@ class EveryOperatorTest extends BuiltInTest {
 
     @Test
     void testValidInputs() {
-        testValidInput(EveryOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertValidInput(EveryOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE);
         testInvalidInput(EveryOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 

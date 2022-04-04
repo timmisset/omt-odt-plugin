@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BuiltInTest;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -46,5 +47,21 @@ class CatchOperatorTest extends BuiltInTest {
         doReturn(Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE)).when(call).resolvePreviousStep();
         CatchOperator.INSTANCE.specificValidation(call, holder);
         verify(holder).registerProblem(eq(call), startsWith("Possible outcomes are incompatible"), any(ProblemHighlightType.class));
+    }
+
+    @Test
+    void testName() {
+        Assertions.assertEquals("CATCH", CatchOperator.INSTANCE.getName());
+    }
+
+    @Test
+    void testNumberOfArguments() {
+        Assertions.assertEquals(1, CatchOperator.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(1, CatchOperator.INSTANCE.maxNumberOfArguments());
+    }
+
+    @Test
+    void testGetAcceptableArgumentType() {
+        assertGetAcceptableArgumentTypeSameAsPreviousStep(CatchOperator.INSTANCE, 0);
     }
 }

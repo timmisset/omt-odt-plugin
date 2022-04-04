@@ -14,8 +14,8 @@ class DateFormatOperatorTest extends BuiltInTest {
 
     @Test
     void testArgumentTypes() {
-        testValidInput(DateFormatOperator.INSTANCE, oppModel.XSD_DATE_INSTANCE);
-        testValidInput(DateFormatOperator.INSTANCE, oppModel.XSD_DATETIME_INSTANCE);
+        assertValidInput(DateFormatOperator.INSTANCE, oppModel.XSD_DATE_INSTANCE);
+        assertValidInput(DateFormatOperator.INSTANCE, oppModel.XSD_DATETIME_INSTANCE);
         testArgument(DateFormatOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 }

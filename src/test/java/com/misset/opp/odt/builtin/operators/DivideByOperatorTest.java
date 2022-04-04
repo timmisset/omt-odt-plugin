@@ -15,9 +15,9 @@ class DivideByOperatorTest extends BuiltInTest {
 
     @Test
     void testValidInputs() {
-        testValidInput(DivideByOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
-        testValidInput(DivideByOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
-        testValidInput(DivideByOperator.INSTANCE, oppModel.XSD_NUMBER_INSTANCE);
+        assertValidInput(DivideByOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
+        assertValidInput(DivideByOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
+        assertValidInput(DivideByOperator.INSTANCE, oppModel.XSD_NUMBER_INSTANCE);
     }
 
     @Test

@@ -144,8 +144,8 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
         testArgument(builtin, index, expected, errorMessage, invalidArgument);
     }
 
-    protected void testValidInput(Builtin builtin,
-                                  OntResource input) {
+    protected void assertValidInput(Builtin builtin,
+                                    OntResource input) {
         PsiCall call = getCall();
         doReturn(Set.of(input)).when(call).resolvePreviousStep();
         builtin.validate(call, holder);
@@ -217,5 +217,27 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
         Assertions.assertEquals(exceptedTypes.size(), acceptableArgumentTypeWithContext.size());
 
         assertTrue(acceptableArgumentTypeWithContext.containsAll(exceptedTypes));
+    }
+
+    protected void assertGetAcceptableArgumentTypeSameAsPreviousStep(Builtin builtin, int index) {
+        PsiCall call = mock(PsiCall.class);
+        Set<OntResource> previousStep = Set.of(oppModel.XSD_STRING_INSTANCE);
+        doReturn(previousStep).when(call).resolvePreviousStep();
+
+        Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
+
+        assertNotNull(acceptableArgumentTypeWithContext);
+        Assertions.assertEquals(previousStep.size(), acceptableArgumentTypeWithContext.size());
+
+        assertTrue(acceptableArgumentTypeWithContext.containsAll(previousStep));
+    }
+
+    protected void assertGetAcceptableInputType(Builtin builtin, OntResource resource) {
+        assertGetAcceptableInputType(builtin, Set.of(resource));
+    }
+
+    protected void assertGetAcceptableInputType(Builtin builtin, Set<OntResource> resources) {
+        Set<OntResource> acceptableInputType = builtin.getAcceptableInputType();
+        assertTrue(acceptableInputType.containsAll(resources));
     }
 }
