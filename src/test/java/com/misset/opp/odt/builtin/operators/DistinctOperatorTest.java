@@ -45,6 +45,6 @@ class DistinctOperatorTest extends BuiltInTest {
 
     @Test
     void testGetFlags() {
-        Assertions.assertEquals(DistinctOperator.IGNORE_CASE_FLAG, DistinctOperator.INSTANCE.getFlags());
+        Assertions.assertEquals(BuiltInOperator.IGNORE_CASE_FLAG, DistinctOperator.INSTANCE.getFlags());
     }
 }

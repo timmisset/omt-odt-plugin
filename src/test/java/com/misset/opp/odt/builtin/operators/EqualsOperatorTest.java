@@ -95,6 +95,6 @@ class EqualsOperatorTest extends BuiltInTest {
 
     @Test
     void testGetFlags() {
-        Assertions.assertEquals(EqualsOperator.IGNORE_CASE_FLAG, EqualsOperator.INSTANCE.getFlags());
+        Assertions.assertEquals(BuiltInOperator.IGNORE_CASE_FLAG, EqualsOperator.INSTANCE.getFlags());
     }
 }

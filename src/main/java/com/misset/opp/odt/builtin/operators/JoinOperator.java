@@ -33,7 +33,6 @@ public class JoinOperator extends BuiltInStringOperator {
         validateStringArgument(0, call, holder);
     }
 
-
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {

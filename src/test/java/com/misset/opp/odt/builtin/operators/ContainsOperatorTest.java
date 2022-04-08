@@ -44,6 +44,6 @@ class ContainsOperatorTest extends BuiltInTest {
 
     @Test
     void testGetFlags() {
-        Assertions.assertEquals(ContainsOperator.IGNORE_CASE_FLAG, ContainsOperator.INSTANCE.getFlags());
+        Assertions.assertEquals(BuiltInOperator.IGNORE_CASE_FLAG, ContainsOperator.INSTANCE.getFlags());
     }
 }
