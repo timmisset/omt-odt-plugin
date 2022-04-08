@@ -2,6 +2,7 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BuiltInTest;
 import com.misset.opp.ttl.util.TTLValidationUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class DurationOperatorTest extends BuiltInTest {
@@ -21,4 +22,23 @@ class DurationOperatorTest extends BuiltInTest {
         testValidArgument(DurationOperator.INSTANCE, 1, oppModel.XSD_STRING_INSTANCE);
         testInvalidArgument(DurationOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
+
+    @Test
+    void testName() {
+        Assertions.assertEquals("DURATION", DurationOperator.INSTANCE.getName());
+    }
+
+    @Test
+    void testNumberOfArguments() {
+        Assertions.assertEquals(2, DurationOperator.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(2, DurationOperator.INSTANCE.maxNumberOfArguments());
+    }
+
+    @Test
+    void testGetAcceptableArgumentTypes() {
+        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 0, oppModel.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 1, oppModel.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentTypeIsNull(DurationOperator.INSTANCE, 2);
+    }
+
 }

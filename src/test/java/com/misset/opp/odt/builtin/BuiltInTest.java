@@ -232,6 +232,19 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
         assertTrue(acceptableArgumentTypeWithContext.containsAll(previousStep));
     }
 
+    protected void assertGetAcceptableArgumentTypeSameAsArgument(Builtin builtin, int index, int sameAsIndex) {
+        PsiCall call = mock(PsiCall.class);
+        Set<OntResource> atIndex = Set.of(oppModel.XSD_STRING_INSTANCE);
+        doReturn(atIndex).when(call).resolveSignatureArgument(sameAsIndex);
+
+        Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
+
+        assertNotNull(acceptableArgumentTypeWithContext);
+        Assertions.assertEquals(atIndex.size(), acceptableArgumentTypeWithContext.size());
+
+        assertTrue(acceptableArgumentTypeWithContext.containsAll(atIndex));
+    }
+
     protected void assertGetAcceptableInputType(Builtin builtin, OntResource resource) {
         assertGetAcceptableInputType(builtin, Set.of(resource));
     }

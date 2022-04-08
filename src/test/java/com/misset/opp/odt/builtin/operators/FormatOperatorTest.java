@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BuiltInTest;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.util.TTLValidationUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -38,6 +39,7 @@ class FormatOperatorTest extends BuiltInTest {
 
         verify(holder).registerProblem(eq(secondArgument), eq(TTLValidationUtil.ERROR_MESSAGE_STRING), eq(ProblemHighlightType.ERROR));
     }
+
     @Test
     void testWrongTypesNumber() {
         PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_STRING_INSTANCE));
@@ -45,6 +47,23 @@ class FormatOperatorTest extends BuiltInTest {
         FormatOperator.INSTANCE.validate(call, holder);
 
         verify(holder).registerProblem(eq(secondArgument), eq(TTLValidationUtil.ERROR_MESSAGE_NUMBER), eq(ProblemHighlightType.ERROR));
+    }
+
+    @Test
+    void testName() {
+        Assertions.assertEquals("FORMAT", FormatOperator.INSTANCE.getName());
+    }
+
+    @Test
+    void testNumberOfArguments() {
+        Assertions.assertEquals(1, FormatOperator.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(-1, FormatOperator.INSTANCE.maxNumberOfArguments());
+    }
+
+    @Test
+    void testGetAcceptableArgumentTypes() {
+        assertGetAcceptableArgumentType(FormatOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentTypeIsNull(FormatOperator.INSTANCE, 1);
     }
 
 }

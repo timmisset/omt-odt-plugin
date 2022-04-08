@@ -26,7 +26,7 @@ public class FindSubjectsOperator extends BuiltInOperator {
 
     @Override
     public int maxNumberOfArguments() {
-        return 1;
+        return 3;
     }
 
     @Override

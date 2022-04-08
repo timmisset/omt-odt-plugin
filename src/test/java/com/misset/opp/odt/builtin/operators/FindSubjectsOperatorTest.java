@@ -6,8 +6,10 @@ import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.OntResource;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.Set;
 
 class FindSubjectsOperatorTest extends BuiltInTest {
@@ -50,5 +52,28 @@ class FindSubjectsOperatorTest extends BuiltInTest {
     void testValidArguments() {
         testValidArgument(FindSubjectsOperator.INSTANCE, 2, oppModel.NAMED_GRAPH);
         testInvalidArgument(FindSubjectsOperator.INSTANCE, 2, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
+    }
+
+    @Test
+    void testName() {
+        Assertions.assertEquals("FIND_SUBJECTS", FindSubjectsOperator.INSTANCE.getName());
+    }
+
+    @Test
+    void testNumberOfArguments() {
+        Assertions.assertEquals(1, FindSubjectsOperator.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(3, FindSubjectsOperator.INSTANCE.maxNumberOfArguments());
+    }
+
+    @Test
+    void testGetAcceptableArgumentTypes() {
+        assertGetAcceptableArgumentType(FindSubjectsOperator.INSTANCE, 2, oppModel.NAMED_GRAPH);
+        assertGetAcceptableArgumentTypeIsNull(FindSubjectsOperator.INSTANCE, 1);
+    }
+
+    @Test
+    void testReturnsEmptyListWhenNoArguments() {
+        Assertions.assertEquals(0,
+                FindSubjectsOperator.INSTANCE.resolveFrom(Collections.emptySet(), getCall()).size());
     }
 }

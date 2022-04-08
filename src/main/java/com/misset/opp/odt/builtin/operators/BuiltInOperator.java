@@ -64,8 +64,10 @@ public abstract class BuiltInOperator extends Builtin {
     protected void validateIgnoreCaseFlagIsUsedOnStrings(Set<OntResource> resources,
                                                          PsiCall call,
                                                          ProblemsHolder holder) {
+        String flag = call.getFlag();
         if(!resources.isEmpty() &&
-                "ignoreCase".equals(call.getFlag()) &&
+                flag != null &&
+                flag.contains("!ignoreCase") &&
                 !resources.contains(OppModel.INSTANCE.XSD_STRING_INSTANCE)) {
             holder.registerProblem(call.getFlagElement(), "Using ignoreCase on non-string values", ProblemHighlightType.WARNING);
         }
@@ -92,7 +94,7 @@ public abstract class BuiltInOperator extends Builtin {
             right = call.resolveSignatureArgument(0);
         } else if (call.getNumberOfArguments() == 2) {
             left = call.resolveSignatureArgument(0);
-            right = call.resolveSignatureArgument(0);
+            right = call.resolveSignatureArgument(1);
         } else {
             return Pair.empty();
         }
