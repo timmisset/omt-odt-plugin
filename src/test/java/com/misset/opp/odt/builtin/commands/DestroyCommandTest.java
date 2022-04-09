@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemHighlightType;
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
@@ -13,7 +13,7 @@ import java.util.Set;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-class DestroyCommandTest extends BuiltInTest {
+class DestroyCommandTest extends BaseBuiltinTest {
 
     @Override
     @Test

@@ -1,9 +1,10 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class PickOperatorTest extends BuiltInOperatorTest {
+class PickOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testName() {
@@ -25,5 +26,10 @@ class PickOperatorTest extends BuiltInOperatorTest {
     void testGetAcceptableArgumentType() {
         assertGetAcceptableArgumentType(PickOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
         assertGetAcceptableArgumentTypeIsNull(PickOperator.INSTANCE, 1);
+    }
+
+    @Override
+    protected void testResolve() {
+        assertResolved(PickOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, oppModel.XSD_STRING_INSTANCE);
     }
 }

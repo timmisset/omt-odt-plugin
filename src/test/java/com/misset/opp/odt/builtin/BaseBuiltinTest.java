@@ -20,7 +20,7 @@ import java.util.Set;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public abstract class BuiltInTest extends OMTOntologyTestCase {
+public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
 
     protected OppModel oppModel;
     protected ProblemsHolder holder = mock(ProblemsHolder.class);

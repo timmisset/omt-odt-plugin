@@ -1,11 +1,12 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class TypeOperatorTest extends BuiltInTest {
+class TypeOperatorTest extends BaseBuiltinTest {
 
     @Override
     @Test
@@ -19,4 +20,14 @@ class TypeOperatorTest extends BuiltInTest {
                 Set.of(oppModel.IRI));
     }
 
+    @Test
+    void testName() {
+        Assertions.assertEquals("TYPE", TypeOperator.INSTANCE.getName());
+    }
+
+    @Test
+    void testNumberOfArguments() {
+        Assertions.assertEquals(0, TypeOperator.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(0, TypeOperator.INSTANCE.maxNumberOfArguments());
+    }
 }

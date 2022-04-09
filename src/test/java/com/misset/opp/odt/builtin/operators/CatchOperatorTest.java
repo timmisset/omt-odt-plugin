@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
-class CatchOperatorTest extends BuiltInTest {
+class CatchOperatorTest extends BaseBuiltinTest {
 
     @Override
     @Test

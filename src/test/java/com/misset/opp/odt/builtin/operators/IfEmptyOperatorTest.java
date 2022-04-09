@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
-class IfEmptyOperatorTest extends BuiltInTest {
+class IfEmptyOperatorTest extends BaseBuiltinTest {
 
     @Override
     @Test

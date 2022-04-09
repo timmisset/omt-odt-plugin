@@ -1,10 +1,10 @@
 package com.misset.opp.odt.builtin.commands;
 
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class LoadOntologyCommandTest extends BuiltInTest {
+class LoadOntologyCommandTest extends BaseBuiltinTest {
 
     @Test
     void testGetDescription() {

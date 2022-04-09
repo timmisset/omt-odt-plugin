@@ -1,10 +1,10 @@
 package com.misset.opp.odt.builtin.commands;
 
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class NewTransientGraphCommandTest extends BuiltInTest {
+class NewTransientGraphCommandTest extends BaseBuiltinTest {
 
     @Override
     @Test

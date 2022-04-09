@@ -1,12 +1,12 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class ConcatOperatorTest extends BuiltInTest {
+class ConcatOperatorTest extends BaseBuiltinTest {
 
     @Override
     @Test

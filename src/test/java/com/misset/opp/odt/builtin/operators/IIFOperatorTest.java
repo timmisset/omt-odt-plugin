@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +13,7 @@ import java.util.Set;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-class IIFOperatorTest extends BuiltInTest {
+class IIFOperatorTest extends BaseBuiltinTest {
 
     @Override
     @Test

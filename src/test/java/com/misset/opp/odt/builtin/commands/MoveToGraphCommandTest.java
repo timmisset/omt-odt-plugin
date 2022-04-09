@@ -1,11 +1,11 @@
 package com.misset.opp.odt.builtin.commands;
 
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class MoveToGraphCommandTest extends BuiltInTest {
+class MoveToGraphCommandTest extends BaseBuiltinTest {
 
     @Override
     @Test

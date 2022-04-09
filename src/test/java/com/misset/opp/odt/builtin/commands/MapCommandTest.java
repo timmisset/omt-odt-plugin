@@ -1,6 +1,6 @@
 package com.misset.opp.odt.builtin.commands;
 
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.junit.jupiter.api.Assertions;
@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
-class MapCommandTest extends BuiltInTest {
+class MapCommandTest extends BaseBuiltinTest {
 
     @Override
     @Test

@@ -1,10 +1,10 @@
 package com.misset.opp.odt.builtin.commands;
 
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ErrorCommandTest extends BuiltInTest {
+class ErrorCommandTest extends BaseBuiltinTest {
 
     @Override
     @Test

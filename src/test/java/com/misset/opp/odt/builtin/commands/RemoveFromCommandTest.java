@@ -3,7 +3,7 @@ package com.misset.opp.odt.builtin.commands;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
@@ -17,7 +17,7 @@ import java.util.Set;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-class RemoveFromCommandTest extends BuiltInTest {
+class RemoveFromCommandTest extends BaseBuiltinTest {
 
     @Override
     @Test

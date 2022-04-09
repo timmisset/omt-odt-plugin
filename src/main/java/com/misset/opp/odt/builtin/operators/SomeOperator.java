@@ -9,7 +9,9 @@ import org.apache.jena.ontology.OntResource;
 import java.util.Set;
 
 public class SomeOperator extends BuiltInBooleanOperator {
-    private SomeOperator() { }
+    private SomeOperator() {
+    }
+
     public static final SomeOperator INSTANCE = new SomeOperator();
 
     @Override
@@ -36,7 +38,6 @@ public class SomeOperator extends BuiltInBooleanOperator {
         }
     }
 
-
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
@@ -44,7 +45,6 @@ public class SomeOperator extends BuiltInBooleanOperator {
         }
         return null;
     }
-
 
     @Override
     public Set<OntResource> getAcceptableInputType() {

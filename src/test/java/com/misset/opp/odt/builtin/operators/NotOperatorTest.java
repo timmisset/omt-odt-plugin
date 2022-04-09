@@ -1,10 +1,10 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class NotOperatorTest extends BuiltInTest {
+class NotOperatorTest extends BaseBuiltinTest {
 
     @Override
     @Test

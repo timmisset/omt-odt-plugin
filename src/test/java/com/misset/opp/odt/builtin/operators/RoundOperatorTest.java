@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.OppModel;
@@ -15,7 +15,7 @@ import java.util.Set;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-class RoundOperatorTest extends BuiltInTest {
+class RoundOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testName() {

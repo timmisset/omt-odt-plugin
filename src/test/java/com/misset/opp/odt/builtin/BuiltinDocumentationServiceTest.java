@@ -1,6 +1,8 @@
 package com.misset.opp.odt.builtin;
 
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.misset.opp.odt.builtin.commands.AddToCommand;
 import com.misset.opp.testCase.ODTTestCase;
 import org.commonmark.parser.Parser;
@@ -49,6 +51,29 @@ class BuiltinDocumentationServiceTest extends ODTTestCase {
             assertThrows(RuntimeException.class,
                     "Error parsing markdown file: /src/MyFile.md, message: some exception",
                     () -> documentationService.getTask().run(null));
+        }
+
+    }
+
+    @Test
+    void testReturnsNullWhenDocumentNotReadable() {
+        try (MockedStatic<FileDocumentManager> documentManagerMockedStatic = Mockito.mockStatic(FileDocumentManager.class)) {
+            FileDocumentManager documentManager = mock(FileDocumentManager.class);
+            documentManagerMockedStatic.when(FileDocumentManager::getInstance).thenReturn(documentManager);
+
+            doReturn(null).when(documentManager).getDocument(any(VirtualFile.class));
+
+            String content = "Some description";
+            WriteCommandAction.runWriteCommandAction(
+                    getProject(),
+                    () -> {
+                        myFixture.addFileToProject("AddToCommand.md", content);
+                    }
+            );
+            final BuiltinDocumentationService documentationService = BuiltinDocumentationService.getInstance(getProject());
+            documentationService.getTask().run(null);
+
+            Assertions.assertNull(AddToCommand.INSTANCE.getDescription(""));
         }
 
     }

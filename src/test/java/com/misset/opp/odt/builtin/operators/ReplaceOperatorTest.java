@@ -1,9 +1,10 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ReplaceOperatorTest extends BuiltInOperatorTest {
+class ReplaceOperatorTest extends BaseBuiltinTest {
     @Test
     void testName() {
         Assertions.assertEquals("REPLACE", ReplaceOperator.INSTANCE.getName());
@@ -30,5 +31,10 @@ class ReplaceOperatorTest extends BuiltInOperatorTest {
     @Test
     void testGetAcceptableArgumentType() {
         assertGetAcceptableArgumentType(ReplaceOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE);
+    }
+
+    @Override
+    protected void testResolve() {
+        assertResolved(PickOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, oppModel.XSD_STRING_INSTANCE);
     }
 }

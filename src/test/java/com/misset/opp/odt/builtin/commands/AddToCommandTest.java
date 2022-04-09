@@ -2,7 +2,7 @@ package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.openapi.util.Pair;
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +14,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.*;
 
-class AddToCommandTest extends BuiltInTest {
+class AddToCommandTest extends BaseBuiltinTest {
 
     @Override
     @Test

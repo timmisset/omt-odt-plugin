@@ -1,12 +1,12 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.misset.opp.odt.builtin.BuiltInTest;
+import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class MinusOperatorTest extends BuiltInTest {
+class MinusOperatorTest extends BaseBuiltinTest {
 
     @Override
     @Test
@@ -15,7 +15,7 @@ class MinusOperatorTest extends BuiltInTest {
                 Set.of(oppModel.XSD_INTEGER_INSTANCE),
                 Set.of(oppModel.XSD_INTEGER_INSTANCE),
                 Set.of(oppModel.XSD_INTEGER_INSTANCE)
-                );
+        );
     }
 
     @Test
