@@ -152,9 +152,9 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
         verify(holder, never()).registerProblem(eq(call), anyString(), any(ProblemHighlightType.class));
     }
 
-    protected void testInvalidInput(Builtin builtin,
-                                    OntResource input,
-                                    String errorMessage) {
+    protected void assertInvalidInput(Builtin builtin,
+                                      OntResource input,
+                                      String errorMessage) {
         PsiCall call = getCall();
         doReturn(Set.of(input)).when(call).resolvePreviousStep();
         builtin.validate(call, holder);
@@ -166,29 +166,13 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
                                 OntResource expected,
                                 String errorMessage,
                                 OntResource invalidArgument) {
-        testValidArgument(builtin, index, expected);
-        testInvalidArgument(builtin, index, invalidArgument, errorMessage);
+        assertValidArgument(builtin, index, expected);
+        assertInvalidArgument(builtin, index, invalidArgument, errorMessage);
     }
 
-    protected void testValidArgument(Builtin builtin,
-                                     int index,
-                                     OntResource argumentType) {
-        final PsiElement callArgument = mockArguments[index];
-        testArgument(builtin, index, argumentType);
-        verify(holder, never()).registerProblem(eq(callArgument), anyString(), eq(ProblemHighlightType.ERROR));
-    }
-
-    protected void testInvalidArgument(Builtin builtin,
-                                       int index,
-                                       OntResource argumentType,
-                                       String errorMessage) {
-        final PsiElement callArgument = mockArguments[index];
-        testArgument(builtin, index, argumentType);
-        verify(holder).registerProblem(eq(callArgument), startsWith(errorMessage), eq(ProblemHighlightType.ERROR));
-    }
-    private void testArgument(Builtin builtin,
-                              int index,
-                              OntResource argumentType) {
+    private void assertArgument(Builtin builtin,
+                                int index,
+                                OntResource argumentType) {
         reset(holder);
         List<Set<OntResource>> invalidArguments = new ArrayList<>();
         while (invalidArguments.size() <= index) {
@@ -197,6 +181,23 @@ public abstract class BuiltInTest extends OMTOntologyTestCase {
 
         final PsiCall invalidCall = getCall(invalidArguments.toArray(Set[]::new));
         builtin.validate(invalidCall, holder);
+    }
+
+    protected void assertValidArgument(Builtin builtin,
+                                       int index,
+                                       OntResource argumentType) {
+        final PsiElement callArgument = mockArguments[index];
+        assertArgument(builtin, index, argumentType);
+        verify(holder, never()).registerProblem(eq(callArgument), anyString(), eq(ProblemHighlightType.ERROR));
+    }
+
+    protected void assertInvalidArgument(Builtin builtin,
+                                         int index,
+                                         OntResource argumentType,
+                                         String errorMessage) {
+        final PsiElement callArgument = mockArguments[index];
+        assertArgument(builtin, index, argumentType);
+        verify(holder).registerProblem(eq(callArgument), startsWith(errorMessage), eq(ProblemHighlightType.ERROR));
     }
 
     protected void assertGetAcceptableArgumentTypeIsNull(Builtin builtin, int index) {

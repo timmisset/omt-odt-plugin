@@ -10,7 +10,13 @@ import org.apache.jena.ontology.OntResource;
 import java.util.Set;
 
 public class RoundOperator extends BuiltInOperator {
-    private RoundOperator() { }
+
+    protected static final String UNNECESSARY_DECIMAL_PLACES_VALUE = "Unnecessary decimalPlaces value";
+    protected static final String INPUT_IS_ALREADY_AN_INTEGER = "Input is already an integer";
+
+    private RoundOperator() {
+    }
+
     public static final RoundOperator INSTANCE = new RoundOperator();
 
     @Override
@@ -50,11 +56,11 @@ public class RoundOperator extends BuiltInOperator {
 
         if ("0".equals(call.getSignatureValue(0))) {
             holder.registerProblem(call.getCallSignatureArgumentElement(0),
-                    "Unnecessary decimalPlaces value", ProblemHighlightType.WEAK_WARNING);
+                    UNNECESSARY_DECIMAL_PLACES_VALUE, ProblemHighlightType.WEAK_WARNING);
         }
         if (!callInputType.isEmpty() && callInputType.stream().allMatch(OppModel.INSTANCE.XSD_INTEGER_INSTANCE::equals)) {
-            holder.registerProblem(call.getCallSignatureArgumentElement(0),
-                    "Input is already an integer", ProblemHighlightType.WEAK_WARNING);
+            holder.registerProblem(call,
+                    INPUT_IS_ALREADY_AN_INTEGER, ProblemHighlightType.WEAK_WARNING);
         }
     }
 

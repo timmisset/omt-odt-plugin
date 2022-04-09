@@ -17,8 +17,8 @@ class CeilOperatorTest extends BuiltInTest {
     @Test
     void testArgumentTypes() {
         assertValidInput(CeilOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
-        testInvalidInput(CeilOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
-        testInvalidInput(CeilOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertInvalidInput(CeilOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertInvalidInput(CeilOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
     }
 
     @Test

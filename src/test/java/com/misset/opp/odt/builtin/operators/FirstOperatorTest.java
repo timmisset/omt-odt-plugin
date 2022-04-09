@@ -17,8 +17,8 @@ class FirstOperatorTest extends BuiltInTest {
 
     @Test
     void testValidArguments() {
-        testValidArgument(FirstOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE);
-        testInvalidArgument(FirstOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(FirstOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertInvalidArgument(FirstOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test

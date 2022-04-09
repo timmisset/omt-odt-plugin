@@ -22,15 +22,9 @@ public class PickOperator extends BuiltInCollectionOperator {
     }
 
     @Override
-    public int minNumberOfArguments() {
-        return 1;
-    }
-
-    @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         validateIntegerArgument(0, call, holder);
     }
-
 
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {

@@ -18,11 +18,6 @@ public class ReplaceOperator extends BuiltInStringOperator {
     }
 
     @Override
-    public int maxNumberOfArguments() {
-        return 2;
-    }
-
-    @Override
     public int minNumberOfArguments() {
         return 2;
     }
@@ -32,7 +27,6 @@ public class ReplaceOperator extends BuiltInStringOperator {
         TTLValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
         validateAllArguments(call, holder, this::validateStringArgument);
     }
-
 
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {

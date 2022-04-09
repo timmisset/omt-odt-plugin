@@ -17,7 +17,7 @@ class FloorOperatorTest extends BuiltInTest {
     @Test
     void testValidInputs() {
         assertValidInput(FloorOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
-        testInvalidInput(FloorOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertInvalidInput(FloorOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
     }
 
     @Test

@@ -16,13 +16,13 @@ class EveryOperatorTest extends BuiltInTest {
     @Test
     void testValidInputs() {
         assertValidInput(EveryOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE);
-        testInvalidInput(EveryOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertInvalidInput(EveryOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testValidArguments() {
-        testValidArgument(EveryOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE);
-        testInvalidArgument(EveryOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(EveryOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertInvalidArgument(EveryOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test

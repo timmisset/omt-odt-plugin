@@ -1,16 +1,9 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BuiltInTest;
-import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.startsWith;
-import static org.mockito.Mockito.*;
 
 class IndexOfOperatorTest extends BuiltInTest {
 
@@ -38,41 +31,10 @@ class IndexOfOperatorTest extends BuiltInTest {
     }
 
     @Test
-    void testSpecificValidationHasErrorWhenNoStringInput() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE));
-        doReturn(Set.of(oppModel.XSD_BOOLEAN_INSTANCE)).when(call).resolvePreviousStep();
-
-        IndexOfOperator.INSTANCE.validate(call, holder);
-
-        verify(holder).registerProblem(
-                eq(call),
-                eq("String required"),
-                eq(ProblemHighlightType.ERROR));
-    }
-
-    @Test
-    void testSpecificValidationHasNoErrorWhenStringInput() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE));
-        doReturn(Set.of(oppModel.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
-
-        IndexOfOperator.INSTANCE.validate(call, holder);
-
-        verify(holder, never()).registerProblem(
-                eq(call),
-                eq("String required"),
-                eq(ProblemHighlightType.ERROR));
-    }
-
-    @Test
-    void testSpecificValidationHasErrorWhenNonStringArgument() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
-        doReturn(Set.of(oppModel.XSD_BOOLEAN_INSTANCE)).when(call).resolvePreviousStep();
-
-        IndexOfOperator.INSTANCE.validate(call, holder);
-
-        verify(holder, never()).registerProblem(
-                eq(call.getCallSignatureArgumentElement(0)),
-                startsWith("String type required"),
-                eq(ProblemHighlightType.ERROR));
+    void testValidArguments() {
+        assertValidArgument(IndexOfOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE);
+        assertInvalidArgument(IndexOfOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidInput(IndexOfOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertInvalidInput(IndexOfOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 }

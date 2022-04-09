@@ -17,8 +17,8 @@ class FilterOperatorTest extends BuiltInTest {
 
     @Test
     void testValidArguments() {
-        testValidArgument(FilterOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE);
-        testInvalidArgument(FilterOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(FilterOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertInvalidArgument(FilterOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test

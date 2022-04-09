@@ -23,10 +23,10 @@ class DivideByOperatorTest extends BuiltInTest {
 
     @Test
     void testValidArguments() {
-        testValidArgument(DivideByOperator.INSTANCE, 0, oppModel.XSD_DECIMAL_INSTANCE);
-        testValidArgument(DivideByOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
-        testValidArgument(DivideByOperator.INSTANCE, 0, oppModel.XSD_NUMBER_INSTANCE);
-        testInvalidArgument(DivideByOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NUMBER);
+        assertValidArgument(DivideByOperator.INSTANCE, 0, oppModel.XSD_DECIMAL_INSTANCE);
+        assertValidArgument(DivideByOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
+        assertValidArgument(DivideByOperator.INSTANCE, 0, oppModel.XSD_NUMBER_INSTANCE);
+        assertInvalidArgument(DivideByOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NUMBER);
     }
 
     @Test

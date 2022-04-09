@@ -29,9 +29,8 @@ public class LowerCaseOperator extends BuiltInStringOperator {
         TTLValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
     }
 
-
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModel.INSTANCE.XSD_STRING);
+        return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
     }
 }

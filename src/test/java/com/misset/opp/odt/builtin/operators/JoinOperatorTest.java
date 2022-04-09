@@ -1,15 +1,9 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BuiltInTest;
-import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
 
 class JoinOperatorTest extends BuiltInTest {
 
@@ -31,24 +25,11 @@ class JoinOperatorTest extends BuiltInTest {
     }
 
     @Test
-    void testSpecificValidationHasErrorWhenNoStringOnIndex0() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
-        JoinOperator.INSTANCE.validate(call, holder);
-
-        verify(holder).registerProblem(call.getCallSignatureArgumentElement(0),
-                "String required",
-                ProblemHighlightType.ERROR);
-    }
-
-    @Test
-    void testSpecificValidationHasErrorWhenNoStringAsInput() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE));
-        doReturn(Set.of(oppModel.XSD_BOOLEAN_INSTANCE)).when(call).resolvePreviousStep();
-        JoinOperator.INSTANCE.validate(call, holder);
-
-        verify(holder).registerProblem(call,
-                "String required",
-                ProblemHighlightType.ERROR);
+    void testValidArguments() {
+        assertValidArgument(JoinOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE);
+        assertInvalidArgument(JoinOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidInput(JoinOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertInvalidInput(JoinOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test

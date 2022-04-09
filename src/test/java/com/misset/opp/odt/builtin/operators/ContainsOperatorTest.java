@@ -16,7 +16,7 @@ class ContainsOperatorTest extends BuiltInTest {
     @Test
     void testArgumentTypes() {
         assertValidInput(ContainsOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
-        testInvalidInput(ContainsOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertInvalidInput(ContainsOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test

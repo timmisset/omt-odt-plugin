@@ -50,8 +50,8 @@ class FindSubjectsOperatorTest extends BuiltInTest {
 
     @Test
     void testValidArguments() {
-        testValidArgument(FindSubjectsOperator.INSTANCE, 2, oppModel.NAMED_GRAPH);
-        testInvalidArgument(FindSubjectsOperator.INSTANCE, 2, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
+        assertValidArgument(FindSubjectsOperator.INSTANCE, 2, oppModel.NAMED_GRAPH);
+        assertInvalidArgument(FindSubjectsOperator.INSTANCE, 2, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     @Test

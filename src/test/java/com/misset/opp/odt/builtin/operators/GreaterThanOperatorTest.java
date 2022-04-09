@@ -17,10 +17,10 @@ class GreaterThanOperatorTest extends BuiltInTest {
 
     @Test
     void testValidArguments() {
-        testValidArgument(GreaterThanOperator.INSTANCE, 1, oppModel.XSD_STRING_INSTANCE);
-        testValidArgument(GreaterThanOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE);
-        testValidArgument(GreaterThanOperator.INSTANCE, 1, oppModel.XSD_INTEGER_INSTANCE);
-        testValidArgument(GreaterThanOperator.INSTANCE, 1, oppModel.XSD_DECIMAL_INSTANCE);
+        assertValidArgument(GreaterThanOperator.INSTANCE, 1, oppModel.XSD_STRING_INSTANCE);
+        assertValidArgument(GreaterThanOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE);
+        assertValidArgument(GreaterThanOperator.INSTANCE, 1, oppModel.XSD_INTEGER_INSTANCE);
+        assertValidArgument(GreaterThanOperator.INSTANCE, 1, oppModel.XSD_DECIMAL_INSTANCE);
     }
 
     @Test

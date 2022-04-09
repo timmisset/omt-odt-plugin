@@ -15,12 +15,12 @@ class DurationOperatorTest extends BuiltInTest {
 
     @Test
     void testValidArguments() {
-        testValidArgument(DurationOperator.INSTANCE, 0, oppModel.XSD_DECIMAL_INSTANCE);
-        testValidArgument(DurationOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
-        testValidArgument(DurationOperator.INSTANCE, 0, oppModel.XSD_NUMBER_INSTANCE);
-        testInvalidArgument(DurationOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NUMBER);
-        testValidArgument(DurationOperator.INSTANCE, 1, oppModel.XSD_STRING_INSTANCE);
-        testInvalidArgument(DurationOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidArgument(DurationOperator.INSTANCE, 0, oppModel.XSD_DECIMAL_INSTANCE);
+        assertValidArgument(DurationOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
+        assertValidArgument(DurationOperator.INSTANCE, 0, oppModel.XSD_NUMBER_INSTANCE);
+        assertInvalidArgument(DurationOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NUMBER);
+        assertValidArgument(DurationOperator.INSTANCE, 1, oppModel.XSD_STRING_INSTANCE);
+        assertInvalidArgument(DurationOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test

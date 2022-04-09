@@ -22,11 +22,6 @@ public class RepeatOperator extends BuiltInOperator {
         return 3;
     }
 
-    @Override
-    public int minNumberOfArguments() {
-        return 1;
-    }
-
     /**
      * REPEAT operator returns the type of both the input and the resolved outcome of the first argument
      */

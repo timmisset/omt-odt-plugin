@@ -17,10 +17,10 @@ class LessThanOperatorTest extends BuiltInTest {
 
     @Test
     void testValidArguments() {
-        testValidArgument(LessThanOperator.INSTANCE, 1, oppModel.XSD_STRING_INSTANCE);
-        testValidArgument(LessThanOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE);
-        testValidArgument(LessThanOperator.INSTANCE, 1, oppModel.XSD_INTEGER_INSTANCE);
-        testValidArgument(LessThanOperator.INSTANCE, 1, oppModel.XSD_DECIMAL_INSTANCE);
+        assertValidArgument(LessThanOperator.INSTANCE, 1, oppModel.XSD_STRING_INSTANCE);
+        assertValidArgument(LessThanOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE);
+        assertValidArgument(LessThanOperator.INSTANCE, 1, oppModel.XSD_INTEGER_INSTANCE);
+        assertValidArgument(LessThanOperator.INSTANCE, 1, oppModel.XSD_DECIMAL_INSTANCE);
     }
 
     @Test
