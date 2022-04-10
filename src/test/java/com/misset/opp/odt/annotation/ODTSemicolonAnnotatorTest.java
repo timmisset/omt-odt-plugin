@@ -129,4 +129,18 @@ class ODTSemicolonAnnotatorTest extends OMTInspectionTestCase {
         assertNoError(SEMICOLON_ILLEGAL);
     }
 
+    @Test
+    void testHasErrorWhenNoSemicolonInODTFile() {
+        String content = "1";
+        myFixture.configureByText("test.odt", content);
+        assertHasError(SEMICOLON_REQUIRED);
+    }
+
+    @Test
+    void testHasNoErrorWhenSemicolonInODTFile() {
+        String content = "1;";
+        myFixture.configureByText("test.odt", content);
+        assertNoError(SEMICOLON_REQUIRED);
+    }
+
 }

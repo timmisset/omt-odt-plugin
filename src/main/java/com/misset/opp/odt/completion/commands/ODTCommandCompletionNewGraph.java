@@ -25,13 +25,11 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
                 // get the CommandCall:
                 PsiElement element = parameters.getPosition();
                 ODTCommandCall newGraphCommand = PsiTreeUtil.getParentOfType(element, ODTCommandCall.class);
-                if (newGraphCommand == null) {
-                    return;
-                }
-
-                int argumentIndexOf = newGraphCommand.getArgumentIndexOf(element);
-                if (argumentIndexOf == 0) {
-                    addShapeCompletions(parameters, result);
+                if (newGraphCommand != null) {
+                    int argumentIndexOf = newGraphCommand.getArgumentIndexOf(element);
+                    if (argumentIndexOf == 0) {
+                        addShapeCompletions(parameters, result);
+                    }
                 }
             }
         });

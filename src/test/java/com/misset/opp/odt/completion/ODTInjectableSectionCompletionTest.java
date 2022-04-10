@@ -1,6 +1,8 @@
 package com.misset.opp.odt.completion;
 
 import com.misset.opp.testCase.OMTCompletionTestCase;
+import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.ttl.OppModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -73,6 +75,19 @@ class ODTInjectableSectionCompletionTest extends OMTCompletionTestCase {
         List<String> lookupStrings = getLookupStrings();
         Assertions.assertTrue(lookupStrings.stream().noneMatch(COMMAND_SIMPLE_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().noneMatch(COMMAND_PARAMETER_TEMPLATE::equals));
+    }
+
+    @Test
+    void testHasGraphShapeCompletions() {
+        OMTOntologyTestCase.initOntologyModel();
+        OppModel.INSTANCE.GRAPH_SHAPE.createIndividual("http://data/graphshape");
+        String content = "model:\n" +
+                "   GraphShapeHandler: !GraphShapeHandlers\n" +
+                "       id: test\n" +
+                "       shape: <caret>\n" +
+                "";
+        configureByText(content, true);
+        assertContainsElements(getLookupStrings(), "/<http://data/graphshape>");
     }
 
 }

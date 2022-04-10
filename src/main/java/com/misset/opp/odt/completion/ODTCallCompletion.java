@@ -33,11 +33,14 @@ public abstract class ODTCallCompletion extends CompletionContributor {
     }
 
     protected LookupElement getLookupElement(Callable callable) {
+        return Optional.ofNullable(callable.getCallId())
+                .map(s -> createLookupElement(callable, s))
+                .orElse(null);
+    }
+
+    @NotNull
+    private LookupElementBuilder createLookupElement(com.misset.opp.resolvable.Callable callable, String callId) {
         StringBuilder stringBuilder = new StringBuilder();
-        String callId = callable.getCallId();
-        if (callId == null) {
-            return null;
-        }
         stringBuilder.append(callId);
 
         if (callable.minNumberOfArguments() > 0) {

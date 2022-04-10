@@ -8,7 +8,6 @@ import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.psi.ODTEquationStatement;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQuery;
-import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.Individual;
@@ -18,7 +17,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.intellij.patterns.StandardPatterns.and;
@@ -41,29 +39,31 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                 final Map<String, String> availableNamespaces = originalFile.getAvailableNamespaces();
 
                 PsiElement position = parameters.getPosition();
-                Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
 
                 ODTEquationStatement equationStatement = PsiTreeUtil.getParentOfType(position, ODTEquationStatement.class);
-                List<ODTQuery> queryList = equationStatement.getQueryList();
-                if (queryList.size() != 2) {
-                    return;
+                if (equationStatement != null) {
+                    addCompletionsForEquationStatement(result, availableNamespaces, position, equationStatement);
                 }
+            }
 
-                if (PsiTreeUtil.getDeepestFirst(queryList.get(1)) != PsiTreeUtil.getDeepestFirst(position)) {
+            private void addCompletionsForEquationStatement(@NotNull CompletionResultSet result,
+                                                            Map<String, String> availableNamespaces,
+                                                            PsiElement position,
+                                                            ODTEquationStatement equationStatement) {
+                List<ODTQuery> queryList = equationStatement.getQueryList();
+                if (queryList.size() == 2 &&
+                        PsiTreeUtil.getDeepestFirst(queryList.get(1)) == PsiTreeUtil.getDeepestFirst(position)) {
                     // only accept the right-side as completion, i.e.
                     // .. / rdf:type == <caret> should show the current class and all possible sub-classes
                     // or
                     // .. / ont:type == <caret> should show the type and all possible instances of that type
-                    return;
+                    // resolve the left-side to check if this is a rdf:type check and what the known classes and subclasses are
+                    ODTQuery odtQuery = queryList.get(0);
+                    Set<OntResource> leftSideResolved = odtQuery.resolve();
+
+                    addClasses(leftSideResolved, availableNamespaces, result);
+                    addInstances(leftSideResolved, availableNamespaces, result);
                 }
-
-                // resolve the left-side to check if this is a rdf:type check and what the known classes and subclasses are
-                ODTQuery odtQuery = queryList.get(0);
-                Set<OntResource> leftSideResolved = odtQuery.resolve();
-
-                addClasses(leftSideResolved, availableNamespaces, result);
-                addInstances(leftSideResolved, availableNamespaces, result);
-
             }
 
             private void addClasses(Set<OntResource> leftSideResolved,

@@ -25,7 +25,6 @@ import static com.misset.opp.odt.completion.CompletionPatterns.getInsideBuiltinC
 
 public class ODTCommandCompletionAssign extends CompletionContributor {
 
-
     public ODTCommandCompletionAssign() {
         extend(CompletionType.BASIC, getInsideBuiltinCommandSignaturePattern(AssignCommand.INSTANCE), new CompletionProvider<>() {
             @Override
@@ -33,18 +32,27 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                 // get the CommandCall:
                 PsiElement element = parameters.getPosition();
                 ODTCommandCall assignCommand = PsiTreeUtil.getParentOfType(element, ODTCommandCall.class);
-                if (assignCommand == null) {
-                    return;
+                if (assignCommand != null) {
+                    addAssignCompletions(parameters, result, element, assignCommand);
                 }
+            }
 
+            private void addAssignCompletions(@NotNull CompletionParameters parameters,
+                                              @NotNull CompletionResultSet result,
+                                              PsiElement element,
+                                              ODTCommandCall assignCommand) {
                 int argumentIndexOf = assignCommand.getArgumentIndexOf(element);
                 if (argumentIndexOf % 2 != 0 && argumentIndexOf > 0) {
-                    // predicate position, show all predicates for this command:
-                    Set<OntResource> subject = assignCommand.resolveSignatureArgument(0);
-                    if (subject.isEmpty()) {
-                        return;
-                    }
+                    addPredicatesCompletion(parameters, result, assignCommand);
+                }
+            }
 
+            private void addPredicatesCompletion(@NotNull CompletionParameters parameters,
+                                                 @NotNull CompletionResultSet result,
+                                                 ODTCommandCall assignCommand) {
+                // predicate position, show all predicates for this command:
+                Set<OntResource> subject = assignCommand.resolveSignatureArgument(0);
+                if (!subject.isEmpty()) {
                     Set<Resource> existingPredicates = existingPredicates(assignCommand)
                             .stream()
                             .map(RDFNode::asResource)

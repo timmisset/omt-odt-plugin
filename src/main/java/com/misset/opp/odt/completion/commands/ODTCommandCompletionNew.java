@@ -20,29 +20,36 @@ public class ODTCommandCompletionNew extends CompletionContributor {
     public ODTCommandCompletionNew() {
         extend(CompletionType.BASIC, getInsideBuiltinCommandSignaturePattern(NewCommand.INSTANCE), new CompletionProvider<>() {
             @Override
-            protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
+            protected void addCompletions(@NotNull CompletionParameters parameters,
+                                          @NotNull ProcessingContext context,
+                                          @NotNull CompletionResultSet result) {
                 // get the CommandCall:
                 PsiElement element = parameters.getPosition();
                 ODTCommandCall newGraphCommand = PsiTreeUtil.getParentOfType(element, ODTCommandCall.class);
-                if (newGraphCommand == null) {
-                    return;
-                }
-
-                int argumentIndexOf = newGraphCommand.getArgumentIndexOf(element);
-                if (argumentIndexOf == 0) {
-                    ODTFile file = (ODTFile) parameters.getOriginalFile();
-                    Map<String, String> availableNamespaces = file.getAvailableNamespaces();
-
-                    // show all classes instances:
-                    OppModel.INSTANCE.listClasses().stream().map(
-                                    resource -> TTLResourceUtil
-                                            .getRootLookupElement(resource, "Class", availableNamespaces))
-                            .filter(Objects::nonNull)
-                            .forEach(result::addElement);
-
-                    result.stopHere();
+                if (newGraphCommand != null) {
+                    addNewCommandCompletions(parameters, result, element, newGraphCommand);
                 }
             }
         });
+    }
+
+    private void addNewCommandCompletions(@NotNull CompletionParameters parameters,
+                                          @NotNull CompletionResultSet result,
+                                          PsiElement element,
+                                          ODTCommandCall newGraphCommand) {
+        int argumentIndexOf = newGraphCommand.getArgumentIndexOf(element);
+        if (argumentIndexOf == 0) {
+            ODTFile file = (ODTFile) parameters.getOriginalFile();
+            Map<String, String> availableNamespaces = file.getAvailableNamespaces();
+
+            // show all classes instances:
+            OppModel.INSTANCE.listClasses().stream().map(
+                            resource -> TTLResourceUtil
+                                    .getRootLookupElement(resource, "Class", availableNamespaces))
+                    .filter(Objects::nonNull)
+                    .forEach(result::addElement);
+
+            result.stopHere();
+        }
     }
 }

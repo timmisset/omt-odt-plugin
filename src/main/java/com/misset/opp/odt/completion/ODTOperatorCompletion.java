@@ -39,13 +39,20 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                 Predicate<Set<OntResource>> precedingFilter;
 
                 ODTQueryStep queryStep = PsiTreeUtil.getParentOfType(position, ODTQueryStep.class, true);
-                if (queryStep == null) {
-                    precedingFilter = resources -> true;
-                } else {
-                    Set<OntResource> previousStep = queryStep.resolvePreviousStep();
-                    precedingFilter = acceptableInput -> previousStep.isEmpty() ||
-                            OppModel.INSTANCE.areCompatible(acceptableInput, previousStep);
+                if (queryStep != null) {
+                    addOperatorCompletions(parameters, result, position, typeFilter, queryStep);
                 }
+            }
+
+            private void addOperatorCompletions(@NotNull CompletionParameters parameters,
+                                                @NotNull CompletionResultSet result,
+                                                PsiElement position,
+                                                Predicate<Set<OntResource>> typeFilter,
+                                                ODTQueryStep queryStep) {
+                Predicate<Set<OntResource>> precedingFilter;
+                Set<OntResource> previousStep = queryStep.resolvePreviousStep();
+                precedingFilter = acceptableInput -> previousStep.isEmpty() ||
+                        OppModel.INSTANCE.areCompatible(acceptableInput, previousStep);
 
                 // add BuiltinOperators
                 addBuiltinOperators(position, result, typeFilter, precedingFilter);
@@ -74,7 +81,6 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                 }
             }
         });
-
 
     }
 }

@@ -92,13 +92,17 @@ public class ODTTraverseCompletion extends CompletionContributor {
 
     public static String parseToCurie(Resource resource,
                                       Map<String, String> availableNamespaces) {
-        final String uri = resource.getURI();
-        if (uri == null) {
-            return null;
-        }
+        return Optional.ofNullable(resource.getURI())
+                .map(uri -> getCurie(resource, availableNamespaces, uri))
+                .orElse(null);
+    }
+
+    private static String getCurie(Resource resource,
+                                   Map<String, String> availableNamespaces,
+                                   String uri) {
         return availableNamespaces.containsKey(resource.getNameSpace()) ?
                 (availableNamespaces.get(resource.getNameSpace()) + ":" + resource.getLocalName()) :
-                "<" + resource.getURI() + ">";
+                "<" + uri + ">";
     }
 
 }
