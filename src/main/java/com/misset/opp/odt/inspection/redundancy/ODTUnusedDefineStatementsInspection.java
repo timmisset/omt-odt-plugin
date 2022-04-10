@@ -15,9 +15,11 @@ import static com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBO
 
 public class ODTUnusedDefineStatementsInspection extends LocalInspectionTool {
 
+    public static final String DESCRIPTION = "Inspect declared DEFINE statements in the ODT language that are not used anywhere.";
+
     @Override
     public @Nullable @Nls String getStaticDescription() {
-        return "Inspect declared DEFINE statements in the ODT language that are not used anywhere.\n";
+        return DESCRIPTION;
     }
 
     @Override

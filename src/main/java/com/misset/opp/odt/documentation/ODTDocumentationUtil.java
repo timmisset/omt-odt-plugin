@@ -30,20 +30,25 @@ public class ODTDocumentationUtil {
     @Nullable
     public static String getJavaDocCommentDescription(@NotNull PsiElement element) {
         PsiDocComment psiDocComment = getJavaDocComment(element);
-        if (psiDocComment != null) {
-            return Arrays.stream(psiDocComment.getDescriptionElements())
-                    .map(PsiElement::getText)
-                    .collect(Collectors.joining("<br>"));
-        }
-        return null;
+        return Optional.ofNullable(psiDocComment)
+                .map(ODTDocumentationUtil::getCommentFromDescriptionElements)
+                .orElse(null);
+
+    }
+
+    private static String getCommentFromDescriptionElements(PsiDocComment psiDocComment) {
+        return Arrays.stream(psiDocComment.getDescriptionElements())
+                .map(PsiElement::getText)
+                .collect(Collectors.joining("<br>"));
     }
 
     @Nullable
     public static PsiDocComment getJavaDocComment(@NotNull PsiElement element) {
-        if (element.getParent() instanceof PsiJavaDocumentedElement) {
-            return ((PsiJavaDocumentedElement) element.getParent()).getDocComment();
-        }
-        return null;
+        return Optional.of(element.getParent())
+                .filter(PsiJavaDocumentedElement.class::isInstance)
+                .map(PsiJavaDocumentedElement.class::cast)
+                .map(PsiJavaDocumentedElement::getDocComment)
+                .orElse(null);
     }
 
     @Nullable
@@ -73,10 +78,14 @@ public class ODTDocumentationUtil {
         if (tags.length > 0) {
             return false;
         }
-        PsiElement[] descriptionElements = comment.getDescriptionElements();
-        if (descriptionElements.length == 0) {
-            return true;
-        }
+
+        return Optional.of(comment.getDescriptionElements())
+                .filter(elements -> elements.length > 0)
+                .map(ODTDocumentationUtil::allDescriptionsEmpty)
+                .orElse(true);
+    }
+
+    private static boolean allDescriptionsEmpty(PsiElement[] descriptionElements) {
         return Arrays.stream(descriptionElements)
                 .map(PsiElement::getText)
                 .allMatch(String::isBlank);

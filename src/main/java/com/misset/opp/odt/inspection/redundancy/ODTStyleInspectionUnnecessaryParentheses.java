@@ -59,10 +59,9 @@ public class ODTStyleInspectionUnnecessaryParentheses extends LocalInspectionToo
     private void inspectDefineStatement(@NotNull ProblemsHolder holder,
                                         @NotNull ODTDefineStatement defineStatement) {
         ODTDefineParam defineParam = defineStatement.getDefineParam();
-        if (defineParam == null || !defineParam.getVariableList().isEmpty()) {
-            return;
+        if (defineParam != null && defineParam.getVariableList().isEmpty()) {
+            holder.registerProblem(defineParam, WARNING, ProblemHighlightType.WARNING, getReplaceQuickFix());
         }
-        holder.registerProblem(defineParam, WARNING, ProblemHighlightType.WARNING, getReplaceQuickFix());
     }
 
     private LocalQuickFix getReplaceQuickFix() {

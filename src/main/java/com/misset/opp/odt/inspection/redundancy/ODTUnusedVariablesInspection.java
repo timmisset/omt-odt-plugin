@@ -14,9 +14,11 @@ import static com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBO
 
 public class ODTUnusedVariablesInspection extends LocalInspectionTool {
 
+    public static final String DESCRIPTION = "Inspect declared variables in the ODT language that are not used anywhere.";
+
     @Override
     public @Nullable @Nls String getStaticDescription() {
-        return "Inspect declared variables & DEFINE input parameters in the ODT language that are not used anywhere.\n";
+        return DESCRIPTION;
     }
 
     @Override

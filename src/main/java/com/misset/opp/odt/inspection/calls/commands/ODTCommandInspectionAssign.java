@@ -62,55 +62,57 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
                                @NotNull ODTCall call) {
         if (call.getNumberOfArguments() >= 3 && call.getNumberOfArguments() % 2 != 0) {
             final Set<OntResource> subject = call.resolveSignatureArgument(0);
-            if (subject.isEmpty() || subject.contains(OppModel.INSTANCE.OWL_THING_INSTANCE)) {
+            if (!subject.isEmpty() && !subject.contains(OppModel.INSTANCE.OWL_THING_INSTANCE)) {
+                inspectSubject(holder, call, subject);
+            }
+        }
+    }
+
+    private void inspectSubject(@NotNull ProblemsHolder holder, @NotNull ODTCall call, Set<OntResource> subject) {
+        for (int i = 1; i < call.getNumberOfArguments(); i = i + 2) {
+
+            final ODTResolvableSignatureArgument predicateArgument = call.getSignatureArgument(i);
+            if (predicateArgument == null) {
+                return;
+            }
+            if (PsiTreeUtil.getDeepestFirst(predicateArgument).getNode().getElementType() != ODTTypes.FORWARD_SLASH) {
+                holder.registerProblem(predicateArgument, ROOT_INDICATOR_EXPECTED, ProblemHighlightType.ERROR);
                 return;
             }
 
-            for (int i = 1; i < call.getNumberOfArguments(); i = i + 2) {
-
-                final ODTResolvableSignatureArgument predicateArgument = call.getSignatureArgument(i);
-                if (predicateArgument == null) {
-                    return;
-                }
-                if (PsiTreeUtil.getDeepestFirst(predicateArgument).getNode().getElementType() != ODTTypes.FORWARD_SLASH) {
-                    holder.registerProblem(predicateArgument, ROOT_INDICATOR_EXPECTED, ProblemHighlightType.ERROR);
-                    return;
-                }
-
-                if (PsiTreeUtil.findChildOfType(predicateArgument, ODTQueryReverseStep.class) != null) {
-                    holder.registerProblem(predicateArgument,
-                            CANNOT_ASSIGN_USING_A_REVERSE_PATH, ProblemHighlightType.ERROR);
-                    return;
-                }
-
-                final List<Property> predicates = call.resolveSignatureArgument(i)
-                        .stream()
-                        .map(resource -> OppModel.INSTANCE.getProperty(resource))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-
-                if (predicates.size() == 0) {
-                    holder.registerProblem(predicateArgument,
-                            UNKNOWN_PREDICATE,
-                            ProblemHighlightType.ERROR);
-                    return;
-                } else if (predicates.size() > 1) {
-                    holder.registerProblem(predicateArgument,
-                            EXPECTED_A_SINGLE_PREDICATE,
-                            ProblemHighlightType.ERROR);
-                    return;
-                }
-                final Property predicate = predicates.get(0);
-
-                final Set<OntResource> object = OppModel.INSTANCE.listObjects(subject, predicate);
-                if (object.isEmpty()) {
-                    holder.registerProblem(predicateArgument,
-                            "Could not traverse FORWARD using predicate: " + predicate.toString());
-                }
-
-                final Set<OntResource> value = call.resolveSignatureArgument(i + 1);
-                TTLValidationUtil.validateCompatibleTypes(object, value, holder, call.getSignatureArgument(i));
+            if (PsiTreeUtil.findChildOfType(predicateArgument, ODTQueryReverseStep.class) != null) {
+                holder.registerProblem(predicateArgument,
+                        CANNOT_ASSIGN_USING_A_REVERSE_PATH, ProblemHighlightType.ERROR);
+                return;
             }
+
+            final List<Property> predicates = call.resolveSignatureArgument(i)
+                    .stream()
+                    .map(resource -> OppModel.INSTANCE.getProperty(resource))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            if (predicates.size() == 0) {
+                holder.registerProblem(predicateArgument,
+                        UNKNOWN_PREDICATE,
+                        ProblemHighlightType.ERROR);
+                return;
+            } else if (predicates.size() > 1) {
+                holder.registerProblem(predicateArgument,
+                        EXPECTED_A_SINGLE_PREDICATE,
+                        ProblemHighlightType.ERROR);
+                return;
+            }
+            final Property predicate = predicates.get(0);
+
+            final Set<OntResource> object = OppModel.INSTANCE.listObjects(subject, predicate);
+            if (object.isEmpty()) {
+                holder.registerProblem(predicateArgument,
+                        "Could not traverse FORWARD using predicate: " + predicate.toString());
+            }
+
+            final Set<OntResource> value = call.resolveSignatureArgument(i + 1);
+            TTLValidationUtil.validateCompatibleTypes(object, value, holder, call.getSignatureArgument(i));
         }
     }
 }

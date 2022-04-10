@@ -25,8 +25,25 @@ class ODTStyleInspectionUnnecessaryWrappingSubqueryTest extends OMTInspectionTes
     }
 
     @Test
+    void testWrappedSubqueryNoWarningForParameterType() {
+        String content = insideActivityWithPrefixes(
+                "params:\n" +
+                        "- $param (ont:ClassA)"
+        );
+        configureByText(content);
+        assertNoWarning(WARNING);
+    }
+
+    @Test
     void testWrappedSubqueryNoWarning() {
         String content = insideQueryWithPrefixes("('' == '' OR '' == '') AND ('' == '' AND '' == '')");
+        configureByText(content);
+        assertNoWarning(WARNING);
+    }
+
+    @Test
+    void testDecoratedWrappedSubqueryNoWarning() {
+        String content = insideQueryWithPrefixes("(/ont:ClassA / ^rdfs:subclassOf)*");
         configureByText(content);
         assertNoWarning(WARNING);
     }

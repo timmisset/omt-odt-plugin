@@ -75,10 +75,18 @@ class ODTStyleInspectionNegationOperatorTest extends OMTInspectionTestCase {
     }
 
     @Test
-    void testReplaceTrailingNegation() {
+    void testReplaceTrailingNegationEmptyForExists() {
         String content = insideProcedureRunWithPrefixes("IF $variable / EMPTY / NOT { }");
         configureByText(content);
         invokeQuickFixIntention(ODTStyleInspectionNegationOperator.REPLACE);
         ReadAction.run(() -> Assertions.assertTrue(myFixture.getFile().getText().contains("IF $variable / EXISTS { }")));
+    }
+
+    @Test
+    void testReplaceTrailingNegationExistsForEmpty() {
+        String content = insideProcedureRunWithPrefixes("IF $variable / EXISTS / NOT { }");
+        configureByText(content);
+        invokeQuickFixIntention(ODTStyleInspectionNegationOperator.REPLACE);
+        ReadAction.run(() -> Assertions.assertTrue(myFixture.getFile().getText().contains("IF $variable / EMPTY { }")));
     }
 }

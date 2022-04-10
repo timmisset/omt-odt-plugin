@@ -16,6 +16,8 @@ import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 /**
  * Code inspection for all unused declarations
  */
@@ -46,33 +48,43 @@ public class ODTStyleInspectionNegationOperator extends LocalInspectionTool {
     private void inspectOperatorCall(@NotNull ProblemsHolder holder,
                                      @NotNull ODTOperatorCall operatorCall) {
         ODTQuery query = PsiTreeUtil.getParentOfType(operatorCall, ODTQuery.class);
-        if (query == null) {
-            return;
+        if (query != null) {
+            inspectOperatorCallQuery(holder, operatorCall, query);
         }
+    }
+
+    private void inspectOperatorCallQuery(@NotNull ProblemsHolder holder,
+                                          @NotNull ODTOperatorCall operatorCall,
+                                          ODTQuery query) {
         String name = operatorCall.getName();
         if (name.equals(ExistsOperator.INSTANCE.getName()) || name.equals(EmptyOperator.INSTANCE.getName())) {
             ODTQueryOperationStep queryOperationStep = PsiTreeUtil.getParentOfType(operatorCall, ODTQueryOperationStep.class);
-            if (queryOperationStep == null) {
-                return;
+            if (queryOperationStep != null) {
+                inspectQueryOperationStep(holder, operatorCall, query, queryOperationStep);
             }
-            // LEADING_NEGATION
-            if (PsiTreeUtil.getParentOfType(queryOperationStep, ODTNegatedStep.class, ODTQueryOperationStep.class) instanceof ODTNegatedStep) {
-                holder.registerProblem(query, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.LEADING_NEGATION, operatorCall));
-                return;
-            }
+        }
+    }
 
-            // INSIDE_NEGATION
-            ODTResolvable parentOfType = PsiTreeUtil.getParentOfType(queryOperationStep, ODTScript.class, ODTCall.class);
-            if (parentOfType instanceof ODTCall && ((ODTCall) parentOfType).getName().equals(NotOperator.INSTANCE.getName())) {
-                holder.registerProblem(query, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.INSIDE_NEGATION, operatorCall));
-                return;
-            }
+    private void inspectQueryOperationStep(@NotNull ProblemsHolder holder,
+                                           @NotNull ODTOperatorCall operatorCall,
+                                           ODTQuery query,
+                                           ODTQueryOperationStep queryOperationStep) {
+        // LEADING_NEGATION
+        if (PsiTreeUtil.getParentOfType(queryOperationStep, ODTNegatedStep.class, ODTQueryOperationStep.class) instanceof ODTNegatedStep) {
+            holder.registerProblem(query, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.LEADING_NEGATION, operatorCall));
+            return;
+        }
 
-            // TRAILING_NEGATION
-            ODTQueryOperationStep siblingOperationStep = PsiTreeUtil.getNextSiblingOfType(queryOperationStep, ODTQueryOperationStep.class);
-            if (siblingOperationStep == null) {
-                return;
-            }
+        // INSIDE_NEGATION
+        ODTResolvable parentOfType = PsiTreeUtil.getParentOfType(queryOperationStep, ODTScript.class, ODTCall.class);
+        if (parentOfType instanceof ODTCall && ((ODTCall) parentOfType).getName().equals(NotOperator.INSTANCE.getName())) {
+            holder.registerProblem(query, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.INSIDE_NEGATION, operatorCall));
+            return;
+        }
+
+        // TRAILING_NEGATION
+        ODTQueryOperationStep siblingOperationStep = PsiTreeUtil.getNextSiblingOfType(queryOperationStep, ODTQueryOperationStep.class);
+        if (siblingOperationStep != null) {
             PsiElement leafElement = PsiTreeUtil.getDeepestFirst(siblingOperationStep);
             if (PsiUtilCore.getElementType(leafElement) == ODTTypes.NOT_OPERATOR) {
                 holder.registerProblem(query, WARNING, ProblemHighlightType.WEAK_WARNING, getQuickFix(CodeStyle.TRAILING_NEGATION, operatorCall));
@@ -101,10 +113,11 @@ public class ODTStyleInspectionNegationOperator extends LocalInspectionTool {
             }
 
             private void removeTrailing(Project project, ODTOperatorCall call) {
-                ODTCall oppositeCall = getOppositeCall(project, call);
-                if (oppositeCall == null) {
-                    return;
-                }
+                Optional.ofNullable(getOppositeCall(project, call))
+                        .ifPresent(oppositeCall -> doRemoveTrailing(project, call, oppositeCall));
+            }
+
+            private void doRemoveTrailing(Project project, ODTOperatorCall call, ODTCall oppositeCall) {
                 PsiElement replacedCall = call.replace(oppositeCall);
                 PsiElement psiElement = PsiTreeUtil.nextVisibleLeaf(replacedCall);
                 if (psiElement != null && PsiUtilCore.getElementType(psiElement) == ODTTypes.FORWARD_SLASH) {
@@ -127,26 +140,24 @@ public class ODTStyleInspectionNegationOperator extends LocalInspectionTool {
             private void replaceKeyword(Project project, ODTOperatorCall call) {
                 ODTNegatedStep negatedStep = PsiTreeUtil.getParentOfType(call, ODTNegatedStep.class);
                 ODTCall oppositeCall = getOppositeCall(project, call);
-                if (negatedStep == null || oppositeCall == null) {
-                    return;
+                if (negatedStep != null && oppositeCall != null) {
+                    negatedStep.replace(oppositeCall);
                 }
-                negatedStep.replace(oppositeCall);
             }
 
             private void replaceOperator(Project project, ODTOperatorCall call) {
                 ODTCall oppositeCall = getOppositeCall(project, call);
-                if (oppositeCall == null) {
-                    return;
-                }
-                PsiElement replacedCall = call.replace(oppositeCall);
-                ODTCall notCall = PsiTreeUtil.getParentOfType(replacedCall, ODTCall.class);
-                ODTSignatureArgument signatureArgument = PsiTreeUtil.getParentOfType(replacedCall, ODTSignatureArgument.class);
+                if (oppositeCall != null) {
+                    PsiElement replacedCall = call.replace(oppositeCall);
+                    ODTCall notCall = PsiTreeUtil.getParentOfType(replacedCall, ODTCall.class);
+                    ODTSignatureArgument signatureArgument = PsiTreeUtil.getParentOfType(replacedCall, ODTSignatureArgument.class);
 
-                if (notCall != null && signatureArgument != null && notCall.getName().equals(NotOperator.INSTANCE.getName())) {
-                    notCall.replace(signatureArgument);
-                } else {
-                    // something is wrong, restore:
-                    replacedCall.replace(call);
+                    if (notCall != null && signatureArgument != null && notCall.getName().equals(NotOperator.INSTANCE.getName())) {
+                        notCall.replace(signatureArgument);
+                    } else {
+                        // something is wrong, restore:
+                        replacedCall.replace(call);
+                    }
                 }
             }
 

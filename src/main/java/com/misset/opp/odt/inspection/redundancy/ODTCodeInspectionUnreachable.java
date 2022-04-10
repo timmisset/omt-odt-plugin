@@ -13,6 +13,8 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 /**
  * Code inspection for all unused declarations
  */
@@ -49,10 +51,12 @@ public class ODTCodeInspectionUnreachable extends LocalInspectionTool {
 
     private void inspectScriptline(@NotNull ProblemsHolder holder,
                                    @Nullable PsiElement element) {
-        ODTScriptLine scriptLine = PsiTreeUtil.getParentOfType(element, ODTScriptLine.class);
-        if (scriptLine == null) {
-            return;
-        }
+        Optional.ofNullable(PsiTreeUtil.getParentOfType(element, ODTScriptLine.class))
+                .ifPresent(scriptLine -> inspectScriptline(holder, scriptLine));
+    }
+
+    private void inspectScriptline(@NotNull ProblemsHolder holder,
+                                   @NotNull ODTScriptLine scriptLine) {
         PsiTreeUtil.findChildrenOfType(scriptLine.getParent(), ODTScriptLine.class)
                 .stream()
                 .filter(sibling -> sibling.getTextOffset() > scriptLine.getTextOffset())

@@ -1,10 +1,6 @@
 package com.misset.opp.odt.inspection.calls.operators;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.codeInspection.*;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.codeInspection.util.IntentionName;
 import com.intellij.openapi.project.Project;
@@ -14,6 +10,7 @@ import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTChooseBlock;
 import com.misset.opp.odt.psi.ODTOtherwisePath;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableChooseBlockStep;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableWhenPathStep;
 import org.jetbrains.annotations.Nls;
@@ -73,10 +70,14 @@ public class ODTOperatorInspectionChoose extends LocalInspectionTool {
     }
 
     private @Nullable PsiElement getIIFReplacement(@NotNull ODTResolvableChooseBlockStep chooseBlock) {
-        final ODTResolvableWhenPathStep whenPath = chooseBlock.getWhenPathList().get(0);
-        if (whenPath.getQueryList().size() != 2) {
-            return null;
-        }
+        return Optional.ofNullable(chooseBlock.getWhenPathList().get(0))
+                .filter(whenPath -> whenPath.getQueryList().size() == 2)
+                .map(whenPath -> getReplacementFromChooseAndWhen(chooseBlock, whenPath))
+                .orElse(null);
+    }
+
+    private ODTCall getReplacementFromChooseAndWhen(@NotNull ODTResolvableChooseBlockStep chooseBlock,
+                                                    ODTResolvableWhenPathStep whenPath) {
         return ODTElementGenerator.getInstance(chooseBlock.getProject())
                 .createCall("IIF", null,
                         Optional.ofNullable(whenPath.getCondition()).map(PsiElement::getText).orElse(null),
@@ -103,10 +104,9 @@ public class ODTOperatorInspectionChoose extends LocalInspectionTool {
             @Override
             public void applyFix(@NotNull Project project,
                                  @NotNull ProblemDescriptor descriptor) {
-                if (replacement == null) {
-                    return;
+                if (replacement != null) {
+                    descriptor.getPsiElement().replace(replacement);
                 }
-                descriptor.getPsiElement().replace(replacement);
             }
         };
     }

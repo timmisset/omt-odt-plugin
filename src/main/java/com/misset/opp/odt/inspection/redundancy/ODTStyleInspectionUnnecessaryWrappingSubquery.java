@@ -6,10 +6,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTSubQueryImpl;
-import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -75,10 +73,6 @@ public class ODTStyleInspectionUnnecessaryWrappingSubquery extends LocalInspecti
 
     public boolean shouldBeWrapped(ODTSubQuery subQuery) {
         if (isDecorated(subQuery)) {
-            return true;
-        }
-        if (ODTInjectionUtil.getInjectionMetaType(subQuery) instanceof OMTParamMetaType) {
-            // the typing in parameter type
             return true;
         }
         final ODTQuery query = subQuery.getQuery();
