@@ -67,9 +67,9 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
             String level1Header = documented.getLevel1Header();
             String type = documented.getDocumentationClass();
             String attribute = element.getKeyText();
-            ApiDocumentationService documentationService = ApiDocumentationService.getInstance(element.getProject());
-            String description = documentationService.readOMTApiDocumentation(level1Header + "/" + type + "/" + attribute);
-            String example = documentationService.readOMTApiDocumentation(level1Header + "/" + type + "/" + attribute + "/Example");
+            OMTApiDocumentationService documentationService = OMTApiDocumentationService.getInstance(element.getProject());
+            String description = documentationService.readApiDocumentation(level1Header + "/" + type + "/" + attribute);
+            String example = documentationService.readApiDocumentation(level1Header + "/" + type + "/" + attribute + "/Example");
 
             StringBuilder sb = new StringBuilder();
             sb.append(DocumentationMarkup.DEFINITION_START);
@@ -79,7 +79,7 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
             sb.append(description != null ? description : "Could not find description");
             sb.append(DocumentationMarkup.CONTENT_END);
             if (example != null) {
-                OMTDocumentationProvider.addKeyValueSection("Example", example, sb);
+                com.misset.opp.documentation.DocumentationProvider.addKeyValueSection("Example", example, sb);
             }
 
             return sb.toString();
@@ -98,18 +98,6 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
     }
 
     /**
-     * Creates a key/value row for the rendered documentation.
-     */
-    public static void addKeyValueSection(String key, String value, StringBuilder sb) {
-        sb.append(DocumentationMarkup.SECTION_HEADER_START);
-        sb.append(key);
-        sb.append(DocumentationMarkup.SECTION_SEPARATOR);
-        sb.append("<p>");
-        sb.append(value);
-        sb.append(DocumentationMarkup.SECTION_END);
-    }
-
-    /**
      * Generic documentation retrieval for OMT Classes
      * Looks for Description, Example, Local Commands
      */
@@ -125,7 +113,7 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
      * Use addKeyValueSection to add additional sections
      */
     public static StringBuilder getClassDocumentationSB(Project project, OMTDocumented omtDocumented) {
-        ApiDocumentationService instance = ApiDocumentationService.getInstance(project);
+        OMTApiDocumentationService instance = OMTApiDocumentationService.getInstance(project);
 
         String type = omtDocumented.getDocumentationClass();
         StringBuilder sb = new StringBuilder();
@@ -133,7 +121,7 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
         sb.append(type);
         sb.append(DocumentationMarkup.DEFINITION_END);
         sb.append(DocumentationMarkup.CONTENT_START);
-        String description = instance.readOMTApiDocumentation(
+        String description = instance.readApiDocumentation(
                 "Classes/" + type + "/Description"
         );
         sb.append(description != null ? description : "Could not find description");
@@ -142,20 +130,19 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
         // Some API documentation sections have additional description headers that should be included
         // as separate documentation segments
         for (String header : omtDocumented.getAdditionalDescriptionHeaders()) {
-            String additionalHeader = instance.readOMTApiDocumentation(
+            String additionalHeader = instance.readApiDocumentation(
                     "Classes/" + type + "/Description/" + header
             );
             if (additionalHeader != null) {
-                OMTDocumentationProvider.addKeyValueSection(header, additionalHeader, sb);
+                com.misset.opp.documentation.DocumentationProvider.addKeyValueSection(header, additionalHeader, sb);
             }
         }
 
-
-        String example = instance.readOMTApiDocumentation(
+        String example = instance.readApiDocumentation(
                 "Classes/" + type + "/Description/Example"
         );
         if (example != null) {
-            OMTDocumentationProvider.addKeyValueSection("Example", example, sb);
+            com.misset.opp.documentation.DocumentationProvider.addKeyValueSection("Example", example, sb);
         }
 
         return sb;

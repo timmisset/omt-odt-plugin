@@ -2,7 +2,9 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.documentation.DocumentationMarkup;
-import com.misset.opp.odt.documentation.ODTDocumentationProvider;
+import com.intellij.openapi.project.Project;
+import com.misset.opp.documentation.DocumentationProvider;
+import com.misset.opp.odt.builtin.Builtin;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
@@ -30,19 +32,23 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
     }
 
     @Override
-    public String getDocumentation() {
+    public String getDocumentation(Project project) {
         // resolve both the callable information and the call itself:
         ODTCall call = getParent();
         Callable callable = call.getCallable();
         if (callable == null) {
             return null;
         }
+        if (callable instanceof Builtin) {
+            return getBuiltinDocumentation(project, callable, call);
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
         sb.append(callable.getName());
         sb.append(DocumentationMarkup.DEFINITION_END);
 
-        String description = callable.getDescription(call.getLocalCommandProvider());
+        String description = callable.getDescription(call.getLocalCommandProvider(), project);
         if (description != null) {
             sb.append(DocumentationMarkup.CONTENT_START);
             sb.append(description);
@@ -50,7 +56,7 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
         }
 
         sb.append(DocumentationMarkup.SECTIONS_START);
-        ODTDocumentationProvider.addKeyValueSection("Type: ", callable.getType(), sb);
+        DocumentationProvider.addKeyValueSection("Type: ", callable.getType(), sb);
         List<String> params = new ArrayList<>();
         Map<Integer, String> parameterNames = callable.getParameterNames();
         HashMap<Integer, Set<OntResource>> parameterTypes = callable.getParameterTypes();
@@ -60,24 +66,36 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
                                 parameterNames.get(i) + " (" + TTLResourceUtil.describeUrisForLookupJoined(parameterTypes.get(i)) + ")")
         );
         if (!params.isEmpty()) {
-            ODTDocumentationProvider.addKeyValueSection("Params: ", String.join("<br>", params), sb);
+            DocumentationProvider.addKeyValueSection("Params: ", String.join("<br>", params), sb);
         }
         List<String> flags = callable.getFlags();
         if (!flags.isEmpty()) {
-            ODTDocumentationProvider.addKeyValueSection("Flags: ", String.join("<br>", flags), sb);
+            DocumentationProvider.addKeyValueSection("Flags: ", String.join("<br>", flags), sb);
         }
 
-        if (!callable.isVoid()) {
-            Set<OntResource> resolve = callable.resolve(Context.fromCall(call));
-            ODTDocumentationProvider.addKeyValueSection("Returns:", resolve.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(resolve), sb);
-            if (!callable.getSecondReturnArgument().isEmpty()) {
-                ODTDocumentationProvider.addKeyValueSection("Secondary return:", TTLResourceUtil.describeUrisForLookupJoined(callable.getSecondReturnArgument()), sb);
-            }
-        }
+        appendReturnInformation(callable, call, sb);
 
         sb.append(DocumentationMarkup.SECTIONS_END);
 
         return sb.toString();
+    }
+
+    private String getBuiltinDocumentation(Project project, Callable callable, ODTCall call) {
+        // static documentation from the API.md
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(callable.getDescription(null, project));
+        appendReturnInformation(callable, call, stringBuilder);
+        return stringBuilder.toString();
+    }
+
+    private void appendReturnInformation(Callable callable, ODTCall call, StringBuilder sb) {
+        if (!callable.isVoid()) {
+            Set<OntResource> resolve = callable.resolve(Context.fromCall(call));
+            DocumentationProvider.addKeyValueSection("Returns:", resolve.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(resolve), sb);
+            if (!callable.getSecondReturnArgument().isEmpty()) {
+                DocumentationProvider.addKeyValueSection("Secondary return:", TTLResourceUtil.describeUrisForLookupJoined(callable.getSecondReturnArgument()), sb);
+            }
+        }
     }
 
     @Override

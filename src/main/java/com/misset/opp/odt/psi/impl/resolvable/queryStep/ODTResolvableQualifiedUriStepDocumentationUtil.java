@@ -1,7 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.lang.documentation.DocumentationMarkup;
-import com.misset.opp.odt.documentation.ODTDocumentationProvider;
+import com.misset.opp.documentation.DocumentationProvider;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.ttl.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
@@ -79,7 +79,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
                 .filter(resource -> resource.getURI() != null && !resource.getURI().endsWith("_INSTANCE"))
                 .collect(Collectors.toSet()));
         if (!instances.isEmpty()) {
-            ODTDocumentationProvider.addKeyValueSection("Instances:",
+            DocumentationProvider.addKeyValueSection("Instances:",
                     TTLResourceUtil.describeUrisJoined(instances, "<br>", false)
                     , sb);
         }
@@ -121,7 +121,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         }
         predicatesTable.append("</table>");
         if (hasValues) {
-            ODTDocumentationProvider.addKeyValueSection(header, predicatesTable.toString(), sb);
+            DocumentationProvider.addKeyValueSection(header, predicatesTable.toString(), sb);
         }
     }
 
@@ -154,7 +154,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         // the order is important for super and subclasses, use list instead of set
         List<OntClass> superClasses = OppModel.INSTANCE.listSuperClasses(ontClass);
         if (!superClasses.isEmpty()) {
-            ODTDocumentationProvider.addKeyValueSection("Superclasses:",
+            DocumentationProvider.addKeyValueSection("Superclasses:",
                     superClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))
                             .distinct()
                             .collect(Collectors.joining("<br>"))
@@ -163,7 +163,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
         List<OntClass> subClasses = OppModel.INSTANCE.listSubclasses(ontClass);
         if (!subClasses.isEmpty()) {
-            ODTDocumentationProvider.addKeyValueSection("Subclasses:",
+            DocumentationProvider.addKeyValueSection("Subclasses:",
                     subClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))
                             .distinct()
                             .collect(Collectors.joining("<br>"))
@@ -196,20 +196,20 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         sb.append(DocumentationMarkup.CONTENT_END);
         sb.append(DocumentationMarkup.SECTIONS_START);
 
-        ODTDocumentationProvider.addKeyValueSection("Direction:", isReversed ? "Reverse" : "Forward", sb);
+        DocumentationProvider.addKeyValueSection("Direction:", isReversed ? "Reverse" : "Forward", sb);
 
         if (OppModel.INSTANCE.getProperty(fullyQualifiedUri) != null) {
             String label = isReversed ? "Subject(s)" : "Object(s)";
-            ODTDocumentationProvider.addKeyValueSection("Result", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(filtered, "<br>", false), sb);
+            DocumentationProvider.addKeyValueSection("Result", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(filtered, "<br>", false), sb);
             if (unfiltered.size() != filtered.size()) {
-                ODTDocumentationProvider.addKeyValueSection("Unfiltered:", TTLResourceUtil.describeUrisJoined(unfiltered, "<br>", false), sb);
+                DocumentationProvider.addKeyValueSection("Unfiltered:", TTLResourceUtil.describeUrisJoined(unfiltered, "<br>", false), sb);
             }
         }
 
         Set<OntResource> previousStep = step.resolvePreviousStep();
         if (!previousStep.isEmpty()) {
             String label = isReversed ? "Object(s)" : "Subject(s)";
-            ODTDocumentationProvider.addKeyValueSection("Previous step", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(previousStep, "<br>", false), sb);
+            DocumentationProvider.addKeyValueSection("Previous step", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(previousStep, "<br>", false), sb);
         }
 
 

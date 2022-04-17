@@ -59,6 +59,8 @@ public class PluginConfigurable implements Configurable {
         modified |= !settingsComponent.getReasonsRoot().equals(settingsState.reasonsFolder);
         modified |= !settingsComponent.getReferencesRoot().equals(settingsState.referencesFolder);
         modified |= !settingsComponent.getTsConfigPath().equals(settingsState.tsConfigPath);
+        modified |= !settingsComponent.getODTAPIPath().equals(settingsState.odtAPIPath);
+        modified |= !settingsComponent.getOMTAPIPath().equals(settingsState.omtAPIPath);
         modified |= settingsComponent.getReferenceDetails() != settingsState.referenceDetails;
         return modified;
     }
@@ -80,7 +82,7 @@ public class PluginConfigurable implements Configurable {
         SettingsState settingsState = getState();
         saveOntologyAndReferencesState(settingsState);
         saveReasonsState(settingsState);
-        saveTsConfigPath(settingsState);
+        savePaths(settingsState);
         saveModelInstanceMappingState(settingsState);
     }
 
@@ -118,8 +120,10 @@ public class PluginConfigurable implements Configurable {
         }
     }
 
-    private void saveTsConfigPath(SettingsState settingsState) {
+    private void savePaths(SettingsState settingsState) {
         settingsState.tsConfigPath = settingsComponent.getTsConfigPath();
+        settingsState.omtAPIPath = settingsComponent.getOMTAPIPath();
+        settingsState.odtAPIPath = settingsComponent.getODTAPIPath();
     }
 
     private void saveModelInstanceMappingState(SettingsState settingsState) {
@@ -142,6 +146,8 @@ public class PluginConfigurable implements Configurable {
         settingsComponent.setModelInstanceMapper(settingsState.modelInstanceMapping);
         settingsComponent.setReferenceDetails(settingsState.referenceDetails);
         settingsComponent.setTsConfigPath(settingsState.tsConfigPath);
+        settingsComponent.setODTAPIPath(settingsState.odtAPIPath);
+        settingsComponent.setOMTAPIPath(settingsState.omtAPIPath);
     }
 
     @Override

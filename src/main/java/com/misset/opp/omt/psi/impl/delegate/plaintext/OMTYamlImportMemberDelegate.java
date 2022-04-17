@@ -2,6 +2,7 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
@@ -161,8 +162,8 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     }
 
     @Override
-    public String getDescription(String context) {
-        return computeFromCallable(callable -> callable.getDescription(context), null);
+    public String getDescription(String context, Project project) {
+        return computeFromCallable(callable -> callable.getDescription(context, project), null);
     }
 
     @Override

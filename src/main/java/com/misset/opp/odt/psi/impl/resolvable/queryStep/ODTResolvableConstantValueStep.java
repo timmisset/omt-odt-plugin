@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.documentation.DocumentationMarkup;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTTypes;
@@ -51,7 +52,7 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
     }
 
     @Override
-    public String getDocumentation() {
+    public String getDocumentation(Project project) {
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
         sb.append("Constant<br>");

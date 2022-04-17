@@ -1,4 +1,4 @@
-package com.misset.opp.omt.documentation;
+package com.misset.opp.documentation;
 
 import com.intellij.openapi.util.text.Strings;
 import org.commonmark.html.HtmlRenderer;
@@ -7,6 +7,7 @@ import org.commonmark.node.Header;
 import org.commonmark.node.Node;
 import org.commonmark.node.Text;
 import org.commonmark.parser.Parser;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -15,25 +16,16 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Helper class to read the API documentation for the OMT language
- * It expects a certain format with respect to header levels:
- * <p>
- * # Classes
- * ## Class
- * ### Attributes of the class
- * Description of the attribute
- * <p>
- * #### Example
- * Example code for using the attribute
+ * Helper class to read the API documentation
  */
-public class ApiReader {
+public class ApiMarkdownReader {
 
     private final Parser parser = Parser.builder().build();
     private final HtmlRenderer renderer = HtmlRenderer.builder().build();
 
-    private final String content;
+    private final @NotNull String content;
 
-    public ApiReader(Path path) throws IOException {
+    public ApiMarkdownReader(Path path) throws IOException {
         content = readFile(path);
     }
 
@@ -43,26 +35,11 @@ public class ApiReader {
     }
 
     /**
-     * Return the paragraph contents of a specific path, returns null if not available.
-     * Expects every step in the path to be a heading level increment
-     * Example:
-     * Classes/Activity/Description
-     * will look for:
-     * # Classes
-     * ## Activity
-     * ### Description
-     * <p>
-     * Classes/Activity/graphs/Example
-     * # Classes
-     * ## Activity
-     * ### graphs
-     * #### Description
-     * <p>
-     * The heading is looked for with a startsWith since headings can contain
-     * required/optional flags and return types
+     * Returns the text/data at the specified path, where the path contains
+     * markdown headers. For example: /Operators/[OPERATOR_NAME]/Examples
      */
     public String getDescription(String path) {
-        if (content == null) {
+        if (content.isBlank()) {
             return null;
         }
         String[] steps = path.split("/");
@@ -72,8 +49,6 @@ public class ApiReader {
         for (int level = 1; level <= steps.length; level++) {
             if (node != null) {
                 node = getChapterNode(node.getNext(), level, steps[level - 1]);
-            } else {
-                return null;
             }
         }
         return getContentAsHtml(node);

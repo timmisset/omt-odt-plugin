@@ -1,6 +1,8 @@
 
 package com.misset.opp.odt.builtin.commands;
 
+import com.intellij.openapi.project.Project;
+
 public class LoadOntologyCommand extends BuiltInCommand {
 
     protected static final String DESCRIPTION = "Unlike normal ontologies, which are loaded with the OMT module, a locally defined ontology has to be explicitly </br>" +
@@ -14,7 +16,7 @@ public class LoadOntologyCommand extends BuiltInCommand {
     public static final LoadOntologyCommand INSTANCE = new LoadOntologyCommand();
 
     @Override
-    public String getDescription(String context) {
+    public String getDescription(String context, Project project) {
         return DESCRIPTION;
     }
 

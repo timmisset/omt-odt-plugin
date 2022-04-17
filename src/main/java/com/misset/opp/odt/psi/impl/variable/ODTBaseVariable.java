@@ -3,6 +3,7 @@ package com.misset.opp.odt.psi.impl.variable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
@@ -14,8 +15,8 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.documentation.DocumentationProvider;
 import com.misset.opp.odt.ODTElementGenerator;
-import com.misset.opp.odt.documentation.ODTDocumentationProvider;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
@@ -160,7 +161,7 @@ public abstract class ODTBaseVariable
     }
 
     @Override
-    public String getDocumentation() {
+    public String getDocumentation(Project project) {
         Variable declared = getDeclared();
         if (declared == null) {
             return null;
@@ -187,12 +188,12 @@ public abstract class ODTBaseVariable
         Set<OntResource> filtered = variableStep != null ? variableStep.getResolvableParent().filter(unfiltered) : unfiltered;
         sb.append(DocumentationMarkup.SECTIONS_START);
         String typeLabel = filtered.size() == 1 ? "Type:" : "Types:";
-        ODTDocumentationProvider.addKeyValueSection(typeLabel, filtered.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(filtered), sb);
+        DocumentationProvider.addKeyValueSection(typeLabel, filtered.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(filtered), sb);
         if (!unfiltered.equals(filtered)) {
-            ODTDocumentationProvider.addKeyValueSection("Unfiltered:", TTLResourceUtil.describeUrisForLookupJoined(unfiltered, "<br>"), sb);
+            DocumentationProvider.addKeyValueSection("Unfiltered:", TTLResourceUtil.describeUrisForLookupJoined(unfiltered, "<br>"), sb);
         }
-        ODTDocumentationProvider.addKeyValueSection("Scope:", isGlobal() ? "Global" : "Local", sb);
-        ODTDocumentationProvider.addKeyValueSection("Readonly:", isGlobal() || isReadonly() ? "Yes" : "No", sb);
+        DocumentationProvider.addKeyValueSection("Scope:", isGlobal() ? "Global" : "Local", sb);
+        DocumentationProvider.addKeyValueSection("Readonly:", isGlobal() || isReadonly() ? "Yes" : "No", sb);
         sb.append(DocumentationMarkup.SECTIONS_END);
         return sb.toString();
     }

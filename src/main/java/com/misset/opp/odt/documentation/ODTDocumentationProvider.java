@@ -1,7 +1,6 @@
 package com.misset.opp.odt.documentation;
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
-import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.lang.documentation.DocumentationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
@@ -17,7 +16,7 @@ public class ODTDocumentationProvider extends AbstractDocumentationProvider impl
         if (!(element instanceof ODTDocumented)) {
             return null;
         }
-        return ((ODTDocumented) element).getDocumentation();
+        return ((ODTDocumented) element).getDocumentation(element.getProject());
     }
 
     @Override
@@ -30,17 +29,6 @@ public class ODTDocumentationProvider extends AbstractDocumentationProvider impl
             element = contextElement.getParent();
         }
         return element;
-    }
-
-    /**
-     * Creates a key/value row for the rendered documentation.
-     */
-    public static void addKeyValueSection(String key, String value, StringBuilder sb) {
-        sb.append(DocumentationMarkup.SECTION_HEADER_START);
-        sb.append(key);
-        sb.append(DocumentationMarkup.SECTION_SEPARATOR);
-        sb.append(value);
-        sb.append(DocumentationMarkup.SECTION_END);
     }
 
 }

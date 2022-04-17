@@ -1,5 +1,6 @@
 package com.misset.opp.resolvable.local;
 
+import com.intellij.openapi.project.Project;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ public class GetErrorState extends LocalCommand {
     }
 
     @Override
-    public String getDescription(String context) {
+    public String getDescription(String context, Project project) {
         return String.format("Get the current error state for the %s", context);
     }
 

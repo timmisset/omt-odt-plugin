@@ -1,6 +1,7 @@
 package com.misset.opp.settings;
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.Comparing;
@@ -14,6 +15,7 @@ import org.jdesktop.swingx.JXTitledSeparator;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,8 @@ public class SettingsComponent {
 
     private final JPanel myMainPanel;
     private final TextFieldWithBrowseButton ontologyModelRootPath = getFileLocationSetting("root.ttl");
+    private final LabeledComponent<TextFieldWithBrowseButton> omtAPIPath = getFileLocationSettingWithLabel("API.md", "OMT");
+    private final LabeledComponent<TextFieldWithBrowseButton> odtAPIPath = getFileLocationSettingWithLabel("API.md", "ODT");
     private final TextFieldWithBrowseButton reasonsRoot = getFolderLocationSetting();
     private final TextFieldWithBrowseButton referencesRoot = getFolderLocationSetting();
     private final ModelInstanceMapperTable modelInstanceMapperTable = new ModelInstanceMapperTable();
@@ -35,6 +39,7 @@ public class SettingsComponent {
                 "The owl:imports in the root.ttl and all importing files will determine how the final ontology is loaded.")
                 .setAllowAutoWrapping(true)
                 .setCopyable(true);
+
         JBLabel references = new JBLabel("Reference lists (instance data) can be included in the in-memory OPP model that the plugin uses.<br>" +
                 "This will allow completion and model validation to understand explicitly used instances of the model in ODT " +
                 "queries or statements.<br>By including the reference details, all the values are also loaded which is noticeable " +
@@ -47,8 +52,13 @@ public class SettingsComponent {
                 .setCopyable(true);
 
         JPanel panel = FormBuilder.createFormBuilder()
+                .addComponent(new JXTitledSeparator("API documentation"))
+                .addComponent(omtAPIPath)
+                .addComponent(odtAPIPath)
+                .addComponent(new JXTitledSeparator("TSConfig"))
                 .addComponent(new JBLabel("TSConfig file that contains path mappings:"))
                 .addComponent(tsconfig)
+                .addComponent(new JXTitledSeparator("Ontology"))
                 .addComponent(ontologyRootLabel)
                 .addComponent(ontologyModelRootPath)
                 .addComponent(new JXTitledSeparator("References"))
@@ -65,6 +75,14 @@ public class SettingsComponent {
 
         myMainPanel = FormBuilder.createFormBuilder()
                 .addComponentFillVertically(panel, UIUtil.DEFAULT_VGAP).getPanel();
+    }
+
+    private LabeledComponent<TextFieldWithBrowseButton> getFileLocationSettingWithLabel(String name, String label) {
+        LabeledComponent<TextFieldWithBrowseButton> labeledComponent = new LabeledComponent<>();
+        labeledComponent.setText(label);
+        labeledComponent.setLabelLocation(BorderLayout.WEST);
+        labeledComponent.setComponent(getFileLocationSetting(name));
+        return labeledComponent;
     }
 
     private TextFieldWithBrowseButton getFileLocationSetting(String name) {
@@ -126,6 +144,24 @@ public class SettingsComponent {
 
     public void setTsConfigPath(@NotNull String newText) {
         tsconfig.setText(newText);
+    }
+
+    @NotNull
+    public String getOMTAPIPath() {
+        return omtAPIPath.getComponent().getText();
+    }
+
+    public void setOMTAPIPath(@NotNull String newText) {
+        omtAPIPath.getComponent().setText(newText);
+    }
+
+    @NotNull
+    public String getODTAPIPath() {
+        return odtAPIPath.getComponent().getText();
+    }
+
+    public void setODTAPIPath(@NotNull String newText) {
+        odtAPIPath.getComponent().setText(newText);
     }
 
     @NotNull

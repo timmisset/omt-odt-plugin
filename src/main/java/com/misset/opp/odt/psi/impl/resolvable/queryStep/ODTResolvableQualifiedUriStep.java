@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
@@ -51,7 +52,7 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
     }
 
     @Override
-    public String getDocumentation() {
+    public String getDocumentation(Project project) {
         return ODTResolvableQualifiedUriStepDocumentationUtil.getDocumentation(this);
     }
 

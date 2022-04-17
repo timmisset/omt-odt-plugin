@@ -8,7 +8,7 @@ class LoadOntologyCommandTest extends BaseBuiltinTest {
 
     @Test
     void testGetDescription() {
-        Assertions.assertEquals(LoadOntologyCommand.DESCRIPTION, LoadOntologyCommand.INSTANCE.getDescription(""));
+        Assertions.assertEquals(LoadOntologyCommand.DESCRIPTION, LoadOntologyCommand.INSTANCE.getDescription("", null));
     }
 
     @Test

@@ -1,30 +1,16 @@
 package com.misset.opp.odt.builtin;
 
-import com.intellij.openapi.application.ReadAction;
+import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.components.Service;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator;
-import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.search.FilenameIndex;
-import org.commonmark.html.HtmlRenderer;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
+import com.intellij.openapi.util.text.Strings;
+import com.misset.opp.documentation.DocumentationProvider;
+import com.misset.opp.odt.documentation.ODTApiDocumentationService;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.Optional;
 
 @Service
 public final class BuiltinDocumentationService {
     private final Project project;
-    private static final HashMap<String, String> documents = new HashMap<>();
 
     public static BuiltinDocumentationService getInstance(@NotNull Project project) {
         return project.getService(BuiltinDocumentationService.class);
@@ -34,57 +20,38 @@ public final class BuiltinDocumentationService {
         this.project = project;
     }
 
-    public static String getDocumentation(Builtin builtin) {
-        return documents.getOrDefault(builtin.getMarkdownFilename(),
-                "Could not find Markdown file with name: " + builtin.getMarkdownFilename() + ".md");
+    public String getDocumentation(Builtin builtin) {
+        ODTApiDocumentationService documentationService = ODTApiDocumentationService.getInstance(project);
+
+        String level1 = builtin.isCommand() ? "Commands" : "Operators";
+        String path = level1 + "/" + builtin.getName();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(DocumentationMarkup.DEFINITION_START);
+        sb.append(builtin.getName());
+        sb.append(DocumentationMarkup.DEFINITION_END);
+
+        String description = documentationService.readApiDocumentation(path);
+        if (description != null) {
+            sb.append(DocumentationMarkup.CONTENT_START);
+            sb.append(description);
+            sb.append(DocumentationMarkup.CONTENT_END);
+        }
+
+        DocumentationProvider.addKeyValueSection("Type:", builtin.isCommand() ? "Command" : "Operator", sb);
+        DocumentationProvider.addKeyValueSection("Min parameters:", String.valueOf(builtin.minNumberOfArguments()), sb);
+        DocumentationProvider.addKeyValueSection("Max parameters:", String.valueOf(builtin.maxNumberOfArguments()), sb);
+
+        if (!builtin.getFlags().isEmpty()) {
+            DocumentationProvider.addKeyValueSection("Flags:", Strings.join(builtin.getFlags(), ", "), sb);
+        }
+
+        String examples = documentationService.readApiDocumentation(path + "/Examples");
+        if (examples != null) {
+            DocumentationProvider.addKeyValueSection("Example(s):", examples, sb);
+        }
+
+        return sb.toString();
     }
 
-    public Task.Backgroundable getTask() {
-        return new Task.Backgroundable(project,
-                "Load Markdown descriptions for Builtin operators & commands") {
-            private final FileDocumentManager documentManager = FileDocumentManager.getInstance();
-            private final Parser parser = Parser.builder().build();
-            private final HtmlRenderer renderer = HtmlRenderer.builder().build();
-
-            @Override
-            public void run(@Nullable ProgressIndicator indicator) {
-                documents.clear();
-                ReadAction.run(() -> FilenameIndex.getAllFilesByExt(project, "md")
-                        .forEach(this::addToContents));
-            }
-
-            private void addToContents(VirtualFile virtualFile) {
-                documents.put(virtualFile.getNameWithoutExtension(), parseMarkdownToHtml(virtualFile));
-            }
-
-            private String parseMarkdownToHtml(VirtualFile virtualFile) {
-                try {
-                    String text = Optional.ofNullable(documentManager.getDocument(virtualFile))
-                            .map(Document::getText)
-                            .orElse(null);
-                    if (text == null) {
-                        return null;
-                    }
-
-                    Node parse = parser.parse(text);
-                    return renderer.render(parse);
-                } catch (Exception e) {
-                    RuntimeException exception = new RuntimeException("Error parsing markdown file: " + virtualFile.getPath() + ", message: " + e.getMessage());
-                    exception.addSuppressed(e);
-                    throw exception;
-                }
-            }
-        };
-    }
-
-    public void loadDocuments() {
-        DumbService.getInstance(project).runWhenSmart(() -> {
-            final Task.Backgroundable task = getTask();
-
-            ProgressManager.getInstance().runProcessWithProgressAsynchronously(
-                    getTask(), new BackgroundableProcessIndicator(task)
-            );
-        });
-
-    }
 }

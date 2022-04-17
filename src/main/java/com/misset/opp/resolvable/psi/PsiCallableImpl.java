@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import com.misset.opp.util.LoggerUtil;
@@ -75,7 +76,7 @@ public abstract class PsiCallableImpl extends ASTWrapperPsiElement implements Ps
     }
 
     @Override
-    public String getDescription(String context) {
+    public String getDescription(String context, Project project) {
         return null;
     }
 }

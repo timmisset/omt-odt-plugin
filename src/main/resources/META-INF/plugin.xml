@@ -92,7 +92,6 @@
         <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
         <lang.syntaxHighlighter language="ODT" implementationClass="com.misset.opp.odt.ODTSyntaxHighlighter"/>
         <colorSettingsPage implementation="com.misset.opp.odt.syntax.ODTColorSettingsPage"/>
-        <postStartupActivity implementation="com.misset.opp.odt.builtin.LoadDocumentationStartupActivity"/>
         <lang.formatter language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTFormattingModelBuilder"/>
         <enterHandlerDelegate implementation="com.misset.opp.odt.formatter.ODTEnterHandlerDelegateAdapter"/>
         <lang.braceMatcher language="ODT" implementationClass="com.misset.opp.odt.formatter.ODTPairedBraceMatcher"/>

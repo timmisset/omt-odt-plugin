@@ -42,6 +42,8 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
     public String reasonsFolder = "";
     public String referencesFolder = "";
     public String tsConfigPath = "";
+    public String omtAPIPath = "";
+    public String odtAPIPath = "";
     public Map<String, String> modelInstanceMapping = new HashMap<>();
     public HashMap<String, String> knownInstances = new HashMap<>();
     public boolean referenceDetails = false;
@@ -65,6 +67,14 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
 
         if (settingsState.tsConfigPath.isBlank()) {
             settingsState.tsConfigPath = project.getBasePath() + "/frontend/tsconfig.base.json";
+        }
+
+        if (settingsState.omtAPIPath.isBlank()) {
+            settingsState.omtAPIPath = project.getBasePath() + "/core/omt/API.md";
+        }
+
+        if (settingsState.odtAPIPath.isBlank()) {
+            settingsState.odtAPIPath = project.getBasePath() + "/core/odt/API.md";
         }
 
         if (!settingsState.modelInstanceMapping.containsKey(NAMED_GRAPH_URI_PREFIX)) {

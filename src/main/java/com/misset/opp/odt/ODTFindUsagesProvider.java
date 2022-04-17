@@ -63,7 +63,7 @@ public class ODTFindUsagesProvider implements FindUsagesProvider {
             // unresolved call but might be a local or built-in:
             ODTCall call = (ODTCall) element;
             Callable callable = (call).getCallable();
-            return callable != null ? callable.getDescription(call.getLocalCommandProvider()) : element.getText();
+            return callable != null ? callable.getDescription(call.getLocalCommandProvider(), element.getProject()) : element.getText();
         } else if (element instanceof PsiCallable) {
             return ((PsiCallable) element).getName();
         } else if (element instanceof PsiVariable) {

@@ -2,6 +2,7 @@ package com.misset.opp.resolvable;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.util.CallableUtil;
 import com.misset.opp.ttl.OppModel;
@@ -30,7 +31,7 @@ public interface Callable extends ContextResolvable {
      * The context might provide some additional information about the location of the call that can be included in the
      * output string. The returned string should be HTML based.
      */
-    String getDescription(String context);
+    String getDescription(String context, Project project);
 
     /**
      * The id used to call this callable. For example, @Call for commands, Call for operators.

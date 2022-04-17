@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQueryStep;
@@ -51,7 +52,7 @@ public abstract class ODTResolvableQueryStepBase extends ODTASTWrapperPsiElement
     }
 
     @Override
-    public String getDocumentation() {
+    public String getDocumentation(Project project) {
         return null;
     }
 

@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.callable;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
@@ -64,14 +65,16 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
     abstract public ODTDefineName getDefineName();
 
     @Override
-    public String getDescription(String context) {
+    public String getDescription(String context, Project project) {
         String javaDocComment = ODTDocumentationUtil.getJavaDocCommentDescription(this);
-        return javaDocComment == null || javaDocComment.replace("<br>", "\n").isBlank() ? super.getDescription(context) : javaDocComment;
+        return javaDocComment == null || javaDocComment.replace("<br>", "\n").isBlank() ?
+                super.getDescription(context, project) :
+                javaDocComment;
     }
 
     @Override
-    public String getDocumentation() {
-        return getDescription(null);
+    public String getDocumentation(Project project) {
+        return getDescription(null, project);
     }
 
     @Override

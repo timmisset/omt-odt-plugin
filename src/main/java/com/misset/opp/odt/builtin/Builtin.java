@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.project.Project;
 import com.intellij.util.TriConsumer;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
@@ -16,12 +17,8 @@ import java.util.*;
 public abstract class Builtin implements Callable {
 
     @Override
-    public String getDescription(String context) {
-        return BuiltinDocumentationService.getDocumentation(this);
-    }
-
-    public String getMarkdownFilename() {
-        return getClass().getSimpleName();
+    public String getDescription(String context, Project project) {
+        return BuiltinDocumentationService.getInstance(project).getDocumentation(this);
     }
 
     @Override

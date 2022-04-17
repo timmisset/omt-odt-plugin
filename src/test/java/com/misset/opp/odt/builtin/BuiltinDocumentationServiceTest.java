@@ -1,81 +1,45 @@
 package com.misset.opp.odt.builtin;
 
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.misset.opp.odt.builtin.commands.AddToCommand;
-import com.misset.opp.testCase.ODTTestCase;
-import org.commonmark.parser.Parser;
+import com.misset.opp.odt.builtin.operators.LogOperator;
+import com.misset.opp.settings.SettingsState;
+import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
-import static org.mockito.Mockito.*;
+import java.nio.file.Path;
+import java.util.List;
 
-class BuiltinDocumentationServiceTest extends ODTTestCase {
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+
+class BuiltinDocumentationServiceTest extends OMTTestCase {
 
     @Test
-    void testLoadDocumentationStartup() {
-        String content = "Some description";
-        WriteCommandAction.runWriteCommandAction(
-                getProject(),
-                () -> {
-                    myFixture.addFileToProject("AddToCommand.md", content);
-                }
-        );
-        final BuiltinDocumentationService documentationService = BuiltinDocumentationService.getInstance(getProject());
-        documentationService.getTask().run(null);
+    void testGetDocumentationIncludesInformationFromTheAPI() {
+        LogOperator logOperator = spy(LogOperator.INSTANCE);
+        doReturn("OPERATOR").when(logOperator).getName();
 
-        Assertions.assertEquals("<p>Some description</p>\n", AddToCommand.INSTANCE.getDescription(""));
+        SettingsState.getInstance(getProject()).odtAPIPath = Path.of("src/test/resources/ODT-API.md").toString();
+
+        BuiltinDocumentationService documentationService = BuiltinDocumentationService.getInstance(getProject());
+        String documentation = documentationService.getDocumentation(logOperator);
+
+        Assertions.assertTrue(documentation.contains("This is some information about the operator 'Operator'"));
     }
 
     @Test
-    void testShowsErroredFileOnException() {
-        try (MockedStatic<Parser> parserMockedStatic = Mockito.mockStatic(Parser.class)) {
-            Parser.Builder builder = mock(Parser.Builder.class);
-            Parser parser = mock(Parser.class);
-            parserMockedStatic.when(Parser::builder).thenReturn(builder);
-            doReturn(parser).when(builder).build();
-            doThrow(new RuntimeException("some exception")).when(parser).parse(anyString());
+    void testGetDocumentationIncludesFlags() {
+        LogOperator logOperator = spy(LogOperator.INSTANCE);
+        doReturn("OPERATOR").when(logOperator).getName();
+        doReturn(List.of("!FlagA", "!FlagB")).when(logOperator).getFlags();
 
-            String content = "Some description";
-            WriteCommandAction.runWriteCommandAction(
-                    getProject(),
-                    () -> {
-                        myFixture.addFileToProject("MyFile.md", content);
-                    }
-            );
+        SettingsState.getInstance(getProject()).odtAPIPath = Path.of("src/test/resources/ODT-API.md").toString();
 
-            final BuiltinDocumentationService documentationService = BuiltinDocumentationService.getInstance(getProject());
-            assertThrows(RuntimeException.class,
-                    "Error parsing markdown file: /src/MyFile.md, message: some exception",
-                    () -> documentationService.getTask().run(null));
-        }
+        BuiltinDocumentationService documentationService = BuiltinDocumentationService.getInstance(getProject());
+        String documentation = documentationService.getDocumentation(logOperator);
 
+        Assertions.assertTrue(documentation.contains("This is some information about the operator 'Operator'"));
+        Assertions.assertTrue(documentation.contains("!FlagA"));
+        Assertions.assertTrue(documentation.contains("!FlagB"));
     }
-
-    @Test
-    void testReturnsNullWhenDocumentNotReadable() {
-        try (MockedStatic<FileDocumentManager> documentManagerMockedStatic = Mockito.mockStatic(FileDocumentManager.class)) {
-            FileDocumentManager documentManager = mock(FileDocumentManager.class);
-            documentManagerMockedStatic.when(FileDocumentManager::getInstance).thenReturn(documentManager);
-
-            doReturn(null).when(documentManager).getDocument(any(VirtualFile.class));
-
-            String content = "Some description";
-            WriteCommandAction.runWriteCommandAction(
-                    getProject(),
-                    () -> {
-                        myFixture.addFileToProject("AddToCommand.md", content);
-                    }
-            );
-            final BuiltinDocumentationService documentationService = BuiltinDocumentationService.getInstance(getProject());
-            documentationService.getTask().run(null);
-
-            Assertions.assertNull(AddToCommand.INSTANCE.getDescription(""));
-        }
-
-    }
-
 }
