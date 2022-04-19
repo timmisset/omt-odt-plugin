@@ -128,6 +128,7 @@ public class TTLResourceUtil {
 
 
     public static LookupElementBuilder getPredicateLookupElement(Resource resource,
+                                                                 Set<OntResource> objects,
                                                                  ODTTraverseCompletion.TraverseDirection direction,
                                                                  Map<String, String> availableNamespaces) {
         String title = ODTTraverseCompletion.parseToCurie(resource, availableNamespaces);
@@ -135,10 +136,17 @@ public class TTLResourceUtil {
             return null;
         }
         String lookupText = direction == ODTTraverseCompletion.TraverseDirection.REVERSE ? "^" + title : title;
+        String typeText = "";
+        if (!objects.isEmpty()) {
+            typeText = TTLResourceUtil.describeUrisForLookupJoined(objects.stream().limit(2).collect(Collectors.toSet()));
+            if (objects.size() > 2) {
+                typeText += "...";
+            }
+        }
         return LookupElementBuilder.create(lookupText)
                 .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
                 .withTailText(direction == ODTTraverseCompletion.TraverseDirection.FORWARD ? " -> forward" : " <- reverse")
-                .withTypeText("", Icons.TTLFile, false)
+                .withTypeText(typeText)
                 .withIcon(Icons.TTLFile)
                 .withPresentableText(title);
     }

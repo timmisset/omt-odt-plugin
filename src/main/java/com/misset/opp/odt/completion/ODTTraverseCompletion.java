@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static com.intellij.patterns.StandardPatterns.or;
 import static com.misset.opp.odt.completion.CompletionPatterns.*;
@@ -48,19 +47,27 @@ public class ODTTraverseCompletion extends CompletionContributor {
                         .map(element -> PsiTreeUtil.getParentOfType(element, ODTResolvableQueryOperationStep.class))
                         .map(ODTResolvableQueryOperationStep::resolvePreviousStep)
                         .orElse(Collections.emptySet());
-                Set<Property> forwardPredicates;
-                Set<Property> reversePredicates;
+                HashMap<Property, Set<OntResource>> forwardPredicates = new HashMap<>();
+                HashMap<Property, Set<OntResource>> reversePredicates = new HashMap<>();
                 if (subjects.isEmpty()) {
                     // cannot establish subject, only show the rdf:type predicates
-                    forwardPredicates = Set.of(OppModel.INSTANCE.RDF_TYPE);
-                    reversePredicates = Set.of(OppModel.INSTANCE.RDF_TYPE);
+                    forwardPredicates.put(OppModel.INSTANCE.RDF_TYPE, Collections.emptySet());
+                    reversePredicates.put(OppModel.INSTANCE.RDF_TYPE, Collections.emptySet());
                 } else {
-                    forwardPredicates = OppModel.INSTANCE.listPredicates(subjects).stream()
-                            .filter(property -> typeFilter.test(OppModel.INSTANCE.listObjects(subjects, property)))
-                            .collect(Collectors.toSet());
-                    reversePredicates = OppModel.INSTANCE.listReversePredicates(subjects).stream()
-                            .filter(property -> typeFilter.test(OppModel.INSTANCE.listSubjects(property, subjects)))
-                            .collect(Collectors.toSet());
+                    OppModel.INSTANCE.listPredicates(subjects)
+                            .forEach(property -> {
+                                Set<OntResource> predicateObjects = OppModel.INSTANCE.listObjects(subjects, property);
+                                if (typeFilter.test(predicateObjects)) {
+                                    forwardPredicates.put(property, predicateObjects);
+                                }
+                            });
+                    OppModel.INSTANCE.listReversePredicates(subjects)
+                            .forEach(property -> {
+                                Set<OntResource> predicateSubjects = OppModel.INSTANCE.listSubjects(property, subjects);
+                                if (typeFilter.test(predicateSubjects)) {
+                                    reversePredicates.put(property, predicateSubjects);
+                                }
+                            });
                 }
 
                 // add model options
@@ -77,12 +84,15 @@ public class ODTTraverseCompletion extends CompletionContributor {
         });
     }
 
-    private void addModelTraverseLookupElements(Set<Property> predicates,
+    private void addModelTraverseLookupElements(HashMap<Property, Set<OntResource>> predicateObjects,
                                                 TraverseDirection direction,
                                                 Map<String, String> availableNamespaces,
                                                 CompletionResultSet result) {
-        predicates.stream()
-                .map(resource -> TTLResourceUtil.getPredicateLookupElement(resource,
+        predicateObjects.keySet()
+                .stream()
+                .map(predicate -> TTLResourceUtil.getPredicateLookupElement(
+                        predicate,
+                        predicateObjects.get(predicate),
                         direction,
                         availableNamespaces))
                 .filter(Objects::nonNull)
