@@ -161,7 +161,7 @@ public class TTLResourceUtil {
         String lookupText = "/" + title;
         return LookupElementBuilder.create(lookupText)
                 .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
-                .withTypeText(typeText, Icons.TTLFile, false)
+                .withTypeText(typeText)
                 .withIcon(Icons.TTLFile)
                 .withPresentableText(title);
     }

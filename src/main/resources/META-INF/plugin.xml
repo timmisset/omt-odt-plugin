@@ -127,6 +127,8 @@
                                 implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionNew"/>
         <completion.contributor order="first" language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.operators.ODTOperatorCompletionLoadableContext"/>
+        <completion.contributor order="first" language="ODT"
+                                implementationClass="com.misset.opp.odt.completion.operators.ODTOperatorCompletionCast"/>
 
         <!-- Annotations -->
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTSemicolonAnnotator"/>

@@ -402,6 +402,17 @@ public class OppModel {
         return computeWithReadLock(() -> getModel().listClasses().toSet());
     }
 
+    public Set<OntClass> listXSDTypes() {
+        return Set.of(
+                XSD_BOOLEAN,
+                XSD_STRING,
+                XSD_INTEGER,
+                XSD_DECIMAL,
+                XSD_DATETIME,
+                XSD_DATE,
+                XSD_DURATION);
+    }
+
     /**
      * Returns the list with all predicate-objects for the provided subject
      */

@@ -7,9 +7,13 @@ import com.intellij.patterns.PsiJavaElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.misset.opp.odt.builtin.Builtin;
+import com.misset.opp.odt.builtin.commands.BuiltInCommand;
+import com.misset.opp.odt.builtin.operators.BuiltInOperator;
 import com.misset.opp.odt.psi.*;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 import static com.intellij.patterns.PsiJavaPatterns.psiElement;
 
@@ -43,13 +47,31 @@ public interface CompletionPatterns {
     PsiJavaElementPattern.Capture<PsiElement> VARIABLE_ASSIGNMENT_VALUE = psiElement().inside(ODTVariableAssignment.class);
     PsiJavaElementPattern.Capture<PsiElement> SIGNATURE_ARGUMENT = psiElement().inside(ODTSignatureArgument.class);
 
-    static ElementPattern<PsiElement> getInsideBuiltinCommandSignaturePattern(Builtin builtin) {
+    static ElementPattern<PsiElement> getInsideBuiltinCommandSignaturePattern(BuiltInCommand builtin) {
         return PlatformPatterns.psiElement().inside(ODTSignatureArgument.class).and(PlatformPatterns.psiElement().with(
-                new PatternCondition<>("Builtin member") {
+                new PatternCondition<>("Builtin command") {
                     @Override
                     public boolean accepts(@NotNull PsiElement element, ProcessingContext context) {
                         ODTCommandCall commandCall = PsiTreeUtil.getParentOfType(element, ODTCommandCall.class);
                         return commandCall != null && commandCall.getCallable() == builtin;
+                    }
+                }
+        ));
+    }
+
+    static ElementPattern<PsiElement> getInsideBuiltinOperatorSignaturePattern(BuiltInOperator operator) {
+        return PlatformPatterns.psiElement().inside(ODTSignatureArgument.class).and(PlatformPatterns.psiElement().with(
+                new PatternCondition<>("Builtin operator") {
+                    @Override
+                    public boolean accepts(@NotNull PsiElement element, ProcessingContext context) {
+                        // since the dummy placeholder (IntelliJRulezzzz) is also parsed as an operator
+                        // we must first travel outside that scope
+                        ODTSignatureArgument signatureArgument = PsiTreeUtil.getParentOfType(element, ODTSignatureArgument.class);
+                        return Optional.ofNullable(signatureArgument)
+                                .map(argument -> PsiTreeUtil.getParentOfType(argument, ODTOperatorCall.class))
+                                .map(PsiCall::getCallable)
+                                .map(operator::equals)
+                                .orElse(false);
                     }
                 }
         ));

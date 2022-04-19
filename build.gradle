@@ -60,7 +60,8 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.13</h1>
-        Added #69: <a href=""></a><br>
+        Added #67: <a href="https://github.com/timmisset/omt-odt-plugin/issues/67">Specific completion: CAST operator</a><br>
+        Added #69: <a href="https://github.com/timmisset/omt-odt-plugin/issues/69">Specific completion: Rules strict</a><br>
         For queries that expect/require a boolean result, the completion results are now filtered to only show applicable
         queries, variables and fixed values true / false.<br>
         An example of this is the payload/[item]/strict property in an OMT Activity.<br>
@@ -75,7 +76,6 @@ patchPluginXml {
         <br>
         Added #71 <a href="https://github.com/timmisset/omt-odt-plugin/issues/71">Warning ODTIgnoredReturnValueInspection for Builtin members</a><br>
         The ODTIgnoredReturnValueInspection no longer warns for calls made to Builtin Commands, such as @ASSIGN.<br>
-        
         """
 }
 tasks {
