@@ -44,7 +44,5 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
                         resource -> TTLResourceUtil
                                 .getRootLookupElement(resource, "Graphshape", availableNamespaces))
                 .forEachRemaining(result::addElement));
-
-        result.stopHere();
     }
 }

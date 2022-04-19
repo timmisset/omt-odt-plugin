@@ -14,6 +14,7 @@ import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -39,31 +40,33 @@ public abstract class ODTCallCompletion extends CompletionContributor {
     }
 
     @NotNull
-    private LookupElementBuilder createLookupElement(com.misset.opp.resolvable.Callable callable, String callId) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(callId);
-
+    private LookupElementBuilder createLookupElement(Callable callable, String callId) {
+        StringBuilder signature = new StringBuilder();
         if (callable.minNumberOfArguments() > 0) {
-            stringBuilder.append("(");
+            signature.append("(");
             for (int i = 0; i < callable.maxNumberOfArguments(); i++) {
                 if (i > 0) {
-                    stringBuilder.append(", ");
+                    signature.append(", ");
                 }
-                stringBuilder.append("$param").append(i);
+                signature.append("$param").append(i);
             }
-            stringBuilder.append(")");
+            signature.append(")");
         } else {
             if (callable.isCommand()) {
-                stringBuilder.append("()");
+                signature.append("()");
             }
         }
-        return LookupElementBuilder.create(stringBuilder.toString())
+        String lookup = callId + signature;
+        String typeText = callable.isVoid() ? "void" : TTLResourceUtil.describeUrisForLookupJoined(callable.resolve());
+        return LookupElementBuilder.create(lookup)
                 .withLookupString(callId)
                 .withLookupString(callId.toLowerCase())
                 .withLookupString(callable.getName())
                 .withLookupString(callable.getName().toLowerCase())
+                .withPresentableText(callId)
+                .withTailText(signature.toString(), true)
                 .withIcon(PlatformIcons.METHOD_ICON)
-                .withTypeText(callable.getType());
+                .withTypeText(typeText);
     }
 
     protected List<Callable> getFromSiblingDefined(PsiElement element) {

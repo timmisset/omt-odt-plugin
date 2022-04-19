@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.shared.InjectableContentType;
 import com.misset.opp.ttl.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -23,5 +24,10 @@ public class OMTBooleanQueryType extends OMTQueryMetaType {
     @Override
     public @NotNull String getDisplayName() {
         return super.getDisplayName() + " (boolean)";
+    }
+
+    @Override
+    public InjectableContentType getInjectableContentType() {
+        return InjectableContentType.Boolean;
     }
 }

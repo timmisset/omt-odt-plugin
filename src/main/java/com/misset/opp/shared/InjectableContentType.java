@@ -20,6 +20,11 @@ public enum InjectableContentType {
      */
     GraphShapeQuery,
 
+    /**
+     * Position that expects a query that returns a boolean
+     */
+    Boolean,
+
     None
 
 }

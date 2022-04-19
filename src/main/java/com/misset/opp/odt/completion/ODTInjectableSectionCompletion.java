@@ -54,14 +54,23 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                         switch (injectableContentType) {
                             case Query:
                                 insertQueryTemplate(element, originalFile, result);
+                                result.stopHere();
                                 break;
                             case Command:
                                 insideCommandTemplate(element, originalFile, result);
+                                result.stopHere();
                                 break;
                             case GraphShapeQuery:
                                 ODTCommandCompletionNewGraph.addShapeCompletions(parameters, result);
+                                result.stopHere();
+                                break;
+                            case Boolean:
+                                new ODTOperatorCompletion().addBooleanCompletions(parameters, result, element);
+                                new ODTVariableCompletion().addBooleanCompletions(parameters, result, element);
+                                result.stopHere();
                                 break;
                         }
+
                     }
                 }
             }
@@ -77,7 +86,6 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                     resultSet.addElement(LookupElementBuilder.create(withIndentation(QUERY_BASE_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE QUERY queryWithBase")
                             .withTypeText(CODE_SNIPPET));
-                    resultSet.stopHere();
                 }
             }
 
@@ -89,7 +97,6 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                     resultSet.addElement(LookupElementBuilder.create(withIndentation(COMMAND_PARAMETER_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE COMMAND commandWithParameter($param)")
                             .withTypeText(CODE_SNIPPET));
-                    resultSet.stopHere();
                 }
             }
 
