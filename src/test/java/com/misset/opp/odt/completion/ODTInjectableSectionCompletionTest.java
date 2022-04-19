@@ -90,4 +90,18 @@ class ODTInjectableSectionCompletionTest extends OMTCompletionTestCase {
         assertContainsElements(getLookupStrings(), "/<http://data/graphshape>");
     }
 
+    @Test
+    void testHasBooleanCompletions() {
+        String content = insideActivityWithPrefixes(
+                "" +
+                        "variables:\n" +
+                        "- $boolean = true\n" +
+                        "rules:\n" +
+                        "   myRule:\n" +
+                        "       query: true\n" +
+                        "       strict: <caret>\n"
+        );
+        configureByText(content);
+        assertContainsElements(getLookupStrings(), "true", "false", "$boolean");
+    }
 }
