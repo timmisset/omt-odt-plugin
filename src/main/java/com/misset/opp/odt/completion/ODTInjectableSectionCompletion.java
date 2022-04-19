@@ -53,12 +53,14 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                         PsiElement element = parameters.getPosition();
                         switch (injectableContentType) {
                             case Query:
-                                insertQueryTemplate(element, originalFile, result);
-                                result.stopHere();
+                                if (insertQueryTemplate(element, originalFile, result)) {
+                                    result.stopHere();
+                                }
                                 break;
                             case Command:
-                                insideCommandTemplate(element, originalFile, result);
-                                result.stopHere();
+                                if (insertCommandTemplate(element, originalFile, result)) {
+                                    result.stopHere();
+                                }
                                 break;
                             case GraphShapeQuery:
                                 ODTCommandCompletionNewGraph.addShapeCompletions(parameters, result);
@@ -75,7 +77,9 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                 }
             }
 
-            private void insertQueryTemplate(PsiElement element, ODTFile containingFile, CompletionResultSet resultSet) {
+            private boolean insertQueryTemplate(PsiElement element,
+                                                ODTFile containingFile,
+                                                CompletionResultSet resultSet) {
                 if (OUTSIDE_STATEMENT.accepts(element)) {
                     resultSet.addElement(LookupElementBuilder.create(withIndentation(QUERY_SIMPLE_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE QUERY simpleQuery")
@@ -86,10 +90,14 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                     resultSet.addElement(LookupElementBuilder.create(withIndentation(QUERY_BASE_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE QUERY queryWithBase")
                             .withTypeText(CODE_SNIPPET));
+                    return true;
                 }
+                return false;
             }
 
-            private void insideCommandTemplate(PsiElement element, ODTFile containingFile, CompletionResultSet resultSet) {
+            private boolean insertCommandTemplate(PsiElement element,
+                                                  ODTFile containingFile,
+                                                  CompletionResultSet resultSet) {
                 if (OUTSIDE_STATEMENT.accepts(element)) {
                     resultSet.addElement(LookupElementBuilder.create(withIndentation(COMMAND_SIMPLE_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE COMMAND simpleCommand")
@@ -97,7 +105,9 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                     resultSet.addElement(LookupElementBuilder.create(withIndentation(COMMAND_PARAMETER_TEMPLATE, containingFile))
                             .withPresentableText("DEFINE COMMAND commandWithParameter($param)")
                             .withTypeText(CODE_SNIPPET));
+                    return true;
                 }
+                return false;
             }
 
             private String withIndentation(String template, ODTFile containingFile) {
