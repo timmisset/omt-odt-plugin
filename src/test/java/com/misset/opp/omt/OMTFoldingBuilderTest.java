@@ -47,7 +47,7 @@ class OMTFoldingBuilderTest extends OMTTestCase {
         OMTFile omtFile = configureByText(content);
         ReadAction.run(() -> {
             FoldingDescriptor[] foldingDescriptors = foldingBuilder.buildFoldRegions(omtFile.getNode(), getEditor().getDocument());
-            Assertions.assertEquals(3, foldingDescriptors.length);
+            Assertions.assertEquals(2, foldingDescriptors.length);
             FoldingDescriptor foldingDescriptor = foldingDescriptors[0];
 
             final JavaCodeFoldingSettings settings = JavaCodeFoldingSettings.getInstance();
