@@ -86,4 +86,18 @@ class ODTIgnoredReturnValueInspectionTest extends OMTInspectionTestCase {
         configureByText(content);
         assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
+
+    @Test
+    void testNoWarningForBuiltinCommands() {
+        String content = "model:\n" +
+                "   Procedure: !Procedure\n" +
+                "       params:\n" +
+                "       - $subject\n" +
+                "       - $predicate\n" +
+                "       - $value\n" +
+                "       onRun: |\n" +
+                "           @ASSIGN($subject, $predicate, $value);\n";
+        configureByText(content);
+        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    }
 }

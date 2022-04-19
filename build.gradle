@@ -72,6 +72,10 @@ patchPluginXml {
         The completion consist of a value, tail and type. The value can be the name of the method, or the predicate IRI. The tail
         contains some more specifics, such as parameters, the traverse direction (forward/reverse) etc. The type now always contains
         the return or current type (for variables).<br>
+        <br>
+        Added #71 <a href="https://github.com/timmisset/omt-odt-plugin/issues/71">Warning ODTIgnoredReturnValueInspection for Builtin members</a><br>
+        The ODTIgnoredReturnValueInspection no longer warns for calls made to Builtin Commands, such as @ASSIGN.<br>
+        
         """
 }
 tasks {
