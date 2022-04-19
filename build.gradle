@@ -59,28 +59,19 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.12</h1>
-        Added #72: <a href="https://github.com/timmisset/omt-odt-plugin/issues/72">Upgrade plugin to support IntelliJ 2022.1</a><br>
-        OMT/ODT plugin is compatible with IDE versions 2021.2, 2021.3 and 2022.1<br>
-        Besides some minor modifications under the hood there are no functional changes made to the plugin.<br>
+        <h1>Update 5.13</h1>
+        Added #69: <a href=""></a><br>
+        For queries that expect/require a boolean result, the completion results are now filtered to only show applicable
+        queries, variables and fixed values true / false.<br>
+        An example of this is the payload/[item]/strict property in an OMT Activity.<br>
+        Since all boolean based OMT properties use the same way to interact with the injected ODT fragments, it should be applied to all
+        locations in the OMT model.<br>
         <br>
-        Fixed #66: <a href="https://github.com/timmisset/omt-odt-plugin/issues/66">Use API.md for Builtin members</a><br>
-        Refactored the behavior for Builtin documentation. Just like with OMT documentation, everything is now extracted from the
-        API.md directly. Both the OMT and ODT API.md file locations are now configurable in the Settings panel.
-        <h1>Update 5.11</h1>
-        Fixed #64: <a href="https://github.com/timmisset/omt-odt-plugin/issues/64">Json as primitive type</a><br>
-        Added #65: <a href="https://github.com/timmisset/omt-odt-plugin/issues/65">Add flags to calls made to a Loadable instance</a><br>
-        Aside from flag syntax, the combinations of flags is also checked. Moreover, the context selector value (omt, session etc) is validated
-        and is included in the completion contributor.<br>
-        <h1>Update 5.10.1</h1>
-        Added #63: <a href="https://github.com/timmisset/omt-odt-plugin/issues/63">Show markdown file location on parser error</a><br>
-        <h1>Update 5.10</h1>
-        Added #62: <a href="https://github.com/timmisset/omt-odt-plugin/issues/62">Return tag for ODT DEFINE statements</a><br>
-        DEFINE statements can now be decorated with a @return tag (@param and @base were already an option).<br>
-        By adding this @return tag with a type, any call made to this method will return the provided type instead of calculating it
-        on the fly. This will improve the performance of the plugin significantly.<br>
-        <br>
-        Moreover, the inspection will check if the calculated type matches the specified type<br>
+        Added #70: <a href="https://github.com/timmisset/omt-odt-plugin/issues/70">Align completions presentation</a><br>
+        Based on the presentation of completions in IntelliJ, the implementation for OMT/ODT completions are aligned.
+        The completion consist of a value, tail and type. The value can be the name of the method, or the predicate IRI. The tail
+        contains some more specifics, such as parameters, the traverse direction (forward/reverse) etc. The type now always contains
+        the return or current type (for variables).<br>
         """
 }
 tasks {
