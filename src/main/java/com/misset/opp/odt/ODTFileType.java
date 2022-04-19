@@ -9,7 +9,7 @@ import javax.swing.*;
 
 public class ODTFileType extends LanguageFileType {
 
-    public static final Icon ICON = IconLoader.findIcon("/icons/cartman-16.png");
+    public static final Icon ICON = IconLoader.findIcon("/icons/cartman-16.png", ODTFileType.class.getClassLoader());
     public static final ODTFileType INSTANCE = new ODTFileType();
 
     private ODTFileType() {

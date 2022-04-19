@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class OMTFileType extends LanguageFileType {
-    public static final Icon ICON = IconLoader.findIcon("/icons/cartman-16.png");
+    public static final Icon ICON = IconLoader.findIcon("/icons/cartman-16.png", OMTFileType.class.getClassLoader());
     public static final OMTFileType INSTANCE = new OMTFileType();
 
     private OMTFileType() {
