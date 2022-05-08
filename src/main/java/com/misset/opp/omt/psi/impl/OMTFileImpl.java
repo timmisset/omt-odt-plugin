@@ -7,9 +7,10 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.newvfs.impl.VirtualDirectoryImpl;
-import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
+import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
@@ -19,6 +20,7 @@ import com.misset.opp.omt.meta.OMTFileMetaType;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlImportPathDelegate;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.shared.InjectionHost;
@@ -39,6 +41,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     private static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> IMPORTING_MEMBERS = new Key<>(
             "IMPORTING_MEMBERS");
     private static final Key<CachedValue<Map<String, List<PsiCall>>>> PSI_CALLS = new Key<>("PSI_CALLS");
+    private static final Key<CachedValue<SearchScope>> IMPORTED_BY = new Key<>("IMPORTED_BY");
 
     Logger LOGGER = Logger.getInstance(OMTFileImpl.class);
 
@@ -58,6 +61,28 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
                         .map(yamlDocument -> PsiTreeUtil.findChildOfType(yamlDocument, YAMLMapping.class))
                         .orElse(null)));
 
+    }
+
+    @Override
+    @NotNull
+    public SearchScope getUseScope() {
+        return CachedValuesManager.getCachedValue(
+                this,
+                IMPORTED_BY,
+                () -> new CachedValueProvider.Result<>(calculateUseScope(), OMTYamlImportPathDelegate.IMPORTS_TRACKER));
+    }
+
+    private SearchScope calculateUseScope() {
+        GlobalSearchScope scopeRestrictedByFileTypes = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.projectScope(getProject()), OMTFileType.INSTANCE);
+        Collection<PsiReference> all = ReferencesSearch.search(this, scopeRestrictedByFileTypes, true).findAll();
+        HashSet<VirtualFile> usageScope = all.stream()
+                .map(reference -> reference.getElement().getContainingFile())
+                .filter(OMTFile.class::isInstance)
+                .map(OMTFile.class::cast)
+                .map(PsiFile::getVirtualFile)
+                .collect(Collectors.toCollection(HashSet::new));
+        usageScope.add(getVirtualFile());
+        return GlobalSearchScope.filesScope(getProject(), usageScope);
     }
 
     @Override
@@ -151,7 +176,6 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
                         (s, s2) -> s));
     }
 
-
     @Override
     public String getModuleName() {
         return Optional.ofNullable(PsiTreeUtil.findChildOfType(getModuleFile(), YAMLMapping.class))
@@ -179,6 +203,5 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
         }
         return null;
     }
-
 
 }

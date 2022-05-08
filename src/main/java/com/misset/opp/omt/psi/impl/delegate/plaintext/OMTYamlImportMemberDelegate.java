@@ -76,7 +76,7 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
 
     @Override
     public boolean isUnused() {
-        return ReferencesSearch.search(this).findFirst() == null;
+        return ReferencesSearch.search(this, getContainingFile().getUseScope()).findFirst() == null;
     }
 
     @Override

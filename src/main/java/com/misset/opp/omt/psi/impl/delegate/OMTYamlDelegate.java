@@ -21,4 +21,6 @@ public interface OMTYamlDelegate extends PsiNamedElement {
                 .toArray(PsiReference[]::new);
     }
 
+    void subtreeChanged();
+
 }

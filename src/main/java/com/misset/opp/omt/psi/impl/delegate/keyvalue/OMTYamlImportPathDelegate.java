@@ -1,5 +1,6 @@
 package com.misset.opp.omt.psi.impl.delegate.keyvalue;
 
+import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.psi.PsiReference;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTImportPathReference;
@@ -10,6 +11,9 @@ import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 public class OMTYamlImportPathDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate {
 
     private final YAMLKeyValue keyValue;
+
+    private static long importsTrackerValue = 0;
+    public static final ModificationTracker IMPORTS_TRACKER = () -> importsTrackerValue;
 
     public OMTYamlImportPathDelegate(YAMLKeyValue keyValue) {
         super(keyValue.getNode());
@@ -27,5 +31,10 @@ public class OMTYamlImportPathDelegate extends YAMLKeyValueImpl implements OMTYa
             return null;
         }
         return new OMTImportPathReference(keyValue, getKey().getTextRangeInParent());
+    }
+
+    @Override
+    public void subtreeChanged() {
+        importsTrackerValue++;
     }
 }

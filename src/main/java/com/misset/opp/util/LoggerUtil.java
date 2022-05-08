@@ -12,25 +12,27 @@ public class LoggerUtil {
         ZonedDateTime start = ZonedDateTime.now();
         runnable.run();
         ZonedDateTime end = ZonedDateTime.now();
-        long millis = Duration.between(start, end).toMillis();
-        if (millis > 100) {
-            logger.info(methodName + " took " + millis + "ms");
-        } else {
-            logger.debug(methodName + " took " + millis + "ms");
-        }
+        doLog(logger, methodName, start, end);
     }
 
     public static <T> T computeWithLogger(Logger logger, String methodName, Computable<T> computable) {
         ZonedDateTime start = ZonedDateTime.now();
         T compute = computable.compute();
         ZonedDateTime end = ZonedDateTime.now();
+        doLog(logger, methodName, start, end);
+        return compute;
+    }
+
+    private static void doLog(Logger logger,
+                              String methodName,
+                              ZonedDateTime start,
+                              ZonedDateTime end) {
         long millis = Duration.between(start, end).toMillis();
         if (millis > 100) {
             logger.info(methodName + " took " + millis + "ms");
         } else {
             logger.debug(methodName + " took " + millis + "ms");
         }
-        return compute;
     }
 
 }

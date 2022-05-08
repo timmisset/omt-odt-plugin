@@ -5,11 +5,9 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.CachedValue;
@@ -23,7 +21,6 @@ import com.misset.opp.odt.psi.ODTDefinePrefix;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.impl.prefix.ODTBaseDefinePrefix;
-import com.misset.opp.omt.indexing.OMTImportedMembersIndex;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.providers.OMTMetaTypeStructureProvider;
@@ -73,20 +70,12 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     }
 
     public SearchScope getExportingMemberUseScope(String name) {
-        final ArrayList<PsiFile> psiFiles = new ArrayList<>();
-        psiFiles.add(getToplevelFile());
-        if (isExportable()) {
-            psiFiles.addAll(OMTImportedMembersIndex.getImportingFiles(getProject(), name));
-        }
-        final List<VirtualFile> targetFiles = psiFiles.stream()
-                .map(PsiFile::getVirtualFile)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(ArrayList::new));
-        if (isExportable()) {
-            // also, all module files can declare the member as reference
-            targetFiles.addAll(FilenameIndex.getAllFilesByExt(getProject(), "module.omt"));
-        }
-        return GlobalSearchScope.filesScope(getProject(), targetFiles);
+        return getToplevelFile().getUseScope();
+    }
+
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        return GlobalSearchScope.fileScope(this);
     }
 
     @Override
