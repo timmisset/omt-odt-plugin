@@ -135,7 +135,7 @@
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator"/>
 
         <!-- Inspections -->
-        <!-- Redudancy -->
+        <!-- Redundancy -->
         <localInspection displayName="Duplicated DEFINE statements" groupName="Redundancy" language="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true" groupPath="ODT"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionDefinedDuplication"/>
@@ -168,6 +168,9 @@
         <localInspection displayName="Unnecessary NOT operator" groupName="Redundancy" language="ODT"
                          groupPath="ODT" enabledByDefault="true" level="WARNING"
                          implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionNegationOperator"/>
+        <localInspection displayName="Unnecessary true condition" groupName="Redundancy" language="ODT"
+                         groupPath="ODT" enabledByDefault="true" level="WARNING"
+                         implementationClass="com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryTrueCondition"/>
         <!--        Resolvable -->
         <localInspection displayName="Ontology" groupName="RDF / TTL" language="ODT" groupPath="ODT"
                          enabledByDefault="true" level="WARNING" hasStaticDescription="true"
