@@ -59,6 +59,9 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        <h1>Update 5.14</h1>
+        Fixed #73: <a href="https://github.com/timmisset/omt-odt-plugin/issues/73">Imported query marked as unused when only used on the payload</a><br>
+        
         <h1>Update 5.13</h1>
         Added #67: <a href="https://github.com/timmisset/omt-odt-plugin/issues/67">Specific completion: CAST operator</a><br>
         Added #69: <a href="https://github.com/timmisset/omt-odt-plugin/issues/69">Specific completion: Rules strict</a><br>

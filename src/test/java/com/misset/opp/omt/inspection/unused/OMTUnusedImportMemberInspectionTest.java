@@ -134,4 +134,36 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
         configureByText("myModule.module.omt", content);
         assertNoWarning("Import for memberA is never used");
     }
+
+    @Test
+    void testNoWarningForReferencedUsageWithUnresolvableImport() {
+        String content = "import:\n" +
+                "    ./myfile.omt:\n" +
+                "    - myQuery\n" +
+                "\n" +
+                "model:\n" +
+                "    MyActivity: !Activity\n" +
+                "        payload:\n" +
+                "            myQuery:\n" +
+                "                query: myQuery\n";
+        configureByText(content);
+        assertNoWarning("Import for myQuery is never used");
+    }
+
+    @Test
+    void testNoWarningForReferencedUsageWithResolvableImport() {
+        addFileToProject("myfile.omt", "queries: |\n" +
+                "   DEFINE QUERY myQuery => '';\n");
+        String content = "import:\n" +
+                "    ./myfile.omt:\n" +
+                "    - myQuery\n" +
+                "\n" +
+                "model:\n" +
+                "    MyActivity: !Activity\n" +
+                "        payload:\n" +
+                "            myQuery:\n" +
+                "                query: myQuery\n";
+        configureByText(content);
+        assertNoWarning("Import for myQuery is never used");
+    }
 }
