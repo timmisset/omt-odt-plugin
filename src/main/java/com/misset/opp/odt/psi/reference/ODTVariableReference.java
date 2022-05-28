@@ -92,6 +92,12 @@ public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> impl
                 .map(PsiElementResolveResult::createResults);
     }
 
+    // required to preserve valid reference text range when backspacing an element
+    @Override
+    public @NotNull TextRange getRangeInElement() {
+        return TextRange.allOf(myElement.getText());
+    }
+
     @Override
     public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
         return getElement().setName(newElementName);

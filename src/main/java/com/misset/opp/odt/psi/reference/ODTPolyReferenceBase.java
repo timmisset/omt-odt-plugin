@@ -15,6 +15,9 @@ public abstract class ODTPolyReferenceBase<T extends PsiElement> extends PsiRefe
     protected ResolveResult[] toResults(List<? extends PsiElement> resolvedElements,
                                         boolean resolveToOriginalElement,
                                         boolean resolveToFinalElement) {
+        if (resolvedElements == null) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
         return resolvedElements.stream()
                 .filter(Objects::nonNull)
                 .map(psiElement -> {
