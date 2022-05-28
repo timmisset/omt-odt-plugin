@@ -87,7 +87,7 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
         if (value instanceof YAMLPlainTextImpl) {
             return value;
         }
-        return Optional.of(value)
+        return Optional.ofNullable(value)
                 .filter(YAMLMapping.class::isInstance)
                 .map(YAMLMapping.class::cast)
                 .map(mapping -> mapping.getKeyValueByKey("bindTo"))

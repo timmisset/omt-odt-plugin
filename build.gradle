@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.14'
+version '5.15'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,11 +59,8 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.14</h1>
-        Fixed #73: <a href="https://github.com/timmisset/omt-odt-plugin/issues/73">Imported query marked as unused when only used on the payload</a><br>
-        Added #74: <a href="https://github.com/timmisset/omt-odt-plugin/issues/74">Unnecessary true inspection</a><br>
-        <br>
-        Also fixed some scope issues when checking for unused elements<br>
+        <h1>Update 5.15</h1>
+        Fixed #77: <a href="https://github.com/timmisset/omt-odt-plugin/issues/77">getBindToValue NPE</a><br>
         """
 }
 tasks {
