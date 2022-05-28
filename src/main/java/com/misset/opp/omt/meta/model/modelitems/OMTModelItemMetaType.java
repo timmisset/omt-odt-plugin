@@ -26,7 +26,7 @@ public class OMTModelItemMetaType extends OMTMetaTaggedType<OMTModelItemDelegate
         taggedTypes.put("!GraphShapeHandlers", OMTGraphShapeHandlerMetaType::new);
         taggedTypes.put("!Loadable", OMTLoadableMetaType::new);
         taggedTypes.put("!Ontology", OMTOntologyMetaType::new);
-        taggedTypes.put("!Procedure", OMTProcedureMetaType::new);
+        taggedTypes.put("!Procedure", () -> OMTProcedureMetaType.INSTANCE);
         taggedTypes.put("!StandaloneQuery", OMTStandaloneQueryMetaType::new);
     }
 

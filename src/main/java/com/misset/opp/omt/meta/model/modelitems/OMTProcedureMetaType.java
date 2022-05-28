@@ -48,6 +48,8 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     private static final Key<Boolean> UNRESOLVABLE = new Key<>("Unresolvable");
     private static final Key<Long> UNRESOLVABLE_TIMESTAMP = new Key<>("Timestamp");
 
+    public static final OMTProcedureMetaType INSTANCE = new OMTProcedureMetaType();
+
     static {
         features.put("params", OMTParamsArrayMetaType::new);
         features.put("variables", OMTVariablesArrayMetaType::new);
