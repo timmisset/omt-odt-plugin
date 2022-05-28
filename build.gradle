@@ -60,6 +60,7 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.15</h1>
+        Fixed #76: <a href="https://github.com/timmisset/omt-odt-plugin/issues/76">semicolon inspection</a><br>
         Fixed #77: <a href="https://github.com/timmisset/omt-odt-plugin/issues/77">getBindToValue NPE</a><br>
         """
 }

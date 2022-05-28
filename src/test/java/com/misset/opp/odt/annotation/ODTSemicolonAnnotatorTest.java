@@ -9,7 +9,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.annotation.ODTSemicolonAnnotator.*;
+import static com.misset.opp.odt.annotation.ODTSemicolonAnnotator.SEMICOLON_ILLEGAL;
+import static com.misset.opp.odt.annotation.ODTSemicolonAnnotator.SEMICOLON_REQUIRED;
 
 @RunWith(MockitoJUnitRunner.class)
 class ODTSemicolonAnnotatorTest extends OMTInspectionTestCase {
@@ -111,8 +112,7 @@ class ODTSemicolonAnnotatorTest extends OMTInspectionTestCase {
     void testHasWarningWhenQueryStatementWithUnnecessarySemicolon() {
         configureByText(insideQueryWithPrefixesNoSemicolonEnding("1;;"));
         assertNoError(SEMICOLON_REQUIRED);
-        assertNoError(SEMICOLON_ILLEGAL);
-        assertHasWarning(SEMICOLON_UNNECESSARY);
+        assertHasError(SEMICOLON_ILLEGAL);
     }
 
     @Test

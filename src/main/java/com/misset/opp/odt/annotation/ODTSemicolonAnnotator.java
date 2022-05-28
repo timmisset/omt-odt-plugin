@@ -26,7 +26,6 @@ public class ODTSemicolonAnnotator implements Annotator {
 
     protected static final String SEMICOLON_REQUIRED = "Semicolon required";
     protected static final String SEMICOLON_ILLEGAL = "Should not contain a semicolon";
-    protected static final String SEMICOLON_UNNECESSARY = "Unnecessary semicolon";
 
     @Override
     public void annotate(@NotNull PsiElement element,
@@ -38,7 +37,7 @@ public class ODTSemicolonAnnotator implements Annotator {
             LoggerUtil.runWithLogger(LOGGER, "Annotate semicolon", () -> {
                 PsiElement prevVisibleLeaf = PsiTreeUtil.prevVisibleLeaf(element);
                 if (prevVisibleLeaf != null && prevVisibleLeaf.getNode().getElementType() == ODTTypes.SEMICOLON) {
-                    holder.newAnnotation(HighlightSeverity.WARNING, SEMICOLON_UNNECESSARY).create();
+                    holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
                 }
             });
         }
