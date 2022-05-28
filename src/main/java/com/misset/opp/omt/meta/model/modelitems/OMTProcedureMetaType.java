@@ -93,6 +93,11 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return obj instanceof OMTProcedureMetaType;
+    }
+
+    @Override
     public String getType() {
         return "PROCEDURE";
     }

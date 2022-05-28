@@ -143,7 +143,6 @@ public class OppModel {
         multiple.clear();
     }
 
-
     protected OntModel getShaclModel() {
         return shaclModel;
     }
@@ -349,7 +348,6 @@ public class OppModel {
         }
         return 0;
     }
-
 
     /**
      * The Apache Jena Ontology model is not thread-safe when reading and writing at the same time.
@@ -680,6 +678,22 @@ public class OppModel {
                         .collect(Collectors.toSet());
             }
         });
+    }
+
+    public Set<OntResource> appendInstancesWithSubclasses(Set<OntResource> resources) {
+        if (resources.stream().noneMatch(OWL_THING_INSTANCE::equals) &&
+                resources.stream().allMatch(this::isIndividual)) {
+            HashSet<OntResource> subclasses = resources.stream().map(this::toClass)
+                    .map(this::listSubclasses)
+                    .flatMap(Collection::stream)
+                    .map(this::toIndividual)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toCollection(HashSet::new));
+            subclasses.addAll(resources);
+            return subclasses;
+        } else {
+            return resources;
+        }
     }
 
     /*

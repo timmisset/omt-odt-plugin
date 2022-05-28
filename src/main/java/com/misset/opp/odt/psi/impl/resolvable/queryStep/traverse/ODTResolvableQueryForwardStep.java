@@ -33,7 +33,11 @@ public abstract class ODTResolvableQueryForwardStep extends ODTResolvableQualifi
         } else {
             // resolve the previous step and use the current curie to traverse the model
             final Property property = model.getProperty(fullyQualifiedUri);
-            return property != null ? model.listObjects(resolvePreviousStep(), property) : Collections.emptySet();
+            if (property == null) {
+                return Collections.emptySet();
+            }
+            return model.appendInstancesWithSubclasses(model.listObjects(resolvePreviousStep(), property));
         }
     }
+
 }

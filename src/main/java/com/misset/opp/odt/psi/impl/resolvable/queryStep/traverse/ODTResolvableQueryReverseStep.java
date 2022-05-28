@@ -31,14 +31,14 @@ public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQuerySt
         // - a curie => ont:somePredicate)
         // - an iri  => <http://ontology/somePredicate>
         if(queryStep instanceof ODTResolvableQualifiedUriStep) {
-            final OppModel oppModel = OppModel.INSTANCE;
+            final OppModel model = OppModel.INSTANCE;
             // a reverse path indicator can only be applied to a curie step
             final String fullyQualified = ((ODTResolvableQualifiedUriStep) queryStep).getFullyQualifiedUri();
-            final Property property = oppModel.getProperty(fullyQualified);
+            final Property property = model.getProperty(fullyQualified);
             if (property == null) {
                 return Collections.emptySet();
             }
-            return oppModel.listSubjects(property, resolvePreviousStep());
+            return model.appendInstancesWithSubclasses(model.listSubjects(property, resolvePreviousStep()));
         }
         return Collections.emptySet();
     }
