@@ -29,8 +29,9 @@ class ODTResolvableEquationStatementTest extends OMTOntologyTestCase {
     void testFilterRdfTypeNegated() {
         final Set<OntResource> resources = resolveQueryStatement(
                 "(/ont:ClassA | /ont:ClassB) / ^rdf:type[NOT /ont:ClassA == rdf:type]");
-        Assertions.assertEquals(1, resources.size());
+        Assertions.assertEquals(2, resources.size());
         Assertions.assertTrue(resources.stream().anyMatch(resource -> resource.asIndividual().hasOntClass(createClass("ClassB"))));
+        Assertions.assertTrue(resources.stream().anyMatch(resource -> resource.asIndividual().hasOntClass(createClass("ClassBSub"))));
     }
 
     @Test

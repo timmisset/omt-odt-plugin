@@ -46,7 +46,7 @@ class ODTCodeInspectionCollectionStatementTest extends OMTInspectionTestCase {
 
     @Test
     void testHasWarningWhenAssigningSuperClass() {
-        assertHasTypeWarning("/ont:ClassA / ^rdf:type / ont:classPredicate = /ont:ClassB / ^rdf:type;");
+        assertHasNoTypeWarning("/ont:ClassA / ^rdf:type / ont:classPredicate = /ont:ClassB / ^rdf:type;");
     }
 
     @Test
