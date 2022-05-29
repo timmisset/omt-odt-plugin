@@ -1,24 +1,19 @@
 package com.misset.opp.odt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.codeInspection.*;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTElementGenerator;
-import com.misset.opp.odt.psi.ODTIdentifierStep;
-import com.misset.opp.odt.psi.ODTQueryOperationStep;
-import com.misset.opp.odt.psi.ODTQueryPath;
-import com.misset.opp.odt.psi.ODTQueryStep;
+import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -71,14 +66,21 @@ public class ODTStyleInspectionUnnecessaryIdentifierOperator extends LocalInspec
                     Instead, filter out the current step and generate a new query, then replace it and catch the error
                  */
                 final PsiElement psiElement = descriptor.getPsiElement();
-                final ODTQueryOperationStep operationStep = PsiTreeUtil.getParentOfType(psiElement,
-                        ODTQueryOperationStep.class);
-                final ODTQueryPath queryPath = (ODTQueryPath) operationStep.getParent();
-                final String filteredQuery = queryPath.getQueryOperationStepList()
+                final ODTResolvableQueryOperationStep operationStep = PsiTreeUtil.getParentOfType(psiElement,
+                        ODTResolvableQueryOperationStep.class);
+                if (operationStep == null) {
+                    return;
+                }
+
+                final ODTQueryPath queryPath = operationStep.getParent();
+                String filteredQuery = queryPath.getQueryOperationStepList()
                         .stream()
-                        .filter(step -> step != operationStep)
-                        .map(PsiElement::getText)
+                        .map(step -> getStep(step, operationStep))
+                        .filter(Objects::nonNull)
                         .collect(Collectors.joining(" / "));
+                if (queryPath.getText().trim().startsWith("/")) {
+                    filteredQuery = "/" + filteredQuery;
+                }
                 // workaround for: https://youtrack.jetbrains.com/issue/IDEA-282939
                 // cannot remove psi element from injected language??
                 // first replace with a completely different query, then replace that with the correct one
@@ -96,6 +98,19 @@ public class ODTStyleInspectionUnnecessaryIdentifierOperator extends LocalInspec
                 .map(ODTQueryPath::getQueryOperationStepList)
                 .map(ODTQuerySteps -> ODTQuerySteps.size() == 1)
                 .orElse(false);
+    }
+
+    private String getStep(ODTQueryOperationStep operationStep, ODTQueryOperationStep identifierStep) {
+        if (operationStep == identifierStep) {
+            ODTQueryFilter filter = PsiTreeUtil.getChildOfType(operationStep, ODTQueryFilter.class);
+            if (filter != null) {
+                return filter.getText();
+            } else {
+                return null;
+            }
+        } else {
+            return operationStep.getText();
+        }
     }
 
 }

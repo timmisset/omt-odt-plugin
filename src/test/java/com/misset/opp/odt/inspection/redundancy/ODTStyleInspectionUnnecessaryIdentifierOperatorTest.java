@@ -19,7 +19,7 @@ class ODTStyleInspectionUnnecessaryIdentifierOperatorTest extends OMTInspectionT
     }
 
     @Test
-    void testUnnecessaryBaseOperatorAsFirstStep() {
+    void testUnnecessaryIdentifierOperatorAsFirstStep() {
         String content = withPrefixes("queries: |\n" +
                 "   DEFINE QUERY query => . / ont:property;\n");
         configureByText(content);
@@ -27,7 +27,7 @@ class ODTStyleInspectionUnnecessaryIdentifierOperatorTest extends OMTInspectionT
     }
 
     @Test
-    void testUnnecessaryBaseOperatorInFilter() {
+    void testUnnecessaryIdentifierOperatorInFilter() {
         String content = withPrefixes("queries: |\n" +
                 "   DEFINE QUERY query => /ont:ClassA[. / rdf:type == /ont:ClassA];\n");
         configureByText(content);
@@ -35,7 +35,7 @@ class ODTStyleInspectionUnnecessaryIdentifierOperatorTest extends OMTInspectionT
     }
 
     @Test
-    void testUnnecessaryBaseOperatorNoWarningInSignatureArgument() {
+    void testUnnecessaryIdentifierOperatorNoWarningInSignatureArgument() {
         String content = withPrefixes("queries: |\n" +
                 "   DEFINE QUERY query => CALL(.);\n");
         configureByText(content);
@@ -43,7 +43,7 @@ class ODTStyleInspectionUnnecessaryIdentifierOperatorTest extends OMTInspectionT
     }
 
     @Test
-    void testUnnecessaryBaseOperatorNoWarningWhenHasFilter() {
+    void testUnnecessaryIdentifierOperatorNoWarningWhenHasFilter() {
         String content = withPrefixes("queries: |\n" +
                 "   DEFINE QUERY query => . [rdf:type == /ont:ClassA];\n");
         configureByText(content);
@@ -51,7 +51,7 @@ class ODTStyleInspectionUnnecessaryIdentifierOperatorTest extends OMTInspectionT
     }
 
     @Test
-    void testUnnecessaryBaseOperatorNoWarningWhenOnlyStep() {
+    void testUnnecessaryIdentifierOperatorNoWarningWhenOnlyStep() {
         String content = withPrefixes("queries: |\n" +
                 "   DEFINE QUERY query => true / CHOOSE WHEN . == true => true OTHERWISE => . END;\n");
         configureByText(content);
@@ -67,5 +67,15 @@ class ODTStyleInspectionUnnecessaryIdentifierOperatorTest extends OMTInspectionT
         invokeQuickFixIntention(REMOVE);
         Assertions.assertFalse(getFile().getText().contains(". / ont:property;"));
         Assertions.assertTrue(getFile().getText().contains("=> ont:property;"));
+    }
+
+    @Test
+    void testUnnecessaryIdentifierOperatorDoesntRemoveFilter() {
+        String content = withPrefixes("queries: |\n" +
+                "   DEFINE QUERY query => /ont:ClassA / . [rdf:type == /ont:ClassA];\n");
+        configureByText(content);
+        assertHasWarning(WARNING);
+        invokeQuickFixIntention(REMOVE);
+        Assertions.assertTrue(getFile().getText().contains("/ont:ClassA / [rdf:type == /ont:ClassA];"));
     }
 }
