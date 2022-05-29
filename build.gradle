@@ -63,6 +63,7 @@ patchPluginXml {
         Fixed #76: <a href="https://github.com/timmisset/omt-odt-plugin/issues/76">semicolon inspection</a><br>
         Fixed #77: <a href="https://github.com/timmisset/omt-odt-plugin/issues/77">getBindToValue NPE</a><br>
         Fixed #78: <a href="https://github.com/timmisset/omt-odt-plugin/issues/78">Reference error when backspacing a variable name in payload</a><br>
+        Fixed #79: <a href="https://github.com/timmisset/omt-odt-plugin/issues/79">Accept subclass predicates in query paths</a><br>
         """
 }
 tasks {
