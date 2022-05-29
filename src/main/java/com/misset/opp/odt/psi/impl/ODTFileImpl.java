@@ -153,7 +153,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     @Override
     public <T> CachedValueProvider.Result<T> getCachedValue(T result,
                                                             ModificationTracker... additionalTrackers) {
-        return new CachedValueProvider.Result<>(result, getToplevelFile(), additionalTrackers);
+        return new CachedValueProvider.Result<>(result, getToplevelFile(), this, additionalTrackers);
     }
 
     @Override
