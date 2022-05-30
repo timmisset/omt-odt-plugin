@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.15'
+version '5.16'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,6 +59,9 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
+        <h1>Update 5.16</h1>
+        Added #83: <a href="https://github.com/timmisset/omt-odt-plugin/issues/83">anyPredicates property for merge handlers</a><br>
+
         <h1>Update 5.15</h1>
         Fixed #76: <a href="https://github.com/timmisset/omt-odt-plugin/issues/76">semicolon inspection</a><br>
         Fixed #77: <a href="https://github.com/timmisset/omt-odt-plugin/issues/77">getBindToValue NPE</a><br>
