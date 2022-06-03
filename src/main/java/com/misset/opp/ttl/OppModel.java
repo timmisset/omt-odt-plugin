@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -89,6 +90,10 @@ public class OppModel {
     HashMap<OntResource, Boolean> isIndividualCache = new HashMap<>();
     HashMap<String, OntClass> mappedClassesCache = new HashMap<>();
 
+    HashMap<OntClass, List<OntClass>> mappedSubclasses = new HashMap<>();
+
+    HashMap<OntClass, List<OntClass>> mappedSuperclasses = new HashMap<>();
+
     // contain information from the SHACL model about the cardinality of the predicates
     HashMap<OntClass, List<Property>> required = new HashMap<>();
     HashMap<OntClass, List<Property>> singles = new HashMap<>();
@@ -135,6 +140,8 @@ public class OppModel {
         toIndividualCache.clear();
         toClassCache.clear();
         isIndividualCache.clear();
+        mappedSubclasses.clear();
+        mappedSuperclasses.clear();
     }
 
     private void clearCardinality() {
@@ -696,6 +703,7 @@ public class OppModel {
                 return resources;
             }
         });
+//        return resources;
     }
 
     /*
@@ -1162,14 +1170,44 @@ public class OppModel {
      * Only use this for documentation / completion purposes
      */
     public List<OntClass> listSuperClasses(OntClass ontClass) {
-        return computeWithReadLock(() -> ontClass.listSuperClasses(false).toList());
+        return listClasses(ontClass, mappedSuperclasses, subclass -> subclass.listSuperClasses(true).toList());
     }
 
     /**
      * Only use this for documentation / completion purposes
      */
     public List<OntClass> listSubclasses(OntClass ontClass) {
-        return computeWithReadLock(() -> ontClass.listSubClasses(false).toList());
+        return listClasses(ontClass, mappedSubclasses, subclass -> subclass.listSubClasses(true).toList());
+    }
+
+    private List<OntClass> listClasses(OntClass ontClass,
+                                       HashMap<OntClass, List<OntClass>> mapped,
+                                       Function<OntClass, List<OntClass>> withMethod) {
+        if (mapped.containsKey(ontClass)) {
+            return mapped.get(ontClass);
+        }
+
+        return computeWithReadLock(() -> {
+            ArrayList<OntClass> listClasses = new ArrayList<>();
+            listClassesRecursive(ontClass, listClasses, withMethod);
+            mapped.put(ontClass, listClasses);
+            return listClasses;
+        });
+    }
+
+    private void listClassesRecursive(OntClass ontClass,
+                                      List<OntClass> existingClasses,
+                                      Function<OntClass, List<OntClass>> withMethod) {
+        List<OntClass> ontClasses = withMethod.apply(ontClass);
+        for (OntClass subclass : ontClasses) {
+            if (!existingClasses.contains(subclass)) {
+                listClassesRecursive(subclass, existingClasses, withMethod);
+            } else {
+                LOGGER.error("It looks like there is a recursion in the model when processing "
+                        + subclass.getURI() + " while it was already present in the recursive class collector");
+            }
+        }
+        existingClasses.addAll(ontClasses);
     }
 
     public Collection<? extends OntClass> listSubclasses(Set<OntClass> classes) {
