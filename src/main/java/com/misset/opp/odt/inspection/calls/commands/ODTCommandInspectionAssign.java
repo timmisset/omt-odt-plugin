@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.builtin.commands.AssignCommand;
-import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
@@ -45,7 +44,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
-        return new ModelAwarePsiElementVisitor() {
+        return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTCall) {

@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.builtin.operators.IIfOperator;
-import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Resolvable;
@@ -33,7 +32,7 @@ public class ODTOperatorInspectionIIf extends LocalInspectionTool {
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
-        return new ModelAwarePsiElementVisitor() {
+        return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTCall) {

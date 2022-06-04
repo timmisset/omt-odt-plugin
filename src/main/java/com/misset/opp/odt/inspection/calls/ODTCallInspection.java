@@ -6,7 +6,6 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
@@ -37,7 +36,7 @@ public class ODTCallInspection extends LocalInspectionTool {
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
 
-        return new ModelAwarePsiElementVisitor() {
+        return new PsiElementVisitor() {
 
             @Override
             public void visitElement(@NotNull PsiElement element) {

@@ -7,7 +7,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.ODTElementGenerator;
-import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTChooseBlock;
 import com.misset.opp.odt.psi.ODTOtherwisePath;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
@@ -37,7 +36,7 @@ public class ODTOperatorInspectionChoose extends LocalInspectionTool {
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
-        return new ModelAwarePsiElementVisitor() {
+        return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTChooseBlock) {

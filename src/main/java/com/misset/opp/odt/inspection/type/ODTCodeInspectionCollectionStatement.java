@@ -4,7 +4,6 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTCollectionStatement;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTResolvableValue;
@@ -22,7 +21,7 @@ public class ODTCodeInspectionCollectionStatement extends LocalInspectionTool {
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
-        return new ModelAwarePsiElementVisitor() {
+        return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTCollectionStatement) {

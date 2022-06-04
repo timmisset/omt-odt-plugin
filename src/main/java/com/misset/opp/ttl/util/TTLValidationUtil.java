@@ -98,9 +98,8 @@ public class TTLValidationUtil {
 
     private static boolean hasOntClass(OntResource resource,
                                        Set<OntClass> classes) {
-        return OppModel.INSTANCE.computeWithReadLock("TTLValidationUtil::hasOntClass", () ->
-                OppModel.INSTANCE.isIndividual(resource) &&
-                        OppModel.INSTANCE.listOntClasses(resource).stream().anyMatch(classes::contains));
+        return OppModel.INSTANCE.isIndividual(resource) &&
+                OppModel.INSTANCE.listOntClasses(resource).stream().anyMatch(classes::contains);
     }
 
     private static boolean validate(Set<OntResource> resources,
@@ -108,15 +107,13 @@ public class TTLValidationUtil {
                                     PsiElement element,
                                     Predicate<OntResource> condition,
                                     String error) {
-        return OppModel.INSTANCE.computeWithReadLock("TTLValidationUtil::validate", () -> {
-            if (!resources.isEmpty() &&
-                    !resources.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) &&
-                    !resources.stream().allMatch(condition)) {
-                holder.registerProblem(element, error, ProblemHighlightType.ERROR);
-                return false;
-            }
-            return true;
-        });
+        if (!resources.isEmpty() &&
+                !resources.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) &&
+                !resources.stream().allMatch(condition)) {
+            holder.registerProblem(element, error, ProblemHighlightType.ERROR);
+            return false;
+        }
+        return true;
     }
 
     public static void validateNamedGraph(Set<OntResource> resources,
@@ -150,7 +147,6 @@ public class TTLValidationUtil {
                 OppModel.INSTANCE.XSD_DECIMAL_INSTANCE::equals,
                 ERROR_MESSAGE_DECIMAL);
     }
-
 
     public static void validateInteger(Set<OntResource> resources, ProblemsHolder holder, PsiElement element) {
         validate(resources,
@@ -234,7 +230,10 @@ public class TTLValidationUtil {
                 TTLResourceUtil.describeUrisJoined(provided);
     }
 
-    public static void validateValues(Set<String> paramValues, String argumentValue, ProblemsHolder holder, PsiElement signatureArgumentElement) {
+    public static void validateValues(Set<String> paramValues,
+                                      String argumentValue,
+                                      ProblemsHolder holder,
+                                      PsiElement signatureArgumentElement) {
         if (paramValues.isEmpty() || argumentValue.isBlank() || paramValues.contains(argumentValue)) {
             return;
         }

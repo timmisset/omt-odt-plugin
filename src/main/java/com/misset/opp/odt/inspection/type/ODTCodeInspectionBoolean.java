@@ -4,7 +4,6 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTBooleanStatement;
 import com.misset.opp.odt.psi.ODTIfBlock;
 import com.misset.opp.ttl.util.TTLValidationUtil;
@@ -25,7 +24,7 @@ public class ODTCodeInspectionBoolean extends LocalInspectionTool {
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
-        return new ModelAwarePsiElementVisitor() {
+        return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTBooleanStatement) {

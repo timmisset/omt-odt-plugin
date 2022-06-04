@@ -6,7 +6,6 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.inspection.ModelAwarePsiElementVisitor;
 import com.misset.opp.odt.psi.ODTReturnStatement;
 import com.misset.opp.odt.psi.impl.ODTDefineCommandStatementImpl;
 import com.misset.opp.odt.psi.impl.ODTDefineQueryStatementImpl;
@@ -36,7 +35,7 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
     @Override
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
                                                    boolean isOnTheFly) {
-        return new ModelAwarePsiElementVisitor() {
+        return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTDefineQueryStatementImpl) {
