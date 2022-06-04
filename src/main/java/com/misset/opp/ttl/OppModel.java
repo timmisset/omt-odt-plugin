@@ -89,6 +89,7 @@ public class OppModel {
     HashMap<OntClass, Set<OntClass>> superClassesCache = new HashMap<>();
     HashMap<String, OntResource> mappedResourcesCache = new HashMap<>();
     HashMap<OntResource, Boolean> isIndividualCache = new HashMap<>();
+    HashMap<OntResource, Boolean> isClassCache = new HashMap<>();
     HashMap<OntClass, List<OntClass>> listSubclassesCache = new HashMap<>();
     HashMap<OntClass, List<OntClass>> listSuperclassesCache = new HashMap<>();
 
@@ -272,6 +273,8 @@ public class OppModel {
                 .filterKeep(resource -> resource.getProperty(RDF_TYPE).getObject().equals(SHACL_PROPERYSHAPE))
                 .forEach((shaclPropertyShape) -> getSimpleResourceStatement(ontologyModel, simpleModelClass, shaclPropertyShape));
         toClassCache.put(ontClass.getURI(), simpleModelClass);
+        isIndividualCache.put(simpleModelClass, false);
+        isClassCache.put(simpleModelClass, true);
 
         createIndividual(simpleModelClass, simpleModelClass.getURI() + "_INSTANCE");
     }
@@ -884,14 +887,24 @@ public class OppModel {
     }
 
     public Boolean isClass(OntResource resource) {
-        return getClass(resource) != null;
+        if (isClassCache.containsKey(resource)) {
+            return isClassCache.get(resource);
+        } else if (isIndividualCache.containsKey(resource)) {
+            return !isIndividualCache.get(resource);
+        }
+
+        boolean b = getClass(resource) != null;
+        isClassCache.put(resource, b);
+        return b;
     }
 
     public Boolean isIndividual(OntResource resource) {
         if (isIndividualCache.containsKey(resource)) {
             return isIndividualCache.get(resource);
+        } else if (isClassCache.containsKey(resource)) {
+            return !isClassCache.get(resource);
         } else {
-            Boolean isIndividual = computeWithReadLock("OppModel::getProperty(OntResource)", resource::isIndividual);
+            Boolean isIndividual = computeWithReadLock("OppModel::isIndividual(OntResource) " + resource, resource::isIndividual);
             isIndividualCache.put(resource, isIndividual);
             return isIndividual;
         }
@@ -906,12 +919,12 @@ public class OppModel {
         if (uri == null) {
             return null;
         }
-        return computeWithReadLock("OppModel::getProperty(Resource)", () -> getModel().getProperty(uri));
+        return computeWithReadLock("OppModel::getProperty(Resource) " + resource, () -> getModel().getProperty(uri));
     }
 
     @Nullable
     public Property getProperty(@Nullable String uri) {
-        return computeWithReadLock("OppModel::getProperty(String)", () -> uri == null ? null : getModel().getProperty(uri));
+        return computeWithReadLock("OppModel::getProperty(String) " + uri, () -> uri == null ? null : getModel().getProperty(uri));
     }
 
     private Set<Resource> listSubjectsWithProperty(Property property,
@@ -1033,6 +1046,8 @@ public class OppModel {
         toClassCache.put(individualURI, ontClass);
         toIndividualCache.put(ontClassURI, individuals);
         getIndividualCache.put(individualURI, individual);
+        isIndividualCache.put(individual, true);
+        isClassCache.put(individual, false);
         return individual;
     }
 
