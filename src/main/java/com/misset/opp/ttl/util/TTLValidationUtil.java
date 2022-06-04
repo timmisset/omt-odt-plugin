@@ -98,7 +98,7 @@ public class TTLValidationUtil {
 
     private static boolean hasOntClass(OntResource resource,
                                        Set<OntClass> classes) {
-        return OppModel.INSTANCE.computeWithReadLock(() ->
+        return OppModel.INSTANCE.computeWithReadLock("TTLValidationUtil::hasOntClass", () ->
                 OppModel.INSTANCE.isIndividual(resource) &&
                         OppModel.INSTANCE.listOntClasses(resource).stream().anyMatch(classes::contains));
     }
@@ -108,7 +108,7 @@ public class TTLValidationUtil {
                                     PsiElement element,
                                     Predicate<OntResource> condition,
                                     String error) {
-        return OppModel.INSTANCE.computeWithReadLock(() -> {
+        return OppModel.INSTANCE.computeWithReadLock("TTLValidationUtil::validate", () -> {
             if (!resources.isEmpty() &&
                     !resources.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) &&
                     !resources.stream().allMatch(condition)) {

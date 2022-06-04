@@ -53,6 +53,7 @@ public class TTLResourceUtil {
     public static List<String> describeUris(Set<? extends Resource> resources, boolean withType) {
         return resources.stream()
                 .map(resource -> describeUri(resource, withType))
+                .filter(Objects::nonNull)
                 .sorted()
                 .collect(Collectors.toList());
     }

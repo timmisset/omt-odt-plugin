@@ -75,7 +75,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
         sb.append(DocumentationMarkup.SECTIONS_START);
         setClassInfo(ontClass, sb);
-        Set<? extends OntResource> instances = OppModel.INSTANCE.computeWithReadLock(() -> ontClass.listInstances().toSet().stream()
+        Set<? extends OntResource> instances = OppModel.INSTANCE.computeWithReadLock("Class documenation", () -> ontClass.listInstances().toSet().stream()
                 .filter(resource -> resource.getURI() != null && !resource.getURI().endsWith("_INSTANCE"))
                 .collect(Collectors.toSet()));
         if (!instances.isEmpty()) {

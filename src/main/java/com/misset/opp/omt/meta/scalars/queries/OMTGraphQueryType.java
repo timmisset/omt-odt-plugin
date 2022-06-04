@@ -17,7 +17,7 @@ public class OMTGraphQueryType extends OMTQueryMetaType {
         final Set<OntResource> resolve = resolve(scalarValue);
         if (resolve.isEmpty() || resolve.stream()
                 .allMatch(resource -> resource != null &&
-                        OppModel.INSTANCE.computeWithReadLock(resource::isIndividual) &&
+                        OppModel.INSTANCE.computeWithReadLock("Validating scalar", resource::isIndividual) &&
                         Optional.ofNullable(OppModel.INSTANCE.toClass(resource))
                                 .map(OppModel.INSTANCE.NAMED_GRAPH_CLASS::equals)
                                 .orElse(false))) {

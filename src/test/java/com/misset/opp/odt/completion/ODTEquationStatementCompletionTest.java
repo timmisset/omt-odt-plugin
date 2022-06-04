@@ -26,8 +26,8 @@ class ODTEquationStatementCompletionTest extends OMTCompletionTestCase {
     @Test
     void testShowsInstancesForInstanceOfClass() {
         OntClass ontClass = OppModel.INSTANCE.getClass("http://ontology#ClassB");
-        ontClass.createIndividual("http://ontology#ClassB_1");
-        ontClass.createIndividual("http://ontology#ClassB_2");
+        oppModel.createIndividual(ontClass, "http://ontology#ClassB_1");
+        oppModel.createIndividual(ontClass, "http://ontology#ClassB_2");
         String content = insideProcedureRunWithPrefixes("/ont:ClassB / ^rdf:type == <caret>");
         configureByText(content, true);
         List<String> lookupStrings = getLookupStrings();

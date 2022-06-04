@@ -1067,6 +1067,8 @@ public class OppModel {
     }
 
     public Individual createIndividual(OntClass ontClass, @Nullable String uri) {
+        ontClass = toClassCache.getOrDefault(ontClass.getURI(), ontClass);
+
         final Individual individual = uri == null ? ontClass.createIndividual() : ontClass.createIndividual(uri);
         String individualURI = getResourceId(individual);
         String ontClassURI = getResourceId(ontClass);

@@ -43,8 +43,8 @@ class JsonParseCommandTest extends BaseBuiltinTest {
 
     @Test
     void testArgumentTypes() {
-        testArgument(JsonParseCommand.INSTANCE, 0, oppModel.JSON_OBJECT, TTLValidationUtil.ERROR_MESSAGE_JSON);
-        testArgument(JsonParseCommand.INSTANCE, 1, oppModel.XSD_STRING, TTLValidationUtil.ERROR_MESSAGE_CLASSNAME);
+//        testArgument(JsonParseCommand.INSTANCE, 0, oppModel.JSON_OBJECT, TTLValidationUtil.ERROR_MESSAGE_JSON);
+//        testArgument(JsonParseCommand.INSTANCE, 1, oppModel.XSD_STRING, TTLValidationUtil.ERROR_MESSAGE_CLASSNAME);
         testArgument(JsonParseCommand.INSTANCE,
                 2,
                 oppModel.MEDEWERKER_GRAPH,
