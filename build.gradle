@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.16'
+version '5.17'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,15 +59,10 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.16</h1>
-        Added #83: <a href="https://github.com/timmisset/omt-odt-plugin/issues/83">anyPredicates property for merge handlers</a><br>
-
-        <h1>Update 5.15</h1>
-        Fixed #76: <a href="https://github.com/timmisset/omt-odt-plugin/issues/76">semicolon inspection</a><br>
-        Fixed #77: <a href="https://github.com/timmisset/omt-odt-plugin/issues/77">getBindToValue NPE</a><br>
-        Fixed #78: <a href="https://github.com/timmisset/omt-odt-plugin/issues/78">Reference error when backspacing a variable name in payload</a><br>
-        Fixed #79: <a href="https://github.com/timmisset/omt-odt-plugin/issues/79">Accept subclass predicates in query paths</a><br>
-        Fixed #80: <a href="https://github.com/timmisset/omt-odt-plugin/issues/80">Remove unnecessary operator removes filter</a><br>
+        <h1>Update 5.17</h1>
+        Added #85: <a href="https://github.com/timmisset/omt-odt-plugin/issues/85">Page freeze when starting to type in ODT fragments</a><br>
+        The issue that caused the IDE to freeze when starting to type has been resolved. If still facing issues first try to clean all local
+        caches.
         """
 }
 tasks {

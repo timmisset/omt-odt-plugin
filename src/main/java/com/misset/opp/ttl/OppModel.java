@@ -365,17 +365,6 @@ public class OppModel {
      * write lock.
      * Make sure to also use this when calling methods directly on ontology members such as OntClass.listIndividuals etc.
      */
-    public void runWithReadLock(String description, Runnable runnable) {
-        LoggerUtil.runWithLogger(LOGGER, description, () -> {
-            lock.readLock().lock();
-            try {
-                runnable.run();
-            } finally {
-                lock.readLock().unlock();
-            }
-        });
-    }
-
     public <T> T computeWithReadLock(String description, Supplier<T> compute) {
         return LoggerUtil.computeWithLogger(LOGGER, description, () -> {
             lock.readLock().lock();
