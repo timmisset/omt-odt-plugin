@@ -63,6 +63,10 @@ patchPluginXml {
         Added #85: <a href="https://github.com/timmisset/omt-odt-plugin/issues/85">Page freeze when starting to type in ODT fragments</a><br>
         The issue that caused the IDE to freeze when starting to type has been resolved. If still facing issues first try to clean all local
         caches.
+        Please note that this fix is not a solution for the issue with large ODT fragments that result in very slow behavior when modifying the text. That issue
+        is reported to Jetbrains but has not yet been resolved. For more info on that item, check: https://github.com/timmisset/omt-odt-plugin/issues/75
+        
+        Fixed #84: <a href="https://github.com/timmisset/omt-odt-plugin/issues/84">ODTStyleInspectionUnnecessaryTrueCondition IOOBE</a>
         """
 }
 tasks {

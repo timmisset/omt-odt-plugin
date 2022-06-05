@@ -30,6 +30,22 @@ class ODTStyleInspectionUnnecessaryTrueConditionTest extends OMTInspectionTestCa
     }
 
     @Test
+    void testShowsWarningWhenInsideQuery() {
+        String content = insideQueryWithPrefixes("$x == true AND $y == true");
+        configureByText(content);
+        assertHasWarning("$x == true can be simplified to $x");
+        assertHasWarning("$y == true can be simplified to $y");
+    }
+
+    @Test
+    void testShowsNoWarningWhenInsideBooleanOperator() {
+        String content = insideQueryWithPrefixes("AND($x == true, $y == true)");
+        configureByText(content);
+        assertNoWarning("$x == true can be simplified to $x");
+        assertNoWarning("$y == true can be simplified to $y");
+    }
+
+    @Test
     void testAppliesQuickfix() {
         configureByText(insideProcedureRunWithPrefixes("IF $x == true { }"));
         invokeQuickFixIntention("Replace with: $x");

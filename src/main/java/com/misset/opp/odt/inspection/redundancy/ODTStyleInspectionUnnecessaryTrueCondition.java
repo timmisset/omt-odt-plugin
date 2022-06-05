@@ -10,11 +10,18 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.builtin.operators.BuiltInBooleanOperator;
 import com.misset.opp.odt.psi.ODTQuery;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableEquationStatement;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Code inspection for all unused declarations
@@ -42,8 +49,21 @@ public class ODTStyleInspectionUnnecessaryTrueCondition extends LocalInspectionT
     private void inspectBaseOperator(@NotNull ProblemsHolder holder,
                                      @NotNull ODTResolvableEquationStatement equationStatement) {
 
-        ODTQuery leftHand = equationStatement.getQueryList().get(0);
-        ODTQuery rightHand = equationStatement.getQueryList().get(1);
+        Boolean insideBooleanOperator = Optional.ofNullable(PsiTreeUtil.getParentOfType(equationStatement, ODTCall.class))
+                .map(PsiCall::getCallable)
+                .map(callable -> callable instanceof BuiltInBooleanOperator)
+                .orElse(false);
+        if (insideBooleanOperator) {
+            return;
+        }
+
+        List<ODTQuery> queryList = equationStatement.getQueryList();
+        if (queryList.size() != 2) {
+            return;
+        }
+
+        ODTQuery leftHand = queryList.get(0);
+        ODTQuery rightHand = queryList.get(1);
 
         if (leftHand.getText().equals("true")) {
             addWarning(holder, equationStatement, rightHand);

@@ -29,7 +29,6 @@ public class LoggerUtil {
                               ZonedDateTime end) {
         long millis = Duration.between(start, end).toMillis();
         if (millis > 100) {
-            System.out.println(methodName + " took " + millis + "ms");
             logger.info(methodName + " took " + millis + "ms");
         } else {
             logger.debug(methodName + " took " + millis + "ms");
