@@ -2,6 +2,7 @@ package com.misset.opp.omt.psi.impl;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.search.SearchScope;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCallable;
@@ -87,4 +88,40 @@ class OMTFileImplTest extends OMTTestCase {
         });
     }
 
+    @Test
+    void testGetUseScopeShouldReturnImportingFileAndSelf() {
+        PsiFile exportingFile = configureByText("exportingFile.omt", "queries:\n" +
+                "   DEFINE QUERY memberA => '';\n" +
+                "   DEFINE QUERY memberB => '';\n");
+        PsiFile importingFile = myFixture.addFileToProject("index.omt", "import:\n" +
+                "   exportingFile.omt:\n" +
+                "   - memberA\n" +
+                "   - memberB\n");
+        underProgress(() -> {
+            SearchScope useScope = exportingFile.getUseScope();
+            assertTrue(useScope.contains(exportingFile.getVirtualFile()));
+            assertTrue(useScope.contains(importingFile.getVirtualFile()));
+        });
+    }
+
+    @Test
+    void testGetUseScopeShouldReturnImportingTree() {
+        PsiFile exportingFile = configureByText("exportingFile.omt", "queries:\n" +
+                "   DEFINE QUERY memberA => '';\n" +
+                "   DEFINE QUERY memberB => '';\n");
+        PsiFile importingFile = myFixture.addFileToProject("index.omt", "import:\n" +
+                "   exportingFile.omt:\n" +
+                "   - memberA\n" +
+                "   - memberB\n");
+        PsiFile secondaryImportingFile = myFixture.addFileToProject("index2.omt", "import:\n" +
+                "   index.omt:\n" +
+                "   - memberA\n" +
+                "   - memberB\n");
+        underProgress(() -> {
+            SearchScope useScope = exportingFile.getUseScope();
+            assertTrue(useScope.contains(exportingFile.getVirtualFile()));
+            assertTrue(useScope.contains(importingFile.getVirtualFile()));
+            assertTrue(useScope.contains(secondaryImportingFile.getVirtualFile()));
+        });
+    }
 }
