@@ -73,4 +73,13 @@ class ODTUnassignedVariableAssignmentInspectionTest extends OMTInspectionTestCas
         configureByText(content);
         assertHasWarning("$variable is used before it is assigned a value");
     }
+
+    @Test
+    void testHasNoWarningForAssigningAttributes() {
+        String content = insideProcedureRunWithPrefixes("VAR $variable;\n" +
+                "$variable / <json:attribute> = 'myValue';\n"
+        );
+        configureByText(content);
+        assertNoWarning("$variable is used before it is assigned a value");
+    }
 }
