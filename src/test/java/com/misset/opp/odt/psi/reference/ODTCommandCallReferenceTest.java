@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.testCase.OMTTestCase;
@@ -22,6 +23,22 @@ class ODTCommandCallReferenceTest extends OMTTestCase {
         configureByText(content);
         // is resolved to the DEFINE statement
         ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof Callable));
+    }
+
+    @Test
+    void testODTReferenceCannotResolveToDefineCommandInsideScriptBelowCurrentCommand() {
+        String content = insideActivityWithPrefixes(
+                "onStart: |\n" +
+                        "   DEFINE COMMAND commandA => { @co<caret>mmandB(); }\n" +
+                        "   DEFINE COMMAND commandB => { @LOG('test'); }\n" +
+                        "   \n" +
+                        ""
+        );
+        configureByText(content);
+        // is resolved to the DEFINE statement
+        ReadAction.run(() -> Assertions.assertNull(
+                myFixture.findElementByText("@commandB", ODTCall.class).getReference().resolve())
+        );
     }
 
     @Test

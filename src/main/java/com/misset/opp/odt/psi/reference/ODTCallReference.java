@@ -84,7 +84,8 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
                 // must have the same name and cannot contain itself
                 // i.e. a call from an ODTDefineStatement must always refer to one listed above it
                 .filter(odtDefineStatement -> defineStatement != odtDefineStatement &&
-                        odtDefineStatement.getCallId().equals(myElement.getCallId()))
+                        odtDefineStatement.getCallId().equals(myElement.getCallId()) &&
+                        odtDefineStatement.getTextOffset() < myElement.getTextOffset())
                 .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
                 .map(odtDefineStatement -> resolveToOriginalElement ? odtDefineStatement.getOriginalElement() : odtDefineStatement)
                 .map(PsiElementResolveResult::createResults);
