@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTNegatedStep;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 

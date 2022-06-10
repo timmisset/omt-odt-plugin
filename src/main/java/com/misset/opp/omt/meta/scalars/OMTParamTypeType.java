@@ -21,7 +21,7 @@ import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.references.OMTParamTypePrefixReference;
 import com.misset.opp.omt.util.PatternUtil;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import com.misset.opp.ttl.util.TTLValueParserUtil;
 import com.misset.opp.util.LoggerUtil;

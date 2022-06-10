@@ -17,7 +17,7 @@ import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.shared.refactoring.RefactoringUtil;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;

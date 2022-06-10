@@ -1,7 +1,7 @@
 package com.misset.opp.resolvable.local;
 
 import com.intellij.openapi.project.Project;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 

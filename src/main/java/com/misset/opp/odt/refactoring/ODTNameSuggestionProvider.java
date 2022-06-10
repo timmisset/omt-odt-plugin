@@ -12,7 +12,7 @@ import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.resolvable.Resolvable;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;

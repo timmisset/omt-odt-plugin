@@ -1,4 +1,4 @@
-package com.misset.opp.ttl;
+package com.misset.opp.ttl.model;
 
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Resource;

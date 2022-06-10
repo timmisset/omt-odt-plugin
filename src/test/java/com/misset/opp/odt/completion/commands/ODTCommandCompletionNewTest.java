@@ -1,7 +1,7 @@
 package com.misset.opp.odt.completion.commands;
 
 import com.misset.opp.testCase.OMTCompletionTestCase;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

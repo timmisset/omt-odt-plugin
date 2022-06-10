@@ -11,7 +11,7 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.stubs.StubIndex;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
 import com.misset.opp.ttl.util.TTLScopeUtil;

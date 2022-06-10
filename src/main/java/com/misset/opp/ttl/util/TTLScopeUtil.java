@@ -4,8 +4,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.misset.opp.ttl.OppModel;
-import com.misset.opp.ttl.OppModelLoader;
+import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelLoader;
 
 import java.util.Collections;
 import java.util.List;

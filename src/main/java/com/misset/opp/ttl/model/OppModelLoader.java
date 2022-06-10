@@ -1,4 +1,4 @@
-package com.misset.opp.ttl;
+package com.misset.opp.ttl.model;
 
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.progress.ProgressIndicator;

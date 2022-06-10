@@ -9,7 +9,7 @@ import com.misset.opp.omt.meta.scalars.values.OMTLoadablePathMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTLoadableSchemaMetaType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.model.YamlMetaType;

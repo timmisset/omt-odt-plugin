@@ -3,7 +3,7 @@ package com.misset.opp.odt.inspection.type;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.testCase.OMTInspectionTestCase;
 import com.misset.opp.testCase.OMTOntologyTestCase;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

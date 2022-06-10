@@ -8,7 +8,7 @@ import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlModelItemDelegate;
 import com.misset.opp.omt.psi.impl.yaml.YAMLOMTKeyValueImpl;
 import com.misset.opp.testCase.OMTInspectionTestCase;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

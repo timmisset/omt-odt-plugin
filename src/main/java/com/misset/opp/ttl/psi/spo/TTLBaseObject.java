@@ -7,7 +7,7 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.psi.*;
 import com.misset.opp.ttl.psi.iri.TTLIriHolder;
 import com.misset.opp.ttl.stubs.object.TTLObjectStub;

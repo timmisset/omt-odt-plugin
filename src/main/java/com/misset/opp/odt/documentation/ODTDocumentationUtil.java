@@ -10,7 +10,7 @@ import com.misset.opp.odt.psi.ODTDefinePrefix;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.prefix.PrefixUtil;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;

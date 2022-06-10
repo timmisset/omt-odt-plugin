@@ -13,7 +13,7 @@ import com.intellij.psi.util.PsiModificationTracker;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.reference.ODTTTLSubjectPredicateReference;
 import com.misset.opp.odt.psi.reference.ODTTTLSubjectReference;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.jetbrains.annotations.NotNull;

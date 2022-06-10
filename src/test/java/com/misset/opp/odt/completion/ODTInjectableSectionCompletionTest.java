@@ -2,7 +2,7 @@ package com.misset.opp.odt.completion;
 
 import com.misset.opp.testCase.OMTCompletionTestCase;
 import com.misset.opp.testCase.OMTOntologyTestCase;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

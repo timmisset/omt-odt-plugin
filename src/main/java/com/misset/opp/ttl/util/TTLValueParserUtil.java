@@ -1,6 +1,6 @@
 package com.misset.opp.ttl.util;
 
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 

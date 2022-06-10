@@ -4,7 +4,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.builtin.operators.BuiltInOperator;
 import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import com.misset.opp.testCase.OMTOntologyTestCase;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

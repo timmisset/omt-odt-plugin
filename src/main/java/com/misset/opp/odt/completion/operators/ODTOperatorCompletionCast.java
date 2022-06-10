@@ -9,7 +9,7 @@ import com.misset.opp.odt.builtin.operators.CastOperator;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTOperatorCall;
 import com.misset.opp.odt.psi.ODTSignature;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 

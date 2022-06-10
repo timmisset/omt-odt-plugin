@@ -21,7 +21,7 @@ import com.misset.opp.resolvable.local.Commit;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.resolvable.local.Rollback;
 import com.misset.opp.resolvable.psi.PsiResolvableScript;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;

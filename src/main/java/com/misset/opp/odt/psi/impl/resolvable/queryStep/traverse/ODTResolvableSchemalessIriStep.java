@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.misset.opp.odt.psi.ODTSchemalessIriStep;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 

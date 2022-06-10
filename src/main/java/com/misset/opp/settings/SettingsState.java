@@ -11,7 +11,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.misset.opp.omt.OMTFileType;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import net.minidev.json.JSONArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

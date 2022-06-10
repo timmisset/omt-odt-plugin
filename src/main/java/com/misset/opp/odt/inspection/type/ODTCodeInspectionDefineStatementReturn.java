@@ -10,7 +10,7 @@ import com.misset.opp.odt.psi.ODTReturnStatement;
 import com.misset.opp.odt.psi.impl.ODTDefineCommandStatementImpl;
 import com.misset.opp.odt.psi.impl.ODTDefineQueryStatementImpl;
 import com.misset.opp.resolvable.Resolvable;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;

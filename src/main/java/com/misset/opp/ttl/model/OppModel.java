@@ -1,4 +1,4 @@
-package com.misset.opp.ttl;
+package com.misset.opp.ttl.model;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

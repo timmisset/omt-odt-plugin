@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.Individual;
 import org.junit.jupiter.api.Assertions;

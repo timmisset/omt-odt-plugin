@@ -8,7 +8,7 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.stubs.StubIndex;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.psi.spo.TTLSPO;
 import com.misset.opp.ttl.stubs.index.TTLObjectStubIndex;

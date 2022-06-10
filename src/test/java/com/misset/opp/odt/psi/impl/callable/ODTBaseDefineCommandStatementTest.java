@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.impl.callable;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.testCase.ODTTestCase;
 import com.misset.opp.testCase.OMTOntologyTestCase;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.misset.opp.documentation.DocumentationProvider;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;

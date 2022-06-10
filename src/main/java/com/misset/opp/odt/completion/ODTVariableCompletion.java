@@ -20,7 +20,7 @@ import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
 import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.shared.providers.CallableLocalVariableTypeProvider;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;

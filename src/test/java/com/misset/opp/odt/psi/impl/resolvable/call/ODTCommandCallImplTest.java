@@ -6,7 +6,7 @@ import com.misset.opp.odt.builtin.commands.BuiltInCommand;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.testCase.OMTTestCase;
-import com.misset.opp.ttl.OppModel;
+import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
