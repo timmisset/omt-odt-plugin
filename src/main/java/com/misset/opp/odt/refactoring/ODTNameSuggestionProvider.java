@@ -135,6 +135,7 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
                 .map(this::getSuperClasses)
                 .flatMap(Collection::stream)
                 .distinct()
+                .filter(Objects::nonNull)
                 .filter(s -> s.length() > 2)
                 .map(this::camelCase)
                 .collect(Collectors.toList());
