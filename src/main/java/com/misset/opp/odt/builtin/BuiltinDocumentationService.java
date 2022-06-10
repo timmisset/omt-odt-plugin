@@ -24,7 +24,7 @@ public final class BuiltinDocumentationService {
         ODTApiDocumentationService documentationService = ODTApiDocumentationService.getInstance(project);
 
         String level1 = builtin.isCommand() ? "Commands" : "Operators";
-        String path = level1 + "/" + builtin.getName();
+        String path = level1 + "/" + builtin.getCallId();
 
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
