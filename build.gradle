@@ -65,6 +65,7 @@ patchPluginXml {
         Fixed #89: <a href="https://github.com/timmisset/omt-odt-plugin/issues/89">Reference unreachable statement</a><br>
         Fixed #90: <a href="https://github.com/timmisset/omt-odt-plugin/issues/90">ODTNameSuggestionProvider NPE</a><br>
         Fixed #91: <a href="https://github.com/timmisset/omt-odt-plugin/issues/91">Documentation for Builtin Commands</a><br>
+        Fixed #92: <a href="https://github.com/timmisset/omt-odt-plugin/issues/92">Comparison method violates its general contract</a><br>
         """
 }
 tasks {

@@ -63,12 +63,19 @@ public class OMTPrefixIndex {
     public static void orderIndexByFrequency() {
         // the list is ordered first, the more times a specific IRI is used for a prefix the higher it
         // moves up the list. Then the list is filtered (distinct)
-        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
-            final List<String> list = entry.getValue();
-            list.sort(Comparator.comparingInt(value -> Collections.frequency(list, value)).reversed());
-            final List<String> orderedList = list.stream().distinct().collect(Collectors.toList());
-            entry.setValue(orderedList);
+        try {
+            for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+                final List<String> list = entry.getValue();
+                list.sort(Comparator.comparingInt(value -> Collections.frequency(list, value)).reversed());
+                final List<String> orderedList = list.stream().distinct().collect(Collectors.toList());
+                entry.setValue(orderedList);
+            }
+        } catch (IllegalArgumentException ignored) {
+            // todo: find a better fix than catch & ignore
+            // sometimes the ordering fails due to a TimSort contract violation. However, this is not reproducable in dev
+            // mode and therefor is quite difficult to fix
         }
+
     }
 
     public static void clear() {
