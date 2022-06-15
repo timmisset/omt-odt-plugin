@@ -91,7 +91,7 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                         .map(Individual::getOntClass)
                         .map(Resource::getURI)
                         .filter(Objects::nonNull)
-                        .map(OppModel.INSTANCE::getClassIndividuals)
+                        .map(OppModel.INSTANCE::toIndividuals)
                         .flatMap(Collection::stream)
                         .filter(this::isRealInstance)
                         .map(

@@ -121,7 +121,7 @@ public class ODTDocumentationUtil {
                         uri = PrefixUtil.getFullyQualifiedUri((ODTDefinePrefix) prefix.getParent(), localName);
                     }
                     return Optional.ofNullable(uri)
-                            .map(OppModel.INSTANCE::getClassIndividuals)
+                            .map(OppModel.INSTANCE::toIndividuals)
                             .stream()
                             .flatMap(Collection::stream)
                             .collect(Collectors.toSet());

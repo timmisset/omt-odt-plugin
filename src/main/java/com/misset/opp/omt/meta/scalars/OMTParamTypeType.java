@@ -205,7 +205,7 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
         return LoggerUtil.computeWithLogger(LOGGER, "Calculating param type for " + type, () -> {
             // resolve from URI
             return Optional.ofNullable(getQualifiedUri(element, type))
-                    .map(OppModel.INSTANCE::getClassIndividuals)
+                    .map(OppModel.INSTANCE::toIndividuals)
                     .stream()
                     .flatMap(Collection::stream)
                     .map(OntResource.class::cast)

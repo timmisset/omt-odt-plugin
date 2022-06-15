@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 class ODTTraverseCompletionTest extends OMTCompletionTestCase {
-    // todo: add some more tests for different model traversions
-
     @Test
     void testQueryStepTraversion() {
         configureByText(insideQueryWithPrefixes("/ont:ClassA / <caret>"), true);

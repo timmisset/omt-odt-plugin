@@ -43,7 +43,7 @@ class AddToCommandTest extends BaseBuiltinTest {
     @Test
     void testValidateShowsWarningWhenNonMultiple() {
         final PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_STRING_INSTANCE));
-        doReturn(new Pair<>(oppModel.getClassIndividuals("http://ontology#ClassA"),
+        doReturn(new Pair<>(oppModel.toIndividuals("http://ontology#ClassA"),
                 oppModel.getProperty("http://ontology#classPredicate")))
                 .when(call).getSignatureLeadingInformation(0);
         AddToCommand.INSTANCE.validate(call, holder);

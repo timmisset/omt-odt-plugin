@@ -23,7 +23,7 @@ class OMTShapeQueryTypeTest extends OMTInspectionTestCase {
     protected void setUp() {
         super.setUp();
         OMTOntologyTestCase.initOntologyModel();
-        OppModel.INSTANCE.GRAPH_SHAPE.createIndividual("http://shapeA");
+        OppModel.INSTANCE.createIndividual(OppModel.INSTANCE.GRAPH_SHAPE, "http://shapeA");
     }
 
     @Test

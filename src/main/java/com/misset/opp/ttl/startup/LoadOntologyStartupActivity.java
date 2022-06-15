@@ -175,7 +175,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                         (instanceUri, typeUri) -> {
                             OntClass ontClass = OppModel.INSTANCE.getClass(typeUri);
                             if (ontClass != null) {
-                                ontClass.createIndividual(instanceUri);
+                                OppModel.INSTANCE.createIndividual(ontClass, instanceUri);
                             }
                         }
                 );

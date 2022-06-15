@@ -33,8 +33,8 @@ class NewGraphCommandTest extends BaseBuiltinTest {
 
     @Test
     void testArgumentTypes() {
-        final Individual shapeIndividual = OppModel.INSTANCE.GRAPH_SHAPE.createIndividual(
-                "http://ontology#someGraphShape");
+        final Individual shapeIndividual =
+                oppModel.createIndividual(OppModel.INSTANCE.GRAPH_SHAPE, "http://ontology#someGraphShape");
         testArgument(NewGraphCommand.INSTANCE, 0, shapeIndividual, TTLValidationUtil.ERROR_MESSAGE_GRAPH_SHAPE);
     }
 

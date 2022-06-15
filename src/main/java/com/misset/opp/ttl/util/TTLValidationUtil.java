@@ -87,7 +87,7 @@ public class TTLValidationUtil {
         if (!resources.stream().allMatch(
                 ontResource -> hasOntClass(ontResource, classes)
         )) {
-            Set<OntResource> acceptableIndividuals = classes.stream().map(ontClass -> OppModel.INSTANCE.getClassIndividuals(ontClass.getURI()))
+            Set<OntResource> acceptableIndividuals = classes.stream().map(ontClass -> OppModel.INSTANCE.toIndividuals(ontClass.getURI()))
                     .flatMap(Collection::stream)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());

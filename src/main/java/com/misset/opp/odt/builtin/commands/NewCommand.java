@@ -7,6 +7,7 @@ import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class NewCommand extends BuiltInCommand {
     private NewCommand() { }
@@ -30,7 +31,10 @@ public class NewCommand extends BuiltInCommand {
     @Override
     protected Set<OntResource> resolveFrom(PsiCall call) {
         // create an instance from the class
-        return OppModel.INSTANCE.toIndividuals(call.resolveSignatureArgument(0));
+        return OppModel.INSTANCE.toIndividuals(call.resolveSignatureArgument(0))
+                .stream()
+                .map(OntResource.class::cast)
+                .collect(Collectors.toSet());
     }
 
     @Override

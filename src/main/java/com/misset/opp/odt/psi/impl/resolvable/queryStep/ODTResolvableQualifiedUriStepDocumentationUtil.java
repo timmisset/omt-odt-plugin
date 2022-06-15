@@ -12,7 +12,6 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -152,7 +151,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
     private static void setClassInfo(OntClass ontClass, StringBuilder sb) {
         // the order is important for super and subclasses, use list instead of set
-        List<OntClass> superClasses = OppModel.INSTANCE.listSuperClasses(ontClass);
+        Set<OntClass> superClasses = OppModel.INSTANCE.listSuperClasses(ontClass);
         if (!superClasses.isEmpty()) {
             DocumentationProvider.addKeyValueSection("Superclasses:",
                     superClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))
@@ -161,7 +160,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
                     , sb);
         }
 
-        List<OntClass> subClasses = OppModel.INSTANCE.listSubclasses(ontClass);
+        Set<OntClass> subClasses = OppModel.INSTANCE.listSubclasses(ontClass);
         if (!subClasses.isEmpty()) {
             DocumentationProvider.addKeyValueSection("Subclasses:",
                     subClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))

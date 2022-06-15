@@ -74,9 +74,9 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
 
         // check if owl:Thing is part of the equation
         if (leftSide.stream().anyMatch(OppModel.INSTANCE.OWL_THING_INSTANCE::equals)) {
-            return OppModel.INSTANCE.toType(rightSide, resource);
+            return OppModel.INSTANCE.toType(rightSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
         } else if (rightSide.stream().anyMatch(OppModel.INSTANCE.OWL_THING_INSTANCE::equals)) {
-            return OppModel.INSTANCE.toType(leftSide, resource);
+            return OppModel.INSTANCE.toType(leftSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
         }
 
         // not a direct match, there might be match based on class types. If the left-side is a subclass of the right-side
@@ -85,7 +85,7 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
         if (leftSide.stream().allMatch(OppModel.INSTANCE::isClass) &&
                 rightSide.stream().allMatch(OppModel.INSTANCE::isClass)) {
             Set<OntClass> ontClasses = intersectBothSideSuperClasses(OppModel.INSTANCE.toClasses(leftSide), OppModel.INSTANCE.toClasses(rightSide));
-            return OppModel.INSTANCE.toType(ontClasses.stream().map(OntResource.class::cast).collect(Collectors.toSet()), resource);
+            return OppModel.INSTANCE.toType(ontClasses, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
         }
         return Collections.emptySet();
     }

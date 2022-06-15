@@ -5,6 +5,7 @@ import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CastOperator extends BuiltInOperator {
     private CastOperator() {
@@ -28,6 +29,9 @@ public class CastOperator extends BuiltInOperator {
         if (argument.contains(OppModel.INSTANCE.IRI)) {
             return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
         }
-        return OppModel.INSTANCE.toIndividuals(argument);
+        return OppModel.INSTANCE.toIndividuals(argument)
+                .stream()
+                .map(OntResource.class::cast)
+                .collect(Collectors.toSet());
     }
 }

@@ -52,7 +52,7 @@ public class JsonParseCommand extends BuiltInCommand {
                                         PsiCall call) {
         return call.resolveSignatureArgument(1).stream()
                 .map(Objects::toString)
-                .map(OppModel.INSTANCE::getClassIndividuals)
+                .map(OppModel.INSTANCE::toIndividuals)
                 .flatMap(Collection::stream)
                 .map(individual -> Set.of((OntResource) individual))
                 .findFirst()
