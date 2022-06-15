@@ -188,18 +188,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
     public @NotNull Set<OntResource> resolve() {
         return LoggerUtil.computeWithLogger(LOGGER, "Resolving " + getText(), () -> {
             if (getQueryStep() != null) {
-                if (isPartOfFilter()) {
-                    // Filters are evaluated more often to determine which of the input resources
-                    // survive the filter. Therefore, caching the outcome of one would mean they
-                    // all either pass or fail.
-                    return filter(getQueryStep().resolve());
-                } else {
-                    return CachedValuesManager.getCachedValue(this,
-                            RESOLVED_VALUE,
-                            () -> getODTFile()
-                                    .getCachedValue(filter(getQueryStep().resolve()),
-                                            OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
-                }
+                return filter(getQueryStep().resolve());
             } else {
                 return Collections.emptySet();
             }
