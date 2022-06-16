@@ -2,11 +2,15 @@ package com.misset.opp.omt.meta.providers;
 
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.util.CachedValue;
+import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
+import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.LocalVariable;
+import com.misset.opp.resolvable.psi.PsiResolvableQuery;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLValue;
 
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Whenever a LocalVariable is available, the (usually) onChange script makes the variables available
@@ -18,4 +22,17 @@ public interface OMTLocalVariableTypeProvider extends OMTMetaTypeStructureProvid
             "OMTLocalVariableTypeProvider");
 
     List<LocalVariable> getLocalVariables(YAMLMapping mapping);
+
+    YAMLValue getTypeProviderMap(YAMLMapping mapping);
+
+    default Set<OntResource> getType(YAMLMapping mapping) {
+        final YAMLValue yamlValue = getTypeProviderMap(mapping);
+        return Optional.ofNullable(yamlValue)
+                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableQuery.class))
+                .orElse(Collections.emptySet())
+                .stream()
+                .map(Resolvable::resolve)
+                .findFirst()
+                .orElse(Collections.emptySet());
+    }
 }

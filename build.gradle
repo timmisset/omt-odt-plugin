@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.18'
+version '5.19'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,13 +59,8 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.18</h1>
-        Fixed #87: <a href="https://github.com/timmisset/omt-odt-plugin/issues/87">FindUsages resolves to index.omt only</a><br>
-        Fixed #88: <a href="https://github.com/timmisset/omt-odt-plugin/issues/88">Variable used before value assignment inspection</a><br>
-        Fixed #89: <a href="https://github.com/timmisset/omt-odt-plugin/issues/89">Reference unreachable statement</a><br>
-        Fixed #90: <a href="https://github.com/timmisset/omt-odt-plugin/issues/90">ODTNameSuggestionProvider NPE</a><br>
-        Fixed #91: <a href="https://github.com/timmisset/omt-odt-plugin/issues/91">Documentation for Builtin Commands</a><br>
-        Fixed #92: <a href="https://github.com/timmisset/omt-odt-plugin/issues/92">Comparison method violates its general contract</a><br>
+        <h1>Update 5.19</h1>
+        Added #93: <a href="https://github.com/timmisset/omt-odt-plugin/issues/93">onSelect DynamicActionQuery variables</a><br>
         """
 }
 tasks {

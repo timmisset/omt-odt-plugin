@@ -5,13 +5,13 @@ import org.jetbrains.yaml.psi.YAMLPsiElement;
 
 import java.util.List;
 
-public class OMTOnChangeScriptMetaType extends OMTLocalVariableProviderMetaType {
-    public OMTOnChangeScriptMetaType() {
-        super("Script, triggers when the value changes");
+public class OMTOnSelectScriptMetaType extends OMTLocalVariableProviderMetaType {
+    public OMTOnSelectScriptMetaType() {
+        super("onSelect");
     }
 
     @Override
     protected List<String> getLocalVariables(YAMLPsiElement element) {
-        return List.of("$newValue", "$oldValue");
+        return List.of("$value");
     }
 }

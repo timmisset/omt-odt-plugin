@@ -135,6 +135,12 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements
     }
 
     @Override
+    public YAMLValue getTypeProviderMap(YAMLMapping mapping) {
+        // not used
+        return null;
+    }
+
+    @Override
     public String getDocumentationClass() {
         return "VariableDeclaration";
     }

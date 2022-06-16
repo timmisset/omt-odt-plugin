@@ -37,7 +37,7 @@ public abstract class OMTLocalVariableProviderMetaType extends OMTScriptMetaType
         super(typeName);
     }
 
-    protected abstract List<String> getLocalVariables();
+    protected abstract List<String> getLocalVariables(YAMLPsiElement element);
 
     @Override
     public Map<String, LocalVariable> getLocalVariableMap(YAMLPsiElement element) {
@@ -50,7 +50,7 @@ public abstract class OMTLocalVariableProviderMetaType extends OMTScriptMetaType
         return contextProviders.entrySet().stream()
                 .map(entry -> entry.getValue().getLocalVariables(entry.getKey()))
                 .flatMap(Collection::stream)
-                .filter(localVariable -> getLocalVariables().contains(localVariable.getName()))
+                .filter(localVariable -> getLocalVariables(element).contains(localVariable.getName()))
                 .collect(Collectors.toMap(LocalVariable::getName, localVariable -> localVariable, (t, t2) -> t));
     }
 }

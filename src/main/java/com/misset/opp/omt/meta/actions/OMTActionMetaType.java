@@ -7,23 +7,24 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
+import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
-import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.omt.meta.scalars.scripts.OMTOnSelectScriptMetaType;
+import com.misset.opp.resolvable.local.LocalVariable;
+import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.meta.model.YamlStringType;
 import org.jetbrains.yaml.psi.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 
-public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvider, OMTDocumented {
+public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvider, OMTDocumented, OMTLocalVariableTypeProvider {
     private final boolean mapped;
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
@@ -38,7 +39,7 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
         features.put("disabled", OMTBooleanQueryType::new);
         features.put("busyDisabled", OMTBooleanQueryType::new);
         features.put("dynamicActionQuery", OMTQueryMetaType::new);
-        features.put("onSelect", OMTScriptMetaType::new);
+        features.put("onSelect", OMTOnSelectScriptMetaType::new);
     }
 
     public OMTActionMetaType(boolean mapped) {
@@ -99,5 +100,22 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
     @Override
     public String getDocumentationClass() {
         return "Action";
+    }
+
+    public YAMLValue getTypeProviderMap(@NotNull YAMLMapping mapping) {
+        return Optional.ofNullable(mapping.getKeyValueByKey("dynamicActionQuery"))
+                .map(YAMLKeyValue::getValue)
+                .orElse(null);
+    }
+
+    @Override
+    public List<LocalVariable> getLocalVariables(YAMLMapping mapping) {
+        if (mapping.getKeyValueByKey("dynamicActionQuery") == null) {
+            return Collections.emptyList();
+        }
+        Set<OntResource> type = getType(mapping);
+        return List.of(
+                new LocalVariable("$value", "Individual result of the DynamicActionQuery", type)
+        );
     }
 }

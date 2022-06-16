@@ -5,13 +5,10 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
-import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.references.OMTPayloadQueryReferenceMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTOnChangeScriptMetaType;
-import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.LocalVariable;
-import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
@@ -79,18 +76,7 @@ public class OMTPayloadItemMetaType extends OMTMetaType implements
         );
     }
 
-    private Set<OntResource> getType(YAMLMapping mapping) {
-        final YAMLValue yamlValue = getTypeProviderMap(mapping);
-        return Optional.ofNullable(yamlValue)
-                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableQuery.class))
-                .orElse(Collections.emptySet())
-                .stream()
-                .map(Resolvable::resolve)
-                .findFirst()
-                .orElse(Collections.emptySet());
-    }
-
-    private YAMLValue getTypeProviderMap(@NotNull YAMLMapping mapping) {
+    public YAMLValue getTypeProviderMap(@NotNull YAMLMapping mapping) {
         return Optional.ofNullable(mapping.getKeyValueByKey("value"))
                 .map(YAMLKeyValue::getValue)
                 .orElse(null);
