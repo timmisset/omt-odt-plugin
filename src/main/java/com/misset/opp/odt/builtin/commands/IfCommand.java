@@ -2,7 +2,7 @@ package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +45,7 @@ public class IfCommand extends BuiltInCommand {
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+            return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
         }
         return null;
     }

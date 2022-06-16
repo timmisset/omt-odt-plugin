@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.DocumentationMarkup;
 import com.misset.opp.documentation.DocumentationProvider;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -95,7 +96,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         predicatesTable.append("<table>");
         boolean hasValues = false;
         for (Property property : properties) {
-            if (!property.equals(OppModel.INSTANCE.RDF_TYPE)) {
+            if (!property.equals(OppModelConstants.RDF_TYPE)) {
                 RDFNode propertyValue = resource.getPropertyValue(property);
                 if (propertyValue == null && resource instanceof OntClass) {
                     propertyValue = getFromSuperclass((OntClass) resource, property);
@@ -145,7 +146,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
     private static Set<Property> getProperties(OntResource resource) {
         return OppModel.INSTANCE.listPredicates(OppModel.INSTANCE.toClass(resource))
                 .stream()
-                .filter(property -> !OppModel.INSTANCE.classModelProperties.contains(property))
+                .filter(property -> !OppModelConstants.CLASS_MODEL_PROPERTIES.contains(property))
                 .collect(Collectors.toSet());
     }
 

@@ -11,7 +11,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.misset.opp.omt.OMTFileType;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import net.minidev.json.JSONArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,10 +77,11 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
             settingsState.odtAPIPath = project.getBasePath() + "/core/odt/API.md";
         }
 
-        if (!settingsState.modelInstanceMapping.containsKey(NAMED_GRAPH_URI_PREFIX)) {
+        if (!settingsState.modelInstanceMapping.containsKey(NAMED_GRAPH_URI_PREFIX) &&
+                OppModelConstants.NAMED_GRAPH_CLASS != null) {
             settingsState.modelInstanceMapping.put(
                     NAMED_GRAPH_URI_PREFIX,
-                    OppModel.INSTANCE.NAMED_GRAPH_CLASS.getURI()
+                    OppModelConstants.NAMED_GRAPH_CLASS.getURI()
             );
         }
     }

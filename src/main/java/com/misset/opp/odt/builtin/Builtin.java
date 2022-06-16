@@ -6,7 +6,7 @@ import com.intellij.util.TriConsumer;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +63,7 @@ public abstract class Builtin implements Callable {
     }
 
     private boolean hasError(Set<OntResource> resources) {
-        return resources.stream().anyMatch(OppModel.INSTANCE.ERROR::equals);
+        return resources.stream().anyMatch(OppModelConstants.ERROR::equals);
     }
 
     @Override

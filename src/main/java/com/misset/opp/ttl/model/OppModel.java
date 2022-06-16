@@ -13,12 +13,12 @@ import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.settings.SettingsState;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.*;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -39,27 +39,6 @@ import java.util.stream.Collectors;
  */
 public class OppModel {
     private static final OppModelCache modelCache = new OppModelCache();
-    public static final String XSD = "http://www.w3.org/2001/XMLSchema#";
-    private static final String SHACL = "http://www.w3.org/ns/shacl#";
-    private static final String RDFS = "http://www.w3.org/2000/01/rdf-schema#";
-    private static final String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-    private static final String OWL = "http://www.w3.org/2002/07/owl#";
-    private static final String OPP = "http://ontologie.politie.nl/def/politie#";
-    private static final String PLATFORM = "http://ontologie.politie.nl/def/platform#";
-
-    public Property SHACL_PATH, SHACL_CLASS, SHACL_MINCOUNT, SHACL_MAXCOUNT, SHACL_DATATYPE, SHACL_PROPERTY, SHACL_PROPERYSHAPE;
-    protected Property RDFS_SUBCLASS_OF;
-    public Property RDF_TYPE;
-    public List<Property> classModelProperties;
-
-    public OntClass OWL_CLASS;
-    public OntClass OWL_THING_CLASS;
-    public Individual OWL_THING_INSTANCE;
-    public OntClass OPP_CLASS, JSON, GRAPH_SHAPE, GRAPH_CLASS, NAMED_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS;
-    public Individual IRI, JSON_OBJECT, ERROR, NAMED_GRAPH, TRANSIENT_GRAPH, MEDEWERKER_GRAPH, VOID;
-    public OntClass XSD_BOOLEAN, XSD_STRING, XSD_NUMBER, XSD_INTEGER, XSD_DECIMAL, XSD_DATE, XSD_DATETIME, XSD_DURATION;
-    public Individual XSD_BOOLEAN_INSTANCE, XSD_STRING_INSTANCE, XSD_NUMBER_INSTANCE, XSD_INTEGER_INSTANCE,
-            XSD_DECIMAL_INSTANCE, XSD_DATE_INSTANCE, XSD_DATETIME_INSTANCE, XSD_DURATION_INSTANCE;
 
     private static final Logger LOGGER = Logger.getInstance(OppModel.class);
     /*
@@ -72,20 +51,8 @@ public class OppModel {
     // create a default empty model to begin with until the DumbService is smart (finished indexing)
     // and the ontology can be loaded using the FileIndex
     public static OppModel INSTANCE = new OppModel(ModelFactory.createOntologyModel());
-    private final OntModel shaclModel;
 
-    // some caching to improve performance, flushed when the model is updated
-    HashMap<OntResource, HashMap<Property, Set<OntResource>>> listObjectsCache = new HashMap<>();
     HashMap<String, OntResource> mappedResourcesCache = new HashMap<>();
-
-    // contain information from the SHACL model about the cardinality of the predicates
-    HashMap<OntClass, List<Property>> required = new HashMap<>();
-    HashMap<OntClass, List<Property>> singles = new HashMap<>();
-    HashMap<OntClass, List<Property>> multiple = new HashMap<>();
-
-    Logger logger = Logger.getInstance(OppModel.class);
-
-    private final ReentrantReadWriteLock lock;
 
     /**
      * The simple model contains a simple representation of the SHACL based model that is initially loaded
@@ -93,23 +60,18 @@ public class OppModel {
     private OntModel model;
 
     public OppModel(OntModel shaclModel) {
-        this.lock = new ReentrantReadWriteLock();
-        this.shaclModel = shaclModel;
-
         OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
 
-        LoggerUtil.runWithLogger(LOGGER, "Loading OppModel from Shacl", () -> runWithWriteLock("Loading OppModel from Shacl", () -> {
-            clearCardinality();
+        LoggerUtil.runWithLogger(LOGGER, "Loading OppModel from Shacl", () -> {
             // the OWL_DL restricts types, a resource can only be either a class, a property or an instance, not multiple at the same time
             // the RDFS_INF inferencing provides the support for sub/superclass logic
             incrementModificationCount();
-            setProperties(ontologyModel);
-            setPrimitives(ontologyModel);
-            loadSimpleModel(ontologyModel);
+            OppModelConstants.setConstants(this, modelCache, ontologyModel);
+            OppModelTranslator.loadSimpleModel(this, modelCache, ontologyModel, shaclModel);
             modelCache.cacheClassesTree();
             INSTANCE = this;
             this.model = ontologyModel;
-        }));
+        });
     }
 
     /**
@@ -119,284 +81,20 @@ public class OppModel {
      */
     private void incrementModificationCount() {
         ONTOLOGY_MODEL_MODIFICATION_TRACKER.incModificationCount();
-        listObjectsCache.clear();
         mappedResourcesCache.clear();
         modelCache.flush();
     }
 
-    private void clearCardinality() {
-        required.clear();
-        singles.clear();
-        multiple.clear();
-    }
-
     protected OntModel getShaclModel() {
-        return shaclModel;
+        return OppModelTranslator.getShaclModel();
     }
 
     public OntModel getModel() {
         return model;
     }
 
-    /*
-        Prepare Ontology model
-     */
-    private Set<OntClass> listShaclClasses() {
-        return shaclModel
-                .listSubjectsWithProperty(RDF_TYPE, OWL_CLASS)
-                .mapWith(resource -> shaclModel.createClass(resource.getURI()))
-                .toSet();
-    }
-
-    private Set<Individual> listShaclIndividuals(OntModel ontologyModel) {
-        return shaclModel
-                .listStatements()
-                .filterKeep(statement -> statement.getPredicate()
-                        .equals(RDF_TYPE) && ontologyModel.getOntClass(statement.getObject().asResource().getURI()) != null)
-                .mapWith(statement -> shaclModel.getIndividual(statement.getSubject().getURI()))
-                .filterKeep(OntResource::isIndividual)
-                .toSet();
-    }
-
-    private Set<Resource> listGraphshapes() {
-        return shaclModel
-                .listStatements()
-                .filterKeep(statement -> statement.getPredicate().equals(RDF_TYPE) && statement.getObject()
-                        .equals(GRAPH_SHAPE))
-                .mapWith(Statement::getSubject)
-                .toSet();
-    }
-
-    private void setProperties(OntModel ontologyModel) {
-        SHACL_PATH = createProperty(SHACL + "path", ontologyModel);
-        SHACL_CLASS = createProperty(SHACL + "class", ontologyModel);
-        SHACL_DATATYPE = createProperty(SHACL + "datatype", ontologyModel);
-        SHACL_MINCOUNT = createProperty(SHACL + "minCount", ontologyModel);
-        SHACL_MAXCOUNT = createProperty(SHACL + "maxCount", ontologyModel);
-        SHACL_PROPERTY = createProperty(SHACL + "property", ontologyModel);
-        SHACL_PROPERYSHAPE = createProperty(SHACL + "PropertyShape", ontologyModel);
-
-        RDFS_SUBCLASS_OF = createProperty(RDFS + "subClassOf", ontologyModel);
-        RDF_TYPE = createProperty(RDF + "type", ontologyModel);
-
-        OWL_CLASS = createClass(OWL + "Class", ontologyModel);
-        OWL_THING_CLASS = createClass(OWL + "Thing", ontologyModel);
-        OWL_THING_INSTANCE = createIndividual(OWL_THING_CLASS, OWL + "Thing_INSTANCE");
-
-        OPP_CLASS = createClass(OPP + "Class", ontologyModel);
-        JSON = createClass(OPP + "JSON", ontologyModel);
-        JSON_OBJECT = createIndividual(JSON, OPP + "JSON_OBJECT");
-        IRI = createIndividual(OPP_CLASS, OPP + "IRI");
-        ERROR = createIndividual(OPP_CLASS, OPP + "ERROR");
-        VOID = createIndividual(OPP_CLASS, OPP + "VOID");
-
-        GRAPH_CLASS = createClass(PLATFORM + "Graph", ontologyModel);
-        NAMED_GRAPH_CLASS = createClass(PLATFORM + "NamedGraph", ontologyModel);
-        GRAPH_SHAPE = createClass(PLATFORM + "GraphShape", ontologyModel);
-        TRANSIENT_GRAPH_CLASS = createClass("http://ontologie.politie.nl/internal/transient#TransientNamedGraph", ontologyModel);
-
-        NAMED_GRAPH = createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
-        MEDEWERKER_GRAPH = createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_MEDEWERKERGRAPH");
-        TRANSIENT_GRAPH = createIndividual(TRANSIENT_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS.getURI() + "_INSTANCE");
-
-        classModelProperties = List.of(RDFS_SUBCLASS_OF, RDF_TYPE);
-    }
-
-    private void setPrimitives(OntModel ontologyModel) {
-        XSD_BOOLEAN = createClass(XSD + "boolean", ontologyModel);
-        XSD_BOOLEAN_INSTANCE = createIndividual(XSD_BOOLEAN);
-
-        XSD_STRING = createClass(XSD + "string", ontologyModel);
-        XSD_STRING_INSTANCE = createIndividual(XSD_STRING);
-
-        XSD_NUMBER = createClass(XSD + "number", ontologyModel);
-        XSD_NUMBER_INSTANCE = createIndividual(XSD_NUMBER);
-
-        XSD_DECIMAL = createClass(XSD + "decimal", ontologyModel);
-        XSD_DECIMAL.addSuperClass(XSD_NUMBER);
-        XSD_DECIMAL_INSTANCE = createIndividual(XSD_DECIMAL);
-        modelCache.cacheSuperclasses(XSD_DECIMAL.getURI(), XSD_DECIMAL);
-
-        XSD_INTEGER = createClass(XSD + "integer", ontologyModel);
-        // by making XSD_INTEGER a subclass of XSD_DECIMAL, it will allow type checking
-        // to accept an integer at a decimal position, but not the other way around
-        XSD_INTEGER.addSuperClass(XSD_DECIMAL);
-        XSD_INTEGER_INSTANCE = createIndividual(XSD_INTEGER);
-        modelCache.cacheSuperclasses(XSD_INTEGER.getURI(), XSD_INTEGER);
-
-        XSD_DATETIME = createClass(XSD + "dateTime", ontologyModel);
-        XSD_DATETIME_INSTANCE = createIndividual(XSD_DATETIME);
-
-        XSD_DATE = createClass(XSD + "date", ontologyModel);
-        // by making XSD_DATE a subclass of XSD_DATETIME, it will allow type checking
-        // to accept a date at a datetime position, but not the other way around
-        XSD_DATE.addSuperClass(XSD_DATETIME);
-        XSD_DATE_INSTANCE = createIndividual(XSD_DATE);
-        modelCache.cacheSuperclasses(XSD_DATE.getURI(), XSD_DATE);
-
-        XSD_DURATION = createClass(XSD + "duration", ontologyModel);
-        XSD_DURATION_INSTANCE = createIndividual(XSD_DURATION);
-    }
-
-    private void loadSimpleModel(OntModel ontologyModel) {
-        listShaclClasses().forEach(ontClass -> loadSimpleModelClass(ontologyModel, ontClass));
-        listShaclIndividuals(ontologyModel).forEach(individual -> loadSimpleModelIndividual(ontologyModel, individual));
-        listGraphshapes().forEach(resource -> loadGraphShapes(ontologyModel, resource));
-    }
-
-    private void loadSimpleModelClass(OntModel ontologyModel, OntClass ontClass) {
-        // create a simple class instance and inherit the superclass(es)
-        final OntClass simpleModelClass = createClass(ontClass.getURI(), ontologyModel);
-        // create one individual per class, this is used as a mock when traversing the paths
-        // and discriminate between classes and instances of the class being visited.
-        final List<Statement> superClasses = ontClass.listProperties(RDFS_SUBCLASS_OF).toList();
-        if (superClasses.isEmpty()) {
-            // base class in the model, subclass of Owl:Thing
-            simpleModelClass.addSuperClass(OWL_THING_CLASS);
-        } else {
-            superClasses.forEach(statement -> simpleModelClass.addSuperClass(statement.getObject().asResource()));
-        }
-
-        // translate the SHACL PATH properties into simple predicate-object statements for this class
-        ontClass.listProperties(SHACL_PROPERTY)
-                .mapWith(Statement::getObject)
-                .mapWith(RDFNode::asResource)
-                .filterKeep(resource -> resource.getProperty(RDF_TYPE).getObject().equals(SHACL_PROPERYSHAPE))
-                .forEach((shaclPropertyShape) -> getSimpleResourceStatement(ontologyModel, simpleModelClass, shaclPropertyShape));
-
-        modelCache.cache(simpleModelClass);
-
-        createIndividual(simpleModelClass, simpleModelClass.getURI() + "_INSTANCE");
-    }
-
-    private void loadSimpleModelIndividual(OntModel ontologyModel, Individual individual) {
-        try {
-            if (ontologyModel.getOntResource(individual.getURI()) == null) {
-                createIndividual(individual.getOntClass(), individual.getURI());
-                ontologyModel.add(individual.listProperties());
-            }
-        } catch (ConversionException conversionException) {
-            // do nothing, there might be an input issue in the ontology or some other reason
-            // why the provided individual cannot be recreated as an individual in the simple model
-            // in any case, this should just be a warning
-            logger.warn("Could not create an individual for: " + individual.getURI());
-        }
-    }
-
-    private void loadGraphShapes(OntModel ontologyModel, Resource resource) {
-        if (ontologyModel.getOntResource(resource.getURI()) == null) {
-            createIndividual(GRAPH_SHAPE, resource.getURI());
-        }
-    }
-
-    private void getSimpleResourceStatement(OntModel ontologyModel,
-                                            OntClass subject,
-                                            Resource shaclPropertyShape) {
-        if (!shaclPropertyShape.hasProperty(SHACL_PATH)) {
-            return;
-        }
-
-        // the predicate is extracted from the SHACL PATH and translated into a model property
-        final Property predicate = ontologyModel.createProperty(shaclPropertyShape.getProperty(SHACL_PATH)
-                .getObject()
-                .asResource()
-                .getURI());
-
-        // the object is extracted from either the SHACL_CLASS or SHACLE_DATATYPE and added as node
-        final RDFNode object = getObjectDefinition(shaclPropertyShape);
-        if (!(object instanceof Resource)) {
-            return;
-        }
-        subject.addProperty(predicate, object);
-        modelCache.cache(subject, predicate, object.asResource());
-
-        // cardinality:
-        int min = getShaclPropertyInteger(shaclPropertyShape, SHACL_MINCOUNT);
-        int max = getShaclPropertyInteger(shaclPropertyShape, SHACL_MAXCOUNT);
-        if (min == 1) {
-            addToMapCollection(required, subject, predicate);
-        }
-        if (max == 1) {
-            addToMapCollection(singles, subject, predicate);
-        } else {
-            addToMapCollection(multiple, subject, predicate);
-        }
-    }
-
-    private RDFNode getObjectDefinition(Resource shaclPropertyShape) {
-        if (shaclPropertyShape.hasProperty(SHACL_CLASS)) {
-            return shaclPropertyShape.getProperty(SHACL_CLASS).getObject();
-        } else if (shaclPropertyShape.hasProperty(SHACL_DATATYPE)) {
-            return shaclPropertyShape.getProperty(SHACL_DATATYPE).getObject();
-        }
-        return null;
-    }
-
-    private void addToMapCollection(HashMap<OntClass, List<Property>> map,
-                                    OntClass subject,
-                                    Property property) {
-        final List<Property> propertyList = map.getOrDefault(subject, new ArrayList<>());
-        propertyList.add(property);
-        map.put(subject, propertyList);
-    }
-
-    private int getShaclPropertyInteger(Resource shape,
-                                        Property property) {
-        if (shape.hasProperty(property)) {
-            try {
-                // catch any wrong usage of the model, not our job to fix that
-                return shape.getProperty(property).getObject().asLiteral().getInt();
-            } catch (Exception ignored) {
-                return 0;
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * The Apache Jena Ontology model is not thread-safe when reading and writing at the same time.
-     * Therefore, all operations regarding the model should be wrapped in a read lock. This uses
-     * a ReentrantReadWriteLock which will allow for any number of consecutive read threads or a single
-     * write lock.
-     * Make sure to also use this when calling methods directly on ontology members such as OntClass.listIndividuals etc.
-     */
-    public <T> T computeWithReadLock(String description, Supplier<T> compute) {
-        return LoggerUtil.computeWithLogger(LOGGER, description, () -> {
-            lock.readLock().lock();
-            T result;
-            try {
-                result = compute.get();
-            } finally {
-                lock.readLock().unlock();
-            }
-            return result;
-        });
-    }
-
-    public void runWithWriteLock(String description, Runnable runnable) {
-        LoggerUtil.runWithLogger(LOGGER, description, () -> {
-            lock.writeLock().lock();
-            try {
-                runnable.run();
-            } finally {
-                lock.writeLock().unlock();
-            }
-        });
-    }
-
     public Set<OntClass> listClasses() {
         return modelCache.getClasses();
-    }
-
-    public Set<OntClass> listXSDTypes() {
-        return Set.of(
-                XSD_BOOLEAN,
-                XSD_STRING,
-                XSD_INTEGER,
-                XSD_DECIMAL,
-                XSD_DATETIME,
-                XSD_DATE,
-                XSD_DURATION);
     }
 
     /**
@@ -404,8 +102,8 @@ public class OppModel {
      */
     public Set<OntResource> listSubjects(Property predicate,
                                          Set<OntResource> objects) {
-        if (objects.contains(OWL_THING_INSTANCE)) {
-            return Set.of(OWL_THING_INSTANCE);
+        if (objects.contains(OppModelConstants.OWL_THING_INSTANCE)) {
+            return Set.of(OppModelConstants.OWL_THING_INSTANCE);
         }
         return objects.stream()
                 .map(classObject -> listSubjects(predicate, classObject))
@@ -419,16 +117,16 @@ public class OppModel {
     public Set<? extends OntResource> listSubjects(Property predicate,
                                                    OntResource object) {
 
-        if (isIndividual(object) && RDF_TYPE.equals(predicate)) {
+        if (isIndividual(object) && OppModelConstants.RDF_TYPE.equals(predicate)) {
             // /ont:instanceOfClass / rdf:type => return ontology class of individual
             return Optional.ofNullable(toClass(object))
                     .map(Set::of)
                     .orElse(Collections.emptySet());
         } else if (isClass(object)) {
-            if (RDF_TYPE.equals(predicate)) {
+            if (OppModelConstants.RDF_TYPE.equals(predicate)) {
                 // /ont:Class / ^rdf:type => return all individuals of the class
                 return toIndividuals(object);
-            } else if (RDFS_SUBCLASS_OF.equals(predicate)) {
+            } else if (OppModelConstants.RDFS_SUBCLASS_OF.equals(predicate)) {
                 // return the subclasses of the provided object
                 // /ont:ClassA / ^rdfs:subclassOf => /ont:ClassB (given B is a subclass of A)
                 return modelCache.listSubclasses(getResourceId(object));
@@ -516,8 +214,8 @@ public class OppModel {
      */
     public Set<OntResource> listObjects(Set<? extends OntResource> classSubjects,
                                         Property predicate) {
-        if (classSubjects.contains(OWL_THING_INSTANCE)) {
-            return Set.of(OWL_THING_INSTANCE);
+        if (classSubjects.contains(OppModelConstants.OWL_THING_INSTANCE)) {
+            return Set.of(OppModelConstants.OWL_THING_INSTANCE);
         }
         return classSubjects.stream()
                 .map(subject -> listObjects(subject, predicate))
@@ -528,14 +226,14 @@ public class OppModel {
 
     private Set<? extends OntResource> listObjects(OntResource subject,
                                                    Property predicate) {
-        if (isClass(subject) && RDF_TYPE.equals(predicate)) {
-            if (RDF_TYPE.equals(predicate)) {
+        if (isClass(subject) && OppModelConstants.RDF_TYPE.equals(predicate)) {
+            if (OppModelConstants.RDF_TYPE.equals(predicate)) {
                 // /ont:Class / rdf:type => return OWL_CLASS
-                return Set.of(OWL_CLASS);
-            } else if (RDFS_SUBCLASS_OF.equals(predicate)) {
+                return Set.of(OppModelConstants.OWL_CLASS);
+            } else if (OppModelConstants.RDFS_SUBCLASS_OF.equals(predicate)) {
                 return modelCache.listSuperclasses(getResourceId(subject));
             }
-        } else if (isIndividual(subject) && RDF_TYPE.equals(predicate)) {
+        } else if (isIndividual(subject) && OppModelConstants.RDF_TYPE.equals(predicate)) {
             return Optional.ofNullable(toClass(subject)).map(Set::of).orElse(Collections.emptySet());
         }
         return toType(modelCache.listObjects(predicate, subject), subject);
@@ -545,7 +243,7 @@ public class OppModel {
      * Returns all possible subclasses for the provided instances
      */
     public Set<OntResource> appendInstancesWithSubclasses(Set<OntResource> resources) {
-        if (resources.stream().noneMatch(OWL_THING_INSTANCE::equals) &&
+        if (resources.stream().noneMatch(OppModelConstants.OWL_THING_INSTANCE::equals) &&
                 resources.stream().allMatch(this::isIndividual)) {
             HashSet<OntResource> subclasses = resources.stream().map(this::toClass)
                     .map(this::listSubclasses)
@@ -616,9 +314,9 @@ public class OppModel {
         Set<Property> properties = new HashSet<>(
                 modelCache.listSubjectPredicates(toClass(ontResource)));
         if (isClass(ontResource)) {
-            properties.addAll(Set.of(RDF_TYPE, RDFS_SUBCLASS_OF));
+            properties.addAll(Set.of(OppModelConstants.RDF_TYPE, OppModelConstants.RDFS_SUBCLASS_OF));
         } else if (isIndividual(ontResource)) {
-            properties.add(RDF_TYPE);
+            properties.add(OppModelConstants.RDF_TYPE);
         }
         return properties;
     }
@@ -640,7 +338,7 @@ public class OppModel {
         Set<Property> properties = new HashSet<>(
                 modelCache.listObjectPredicates(toClass(ontResource)));
         if (isClass(ontResource)) {
-            properties.addAll(Set.of(RDF_TYPE, RDFS_SUBCLASS_OF));
+            properties.addAll(Set.of(OppModelConstants.RDF_TYPE, OppModelConstants.RDFS_SUBCLASS_OF));
         }
         return properties;
     }
@@ -681,7 +379,7 @@ public class OppModel {
 
     @Nullable
     public Property getProperty(@Nullable String uri) {
-        return computeWithReadLock("OppModel::getProperty(String) " + uri, () -> uri == null ? null : getModel().getProperty(uri));
+        return modelCache.getProperty(uri);
     }
 
     /**
@@ -727,7 +425,7 @@ public class OppModel {
         return createProperty(uri, getModel());
     }
 
-    private OntProperty createProperty(String uri, OntModel model) {
+    OntProperty createProperty(String uri, OntModel model) {
         OntProperty property = model.createOntProperty(uri);
         modelCache.cache(property);
         return property;
@@ -737,7 +435,7 @@ public class OppModel {
         return createClass(uri, getModel());
     }
 
-    private OntClass createClass(String uri, OntModel model) {
+    OntClass createClass(String uri, OntModel model) {
         OntClass ontClass = model.createClass(uri);
         modelCache.cache(ontClass);
         return ontClass;
@@ -801,8 +499,8 @@ public class OppModel {
     private boolean areCompatible(OntResource resourceA,
                                   OntResource resourceB) {
         if (resourceA.equals(resourceB) ||
-                resourceA.equals(OWL_THING_INSTANCE) ||
-                resourceB.equals(OWL_THING_INSTANCE)) {
+                resourceA.equals(OppModelConstants.OWL_THING_INSTANCE) ||
+                resourceB.equals(OppModelConstants.OWL_THING_INSTANCE)) {
             return true;
         }
         if (isIndividual(resourceA)) {
@@ -828,52 +526,6 @@ public class OppModel {
             }
         }
         return false;
-    }
-
-    public boolean isMultiple(Set<OntResource> resources,
-                              Property property) {
-        return resources.stream().allMatch(resource -> isMultiple(resource, property));
-    }
-
-    public boolean isMultiple(OntResource resource,
-                              Property property) {
-        return isCardinality(multiple, toClass(resource), property);
-    }
-
-    public boolean isSingleton(Set<OntResource> resources,
-                               Property property) {
-        return resources.stream().allMatch(resource -> isSingleton(resource, property));
-    }
-
-    public boolean isSingleton(OntResource resource,
-                               Property property) {
-        return isCardinality(singles, toClass(resource), property);
-    }
-
-    public boolean isRequired(Set<OntResource> resources,
-                              Property property) {
-        return resources.stream().allMatch(resource -> isRequired(resource, property));
-    }
-
-    public boolean isRequired(OntResource resource,
-                              Property property) {
-        return isCardinality(required, toClass(resource), property);
-    }
-
-    private boolean isCardinality(Map<OntClass, List<Property>> map,
-                                  OntClass ontClass,
-                                  Property property) {
-        if (ontClass == null) {
-            return false;
-        }
-        if (map.getOrDefault(ontClass, Collections.emptyList()).contains(property)) {
-            return true;
-        }
-        final OntClass superClass = ontClass.getSuperClass();
-        if (superClass == null || superClass.equals(ontClass)) {
-            return false;
-        }
-        return isCardinality(map, superClass, property);
     }
 
     public Set<OntClass> listSuperClasses(OntClass ontClass) {
@@ -926,13 +578,11 @@ public class OppModel {
                 Set<String> individuals = new HashSet<>();
                 JsonArray jsonArray = jsonElement.getAsJsonArray();
                 jsonArray.forEach(element -> individuals.add(getSubject(element)));
-                runWithWriteLock("OppModel::addFromJson", () -> {
-                    individuals.forEach(uri -> {
-                        Individual individual = createIndividual(ontClass, uri);
-                        if (referenceDetails) {
-                            addReferenceDetails(jsonArray, individual);
-                        }
-                    });
+                individuals.forEach(uri -> {
+                    Individual individual = createIndividual(ontClass, uri);
+                    if (referenceDetails) {
+                        addReferenceDetails(jsonArray, individual);
+                    }
                 });
             }
             processed++;
@@ -962,7 +612,7 @@ public class OppModel {
                         String object = jsonStatement.get("o").getAsString();
                         Property property = getModel().getProperty(propertyIri);
                         // the individual is already added to a class, no need to add the rdf_type predicate again
-                        if (!property.equals(RDF_TYPE)) {
+                        if (!property.equals(OppModelConstants.RDF_TYPE)) {
                             individual.addProperty(property, object);
                         }
                     }

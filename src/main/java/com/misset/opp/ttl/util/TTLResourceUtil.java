@@ -3,6 +3,7 @@ package com.misset.opp.ttl.util;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.misset.opp.odt.completion.ODTTraverseCompletion;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.util.Icons;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -39,7 +40,7 @@ public class TTLResourceUtil {
     }
 
     public static boolean isXSDType(Resource resource) {
-        return is(resource, isXSDType, _resource -> _resource.getNameSpace().equals(OppModel.XSD));
+        return is(resource, isXSDType, _resource -> _resource.getNameSpace().equals(OppModelConstants.XSD));
     }
 
     public static String describeUrisJoined(Set<? extends Resource> resources) {
@@ -70,7 +71,7 @@ public class TTLResourceUtil {
 
     private static String doDescribeUri(Resource resource, boolean withType) {
         if (resource instanceof OntResource && ((OntResource) resource).isClass()) {
-            if (resource.getNameSpace().equals(OppModel.XSD)) {
+            if (resource.getNameSpace().equals(OppModelConstants.XSD)) {
                 return resource.getURI() + (withType ? " (TYPE)" : "");
             }
             return resource.getURI() + (withType ? " (CLASS)" : "");
@@ -82,7 +83,7 @@ public class TTLResourceUtil {
             }
             if (isXSDType(ontClass)) {
                 return ontClass.getURI() + (withType ? " (VALUE)" : "");
-            } else if (ontClass.equals(OppModel.INSTANCE.OPP_CLASS)) {
+            } else if (ontClass.equals(OppModelConstants.OPP_CLASS)) {
                 // Specific OPP_CLASS instances that describe non-ontology values such as ERROR etc
                 return individual.getURI();
             } else if (individual.getNameSpace() != null &&
@@ -122,7 +123,7 @@ public class TTLResourceUtil {
 
     public static String describeUriForLookup(OntResource resource) {
         return Optional.ofNullable(OppModel.INSTANCE.toClass(resource))
-                .map(ontClass -> ontClass.equals(OppModel.INSTANCE.OPP_CLASS) ? resource : ontClass)
+                .map(ontClass -> ontClass.equals(OppModelConstants.OPP_CLASS) ? resource : ontClass)
                 .map(Resource::getLocalName)
                 .orElse("Ontology class could not be found in the model");
     }

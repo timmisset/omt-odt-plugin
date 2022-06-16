@@ -9,6 +9,7 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -51,8 +52,8 @@ public class ODTTraverseCompletion extends CompletionContributor {
                 HashMap<Property, Set<OntResource>> reversePredicates = new HashMap<>();
                 if (subjects.isEmpty()) {
                     // cannot establish subject, only show the rdf:type predicates
-                    forwardPredicates.put(OppModel.INSTANCE.RDF_TYPE, Collections.emptySet());
-                    reversePredicates.put(OppModel.INSTANCE.RDF_TYPE, Collections.emptySet());
+                    forwardPredicates.put(OppModelConstants.RDF_TYPE, Collections.emptySet());
+                    reversePredicates.put(OppModelConstants.RDF_TYPE, Collections.emptySet());
                 } else {
                     OppModel.INSTANCE.listPredicates(subjects)
                             .forEach(property -> {

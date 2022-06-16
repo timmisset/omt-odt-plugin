@@ -1,7 +1,7 @@
 package com.misset.opp.resolvable.global;
 
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +36,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModel.INSTANCE.MEDEWERKER_GRAPH);
+            return Set.of(OppModelConstants.MEDEWERKER_GRAPH);
         }
     };
     private static final GlobalVariable USERNAME = new GlobalVariable() {
@@ -52,7 +52,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
+            return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         }
     };
     private static final GlobalVariable OFFLINE = new GlobalVariable() {
@@ -68,7 +68,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+            return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
         }
     };
 
@@ -85,7 +85,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+            return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
         }
     };
 
@@ -102,7 +102,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModel.INSTANCE.JSON_OBJECT);
+            return Set.of(OppModelConstants.JSON_OBJECT);
         }
     };
 

@@ -7,7 +7,7 @@ import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.builtin.commands.NewGraphCommand;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
         Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
         // show all graphshape instances:
-        OppModel.INSTANCE.GRAPH_SHAPE.listInstances().mapWith(
+        OppModelConstants.GRAPH_SHAPE.listInstances().mapWith(
                         resource -> TTLResourceUtil
                                 .getRootLookupElement(resource, "Graphshape", availableNamespaces))
                 .forEachRemaining(result::addElement);

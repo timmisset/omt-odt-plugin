@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta.scalars.queries;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLScalar;
@@ -19,7 +20,7 @@ public class OMTGraphQueryType extends OMTQueryMetaType {
                 .allMatch(resource -> resource != null &&
                         OppModel.INSTANCE.isIndividual(resource) &&
                         Optional.ofNullable(OppModel.INSTANCE.toClass(resource))
-                                .map(OppModel.INSTANCE.NAMED_GRAPH_CLASS::equals)
+                                .map(OppModelConstants.NAMED_GRAPH_CLASS::equals)
                                 .orElse(false))) {
             return;
         }

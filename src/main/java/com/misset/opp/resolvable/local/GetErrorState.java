@@ -1,7 +1,7 @@
 package com.misset.opp.resolvable.local;
 
 import com.intellij.openapi.project.Project;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public class GetErrorState extends LocalCommand {
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
+        return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Override

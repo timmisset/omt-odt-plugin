@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -53,7 +54,7 @@ public class FindSubjectsOperator extends BuiltInOperator {
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 2) {
-            return Set.of(OppModel.INSTANCE.NAMED_GRAPH);
+            return Set.of(OppModelConstants.NAMED_GRAPH);
         }
         return null;
     }

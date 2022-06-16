@@ -1,6 +1,6 @@
 package com.misset.opp.odt.builtin.commands;
 
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 public class TimeStampCommand extends BuiltInCommand {
@@ -24,6 +24,6 @@ public class TimeStampCommand extends BuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModel.INSTANCE.XSD_INTEGER_INSTANCE;
+        return OppModelConstants.XSD_INTEGER_INSTANCE;
     }
 }

@@ -12,6 +12,7 @@ import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgument;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -61,7 +62,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
                                @NotNull ODTCall call) {
         if (call.getNumberOfArguments() >= 3 && call.getNumberOfArguments() % 2 != 0) {
             final Set<OntResource> subject = call.resolveSignatureArgument(0);
-            if (!subject.isEmpty() && !subject.contains(OppModel.INSTANCE.OWL_THING_INSTANCE)) {
+            if (!subject.isEmpty() && !subject.contains(OppModelConstants.OWL_THING_INSTANCE)) {
                 inspectSubject(holder, call, subject);
             }
         }

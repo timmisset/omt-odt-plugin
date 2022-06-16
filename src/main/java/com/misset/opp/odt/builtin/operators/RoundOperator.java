@@ -3,7 +3,7 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
@@ -39,12 +39,12 @@ public class RoundOperator extends BuiltInOperator {
                                            PsiCall call) {
         final int numberOfArguments = call.getNumberOfArguments();
         if (numberOfArguments == 0) {
-            return Set.of(OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
+            return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
         } else {
             if ("0".equals(call.getSignatureValue(0))) {
-                return Set.of(OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
+                return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
             }
-            return Set.of(OppModel.INSTANCE.XSD_DECIMAL_INSTANCE);
+            return Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
         }
     }
 
@@ -58,7 +58,7 @@ public class RoundOperator extends BuiltInOperator {
             holder.registerProblem(call.getCallSignatureArgumentElement(0),
                     UNNECESSARY_DECIMAL_PLACES_VALUE, ProblemHighlightType.WEAK_WARNING);
         }
-        if (!callInputType.isEmpty() && callInputType.stream().allMatch(OppModel.INSTANCE.XSD_INTEGER_INSTANCE::equals)) {
+        if (!callInputType.isEmpty() && callInputType.stream().allMatch(OppModelConstants.XSD_INTEGER_INSTANCE::equals)) {
             holder.registerProblem(call,
                     INPUT_IS_ALREADY_AN_INTEGER, ProblemHighlightType.WEAK_WARNING);
         }
@@ -68,13 +68,13 @@ public class RoundOperator extends BuiltInOperator {
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
+            return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
         }
         return null;
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModel.INSTANCE.XSD_DECIMAL_INSTANCE);
+        return Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
     }
 }

@@ -7,6 +7,7 @@ import com.misset.opp.odt.psi.ODTEquationStatement;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Override
@@ -73,9 +74,9 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
         }
 
         // check if owl:Thing is part of the equation
-        if (leftSide.stream().anyMatch(OppModel.INSTANCE.OWL_THING_INSTANCE::equals)) {
+        if (leftSide.stream().anyMatch(OppModelConstants.OWL_THING_INSTANCE::equals)) {
             return OppModel.INSTANCE.toType(rightSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
-        } else if (rightSide.stream().anyMatch(OppModel.INSTANCE.OWL_THING_INSTANCE::equals)) {
+        } else if (rightSide.stream().anyMatch(OppModelConstants.OWL_THING_INSTANCE::equals)) {
             return OppModel.INSTANCE.toType(leftSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
         }
 

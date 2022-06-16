@@ -1,6 +1,6 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 public class IriOperator extends BuiltInOperator {
@@ -19,6 +19,6 @@ public class IriOperator extends BuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModel.INSTANCE.IRI;
+        return OppModelConstants.IRI;
     }
 }

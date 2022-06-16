@@ -9,7 +9,7 @@ import com.misset.opp.omt.meta.scalars.values.OMTLoadablePathMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTLoadableSchemaMetaType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -43,7 +43,7 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
 
         parameterNames.put(0, "$context");
 
-        parameterTypes.put(0, Collections.singleton(OppModel.INSTANCE.XSD_STRING_INSTANCE));
+        parameterTypes.put(0, Collections.singleton(OppModelConstants.XSD_STRING_INSTANCE));
 
         CONTEXT_SELECTORS.put("local", "returns the calling context");
         CONTEXT_SELECTORS.put("parent", "returns the parent of the calling context");
@@ -68,7 +68,7 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
 
     @Override
     public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
-        return Set.of(OppModel.INSTANCE.JSON_OBJECT);
+        return Set.of(OppModelConstants.JSON_OBJECT);
     }
 
     @Override

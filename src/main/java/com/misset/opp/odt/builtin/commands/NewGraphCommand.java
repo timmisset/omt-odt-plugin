@@ -2,7 +2,7 @@ package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 public class NewGraphCommand extends BuiltInCommand {
@@ -26,7 +26,7 @@ public class NewGraphCommand extends BuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModel.INSTANCE.NAMED_GRAPH;
+        return OppModelConstants.NAMED_GRAPH;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.misset.opp.odt.builtin.commands;
 import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.shared.providers.CallableLocalVariableTypeProvider;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -37,7 +37,7 @@ public class ForEachCommand extends BuiltInCommand implements CallableLocalVaria
         }
         return List.of(
                 new LocalVariable("$value", "iterator value", call.resolveSignatureArgument(0)),
-                new LocalVariable("$index", "iterator index", Set.of(OppModel.INSTANCE.XSD_INTEGER_INSTANCE)),
+                new LocalVariable("$index", "iterator index", Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)),
                 new LocalVariable("$array", "all input values", call.resolveSignatureArgument(0))
         );
     }

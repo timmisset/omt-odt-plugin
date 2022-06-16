@@ -2,7 +2,7 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -30,7 +30,7 @@ public class MinOperator extends BuiltInCollectionOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        Set<OntClass> acceptableTypes = Set.of(OppModel.INSTANCE.XSD_NUMBER, OppModel.INSTANCE.XSD_DATETIME);
+        Set<OntClass> acceptableTypes = Set.of(OppModelConstants.XSD_NUMBER, OppModelConstants.XSD_DATETIME);
         TTLValidationUtil.validateHasOntClass(call.resolvePreviousStep(),
                 holder,
                 call,
@@ -45,13 +45,13 @@ public class MinOperator extends BuiltInCollectionOperator {
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE, OppModel.INSTANCE.XSD_DATETIME_INSTANCE);
+            return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
         }
         return null;
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE, OppModel.INSTANCE.XSD_DATETIME_INSTANCE);
+        return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
     }
 }

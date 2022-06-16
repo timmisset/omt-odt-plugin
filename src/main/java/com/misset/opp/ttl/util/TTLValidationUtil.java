@@ -5,6 +5,8 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.text.Strings;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
+import com.misset.opp.ttl.model.OppModelTranslator;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -37,8 +39,8 @@ public class TTLValidationUtil {
                 resourcesB == null ||
                 resourcesA.isEmpty() ||
                 resourcesB.isEmpty() ||
-                resourcesA.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) ||
-                resourcesB.contains(OppModel.INSTANCE.OWL_THING_INSTANCE)
+                resourcesA.contains(OppModelConstants.OWL_THING_INSTANCE) ||
+                resourcesB.contains(OppModelConstants.OWL_THING_INSTANCE)
         ) {
             // don't register problem
             return;
@@ -69,7 +71,7 @@ public class TTLValidationUtil {
                                                    Property predicate,
                                                    ProblemsHolder holder,
                                                    PsiElement element) {
-        if (OppModel.INSTANCE.isSingleton(subject, predicate)) {
+        if (OppModelTranslator.isSingleton(subject, predicate)) {
             // assigning a collection or creating a collection where a singleton is expected
             holder.registerProblem(element,
                     "Suspicious assignment: " + predicate.getLocalName() + " maxCount == 1",
@@ -108,7 +110,7 @@ public class TTLValidationUtil {
                                     Predicate<OntResource> condition,
                                     String error) {
         if (!resources.isEmpty() &&
-                !resources.contains(OppModel.INSTANCE.OWL_THING_INSTANCE) &&
+                !resources.contains(OppModelConstants.OWL_THING_INSTANCE) &&
                 !resources.stream().allMatch(condition)) {
             holder.registerProblem(element, error, ProblemHighlightType.ERROR);
             return false;
@@ -134,7 +136,7 @@ public class TTLValidationUtil {
         return validate(resources,
                 holder,
                 element,
-                OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE::equals,
+                OppModelConstants.XSD_BOOLEAN_INSTANCE::equals,
                 ERROR_MESSAGE_BOOLEAN);
     }
 
@@ -144,7 +146,7 @@ public class TTLValidationUtil {
         validate(resources,
                 holder,
                 element,
-                OppModel.INSTANCE.XSD_DECIMAL_INSTANCE::equals,
+                OppModelConstants.XSD_DECIMAL_INSTANCE::equals,
                 ERROR_MESSAGE_DECIMAL);
     }
 
@@ -152,7 +154,7 @@ public class TTLValidationUtil {
         validate(resources,
                 holder,
                 element,
-                OppModel.INSTANCE.XSD_INTEGER_INSTANCE::equals,
+                OppModelConstants.XSD_INTEGER_INSTANCE::equals,
                 ERROR_MESSAGE_INTEGER);
     }
 
@@ -160,14 +162,14 @@ public class TTLValidationUtil {
                                       ProblemsHolder holder,
                                       PsiElement element) {
         validate(resources, holder, element,
-                resource -> isIndividualOfType(resource, OppModel.INSTANCE.XSD_NUMBER),
+                resource -> isIndividualOfType(resource, OppModelConstants.XSD_NUMBER),
                 ERROR_MESSAGE_NUMBER);
     }
 
     public static void validateJSON(Set<OntResource> resources,
                                     ProblemsHolder holder,
                                     PsiElement element) {
-        validate(resources, holder, element, OppModel.INSTANCE.JSON_OBJECT::equals, ERROR_MESSAGE_JSON);
+        validate(resources, holder, element, OppModelConstants.JSON_OBJECT::equals, ERROR_MESSAGE_JSON);
     }
 
     public static boolean validateString(Set<OntResource> resources,
@@ -176,7 +178,7 @@ public class TTLValidationUtil {
         return validate(resources,
                 holder,
                 element,
-                OppModel.INSTANCE.XSD_STRING_INSTANCE::equals,
+                OppModelConstants.XSD_STRING_INSTANCE::equals,
                 ERROR_MESSAGE_STRING);
     }
 
@@ -195,16 +197,16 @@ public class TTLValidationUtil {
     public static void validateDateTime(Set<OntResource> resources, ProblemsHolder holder, PsiElement element) {
         validate(resources, holder, element,
                 resource ->
-                        isIndividualOfType(resource, OppModel.INSTANCE.XSD_DATETIME),
+                        isIndividualOfType(resource, OppModelConstants.XSD_DATETIME),
                 ERROR_MESSAGE_DATE_TIME);
     }
 
     private static boolean isNamedGraphInstance(OntResource resource) {
-        return isIndividualOfType(resource, OppModel.INSTANCE.NAMED_GRAPH_CLASS);
+        return isIndividualOfType(resource, OppModelConstants.NAMED_GRAPH_CLASS);
     }
 
     public static boolean isGraphshapeInstance(OntResource resource) {
-        return isIndividualOfType(resource, OppModel.INSTANCE.GRAPH_SHAPE);
+        return isIndividualOfType(resource, OppModelConstants.GRAPH_SHAPE);
     }
 
     private static boolean isIndividualOfType(OntResource resource, OntClass type) {

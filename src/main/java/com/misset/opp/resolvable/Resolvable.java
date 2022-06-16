@@ -1,6 +1,6 @@
 package com.misset.opp.resolvable;
 
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ public interface Resolvable {
      */
     default boolean isBoolean() {
         final Set<OntResource> resolved = resolve();
-        return resolved.size() == 1 && resolved.contains(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+        return resolved.size() == 1 && resolved.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     /**

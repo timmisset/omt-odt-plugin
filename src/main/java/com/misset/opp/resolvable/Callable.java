@@ -5,7 +5,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.util.CallableUtil;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -131,7 +131,7 @@ public interface Callable extends ContextResolvable {
      * Should return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE) when any input is acceptable
      */
     default Set<OntResource> getAcceptableArgumentType(int index, PsiCall call) {
-        return getParameterTypes().getOrDefault(index, Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE));
+        return getParameterTypes().getOrDefault(index, Set.of(OppModelConstants.OWL_THING_INSTANCE));
     }
 
     /**
@@ -139,7 +139,7 @@ public interface Callable extends ContextResolvable {
      * Should return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE) when any input is acceptable
      */
     default Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE);
+        return Set.of(OppModelConstants.OWL_THING_INSTANCE);
     }
 
     default HashMap<Integer, Set<OntResource>> mapCallableParameters(List<Set<OntResource>> resources) {

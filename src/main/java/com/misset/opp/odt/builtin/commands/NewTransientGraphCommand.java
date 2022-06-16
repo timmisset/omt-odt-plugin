@@ -1,6 +1,6 @@
 package com.misset.opp.odt.builtin.commands;
 
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 public class NewTransientGraphCommand extends BuiltInCommand {
@@ -24,6 +24,6 @@ public class NewTransientGraphCommand extends BuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModel.INSTANCE.NAMED_GRAPH;
+        return OppModelConstants.NAMED_GRAPH;
     }
 }

@@ -9,7 +9,7 @@ import com.misset.opp.odt.builtin.operators.CastOperator;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTOperatorCall;
 import com.misset.opp.odt.psi.ODTSignature;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,17 +35,17 @@ public class ODTOperatorCompletionCast extends CompletionContributor {
         });
     }
 
-    private void addCastOperatorCompletions(@NotNull CompletionParameters parameters,
-                                            @NotNull CompletionResultSet result,
-                                            PsiElement element,
-                                            ODTOperatorCall operatorCall) {
+    private static void addCastOperatorCompletions(@NotNull CompletionParameters parameters,
+                                                   @NotNull CompletionResultSet result,
+                                                   PsiElement element,
+                                                   ODTOperatorCall operatorCall) {
         int argumentIndexOf = operatorCall.getArgumentIndexOf(element);
         if (argumentIndexOf == 0) {
             ODTFile file = (ODTFile) parameters.getOriginalFile();
             Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
             // show all classes instances:
-            OppModel.INSTANCE.listXSDTypes().stream().map(
+            OppModelConstants.listXSDTypes().stream().map(
                             resource -> TTLResourceUtil
                                     .getRootLookupElement(resource, TTLResourceUtil.describeUriForLookup(resource), availableNamespaces))
                     .filter(Objects::nonNull)

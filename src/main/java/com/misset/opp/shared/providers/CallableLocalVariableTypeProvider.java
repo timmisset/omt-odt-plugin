@@ -2,7 +2,7 @@ package com.misset.opp.shared.providers;
 
 import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -21,7 +21,7 @@ public interface CallableLocalVariableTypeProvider {
                                      int argumentIndex) {
         return Optional.ofNullable(getLocalVariable(name, call, argumentIndex))
                 .map(LocalVariable::resolve)
-                .map(resources -> resources.isEmpty() ? Set.of((OntResource) OppModel.INSTANCE.OWL_THING_INSTANCE) : resources)
+                .map(resources -> resources.isEmpty() ? Set.of((OntResource) OppModelConstants.OWL_THING_INSTANCE) : resources)
                 .orElse(Collections.emptySet());
     }
 

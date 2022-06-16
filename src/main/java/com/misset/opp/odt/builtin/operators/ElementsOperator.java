@@ -1,6 +1,6 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 /**
@@ -22,6 +22,6 @@ public class ElementsOperator extends BuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModel.INSTANCE.OWL_THING_INSTANCE;
+        return OppModelConstants.OWL_THING_INSTANCE;
     }
 }

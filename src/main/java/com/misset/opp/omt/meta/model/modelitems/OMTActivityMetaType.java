@@ -25,7 +25,7 @@ import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.*;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiResolvableQuery;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -129,7 +129,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
                     .map(Resolvable::resolve)
                     .filter(resources -> !resources.isEmpty())
                     .findFirst()
-                    .orElse(Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE));
+                    .orElse(Set.of(OppModelConstants.OWL_THING_INSTANCE));
         }
     }
 
@@ -146,7 +146,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
     @Override
     public Set<OntResource> getSecondReturnArgument() {
         // $committed value
-        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Override

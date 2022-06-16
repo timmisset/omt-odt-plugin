@@ -2,7 +2,7 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
@@ -40,11 +40,11 @@ public class EveryOperator extends BuiltInBooleanOperator {
 
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 }

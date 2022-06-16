@@ -6,6 +6,7 @@ import com.intellij.openapi.util.Pair;
 import com.misset.opp.odt.builtin.Builtin;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
@@ -65,10 +66,10 @@ public abstract class BuiltInOperator extends Builtin {
                                                          PsiCall call,
                                                          ProblemsHolder holder) {
         String flag = call.getFlag();
-        if(!resources.isEmpty() &&
+        if (!resources.isEmpty() &&
                 flag != null &&
                 flag.contains("!ignoreCase") &&
-                !resources.contains(OppModel.INSTANCE.XSD_STRING_INSTANCE)) {
+                !resources.contains(OppModelConstants.XSD_STRING_INSTANCE)) {
             holder.registerProblem(call.getFlagElement(), "Using ignoreCase on non-string values", ProblemHighlightType.WARNING);
         }
     }

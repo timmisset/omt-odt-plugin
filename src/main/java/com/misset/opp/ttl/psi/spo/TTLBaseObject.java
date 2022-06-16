@@ -7,7 +7,7 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.psi.*;
 import com.misset.opp.ttl.psi.iri.TTLIriHolder;
 import com.misset.opp.ttl.stubs.object.TTLObjectStub;
@@ -67,7 +67,7 @@ public abstract class TTLBaseObject extends StubBasedPsiElementBase<TTLObjectStu
     @Override
     public boolean isPredicate() {
         return getFromStubOrPsi(TTLObjectStub::isPredicate,
-                () -> hasShaclPredicate(OppModel.INSTANCE.SHACL_PATH.getURI()));
+                () -> hasShaclPredicate(OppModelConstants.SHACL_PATH.getURI()));
     }
 
     @Override
@@ -90,7 +90,7 @@ public abstract class TTLBaseObject extends StubBasedPsiElementBase<TTLObjectStu
     @Override
     public boolean isObjectClass() {
         return getFromStubOrPsi(TTLObjectStub::isPredicate,
-                () -> hasShaclPredicate(OppModel.INSTANCE.SHACL_CLASS.getURI()));
+                () -> hasShaclPredicate(OppModelConstants.SHACL_CLASS.getURI()));
     }
 
     private boolean hasShaclPredicate(String iri) {

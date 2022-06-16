@@ -1,6 +1,6 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 public class JsonOperator extends BuiltInOperator {
@@ -21,6 +21,6 @@ public class JsonOperator extends BuiltInOperator {
     public OntResource resolveSingle() {
         // The JSON operator is only ever used in the CAST operator
         // it should cast to an JSON_OBJECT
-        return OppModel.INSTANCE.JSON_OBJECT;
+        return OppModelConstants.JSON_OBJECT;
     }
 }

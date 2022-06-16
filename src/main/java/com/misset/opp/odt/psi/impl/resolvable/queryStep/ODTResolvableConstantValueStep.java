@@ -7,6 +7,7 @@ import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.Individual;
@@ -28,22 +29,22 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
 
         final OntResource result;
         if (elementType == ODTTypes.BOOLEAN) {
-            result = oppModel.XSD_BOOLEAN_INSTANCE;
+            result = OppModelConstants.XSD_BOOLEAN_INSTANCE;
         } else if (elementType == ODTTypes.STRING) {
-            result = oppModel.XSD_STRING_INSTANCE;
+            result = OppModelConstants.XSD_STRING_INSTANCE;
         } else if (elementType == ODTTypes.INTEGER) {
-            result = oppModel.XSD_INTEGER_INSTANCE;
+            result = OppModelConstants.XSD_INTEGER_INSTANCE;
         } else if (elementType == ODTTypes.DECIMAL) {
-            result = oppModel.XSD_DECIMAL_INSTANCE;
+            result = OppModelConstants.XSD_DECIMAL_INSTANCE;
         } else if (elementType == ODTTypes.INTERPOLATED_STRING) {
-            result = oppModel.XSD_STRING_INSTANCE;
+            result = OppModelConstants.XSD_STRING_INSTANCE;
         } else if (elementType == ODTTypes.NULL) {
             result = null; // returns an emptySet which is the ODT equivalent of null
         } else if (elementType == ODTTypes.PRIMITIVE) {
             final Individual individual = TTLValueParserUtil.parsePrimitive(getText());
             result = individual != null ? OppModel.INSTANCE.toClass(individual) : null;
         } else {
-            result = oppModel.OWL_THING_INSTANCE;
+            result = OppModelConstants.OWL_THING_INSTANCE;
         }
 
         // a constant value, like a string, boolean, number etc is considered

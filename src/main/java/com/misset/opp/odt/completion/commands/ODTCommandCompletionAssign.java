@@ -8,6 +8,7 @@ import com.misset.opp.odt.builtin.commands.AssignCommand;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -59,7 +60,7 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                             .collect(Collectors.toSet());
                     Set<Property> predicates = OppModel.INSTANCE.listPredicates(subject)
                             .stream()
-                            .filter(property -> !OppModel.INSTANCE.classModelProperties.contains(property))
+                            .filter(property -> !OppModelConstants.CLASS_MODEL_PROPERTIES.contains(property))
                             .filter(property -> !existingPredicates.contains(property))
                             .collect(Collectors.toSet());
 

@@ -6,7 +6,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTBooleanStatement;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,7 @@ public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery i
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Override
@@ -52,6 +52,6 @@ public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery i
 
     @Override
     public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {
-        return resources -> resources.isEmpty() || resources.contains(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+        return resources -> resources.isEmpty() || resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 }

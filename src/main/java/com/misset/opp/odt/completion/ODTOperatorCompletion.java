@@ -11,6 +11,7 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +58,7 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                 LookupElementBuilder.create("false"), 100
         ));
 
-        Predicate<Set<OntResource>> filterType = resources -> OppModel.INSTANCE.areCompatible(Collections.singleton(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE), resources);
+        Predicate<Set<OntResource>> filterType = resources -> OppModel.INSTANCE.areCompatible(Collections.singleton(OppModelConstants.XSD_BOOLEAN_INSTANCE), resources);
         ODTQueryStep queryStep = PsiTreeUtil.getParentOfType(element, ODTQueryStep.class);
         if (queryStep != null) {
             new ODTOperatorCompletion().addOperatorCompletions(parameters, result, element, filterType, queryStep);

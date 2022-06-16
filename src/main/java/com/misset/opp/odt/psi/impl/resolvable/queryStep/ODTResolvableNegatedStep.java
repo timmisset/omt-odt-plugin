@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTNegatedStep;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ public abstract class ODTResolvableNegatedStep extends ODTResolvableQueryStepBas
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Override

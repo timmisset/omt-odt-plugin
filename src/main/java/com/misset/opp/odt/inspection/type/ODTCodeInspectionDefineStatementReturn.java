@@ -10,7 +10,7 @@ import com.misset.opp.odt.psi.ODTReturnStatement;
 import com.misset.opp.odt.psi.impl.ODTDefineCommandStatementImpl;
 import com.misset.opp.odt.psi.impl.ODTDefineQueryStatementImpl;
 import com.misset.opp.resolvable.Resolvable;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
@@ -58,7 +58,7 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
                 returnType, resolve, holder, defineQueryStatement
         );
 
-        if (returnType.contains(OppModel.INSTANCE.VOID)) {
+        if (returnType.contains(OppModelConstants.VOID)) {
             holder.registerProblem(defineQueryStatement,
                     "A query should not be typed void",
                     ProblemHighlightType.WARNING);
@@ -82,7 +82,7 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
                     returnType, resources, holder, returnStatement
             );
 
-            if (returnType.contains(OppModel.INSTANCE.VOID)) {
+            if (returnType.contains(OppModelConstants.VOID)) {
                 holder.registerProblem(returnStatement,
                         "A void command should not contain RETURN statements",
                         ProblemHighlightType.WARNING);

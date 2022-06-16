@@ -2,7 +2,7 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
@@ -24,9 +24,9 @@ public class SumOperator extends BuiltInOperator {
 
     @Override
     protected Set<OntResource> resolveFrom(Set<OntResource> resources) {
-        return resources.stream().allMatch(OppModel.INSTANCE.XSD_INTEGER_INSTANCE::equals) ?
+        return resources.stream().allMatch(OppModelConstants.XSD_INTEGER_INSTANCE::equals) ?
                 resources :
-                Set.of(OppModel.INSTANCE.XSD_DECIMAL_INSTANCE);
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
     }
 
     @Override
@@ -36,6 +36,6 @@ public class SumOperator extends BuiltInOperator {
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE);
+        return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE);
     }
 }

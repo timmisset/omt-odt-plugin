@@ -1,6 +1,6 @@
 package com.misset.opp.odt.builtin.commands;
 
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 public class GuidCommand extends BuiltInCommand {
@@ -24,6 +24,6 @@ public class GuidCommand extends BuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModel.INSTANCE.XSD_STRING_INSTANCE;
+        return OppModelConstants.XSD_STRING_INSTANCE;
     }
 }

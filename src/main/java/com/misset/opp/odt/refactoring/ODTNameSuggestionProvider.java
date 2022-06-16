@@ -13,6 +13,7 @@ import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
@@ -149,8 +150,8 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
         List<String> classLocalNames = new ArrayList<>();
         classLocalNames.add(ontClass.getLocalName());
         classLocalNames.addAll(ontClasses.stream()
-                .filter(superClass -> superClass != OppModel.INSTANCE.OWL_CLASS &&
-                        superClass != OppModel.INSTANCE.OWL_THING_CLASS)
+                .filter(superClass -> superClass != OppModelConstants.OWL_CLASS &&
+                        superClass != OppModelConstants.OWL_THING_CLASS)
                 .map(Resource::getLocalName)
                 .collect(Collectors.toList()));
         return classLocalNames;

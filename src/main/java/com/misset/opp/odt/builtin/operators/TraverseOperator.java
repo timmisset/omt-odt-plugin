@@ -2,7 +2,7 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
@@ -28,7 +28,7 @@ public class TraverseOperator extends BuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModel.INSTANCE.OWL_THING_INSTANCE;
+        return OppModelConstants.OWL_THING_INSTANCE;
     }
 
     @Override
@@ -41,9 +41,9 @@ public class TraverseOperator extends BuiltInOperator {
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE);
+            return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         } else if (index == 1) {
-            return Set.of(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+            return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
         }
         return null;
     }

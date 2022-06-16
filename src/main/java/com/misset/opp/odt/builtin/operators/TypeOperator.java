@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -31,7 +32,7 @@ public class TypeOperator extends BuiltInOperator {
         if (TTLResourceUtil.isType(ontClass)) {
             return ontClass;
         } else {
-            return OppModel.INSTANCE.IRI;
+            return OppModelConstants.IRI;
         }
     }
 }
