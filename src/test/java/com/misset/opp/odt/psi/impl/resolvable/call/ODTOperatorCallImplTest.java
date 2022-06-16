@@ -4,7 +4,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.builtin.operators.BuiltInOperator;
 import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import com.misset.opp.testCase.OMTOntologyTestCase;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +47,7 @@ class ODTOperatorCallImplTest extends OMTOntologyTestCase {
                 "   DEFINE QUERY query => 'string value';\n" +
                 "   DEFINE QUERY <caret>callingQuery => query;\n");
         assertContainsElements(resolveQueryAtCaret(content),
-                OppModel.INSTANCE.XSD_STRING_INSTANCE);
+                OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Test
@@ -56,18 +56,18 @@ class ODTOperatorCallImplTest extends OMTOntologyTestCase {
                 "   DEFINE QUERY query($param) => $param;\n" +
                 "   DEFINE QUERY <caret>callingQuery => query('test');\n");
         assertContainsElements(resolveQueryAtCaret(content),
-                OppModel.INSTANCE.XSD_STRING_INSTANCE);
+                OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Test
     void testResolveOperatorCallWithInput() {
-        Assertions.assertEquals(OppModel.INSTANCE.XSD_STRING_INSTANCE,
+        Assertions.assertEquals(OppModelConstants.XSD_STRING_INSTANCE,
                 resolveQueryStatementToSingleResult("'test' / FIRST"));
     }
 
     @Test
     void testResolveOperatorCallWithCallContent() {
-        Assertions.assertEquals(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE,
+        Assertions.assertEquals(OppModelConstants.XSD_BOOLEAN_INSTANCE,
                 resolveQueryStatementToSingleResult("'test' / MAP(true)"));
     }
 }

@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,9 +12,9 @@ class SumOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(SumOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
-        assertResolved(SumOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
-        assertResolved(SumOperator.INSTANCE, Set.of(oppModel.XSD_INTEGER_INSTANCE, oppModel.XSD_DECIMAL_INSTANCE), Set.of(oppModel.XSD_DECIMAL_INSTANCE));
+        assertResolved(SumOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertResolved(SumOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
+        assertResolved(SumOperator.INSTANCE, Set.of(OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE), Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE));
     }
 
     @Test
@@ -29,11 +30,11 @@ class SumOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(SumOperator.INSTANCE, oppModel.XSD_NUMBER_INSTANCE);
+        assertValidInput(SumOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(SumOperator.INSTANCE, oppModel.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableInputType(SumOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
     }
 }

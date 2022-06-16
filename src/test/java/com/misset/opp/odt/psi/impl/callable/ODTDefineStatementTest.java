@@ -5,6 +5,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.misset.opp.testCase.ODTTestCase;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ class ODTDefineStatementTest extends ODTTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
-            Assertions.assertEquals(Set.of(OppModel.INSTANCE.XSD_STRING_INSTANCE), defineStatement.getParamType(0));
+            Assertions.assertEquals(Set.of(OppModelConstants.XSD_STRING_INSTANCE), defineStatement.getParamType(0));
         });
     }
 
@@ -94,7 +95,7 @@ class ODTDefineStatementTest extends ODTTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
-            Assertions.assertEquals(Set.of(OppModel.INSTANCE.XSD_INTEGER_INSTANCE), defineStatement.resolve());
+            Assertions.assertEquals(Set.of(OppModelConstants.XSD_INTEGER_INSTANCE), defineStatement.resolve());
         });
     }
 

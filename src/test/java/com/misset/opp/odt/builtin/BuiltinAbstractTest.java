@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.operators.LogOperator;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class BuiltinAbstractTest extends BaseBuiltinTest {
 
     @Test
     void testResolveError() {
-        Set<OntResource> resources = Set.of(oppModel.XSD_STRING_INSTANCE);
+        Set<OntResource> resources = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         Assertions.assertEquals(resources, LogOperator.INSTANCE.resolveError(resources, null));
     }
 

@@ -3,7 +3,7 @@ package com.misset.opp.odt.builtin.commands;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,8 +23,8 @@ class DestroyCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateThrowsErrorWhenNotInstances() {
-        final PsiCall call = getCall(Set.of(OppModel.INSTANCE.XSD_NUMBER),
-                Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_NUMBER),
+                Set.of(OppModelConstants.XSD_NUMBER_INSTANCE));
         DestroyCommand.INSTANCE.validate(call, holder);
         verify(holder).registerProblem(firstArgument,
                 TTLValidationUtil.ERROR_MESSAGE_INSTANCES,
@@ -33,8 +33,8 @@ class DestroyCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateThrowsNoErrorWhenInstances() {
-        final PsiCall call = getCall(Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE),
-                Set.of(OppModel.INSTANCE.XSD_NUMBER_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_NUMBER_INSTANCE),
+                Set.of(OppModelConstants.XSD_NUMBER_INSTANCE));
         DestroyCommand.INSTANCE.validate(call, holder);
         verify(holder, never()).registerProblem(firstArgument,
                 TTLValidationUtil.ERROR_MESSAGE_INSTANCES,

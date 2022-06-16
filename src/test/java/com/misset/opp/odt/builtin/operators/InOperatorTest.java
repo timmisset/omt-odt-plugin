@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class InOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(InOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertResolved(InOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Test
@@ -39,8 +40,8 @@ class InOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationShowsWarningWhenIncompatiblePreviousStepAndArgumentTypes() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
-        doReturn(Set.of(oppModel.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        doReturn(Set.of(OppModelConstants.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 

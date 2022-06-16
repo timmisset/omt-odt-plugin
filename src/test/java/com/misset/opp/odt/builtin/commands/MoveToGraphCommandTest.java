@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,18 +34,18 @@ class MoveToGraphCommandTest extends BaseBuiltinTest {
     void testArgumentTypes() {
         testArgument(MoveToGraphCommand.INSTANCE,
                 0,
-                oppModel.XSD_STRING_INSTANCE,
+                OppModelConstants.XSD_STRING_INSTANCE,
                 TTLValidationUtil.ERROR_MESSAGE_INSTANCES,
-                oppModel.XSD_STRING);
+                OppModelConstants.XSD_STRING);
         testArgument(MoveToGraphCommand.INSTANCE,
                 1,
-                oppModel.MEDEWERKER_GRAPH,
+                OppModelConstants.MEDEWERKER_GRAPH,
                 TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(MoveToGraphCommand.INSTANCE, 1, oppModel.NAMED_GRAPH);
+        assertGetAcceptableArgumentType(MoveToGraphCommand.INSTANCE, 1, OppModelConstants.NAMED_GRAPH);
         assertGetAcceptableArgumentTypeIsNull(MoveToGraphCommand.INSTANCE, 0);
     }
 }

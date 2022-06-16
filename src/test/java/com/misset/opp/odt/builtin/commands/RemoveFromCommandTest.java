@@ -5,6 +5,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -43,7 +44,7 @@ class RemoveFromCommandTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasWarningWhenNonMultiple() {
-        PsiCall call = getCall(Set.of(oppModel.OWL_THING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.OWL_THING_INSTANCE));
         PsiElement element = call.getCallSignatureElement();
 
         Pair<Set<OntResource>, Property> pair = mock(Pair.class);

@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ class NotOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(NotOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertResolved(NotOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Test
@@ -25,18 +26,18 @@ class NotOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(NotOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE);
-        assertValidArgument(NotOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertValidInput(NotOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertValidArgument(NotOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(NotOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableInputType(NotOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(NotOperator.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(NotOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
         assertGetAcceptableArgumentTypeIsNull(NotOperator.INSTANCE, 1);
     }
 }

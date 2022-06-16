@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
@@ -37,7 +38,7 @@ class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
     @Test
     void testCurieStepResolves() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / ont:booleanPredicate");
-        Assertions.assertTrue(resources.contains(oppModel.XSD_BOOLEAN_INSTANCE));
+        Assertions.assertTrue(resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test
@@ -62,19 +63,19 @@ class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
     @Test
     void testNegatedStep() {
         final Set<OntResource> resources = resolveQueryStatement("NOT IN(/ont:ClassA)");
-        Assertions.assertTrue(resources.contains(oppModel.XSD_BOOLEAN_INSTANCE));
+        Assertions.assertTrue(resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test
     void testNegatedStepTerminal() {
         final Set<OntResource> resources = resolveQueryStatement("IN(/ont:ClassA) / NOT");
-        Assertions.assertTrue(resources.contains(oppModel.XSD_BOOLEAN_INSTANCE));
+        Assertions.assertTrue(resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test
     void testSubqueryWithoutPath() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / (ont:booleanPredicate)*");
-        Assertions.assertTrue(resources.contains(oppModel.XSD_BOOLEAN_INSTANCE));
+        Assertions.assertTrue(resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test

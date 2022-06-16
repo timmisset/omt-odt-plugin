@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.impl.resolvable;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.testCase.OMTOntologyTestCase;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ class ODTResolvableScriptTest extends OMTOntologyTestCase {
         );
         configureByText(content);
         Set<OntResource> resources = ReadAction.compute(() -> ((ODTScript) myFixture.getFile().getFirstChild()).resolve());
-        assertContainsElements(resources, OppModel.INSTANCE.XSD_STRING_INSTANCE, OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
+        assertContainsElements(resources, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 
     @Test
@@ -26,7 +26,7 @@ class ODTResolvableScriptTest extends OMTOntologyTestCase {
         String content = insideStandaloneQueryWithPrefixes("query: '<caret>'");
         configureByText(content);
         Set<OntResource> resources = ReadAction.compute(() -> ((ODTScript) myFixture.getFile().getFirstChild()).resolve());
-        assertDoesntContain(resources, OppModel.INSTANCE.XSD_STRING_INSTANCE);
+        assertDoesntContain(resources, OppModelConstants.XSD_STRING_INSTANCE);
     }
 
 }

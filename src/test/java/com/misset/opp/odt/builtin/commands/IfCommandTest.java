@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,9 @@ class IfCommandTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         // IF(<boolean>, THEN) => THEN
-        assertResolved(IfCommand.INSTANCE, Collections.emptySet(), Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_BOOLEAN_INSTANCE), Set.of(oppModel.XSD_STRING_INSTANCE));
+        assertResolved(IfCommand.INSTANCE, Collections.emptySet(), Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
         // IF(<boolean>, THEN, ELSE) => THEN | ELSE
-        assertResolved(IfCommand.INSTANCE, Collections.emptySet(), Set.of(oppModel.XSD_STRING_INSTANCE, oppModel.XSD_INTEGER_INSTANCE), Set.of(oppModel.XSD_BOOLEAN_INSTANCE), Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_INTEGER_INSTANCE));
+        assertResolved(IfCommand.INSTANCE, Collections.emptySet(), Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_INTEGER_INSTANCE));
     }
 
     @Test
@@ -37,7 +38,7 @@ class IfCommandTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasErrorWhenCalledWithNonBooleanArgument() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
         ProblemsHolder holder = mock(ProblemsHolder.class);
 
         IfCommand.INSTANCE.specificValidation(call, holder);
@@ -47,7 +48,7 @@ class IfCommandTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasNoErrorWhenCalledWithBooleanArgument() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
         ProblemsHolder holder = mock(ProblemsHolder.class);
 
         IfCommand.INSTANCE.specificValidation(call, holder);
@@ -57,7 +58,7 @@ class IfCommandTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(IfCommand.INSTANCE, 0, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(IfCommand.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
         assertGetAcceptableArgumentTypeIsNull(IfCommand.INSTANCE, 1);
     }
 }

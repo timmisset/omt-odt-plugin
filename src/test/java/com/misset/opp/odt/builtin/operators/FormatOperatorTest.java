@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,12 +20,12 @@ class FormatOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(FormatOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertResolved(FormatOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Test
     void testUnequalNumberOfArguments() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
         doReturn("Test %s").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
@@ -33,7 +34,7 @@ class FormatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testWrongTypesString() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_INTEGER_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_INTEGER_INSTANCE));
         doReturn("Test %s").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
@@ -42,7 +43,7 @@ class FormatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testWrongTypesNumber() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
         doReturn("Test %d").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
@@ -62,7 +63,7 @@ class FormatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(FormatOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(FormatOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
         assertGetAcceptableArgumentTypeIsNull(FormatOperator.INSTANCE, 1);
     }
 

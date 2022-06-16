@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.impl.callable;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.testCase.ODTTestCase;
 import com.misset.opp.testCase.OMTOntologyTestCase;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class ODTBaseDefineCommandStatementTest extends ODTTestCase {
         configureByText(content);
         ODTDefineStatement defineStatement = (ODTDefineStatement) ReadAction.compute(myFixture::getElementAtCaret);
         Set<OntResource> resolve = ReadAction.compute(defineStatement::resolve);
-        assertContainsElements(resolve, OppModel.INSTANCE.XSD_STRING_INSTANCE);
+        assertContainsElements(resolve, OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Test
@@ -34,7 +34,7 @@ class ODTBaseDefineCommandStatementTest extends ODTTestCase {
         configureByText(content);
         ODTDefineStatement defineStatement = (ODTDefineStatement) ReadAction.compute(myFixture::getElementAtCaret);
         Set<OntResource> resolve = ReadAction.compute(defineStatement::resolve);
-        assertContainsElements(resolve, OppModel.INSTANCE.XSD_STRING_INSTANCE, OppModel.INSTANCE.XSD_INTEGER_INSTANCE);
+        assertContainsElements(resolve, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 
 }

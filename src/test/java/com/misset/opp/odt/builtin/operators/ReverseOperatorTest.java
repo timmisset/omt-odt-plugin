@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +13,8 @@ class ReverseOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(ReverseOperator.INSTANCE,
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test

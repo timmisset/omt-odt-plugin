@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ class ElementsOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(ElementsOperator.INSTANCE, oppModel.OWL_THING_INSTANCE);
+        assertResolved(ElementsOperator.INSTANCE, OppModelConstants.OWL_THING_INSTANCE);
     }
 
     @Test

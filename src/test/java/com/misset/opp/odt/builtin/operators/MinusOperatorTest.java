@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,38 +13,38 @@ class MinusOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(MinusOperator.INSTANCE,
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
         );
     }
 
     @Test
     protected void testResolveDecimal() {
         assertResolved(MinusOperator.INSTANCE,
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE),
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE)
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE)
         );
     }
 
     @Test
     protected void testResolveDecimalLeading() {
         assertResolved(MinusOperator.INSTANCE,
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE),
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
         );
     }
 
     @Test
     protected void testResolveMoreThan2Arguments() {
         assertResolved(MinusOperator.INSTANCE,
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
         );
     }
 

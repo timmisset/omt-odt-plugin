@@ -3,7 +3,7 @@ package com.misset.opp.omt.meta.model.variables;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.testCase.OMTOntologyTestCase;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class OMTParamMetaTypeOntologyTest extends OMTOntologyTestCase {
             final ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
             final Set<OntResource> resolve = defineStatement.resolve();
             Assertions.assertFalse(resolve.isEmpty());
-            Assertions.assertEquals(OppModel.INSTANCE.XSD_STRING_INSTANCE, resolve.toArray()[0]);
+            Assertions.assertEquals(OppModelConstants.XSD_STRING_INSTANCE, resolve.toArray()[0]);
         });
     }
 
@@ -64,7 +64,7 @@ class OMTParamMetaTypeOntologyTest extends OMTOntologyTestCase {
             final ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
             final Set<OntResource> resolve = defineStatement.resolve();
             Assertions.assertFalse(resolve.isEmpty());
-            Assertions.assertEquals(OppModel.INSTANCE.XSD_STRING_INSTANCE, resolve.toArray()[0]);
+            Assertions.assertEquals(OppModelConstants.XSD_STRING_INSTANCE, resolve.toArray()[0]);
         });
     }
 

@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ class NewTransientGraphCommandTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(NewTransientGraphCommand.INSTANCE, oppModel.NAMED_GRAPH);
+        assertReturns(NewTransientGraphCommand.INSTANCE, OppModelConstants.NAMED_GRAPH);
     }
 
     @Test

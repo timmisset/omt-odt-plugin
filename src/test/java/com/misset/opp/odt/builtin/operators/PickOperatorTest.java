@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,17 +20,17 @@ class PickOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(PickOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
+        assertValidArgument(PickOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(PickOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
+        assertGetAcceptableArgumentType(PickOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
         assertGetAcceptableArgumentTypeIsNull(PickOperator.INSTANCE, 1);
     }
 
     @Override
     protected void testResolve() {
-        assertResolved(PickOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertResolved(PickOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
     }
 }

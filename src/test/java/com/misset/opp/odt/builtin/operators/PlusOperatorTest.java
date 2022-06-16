@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,27 +13,27 @@ class PlusOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(PlusOperator.INSTANCE,
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
         );
     }
 
     @Test
     protected void testResolveDecimal() {
         assertResolved(PlusOperator.INSTANCE,
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE),
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE)
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE)
         );
     }
 
     @Test
     protected void testResolveDecimalLeading() {
         assertResolved(PlusOperator.INSTANCE,
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE),
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
         );
     }
 

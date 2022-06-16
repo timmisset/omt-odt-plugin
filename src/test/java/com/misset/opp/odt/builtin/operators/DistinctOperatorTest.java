@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,14 +17,14 @@ class DistinctOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(DistinctOperator.INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE, oppModel.XSD_BOOLEAN_INSTANCE);
-        assertResolved(DistinctOperator.INSTANCE, oppModel.XSD_DATE, oppModel.XSD_DATE);
-        assertResolved(DistinctOperator.INSTANCE, oppModel.XSD_INTEGER, oppModel.XSD_INTEGER);
+        assertResolved(DistinctOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(DistinctOperator.INSTANCE, OppModelConstants.XSD_DATE, OppModelConstants.XSD_DATE);
+        assertResolved(DistinctOperator.INSTANCE, OppModelConstants.XSD_INTEGER, OppModelConstants.XSD_INTEGER);
     }
 
     @Test
     void testFlagShowsWarningWhenDefault() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 

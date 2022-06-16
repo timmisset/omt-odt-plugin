@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ class SubtringOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(SubstringOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertResolved(SubstringOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Test
@@ -25,18 +26,18 @@ class SubtringOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(SubstringOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
-        assertValidArgument(SubstringOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
-        assertValidArgument(SubstringOperator.INSTANCE, 1, oppModel.XSD_INTEGER_INSTANCE);
+        assertValidInput(SubstringOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertValidArgument(SubstringOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertValidArgument(SubstringOperator.INSTANCE, 1, OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(SubstringOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertGetAcceptableInputType(SubstringOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(SubstringOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
+        assertGetAcceptableArgumentType(SubstringOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 }

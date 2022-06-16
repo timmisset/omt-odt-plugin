@@ -6,7 +6,7 @@ import com.misset.opp.odt.builtin.commands.BuiltInCommand;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.testCase.OMTTestCase;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ class ODTCommandCallImplTest extends OMTTestCase {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
             Set<OntResource> variableType = ((ODTVariable) elementAtCaret).resolve();
-            assertContainsElements(variableType, OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE);
+            assertContainsElements(variableType, OppModelConstants.XSD_BOOLEAN_INSTANCE);
         });
     }
 

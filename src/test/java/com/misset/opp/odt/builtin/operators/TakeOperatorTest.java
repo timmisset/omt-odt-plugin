@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +13,8 @@ class TakeOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TakeOperator.INSTANCE,
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test
@@ -29,12 +30,12 @@ class TakeOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(TakeOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
+        assertValidArgument(TakeOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(TakeOperator.INSTANCE, 0, oppModel.XSD_INTEGER_INSTANCE);
+        assertGetAcceptableArgumentType(TakeOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
         assertGetAcceptableArgumentTypeIsNull(TakeOperator.INSTANCE, 1);
     }
 }

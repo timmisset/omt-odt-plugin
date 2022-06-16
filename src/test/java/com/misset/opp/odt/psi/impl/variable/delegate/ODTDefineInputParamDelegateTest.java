@@ -6,6 +6,7 @@ import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ class ODTDefineInputParamDelegateTest extends OMTOntologyTestCase {
                 "    */\n" +
                 "   DEFINE QUERY <caret>query($param) => $param;");
         assertContainsElements(resolveQueryAtCaret(content),
-                OppModel.INSTANCE.XSD_STRING_INSTANCE);
+                OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Test

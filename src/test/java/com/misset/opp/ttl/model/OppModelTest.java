@@ -42,16 +42,16 @@ class OppModelTest extends OMTOntologyTestCase {
     void listPredicateOnClass() {
         final Set<Property> predicates = oppModel.listPredicates(CLASS_A);
         Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
-        Assertions.assertTrue(predicates.contains(oppModel.RDF_TYPE));
-        Assertions.assertTrue(predicates.contains(oppModel.RDFS_SUBCLASS_OF));
+        Assertions.assertTrue(predicates.contains(OppModelConstants.RDF_TYPE));
+        Assertions.assertTrue(predicates.contains(OppModelConstants.RDFS_SUBCLASS_OF));
     }
 
     @Test
     void listPredicateOnIndividual() {
         final Set<Property> predicates = oppModel.listPredicates(CLASS_A_INDIVIDUAL);
         Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
-        Assertions.assertTrue(predicates.contains(oppModel.RDF_TYPE));
-        Assertions.assertFalse(predicates.contains(oppModel.RDFS_SUBCLASS_OF));
+        Assertions.assertTrue(predicates.contains(OppModelConstants.RDF_TYPE));
+        Assertions.assertFalse(predicates.contains(OppModelConstants.RDFS_SUBCLASS_OF));
     }
 
     @Test
@@ -60,7 +60,7 @@ class OppModelTest extends OMTOntologyTestCase {
                 Set.of(CLASS_A, createClass("ClassB")));
         Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
         Assertions.assertTrue(predicates.contains(createProperty("stringPredicate")));
-        Assertions.assertTrue(predicates.contains(oppModel.RDF_TYPE));
+        Assertions.assertTrue(predicates.contains(OppModelConstants.RDF_TYPE));
     }
 
     @Test
@@ -72,7 +72,7 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void testListSubjectsRdfType() {
-        final Set<OntResource> resources = oppModel.listSubjects(oppModel.RDF_TYPE, Set.of(CLASS_A));
+        final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.RDF_TYPE, Set.of(CLASS_A));
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof Individual && ((Individual) resource).hasOntClass(CLASS_A)
         ));
@@ -87,7 +87,7 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void testListSubjectsClassPredicate() {
-        final Set<OntResource> resources = oppModel.listSubjects(oppModel.RDFS_SUBCLASS_OF,
+        final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.RDFS_SUBCLASS_OF,
                 Set.of(createResource("ClassB")));
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof OntClass && resource.equals(createResource(
@@ -100,7 +100,7 @@ class OppModelTest extends OMTOntologyTestCase {
         final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
                 createProperty("booleanPredicate"));
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> resource.equals(oppModel.XSD_BOOLEAN_INSTANCE)
+                resource -> resource.equals(OppModelConstants.XSD_BOOLEAN_INSTANCE)
         ));
     }
 
@@ -116,7 +116,7 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void testListObjectsRdfTypeOnIndividual() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), oppModel.RDF_TYPE);
+        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), OppModelConstants.RDF_TYPE);
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> resource.equals(CLASS_A))
         );
@@ -124,9 +124,9 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void testListObjectsRdfTypeOnClass() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A), oppModel.RDF_TYPE);
+        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A), OppModelConstants.RDF_TYPE);
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> resource.equals(oppModel.OWL_CLASS))
+                resource -> resource.equals(OppModelConstants.OWL_CLASS))
         );
     }
 

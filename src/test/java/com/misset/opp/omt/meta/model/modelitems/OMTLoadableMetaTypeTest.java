@@ -8,7 +8,7 @@ import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlModelItemDelegate;
 import com.misset.opp.omt.psi.impl.yaml.YAMLOMTKeyValueImpl;
 import com.misset.opp.testCase.OMTInspectionTestCase;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -63,7 +63,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
 
     @Test
     void testResolvesToJson() {
-        Assertions.assertEquals(Set.of(OppModel.INSTANCE.JSON_OBJECT), new OMTLoadableMetaType().resolve(null, null));
+        Assertions.assertEquals(Set.of(OppModelConstants.JSON_OBJECT), new OMTLoadableMetaType().resolve(null, null));
     }
 
     @Test

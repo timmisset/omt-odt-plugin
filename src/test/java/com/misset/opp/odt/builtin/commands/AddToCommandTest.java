@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.openapi.util.Pair;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateShowsWarningWhenDifferentTypes() {
-        final PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
         AddToCommand.INSTANCE.validate(call, holder);
         verify(holder).registerProblem(eq(signature),
                 startsWith("Incompatible types"),
@@ -33,7 +34,7 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateShowsNoWarningWhenCompatibleTypes() {
-        final PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_STRING_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
         AddToCommand.INSTANCE.validate(call, holder);
         verify(holder, never()).registerProblem(eq(signature),
                 startsWith("Incompatible types"),
@@ -42,7 +43,7 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateShowsWarningWhenNonMultiple() {
-        final PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE), Set.of(oppModel.XSD_STRING_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
         doReturn(new Pair<>(oppModel.toIndividuals("http://ontology#ClassA"),
                 oppModel.getProperty("http://ontology#classPredicate")))
                 .when(call).getSignatureLeadingInformation(0);
@@ -54,11 +55,11 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testAcceptableArgumentType() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
         Assertions.assertTrue(AddToCommand.INSTANCE.getAcceptableArgumentType(1, call)
-                .contains(oppModel.XSD_STRING_INSTANCE));
+                .contains(OppModelConstants.XSD_STRING_INSTANCE));
         Assertions.assertFalse(AddToCommand.INSTANCE.getAcceptableArgumentType(1, call)
-                .contains(oppModel.XSD_BOOLEAN_INSTANCE));
+                .contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test

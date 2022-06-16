@@ -5,6 +5,7 @@ import com.misset.opp.omt.inspection.structure.OMTValueInspection;
 import com.misset.opp.testCase.OMTInspectionTestCase;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +24,7 @@ class OMTShapeQueryTypeTest extends OMTInspectionTestCase {
     protected void setUp() {
         super.setUp();
         OMTOntologyTestCase.initOntologyModel();
-        OppModel.INSTANCE.createIndividual(OppModel.INSTANCE.GRAPH_SHAPE, "http://shapeA");
+        OppModel.INSTANCE.createIndividual(OppModelConstants.GRAPH_SHAPE, "http://shapeA");
     }
 
     @Test

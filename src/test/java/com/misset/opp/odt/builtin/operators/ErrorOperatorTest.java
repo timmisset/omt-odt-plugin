@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ class ErrorOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(ErrorOperator.INSTANCE, oppModel.ERROR);
+        assertResolved(ErrorOperator.INSTANCE, OppModelConstants.ERROR);
     }
 
     @Test
@@ -32,13 +33,13 @@ class ErrorOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(ErrorOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(ErrorOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
         assertGetAcceptableArgumentTypeIsNull(ErrorOperator.INSTANCE, 1);
     }
 
     @Test
     void testSpecificValidationNoErrorWhenValid() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
 
         ErrorOperator.INSTANCE.specificValidation(call, holder);
         verify(holder, never()).registerProblem(any(PsiElement.class), anyString(), eq(ProblemHighlightType.ERROR));
@@ -46,7 +47,7 @@ class ErrorOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationErrorWhenNotValid() {
-        PsiCall call = getCall(Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
 
         ErrorOperator.INSTANCE.specificValidation(call, holder);
         verify(holder, times(1)).registerProblem(any(PsiElement.class), anyString(), eq(ProblemHighlightType.ERROR));

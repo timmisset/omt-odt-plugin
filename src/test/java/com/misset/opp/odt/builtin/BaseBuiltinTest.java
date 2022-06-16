@@ -7,6 +7,7 @@ import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -101,18 +102,18 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
     protected final void assertCombinesInput(Builtin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE,
-                        oppModel.XSD_STRING_INSTANCE),
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
-                Set.of(oppModel.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE,
+                        OppModelConstants.XSD_STRING_INSTANCE),
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
+                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
     }
 
     protected final void assertReturnsFirstArgument(Builtin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
-                Set.of(oppModel.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
+                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
     }
 
     /**
@@ -122,16 +123,16 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         assertResolved(builtin,
                 Collections.emptySet(),
                 Set.of(resource),
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
-                Set.of(oppModel.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
+                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
     }
 
     protected final void assertReturnsVoid(Builtin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
                 Collections.emptySet(),
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE),
-                Set.of(oppModel.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
+                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
     }
 
     protected abstract void testResolve();
@@ -140,7 +141,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
                                 int index,
                                 OntResource expected,
                                 String errorMessage) {
-        OntResource invalidArgument = expected.equals(OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE) ? OppModel.INSTANCE.XSD_STRING_INSTANCE : OppModel.INSTANCE.XSD_BOOLEAN_INSTANCE;
+        OntResource invalidArgument = expected.equals(OppModelConstants.XSD_BOOLEAN_INSTANCE) ? OppModelConstants.XSD_STRING_INSTANCE : OppModelConstants.XSD_BOOLEAN_INSTANCE;
         testArgument(builtin, index, expected, errorMessage, invalidArgument);
     }
 
@@ -222,7 +223,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
 
     protected void assertGetAcceptableArgumentTypeSameAsPreviousStep(Builtin builtin, int index) {
         PsiCall call = mock(PsiCall.class);
-        Set<OntResource> previousStep = Set.of(oppModel.XSD_STRING_INSTANCE);
+        Set<OntResource> previousStep = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         doReturn(previousStep).when(call).resolvePreviousStep();
 
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
@@ -235,7 +236,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
 
     protected void assertGetAcceptableArgumentTypeSameAsArgument(Builtin builtin, int index, int sameAsIndex) {
         PsiCall call = mock(PsiCall.class);
-        Set<OntResource> atIndex = Set.of(oppModel.XSD_STRING_INSTANCE);
+        Set<OntResource> atIndex = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         doReturn(atIndex).when(call).resolveSignatureArgument(sameAsIndex);
 
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);

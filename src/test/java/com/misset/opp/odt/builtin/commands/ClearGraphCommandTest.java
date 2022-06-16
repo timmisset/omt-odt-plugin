@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,14 +11,14 @@ class ClearGraphCommandTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(ClearGraphCommand.INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
+        assertReturns(ClearGraphCommand.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 
     @Test
     void testArgumentTypes() {
         testArgument(ClearGraphCommand.INSTANCE,
                 0,
-                OppModel.INSTANCE.MEDEWERKER_GRAPH,
+                OppModelConstants.MEDEWERKER_GRAPH,
                 TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
@@ -34,7 +34,7 @@ class ClearGraphCommandTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(ClearGraphCommand.INSTANCE, 0, oppModel.NAMED_GRAPH);
+        assertGetAcceptableArgumentType(ClearGraphCommand.INSTANCE, 0, OppModelConstants.NAMED_GRAPH);
         assertGetAcceptableArgumentTypeIsNull(ClearGraphCommand.INSTANCE, 1);
     }
 

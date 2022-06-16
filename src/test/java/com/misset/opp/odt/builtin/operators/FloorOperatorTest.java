@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,14 +11,14 @@ class FloorOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(FloorOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
-        assertResolved(FloorOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
+        assertResolved(FloorOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertResolved(FloorOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 
     @Test
     void testValidInputs() {
-        assertValidInput(FloorOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
-        assertInvalidInput(FloorOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertValidInput(FloorOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
+        assertInvalidInput(FloorOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
     }
 
     @Test
@@ -33,6 +34,6 @@ class FloorOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableInput() {
-        assertGetAcceptableInputType(FloorOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
+        assertGetAcceptableInputType(FloorOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
     }
 }

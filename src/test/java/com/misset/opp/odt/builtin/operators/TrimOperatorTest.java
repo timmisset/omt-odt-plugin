@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ class TrimOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(TrimOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertResolved(TrimOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Test
@@ -25,11 +26,11 @@ class TrimOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(TrimOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertValidInput(TrimOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(TrimOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE);
+        assertGetAcceptableInputType(TrimOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
     }
 }

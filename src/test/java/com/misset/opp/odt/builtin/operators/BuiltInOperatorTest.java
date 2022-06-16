@@ -5,6 +5,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ final class BuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testCanBeAppliedTo() {
-        Assertions.assertTrue(LogOperator.INSTANCE.canBeAppliedTo(Set.of(oppModel.XSD_STRING_INSTANCE)));
+        Assertions.assertTrue(LogOperator.INSTANCE.canBeAppliedTo(Set.of(OppModelConstants.XSD_STRING_INSTANCE)));
     }
 
     @Test
@@ -56,7 +57,7 @@ final class BuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidateCompatibleOutcomePossibilitiesReturnsWithoutValidationWhenResourceEmpty() {
-        Set<OntResource> withValues = Set.of(oppModel.XSD_STRING_INSTANCE);
+        Set<OntResource> withValues = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         Set<OntResource> emptySet = Collections.emptySet();
 
         PsiCall call = mock(PsiCall.class);

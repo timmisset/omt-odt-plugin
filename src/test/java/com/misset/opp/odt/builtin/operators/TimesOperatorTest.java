@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,27 +13,27 @@ class TimesOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TimesOperator.INSTANCE,
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
         );
     }
 
     @Test
     protected void testResolveDecimal() {
         assertResolved(TimesOperator.INSTANCE,
-                Set.of(oppModel.XSD_INTEGER_INSTANCE),
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE),
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE)
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE)
         );
     }
 
     @Test
     protected void testResolveDecimalLeading() {
         assertResolved(TimesOperator.INSTANCE,
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE),
-                Set.of(oppModel.XSD_DECIMAL_INSTANCE),
-                Set.of(oppModel.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
+                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
+                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
         );
     }
 
@@ -49,21 +50,21 @@ class TimesOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(TimesOperator.INSTANCE, oppModel.XSD_NUMBER_INSTANCE);
-        assertValidArgument(TimesOperator.INSTANCE, 0, oppModel.XSD_NUMBER_INSTANCE);
-        assertValidArgument(TimesOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE);
-        assertValidArgument(TimesOperator.INSTANCE, 2, oppModel.XSD_NUMBER_INSTANCE);
+        assertValidInput(TimesOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertValidArgument(TimesOperator.INSTANCE, 0, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertValidArgument(TimesOperator.INSTANCE, 1, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertValidArgument(TimesOperator.INSTANCE, 2, OppModelConstants.XSD_NUMBER_INSTANCE);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(TimesOperator.INSTANCE, oppModel.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableInputType(TimesOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(TimesOperator.INSTANCE, 0, oppModel.XSD_NUMBER_INSTANCE);
-        assertGetAcceptableArgumentType(TimesOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableArgumentType(TimesOperator.INSTANCE, 0, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableArgumentType(TimesOperator.INSTANCE, 1, OppModelConstants.XSD_NUMBER_INSTANCE);
     }
 
 }

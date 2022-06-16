@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +13,8 @@ class TraverseOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TraverseOperator.INSTANCE,
-                Set.of(oppModel.OWL_THING_INSTANCE),
-                Set.of(oppModel.OWL_THING_INSTANCE));
+                Set.of(OppModelConstants.OWL_THING_INSTANCE),
+                Set.of(OppModelConstants.OWL_THING_INSTANCE));
     }
 
     @Test
@@ -29,14 +30,14 @@ class TraverseOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(TraverseOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE);
-        assertValidArgument(TraverseOperator.INSTANCE, 1, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertValidArgument(TraverseOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertValidArgument(TraverseOperator.INSTANCE, 1, OppModelConstants.XSD_BOOLEAN_INSTANCE);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 0, oppModel.XSD_STRING_INSTANCE);
-        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 1, oppModel.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 1, OppModelConstants.XSD_BOOLEAN_INSTANCE);
         assertGetAcceptableArgumentTypeIsNull(TraverseOperator.INSTANCE, 2);
     }
 }

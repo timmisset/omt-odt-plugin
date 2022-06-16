@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,15 +11,15 @@ class CeilOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(CeilOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
-        assertResolved(CeilOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, oppModel.XSD_INTEGER_INSTANCE);
+        assertResolved(CeilOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertResolved(CeilOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 
     @Test
     void testArgumentTypes() {
-        assertValidInput(CeilOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
-        assertInvalidInput(CeilOperator.INSTANCE, oppModel.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
-        assertInvalidInput(CeilOperator.INSTANCE, oppModel.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertValidInput(CeilOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
+        assertInvalidInput(CeilOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertInvalidInput(CeilOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
     }
 
     @Test
@@ -34,6 +35,6 @@ class CeilOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(CeilOperator.INSTANCE, oppModel.XSD_DECIMAL_INSTANCE);
+        assertGetAcceptableInputType(CeilOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
     }
 }

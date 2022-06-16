@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,10 +14,10 @@ class RepeatOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         // no known error state, return input + catch
         assertResolved(RepeatOperator.INSTANCE,
-                Set.of(oppModel.XSD_STRING_INSTANCE),
-                Set.of(oppModel.XSD_STRING_INSTANCE,
-                        oppModel.XSD_BOOLEAN_INSTANCE),
-                Set.of(oppModel.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
+                Set.of(OppModelConstants.XSD_STRING_INSTANCE,
+                        OppModelConstants.XSD_BOOLEAN_INSTANCE),
+                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
     }
 
     @Test
@@ -32,14 +33,14 @@ class RepeatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(RepeatOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE);
-        assertValidArgument(RepeatOperator.INSTANCE, 2, oppModel.XSD_NUMBER_INSTANCE);
+        assertValidArgument(RepeatOperator.INSTANCE, 1, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertValidArgument(RepeatOperator.INSTANCE, 2, OppModelConstants.XSD_NUMBER_INSTANCE);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 1, oppModel.XSD_NUMBER_INSTANCE);
-        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 2, oppModel.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 1, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 2, OppModelConstants.XSD_NUMBER_INSTANCE);
         assertGetAcceptableArgumentTypeIsNull(RepeatOperator.INSTANCE, 0);
     }
 }
