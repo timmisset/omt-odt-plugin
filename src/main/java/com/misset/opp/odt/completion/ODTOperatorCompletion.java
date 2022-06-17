@@ -39,7 +39,7 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
 
                 ODTQueryStep queryStep = PsiTreeUtil.getParentOfType(position, ODTQueryStep.class, true);
                 if (queryStep != null) {
-                    addOperatorCompletions(parameters, result, position, typeFilter, queryStep);
+                    addOperatorCompletions(parameters, result, context, position, typeFilter, queryStep);
                 }
             }
         });
@@ -50,6 +50,7 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
      */
     public void addBooleanCompletions(@NotNull CompletionParameters parameters,
                                       @NotNull CompletionResultSet result,
+                                      @NotNull ProcessingContext context,
                                       PsiElement element) {
         result.addElement(PrioritizedLookupElement.withPriority(
                 LookupElementBuilder.create("true"), 100
@@ -61,12 +62,13 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
         Predicate<Set<OntResource>> filterType = resources -> OppModel.INSTANCE.areCompatible(Collections.singleton(OppModelConstants.XSD_BOOLEAN_INSTANCE), resources);
         ODTQueryStep queryStep = PsiTreeUtil.getParentOfType(element, ODTQueryStep.class);
         if (queryStep != null) {
-            new ODTOperatorCompletion().addOperatorCompletions(parameters, result, element, filterType, queryStep);
+            new ODTOperatorCompletion().addOperatorCompletions(parameters, result, context, element, filterType, queryStep);
         }
     }
 
     public void addOperatorCompletions(@NotNull CompletionParameters parameters,
                                        @NotNull CompletionResultSet result,
+                                       @NotNull ProcessingContext context,
                                        PsiElement position,
                                        Predicate<Set<OntResource>> typeFilter,
                                        ODTQueryStep queryStep) {
@@ -76,29 +78,30 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                 OppModel.INSTANCE.areCompatible(acceptableInput, previousStep);
 
         // add BuiltinOperators
-        addBuiltinOperators(position, result, typeFilter, precedingFilter);
+        addBuiltinOperators(position, result, context, typeFilter, precedingFilter);
 
         // if inside a queries block, add the preceding sibling statements as callable options
-        addCallables(getFromSiblingDefined(position), result, typeFilter, precedingFilter);
+        addCallables(getFromSiblingDefined(position), result, typeFilter, precedingFilter, context);
 
         // and all that are provided by the (if any) host file:
-        addCallables(getFromCallableProviders((ODTFile) parameters.getOriginalFile()), result, typeFilter, precedingFilter);
+        addCallables(getFromCallableProviders((ODTFile) parameters.getOriginalFile()), result, typeFilter, precedingFilter, context);
     }
 
     private void addBuiltinOperators(PsiElement position,
                                      CompletionResultSet result,
+                                     @NotNull ProcessingContext context,
                                      Predicate<Set<OntResource>> typeFilter,
                                      Predicate<Set<OntResource>> precedingFilter) {
         // static Operators are ones that don't require (actually don't want) to be applied on an input
         // but only as start. For example, the DATE_TIME stamp or IIF operator.
         if (BUILTIN_OPERATOR_STRICT.accepts(position)) {
-            addCallables(BuiltinOperators.getNonStaticOperators(), result, typeFilter, precedingFilter);
+            addCallables(BuiltinOperators.getNonStaticOperators(), result, typeFilter, precedingFilter, context);
             if (!AFTER_FIRST_QUERY_STEP.accepts(position)) {
-                addCallables(BuiltinOperators.getStaticOperators(), result, typeFilter, precedingFilter);
+                addCallables(BuiltinOperators.getStaticOperators(), result, typeFilter, precedingFilter, context);
             }
         } else {
             // only add the static builtin operators:
-            addCallables(BuiltinOperators.getStaticOperators(), result, typeFilter, resources -> true);
+            addCallables(BuiltinOperators.getStaticOperators(), result, typeFilter, resources -> true, context);
         }
     }
 }

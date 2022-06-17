@@ -67,7 +67,7 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                                 result.stopHere();
                                 break;
                             case Boolean:
-                                new ODTOperatorCompletion().addBooleanCompletions(parameters, result, element);
+                                new ODTOperatorCompletion().addBooleanCompletions(parameters, result, context, element);
                                 new ODTVariableCompletion().addBooleanCompletions(parameters, result, element);
                                 result.stopHere();
                                 break;
