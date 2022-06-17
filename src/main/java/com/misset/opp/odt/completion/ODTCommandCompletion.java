@@ -22,25 +22,26 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.misset.opp.odt.completion.CompletionPatterns.AFTER_FIRST_QUERY_STEP;
-import static com.misset.opp.odt.completion.CompletionPatterns.FIRST_QUERY_STEP;
+import static com.intellij.patterns.StandardPatterns.or;
+import static com.misset.opp.odt.completion.CompletionPatterns.*;
 
 public class ODTCommandCompletion extends ODTCallCompletion {
 
     public ODTCommandCompletion() {
         super(Callable::isCommand);
 
-        extend(CompletionType.BASIC, FIRST_QUERY_STEP.andNot(AFTER_FIRST_QUERY_STEP), new CompletionProvider<>() {
-            @Override
-            protected void addCompletions(@NotNull CompletionParameters parameters,
-                                          @NotNull ProcessingContext context,
-                                          @NotNull CompletionResultSet result) {
-                PsiElement position = parameters.getPosition();
-                Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
-                Predicate<Set<OntResource>> precedingFilter = resources -> true;
+        extend(CompletionType.BASIC, or(FIRST_QUERY_STEP.andNot(AFTER_FIRST_QUERY_STEP), getAfterCommandPrefixPattern())
+                , new CompletionProvider<>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters,
+                                                  @NotNull ProcessingContext context,
+                                                  @NotNull CompletionResultSet result) {
+                        PsiElement position = parameters.getPosition();
+                        Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
+                        Predicate<Set<OntResource>> precedingFilter = resources -> true;
 
-                // add BuiltinCommands:
-                addCallables(BuiltinCommands.builtinCommands.values(), result, typeFilter, precedingFilter);
+                        // add BuiltinCommands:
+                        addCallables(BuiltinCommands.builtinCommands.values(), result, typeFilter, precedingFilter);
 
                 // if inside a queries block, add the preceding sibling statements as callable options
                 addCallables(getFromSiblingDefined(position), result, typeFilter, precedingFilter);

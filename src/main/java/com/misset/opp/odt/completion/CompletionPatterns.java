@@ -47,6 +47,17 @@ public interface CompletionPatterns {
     PsiJavaElementPattern.Capture<PsiElement> VARIABLE_ASSIGNMENT_VALUE = psiElement().inside(ODTVariableAssignment.class);
     PsiJavaElementPattern.Capture<PsiElement> SIGNATURE_ARGUMENT = psiElement().inside(ODTSignatureArgument.class);
 
+    static ElementPattern<PsiElement> getAfterCommandPrefixPattern() {
+        return PlatformPatterns.psiElement().with(
+                new PatternCondition<>("Command completion") {
+                    @Override
+                    public boolean accepts(@NotNull PsiElement element, ProcessingContext context) {
+                        return PsiTreeUtil.prevLeaf(element).getText().equals("@");
+                    }
+                }
+        );
+    }
+
     static ElementPattern<PsiElement> getInsideBuiltinCommandSignaturePattern(BuiltInCommand builtin) {
         return PlatformPatterns.psiElement().inside(ODTSignatureArgument.class).and(PlatformPatterns.psiElement().with(
                 new PatternCondition<>("Builtin command") {

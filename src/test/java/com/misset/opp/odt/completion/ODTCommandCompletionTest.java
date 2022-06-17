@@ -9,7 +9,13 @@ class ODTCommandCompletionTest extends OMTCompletionTestCase {
 
     @Test
     void testBuiltinCommands() {
-        configureByText(insideQueryWithPrefixes("<caret>"), true);
+        configureByText(insideProcedureRunWithPrefixes("<caret>"), true);
+        assertContainsElements(getLookupStrings(), "@LOG()");
+    }
+
+    @Test
+    void testBuiltinCommandsWithPrefix() {
+        configureByText(insideProcedureRunWithPrefixes("@<caret>"), true);
         assertContainsElements(getLookupStrings(), "@LOG()");
     }
 

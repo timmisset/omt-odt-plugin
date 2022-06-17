@@ -19,7 +19,8 @@ class OppModelLoaderTest {
         final List<Resource> resources = ontModel.listSubjects().toList();
         Assertions.assertTrue(resources.contains(ontModel.createResource("http://ontology#ClassA")));
         Assertions.assertTrue(resources.contains(ontModel.createResource("http://ontology#ClassB")));
-        Assertions.assertFalse(resources.contains(ontModel.createResource("http://ontology#ClassC")));
+        Assertions.assertTrue(resources.contains(ontModel.createResource("http://ontology#ClassC")));
+        Assertions.assertFalse(resources.contains(ontModel.createResource("http://ontology#ClassNotIncluded")));
         Assertions.assertTrue(resources.contains(ontModel.createResource("http://ontology#ClassD")));
     }
 

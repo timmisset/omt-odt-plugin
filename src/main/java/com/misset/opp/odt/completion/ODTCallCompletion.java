@@ -114,9 +114,18 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                     Set<OntResource> resolve = callable.resolve();
                     return resolve.isEmpty() || typeFilter.test(resolve);
                 })
-                .map(this::getLookupElement)
-                .filter(Objects::nonNull)
-                .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, Callable.getValue()))
-                .forEach(result::addElement);
+                .forEach(callable -> addCallable(callable, result));
+    }
+
+    private void addCallable(Callable callable, @NotNull CompletionResultSet result) {
+        LookupElement lookupElement = getLookupElement(callable);
+        if (lookupElement != null) {
+            LookupElement withPriority = PrioritizedLookupElement.withPriority(lookupElement, Callable.getValue());
+            if (callable.isCommand()) {
+                result.withPrefixMatcher("@").addElement(withPriority);
+            } else {
+                result.addElement(withPriority);
+            }
+        }
     }
 }
