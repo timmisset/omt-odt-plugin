@@ -5,5 +5,6 @@
   rdf:type owl:Ontology ;
   owl:imports <http://ontology/ontologyA> ;
   owl:imports <http://ontology/ontologyB> ;
+  owl:imports <http://ontology/ontologyC> ;
   owl:versionInfo "Created manually" ;
 .

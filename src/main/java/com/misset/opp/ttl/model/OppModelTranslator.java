@@ -178,9 +178,9 @@ public class OppModelTranslator {
         return shaclModel;
     }
 
-    public boolean isMultiple(Set<OntResource> resources,
-                              Property property) {
-        return resources.stream().allMatch(resource -> isMultiple(resource, property));
+    public static boolean isMultiple(Set<OntResource> resources,
+                                     Property property) {
+        return resources.stream().anyMatch(resource -> isMultiple(resource, property));
     }
 
     public static boolean isMultiple(OntResource resource,
@@ -190,7 +190,7 @@ public class OppModelTranslator {
 
     public static boolean isSingleton(Set<OntResource> resources,
                                       Property property) {
-        return resources.stream().allMatch(resource -> isSingleton(resource, property));
+        return resources.stream().anyMatch(resource -> isSingleton(resource, property));
     }
 
     public static boolean isSingleton(OntResource resource,
@@ -200,7 +200,7 @@ public class OppModelTranslator {
 
     public static boolean isRequired(Set<OntResource> resources,
                                      Property property) {
-        return resources.stream().allMatch(resource -> isRequired(resource, property));
+        return resources.stream().anyMatch(resource -> isRequired(resource, property));
     }
 
     public static boolean isRequired(OntResource resource,

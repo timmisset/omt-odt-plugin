@@ -36,7 +36,7 @@ class OMTFoldingBuilderTest extends OMTTestCase {
         });
     }
 
-    @ParameterizedTest()
+    @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testImportBlockIsCollapsedByDefault(boolean collapseImports) {
         OMTFoldingBuilder foldingBuilder = new OMTFoldingBuilder();

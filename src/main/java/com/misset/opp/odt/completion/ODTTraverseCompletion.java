@@ -31,6 +31,10 @@ public class ODTTraverseCompletion extends CompletionContributor {
         FORWARD, REVERSE
     }
 
+    public static boolean isForward(TraverseDirection traverseDirection) {
+        return traverseDirection == TraverseDirection.FORWARD;
+    }
+
     public ODTTraverseCompletion() {
         // the position rules where a Traverse and QueryOperator can be suggested is identical
         extend(CompletionType.BASIC, TRAVERSE, new CompletionProvider<>() {
@@ -72,11 +76,15 @@ public class ODTTraverseCompletion extends CompletionContributor {
                 }
 
                 // add model options
-                addModelTraverseLookupElements(forwardPredicates,
+                addModelTraverseLookupElements(
+                        subjects,
+                        forwardPredicates,
                         TraverseDirection.FORWARD,
                         availableNamespaces,
                         result);
-                addModelTraverseLookupElements(reversePredicates,
+                addModelTraverseLookupElements(
+                        subjects,
+                        reversePredicates,
                         TraverseDirection.REVERSE,
                         availableNamespaces,
                         result);
@@ -85,13 +93,16 @@ public class ODTTraverseCompletion extends CompletionContributor {
         });
     }
 
-    private void addModelTraverseLookupElements(HashMap<Property, Set<OntResource>> predicateObjects,
-                                                TraverseDirection direction,
-                                                Map<String, String> availableNamespaces,
-                                                CompletionResultSet result) {
+    private void addModelTraverseLookupElements(
+            Set<OntResource> subjects,
+            HashMap<Property, Set<OntResource>> predicateObjects,
+            TraverseDirection direction,
+            Map<String, String> availableNamespaces,
+            CompletionResultSet result) {
         predicateObjects.keySet()
                 .stream()
                 .map(predicate -> TTLResourceUtil.getPredicateLookupElement(
+                        subjects,
                         predicate,
                         predicateObjects.get(predicate),
                         direction,

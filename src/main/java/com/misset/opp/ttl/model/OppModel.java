@@ -383,6 +383,14 @@ public class OppModel {
     }
 
     /**
+     * If only a single resource contains the given property, it will return that resource
+     * if zero or more than 1 contain property, it will return null
+     */
+    public OntResource getUnambigiousResource(Property property) {
+        return modelCache.getUnambigiousResource(property);
+    }
+
+    /**
      * Method to retrieve an existing Resource from the Ontology
      * If the resource doesn't exist but it can be matched to a known Iri (by RegEx pattern), it will be added
      * as an instance of the specified class.

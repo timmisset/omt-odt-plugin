@@ -4,15 +4,19 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.misset.opp.odt.completion.ODTTraverseCompletion;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
+import com.misset.opp.ttl.model.OppModelTranslator;
 import com.misset.opp.util.Icons;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.misset.opp.odt.completion.ODTTraverseCompletion.isForward;
 
 /**
  * Helper class that is particularly to describe resources for documentation, completion and error/warning messages
@@ -104,7 +108,6 @@ public class TTLResourceUtil {
         return iriRef;
     }
 
-
     public static String describeUrisForLookupJoined(Set<? extends OntResource> resources) {
         return describeUrisForLookupJoined(resources, ", ");
     }
@@ -128,16 +131,52 @@ public class TTLResourceUtil {
                 .orElse("Ontology class could not be found in the model");
     }
 
+    public static String getCardinalityLabel(Set<OntResource> resources, Property property) {
+        if (property == null) {
+            return null;
+        }
+        if (resources.isEmpty()) {
+            OntResource unambigiousResource = OppModel.INSTANCE.getUnambigiousResource(property);
+            if (unambigiousResource == null) {
+                return null;
+            }
+            resources = Set.of(unambigiousResource);
+        }
+        boolean isMultiple = OppModelTranslator.isMultiple(resources, property);
+        boolean isSingle = OppModelTranslator.isSingleton(resources, property);
+        boolean isRequired = OppModelTranslator.isRequired(resources, property);
+        if (isRequired) {
+            if (isMultiple) {
+                return "+";
+            }
+            if (isSingle) {
+                return "1";
+            }
+        } else {
+            if (isMultiple) {
+                return "*";
+            }
+            if (isSingle) {
+                return "?";
+            }
+        }
+        return null;
+    }
 
-    public static LookupElementBuilder getPredicateLookupElement(Resource resource,
+    public static LookupElementBuilder getPredicateLookupElement(Set<OntResource> subjects,
+                                                                 Property property,
                                                                  Set<OntResource> objects,
                                                                  ODTTraverseCompletion.TraverseDirection direction,
                                                                  Map<String, String> availableNamespaces) {
-        String title = ODTTraverseCompletion.parseToCurie(resource, availableNamespaces);
+        String title = ODTTraverseCompletion.parseToCurie(property, availableNamespaces);
         if (title == null) {
             return null;
         }
-        String lookupText = direction == ODTTraverseCompletion.TraverseDirection.REVERSE ? "^" + title : title;
+        String lookupText = !isForward(direction) ? "^" + title : title;
+        String cardinality = isForward(direction) ? getCardinalityLabel(subjects, property) : getCardinalityLabel(objects, property);
+        if (cardinality == null) {
+            cardinality = "";
+        }
         String typeText = "";
         if (!objects.isEmpty()) {
             typeText = TTLResourceUtil.describeUrisForLookupJoined(objects.stream().limit(2).collect(Collectors.toSet()));
@@ -146,8 +185,8 @@ public class TTLResourceUtil {
             }
         }
         return LookupElementBuilder.create(lookupText)
-                .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
-                .withTailText(direction == ODTTraverseCompletion.TraverseDirection.FORWARD ? " -> forward" : " <- reverse")
+                .withLookupStrings(Set.of(property.getURI(), property.getLocalName()))
+                .withTailText((isForward(direction) ? " -> forward " : " <- reverse ") + cardinality)
                 .withTypeText(typeText)
                 .withIcon(Icons.TTLFile)
                 .withPresentableText(title);

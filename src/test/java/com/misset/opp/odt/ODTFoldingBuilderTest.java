@@ -133,7 +133,7 @@ class ODTFoldingBuilderTest extends ODTTestCase {
         });
     }
 
-    @ParameterizedTest()
+    @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testDEFINECommandBlockIsCollapsedByDefault(boolean collapsedByDefault) {
         String content = "DEFINE COMMAND command => {\n" +
@@ -151,7 +151,7 @@ class ODTFoldingBuilderTest extends ODTTestCase {
         });
     }
 
-    @ParameterizedTest()
+    @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testCommandBlockIsNeverCollapsedByDefault(boolean collapsedByDefault) {
         String content = "IF true {\n" +
@@ -169,7 +169,7 @@ class ODTFoldingBuilderTest extends ODTTestCase {
         });
     }
 
-    @ParameterizedTest()
+    @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testQueryIsCollapsedByDefault(boolean collapsedByDefault) {
         String content = "DEFINE QUERY query => true == false;";

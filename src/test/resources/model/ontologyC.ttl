@@ -17,4 +17,11 @@ ont:ClassC
       sh:datatype xsd:string ;
       sh:maxCount 1 ;
     ] ;
+
+    sh:property [
+          a sh:PropertyShape ;
+          sh:path ont:oneOrMore ;
+          sh:datatype xsd:string ;
+          sh:minCount 1 ;
+        ] ;
 .

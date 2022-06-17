@@ -300,4 +300,22 @@ public class OppModelCache {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
+
+    /**
+     * If only a single resource contains the given property, it will return that resource
+     * if zero or more than 1 contain property, it will return null
+     */
+    protected OntResource getUnambigiousResource(Property property) {
+        List<OntResource> resources = subjectPredicateMap.entrySet()
+                .stream().filter(
+                        stringSetEntry -> stringSetEntry.getValue().contains(getResourceId(property))
+                )
+                .map(Map.Entry::getKey)
+                .map(this::getResource)
+                .collect(Collectors.toList());
+        if (resources.size() == 1) {
+            return resources.get(0);
+        }
+        return null;
+    }
 }

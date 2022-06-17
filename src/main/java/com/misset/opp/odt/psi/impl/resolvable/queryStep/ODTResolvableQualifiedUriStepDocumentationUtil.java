@@ -1,8 +1,10 @@
 package com.misset.opp.odt.psi.impl.resolvable.queryStep;
 
 import com.intellij.lang.documentation.DocumentationMarkup;
+import com.intellij.psi.PsiElement;
 import com.misset.opp.documentation.DocumentationProvider;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
+import com.misset.opp.odt.psi.impl.ODTQueryOperationStepImpl;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
@@ -173,15 +175,55 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         setPredicateInfo(ontClass, "Predicates", sb);
     }
 
+    private static String getCardinalityDetail(String cardinality) {
+        if (cardinality == null) {
+            return null;
+        }
+        if (cardinality.equals("*")) {
+            return "0 or more";
+        }
+        if (cardinality.equals("?")) {
+            return "0 or 1";
+        }
+        if (cardinality.equals("+")) {
+            return "1 or more";
+        }
+        if (cardinality.equals("1")) {
+            return "exactly one";
+        }
+        return "";
+    }
+
     private static String getTraverseDocumentation(ODTResolvableQualifiedUriStep step) {
-        boolean isReversed = step.getParent() instanceof ODTQueryReverseStep;
-        Set<OntResource> unfiltered = isReversed ? ((ODTResolvableQueryStep) step.getParent()).resolve() : step.resolve();
+        PsiElement parent = step.getParent();
+        boolean isReversed = parent instanceof ODTQueryReverseStep;
+        Set<OntResource> unfiltered = isReversed ? ((ODTResolvableQueryStep) parent).resolve() : step.resolve();
         Set<OntResource> filtered = step.getResolvableParent().filter(unfiltered);
         String fullyQualifiedUri = step.getFullyQualifiedUri();
+
+        String cardinality;
+        if (parent instanceof ODTQueryOperationStepImpl) {
+            Set<OntResource> previous = ((ODTQueryOperationStepImpl) parent).resolvePreviousStep();
+            cardinality = TTLResourceUtil.getCardinalityLabel(previous, OppModel.INSTANCE.getProperty(step.getFullyQualifiedUri()));
+        } else if (isReversed) {
+            cardinality = TTLResourceUtil.getCardinalityLabel(filtered, OppModel.INSTANCE.getProperty(step.getFullyQualifiedUri()));
+        } else {
+            cardinality = null;
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
-        sb.append("Predicate<br>");
+        sb.append("Predicate: ");
         sb.append(fullyQualifiedUri);
+        if (cardinality != null) {
+            sb.append("<br>Cardinality");
+            if (!cardinality.equals("1")) {
+                sb.append(cardinality);
+            }
+            sb.append(": ");
+            sb.append(getCardinalityDetail(cardinality)).append(" ");
+
+        }
         sb.append(DocumentationMarkup.DEFINITION_END);
         sb.append(DocumentationMarkup.CONTENT_START);
         final String content;
@@ -211,7 +253,6 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
             String label = isReversed ? "Object(s)" : "Subject(s)";
             DocumentationProvider.addKeyValueSection("Previous step", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(previousStep, "<br>", false), sb);
         }
-
 
         sb.append(DocumentationMarkup.SECTIONS_END);
         return sb.toString();
