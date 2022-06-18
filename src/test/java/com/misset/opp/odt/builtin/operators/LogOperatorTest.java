@@ -23,6 +23,6 @@ class LogOperatorTest extends BaseBuiltinTest {
     @Test
     void testNumberOfArguments() {
         Assertions.assertEquals(0, LogOperator.INSTANCE.minNumberOfArguments());
-        Assertions.assertEquals(1, LogOperator.INSTANCE.maxNumberOfArguments());
+        Assertions.assertEquals(0, LogOperator.INSTANCE.maxNumberOfArguments());
     }
 }
