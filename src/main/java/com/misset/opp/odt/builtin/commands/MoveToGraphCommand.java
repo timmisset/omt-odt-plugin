@@ -6,10 +6,16 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 
 public class MoveToGraphCommand extends BuiltInCommand {
-    private MoveToGraphCommand() { }
+
+    private static final List<String> PARAMETER_NAMES = List.of("iri", "graph");
+
+    private MoveToGraphCommand() {
+    }
+
     public static final MoveToGraphCommand INSTANCE = new MoveToGraphCommand();
 
     @Override
@@ -39,12 +45,16 @@ public class MoveToGraphCommand extends BuiltInCommand {
         validateNamedGraphArgument(1, call, holder);
     }
 
-
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 1) {
             return Set.of(OppModelConstants.NAMED_GRAPH);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

@@ -6,11 +6,15 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class JoinOperator extends BuiltInStringOperator {
-    private JoinOperator() { }
+    private JoinOperator() {
+    }
+
     public static final JoinOperator INSTANCE = new JoinOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("seperator");
 
     @Override
     public String getName() {
@@ -39,5 +43,10 @@ public class JoinOperator extends BuiltInStringOperator {
             return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

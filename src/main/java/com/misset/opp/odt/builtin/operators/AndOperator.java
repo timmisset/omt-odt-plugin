@@ -5,11 +5,14 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class AndOperator extends BuiltInBooleanOperator {
     private AndOperator() { }
+
     public static final AndOperator INSTANCE = new AndOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("boolean", "boolean");
 
     @Override
     public String getName() {
@@ -35,5 +38,10 @@ public class AndOperator extends BuiltInBooleanOperator {
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

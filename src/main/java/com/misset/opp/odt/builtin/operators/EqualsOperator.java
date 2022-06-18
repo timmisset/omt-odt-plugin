@@ -10,6 +10,7 @@ import java.util.Set;
 public class EqualsOperator extends BuiltInBooleanOperator {
     private EqualsOperator() { }
     public static final EqualsOperator INSTANCE = new EqualsOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("left", "right");
 
     @Override
     public String getName() {
@@ -41,5 +42,10 @@ public class EqualsOperator extends BuiltInBooleanOperator {
             return call.resolveSignatureArgument(0);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

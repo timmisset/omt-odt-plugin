@@ -5,8 +5,15 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
+
 public class NewGraphCommand extends BuiltInCommand {
-    private NewGraphCommand() { }
+
+    private static final List<String> PARAMETER_NAMES = List.of("graph");
+
+    private NewGraphCommand() {
+    }
+
     public static final NewGraphCommand INSTANCE = new NewGraphCommand();
 
     @Override
@@ -33,5 +40,10 @@ public class NewGraphCommand extends BuiltInCommand {
     protected void specificValidation(PsiCall call,
                                       ProblemsHolder holder) {
         validateGraphShapeArgument(0, call, holder);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Set;
 
 public class MapCommand extends BuiltInCommand implements CallableLocalVariableTypeProvider {
+
+    private static final List<String> PARAMETER_NAMES = List.of("collection", "command");
+
     private MapCommand() {
     }
 
     public static final MapCommand INSTANCE = new MapCommand();
-
 
     @Override
     public String getName() {
@@ -41,5 +43,10 @@ public class MapCommand extends BuiltInCommand implements CallableLocalVariableT
                 new LocalVariable("$index", "iterator index", call.resolveSignatureArgument(0)),
                 new LocalVariable("$array", "all input values", call.resolveSignatureArgument(0))
         );
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

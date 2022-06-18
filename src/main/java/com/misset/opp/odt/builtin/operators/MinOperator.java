@@ -7,11 +7,14 @@ import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class MinOperator extends BuiltInCollectionOperator {
     private MinOperator() { }
+
     public static final MinOperator INSTANCE = new MinOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("compareBy");
 
     @Override
     public String getName() {
@@ -53,5 +56,10 @@ public class MinOperator extends BuiltInCollectionOperator {
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

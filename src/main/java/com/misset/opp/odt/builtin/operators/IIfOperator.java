@@ -7,6 +7,7 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class IIfOperator extends BuiltInOperator {
@@ -14,6 +15,7 @@ public class IIfOperator extends BuiltInOperator {
     }
 
     public static final IIfOperator INSTANCE = new IIfOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("condition", "then", "else");
 
     @Override
     public String getName() {
@@ -63,5 +65,10 @@ public class IIfOperator extends BuiltInOperator {
             return call.resolveSignatureArgument(1);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

@@ -7,6 +7,7 @@ import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 
+import java.util.List;
 import java.util.Set;
 
 public class AddToCommand extends BuiltInCommand {
@@ -14,6 +15,7 @@ public class AddToCommand extends BuiltInCommand {
     }
 
     public static final AddToCommand INSTANCE = new AddToCommand();
+    private static final List<String> PARAMETER_NAMES = List.of("collection", "addition");
 
     @Override
     public String getName() {
@@ -56,5 +58,10 @@ public class AddToCommand extends BuiltInCommand {
                     holder,
                     call.getCallSignatureElement());
         }
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

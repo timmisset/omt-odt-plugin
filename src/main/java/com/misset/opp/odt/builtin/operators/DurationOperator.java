@@ -5,6 +5,7 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class DurationOperator extends BuiltInOperator {
@@ -12,6 +13,7 @@ public class DurationOperator extends BuiltInOperator {
     }
 
     public static final DurationOperator INSTANCE = new DurationOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("value", "unit");
 
     @Override
     public String getName() {
@@ -42,5 +44,10 @@ public class DurationOperator extends BuiltInOperator {
             return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

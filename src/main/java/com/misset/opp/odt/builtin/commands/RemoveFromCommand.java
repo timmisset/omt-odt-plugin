@@ -7,10 +7,16 @@ import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 
+import java.util.List;
 import java.util.Set;
 
 public class RemoveFromCommand extends BuiltInCommand {
-    private RemoveFromCommand() { }
+
+    private static final List<String> PARAMETER_NAMES = List.of("collection", "removal");
+
+    private RemoveFromCommand() {
+    }
+
     public static final RemoveFromCommand INSTANCE = new RemoveFromCommand();
 
     @Override
@@ -42,5 +48,10 @@ public class RemoveFromCommand extends BuiltInCommand {
                     holder,
                     call.getCallSignatureElement());
         }
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

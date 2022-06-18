@@ -44,13 +44,19 @@ public abstract class ODTCallCompletion extends CompletionContributor {
     @NotNull
     private LookupElementBuilder createLookupElement(Callable callable, String callId) {
         StringBuilder signature = new StringBuilder();
-        if (callable.minNumberOfArguments() > 0) {
+        Map<Integer, String> parameterNames = callable.getParameterNames();
+        int numberOfParams = Math.max(callable.maxNumberOfArguments(), parameterNames.size());
+        if (numberOfParams > 0) {
             signature.append("(");
-            for (int i = 0; i < callable.maxNumberOfArguments(); i++) {
+            for (int i = 0; i < numberOfParams; i++) {
                 if (i > 0) {
                     signature.append(", ");
                 }
-                signature.append("$param").append(i);
+                if (parameterNames.containsKey(i)) {
+                    signature.append(parameterNames.get(i));
+                } else {
+                    signature.append("$param").append(i);
+                }
             }
             signature.append(")");
         } else {
@@ -58,7 +64,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 signature.append("()");
             }
         }
-        String lookup = callId + signature;
+        String lookup = callId + (signature.length() > 0 ? "()" : "");
         String typeText = callable.isVoid() ? "void" : TTLResourceUtil.describeUrisForLookupJoined(callable.resolve());
         return LookupElementBuilder.create(lookup)
                 .withLookupString(callId)
@@ -68,6 +74,12 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .withPresentableText(callId)
                 .withTailText(signature.toString(), true)
                 .withIcon(PlatformIcons.METHOD_ICON)
+                .withInsertHandler((context, item) -> {
+                    // when the signature is added, move the caret into the signature
+                    if (signature.length() > 0) {
+                        context.getEditor().getCaretModel().moveCaretRelatively(-1, 0, false, false, true);
+                    }
+                })
                 .withTypeText(typeText);
     }
 

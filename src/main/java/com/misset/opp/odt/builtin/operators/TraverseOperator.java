@@ -5,11 +5,14 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class TraverseOperator extends BuiltInOperator {
     private TraverseOperator() { }
+
     public static final TraverseOperator INSTANCE = new TraverseOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("predicate", "backwards");
 
     @Override
     public String getName() {
@@ -37,7 +40,6 @@ public class TraverseOperator extends BuiltInOperator {
         validateBooleanArgument(1, call, holder);
     }
 
-
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
@@ -46,5 +48,10 @@ public class TraverseOperator extends BuiltInOperator {
             return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

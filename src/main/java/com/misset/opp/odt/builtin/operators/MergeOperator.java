@@ -6,11 +6,14 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MergeOperator extends BuiltInOperator {
     private MergeOperator() { }
+
     public static final MergeOperator INSTANCE = new MergeOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("collection", "collection");
 
     @Override
     public String getName() {
@@ -46,5 +49,10 @@ public class MergeOperator extends BuiltInOperator {
         if (call.getNumberOfArguments() >= 2 && !call.resolvePreviousStep().isEmpty()) {
             holder.registerProblem(call, "Using 2 or more arguments will ignore the input value, consider using pipes instead (<query> | <query> | <query>)", ProblemHighlightType.WARNING);
         }
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

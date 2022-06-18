@@ -6,11 +6,15 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class SubstringOperator extends BuiltInStringOperator {
-    private SubstringOperator() { }
+    private SubstringOperator() {
+    }
+
     public static final SubstringOperator INSTANCE = new SubstringOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("begin", "end");
 
     @Override
     public String getName() {
@@ -33,15 +37,18 @@ public class SubstringOperator extends BuiltInStringOperator {
         validateAllArguments(call, holder, this::validateIntegerArgument);
     }
 
-
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
     }
 
-
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

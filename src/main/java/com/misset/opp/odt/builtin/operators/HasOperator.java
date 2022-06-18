@@ -10,6 +10,7 @@ import java.util.Set;
 public class HasOperator extends BuiltInBooleanOperator {
     private HasOperator() { }
     public static final HasOperator INSTANCE = new HasOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("set", "subset");
 
     @Override
     public String getName() {
@@ -41,5 +42,10 @@ public class HasOperator extends BuiltInBooleanOperator {
             return call.resolveSignatureArgument(0);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

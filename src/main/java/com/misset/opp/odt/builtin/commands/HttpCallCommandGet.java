@@ -6,9 +6,13 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 
 public class HttpCallCommandGet extends BuiltInHttpCommand {
+
+    private static final List<String> PARAMETER_NAMES = List.of("url", "queryParams", "throwsOnError");
+
     private HttpCallCommandGet() {
     }
 
@@ -52,5 +56,10 @@ public class HttpCallCommandGet extends BuiltInHttpCommand {
             return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

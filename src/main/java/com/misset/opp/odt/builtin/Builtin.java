@@ -13,6 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toMap;
 
 public abstract class Builtin implements Callable {
 
@@ -238,8 +241,22 @@ public abstract class Builtin implements Callable {
 
     @Override
     public Map<Integer, String> getParameterNames() {
-        return new HashMap<>();
+        return IntStream.range(0, getParameters().size())
+                .boxed()
+                .collect(toMap(i -> i, this::getParameterName));
     }
+
+    private String getParameterName(int i) {
+        List<String> parameters = getParameters();
+        if (i == parameters.size() - 1 && maxNumberOfArguments() == -1) {
+            return "..." + parameters.get(i);
+        } else if (i >= minNumberOfArguments()) {
+            return parameters.get(i) + "?";
+        }
+        return parameters.get(i);
+    }
+
+    protected abstract List<String> getParameters();
 
     /**
      * Checks if the Builtin member always returns the same output, for example, boolean operators

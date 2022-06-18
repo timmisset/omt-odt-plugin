@@ -6,9 +6,13 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 
 public class CopyInGraphCommand extends BuiltInCommand {
+
+    private static final List<String> PARAMETER_NAMES = List.of("subject", "graph", "recursive");
+
     private CopyInGraphCommand() {
     }
 
@@ -50,5 +54,10 @@ public class CopyInGraphCommand extends BuiltInCommand {
             return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

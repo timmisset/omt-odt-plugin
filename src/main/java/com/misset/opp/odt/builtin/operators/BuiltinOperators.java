@@ -14,6 +14,7 @@ public class BuiltinOperators {
     }
     static {
         addOperator(AndOperator.INSTANCE);
+        addOperator(BlankNodeOperator.INSTANCE);
         addOperator(CastOperator.INSTANCE);
         addOperator(CatchOperator.INSTANCE);
         addOperator(CeilOperator.INSTANCE);
