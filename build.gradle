@@ -60,9 +60,13 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.19</h1>
+        Added #68: <a href="https://github.com/timmisset/omt-odt-plugin/issues/68">Specific completion: Rules query</a><br>
         Added #93: <a href="https://github.com/timmisset/omt-odt-plugin/issues/93">onSelect DynamicActionQuery variables</a><br>
-        Added #96: <a href="https://github.com/timmisset/omt-odt-plugin/issues/96">@ character in completion</a><br>
+        Added #94: <a href="https://github.com/timmisset/omt-odt-plugin/issues/94">No parameters in completion result</a><br>
+        Fixed #95: <a href="https://github.com/timmisset/omt-odt-plugin/issues/95">No completion prefix duplication in result</a><br>
+        Fixed #96: <a href="https://github.com/timmisset/omt-odt-plugin/issues/96">@ character in completion</a><br>
         Added #97: <a href="https://github.com/timmisset/omt-odt-plugin/issues/97">Show cardinality information</a><br>
+        Fixed #98: <a href="https://github.com/timmisset/omt-odt-plugin/issues/98">LOG operator has no arguments</a><br>
         """
 }
 tasks {
