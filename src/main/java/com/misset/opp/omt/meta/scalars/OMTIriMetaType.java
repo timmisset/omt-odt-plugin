@@ -10,8 +10,13 @@ import org.jetbrains.yaml.psi.YAMLValue;
 import java.util.Optional;
 
 public class OMTIriMetaType extends YamlScalarType {
+    private static final OMTIriMetaType INSTANCE = new OMTIriMetaType();
 
-    public OMTIriMetaType() {
+    public static OMTIriMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTIriMetaType() {
         super("OMT Iri");
     }
 

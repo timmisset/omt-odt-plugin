@@ -6,7 +6,13 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class OMTReasonMetaType extends OMTFixedValueScalarMetaType {
-    public OMTReasonMetaType() {
+    private static final OMTReasonMetaType INSTANCE = new OMTReasonMetaType();
+
+    public static OMTReasonMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTReasonMetaType() {
         super("Reason");
     }
 

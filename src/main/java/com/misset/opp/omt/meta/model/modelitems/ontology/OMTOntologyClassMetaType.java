@@ -10,15 +10,21 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OMTOntologyClassMetaType extends OMTMetaType implements OMTDocumented {
+    private static final OMTOntologyClassMetaType INSTANCE = new OMTOntologyClassMetaType();
+
+    public static OMTOntologyClassMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     private static final Set<String> requiredFields = Set.of("id", "properties");
 
     static {
-        features.put("id", YamlStringType::new);
-        features.put("properties", OMTOntologyPropertyMetaType::new);
+        features.put("id", YamlStringType::getInstance);
+        features.put("properties", OMTOntologyPropertyMetaType::getInstance);
     }
 
-    public OMTOntologyClassMetaType() {
+    private OMTOntologyClassMetaType() {
         super("OMT Ontology Class");
     }
 

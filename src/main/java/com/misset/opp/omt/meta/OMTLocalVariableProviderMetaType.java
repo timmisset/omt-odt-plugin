@@ -4,8 +4,6 @@ import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.resolvable.local.LocalVariable;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
@@ -33,8 +31,8 @@ import java.util.stream.Collectors;
  */
 public abstract class OMTLocalVariableProviderMetaType extends OMTScriptMetaType implements OMTLocalVariableProvider {
 
-    protected OMTLocalVariableProviderMetaType(@NonNls @NotNull String typeName) {
-        super(typeName);
+    protected OMTLocalVariableProviderMetaType() {
+        super();
     }
 
     protected abstract List<String> getLocalVariables(YAMLPsiElement element);

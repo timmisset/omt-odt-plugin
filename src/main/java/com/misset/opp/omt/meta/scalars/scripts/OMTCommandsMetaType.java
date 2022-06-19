@@ -3,12 +3,15 @@ package com.misset.opp.omt.meta.scalars.scripts;
 import com.misset.opp.shared.InjectableContentType;
 
 public class OMTCommandsMetaType extends OMTScriptMetaType {
-    public OMTCommandsMetaType() {
-        super("Script, allocated for Commands");
+
+    private static final OMTCommandsMetaType INSTANCE = new OMTCommandsMetaType();
+
+    public static OMTCommandsMetaType getInstance() {
+        return INSTANCE;
     }
 
-    public OMTCommandsMetaType(boolean exportable) {
-        super("Script, allocated for Commands", exportable);
+    protected OMTCommandsMetaType() {
+        super();
     }
 
     @Override

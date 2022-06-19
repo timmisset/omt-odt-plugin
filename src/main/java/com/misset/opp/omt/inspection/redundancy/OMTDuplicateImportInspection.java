@@ -68,7 +68,7 @@ public class OMTDuplicateImportInspection extends OMTMetaTypeInspectionBase {
         }
 
         private String nullSafePathMap(YAMLKeyValue keyValue) {
-            return Optional.ofNullable(OMTImportMetaType.resolveToPath(keyValue))
+            return Optional.ofNullable(OMTImportMetaType.getInstance().resolveToPath(keyValue))
                     .orElse("");
         }
 

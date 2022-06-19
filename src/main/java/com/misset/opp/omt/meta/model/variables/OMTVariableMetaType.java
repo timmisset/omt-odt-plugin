@@ -32,21 +32,26 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements
         OMTLocalVariableTypeProvider,
         OMTMetaInjectable,
         OMTDocumented {
+    private static final OMTVariableMetaType INSTANCE = new OMTVariableMetaType();
+
+    public static OMTVariableMetaType getInstance() {
+        return INSTANCE;
+    }
 
     private static final Set<String> requiredFeatures = Set.of("name");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("name", OMTVariableNameMetaType::new);
+        features.put("name", OMTVariableNameMetaType::getInstance);
         features.put("readonly", YamlBooleanType::getSharedInstance);
-        features.put("value", OMTQueryMetaType::new);
-        features.put("onChange", OMTOnChangeScriptMetaType::new);
+        features.put("value", OMTQueryMetaType::getInstance);
+        features.put("onChange", OMTOnChangeScriptMetaType::getInstance);
     }
 
     private static final Pattern SHORTHAND = Pattern.compile("^\\s*(\\$\\w+)\\s*(?:=\\s*(.+))?$");
     protected static final String SYNTAX_ERROR = "Invalid syntax for parameter shorthand, use: '$name = someValue' OR '$name'";
 
-    public OMTVariableMetaType() {
+    private OMTVariableMetaType() {
         super("OMT Variable");
     }
 

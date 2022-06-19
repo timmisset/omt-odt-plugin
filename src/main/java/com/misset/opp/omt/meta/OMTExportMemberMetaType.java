@@ -22,9 +22,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OMTExportMemberMetaType extends YamlStringType {
+    private static final OMTExportMemberMetaType INSTANCE = new OMTExportMemberMetaType();
+
+    public static OMTExportMemberMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTExportMemberMetaType() {
+    }
 
     @Override
-    public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar, @Nullable CompletionContext completionContext) {
+    public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar,
+                                                                  @Nullable CompletionContext completionContext) {
         YAMLMapping root = PsiTreeUtil.getTopmostParentOfType(insertedScalar, YAMLMapping.class);
         YAMLSequence exportingArray = PsiTreeUtil.getParentOfType(insertedScalar, YAMLSequence.class);
         if (root != null) {

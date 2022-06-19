@@ -95,7 +95,7 @@ class OMTPayloadItemMetaTypeTest extends OMTInspectionTestCase {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             YAMLMapping mapping = PsiTreeUtil.getParentOfType(elementAtCaret, YAMLMapping.class, false);
             List<LocalVariable> localVariables =
-                    new OMTPayloadItemMetaType().getLocalVariables(mapping);
+                    OMTPayloadItemMetaType.getInstance().getLocalVariables(mapping);
             Assertions.assertEquals(2, localVariables.size());
             Assertions.assertTrue(localVariables.stream().allMatch(
                     Resolvable::isBoolean

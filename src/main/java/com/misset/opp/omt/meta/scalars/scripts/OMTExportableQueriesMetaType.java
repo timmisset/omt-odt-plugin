@@ -2,14 +2,14 @@ package com.misset.opp.omt.meta.scalars.scripts;
 
 import com.misset.opp.shared.InjectableContentType;
 
-public class OMTQueriesMetaType extends OMTScriptMetaType {
-    private static final OMTQueriesMetaType INSTANCE = new OMTQueriesMetaType();
+public class OMTExportableQueriesMetaType extends OMTScriptMetaType {
+    private static final OMTExportableQueriesMetaType INSTANCE = new OMTExportableQueriesMetaType();
 
-    public static OMTQueriesMetaType getInstance() {
+    public static OMTExportableQueriesMetaType getInstance() {
         return INSTANCE;
     }
 
-    private OMTQueriesMetaType() {
+    private OMTExportableQueriesMetaType() {
         super();
     }
 

@@ -9,6 +9,16 @@ import java.util.Set;
 
 public class OMTSubjectQueryType extends OMTQueryMetaType {
 
+    private static final OMTSubjectQueryType INSTANCE = new OMTSubjectQueryType();
+
+    public static OMTSubjectQueryType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTSubjectQueryType() {
+        super();
+    }
+
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,
                                        @NotNull ProblemsHolder holder) {

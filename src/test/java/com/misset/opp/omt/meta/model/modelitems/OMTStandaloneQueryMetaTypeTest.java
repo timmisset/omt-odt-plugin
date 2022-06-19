@@ -66,7 +66,7 @@ class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
                     .orElse(null);
             doReturn(resources).when(call).resolvePreviousStep();
             Context context = Context.fromCall(call);
-            final Set<OntResource> resolved = new OMTStandaloneQueryMetaType().resolve(mapping, context);
+            final Set<OntResource> resolved = OMTStandaloneQueryMetaType.getInstance().resolve(mapping, context);
             assertContainsElements(resolved, resource);
         });
     }

@@ -12,14 +12,19 @@ import java.util.function.Supplier;
 
 public class OMTDossierActionMetaType extends OMTMetaType implements OMTDocumented {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    private static final OMTDossierActionMetaType INSTANCE = new OMTDossierActionMetaType();
 
-    static {
-        features.put("title", OMTInterpolatedStringMetaType::new);
-        features.put("icon", YamlStringType::new);
-        features.put("params", OMTParamsArrayMetaType::new);
+    public static OMTDossierActionMetaType getInstance() {
+        return INSTANCE;
     }
 
-    public OMTDossierActionMetaType() {
+    static {
+        features.put("title", OMTInterpolatedStringMetaType::getInstance);
+        features.put("icon", YamlStringType::getInstance);
+        features.put("params", OMTParamsArrayMetaType::getInstance);
+    }
+
+    private OMTDossierActionMetaType() {
         super("Dossier Action");
     }
 

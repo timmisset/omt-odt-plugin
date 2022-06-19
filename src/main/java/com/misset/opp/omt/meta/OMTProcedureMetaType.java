@@ -11,19 +11,27 @@ import java.util.function.Supplier;
 
 public class OMTProcedureMetaType extends OMTMetaType {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+
     static {
-        features.put("params", OMTParamsArrayMetaType::new);
-        features.put("graphs", OMTGraphSelectionMetaType::new);
-        features.put("prefixes", OMTPrefixesMetaType::new);
-        features.put("onRequest", OMTScriptMetaType::new);
+        features.put("params", OMTParamsArrayMetaType::getInstance);
+        features.put("graphs", OMTGraphSelectionMetaType::getInstance);
+        features.put("prefixes", OMTPrefixesMetaType::getInstance);
+        features.put("onRequest", OMTScriptMetaType::getInstance);
     }
-    public OMTProcedureMetaType() {
+
+    private static final OMTProcedureMetaType INSTANCE = new OMTProcedureMetaType();
+
+    public static OMTProcedureMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTProcedureMetaType() {
         super("OMT Service");
     }
 
     @Override
     protected HashMap<String, Supplier<YamlMetaType>> getFeatures() {
-        return null;
+        return features;
     }
 
 }

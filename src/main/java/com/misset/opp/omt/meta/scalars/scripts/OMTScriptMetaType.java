@@ -4,23 +4,17 @@ import com.misset.opp.omt.meta.OMTMetaInjectable;
 import org.jetbrains.yaml.meta.model.YamlScalarType;
 
 public class OMTScriptMetaType extends YamlScalarType implements OMTMetaInjectable {
-    boolean isExportable = false;
+    private static final OMTScriptMetaType INSTANCE = new OMTScriptMetaType();
 
-    public OMTScriptMetaType() {
+    public static OMTScriptMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    protected OMTScriptMetaType() {
         super("Script");
     }
 
-    public OMTScriptMetaType(String typeName) {
-        super(typeName);
-    }
-
-    public OMTScriptMetaType(String typeName,
-                             boolean isExportable) {
-        super(typeName);
-        this.isExportable = isExportable;
-    }
-
     public boolean isExportable() {
-        return isExportable;
+        return false;
     }
 }

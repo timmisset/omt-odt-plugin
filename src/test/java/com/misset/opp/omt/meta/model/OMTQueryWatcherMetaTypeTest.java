@@ -25,7 +25,7 @@ class OMTQueryWatcherMetaTypeTest extends OMTTestCase {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             YAMLMapping mapping = PsiTreeUtil.getParentOfType(elementAtCaret, YAMLMapping.class, false);
             List<LocalVariable> localVariables =
-                    new OMTQueryWatcherMetaType().getLocalVariables(mapping);
+                    OMTQueryWatcherMetaType.getInstance().getLocalVariables(mapping);
             Assertions.assertEquals(2, localVariables.size());
             Assertions.assertTrue(localVariables.stream().allMatch(
                     Resolvable::isBoolean

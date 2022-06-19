@@ -22,17 +22,24 @@ import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.add
 
 public class OMTModelMetaType extends OMTMetaMapType implements OMTCallableProvider {
 
-    public OMTModelMetaType() {
+    private static final OMTModelMetaType INSTANCE = new OMTModelMetaType();
+
+    public static OMTModelMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTModelMetaType() {
         super("Model");
     }
 
     @Override
     protected YamlMetaType getMapEntryType(String name) {
-        return new OMTModelItemMetaType(name);
+        return OMTModelItemMetaType.getInstance();
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping, PsiLanguageInjectionHost host) {
+    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping,
+                                                                      PsiLanguageInjectionHost host) {
         final HashMap<String, List<PsiCallable>> map = new HashMap<>();
         addModelItemsToMap(yamlMapping, map);
         return map;

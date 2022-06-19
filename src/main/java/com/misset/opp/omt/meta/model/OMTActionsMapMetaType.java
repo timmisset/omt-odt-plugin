@@ -9,13 +9,20 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLValue;
 
 public class OMTActionsMapMetaType extends OMTMetaMapType implements OMTDocumented {
-    public OMTActionsMapMetaType() {
+
+    private static final OMTActionsMapMetaType INSTANCE = new OMTActionsMapMetaType();
+
+    public static OMTActionsMapMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTActionsMapMetaType() {
         super("Actions (map)");
     }
 
     @Override
     protected YamlMetaType getMapEntryType(String name) {
-        return new OMTActionMetaType(true);
+        return OMTActionMetaType.getInstance();
     }
 
     @Override

@@ -10,12 +10,17 @@ import java.util.function.Supplier;
 
 public class OMTEntityBarActionMetaType extends OMTMetaType implements OMTDocumented {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    private static final OMTEntityBarActionMetaType INSTANCE = new OMTEntityBarActionMetaType();
 
-    static {
-        features.put("icon", YamlStringType::new);
+    public static OMTEntityBarActionMetaType getInstance() {
+        return INSTANCE;
     }
 
-    public OMTEntityBarActionMetaType() {
+    static {
+        features.put("icon", YamlStringType::getInstance);
+    }
+
+    private OMTEntityBarActionMetaType() {
         super("EntityBar Action");
     }
 

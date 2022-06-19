@@ -7,15 +7,21 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import java.util.List;
 
 public class OMTPayloadMetaType extends OMTMetaMapType implements OMTDocumented {
+    private static final OMTPayloadMetaType INSTANCE = new OMTPayloadMetaType();
+
+    public static OMTPayloadMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final List<String> additionalDocumentationHeaders = List.of("Example Interaction with Payload from JavaScript");
 
-    public OMTPayloadMetaType() {
+    private OMTPayloadMetaType() {
         super("OMT Payload");
     }
 
     @Override
     protected YamlMetaType getMapEntryType(String name) {
-        return new OMTPayloadItemMetaType();
+        return OMTPayloadItemMetaType.getInstance();
     }
 
     @Override

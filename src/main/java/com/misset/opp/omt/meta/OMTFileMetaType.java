@@ -15,14 +15,13 @@ import com.misset.opp.omt.meta.model.OMTModelMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
-import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
-import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
+import com.misset.opp.omt.meta.scalars.scripts.OMTExportableCommandsMetaType;
+import com.misset.opp.omt.meta.scalars.scripts.OMTExportableQueriesMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.references.OMTDeclaredInterfaceReference;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.util.LoggerUtil;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -41,19 +40,24 @@ import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.*;
 public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider, OMTPrefixProvider, OMTDocumented {
     private static final Logger LOGGER = Logger.getInstance(OMTFileMetaType.class);
     public static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> IMPORTED = new Key<>("IMPORTED");
+    private static final OMTFileMetaType INSTANCE = new OMTFileMetaType();
 
-    public OMTFileMetaType(@NonNls @NotNull String typeName) {
-        super(typeName);
+    public static OMTFileMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    protected OMTFileMetaType() {
+        super("OMTFile");
     }
 
     protected static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("import", OMTImportMetaType::new);
-        features.put("model", OMTModelMetaType::new);
-        features.put("queries", () -> new OMTQueriesMetaType(true));
-        features.put("commands", () -> new OMTCommandsMetaType(true));
-        features.put("prefixes", OMTPrefixesMetaType::new);
+        features.put("import", OMTImportMetaType::getInstance);
+        features.put("model", OMTModelMetaType::getInstance);
+        features.put("queries", OMTExportableQueriesMetaType::getInstance);
+        features.put("commands", OMTExportableCommandsMetaType::getInstance);
+        features.put("prefixes", OMTPrefixesMetaType::getInstance);
     }
 
     @Override
@@ -93,12 +97,12 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
                 .collect(Collectors.groupingBy(Callable::getCallId));
     }
 
-    private static String getFilename(PsiElement element) {
+    private String getFilename(PsiElement element) {
         return element.getContainingFile().getName();
     }
 
-    public static @NotNull HashMap<String, List<PsiCallable>> getDeclaredCallableMap(YAMLMapping mapping,
-                                                                                     PsiLanguageInjectionHost host) {
+    public @NotNull HashMap<String, List<PsiCallable>> getDeclaredCallableMap(YAMLMapping mapping,
+                                                                              PsiLanguageInjectionHost host) {
         final YAMLKeyValue model = mapping.getKeyValueByKey("model");
         return LoggerUtil.computeWithLogger(LOGGER, "getDeclaredCallableMap " + getFilename(mapping), () -> {
         /*
@@ -116,7 +120,7 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
         });
     }
 
-    public static @NotNull HashMap<String, List<PsiCallable>> getImportingMembers(YAMLMapping yamlMapping) {
+    public @NotNull HashMap<String, List<PsiCallable>> getImportingMembers(YAMLMapping yamlMapping) {
         PsiFile containingFile = yamlMapping.getContainingFile();
         if (!(containingFile instanceof OMTFile)) {
             return new HashMap<>();
@@ -128,7 +132,7 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
                         () -> new CachedValueProvider.Result<>(getImportingMembers(omtFile), omtFile)));
     }
 
-    private static HashMap<String, List<PsiCallable>> getImportingMembers(OMTFile containingFile) {
+    private HashMap<String, List<PsiCallable>> getImportingMembers(OMTFile containingFile) {
         final YAMLKeyValue imports = containingFile.getRootMapping().getKeyValueByKey("import");
         final HashMap<String, List<PsiCallable>> map = new HashMap<>();
         if (imports != null && imports.getValue() instanceof YAMLMapping) {

@@ -24,12 +24,20 @@ import java.util.stream.Collectors;
 
 public class OMTImportMemberMetaType extends YamlStringType {
     protected static final Function<String, String> NOT_AN_EXPORTED_MEMBER = s -> String.format("%s is not an exported member", s);
+    private static final OMTImportMemberMetaType INSTANCE = new OMTImportMemberMetaType();
+
+    public static OMTImportMemberMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTImportMemberMetaType() {
+    }
 
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,
                                        @NotNull ProblemsHolder holder) {
 
-        if(scalarValue instanceof YAMLPlainTextImpl) {
+        if (scalarValue instanceof YAMLPlainTextImpl) {
             Optional.ofNullable(scalarValue.getReference())
                     .filter(psiReference -> psiReference.resolve() == null)
                     .ifPresent(psiReference -> holder.registerProblem(
@@ -45,7 +53,7 @@ public class OMTImportMemberMetaType extends YamlStringType {
         if (keyValue == null) {
             return Collections.emptySet();
         }
-        return OMTImportMetaType.getExportedMembersFromOMTFile(keyValue).keySet();
+        return OMTImportMetaType.getInstance().getExportedMembersFromOMTFile(keyValue).keySet();
     }
 
     @Override

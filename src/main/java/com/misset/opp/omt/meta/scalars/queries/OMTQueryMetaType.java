@@ -15,7 +15,13 @@ import java.util.Set;
 
 @SimpleInjectable
 public class OMTQueryMetaType extends YamlScalarType implements OMTMetaInjectable {
-    public OMTQueryMetaType() {
+    private static final OMTQueryMetaType INSTANCE = new OMTQueryMetaType();
+
+    public static OMTQueryMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    protected OMTQueryMetaType() {
         super("Query");
     }
 

@@ -56,7 +56,7 @@ public class OMTImportMemberReference extends OMTPlainTextReference {
         }
 
         String name = element.getText();
-        final HashMap<String, List<PsiCallable>> exportingMembersMap = OMTImportMetaType.getExportedMembersFromOMTFile(
+        final HashMap<String, List<PsiCallable>> exportingMembersMap = OMTImportMetaType.getInstance().getExportedMembersFromOMTFile(
                 keyValue);
         return fromExportableMembersMap(exportingMembersMap, name, resolveToOriginalElement, resolveToFinalElement);
     }

@@ -22,8 +22,13 @@ import java.util.regex.Pattern;
 public class OMTVariableNameMetaType extends YamlScalarType implements OMTNamedVariableMetaType {
     private static final Pattern SHORTHAND = Pattern.compile("^(\\$\\w+)");
     protected static final String SYNTAX_ERROR = "Invalid syntax for variable name, use: '$name'";
+    private static final OMTVariableNameMetaType INSTANCE = new OMTVariableNameMetaType();
 
-    public OMTVariableNameMetaType() {
+    public static OMTVariableNameMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    protected OMTVariableNameMetaType() {
         super("OMTVariableNameMetaType");
     }
 

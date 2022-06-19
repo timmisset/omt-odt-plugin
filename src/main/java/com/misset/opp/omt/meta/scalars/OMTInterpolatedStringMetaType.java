@@ -17,6 +17,15 @@ public class OMTInterpolatedStringMetaType extends YamlStringType implements OMT
     private final Pattern INTERPOLATION = Pattern.compile("\\$\\{([^}]+)}");
     private final Pattern TITLE_VARIABLE = Pattern.compile("^(\\$[-A-z]+)$");
 
+    private static final OMTInterpolatedStringMetaType INSTANCE = new OMTInterpolatedStringMetaType();
+
+    public static OMTInterpolatedStringMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTInterpolatedStringMetaType() {
+    }
+
     @Override
     public List<TextRange> getTextRanges(YAMLScalarImpl host) {
         /*

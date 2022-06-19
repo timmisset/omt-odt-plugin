@@ -107,7 +107,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
 
     private HashMap<String, List<PsiCallable>> getExportingMembersMap(YAMLMapping yamlMapping) {
         return LoggerUtil.computeWithLogger(LOGGER, "getExportingMembersMap", () ->
-                ReadAction.compute(() -> new OMTFileMetaType("OMTFile").getCallableMap(yamlMapping)));
+                ReadAction.compute(() -> OMTFileMetaType.getInstance().getCallableMap(yamlMapping)));
     }
 
     /**
@@ -125,7 +125,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
 
     private HashMap<String, List<PsiCallable>> getDeclaredExportingMembersMap(YAMLMapping yamlMapping) {
         return LoggerUtil.computeWithLogger(LOGGER, "getExportingMembersMap", () ->
-                ReadAction.compute(() -> OMTFileMetaType.getDeclaredCallableMap(yamlMapping, null)));
+                ReadAction.compute(() -> OMTFileMetaType.getInstance().getDeclaredCallableMap(yamlMapping, null)));
     }
 
     /**
@@ -143,7 +143,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
 
     private HashMap<String, List<PsiCallable>> getImportingMembersMap(YAMLMapping yamlMapping) {
         return LoggerUtil.computeWithLogger(LOGGER, "getImportingMembersMap", () ->
-                ReadAction.compute(() -> OMTFileMetaType.getImportingMembers(yamlMapping)));
+                ReadAction.compute(() -> OMTFileMetaType.getInstance().getImportingMembers(yamlMapping)));
     }
 
     @Override

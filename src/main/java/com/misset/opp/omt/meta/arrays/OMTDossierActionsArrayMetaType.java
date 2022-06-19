@@ -4,7 +4,14 @@ import com.misset.opp.omt.meta.actions.OMTDossierActionMetaType;
 import org.jetbrains.yaml.meta.model.YamlArrayType;
 
 public class OMTDossierActionsArrayMetaType extends YamlArrayType {
-    public OMTDossierActionsArrayMetaType() {
-        super(new OMTDossierActionMetaType());
+
+    private static final OMTDossierActionsArrayMetaType INSTANCE = new OMTDossierActionsArrayMetaType();
+
+    public static OMTDossierActionsArrayMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTDossierActionsArrayMetaType() {
+        super(OMTDossierActionMetaType.getInstance());
     }
 }

@@ -10,14 +10,21 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OMTRuleMetaType extends OMTMetaType {
-    private static final Set<String> requiredFeatures = Set.of("query");
-    private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
-    static {
-        features.put("query", OMTQueryMetaType::new);
-        features.put("strict", OMTBooleanQueryType::new);
+    private static final OMTRuleMetaType INSTANCE = new OMTRuleMetaType();
+
+    public static OMTRuleMetaType getInstance() {
+        return INSTANCE;
     }
 
-    public OMTRuleMetaType() {
+    private static final Set<String> requiredFeatures = Set.of("query");
+    private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+
+    static {
+        features.put("query", OMTQueryMetaType::getInstance);
+        features.put("strict", OMTBooleanQueryType::getInstance);
+    }
+
+    private OMTRuleMetaType() {
         super("OMT Rule");
     }
 

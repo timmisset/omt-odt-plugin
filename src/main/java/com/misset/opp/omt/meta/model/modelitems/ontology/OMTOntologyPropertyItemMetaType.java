@@ -14,17 +14,23 @@ import java.util.function.Supplier;
 
 @SimpleInjectable
 public class OMTOntologyPropertyItemMetaType extends OMTMetaType implements OMTMetaInjectable {
+    private static final OMTOntologyPropertyItemMetaType INSTANCE = new OMTOntologyPropertyItemMetaType();
+
+    public static OMTOntologyPropertyItemMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     private static final Set<String> requiredFields = Set.of("type");
 
     static {
-        features.put("type", OMTTypeIdentifierMetaType::new);
+        features.put("type", OMTTypeIdentifierMetaType::getInstance);
         features.put("required", YamlBooleanType::getSharedInstance);
         features.put("multiple", YamlBooleanType::getSharedInstance);
         features.put("maxCardinality", () -> new YamlIntegerType(false));
     }
 
-    public OMTOntologyPropertyItemMetaType() {
+    private OMTOntologyPropertyItemMetaType() {
         super("OMT Ontology Property");
     }
 

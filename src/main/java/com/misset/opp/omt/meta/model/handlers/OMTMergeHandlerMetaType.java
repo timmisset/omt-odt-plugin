@@ -8,14 +8,21 @@ import java.util.function.Supplier;
 
 public class OMTMergeHandlerMetaType extends OMTMetaTaggedType<YamlMetaType> {
     private static final HashMap<String, Supplier<YamlMetaType>> taggedTypes = new HashMap<>();
+
     static {
-        taggedTypes.put("!MergePredicates", OMTMergePredicatesMetaType::new);
-        taggedTypes.put("!MergeLists", OMTMergeListsMetaType::new);
-        taggedTypes.put("!MergeValidation", OMTMergeValidationMetaType::new);
-        taggedTypes.put("!ForbiddenPredicates", OMTForbiddenPredicatesMetaType::new);
+        taggedTypes.put("!MergePredicates", OMTMergePredicatesMetaType::getInstance);
+        taggedTypes.put("!MergeLists", OMTMergeListsMetaType::getInstance);
+        taggedTypes.put("!MergeValidation", OMTMergeValidationMetaType::getInstance);
+        taggedTypes.put("!ForbiddenPredicates", OMTForbiddenPredicatesMetaType::getInstance);
     }
 
-    public OMTMergeHandlerMetaType() {
+    private static final OMTMergeHandlerMetaType INSTANCE = new OMTMergeHandlerMetaType();
+
+    public static OMTMergeHandlerMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTMergeHandlerMetaType() {
         super("OMT MergeHandler");
     }
 

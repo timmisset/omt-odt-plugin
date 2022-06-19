@@ -20,7 +20,7 @@ public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYam
 
     private final YAMLKeyValue keyValue;
     private YAMLMapping mapping = null;
-    private final OMTModelItemMetaType metaType = new OMTModelItemMetaType("modelItem");
+    private final OMTModelItemMetaType metaType = OMTModelItemMetaType.getInstance();
 
     public OMTYamlModelItemDelegate(YAMLKeyValue keyValue) {
         super(keyValue.getNode());

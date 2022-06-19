@@ -22,6 +22,13 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OMTMergePredicatesMetaType extends OMTMetaType implements OMTDocumented {
+
+    private static final OMTMergePredicatesMetaType INSTANCE = new OMTMergePredicatesMetaType();
+
+    public static OMTMergePredicatesMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final Set<String> requiredFeatures = Set.of("subjects");
     protected static final String USE_IS_REQUIRED = "'use' is required when 'from' is 'both'";
     protected static final String USE_IS_ONLY_AVAILABLE = "'use' is only available when 'from' is 'both'";
@@ -32,17 +39,16 @@ public class OMTMergePredicatesMetaType extends OMTMetaType implements OMTDocume
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("subjects", OMTSubjectQueryType::new);
+        features.put("subjects", OMTSubjectQueryType::getInstance);
         features.put("anyPredicate", YamlBooleanType::getSharedInstance);
-        features.put("predicates", OMTPredicateQueryType::new);
-        features.put("when", OMTBooleanQueryType::new);
-        features.put("from", OMTHandlersFromMetaType::new);
-        features.put("use", OMTHandlersUseMetaType::new);
-        features.put("type", OMTHandlersMetaType::new);
+        features.put("predicates", OMTPredicateQueryType::getInstance);
+        features.put("when", OMTBooleanQueryType::getInstance);
+        features.put("from", OMTHandlersFromMetaType::getInstance);
+        features.put("use", OMTHandlersUseMetaType::getInstance);
+        features.put("type", OMTHandlersMetaType::getInstance);
     }
 
-
-    protected OMTMergePredicatesMetaType() {
+    private OMTMergePredicatesMetaType() {
         super("OMT MergePredicates");
     }
 

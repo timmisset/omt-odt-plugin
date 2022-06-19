@@ -13,6 +13,15 @@ import java.util.Optional;
 
 @SimpleInjectable
 public class OMTPayloadQueryReferenceMetaType extends YamlStringType {
+    private static final OMTPayloadQueryReferenceMetaType INSTANCE = new OMTPayloadQueryReferenceMetaType();
+
+    public static OMTPayloadQueryReferenceMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTPayloadQueryReferenceMetaType() {
+        super();
+    }
 
     @Override
     public void validateValue(@NotNull YAMLValue value,

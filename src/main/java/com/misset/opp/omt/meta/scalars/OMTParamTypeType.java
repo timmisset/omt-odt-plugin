@@ -54,8 +54,13 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
     private static final Logger LOGGER = Logger.getInstance(OMTParamTypeType.class);
 
     protected static final String UNKNOWN_PREFIX = "Unknown prefix";
+    private static final OMTParamTypeType INSTANCE = new OMTParamTypeType();
 
-    public OMTParamTypeType() {
+    public static OMTParamTypeType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTParamTypeType() {
         super("OMTParamTypeType");
     }
 

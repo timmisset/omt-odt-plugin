@@ -9,7 +9,13 @@ import org.jetbrains.yaml.meta.model.YamlScalarType;
  */
 @SimpleInjectable
 public class OMTTypeIdentifierMetaType extends YamlScalarType implements OMTMetaInjectable {
-    public OMTTypeIdentifierMetaType() {
+    private static final OMTTypeIdentifierMetaType INSTANCE = new OMTTypeIdentifierMetaType();
+
+    public static OMTTypeIdentifierMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTTypeIdentifierMetaType() {
         super("OMT Type Identifier");
     }
 }
