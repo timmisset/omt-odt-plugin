@@ -36,6 +36,6 @@ public class OMTBooleanQueryType extends OMTQueryMetaType {
 
     @Override
     public InjectableContentType getInjectableContentType() {
-        return InjectableContentType.Boolean;
+        return InjectableContentType.BooleanQuery;
     }
 }

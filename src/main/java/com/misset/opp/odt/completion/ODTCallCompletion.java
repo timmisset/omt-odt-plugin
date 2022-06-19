@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 
 import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.Callable;
 import static com.misset.opp.odt.completion.ODTCommandCompletion.HAS_AT_SYMBOL;
+import static com.misset.opp.odt.completion.ODTInjectableSectionCompletion.CALLABLE_FILTER;
+import static com.misset.opp.odt.completion.ODTInjectableSectionCompletion.sharedContext;
 
 public abstract class ODTCallCompletion extends CompletionContributor {
 
@@ -121,9 +123,14 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                                 Predicate<Set<OntResource>> typeFilter,
                                 Predicate<Set<OntResource>> precedingFilter,
                                 @NotNull ProcessingContext context) {
+        Predicate<Callable> callableFilter = selectionFilter;
+        if (sharedContext != null && sharedContext.get(CALLABLE_FILTER) != null) {
+            callableFilter = callableFilter.and(sharedContext.get(CALLABLE_FILTER));
+        }
+
         callables.stream()
                 .filter(Objects::nonNull)
-                .filter(selectionFilter)
+                .filter(callableFilter)
                 .filter(callable -> precedingFilter.test(callable.getAcceptableInputType()))
                 .filter(callable -> {
                     Set<OntResource> resolve = callable.resolve();

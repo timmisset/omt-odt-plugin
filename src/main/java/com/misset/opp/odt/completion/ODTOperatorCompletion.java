@@ -1,7 +1,9 @@
 package com.misset.opp.odt.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionProvider;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -11,16 +13,16 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.intellij.patterns.StandardPatterns.or;
 import static com.misset.opp.odt.completion.CompletionPatterns.*;
+import static com.misset.opp.odt.completion.ODTInjectableSectionCompletion.TYPE_FILTER;
+import static com.misset.opp.odt.completion.ODTInjectableSectionCompletion.sharedContext;
 
 public class ODTOperatorCompletion extends ODTCallCompletion {
     ElementPattern<PsiElement> BUILTIN_OPERATOR_STRICT =
@@ -36,6 +38,9 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                                           @NotNull CompletionResultSet result) {
                 PsiElement position = parameters.getPosition();
                 Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
+                if (sharedContext != null && sharedContext.get(TYPE_FILTER) != null) {
+                    typeFilter = typeFilter.and(sharedContext.get(TYPE_FILTER));
+                }
 
                 ODTQueryStep queryStep = PsiTreeUtil.getParentOfType(position, ODTQueryStep.class, true);
                 if (queryStep != null) {
@@ -43,27 +48,6 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                 }
             }
         });
-    }
-
-    /**
-     * Adds true/false and all available queries that return a boolean type
-     */
-    public void addBooleanCompletions(@NotNull CompletionParameters parameters,
-                                      @NotNull CompletionResultSet result,
-                                      @NotNull ProcessingContext context,
-                                      PsiElement element) {
-        result.addElement(PrioritizedLookupElement.withPriority(
-                LookupElementBuilder.create("true"), 100
-        ));
-        result.addElement(PrioritizedLookupElement.withPriority(
-                LookupElementBuilder.create("false"), 100
-        ));
-
-        Predicate<Set<OntResource>> filterType = resources -> OppModel.INSTANCE.areCompatible(Collections.singleton(OppModelConstants.XSD_BOOLEAN_INSTANCE), resources);
-        ODTQueryStep queryStep = PsiTreeUtil.getParentOfType(element, ODTQueryStep.class);
-        if (queryStep != null) {
-            new ODTOperatorCompletion().addOperatorCompletions(parameters, result, context, element, filterType, queryStep);
-        }
     }
 
     public void addOperatorCompletions(@NotNull CompletionParameters parameters,
