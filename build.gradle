@@ -59,9 +59,9 @@ patchPluginXml {
     sinceBuild = '212'
 
     changeNotes = """
-        <h1>Update 5.19</h1>
-        Added #93: <a href="https://github.com/timmisset/omt-odt-plugin/issues/93">onSelect DynamicActionQuery variables</a><br>
-        Added #97: <a href="https://github.com/timmisset/omt-odt-plugin/issues/97">Show cardinality information</a><br>
+        <h1>Update 5.20</h1>
+        Added #102: <a href="https://github.com/timmisset/omt-odt-plugin/issues/102">NPE appendInstancesWithSubclasses</a><br>
+        Added #103: <a href="https://github.com/timmisset/omt-odt-plugin/issues/103">\$rollen global variable</a><br>
         """
 }
 tasks {
