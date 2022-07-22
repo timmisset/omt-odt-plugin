@@ -250,6 +250,7 @@ public class OppModel {
                     .flatMap(Collection::stream)
                     .map(this::toIndividuals)
                     .flatMap(Collection::stream)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toCollection(HashSet::new));
             subclasses.addAll(resources);
             return subclasses;
