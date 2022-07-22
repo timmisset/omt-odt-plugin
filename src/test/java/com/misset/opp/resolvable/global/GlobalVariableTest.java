@@ -11,7 +11,16 @@ import org.junit.jupiter.params.provider.ValueSource;
 class GlobalVariableTest extends OMTTestCase {
 
     @ParameterizedTest
-    @ValueSource(strings = {"$username", "$medewerkerGraph", "$offline", "$heeftPreviewRol", "$activityConfig"})
+    @ValueSource(strings = {
+            "$username",
+            "$user",
+            "$rollen",
+            "$medewerkerGraph",
+            "$offline",
+            "$heeftPreviewRol",
+            "$activityConfig",
+            "$geoApiKey",
+    })
         // six numbers
     void testGlobalVariableIsRecognized(String variableName) {
         String content = insideProcedureRunWithPrefixes("<caret>" + variableName);

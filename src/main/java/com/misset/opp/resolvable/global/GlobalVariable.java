@@ -55,6 +55,41 @@ public abstract class GlobalVariable implements Variable {
             return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         }
     };
+
+    private static final GlobalVariable USER = new GlobalVariable() {
+        @Override
+        public String getName() {
+            return "$user";
+        }
+
+        @Override
+        public String getDescription() {
+            return "Iri of current user";
+        }
+
+        @Override
+        public @NotNull Set<OntResource> resolve() {
+            return Set.of(OppModelConstants.OWL_THING_INSTANCE);
+        }
+    };
+
+    private static final GlobalVariable ROLES = new GlobalVariable() {
+        @Override
+        public String getName() {
+            return "$rollen";
+        }
+
+        @Override
+        public String getDescription() {
+            return "The current roles of the user";
+        }
+
+        @Override
+        public @NotNull Set<OntResource> resolve() {
+            return Set.of(OppModelConstants.JSON_OBJECT);
+        }
+    };
+
     private static final GlobalVariable OFFLINE = new GlobalVariable() {
         @Override
         public String getName() {
@@ -106,12 +141,32 @@ public abstract class GlobalVariable implements Variable {
         }
     };
 
+    private static final GlobalVariable GEO_API_KEY = new GlobalVariable() {
+        @Override
+        public String getName() {
+            return "$geoApiKey";
+        }
+
+        @Override
+        public String getDescription() {
+            return "The API key used for the GeoViewer plugin";
+        }
+
+        @Override
+        public @NotNull Set<OntResource> resolve() {
+            return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+        }
+    };
+
     static {
         globalVariableHashMap.put(MEDEWERKER_GRAPH.getName(), MEDEWERKER_GRAPH);
         globalVariableHashMap.put(USERNAME.getName(), USERNAME);
+        globalVariableHashMap.put(USER.getName(), USER);
+        globalVariableHashMap.put(ROLES.getName(), ROLES);
         globalVariableHashMap.put(OFFLINE.getName(), OFFLINE);
         globalVariableHashMap.put(HEEFT_PREVIEW_ROL.getName(), HEEFT_PREVIEW_ROL);
         globalVariableHashMap.put(ACTIVITY_CONFIG.getName(), ACTIVITY_CONFIG);
+        globalVariableHashMap.put(GEO_API_KEY.getName(), GEO_API_KEY);
     }
 
     public static GlobalVariable getVariable(String name) {
