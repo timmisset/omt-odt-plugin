@@ -5,7 +5,7 @@ plugins {
 }
 
 intellij {
-    version = '2022.1'
+    version = '2022.2'
     type = 'IU'
     plugins = [
             'java',
@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.20'
+version '5.21'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -39,7 +39,7 @@ test {
     useJUnitPlatform {
 
     }
-    systemProperty "idea.home.path", "C:/Program Files/JetBrains/IntelliJ IDEA 2022.1"
+    systemProperty "idea.home.path", "C:/Program Files/JetBrains/IntelliJ IDEA 2022.2"
 }
 jacocoTestReport {
     // due to the unpredictability of the IntelliJ Platform, unit tests should not be considered part of the coverage
@@ -56,12 +56,11 @@ buildSearchableOptions.enabled = false
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 
 patchPluginXml {
-    sinceBuild = '212'
+    sinceBuild = '222'
 
     changeNotes = """
-        <h1>Update 5.20</h1>
-        Added #102: <a href="https://github.com/timmisset/omt-odt-plugin/issues/102">NPE appendInstancesWithSubclasses</a><br>
-        Added #103: <a href="https://github.com/timmisset/omt-odt-plugin/issues/103">\$rollen global variable</a><br>
+        <h1>Update 5.21</h1>
+        Made compatible with IntelliJ 2022.2
         """
 }
 tasks {
@@ -69,10 +68,8 @@ tasks {
         jvmArgs("-Xmx2000m")
     }
     runPluginVerifier {
-        ideVersions = ["IC-2021.2", "IC-2021.3", "IC-2022.1"]
+        ideVersions = ["IC-2021.2", "IC-2021.3", "IC-2022.1", "IC-2022.2"]
     }
-
-
 }
 publishPlugin {
     token = System.getenv().getOrDefault("ORG_GRADLE_PROJECT_intellijPublishToken", "")
