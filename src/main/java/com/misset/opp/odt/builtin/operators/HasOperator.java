@@ -30,7 +30,6 @@ public class HasOperator extends BuiltInBooleanOperator {
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         Set<OntResource> ontResources = validateLeftRightCompatible(call, holder);
         validateIgnoreCaseFlagIsUsedOnStrings(ontResources, call, holder);
-        validateIgnoreCaseFlagUsage(1, call, holder);
     }
 
     @Override
