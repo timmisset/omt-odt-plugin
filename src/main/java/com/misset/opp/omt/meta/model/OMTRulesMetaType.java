@@ -18,6 +18,6 @@ public class OMTRulesMetaType extends OMTMetaMapType implements OMTDocumented {
 
     @Override
     public String getDocumentationClass() {
-        return "Rules";
+        return "Rule";
     }
 }

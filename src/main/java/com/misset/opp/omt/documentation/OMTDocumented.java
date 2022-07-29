@@ -15,7 +15,17 @@ import java.util.List;
  * on both the MetaMapType and the MetaType itself.
  */
 public interface OMTDocumented {
+    /**
+     * Returns a list with additional headers that are present on the description level of the current element
+     */
     default List<String> getAdditionalDescriptionHeaders() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Returns a list with additional headers that are present on the same level of the current element
+     */
+    default List<String> getAdditionalHeaders() {
         return Collections.emptyList();
     }
 
