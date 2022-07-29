@@ -151,7 +151,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
     }
 
     @Test
-    void testNoWarningForReferencedUsageWithResolvableImport() {
+    void testNoWarningForReferencedPayloadUsageWithResolvableImport() {
         addFileToProject("myfile.omt", "queries: |\n" +
                 "   DEFINE QUERY myQuery => '';\n");
         String content = "import:\n" +
@@ -163,6 +163,22 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "        payload:\n" +
                 "            myQuery:\n" +
                 "                query: myQuery\n";
+        configureByText(content);
+        assertNoWarning("Import for myQuery is never used");
+    }
+
+    @Test
+    void testNoWarningForReferencedRuleUsageWithResolvableImport() {
+        addFileToProject("myfile.omt", "queries: |\n" +
+                "   DEFINE QUERY myQuery => '';\n");
+        String content = "import:\n" +
+                "    ./myfile.omt:\n" +
+                "    - myQuery\n" +
+                "\n" +
+                "model:\n" +
+                "    MyActivity: !Activity\n" +
+                "        rules:\n" +
+                "            myRule: myQuery\n";
         configureByText(content);
         assertNoWarning("Import for myQuery is never used");
     }
