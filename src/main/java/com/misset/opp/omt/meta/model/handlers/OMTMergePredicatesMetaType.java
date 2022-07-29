@@ -2,7 +2,6 @@ package com.misset.opp.omt.meta.model.handlers;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.documentation.OMTDocumented;
-import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTPredicateQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTSubjectQueryType;
@@ -21,13 +20,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class OMTMergePredicatesMetaType extends OMTMetaType implements OMTDocumented {
+public class OMTMergePredicatesMetaType extends OMTMergeMetaType implements OMTDocumented {
     private static final Set<String> requiredFeatures = Set.of("subjects");
     protected static final String USE_IS_REQUIRED = "'use' is required when 'from' is 'both'";
     protected static final String USE_IS_ONLY_AVAILABLE = "'use' is only available when 'from' is 'both'";
-
-    protected static final String ANY_PREDICATE_OR_PREDICATES_IS_REQUIRED = "Either 'anyPredicate' or 'predicates' is required";
-    protected static final String CANNOT_COMBINE_ANY_PREDICATE_AND_PREDICATES = "Cannot combine 'anyPredicate' and 'predicates'";
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
@@ -65,16 +61,6 @@ public class OMTMergePredicatesMetaType extends OMTMetaType implements OMTDocume
             // on the values of siblings. These have to be analysed on the parent (handler) level
             validateUseWhenBoth(mapping, problemsHolder);
             validatePredicatesOrAnyPredicate(mapping, problemsHolder);
-        }
-    }
-
-    private void validatePredicatesOrAnyPredicate(YAMLMapping mapping, ProblemsHolder problemsHolder) {
-        boolean anyPredicate = mapping.getKeyValueByKey("anyPredicate") != null;
-        boolean predicates = mapping.getKeyValueByKey("predicates") != null;
-        if (!anyPredicate && !predicates) {
-            problemsHolder.registerProblem(mapping, ANY_PREDICATE_OR_PREDICATES_IS_REQUIRED);
-        } else if (anyPredicate && predicates) {
-            problemsHolder.registerProblem(mapping, CANNOT_COMBINE_ANY_PREDICATE_AND_PREDICATES);
         }
     }
 

@@ -1,7 +1,6 @@
 package com.misset.opp.omt.meta.model.handlers;
 
 import com.misset.opp.omt.documentation.OMTDocumented;
-import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTHandlersContextMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -10,7 +9,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class OMTMergeValidationMetaType extends OMTMetaType implements OMTDocumented {
+public class OMTMergeValidationMetaType extends OMTMergeMetaType implements OMTDocumented {
     private static final Set<String> requiredFeatures = Set.of("context", "query");
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
-class OMTMergeListsTest extends OMTInspectionTestCase {
+class OMTMergeListsMetaTypeTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
@@ -41,5 +41,18 @@ class OMTMergeListsTest extends OMTInspectionTestCase {
         );
         configureByText(content);
         assertNoError("Missing required key(s):");
+    }
+
+    @Test
+    void testMergeHandlerUsingBothPredicatesFields() {
+        String content = insideActivityWithPrefixes(
+                "handlers:\n" +
+                        "-  !MergeLists\n" +
+                        "   predicates: /b\n" +
+                        "   anyPredicate: true\n" +
+                        ""
+        );
+        configureByText(content);
+        assertHasError(OMTMergePredicatesMetaType.CANNOT_COMBINE_ANY_PREDICATE_AND_PREDICATES);
     }
 }

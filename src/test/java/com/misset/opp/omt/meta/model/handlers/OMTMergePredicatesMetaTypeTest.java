@@ -13,7 +13,7 @@ import java.util.List;
 import static com.misset.opp.omt.meta.model.handlers.OMTMergePredicatesMetaType.USE_IS_ONLY_AVAILABLE;
 import static com.misset.opp.omt.meta.model.handlers.OMTMergePredicatesMetaType.USE_IS_REQUIRED;
 
-class OMTMergePredicatesTest extends OMTInspectionTestCase {
+class OMTMergePredicatesMetaTypeTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
