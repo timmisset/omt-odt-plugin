@@ -49,6 +49,7 @@ public class BuiltinOperators {
         addOperator(IriOperator.INSTANCE);
         addOperator(JoinOperator.INSTANCE);
         addOperator(JsonOperator.INSTANCE);
+        addOperator(JsonValuesOperator.INSTANCE);
         addOperator(LastOperator.INSTANCE);
         addOperator(LengthOperator.INSTANCE);
         addOperator(LessThanEqualsOperator.INSTANCE);
