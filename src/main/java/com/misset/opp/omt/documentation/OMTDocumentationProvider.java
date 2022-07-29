@@ -37,7 +37,7 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
 
         if (metaType instanceof OMTDocumented) {
             // documented class
-            OMTDocumentationProvider.getClassDocumentation(element.getProject(), (OMTDocumented) metaType);
+            return OMTDocumentationProvider.getClassDocumentation(element.getProject(), (OMTDocumented) metaType);
         } else {
             if (element instanceof YAMLKeyValue) {
                 // might be a documented attribute
