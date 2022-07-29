@@ -11,6 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 public interface OMTFile extends PsiFile {
+    static boolean isModuleFileName(String name) {
+        return name.endsWith(".module.omt") || name.equals("module.omt");
+    }
+
+    static boolean isInterfaceFileName(String name) {
+        return name.endsWith(".interface.omt");
+    }
+
     YAMLMapping getRootMapping();
 
     Map<String, List<PsiCall>> getAllInjectedPsiCalls();

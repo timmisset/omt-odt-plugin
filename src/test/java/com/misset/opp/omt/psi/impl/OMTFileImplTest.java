@@ -124,4 +124,24 @@ class OMTFileImplTest extends OMTTestCase {
             assertTrue(useScope.contains(secondaryImportingFile.getVirtualFile()));
         });
     }
+
+    @Test
+    void testRecognizedModuleFilenameEndsWith() {
+        OMTFile omtFile = configureByText("my.module.omt", "");
+        assertTrue(OMTFile.isModuleFileName(omtFile.getName()));
+        assertEquals(omtFile.getModuleFile(), omtFile);
+    }
+
+    @Test
+    void testRecognizedModuleFilenameEquals() {
+        OMTFile omtFile = configureByText("module.omt", "");
+        assertTrue(OMTFile.isModuleFileName(omtFile.getName()));
+        assertEquals(omtFile.getModuleFile(), omtFile);
+    }
+
+    @Test
+    void testRecognizedInterfaceFilenameEndsWith() {
+        OMTFile omtFile = configureByText("my.interface.omt", "");
+        assertTrue(OMTFile.isInterfaceFileName(omtFile.getName()));
+    }
 }

@@ -168,7 +168,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
 
     @Override
     public OMTFile getModuleFile() {
-        if (getName().contains(".module.omt")) {
+        if (OMTFile.isModuleFileName(getName())) {
             return this;
         }
 

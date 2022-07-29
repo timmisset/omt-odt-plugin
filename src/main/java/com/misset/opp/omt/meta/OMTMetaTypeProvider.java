@@ -10,6 +10,7 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -40,9 +41,9 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
                 .map(PsiFileSystemItem::getName)
                 .orElse("an-omt-file");
         final YamlMetaType root;
-        if (title.endsWith(".module.omt")) {
+        if (OMTFile.isModuleFileName(title)) {
             root = new OMTModuleFileType(title);
-        } else if (title.endsWith(".interface.omt")) {
+        } else if (OMTFile.isInterfaceFileName(title)) {
             root = new OMTInterfaceFileType(title);
         } else {
             root = new OMTFileMetaType(title);
