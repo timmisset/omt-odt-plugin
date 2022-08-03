@@ -26,7 +26,7 @@ class OMTMergeListsMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertHasError("Missing required key(s): 'predicates, subjects'");
+        assertHasError("Missing required key(s): 'subjects'");
     }
 
     @Test
@@ -54,5 +54,17 @@ class OMTMergeListsMetaTypeTest extends OMTInspectionTestCase {
         );
         configureByText(content);
         assertHasError(OMTMergePredicatesMetaType.CANNOT_COMBINE_ANY_PREDICATE_AND_PREDICATES);
+    }
+
+    @Test
+    void testMergeHandlerEitherPredicateOrAnyPredicateIsRequired() {
+        String content = insideActivityWithPrefixes(
+                "handlers:\n" +
+                        "-  !MergeLists\n" +
+                        "   subjects: /a:b\n" +
+                        ""
+        );
+        configureByText(content);
+        assertHasError(OMTMergePredicatesMetaType.ANY_PREDICATE_OR_PREDICATES_IS_REQUIRED);
     }
 }

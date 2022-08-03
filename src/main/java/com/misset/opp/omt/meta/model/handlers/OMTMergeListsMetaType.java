@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OMTMergeListsMetaType extends OMTMergeMetaType implements OMTDocumented {
-    private static final Set<String> requiredFeatures = Set.of("subjects", "predicates");
+    private static final Set<String> requiredFeatures = Set.of("subjects");
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
