@@ -11,6 +11,7 @@ public class BuiltinCommands {
     }
     static {
         addCommand(AddToCommand.INSTANCE);
+        addCommand(AssertCommand.INSTANCE);
         addCommand(AssignCommand.INSTANCE);
         addCommand(ClearGraphCommand.INSTANCE);
         addCommand(CopyInGraphCommand.INSTANCE);
