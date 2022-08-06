@@ -9,10 +9,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.psi.ODTQuery;
-import com.misset.opp.odt.psi.ODTQueryFilter;
-import com.misset.opp.odt.psi.ODTQueryOperationStep;
-import com.misset.opp.odt.psi.ODTSignature;
+import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.impl.ODTQueryArrayImpl;
 import com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
@@ -20,7 +18,6 @@ import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.settings.SettingsState;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
@@ -44,15 +41,6 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED_VALUE = new Key<>("RESOLVED_VALUE");
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED_WITHOUT_FILTER_VALUE = new Key<>("RESOLVED_WITHOUT_FILTER_VALUE");
     private static final Logger LOGGER = Logger.getInstance(ODTResolvableQueryOperationStep.class);
-
-    private SettingsState settingsState;
-
-    private SettingsState getSettingState() {
-        if (settingsState == null) {
-            settingsState = SettingsState.getInstance(getProject()).getState();
-        }
-        return settingsState;
-    }
 
     @Override
     public ODTResolvableQueryPath getParent() {
@@ -84,7 +72,12 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
             // for example:
             // /ont:ClassA / ^rdf:type[rdf:type == /ont:ClassA]
             // the rdf:type in the filter should return the outcome of the ^rdf:type
-            return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, ODTQueryFilter.class, ODTSignature.class, ODTResolvableSubQueryStep.class, ODTBaseDefineQueryStatement.class))
+            return Optional.ofNullable(PsiTreeUtil.getParentOfType(this,
+                            ODTQueryFilter.class,
+                            ODTSignature.class,
+                            ODTResolvableSubQueryStep.class,
+                            ODTQueryArray.class,
+                            ODTBaseDefineQueryStatement.class))
                     .map(container -> resolvePreviousStep(container, resources, call))
                     .orElse(Collections.emptySet());
         } else {
@@ -107,8 +100,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
         if (container instanceof ODTBaseDefineQueryStatement) {
             return ((ODTBaseDefineQueryStatement) container).getBase();
         }
-        final ODTResolvableQueryOperationStep queryOperationStep = PsiTreeUtil.getParentOfType(container,
-                ODTResolvableQueryOperationStep.class);
+        final ODTResolvableQueryOperationStep queryOperationStep = getResolvableStepForContainer(container);
         if (queryOperationStep == null) {
             return Collections.emptySet();
         }
@@ -118,6 +110,20 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
         }
         // else, repeat the process of either unwrapping from a container or resolving the previous step in the same path
         return queryOperationStep.resolvePreviousStep(resources, call);
+    }
+
+    private ODTResolvableQueryOperationStep getResolvableStepForContainer(PsiElement container) {
+        if (container instanceof ODTQueryArray) {
+            ODTQuery odtQuery = ((ODTQueryArrayImpl) container).getQueryList().get(0);
+            if (PsiTreeUtil.isAncestor(odtQuery, this, true)) {
+                return PsiTreeUtil.getParentOfType(odtQuery, ODTResolvableQueryOperationStep.class);
+            } else {
+                return PsiTreeUtil.getParentOfType(
+                        PsiTreeUtil.getDeepestLast(odtQuery), ODTResolvableQueryOperationStep.class);
+            }
+        } else {
+            return PsiTreeUtil.getParentOfType(container, ODTResolvableQueryOperationStep.class);
+        }
     }
 
     public Set<OntResource> resolveWithoutFilter() {

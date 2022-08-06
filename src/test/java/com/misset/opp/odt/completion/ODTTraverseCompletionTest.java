@@ -51,4 +51,18 @@ class ODTTraverseCompletionTest extends OMTCompletionTestCase {
         Assertions.assertTrue(lookupStrings.contains("ont:booleanPredicate"));
         Assertions.assertFalse(lookupStrings.contains("ont:classPredicate"));
     }
+
+    @Test
+    void testQueryStepQueryArray() {
+        configureByText(insideQueryWithPrefixes("/ont:ClassA / ^rdf:type / ont:booleanPredicate | <caret>"), true);
+        List<String> lookupStrings = getLookupStrings();
+        assertContainsElements(lookupStrings, "ont:booleanPredicate", "ont:classPredicate");
+    }
+
+    @Test
+    void testQueryStepWrappedQueryArray() {
+        configureByText(insideQueryWithPrefixes("/ont:ClassA / ^rdf:type / (ont:booleanPredicate | <caret>)"), true);
+        List<String> lookupStrings = getLookupStrings();
+        assertContainsElements(lookupStrings, "ont:booleanPredicate", "ont:classPredicate");
+    }
 }
