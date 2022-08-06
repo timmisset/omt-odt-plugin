@@ -5,6 +5,7 @@ import com.misset.opp.odt.completion.ODTTraverseCompletion;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.model.OppModelTranslator;
+import com.misset.opp.ttl.model.constants.XSD;
 import com.misset.opp.util.Icons;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -44,7 +45,7 @@ public class TTLResourceUtil {
     }
 
     public static boolean isXSDType(Resource resource) {
-        return is(resource, isXSDType, _resource -> _resource.getNameSpace().equals(OppModelConstants.XSD));
+        return is(resource, isXSDType, _resource -> _resource.getNameSpace().equals(XSD.NAMESPACE));
     }
 
     public static String describeUrisJoined(Set<? extends Resource> resources) {
@@ -75,7 +76,7 @@ public class TTLResourceUtil {
 
     private static String doDescribeUri(Resource resource, boolean withType) {
         if (resource instanceof OntResource && ((OntResource) resource).isClass()) {
-            if (resource.getNameSpace().equals(OppModelConstants.XSD)) {
+            if (resource.getNameSpace().equals(XSD.NAMESPACE)) {
                 return resource.getURI() + (withType ? " (TYPE)" : "");
             }
             return resource.getURI() + (withType ? " (CLASS)" : "");

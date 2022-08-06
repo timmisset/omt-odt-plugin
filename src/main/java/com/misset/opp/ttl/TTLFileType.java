@@ -9,6 +9,8 @@ import javax.swing.*;
 public class TTLFileType extends LanguageFileType {
     public static final TTLFileType INSTANCE = new TTLFileType();
 
+    public static final String EXTENSION = "ttl";
+
     private TTLFileType() {
         super(TTLLanguage.INSTANCE);
     }
@@ -28,7 +30,7 @@ public class TTLFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "ttl";
+        return EXTENSION;
     }
 
     @Nullable

@@ -66,7 +66,7 @@ public class OppModel {
             // the OWL_DL restricts types, a resource can only be either a class, a property or an instance, not multiple at the same time
             // the RDFS_INF inferencing provides the support for sub/superclass logic
             incrementModificationCount();
-            OppModelConstants.setConstants(this, modelCache, ontologyModel);
+            OppModelConstants.setConstants(this, ontologyModel);
             OppModelTranslator.loadSimpleModel(this, modelCache, ontologyModel, shaclModel);
             modelCache.cacheClassesTree();
             INSTANCE = this;
@@ -441,11 +441,20 @@ public class OppModel {
     }
 
     public OntClass createClass(String uri) {
-        return createClass(uri, getModel());
+        return createClass(uri, getModel(), new ArrayList<>());
     }
 
-    OntClass createClass(String uri, OntModel model) {
+    public OntClass createClass(String uri, OntModel model) {
+        return createClass(uri, model, new ArrayList<>());
+    }
+
+    public OntClass createClass(String uri, OntModel model, OntClass superClass) {
+        return createClass(uri, model, Collections.singletonList(superClass));
+    }
+
+    public OntClass createClass(String uri, OntModel model, List<OntClass> superClasses) {
         OntClass ontClass = model.createClass(uri);
+        superClasses.forEach(ontClass::addSuperClass);
         modelCache.cache(ontClass);
         return ontClass;
     }
@@ -487,54 +496,66 @@ public class OppModel {
     }
 
     /**
-     * Validate that 2 resources are compatible by the criteria that
-     * resourceB is compatible to resourceA when resourceB is resourceA or any of the subclasses of resourceA.
+     * Validate resource compatability
+     * <p>
+     * The required set states what kind of resource are acceptable. This includes transitive relationships
+     * provided via the rdfs:subClassOf logic.
+     * <p>
+     * Examples:
+     * - Required: OntClassA_Instance
+     * - Acceptable: OntClassA_Instance and any instance of a Subclass of OntClassA
+     * <p>
+     * - Required: Owl:Thing
+     * - Acceptable: Any individual
+     * - Not acceptable: Any class
+     * <p>
+     * - Required: Owl:Class
+     * - Acceptable: Any class
+     * - Not acceptable: Any individual
+     * <p>
+     * - Required: OntClassA
+     * - This should not be possible, the requirement can be an instance of OntClassA but not the resource OntClassA itself
      */
-    public boolean areCompatible(Set<OntResource> resourcesA,
-                                 Set<OntResource> resourcesB) {
+    public boolean areCompatible(Set<OntResource> required,
+                                 Set<OntResource> provided) {
         return LoggerUtil.computeWithLogger(LOGGER, "Comparing compatibility between " +
-                        resourcesA + " and " + resourcesB,
-                () -> resourcesB.stream()
-                        .anyMatch(resourceB -> areCompatible(resourcesA, resourceB)));
+                        required + " and " + provided,
+                () -> provided.stream()
+                        .anyMatch(resourceB -> areCompatible(required, resourceB)));
 
     }
 
-    private boolean areCompatible(Set<OntResource> resourcesA,
-                                  OntResource resourceB) {
-        return resourcesA.stream()
-                .anyMatch(resourceA -> areCompatible(resourceA, resourceB));
+    private boolean areCompatible(Set<OntResource> required,
+                                  OntResource provided) {
+        return required.stream()
+                .anyMatch(resourceA -> areCompatible(resourceA, provided));
     }
 
-    private boolean areCompatible(OntResource resourceA,
-                                  OntResource resourceB) {
-        if (resourceA.equals(resourceB) ||
-                resourceA.equals(OppModelConstants.OWL_THING_INSTANCE) ||
-                resourceB.equals(OppModelConstants.OWL_THING_INSTANCE)) {
+    private boolean areCompatible(OntResource required,
+                                  OntResource provided) {
+        if (isIndividual(required)) {
+            return OppModelConstants.OWL_THING_INSTANCE.equals(provided) || isInstanceOf(provided, toClass(required));
+        } else if (isClass(required)) {
+            return isInstanceOf(provided, (OntClass) required);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns true if the resource is an instance of the provided class or any of its superclasses
+     */
+    public boolean isInstanceOf(@Nullable OntResource resource, @Nullable OntClass ontClass) {
+        if (resource == null || ontClass == null) {
+            return false;
+        }
+
+        Resource rdfType = resource.getRDFType();
+        if (ontClass.equals(rdfType)) {
             return true;
         }
-        if (isIndividual(resourceA)) {
-            // compare individuals by their classes
-            if (!isIndividual(resourceB)) {
-                return false;
-            } else {
-                // for 2 individuals, check if classA is part of the classes for B
-                return listOntClasses(resourceB)
-                        .contains(toClass(resourceA));
-            }
-        }
-        if (isPredicate(resourceA) || isPredicate(resourceB)) {
-            // properties are only compatible when equal
-            return resourceA.equals(resourceB);
-        }
-        if (isClass(resourceA)) {
-            if (!isClass(resourceB)) {
-                return false;
-            } else {
-                return resourceB.equals(resourceA) ||
-                        getSuperClasses(getClass(resourceB)).contains(getClass(resourceA));
-            }
-        }
-        return false;
+        OntClass rdfTypeClass = getClass(rdfType);
+        return rdfTypeClass != null && listSuperClasses(rdfTypeClass).contains(ontClass);
     }
 
     public Set<OntClass> listSuperClasses(OntClass ontClass) {
