@@ -15,7 +15,7 @@ class JsonValuesOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testName() {
-        Assertions.assertEquals("JSONVALUES", JsonValuesOperator.INSTANCE.getName());
+        Assertions.assertEquals("JSON_VALUES", JsonValuesOperator.INSTANCE.getName());
     }
 
     @Test

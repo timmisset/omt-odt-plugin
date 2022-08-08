@@ -17,7 +17,7 @@ public class JsonValuesOperator extends BuiltInOperator {
 
     @Override
     public String getName() {
-        return "JSONVALUES";
+        return "JSON_VALUES";
     }
 
     @Override
