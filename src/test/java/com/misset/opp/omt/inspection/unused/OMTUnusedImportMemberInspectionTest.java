@@ -182,4 +182,16 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
         configureByText(content);
         assertNoWarning("Import for myQuery is never used");
     }
+
+    @Test
+    void testNoWarningForUsedProcedure() {
+        String content = "import:\n" +
+                "   myfile.omt:\n" +
+                "   - myProcedure\n" +
+                "\n" +
+                "procedures:\n" +
+                "- myProcedure\n";
+        configureByText("module.omt", content);
+        assertNoWarning("Import for myProcedure is never used");
+    }
 }

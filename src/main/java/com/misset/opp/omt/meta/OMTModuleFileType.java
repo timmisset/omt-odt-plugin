@@ -1,9 +1,8 @@
 package com.misset.opp.omt.meta;
 
 import com.misset.opp.omt.meta.actions.OMTGlobalActionMetaType;
-import com.misset.opp.omt.meta.arrays.OMTExportArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTGraphShapeHandlerArrayMetaType;
-import com.misset.opp.omt.meta.arrays.OMTProceduresArrayMetaType;
+import com.misset.opp.omt.meta.arrays.OMTImportedMemberRefArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTServicesArrayMetaType;
 import com.misset.opp.omt.meta.model.OMTActionsMapMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
@@ -34,8 +33,8 @@ public class OMTModuleFileType extends OMTFileMetaType {
         features.put("menu", OMTActionsMapMetaType::new);
         features.put("actions", OMTGlobalActionMetaType::new);
         features.put("services", OMTServicesArrayMetaType::new);
-        features.put("procedures", OMTProceduresArrayMetaType::new);
-        features.put("export", OMTExportArrayMetaType::new);
+        features.put("procedures", OMTImportedMemberRefArrayMetaType::new);
+        features.put("export", OMTImportedMemberRefArrayMetaType::new);
         features.put("handlers", OMTGraphShapeHandlerArrayMetaType::new);
     }
 

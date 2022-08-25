@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class OMTExportMemberMetaTypeTest extends OMTCompletionTestCase {
+class OMTImportedMemberRefMetaTypeTest extends OMTCompletionTestCase {
 
     @Test
     void testShowsImportedMembers() {

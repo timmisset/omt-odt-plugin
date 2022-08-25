@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.omt.psi.references.OMTExportMemberReference;
+import com.misset.opp.omt.psi.references.OMTImportedMemberRefReference;
 import com.misset.opp.omt.util.OMTRefactoringUtil;
 import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
@@ -12,11 +12,11 @@ import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-public class OMTYamlExportMemberDelegate extends YAMLPlainTextImpl implements OMTYamlDelegate,
+public class OMTYamlImportedMemberRefDelegate extends YAMLPlainTextImpl implements OMTYamlDelegate,
         SupportsSafeDelete {
     YAMLPlainTextImpl value;
 
-    public OMTYamlExportMemberDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
+    public OMTYamlImportedMemberRefDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
         super(yamlValue.getNode());
         this.value = yamlValue;
     }
@@ -35,7 +35,7 @@ public class OMTYamlExportMemberDelegate extends YAMLPlainTextImpl implements OM
 
     @Override
     public PsiReference getReference() {
-        return new OMTExportMemberReference(value);
+        return new OMTImportedMemberRefReference(value);
     }
 
     @Override

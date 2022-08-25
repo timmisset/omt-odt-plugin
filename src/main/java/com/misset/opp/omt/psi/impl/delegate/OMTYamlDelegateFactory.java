@@ -6,9 +6,9 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.meta.OMTExportMemberMetaType;
 import com.misset.opp.omt.meta.OMTGraphShapeHandlerMemberMetaType;
 import com.misset.opp.omt.meta.OMTImportMemberMetaType;
+import com.misset.opp.omt.meta.OMTImportedMemberRefMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTBindingParameterMetaType;
@@ -94,8 +94,8 @@ public class OMTYamlDelegateFactory {
             return new OMTYamlVariableDelegate(yamlPlainText);
         } else if (metaType instanceof OMTImportMemberMetaType) {
             return new OMTYamlImportMemberDelegate(yamlPlainText);
-        } else if (metaType instanceof OMTExportMemberMetaType) {
-            return new OMTYamlExportMemberDelegate(yamlPlainText);
+        } else if (metaType instanceof OMTImportedMemberRefMetaType) {
+            return new OMTYamlImportedMemberRefDelegate(yamlPlainText);
         } else if (metaType instanceof OMTPayloadQueryReferenceMetaType) {
             return new OMTYamlPayloadQueryReferenceDelegate(yamlPlainText);
         } else if (metaType instanceof OMTOntologyPrefixMetaType) {

@@ -8,7 +8,7 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class OMTExportMemberReferenceTest extends OMTCompletionTestCase {
+class OMTImportedMemberRefReferenceTest extends OMTCompletionTestCase {
     @Test
     void testHasReference() {
         String content = "model:\n" +
