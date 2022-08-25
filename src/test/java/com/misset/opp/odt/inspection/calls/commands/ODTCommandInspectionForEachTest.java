@@ -70,7 +70,16 @@ class ODTCommandInspectionForEachTest extends OMTInspectionTestCase {
     void testForEachCommandUnnecessaryUsageOfForEachShowsNoWarningWhenUsedAsAssignmentValue() {
         String content = insideProcedureRunWithPrefixes("" +
                 "VAR $myValue;\n" +
-                "@FOREACH('', { $myValue = $value; });");
+                "@FOREACH(/ont:ClassA / ^rdf:type, { $myValue = $value; });");
+        configureByText(content);
+        assertNoWarning(ALL_VALUES_ARE_TREATED_EQUAL);
+    }
+
+    @Test
+    void testForEachCommandUnnecessaryUsageOfForEachShowsNoWarningUsedAsAssigneeAndValue() {
+        String content = insideProcedureRunWithPrefixes("" +
+                "VAR $myValue = /ont:ClassA / ^rdf:type;\n" +
+                "@FOREACH($myValue, { $value / ont:propertyA = $value / ont:propertyB; });");
         configureByText(content);
         assertNoWarning(ALL_VALUES_ARE_TREATED_EQUAL);
     }

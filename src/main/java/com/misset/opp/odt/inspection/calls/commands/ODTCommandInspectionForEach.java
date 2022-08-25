@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.builtin.commands.ForEachCommand;
 import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.impl.ODTAssignmentStatementImpl;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.omt.psi.impl.OMTCallableImpl;
 import org.jetbrains.annotations.Nls;
@@ -67,7 +68,9 @@ public class ODTCommandInspectionForEach extends LocalInspectionTool {
                 final boolean unnecessaryUsage = PsiTreeUtil.findChildrenOfType(commandBlock, ODTVariable.class)
                         .stream()
                         .filter(variable -> variable.getName() != null && variable.getName().equals("$value"))
-                        .noneMatch(variable -> isAssigningToVariable(variable) || isEncapsulatedByLogicalBlockOrCall(variable, call));
+                        .noneMatch(variable -> isAssigningToVariable(variable) ||
+                                isAssigningToStatement(variable) ||
+                                isEncapsulatedByLogicalBlockOrCall(variable, call));
                 if (unnecessaryUsage) {
                     holder.registerProblem(call, ALL_VALUES_ARE_TREATED_EQUAL, ProblemHighlightType.WARNING);
                 }
@@ -88,5 +91,10 @@ public class ODTCommandInspectionForEach extends LocalInspectionTool {
     private boolean isAssigningToVariable(@NotNull ODTVariable variable) {
         ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(variable, ODTVariableAssignment.class);
         return variableAssignment != null && !variableAssignment.getVariableList().contains(variable);
+    }
+
+    private boolean isAssigningToStatement(@NotNull ODTVariable variable) {
+        ODTAssignmentStatementImpl statement = PsiTreeUtil.getParentOfType(variable, ODTAssignmentStatementImpl.class);
+        return statement != null && PsiTreeUtil.isAncestor(statement.getQuery(), variable, true);
     }
 }
