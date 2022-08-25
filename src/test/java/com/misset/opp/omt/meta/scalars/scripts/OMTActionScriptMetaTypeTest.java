@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Set;
 
-class OMTOnSelectScriptMetaTypeTest extends OMTInspectionTestCase {
+class OMTActionScriptMetaTypeTest extends OMTInspectionTestCase {
 
     @Override
     protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {

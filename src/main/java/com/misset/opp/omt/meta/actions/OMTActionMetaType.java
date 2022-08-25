@@ -13,7 +13,7 @@ import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
-import com.misset.opp.omt.meta.scalars.scripts.OMTOnSelectScriptMetaType;
+import com.misset.opp.omt.meta.scalars.scripts.OMTActionScriptMetaType;
 import com.misset.opp.resolvable.local.LocalVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -26,20 +26,24 @@ import java.util.function.Supplier;
 
 public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvider, OMTDocumented, OMTLocalVariableTypeProvider {
     private final boolean mapped;
-    private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    protected static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    protected static final String TITLE = "title";
+    protected static final String DESCRIPTION = "description";
+    private static final String DYNAMIC_ACTION_QUERY = "dynamicActionQuery";
+    private static final String ID = "id";
 
     static {
-        features.put("id", YamlStringType::new);
-        features.put("title", OMTInterpolatedStringMetaType::new);
-        features.put("description", OMTInterpolatedStringMetaType::new);
+        features.put(ID, YamlStringType::new);
+        features.put(TITLE, OMTInterpolatedStringMetaType::new);
+        features.put(DESCRIPTION, OMTInterpolatedStringMetaType::new);
         features.put("promoteSubMenuItemToMainMenu", OMTBooleanQueryType::new);
         features.put("icon", YamlStringType::new);
         features.put("params", OMTParamsArrayMetaType::new);
         features.put("precondition", OMTQueryMetaType::new);
         features.put("disabled", OMTBooleanQueryType::new);
         features.put("busyDisabled", OMTBooleanQueryType::new);
-        features.put("dynamicActionQuery", OMTQueryMetaType::new);
-        features.put("onSelect", OMTOnSelectScriptMetaType::new);
+        features.put(DYNAMIC_ACTION_QUERY, OMTQueryMetaType::new);
+        features.put("onSelect", OMTActionScriptMetaType::new);
     }
 
     public OMTActionMetaType(boolean mapped) {
@@ -66,7 +70,7 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
             return;
         }
         YAMLMapping mapping = (YAMLMapping) value;
-        YAMLKeyValue id = mapping.getKeyValueByKey("id");
+        YAMLKeyValue id = mapping.getKeyValueByKey(ID);
         if (id == null) {
             return;
         }
@@ -88,7 +92,7 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
                     .map(YAMLSequenceItem::getValue)
                     .filter(YAMLMapping.class::isInstance)
                     .map(YAMLMapping.class::cast)
-                    .map(siblingMap -> siblingMap.getKeyValueByKey("id"))
+                    .map(siblingMap -> siblingMap.getKeyValueByKey(ID))
                     .filter(Objects::nonNull)
                     .map(YAMLKeyValue::getValueText)
                     .filter(idValue::equals)
@@ -102,15 +106,16 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
         return "Action";
     }
 
+    @Override
     public YAMLValue getTypeProviderMap(@NotNull YAMLMapping mapping) {
-        return Optional.ofNullable(mapping.getKeyValueByKey("dynamicActionQuery"))
+        return Optional.ofNullable(mapping.getKeyValueByKey(DYNAMIC_ACTION_QUERY))
                 .map(YAMLKeyValue::getValue)
                 .orElse(null);
     }
 
     @Override
     public List<LocalVariable> getLocalVariables(YAMLMapping mapping) {
-        if (mapping.getKeyValueByKey("dynamicActionQuery") == null) {
+        if (mapping.getKeyValueByKey(DYNAMIC_ACTION_QUERY) == null) {
             return Collections.emptyList();
         }
         Set<OntResource> type = getType(mapping);

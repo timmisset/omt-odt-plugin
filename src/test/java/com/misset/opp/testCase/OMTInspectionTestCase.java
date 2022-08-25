@@ -84,16 +84,24 @@ public abstract class OMTInspectionTestCase extends OMTTestCase {
     }
 
     private List<HighlightInfo> getHighlighting(HighlightSeverity severity) {
-        return myFixture.doHighlighting().stream().filter(
+        return getHighlighting().stream().filter(
                 highlightInfo -> highlightInfo.getSeverity() == severity
         ).collect(Collectors.toList());
     }
 
     private String allHighlightingAsMessage() {
-        return myFixture.doHighlighting().stream()
+        return getHighlighting().stream()
                 .map(highlightInfo -> String.format(
                         "%s: %s", highlightInfo.getSeverity().myName, highlightInfo.getDescription()
                 )).collect(Collectors.joining("\n"));
+    }
+
+    private @NotNull List<HighlightInfo> getHighlighting() {
+        try {
+            return myFixture.doHighlighting();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Don't wrap highlight assertions in ReadAction.read locks");
+        }
     }
 
     protected @NotNull List<IntentionAction> getAllQuickFixes() {
