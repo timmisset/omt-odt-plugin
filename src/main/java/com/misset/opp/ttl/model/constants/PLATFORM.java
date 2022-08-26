@@ -7,6 +7,7 @@ package com.misset.opp.ttl.model.constants;
 public enum PLATFORM {
 
     // Fictional class to instantiate specific individuals IRI, ERROR and VOID
+    BLANK_NODE("BLANK_NODE"),
     CLASS("CLASS"),
     GRAPH("Graph"),
     GRAPH_SHAPE("GraphShape"),

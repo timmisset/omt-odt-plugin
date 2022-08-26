@@ -29,6 +29,7 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
                     int argumentIndexOf = newGraphCommand.getArgumentIndexOf(element);
                     if (argumentIndexOf == 0) {
                         addShapeCompletions(parameters, result);
+                        result.stopHere();
                     }
                 }
             }

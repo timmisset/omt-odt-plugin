@@ -25,7 +25,6 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvider, OMTDocumented, OMTLocalVariableTypeProvider {
-    private final boolean mapped;
     protected static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     protected static final String TITLE = "title";
     protected static final String DESCRIPTION = "description";
@@ -52,7 +51,7 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
         features.put("onSelect", OMTActionScriptMetaType::getInstance);
     }
 
-    private OMTActionMetaType() {
+    protected OMTActionMetaType() {
         super("Action");
     }
 

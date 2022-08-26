@@ -119,7 +119,7 @@ public class OppModelConstants {
         NAMED_GRAPH = model.createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
         MEDEWERKER_GRAPH = model.createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_MEDEWERKERGRAPH");
         TRANSIENT_GRAPH = model.createIndividual(TRANSIENT_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS.getURI() + "_INSTANCE");
-        BLANK_NODE = model.createIndividual(OPP_CLASS, OPP + "BLANK_NODE");
+        BLANK_NODE = model.createIndividual(OPP_CLASS, PLATFORM.BLANK_NODE.getUri());
     }
 
     private static void setClasses(OppModel model, OntModel ontologyModel) {

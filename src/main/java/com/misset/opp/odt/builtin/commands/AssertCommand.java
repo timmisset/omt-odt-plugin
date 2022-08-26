@@ -5,9 +5,13 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class AssertCommand extends BuiltInCommand {
+
+    public static final List<String> PARAMETER_NAMES = List.of("assertion");
+
     private AssertCommand() {
     }
 
@@ -21,6 +25,11 @@ public class AssertCommand extends BuiltInCommand {
     @Override
     public int minNumberOfArguments() {
         return 1;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 
     @Override

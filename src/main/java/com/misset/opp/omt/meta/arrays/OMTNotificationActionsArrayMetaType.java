@@ -4,7 +4,13 @@ import com.misset.opp.omt.meta.actions.OMTNotificationActionMetaType;
 import org.jetbrains.yaml.meta.model.YamlArrayType;
 
 public class OMTNotificationActionsArrayMetaType extends YamlArrayType {
-    public OMTNotificationActionsArrayMetaType() {
-        super(new OMTNotificationActionMetaType(false));
+    private static final OMTNotificationActionsArrayMetaType INSTANCE = new OMTNotificationActionsArrayMetaType();
+
+    private OMTNotificationActionsArrayMetaType() {
+        super(new OMTNotificationActionMetaType());
+    }
+
+    public static OMTNotificationActionsArrayMetaType getInstance() {
+        return INSTANCE;
     }
 }

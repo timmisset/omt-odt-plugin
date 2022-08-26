@@ -22,13 +22,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OMTImportedMemberRefMetaType extends YamlStringType {
-    private static final OMTExportMemberMetaType INSTANCE = new OMTExportMemberMetaType();
+    private static final OMTImportedMemberRefMetaType INSTANCE = new OMTImportedMemberRefMetaType();
 
-    public static OMTExportMemberMetaType getInstance() {
-        return INSTANCE;
+    private OMTImportedMemberRefMetaType() {
     }
 
-    private OMTExportMemberMetaType() {
+    public static OMTImportedMemberRefMetaType getInstance() {
+        return INSTANCE;
     }
 
     @Override

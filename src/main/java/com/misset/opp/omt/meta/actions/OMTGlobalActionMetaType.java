@@ -24,10 +24,10 @@ public class OMTGlobalActionMetaType extends OMTMetaType implements OMTDocumente
     static {
         features.put("notifications", OMTNotificationActionsArrayMetaType::getInstance);
         features.put("bottomNavigation", OMTActionsArrayMetaType::getInstance);
-        features.put("dashboard", OMTActionsArrayMetaType::new);
+        features.put("dashboard", OMTActionsArrayMetaType::getInstance);
         features.put("dashboardActions", OMTActionsArrayMetaType::getInstance);
         features.put("dossier", OMTDossierActionsArrayMetaType::getInstance);
-        features.put("fixed", OMTActionsArrayMetaType::new);
+        features.put("fixed", OMTActionsArrayMetaType::getInstance);
         features.put("bestandstatus", OMTActionsArrayMetaType::getInstance);
         features.put("entitybar", OMTEntityBarActionsArrayMetaType::getInstance);
     }

@@ -13,13 +13,13 @@ public class OMTNotificationActionMetaType extends OMTActionMetaType implements 
     private static final Set<String> REQUIRED = Set.of(TITLE, DESCRIPTION);
 
     static {
-        features.put("onMarkAsRead", OMTActionScriptMetaType::new);
-        features.put("onDelete", OMTActionScriptMetaType::new);
+        features.put("onMarkAsRead", OMTActionScriptMetaType::getInstance);
+        features.put("onDelete", OMTActionScriptMetaType::getInstance);
         features.putAll(OMTActionMetaType.features);
     }
 
-    public OMTNotificationActionMetaType(boolean mapped) {
-        super(mapped);
+    public OMTNotificationActionMetaType() {
+        super();
     }
 
     @Override
