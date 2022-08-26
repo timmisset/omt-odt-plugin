@@ -23,4 +23,6 @@ public interface ODTVariableDelegate {
     Variable getDeclared();
 
     void delete();
+
+    String getSource();
 }

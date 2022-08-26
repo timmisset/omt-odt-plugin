@@ -237,4 +237,14 @@ public abstract class ODTBaseVariable
     public @Nullable PsiElement getNameIdentifier() {
         return this;
     }
+
+    @Override
+    public String getSource() {
+        return delegate.getSource();
+    }
+
+    @Override
+    public Scope getScope() {
+        return Scope.LOCAL;
+    }
 }

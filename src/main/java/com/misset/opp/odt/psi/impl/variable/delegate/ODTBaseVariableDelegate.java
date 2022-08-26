@@ -61,4 +61,8 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
 
     }
 
+    @Override
+    public String getSource() {
+        return "ODT variable";
+    }
 }

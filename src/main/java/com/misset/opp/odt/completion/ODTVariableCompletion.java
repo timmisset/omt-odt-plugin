@@ -1,6 +1,7 @@
 package com.misset.opp.odt.completion;
 
 import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -86,7 +87,6 @@ public class ODTVariableCompletion extends CompletionContributor {
         variables.stream()
                 .filter(variable -> typeFilter.test(variable.resolve()))
                 .map(this::getLookupElement)
-                .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, CompletionPatterns.COMPLETION_PRIORITY.Variable.getValue()))
                 .forEach(result::addElement);
     }
 
@@ -139,12 +139,18 @@ public class ODTVariableCompletion extends CompletionContributor {
                 .collect(Collectors.toList());
     }
 
-    private @NotNull LookupElementBuilder getLookupElement(Variable variable) {
-        return LookupElementBuilder.create(variable.getName())
+    private @NotNull LookupElement getLookupElement(Variable variable) {
+        LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(variable.getName())
                 .withLookupString(variable.getName().substring(1))
                 .withLookupString(variable.getName().substring(1).toLowerCase())
+                .withTailText("  " + variable.getSource(), true)
                 .withIcon(variable.isParameter() ? PlatformIcons.PARAMETER_ICON : PlatformIcons.VARIABLE_ICON)
                 .withTypeText(TTLResourceUtil.describeUrisForLookupJoined(variable.resolve()));
+
+        double priority = variable.getScope() == Variable.Scope.GLOBAL ?
+                CompletionPatterns.COMPLETION_PRIORITY.VariableGlobal.getValue() :
+                CompletionPatterns.COMPLETION_PRIORITY.VariableLocal.getValue();
+        return PrioritizedLookupElement.withPriority(lookupElementBuilder, priority);
     }
 
 }

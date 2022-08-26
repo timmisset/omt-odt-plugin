@@ -37,6 +37,7 @@ public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements
         OMTVariable,
         OMTYamlDelegate,
         SupportsSafeDelete {
+    public static final String VARIABLE = "variable";
     YAMLPlainTextImpl value;
 
     public OMTYamlVariableDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
@@ -111,13 +112,22 @@ public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements
         return ReferencesSearch.search(value, value.getUseScope()).findFirst() == null;
     }
 
-
     @Override
     public void delete() throws IncorrectOperationException {
         removeFromSequence(value);
     }
 
     public String getType() {
-        return "variable";
+        return VARIABLE;
+    }
+
+    @Override
+    public String getSource() {
+        return "OMT variable";
+    }
+
+    @Override
+    public Scope getScope() {
+        return Scope.LOCAL;
     }
 }

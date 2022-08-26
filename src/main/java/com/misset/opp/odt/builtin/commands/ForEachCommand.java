@@ -13,6 +13,7 @@ import java.util.Set;
 public class ForEachCommand extends BuiltInCommand implements CallableLocalVariableTypeProvider {
 
     private static final List<String> PARAMETER_NAMES = List.of("collection", "command");
+    private static final String FOR_EACH_VARIABLE = "ForEach variable";
 
     private ForEachCommand() {
     }
@@ -39,9 +40,9 @@ public class ForEachCommand extends BuiltInCommand implements CallableLocalVaria
             return Collections.emptyList();
         }
         return List.of(
-                new LocalVariable("$value", "iterator value", call.resolveSignatureArgument(0)),
-                new LocalVariable("$index", "iterator index", Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)),
-                new LocalVariable("$array", "all input values", call.resolveSignatureArgument(0))
+                new LocalVariable("$value", "iterator value", call.resolveSignatureArgument(0), FOR_EACH_VARIABLE),
+                new LocalVariable("$index", "iterator index", Set.of(OppModelConstants.XSD_INTEGER_INSTANCE), FOR_EACH_VARIABLE),
+                new LocalVariable("$array", "all input values", call.resolveSignatureArgument(0), FOR_EACH_VARIABLE)
         );
     }
 

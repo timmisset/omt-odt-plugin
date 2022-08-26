@@ -10,13 +10,16 @@ public class LocalVariable implements Variable {
     private final String name;
     private final String description;
     private final Set<OntResource> type;
+    private final String source;
 
     public LocalVariable(String name,
                          String description,
-                         Set<OntResource> type) {
+                         Set<OntResource> type,
+                         String source) {
         this.name = name;
         this.description = description;
         this.type = type;
+        this.source = source;
     }
 
     @Override
@@ -37,5 +40,15 @@ public class LocalVariable implements Variable {
     @Override
     public boolean isReadonly() {
         return true;
+    }
+
+    @Override
+    public String getSource() {
+        return source;
+    }
+
+    @Override
+    public Scope getScope() {
+        return Scope.LOCAL;
     }
 }

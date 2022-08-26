@@ -114,4 +114,9 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
                 .orElse(Collections.emptyList());
         return parameters.indexOf(element);
     }
+
+    @Override
+    public String getSource() {
+        return "ODT parameter";
+    }
 }

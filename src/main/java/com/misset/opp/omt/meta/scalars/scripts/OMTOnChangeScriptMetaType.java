@@ -9,6 +9,8 @@ public class OMTOnChangeScriptMetaType extends OMTLocalVariableProviderMetaType 
 
     private static final OMTOnChangeScriptMetaType INSTANCE = new OMTOnChangeScriptMetaType();
 
+    public static final String ONCHANGE_VARIABLE = "OnChange variable";
+
     public static OMTOnChangeScriptMetaType getInstance() {
         return INSTANCE;
     }

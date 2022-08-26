@@ -12,6 +12,7 @@ import java.util.Set;
 public class MapCommand extends BuiltInCommand implements CallableLocalVariableTypeProvider {
 
     private static final List<String> PARAMETER_NAMES = List.of("collection", "command");
+    private static final String MAP_VARIABLE = "Map variable";
 
     private MapCommand() {
     }
@@ -39,9 +40,9 @@ public class MapCommand extends BuiltInCommand implements CallableLocalVariableT
             return Collections.emptyList();
         }
         return List.of(
-                new LocalVariable("$value", "iterator value", call.resolveSignatureArgument(0)),
-                new LocalVariable("$index", "iterator index", call.resolveSignatureArgument(0)),
-                new LocalVariable("$array", "all input values", call.resolveSignatureArgument(0))
+                new LocalVariable("$value", "iterator value", call.resolveSignatureArgument(0), MAP_VARIABLE),
+                new LocalVariable("$index", "iterator index", call.resolveSignatureArgument(0), MAP_VARIABLE),
+                new LocalVariable("$array", "all input values", call.resolveSignatureArgument(0), MAP_VARIABLE)
         );
     }
 

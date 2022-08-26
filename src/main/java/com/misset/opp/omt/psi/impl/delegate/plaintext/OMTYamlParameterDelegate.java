@@ -91,4 +91,9 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
     public String getType() {
         return "parameter";
     }
+
+    @Override
+    public String getSource() {
+        return "OMT parameter";
+    }
 }

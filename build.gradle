@@ -60,7 +60,8 @@ patchPluginXml {
 
     changeNotes = """
         <h1>Update 5.26</h1>
-        See <a href="https://github.com/timmisset/omt-odt-plugin/milestone/12?closed=1">milestone 5.26</a> for all items in this release
+        See <a href="https://github.com/timmisset/omt-odt-plugin/milestone/12?closed=1">milestone 5.26</a> for all items in this release.<br>
+        For some reason the <a href="https://github.com/timmisset/omt-odt-plugin/milestone/3?closed=1">milestone 5.19</a> was never merged into master, this is now also done.
         """
 }
 tasks {

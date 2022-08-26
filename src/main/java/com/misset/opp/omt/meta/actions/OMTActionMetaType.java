@@ -124,7 +124,7 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
         }
         Set<OntResource> type = getType(mapping);
         return List.of(
-                new LocalVariable("$value", "Individual result of the DynamicActionQuery", type)
+                new LocalVariable("$value", "Individual result of the DynamicActionQuery", type, "DynamicActionQuery variable")
         );
     }
 }

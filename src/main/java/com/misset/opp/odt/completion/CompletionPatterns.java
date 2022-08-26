@@ -21,7 +21,8 @@ public interface CompletionPatterns {
 
     enum COMPLETION_PRIORITY {
         Callable(0),
-        Variable(1),
+        VariableLocal(1),
+        VariableGlobal(0),
         Traverse(2),
         RootElement(3);
 

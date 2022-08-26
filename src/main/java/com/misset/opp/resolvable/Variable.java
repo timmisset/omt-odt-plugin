@@ -6,6 +6,12 @@ package com.misset.opp.resolvable;
  */
 public interface Variable extends Resolvable {
 
+    /**
+     * Returns the source where this variable was declared
+     * For example, 'ODT Script', 'Global', 'from Command ...' etc
+     */
+    String getSource();
+
     String getName();
 
     String getDescription();
@@ -20,6 +26,12 @@ public interface Variable extends Resolvable {
 
     default boolean isGlobal() {
         return false;
+    }
+
+    Scope getScope();
+
+    enum Scope {
+        GLOBAL, LOCAL
     }
 
 }

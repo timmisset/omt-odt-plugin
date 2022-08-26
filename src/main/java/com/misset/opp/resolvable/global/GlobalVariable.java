@@ -23,6 +23,16 @@ public abstract class GlobalVariable implements Variable {
         return true;
     }
 
+    @Override
+    public String getSource() {
+        return "Global";
+    }
+
+    @Override
+    public Scope getScope() {
+        return Scope.GLOBAL;
+    }
+
     private static final GlobalVariable MEDEWERKER_GRAPH = new GlobalVariable() {
         @Override
         public String getName() {
