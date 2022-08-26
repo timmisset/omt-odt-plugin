@@ -9,22 +9,40 @@ public enum InjectableContentType {
     /**
      * The Injectable position is dedicated for Query entries
      */
-    Query,
+    QueryBlock(),
     /**
      * The Injected position is dedicated for Command entries
      */
-    Command,
+    CommandBlock(),
 
     /**
      * Position that expects a query that returns a graphShape
      */
-    GraphShapeQuery,
+    GraphShapeQuery(true),
 
     /**
      * Position that expects a query that returns a boolean
      */
-    Boolean,
+    BooleanQuery(true),
 
-    None
+    /**
+     * Position that expects a query
+     */
+    Query(true),
+
+    None();
+    private final boolean isQueryStatement;
+
+    InjectableContentType(boolean isQueryStatement) {
+        this.isQueryStatement = isQueryStatement;
+    }
+
+    InjectableContentType() {
+        this.isQueryStatement = false;
+    }
+
+    public boolean isQueryStatement() {
+        return this.isQueryStatement;
+    }
 
 }

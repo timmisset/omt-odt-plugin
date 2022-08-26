@@ -32,23 +32,28 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
     private static final String DYNAMIC_ACTION_QUERY = "dynamicActionQuery";
     private static final String ID = "id";
 
-    static {
-        features.put(ID, YamlStringType::new);
-        features.put(TITLE, OMTInterpolatedStringMetaType::new);
-        features.put(DESCRIPTION, OMTInterpolatedStringMetaType::new);
-        features.put("promoteSubMenuItemToMainMenu", OMTBooleanQueryType::new);
-        features.put("icon", YamlStringType::new);
-        features.put("params", OMTParamsArrayMetaType::new);
-        features.put("precondition", OMTQueryMetaType::new);
-        features.put("disabled", OMTBooleanQueryType::new);
-        features.put("busyDisabled", OMTBooleanQueryType::new);
-        features.put(DYNAMIC_ACTION_QUERY, OMTQueryMetaType::new);
-        features.put("onSelect", OMTActionScriptMetaType::new);
+    private static final OMTActionMetaType INSTANCE = new OMTActionMetaType();
+
+    public static OMTActionMetaType getInstance() {
+        return INSTANCE;
     }
 
-    public OMTActionMetaType(boolean mapped) {
+    static {
+        features.put(ID, YamlStringType::getInstance);
+        features.put(TITLE, OMTInterpolatedStringMetaType::getInstance);
+        features.put(DESCRIPTION, OMTInterpolatedStringMetaType::getInstance);
+        features.put("promoteSubMenuItemToMainMenu", OMTBooleanQueryType::getInstance);
+        features.put("icon", YamlStringType::getInstance);
+        features.put("params", OMTParamsArrayMetaType::getInstance);
+        features.put("precondition", OMTQueryMetaType::getInstance);
+        features.put("disabled", OMTBooleanQueryType::getInstance);
+        features.put("busyDisabled", OMTBooleanQueryType::getInstance);
+        features.put(DYNAMIC_ACTION_QUERY, OMTQueryMetaType::getInstance);
+        features.put("onSelect", OMTActionScriptMetaType::getInstance);
+    }
+
+    private OMTActionMetaType() {
         super("Action");
-        this.mapped = mapped;
     }
 
     @Override
@@ -74,7 +79,7 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
         if (id == null) {
             return;
         }
-
+        boolean mapped = value.getParent() instanceof YAMLKeyValue;
         if (mapped) {
             problemsHolder.registerProblem(id,
                     "Unnecessary id field when action is mapped to a key",

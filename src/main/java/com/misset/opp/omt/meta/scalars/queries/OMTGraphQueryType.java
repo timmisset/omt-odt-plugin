@@ -11,6 +11,14 @@ import java.util.Optional;
 import java.util.Set;
 
 public class OMTGraphQueryType extends OMTQueryMetaType {
+    private static final OMTGraphQueryType INSTANCE = new OMTGraphQueryType();
+
+    public static OMTGraphQueryType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTGraphQueryType() {
+    }
 
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,

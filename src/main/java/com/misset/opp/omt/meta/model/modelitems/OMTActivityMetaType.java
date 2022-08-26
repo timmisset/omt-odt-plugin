@@ -49,28 +49,34 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
         super("OMT Activity");
     }
 
+    private static final OMTActivityMetaType INSTANCE = new OMTActivityMetaType();
+
+    public static OMTActivityMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("title", OMTInterpolatedStringMetaType::new);
-        features.put("onDefaultClose", OMTInterpolatedStringMetaType::new);
-        features.put("params", OMTParamsArrayMetaType::new);
-        features.put("variables", OMTVariablesArrayMetaType::new);
-        features.put("handlers", OMTHandlersArrayMetaType::new);
-        features.put("graphs", OMTGraphSelectionMetaType::new);
-        features.put("watchers", OMTWatchersArrayMetaType::new);
-        features.put("rules", OMTRulesMetaType::new);
-        features.put("prefixes", OMTPrefixesMetaType::new);
-        features.put("queries", OMTQueriesMetaType::new);
-        features.put("commands", OMTCommandsMetaType::new);
-        features.put("onStart", OMTScriptMetaType::new);
-        features.put("onCommit", OMTScriptMetaType::new);
-        features.put("onCancel", OMTScriptMetaType::new);
-        features.put("onDone", OMTScriptMetaType::new);
-        features.put("returns", OMTQueryMetaType::new);
-        features.put("actions", OMTActionsMapMetaType::new);
-        features.put("reason", OMTReasonMetaType::new);
-        features.put("payload", OMTPayloadMetaType::new);
+        features.put("title", OMTInterpolatedStringMetaType::getInstance);
+        features.put("onDefaultClose", OMTInterpolatedStringMetaType::getInstance);
+        features.put("params", OMTParamsArrayMetaType::getInstance);
+        features.put("variables", OMTVariablesArrayMetaType::getInstance);
+        features.put("handlers", OMTHandlersArrayMetaType::getInstance);
+        features.put("graphs", OMTGraphSelectionMetaType::getInstance);
+        features.put("watchers", OMTWatchersArrayMetaType::getInstance);
+        features.put("rules", OMTRulesMetaType::getInstance);
+        features.put("prefixes", OMTPrefixesMetaType::getInstance);
+        features.put("queries", OMTQueriesMetaType::getInstance);
+        features.put("commands", OMTCommandsMetaType::getInstance);
+        features.put("onStart", OMTScriptMetaType::getInstance);
+        features.put("onCommit", OMTScriptMetaType::getInstance);
+        features.put("onCancel", OMTScriptMetaType::getInstance);
+        features.put("onDone", OMTScriptMetaType::getInstance);
+        features.put("returns", OMTQueryMetaType::getInstance);
+        features.put("actions", OMTActionsMapMetaType::getInstance);
+        features.put("reason", OMTReasonMetaType::getInstance);
+        features.put("payload", OMTPayloadMetaType::getInstance);
     }
 
     @Override

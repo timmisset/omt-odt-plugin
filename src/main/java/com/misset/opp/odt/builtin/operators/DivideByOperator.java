@@ -6,6 +6,7 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class DivideByOperator extends BuiltInOperator {
@@ -13,6 +14,7 @@ public class DivideByOperator extends BuiltInOperator {
     }
 
     public static final DivideByOperator INSTANCE = new DivideByOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("dividend", "divisor");
 
     @Override
     public String getName() {
@@ -46,5 +48,10 @@ public class DivideByOperator extends BuiltInOperator {
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

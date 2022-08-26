@@ -8,6 +8,7 @@ import java.util.List;
 public class DistinctOperator extends BuiltInCollectionOperator {
     private DistinctOperator() { }
     public static final DistinctOperator INSTANCE = new DistinctOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("by");
 
     @Override
     public String getName() {
@@ -32,5 +33,10 @@ public class DistinctOperator extends BuiltInCollectionOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         validateIgnoreCaseFlagUsage(1, call, holder);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

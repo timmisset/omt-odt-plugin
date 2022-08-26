@@ -6,6 +6,7 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class SomeOperator extends BuiltInBooleanOperator {
@@ -13,6 +14,7 @@ public class SomeOperator extends BuiltInBooleanOperator {
     }
 
     public static final SomeOperator INSTANCE = new SomeOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("predicate");
 
     @Override
     public String getName() {
@@ -49,5 +51,10 @@ public class SomeOperator extends BuiltInBooleanOperator {
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

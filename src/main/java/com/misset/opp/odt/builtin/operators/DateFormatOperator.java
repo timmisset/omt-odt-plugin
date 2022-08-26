@@ -6,12 +6,14 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class DateFormatOperator extends BuiltInStringOperator {
     private DateFormatOperator() { }
-    public static final DateFormatOperator INSTANCE = new DateFormatOperator();
 
+    public static final DateFormatOperator INSTANCE = new DateFormatOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("format");
     @Override
     public String getName() {
         // that's correct, the classname and function call in this ODT operator are different
@@ -35,5 +37,10 @@ public class DateFormatOperator extends BuiltInStringOperator {
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_DATETIME_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

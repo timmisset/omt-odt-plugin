@@ -5,11 +5,14 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class PickOperator extends BuiltInCollectionOperator {
     private PickOperator() { }
+
     public static final PickOperator INSTANCE = new PickOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("indices");
 
     @Override
     public String getName() {
@@ -32,5 +35,10 @@ public class PickOperator extends BuiltInCollectionOperator {
             return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

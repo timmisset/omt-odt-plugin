@@ -6,8 +6,15 @@ import org.jetbrains.yaml.psi.YAMLPsiElement;
 import java.util.List;
 
 public class OMTOnChangeScriptMetaType extends OMTLocalVariableProviderMetaType {
-    public OMTOnChangeScriptMetaType() {
-        super("Script, triggers when the value changes");
+
+    private static final OMTOnChangeScriptMetaType INSTANCE = new OMTOnChangeScriptMetaType();
+
+    public static OMTOnChangeScriptMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTOnChangeScriptMetaType() {
+        super();
     }
 
     @Override

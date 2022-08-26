@@ -20,13 +20,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OMTDeclareMetaType extends OMTMetaMapType {
-    public OMTDeclareMetaType() {
+
+    private static final OMTDeclareMetaType INSTANCE = new OMTDeclareMetaType();
+
+    public static OMTDeclareMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTDeclareMetaType() {
         super("Declare");
     }
 
     @Override
     protected YamlMetaType getMapEntryType(String name) {
-        return new OMTDeclaredModuleMetaType(name);
+        return OMTDeclaredModuleMetaType.getInstance();
     }
 
     @Override
@@ -45,7 +52,7 @@ public class OMTDeclareMetaType extends OMTMetaMapType {
                 .filter(psiFile -> psiFile != null && psiFile != completionParameters.getOriginalFile())
                 .map(OMTFile.class::cast)
                 .map(OMTFile::getModuleName)
-                .map(s -> new Field(s, new OMTDeclaredModuleMetaType(s)))
+                .map(s -> new Field(s, OMTDeclaredModuleMetaType.getInstance()))
                 .collect(Collectors.toList());
     }
 }

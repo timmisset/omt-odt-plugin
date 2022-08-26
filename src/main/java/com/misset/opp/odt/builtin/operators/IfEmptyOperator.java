@@ -6,11 +6,14 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class IfEmptyOperator extends BuiltInOperator {
     private IfEmptyOperator() { }
+
     public static final IfEmptyOperator INSTANCE = new IfEmptyOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("alternative");
 
     @Override
     public String getName() {
@@ -40,5 +43,10 @@ public class IfEmptyOperator extends BuiltInOperator {
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         return call.resolvePreviousStep();
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

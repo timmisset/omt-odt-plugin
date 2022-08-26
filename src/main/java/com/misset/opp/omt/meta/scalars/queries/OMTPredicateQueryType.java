@@ -9,6 +9,14 @@ import org.jetbrains.yaml.psi.YAMLScalar;
 import java.util.Set;
 
 public class OMTPredicateQueryType extends OMTQueryMetaType {
+    private static final OMTPredicateQueryType INSTANCE = new OMTPredicateQueryType();
+
+    public static OMTPredicateQueryType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTPredicateQueryType() {
+    }
 
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,

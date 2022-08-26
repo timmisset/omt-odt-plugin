@@ -9,14 +9,12 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class JsonParseCommand extends BuiltInCommand {
 
     protected static final String DESCRIPTION = "Parse a JSON object to an Ontology class";
+    private static final List<String> PARAMETER_NAMES = List.of("json", "class", "namedGraph");
 
     private JsonParseCommand() {
     }
@@ -76,5 +74,10 @@ public class JsonParseCommand extends BuiltInCommand {
             return Set.of(OppModelConstants.NAMED_GRAPH);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

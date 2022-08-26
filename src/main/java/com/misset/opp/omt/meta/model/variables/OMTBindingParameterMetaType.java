@@ -14,19 +14,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OMTBindingParameterMetaType extends OMTMetaShorthandType implements OMTNamedVariableMetaType {
+
+    private static final OMTBindingParameterMetaType INSTANCE = new OMTBindingParameterMetaType();
+
+    public static OMTBindingParameterMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final Pattern SHORTHAND = Pattern.compile("^\\s*(\\$\\w+)\\s*(?:\\(\\s*(sync|input|output)\\s*\\))?$");
     protected static final String SYNTAX_ERROR = "Invalid syntax for parameter shorthand, use: '$name (sync|input|output)' OR $name'";
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("bindTo", OMTVariableNameMetaType::new);
+        features.put("bindTo", OMTVariableNameMetaType::getInstance);
         features.put("input", YamlBooleanType::getSharedInstance);
         features.put("output", YamlBooleanType::getSharedInstance);
-        features.put("onChange", OMTScriptMetaType::new);
+        features.put("onChange", OMTScriptMetaType::getInstance);
     }
 
-    public OMTBindingParameterMetaType() {
+    private OMTBindingParameterMetaType() {
         super("OMT Bindings");
     }
 

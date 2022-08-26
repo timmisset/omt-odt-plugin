@@ -18,13 +18,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OMTDeclaredModuleMetaType extends OMTMetaMapType {
-    protected OMTDeclaredModuleMetaType(@NotNull String name) {
-        super(name);
+    private static final OMTDeclaredModuleMetaType INSTANCE = new OMTDeclaredModuleMetaType();
+
+    public static OMTDeclaredModuleMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTDeclaredModuleMetaType() {
+        super("module");
     }
 
     @Override
     protected YamlMetaType getMapEntryType(String name) {
-        return new OMTDeclaredInterfaceMetaType();
+        return OMTDeclaredInterfaceMetaType.getInstance();
     }
 
     @Override
@@ -37,7 +43,7 @@ public class OMTDeclaredModuleMetaType extends OMTMetaMapType {
                 .map(OMTModuleUtil::getExportedMemberNames)
                 .stream()
                 .flatMap(Collection::stream)
-                .map(s -> new Field(s, new OMTDeclaredModuleMetaType(s)))
+                .map(s -> new Field(s, OMTDeclaredModuleMetaType.getInstance()))
                 .collect(Collectors.toList());
     }
 }

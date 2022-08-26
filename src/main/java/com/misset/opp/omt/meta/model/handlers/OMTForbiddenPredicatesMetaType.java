@@ -11,17 +11,22 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OMTForbiddenPredicatesMetaType extends OMTMetaType implements OMTDocumented {
+    private static final OMTForbiddenPredicatesMetaType INSTANCE = new OMTForbiddenPredicatesMetaType();
+
+    public static OMTForbiddenPredicatesMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final Set<String> requiredFeatures = Set.of("context", "predicates");
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("context", OMTHandlersContextMetaType::new);
-        features.put("predicates", OMTPredicateQueryType::new);
+        features.put("context", OMTHandlersContextMetaType::getInstance);
+        features.put("predicates", OMTPredicateQueryType::getInstance);
     }
 
-
-    protected OMTForbiddenPredicatesMetaType() {
+    private OMTForbiddenPredicatesMetaType() {
         super("OMT ForbiddenPredicates");
     }
 

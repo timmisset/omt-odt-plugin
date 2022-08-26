@@ -18,7 +18,7 @@ class OMTGraphShapeHandlerMetaTypeTest extends OMTCompletionTestCase {
                 "\n";
         configureByText(content);
         final List<String> completionList = getLookupStrings();
-        new OMTGraphShapeHandlerMetaType().getFeatures()
+        OMTGraphShapeHandlerMetaType.getInstance().getFeatures()
                 .keySet()
                 .stream()
                 .filter(s -> !s.equals("id"))

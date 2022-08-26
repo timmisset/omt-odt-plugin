@@ -13,10 +13,16 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public class OMTImportPathMetaType extends OMTSortedArrayMetaType {
-    public OMTImportPathMetaType() {
-        super(new OMTImportMemberMetaType());
+
+    private static final OMTImportPathMetaType INSTANCE = new OMTImportPathMetaType();
+
+    public static OMTImportPathMetaType getInstance() {
+        return INSTANCE;
     }
 
+    private OMTImportPathMetaType() {
+        super(OMTImportMemberMetaType.getInstance());
+    }
 
     @Override
     public void validateKey(@NotNull YAMLKeyValue keyValue,
@@ -26,7 +32,7 @@ public class OMTImportPathMetaType extends OMTSortedArrayMetaType {
         }
         // validate that the key can be resolved to file:
         // resolve to the virtual file instead of the Psi to prevent the file from being loaded without cause
-        final boolean resolvable = Optional.ofNullable(OMTImportMetaType.resolveToPath(keyValue))
+        final boolean resolvable = Optional.ofNullable(OMTImportMetaType.getInstance().resolveToPath(keyValue))
                 .filter(s -> !s.startsWith("temp:///")) // <-- unittests use a fictitious path that is not valid for Path
                 .map(Path::of)
                 .map(VirtualFileManager.getInstance()::findFileByNioPath)

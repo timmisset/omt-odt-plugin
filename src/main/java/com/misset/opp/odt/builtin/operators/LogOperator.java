@@ -16,7 +16,7 @@ public class LogOperator extends BuiltInCollectionOperator {
 
     @Override
     public int maxNumberOfArguments() {
-        return 1;
+        return 0;
     }
 
 }

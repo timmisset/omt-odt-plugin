@@ -22,16 +22,22 @@ import java.util.function.Supplier;
 public class OMTGraphShapeHandlerMetaType extends OMTParameterizedModelItemMetaType implements
         OMTMetaCallable,
         OMTDocumented {
-    protected OMTGraphShapeHandlerMetaType() {
+    private static final OMTGraphShapeHandlerMetaType INSTANCE = new OMTGraphShapeHandlerMetaType();
+
+    public static OMTGraphShapeHandlerMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTGraphShapeHandlerMetaType() {
         super("OMT GraphShape Handler");
     }
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("id", YamlStringType::new);
-        features.put("shape", OMTShapeQueryType::new);
-        features.put("handlers", OMTHandlersArrayMetaType::new);
+        features.put("id", YamlStringType::getInstance);
+        features.put("shape", OMTShapeQueryType::getInstance);
+        features.put("handlers", OMTHandlersArrayMetaType::getInstance);
     }
 
     @Override

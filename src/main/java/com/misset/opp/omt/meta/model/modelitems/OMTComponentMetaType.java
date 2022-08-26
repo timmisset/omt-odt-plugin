@@ -35,25 +35,32 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
         OMTCallableProvider,
         OMTPrefixProvider,
         OMTDocumented {
-    protected OMTComponentMetaType() {
+
+    private static final OMTComponentMetaType INSTANCE = new OMTComponentMetaType();
+
+    public static OMTComponentMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTComponentMetaType() {
         super("OMT Component");
     }
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("title", OMTInterpolatedStringMetaType::new);
-        features.put("bindings", OMTBindingMetaType::new);
-        features.put("variables", OMTVariablesArrayMetaType::new);
-        features.put("graphs", OMTGraphSelectionMetaType::new);
-        features.put("watchers", OMTWatchersArrayMetaType::new);
-        features.put("prefixes", OMTPrefixesMetaType::new);
-        features.put("queries", OMTQueriesMetaType::new);
-        features.put("commands", OMTCommandsMetaType::new);
-        features.put("onInit", OMTScriptMetaType::new);
-        features.put("actions", OMTActionsMapMetaType::new);
-        features.put("payload", OMTPayloadMetaType::new);
-        features.put("rules", OMTRulesMetaType::new);
+        features.put("title", OMTInterpolatedStringMetaType::getInstance);
+        features.put("bindings", OMTBindingMetaType::getInstance);
+        features.put("variables", OMTVariablesArrayMetaType::getInstance);
+        features.put("graphs", OMTGraphSelectionMetaType::getInstance);
+        features.put("watchers", OMTWatchersArrayMetaType::getInstance);
+        features.put("prefixes", OMTPrefixesMetaType::getInstance);
+        features.put("queries", OMTQueriesMetaType::getInstance);
+        features.put("commands", OMTCommandsMetaType::getInstance);
+        features.put("onInit", OMTScriptMetaType::getInstance);
+        features.put("actions", OMTActionsMapMetaType::getInstance);
+        features.put("payload", OMTPayloadMetaType::getInstance);
+        features.put("rules", OMTRulesMetaType::getInstance);
     }
 
     @Override

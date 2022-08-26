@@ -7,12 +7,14 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class RoundOperator extends BuiltInOperator {
 
     protected static final String UNNECESSARY_DECIMAL_PLACES_VALUE = "Unnecessary decimalPlaces value";
     protected static final String INPUT_IS_ALREADY_AN_INTEGER = "Input is already an integer";
+    private static final List<String> PARAMETER_NAMES = List.of("decimalPlaces");
 
     private RoundOperator() {
     }
@@ -76,5 +78,10 @@ public class RoundOperator extends BuiltInOperator {
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

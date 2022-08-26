@@ -42,11 +42,11 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
                 .orElse("an-omt-file");
         final YamlMetaType root;
         if (OMTFile.isModuleFileName(title)) {
-            root = new OMTModuleFileType(title);
+            root = OMTModuleFileType.getInstance();
         } else if (OMTFile.isInterfaceFileName(title)) {
-            root = new OMTInterfaceFileType(title);
+            root = OMTInterfaceFileType.getInstance();
         } else {
-            root = new OMTFileMetaType(title);
+            root = OMTFileMetaType.getInstance();
         }
         return new Field(title, root);
     };

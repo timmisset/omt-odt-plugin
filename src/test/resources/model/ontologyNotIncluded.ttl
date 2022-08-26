@@ -3,11 +3,12 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://ontology/ontologyC>
+# This ontology is not imported and should not be included in the OPPModelTest
+<http://ontology/ClassNotIncluded>
   a owl:Ontology ;
   owl:versionInfo "Created manually" ;
 .
-ont:ClassC
+ont:ClassNotIncluded
   a owl:Class ;
   a sh:NodeShape ;
   sh:property [
@@ -16,11 +17,4 @@ ont:ClassC
       sh:datatype xsd:string ;
       sh:maxCount 1 ;
     ] ;
-
-    sh:property [
-          a sh:PropertyShape ;
-          sh:path ont:oneOrMore ;
-          sh:datatype xsd:string ;
-          sh:minCount 1 ;
-        ] ;
 .

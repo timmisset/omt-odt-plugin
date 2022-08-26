@@ -17,16 +17,22 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OMTMergeListsMetaType extends OMTMergeMetaType implements OMTDocumented {
+    private static final OMTMergeListsMetaType INSTANCE = new OMTMergeListsMetaType();
+
+    public static OMTMergeListsMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final Set<String> requiredFeatures = Set.of("subjects");
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("subjects", OMTSubjectQueryType::new);
+        features.put("subjects", OMTSubjectQueryType::getInstance);
         features.put("anyPredicate", YamlBooleanType::getSharedInstance);
-        features.put("predicates", OMTPredicateQueryType::new);
-        features.put("when", OMTBooleanQueryType::new);
-        features.put("from", OMTHandlersFromMetaType::new);
+        features.put("predicates", OMTPredicateQueryType::getInstance);
+        features.put("when", OMTBooleanQueryType::getInstance);
+        features.put("from", OMTHandlersFromMetaType::getInstance);
     }
 
     @Override
@@ -37,7 +43,7 @@ public class OMTMergeListsMetaType extends OMTMergeMetaType implements OMTDocume
         }
     }
 
-    protected OMTMergeListsMetaType() {
+    private OMTMergeListsMetaType() {
         super("OMT MergePredicates");
     }
 

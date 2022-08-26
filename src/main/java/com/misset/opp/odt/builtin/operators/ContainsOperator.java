@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.Set;
 
 public class ContainsOperator extends BuiltInBooleanOperator {
-    private ContainsOperator() { }
+    private ContainsOperator() {
+    }
+
     public static final ContainsOperator INSTANCE = new ContainsOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("value");
 
     @Override
     public String getName() {
@@ -46,9 +49,13 @@ public class ContainsOperator extends BuiltInBooleanOperator {
         return null;
     }
 
-
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

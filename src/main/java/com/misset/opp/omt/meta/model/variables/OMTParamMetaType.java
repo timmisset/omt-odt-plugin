@@ -31,6 +31,11 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
         OMTOntologyTypeProvider,
         OMTNamedVariableMetaType,
         OMTDocumented {
+    private static final OMTParamMetaType INSTANCE = new OMTParamMetaType();
+
+    public static OMTParamMetaType getInstance() {
+        return INSTANCE;
+    }
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     /*
@@ -52,12 +57,11 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
     protected static final String SYNTAX_ERROR = "Invalid syntax for parameter shorthand, use: '$name (type)' OR '$name'";
 
     static {
-        features.put("name", OMTVariableNameMetaType::new);
-        features.put("type", OMTParamTypeType::new);
+        features.put("name", OMTVariableNameMetaType::getInstance);
+        features.put("type", OMTParamTypeType::getInstance);
     }
 
-
-    public OMTParamMetaType() {
+    private OMTParamMetaType() {
         super("OMT Parameter");
     }
 

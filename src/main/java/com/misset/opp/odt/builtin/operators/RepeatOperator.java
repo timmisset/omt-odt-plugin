@@ -6,11 +6,14 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class RepeatOperator extends BuiltInOperator {
     private RepeatOperator() { }
+
     public static final RepeatOperator INSTANCE = new RepeatOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("query", "skip", "take");
 
     @Override
     public String getName() {
@@ -39,12 +42,16 @@ public class RepeatOperator extends BuiltInOperator {
         validateNumberArgument(2, call, holder);
     }
 
-
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 1 || index == 2) {
             return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

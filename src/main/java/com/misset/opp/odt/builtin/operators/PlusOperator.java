@@ -5,11 +5,14 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class PlusOperator extends BuiltinMathOperator {
     private PlusOperator() { }
+
     public static final PlusOperator INSTANCE = new PlusOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("value", "addition");
 
     @Override
     public String getName() {
@@ -34,7 +37,6 @@ public class PlusOperator extends BuiltinMathOperator {
         validateAllArguments(call, holder, validator);
     }
 
-
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         return validInputs;
@@ -43,5 +45,10 @@ public class PlusOperator extends BuiltinMathOperator {
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return validInputs;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

@@ -13,13 +13,21 @@ import java.util.function.Supplier;
 public class OMTServiceMetaType extends OMTMetaType {
     private static final Set<String> requiredFeatures = Set.of("params", "prefixes");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+
     static {
-        features.put("params", OMTParamsArrayMetaType::new);
-        features.put("graphs", OMTGraphSelectionMetaType::new);
-        features.put("prefixes", OMTPrefixesMetaType::new);
-        features.put("onRequest", OMTScriptMetaType::new);
+        features.put("params", OMTParamsArrayMetaType::getInstance);
+        features.put("graphs", OMTGraphSelectionMetaType::getInstance);
+        features.put("prefixes", OMTPrefixesMetaType::getInstance);
+        features.put("onRequest", OMTScriptMetaType::getInstance);
     }
-    public OMTServiceMetaType() {
+
+    private static final OMTServiceMetaType INSTANCE = new OMTServiceMetaType();
+
+    public static OMTServiceMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTServiceMetaType() {
         super("OMT Service");
     }
 

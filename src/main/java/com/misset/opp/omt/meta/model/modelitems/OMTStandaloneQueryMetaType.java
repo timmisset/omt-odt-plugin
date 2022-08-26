@@ -31,18 +31,24 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
         OMTPrefixProvider,
         OMTMetaCallable,
         OMTDocumented {
-    protected OMTStandaloneQueryMetaType() {
+    private OMTStandaloneQueryMetaType() {
         super("OMT StandaloneQuery");
+    }
+
+    private static final OMTStandaloneQueryMetaType INSTANCE = new OMTStandaloneQueryMetaType();
+
+    public static OMTStandaloneQueryMetaType getInstance() {
+        return INSTANCE;
     }
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("base", OMTBaseParameterMetaType::new);
-        features.put("params", OMTParamsArrayMetaType::new);
-        features.put("graphs", OMTGraphSelectionMetaType::new);
-        features.put("prefixes", OMTPrefixesMetaType::new);
-        features.put("query", OMTQueryMetaType::new);
+        features.put("base", OMTBaseParameterMetaType::getInstance);
+        features.put("params", OMTParamsArrayMetaType::getInstance);
+        features.put("graphs", OMTGraphSelectionMetaType::getInstance);
+        features.put("prefixes", OMTPrefixesMetaType::getInstance);
+        features.put("query", OMTQueryMetaType::getInstance);
     }
 
     @Override
@@ -86,7 +92,7 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
         if (params != null && params.getValue() instanceof YAMLSequence) {
             final List<YAMLSequenceItem> items = ((YAMLSequence) params.getValue()).getItems();
             for (int i = 0; i < items.size(); i++) {
-                final String variableName = new OMTParamMetaType().getName(items.get(i).getValue());
+                final String variableName = OMTParamMetaType.getInstance().getName(items.get(i).getValue());
                 call.setParamType(variableName, call.resolveSignatureArgument(i));
             }
         }

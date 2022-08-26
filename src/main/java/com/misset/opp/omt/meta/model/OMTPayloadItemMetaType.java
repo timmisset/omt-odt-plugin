@@ -24,16 +24,22 @@ import java.util.function.Supplier;
 public class OMTPayloadItemMetaType extends OMTMetaType implements
         OMTMetaInjectable,
         OMTLocalVariableTypeProvider {
+    private static final OMTPayloadItemMetaType INSTANCE = new OMTPayloadItemMetaType();
+
+    public static OMTPayloadItemMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("value", OMTQueryMetaType::new);
-        features.put("query", OMTPayloadQueryReferenceMetaType::new);
+        features.put("value", OMTQueryMetaType::getInstance);
+        features.put("query", OMTPayloadQueryReferenceMetaType::getInstance);
         features.put("list", YamlBooleanType::getSharedInstance);
-        features.put("onChange", OMTOnChangeScriptMetaType::new);
+        features.put("onChange", OMTOnChangeScriptMetaType::getInstance);
     }
 
-    public OMTPayloadItemMetaType() {
+    private OMTPayloadItemMetaType() {
         super("OMT PayloadItem");
     }
 

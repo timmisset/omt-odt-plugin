@@ -4,7 +4,13 @@ import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerMetaType;
 import org.jetbrains.yaml.meta.model.YamlArrayType;
 
 public class OMTHandlersArrayMetaType extends YamlArrayType {
-    public OMTHandlersArrayMetaType() {
-        super(new OMTMergeHandlerMetaType());
+    private static final OMTHandlersArrayMetaType INSTANCE = new OMTHandlersArrayMetaType();
+
+    public static OMTHandlersArrayMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTHandlersArrayMetaType() {
+        super(OMTMergeHandlerMetaType.getInstance());
     }
 }

@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class OMTSortedArrayMetaType extends YamlArrayType {
+public abstract class OMTSortedArrayMetaType extends YamlArrayType {
     protected static final String UNSORTED_IMPORT_MEMBERS = "Unsorted import members";
     protected static final String SORT_MEMBERS = "Sort members";
 
-    public OMTSortedArrayMetaType(@NotNull YamlMetaType elementType) {
+    protected OMTSortedArrayMetaType(@NotNull YamlMetaType elementType) {
         super(elementType);
     }
 

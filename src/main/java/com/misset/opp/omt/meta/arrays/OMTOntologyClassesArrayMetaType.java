@@ -4,7 +4,14 @@ import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyClassMetaTyp
 import org.jetbrains.yaml.meta.model.YamlArrayType;
 
 public class OMTOntologyClassesArrayMetaType extends YamlArrayType {
-    public OMTOntologyClassesArrayMetaType() {
-        super(new OMTOntologyClassMetaType());
+
+    private static final OMTOntologyClassesArrayMetaType INSTANCE = new OMTOntologyClassesArrayMetaType();
+
+    public static OMTOntologyClassesArrayMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTOntologyClassesArrayMetaType() {
+        super(OMTOntologyClassMetaType.getInstance());
     }
 }

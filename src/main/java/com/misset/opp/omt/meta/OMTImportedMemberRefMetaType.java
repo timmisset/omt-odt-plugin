@@ -22,6 +22,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OMTImportedMemberRefMetaType extends YamlStringType {
+    private static final OMTExportMemberMetaType INSTANCE = new OMTExportMemberMetaType();
+
+    public static OMTExportMemberMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTExportMemberMetaType() {
+    }
 
     @Override
     public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar,

@@ -22,17 +22,22 @@ import static com.misset.opp.omt.util.OMTImportUtil.getOMTFile;
 public class OMTImportMetaType extends OMTMetaMapType {
 
     private static final Logger LOGGER = Logger.getInstance(OMTImportMetaType.class);
+    private static final OMTImportMetaType INSTANCE = new OMTImportMetaType();
 
-    protected OMTImportMetaType() {
+    public static OMTImportMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTImportMetaType() {
         super("OMT Import");
     }
 
     @Override
     protected YamlMetaType getMapEntryType(String name) {
-        return new OMTImportPathMetaType();
+        return OMTImportPathMetaType.getInstance();
     }
 
-    public static HashMap<String, List<PsiCallable>> getExportedMembersFromOMTFile(YAMLKeyValue keyValue) {
+    public HashMap<String, List<PsiCallable>> getExportedMembersFromOMTFile(YAMLKeyValue keyValue) {
         if (!keyValue.isValid()) {
             return new HashMap<>();
         }
@@ -42,7 +47,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
                 .orElse(new HashMap<>());
     }
 
-    public static OMTFile resolveToOMTFile(YAMLKeyValue keyValue) {
+    public OMTFile resolveToOMTFile(YAMLKeyValue keyValue) {
         if (!keyValue.isValid()) {
             return null;
         }
@@ -52,7 +57,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
                         .orElse(null));
     }
 
-    public static String resolveToPath(YAMLKeyValue keyValue) {
+    public String resolveToPath(YAMLKeyValue keyValue) {
         PsiFile containingFile = keyValue.getContainingFile();
         if (!(containingFile instanceof OMTFile)) {
             return null;
@@ -65,7 +70,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
                             @NotNull ProblemsHolder problemsHolder) {
         // the map with ImportPaths is not validated by the default validator
         if (keyValue.getValue() instanceof YAMLMapping) {
-            final OMTImportPathMetaType omtImportPathMetaType = new OMTImportPathMetaType();
+            final OMTImportPathMetaType omtImportPathMetaType = OMTImportPathMetaType.getInstance();
             ((YAMLMapping) keyValue.getValue()).getKeyValues()
                     .forEach(_keyValue -> omtImportPathMetaType.validateKey(_keyValue, problemsHolder));
         }

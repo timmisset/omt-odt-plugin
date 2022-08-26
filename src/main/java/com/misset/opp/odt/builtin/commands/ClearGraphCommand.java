@@ -6,9 +6,13 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 
 public class ClearGraphCommand extends BuiltInCommand {
+
+    private static final List<String> PARAMETER_NAMES = List.of("graph");
+
     private ClearGraphCommand() {
     }
 
@@ -41,5 +45,10 @@ public class ClearGraphCommand extends BuiltInCommand {
             return Set.of(OppModelConstants.NAMED_GRAPH);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

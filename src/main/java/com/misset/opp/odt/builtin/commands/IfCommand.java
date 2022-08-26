@@ -7,10 +7,16 @@ import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class IfCommand extends BuiltInCommand {
-    private IfCommand() { }
+
+    private static final List<String> PARAMETER_NAMES = List.of("condition", "then", "else");
+
+    private IfCommand() {
+    }
+
     public static final IfCommand INSTANCE = new IfCommand();
 
     @Override
@@ -48,5 +54,10 @@ public class IfCommand extends BuiltInCommand {
             return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

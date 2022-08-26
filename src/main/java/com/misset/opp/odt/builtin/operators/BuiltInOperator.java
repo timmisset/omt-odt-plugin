@@ -126,4 +126,9 @@ public abstract class BuiltInOperator extends Builtin {
     public boolean canBeAppliedTo(Set<OntResource> resources) {
         return true;
     }
+
+    @Override
+    protected List<String> getParameters() {
+        return Collections.emptyList();
+    }
 }

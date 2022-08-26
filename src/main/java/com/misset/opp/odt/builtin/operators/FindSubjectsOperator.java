@@ -7,6 +7,7 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,6 +20,7 @@ public class FindSubjectsOperator extends BuiltInOperator {
     }
 
     public static final FindSubjectsOperator INSTANCE = new FindSubjectsOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("predicates", "objects", "graphName");
 
     @Override
     public String getName() {
@@ -57,5 +59,10 @@ public class FindSubjectsOperator extends BuiltInOperator {
             return Set.of(OppModelConstants.NAMED_GRAPH);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

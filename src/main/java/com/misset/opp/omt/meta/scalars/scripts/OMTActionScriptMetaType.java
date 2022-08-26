@@ -6,6 +6,15 @@ import org.jetbrains.yaml.psi.YAMLPsiElement;
 import java.util.List;
 
 public class OMTActionScriptMetaType extends OMTLocalVariableProviderMetaType {
+    private static final OMTActionScriptMetaType INSTANCE = new OMTOnSelectScriptMetaType();
+
+    public static OMTActionScriptMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTActionScriptMetaType() {
+        super();
+public class OMTActionScriptMetaType extends OMTLocalVariableProviderMetaType {
     public OMTActionScriptMetaType() {
         super("onSelect");
     }

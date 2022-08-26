@@ -40,7 +40,13 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
         OMTLocalCommandProvider,
         OMTMetaCallable,
         OMTDocumented {
-    protected OMTProcedureMetaType() {
+    private static final OMTProcedureMetaType INSTANCE = new OMTProcedureMetaType();
+
+    public static OMTProcedureMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTProcedureMetaType() {
         super("OMT Procedure");
     }
 
@@ -48,16 +54,14 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     private static final Key<Boolean> UNRESOLVABLE = new Key<>("Unresolvable");
     private static final Key<Long> UNRESOLVABLE_TIMESTAMP = new Key<>("Timestamp");
 
-    public static final OMTProcedureMetaType INSTANCE = new OMTProcedureMetaType();
-
     static {
-        features.put("params", OMTParamsArrayMetaType::new);
-        features.put("variables", OMTVariablesArrayMetaType::new);
-        features.put("graphs", OMTGraphSelectionMetaType::new);
-        features.put("prefixes", OMTPrefixesMetaType::new);
-        features.put("onRun", OMTScriptMetaType::new);
-        features.put("handlers", OMTMergeHandlerMetaType::new);
-        features.put("reason", OMTReasonMetaType::new);
+        features.put("params", OMTParamsArrayMetaType::getInstance);
+        features.put("variables", OMTVariablesArrayMetaType::getInstance);
+        features.put("graphs", OMTGraphSelectionMetaType::getInstance);
+        features.put("prefixes", OMTPrefixesMetaType::getInstance);
+        features.put("onRun", OMTScriptMetaType::getInstance);
+        features.put("handlers", OMTMergeHandlerMetaType::getInstance);
+        features.put("reason", OMTReasonMetaType::getInstance);
     }
 
     @Override

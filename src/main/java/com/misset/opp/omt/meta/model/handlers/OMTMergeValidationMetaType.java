@@ -10,17 +10,22 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OMTMergeValidationMetaType extends OMTMergeMetaType implements OMTDocumented {
+
+    private static final OMTMergeValidationMetaType INSTANCE = new OMTMergeValidationMetaType();
+
+    public static OMTMergeValidationMetaType getInstance() {
+        return INSTANCE;
+    }
     private static final Set<String> requiredFeatures = Set.of("context", "query");
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("context", OMTHandlersContextMetaType::new);
-        features.put("query", OMTQueryMetaType::new);
+        features.put("context", OMTHandlersContextMetaType::getInstance);
+        features.put("query", OMTQueryMetaType::getInstance);
     }
 
-
-    protected OMTMergeValidationMetaType() {
+    private OMTMergeValidationMetaType() {
         super("OMT MergePredicates");
     }
 

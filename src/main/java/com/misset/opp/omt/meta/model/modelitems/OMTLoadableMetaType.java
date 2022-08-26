@@ -21,13 +21,19 @@ import java.util.function.Supplier;
 
 public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements OMTMetaCallable, OMTDocumented {
 
+    private static final OMTLoadableMetaType INSTANCE = new OMTLoadableMetaType();
+
+    public static OMTLoadableMetaType getInstance() {
+        return INSTANCE;
+    }
+
     protected static final String RELEASE_FLAG_SHOULD_NOT_BE_COMBINED_WITH_OTHER_FLAGS = "!release flag should not be combined with other flags";
     protected static final String CALLING_WITH_RETAIN_OR_RELEASE_FLAG = "Context argument only expected when calling with !retain or !release flag";
 
     public static final HashMap<String, String> CONTEXT_SELECTORS = new HashMap<>();
     public static final List<String> FLAGS = List.of("!silent", "!load", "!release", "!retain");
 
-    protected OMTLoadableMetaType() {
+    private OMTLoadableMetaType() {
         super("OMT Loadable");
     }
 
@@ -37,9 +43,9 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
     private static final Set<String> required = Set.of("path", "schema");
 
     static {
-        features.put("id", YamlStringType::new);
-        features.put("path", OMTLoadablePathMetaType::new);
-        features.put("schema", OMTLoadableSchemaMetaType::new);
+        features.put("id", YamlStringType::getInstance);
+        features.put("path", OMTLoadablePathMetaType::getInstance);
+        features.put("schema", OMTLoadableSchemaMetaType::getInstance);
 
         parameterNames.put(0, "$context");
 

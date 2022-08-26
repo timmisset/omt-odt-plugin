@@ -3,8 +3,6 @@ package com.misset.opp.omt.meta.model.modelitems;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaTaggedType;
 import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyMetaType;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 
@@ -19,19 +17,26 @@ import java.util.function.Supplier;
  */
 public class OMTModelItemMetaType extends OMTMetaTaggedType<OMTModelItemDelegateMetaType> {
 
-    private static final HashMap<String, Supplier<OMTModelItemDelegateMetaType>> taggedTypes = new HashMap<>();
-    static {
-        taggedTypes.put("!Activity", OMTActivityMetaType::new);
-        taggedTypes.put("!Component", OMTComponentMetaType::new);
-        taggedTypes.put("!GraphShapeHandlers", OMTGraphShapeHandlerMetaType::new);
-        taggedTypes.put("!Loadable", OMTLoadableMetaType::new);
-        taggedTypes.put("!Ontology", OMTOntologyMetaType::new);
-        taggedTypes.put("!Procedure", () -> OMTProcedureMetaType.INSTANCE);
-        taggedTypes.put("!StandaloneQuery", OMTStandaloneQueryMetaType::new);
+    private static final OMTModelItemMetaType INSTANCE = new OMTModelItemMetaType();
+
+    public static OMTModelItemMetaType getInstance() {
+        return INSTANCE;
     }
 
-    public OMTModelItemMetaType(@NonNls @NotNull String name) {
-        super(name);
+    private static final HashMap<String, Supplier<OMTModelItemDelegateMetaType>> taggedTypes = new HashMap<>();
+
+    static {
+        taggedTypes.put("!Activity", OMTActivityMetaType::getInstance);
+        taggedTypes.put("!Component", OMTComponentMetaType::getInstance);
+        taggedTypes.put("!GraphShapeHandlers", OMTGraphShapeHandlerMetaType::getInstance);
+        taggedTypes.put("!Loadable", OMTLoadableMetaType::getInstance);
+        taggedTypes.put("!Ontology", OMTOntologyMetaType::getInstance);
+        taggedTypes.put("!Procedure", OMTProcedureMetaType::getInstance);
+        taggedTypes.put("!StandaloneQuery", OMTStandaloneQueryMetaType::getInstance);
+    }
+
+    private OMTModelItemMetaType() {
+        super("modelItem");
     }
 
     public static Set<String> getTypes() {

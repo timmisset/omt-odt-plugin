@@ -7,13 +7,19 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 public class OMTRulesMetaType extends OMTMetaMapType implements OMTDocumented {
 
-    public OMTRulesMetaType() {
+    private static final OMTRulesMetaType INSTANCE = new OMTRulesMetaType();
+
+    public static OMTRulesMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTRulesMetaType() {
         super("OMTRules");
     }
 
     @Override
     protected YamlMetaType getMapEntryType(String name) {
-        return new OMTRuleMetaType();
+        return OMTRuleMetaType.getInstance();
     }
 
     @Override

@@ -33,6 +33,7 @@ public class OppModelConstants {
     public static OntClass TRANSIENT_GRAPH_CLASS;
     public static Individual IRI;
     public static Individual JSON_OBJECT;
+    public static Individual BLANK_NODE;
     public static Individual ERROR;
     public static Individual NAMED_GRAPH;
     public static Individual TRANSIENT_GRAPH;
@@ -118,6 +119,7 @@ public class OppModelConstants {
         NAMED_GRAPH = model.createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
         MEDEWERKER_GRAPH = model.createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_MEDEWERKERGRAPH");
         TRANSIENT_GRAPH = model.createIndividual(TRANSIENT_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS.getURI() + "_INSTANCE");
+        BLANK_NODE = model.createIndividual(OPP_CLASS, OPP + "BLANK_NODE");
     }
 
     private static void setClasses(OppModel model, OntModel ontologyModel) {

@@ -5,14 +5,19 @@ import com.misset.opp.omt.meta.OMTMetaMapType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 public class OMTOntologyPropertyMetaType extends OMTMetaMapType implements OMTDocumented {
+    private static final OMTOntologyPropertyMetaType INSTANCE = new OMTOntologyPropertyMetaType();
 
-    protected OMTOntologyPropertyMetaType() {
+    public static OMTOntologyPropertyMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTOntologyPropertyMetaType() {
         super("OMT Ontology Properties");
     }
 
     @Override
     protected YamlMetaType getMapEntryType(String name) {
-        return new OMTOntologyPropertyItemMetaType();
+        return OMTOntologyPropertyItemMetaType.getInstance();
     }
 
     @Override

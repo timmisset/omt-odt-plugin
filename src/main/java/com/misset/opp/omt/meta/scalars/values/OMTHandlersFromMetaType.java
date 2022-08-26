@@ -3,8 +3,15 @@ package com.misset.opp.omt.meta.scalars.values;
 import java.util.Set;
 
 public class OMTHandlersFromMetaType extends OMTFixedValueScalarMetaType {
+    private static final OMTHandlersFromMetaType INSTANCE = new OMTHandlersFromMetaType();
+
+    public static OMTHandlersFromMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final Set<String> values = Set.of("both", "parent");
-    public OMTHandlersFromMetaType() {
+
+    private OMTHandlersFromMetaType() {
         super("OMT From (MergeHandlers)");
     }
 

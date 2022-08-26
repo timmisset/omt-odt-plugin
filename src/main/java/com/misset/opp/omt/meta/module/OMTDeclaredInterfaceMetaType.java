@@ -11,15 +11,22 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OMTDeclaredInterfaceMetaType extends OMTMetaType {
+
+    private static final OMTDeclaredInterfaceMetaType INSTANCE = new OMTDeclaredInterfaceMetaType();
+
+    public static OMTDeclaredInterfaceMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("type", OMTDeclaredInterfaceTypeMetaType::new);
-        features.put("params", OMTParamTypesArrayMetaType::new);
-        features.put("returns", OMTParamTypeType::new);
+        features.put("type", OMTDeclaredInterfaceTypeMetaType::getInstance);
+        features.put("params", OMTParamTypesArrayMetaType::getInstance);
+        features.put("returns", OMTParamTypeType::getInstance);
     }
 
-    protected OMTDeclaredInterfaceMetaType() {
+    private OMTDeclaredInterfaceMetaType() {
         super("DeclaredInterface");
     }
 

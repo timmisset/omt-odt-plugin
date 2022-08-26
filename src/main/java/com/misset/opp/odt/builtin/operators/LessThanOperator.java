@@ -7,11 +7,14 @@ import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class LessThanOperator extends BuiltInBooleanOperator {
     private LessThanOperator() { }
+
     public static final LessThanOperator INSTANCE = new LessThanOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("left", "right");
 
     @Override
     public String getName() {
@@ -38,5 +41,10 @@ public class LessThanOperator extends BuiltInBooleanOperator {
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

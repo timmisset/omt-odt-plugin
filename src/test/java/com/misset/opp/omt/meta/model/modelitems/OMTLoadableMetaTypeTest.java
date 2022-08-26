@@ -63,27 +63,27 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
 
     @Test
     void testResolvesToJson() {
-        Assertions.assertEquals(Set.of(OppModelConstants.JSON_OBJECT), new OMTLoadableMetaType().resolve(null, null));
+        Assertions.assertEquals(Set.of(OppModelConstants.JSON_OBJECT), OMTLoadableMetaType.getInstance().resolve(null, null));
     }
 
     @Test
     void testIsVoidIsFalse() {
-        Assertions.assertFalse(new OMTLoadableMetaType().isVoid(null));
+        Assertions.assertFalse(OMTLoadableMetaType.getInstance().isVoid(null));
     }
 
     @Test
     void testCanBeAppliedTo() {
-        Assertions.assertFalse(new OMTLoadableMetaType().canBeAppliedTo(null, null));
+        Assertions.assertFalse(OMTLoadableMetaType.getInstance().canBeAppliedTo(null, null));
     }
 
     @Test
     void testSecondArgument() {
-        Assertions.assertEquals(Collections.emptySet(), new OMTLoadableMetaType().getSecondReturnArgument());
+        Assertions.assertEquals(Collections.emptySet(), OMTLoadableMetaType.getInstance().getSecondReturnArgument());
     }
 
     @Test
     void testGetType() {
-        Assertions.assertEquals("Loadable", new OMTLoadableMetaType().getType());
+        Assertions.assertEquals("Loadable", OMTLoadableMetaType.getInstance().getType());
     }
 
     @ParameterizedTest

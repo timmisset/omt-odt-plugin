@@ -10,15 +10,21 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class OMTGraphSelectionMetaType extends OMTMetaType implements OMTDocumented {
+    private static final OMTGraphSelectionMetaType INSTANCE = new OMTGraphSelectionMetaType();
+
+    public static OMTGraphSelectionMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final List<String> additionalDocumentationHeaders = List.of("Discovery of additional graphs", "Server Side Searches", "Live vs Edit");
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("live", OMTQueryGraphArrayMetaType::new);
-        features.put("edit", OMTQueryGraphArrayMetaType::new);
+        features.put("live", OMTQueryGraphArrayMetaType::getInstance);
+        features.put("edit", OMTQueryGraphArrayMetaType::getInstance);
     }
 
-    public OMTGraphSelectionMetaType() {
+    private OMTGraphSelectionMetaType() {
         super("GraphSelection");
     }
 

@@ -5,11 +5,14 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class ErrorOperator extends BuiltInOperator {
     private ErrorOperator() {
     }
+
+    private static final List<String> PARAMETER_NAMES = List.of("message");
 
     public static final ErrorOperator INSTANCE = new ErrorOperator();
 
@@ -44,5 +47,10 @@ public class ErrorOperator extends BuiltInOperator {
             return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

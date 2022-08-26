@@ -24,7 +24,7 @@ import static com.misset.opp.omt.completion.OMTCompletions.getPlaceholderToken;
 
 public abstract class OMTMetaTaggedType<T extends YamlMetaType> extends OMTMetaType {
 
-    private String name;
+    private final String name;
 
     protected OMTMetaTaggedType(@NotNull String name) {
         super(name);

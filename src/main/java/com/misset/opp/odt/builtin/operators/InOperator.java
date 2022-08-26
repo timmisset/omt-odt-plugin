@@ -10,6 +10,7 @@ import java.util.Set;
 public class InOperator extends BuiltInBooleanOperator {
     private InOperator() { }
     public static final InOperator INSTANCE = new InOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("set", "superset");
 
     @Override
     public String getName() {
@@ -30,5 +31,10 @@ public class InOperator extends BuiltInBooleanOperator {
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         Set<OntResource> ontResources = validateLeftRightCompatible(call, holder);
         validateIgnoreCaseFlagIsUsedOnStrings(ontResources, call, holder);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

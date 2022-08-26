@@ -3,9 +3,14 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
 
+import java.util.List;
+
 public class CountOperator extends BuiltInIntegerOperator {
-    private CountOperator() { }
+    private CountOperator() {
+    }
+
     public static final CountOperator INSTANCE = new CountOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("include");
 
     @Override
     public String getName() {
@@ -25,5 +30,10 @@ public class CountOperator extends BuiltInIntegerOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         validateBooleanArgument(0, call, holder);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

@@ -1,11 +1,17 @@
 package com.misset.opp.odt.completion;
 
 import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.util.Key;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.odt.psi.ODTNamespacePrefix;
+import com.misset.opp.odt.psi.ODTQuery;
+import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.ttl.model.OppModel;
@@ -24,6 +30,8 @@ import static com.misset.opp.odt.completion.CompletionPatterns.*;
 import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.Traverse;
 
 public class ODTTraverseCompletion extends CompletionContributor {
+    private static final Key<Boolean> HAS_CARET = new Key<>("HAS_CARET");
+    private static final Key<Boolean> HAS_PREFIX = new Key<>("HAS_PREFIX");
     ElementPattern<PsiElement> TRAVERSE =
             or(AFTER_FIRST_QUERY_STEP, INSIDE_DEFINED_QUERY, INSIDE_QUERY_FILTER);
 
@@ -47,7 +55,8 @@ public class ODTTraverseCompletion extends CompletionContributor {
 
                 PsiElement position = parameters.getPosition();
                 Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
-
+                context.put(HAS_PREFIX, position.getPrevSibling() instanceof ODTNamespacePrefix);
+                context.put(HAS_CARET, PsiTreeUtil.getParentOfType(position.getPrevSibling(), ODTQueryReverseStep.class, true, ODTQuery.class) != null);
                 final Set<OntResource> subjects = Optional.of(position)
                         .map(element -> PsiTreeUtil.getParentOfType(element, ODTResolvableQueryOperationStep.class))
                         .map(ODTResolvableQueryOperationStep::resolvePreviousStep)
@@ -81,13 +90,15 @@ public class ODTTraverseCompletion extends CompletionContributor {
                         forwardPredicates,
                         TraverseDirection.FORWARD,
                         availableNamespaces,
-                        result);
+                        result,
+                        context);
                 addModelTraverseLookupElements(
                         subjects,
                         reversePredicates,
                         TraverseDirection.REVERSE,
                         availableNamespaces,
-                        result);
+                        result,
+                        context);
 
             }
         });
@@ -98,18 +109,36 @@ public class ODTTraverseCompletion extends CompletionContributor {
             HashMap<Property, Set<OntResource>> predicateObjects,
             TraverseDirection direction,
             Map<String, String> availableNamespaces,
-            CompletionResultSet result) {
+            CompletionResultSet result,
+            ProcessingContext context) {
+        String prefixMatcher = result.getPrefixMatcher().getPrefix();
         predicateObjects.keySet()
-                .stream()
-                .map(predicate -> TTLResourceUtil.getPredicateLookupElement(
-                        subjects,
-                        predicate,
-                        predicateObjects.get(predicate),
-                        direction,
-                        availableNamespaces))
-                .filter(Objects::nonNull)
-                .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, Traverse.getValue()))
-                .forEach(result::addElement);
+                .forEach(predicate -> {
+                    String curie = ODTTraverseCompletion.parseToCurie(predicate, availableNamespaces);
+                    if (!isForward(direction)) {
+                        curie = "^" + curie;
+                    }
+                    String prefix = curie.contains(":") ? curie.substring(0, curie.indexOf(":") + 1) : null;
+
+                    LookupElementBuilder predicateLookupElement = TTLResourceUtil.getPredicateLookupElement(
+                            subjects,
+                            predicate,
+                            predicateObjects.get(predicate),
+                            direction,
+                            curie);
+
+                    LookupElement withPriority = PrioritizedLookupElement.withPriority(predicateLookupElement, Traverse.getValue());
+                    String curieCompletion = prefix + prefixMatcher; // i.e. ont:cla<caret>
+                    if (curieCompletion.startsWith("^") && !context.get(HAS_CARET)) {
+                        curieCompletion = curieCompletion.substring(1);
+                    }
+
+                    if (prefix != null && context.get(HAS_PREFIX) && curie.contains(curieCompletion)) {
+                        result.withPrefixMatcher(curieCompletion).addElement(withPriority);
+                    } else {
+                        result.addElement(withPriority);
+                    }
+                });
     }
 
     public static String parseToCurie(Resource resource,

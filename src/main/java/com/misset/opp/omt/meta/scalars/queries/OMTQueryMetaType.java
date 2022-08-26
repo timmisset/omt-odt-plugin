@@ -5,6 +5,7 @@ import com.misset.opp.omt.meta.model.SimpleInjectable;
 import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiResolvableQuery;
+import com.misset.opp.shared.InjectableContentType;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlScalarType;
@@ -15,8 +16,19 @@ import java.util.Set;
 
 @SimpleInjectable
 public class OMTQueryMetaType extends YamlScalarType implements OMTMetaInjectable {
-    public OMTQueryMetaType() {
+    private static final OMTQueryMetaType INSTANCE = new OMTQueryMetaType();
+
+    public static OMTQueryMetaType getInstance() {
+        return INSTANCE;
+    }
+
+    protected OMTQueryMetaType() {
         super("Query");
+    }
+
+    @Override
+    public InjectableContentType getInjectableContentType() {
+        return InjectableContentType.Query;
     }
 
     protected Set<OntResource> resolve(@NotNull YAMLScalar scalarValue) {

@@ -16,6 +16,7 @@ public class FormatOperator extends BuiltInStringOperator {
     private static final Pattern REPLACEMENT_FLAGS = Pattern.compile("%s|%d");
     private FormatOperator() { }
     public static final FormatOperator INSTANCE = new FormatOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("format", "substitutes");
 
     @Override
     public String getName() {
@@ -62,5 +63,10 @@ public class FormatOperator extends BuiltInStringOperator {
             return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         }
         return null;
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

@@ -15,19 +15,24 @@ import java.util.function.Supplier;
 
 public class OMTGlobalActionMetaType extends OMTMetaType implements OMTDocumented {
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
+    private static final OMTGlobalActionMetaType INSTANCE = new OMTGlobalActionMetaType();
 
-    static {
-        features.put("notifications", OMTNotificationActionsArrayMetaType::new);
-        features.put("bottomNavigation", OMTActionsArrayMetaType::new);
-        features.put("dashboard", OMTActionsArrayMetaType::new);
-        features.put("dashboardActions", OMTActionsArrayMetaType::new);
-        features.put("dossier", OMTDossierActionsArrayMetaType::new);
-        features.put("fixed", OMTActionsArrayMetaType::new);
-        features.put("bestandstatus", OMTActionsArrayMetaType::new);
-        features.put("entitybar", OMTEntityBarActionsArrayMetaType::new);
+    public static OMTGlobalActionMetaType getInstance() {
+        return INSTANCE;
     }
 
-    public OMTGlobalActionMetaType() {
+    static {
+        features.put("notifications", OMTNotificationActionsArrayMetaType::getInstance);
+        features.put("bottomNavigation", OMTActionsArrayMetaType::getInstance);
+        features.put("dashboard", OMTActionsArrayMetaType::new);
+        features.put("dashboardActions", OMTActionsArrayMetaType::getInstance);
+        features.put("dossier", OMTDossierActionsArrayMetaType::getInstance);
+        features.put("fixed", OMTActionsArrayMetaType::new);
+        features.put("bestandstatus", OMTActionsArrayMetaType::getInstance);
+        features.put("entitybar", OMTEntityBarActionsArrayMetaType::getInstance);
+    }
+
+    private OMTGlobalActionMetaType() {
         super("Global Action");
     }
 

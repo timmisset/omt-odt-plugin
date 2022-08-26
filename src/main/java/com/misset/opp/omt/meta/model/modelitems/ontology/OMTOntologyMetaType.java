@@ -11,15 +11,21 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OMTOntologyMetaType extends OMTModelItemDelegateMetaType implements OMTDocumented {
+    private static final OMTOntologyMetaType INSTANCE = new OMTOntologyMetaType();
+
+    public static OMTOntologyMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
     private static final Set<String> requiredFields = Set.of("prefix", "classes");
 
     static {
-        features.put("prefix", OMTOntologyPrefixMetaType::new);
-        features.put("classes", OMTOntologyClassesArrayMetaType::new);
+        features.put("prefix", OMTOntologyPrefixMetaType::getInstance);
+        features.put("classes", OMTOntologyClassesArrayMetaType::getInstance);
     }
 
-    public OMTOntologyMetaType() {
+    private OMTOntologyMetaType() {
         super("OMT Ontology");
     }
 

@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Set;
 
 public class ForEachCommand extends BuiltInCommand implements CallableLocalVariableTypeProvider {
+
+    private static final List<String> PARAMETER_NAMES = List.of("collection", "command");
+
     private ForEachCommand() {
     }
 
@@ -40,5 +43,10 @@ public class ForEachCommand extends BuiltInCommand implements CallableLocalVaria
                 new LocalVariable("$index", "iterator index", Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)),
                 new LocalVariable("$array", "all input values", call.resolveSignatureArgument(0))
         );
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

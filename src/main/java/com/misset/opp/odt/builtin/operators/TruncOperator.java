@@ -6,11 +6,15 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
+import java.util.List;
 import java.util.Set;
 
 public class TruncOperator extends BuiltInCollectionOperator {
-    private TruncOperator() { }
+    private TruncOperator() {
+    }
+
     public static final TruncOperator INSTANCE = new TruncOperator();
+    private static final List<String> PARAMETER_NAMES = List.of("precision");
 
     @Override
     public String getName() {
@@ -24,7 +28,6 @@ public class TruncOperator extends BuiltInCollectionOperator {
 
     }
 
-
     @Override
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
@@ -36,5 +39,10 @@ public class TruncOperator extends BuiltInCollectionOperator {
     @Override
     public Set<OntResource> getAcceptableInputType() {
         return Set.of(OppModelConstants.XSD_DATETIME_INSTANCE);
+    }
+
+    @Override
+    protected List<String> getParameters() {
+        return PARAMETER_NAMES;
     }
 }

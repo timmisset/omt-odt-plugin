@@ -10,6 +10,15 @@ import org.jetbrains.yaml.psi.YAMLScalar;
 import java.util.Set;
 
 public class OMTShapeQueryType extends OMTQueryMetaType {
+    private static final OMTShapeQueryType INSTANCE = new OMTShapeQueryType();
+
+    public static OMTShapeQueryType getInstance() {
+        return INSTANCE;
+    }
+
+    private OMTShapeQueryType() {
+        super();
+    }
 
     @Override
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,

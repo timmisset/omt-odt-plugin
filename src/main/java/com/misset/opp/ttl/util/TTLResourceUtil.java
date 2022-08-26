@@ -168,12 +168,10 @@ public class TTLResourceUtil {
                                                                  Property property,
                                                                  Set<OntResource> objects,
                                                                  ODTTraverseCompletion.TraverseDirection direction,
-                                                                 Map<String, String> availableNamespaces) {
-        String title = ODTTraverseCompletion.parseToCurie(property, availableNamespaces);
+                                                                 String title) {
         if (title == null) {
             return null;
         }
-        String lookupText = !isForward(direction) ? "^" + title : title;
         String cardinality = isForward(direction) ? getCardinalityLabel(subjects, property) : getCardinalityLabel(objects, property);
         if (cardinality == null) {
             cardinality = "";
@@ -185,7 +183,7 @@ public class TTLResourceUtil {
                 typeText += "...";
             }
         }
-        return LookupElementBuilder.create(lookupText)
+        return LookupElementBuilder.create(title)
                 .withLookupStrings(Set.of(property.getURI(), property.getLocalName()))
                 .withTailText((isForward(direction) ? " -> forward " : " <- reverse ") + cardinality)
                 .withTypeText(typeText)

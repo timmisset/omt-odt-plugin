@@ -20,8 +20,6 @@ import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
 import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.shared.providers.CallableLocalVariableTypeProvider;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -33,8 +31,10 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class ODTVariableCompletion extends CompletionContributor {
+import static com.misset.opp.odt.completion.ODTInjectableSectionCompletion.TYPE_FILTER;
+import static com.misset.opp.odt.completion.ODTInjectableSectionCompletion.sharedContext;
 
+public class ODTVariableCompletion extends CompletionContributor {
     public ODTVariableCompletion() {
         extend(CompletionType.BASIC, CompletionPatterns.FIRST_QUERY_STEP, new CompletionProvider<>() {
             @Override
@@ -44,25 +44,15 @@ public class ODTVariableCompletion extends CompletionContributor {
 
                 PsiElement position = parameters.getPosition();
                 Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
+                if (sharedContext != null && sharedContext.get(TYPE_FILTER) != null) {
+                    typeFilter = typeFilter.and(sharedContext.get(TYPE_FILTER));
+                }
 
                 ODTFile originalFile = (ODTFile) parameters.getOriginalFile();
-
-                PsiTreeUtil.getParentOfType(position, ODTTypeFilterProvider.class);
 
                 addVariables(result, position, typeFilter, originalFile);
             }
         });
-    }
-
-    public void addBooleanCompletions(@NotNull CompletionParameters parameters,
-                                      @NotNull CompletionResultSet result,
-                                      PsiElement element) {
-        ODTFile originalFile = (ODTFile) parameters.getOriginalFile();
-
-        PsiTreeUtil.getParentOfType(element, ODTTypeFilterProvider.class);
-
-        Predicate<Set<OntResource>> filterType = resources -> OppModel.INSTANCE.areCompatible(Collections.singleton(OppModelConstants.XSD_BOOLEAN_INSTANCE), resources);
-        addVariables(result, element, filterType, originalFile);
     }
 
     public void addVariables(@NotNull CompletionResultSet result,

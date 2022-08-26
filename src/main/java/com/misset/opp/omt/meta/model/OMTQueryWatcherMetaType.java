@@ -22,14 +22,20 @@ import java.util.function.Supplier;
 public class OMTQueryWatcherMetaType extends OMTMetaType implements
         OMTLocalVariableTypeProvider,
         OMTDocumented {
+    private static final OMTQueryWatcherMetaType INSTANCE = new OMTQueryWatcherMetaType();
+
+    public static OMTQueryWatcherMetaType getInstance() {
+        return INSTANCE;
+    }
+
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
     static {
-        features.put("query", OMTQueryMetaType::new);
-        features.put("onChange", OMTOnChangeScriptMetaType::new);
+        features.put("query", OMTQueryMetaType::getInstance);
+        features.put("onChange", OMTOnChangeScriptMetaType::getInstance);
     }
 
-    public OMTQueryWatcherMetaType() {
+    private OMTQueryWatcherMetaType() {
         super("OMT QueryWatcher");
     }
 

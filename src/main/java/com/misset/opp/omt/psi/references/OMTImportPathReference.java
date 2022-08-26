@@ -20,7 +20,7 @@ public class OMTImportPathReference extends PsiReferenceBase.Poly<YAMLKeyValue> 
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        final OMTFile omtFile = OMTImportMetaType.resolveToOMTFile(myElement);
+        final OMTFile omtFile = OMTImportMetaType.getInstance().resolveToOMTFile(myElement);
         if (omtFile != null) {
             return PsiElementResolveResult.createResults(omtFile);
         }
