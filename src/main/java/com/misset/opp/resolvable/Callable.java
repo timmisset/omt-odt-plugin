@@ -160,4 +160,13 @@ public interface Callable extends ContextResolvable {
      * Should return true if any value from resources is valid.
      */
     boolean canBeAppliedTo(Set<OntResource> resources);
+
+    /**
+     * Determines if inserting this Callable on BasicCompletion will trigger the completion process to be called
+     * again within the parenthesis. This should not be default behavior but is useful for Callables that use
+     * a fixed list of values.
+     */
+    default boolean callCompletionOnInsert() {
+        return false;
+    }
 }

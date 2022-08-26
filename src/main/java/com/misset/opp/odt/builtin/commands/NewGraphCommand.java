@@ -46,4 +46,9 @@ public class NewGraphCommand extends BuiltInCommand {
     protected List<String> getParameters() {
         return PARAMETER_NAMES;
     }
+
+    @Override
+    public boolean callCompletionOnInsert() {
+        return true;
+    }
 }

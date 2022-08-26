@@ -1,8 +1,6 @@
 package com.misset.opp.odt.completion;
 
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
@@ -76,13 +74,21 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .withPresentableText(callId)
                 .withTailText(signature.toString(), true)
                 .withIcon(PlatformIcons.METHOD_ICON)
-                .withInsertHandler((context, item) -> {
-                    // when the signature is added, move the caret into the signature
-                    if (signature.length() > 0) {
-                        context.getEditor().getCaretModel().moveCaretRelatively(-1, 0, false, false, true);
-                    }
-                })
+                .withInsertHandler((context, item) -> setInsertHandler(numberOfParams, callable.callCompletionOnInsert(), context))
                 .withTypeText(typeText);
+    }
+
+    private void setInsertHandler(int numberOfParams, boolean callCompletionOnInsert, InsertionContext context) {
+        // when the signature is added, move the caret into the signature
+        if (numberOfParams > 0) {
+            context.getEditor().getCaretModel().moveCaretRelatively(-1, 0, false, false, true);
+            if (callCompletionOnInsert) {
+                context.setLaterRunnable(() -> new CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(
+                        context.getProject(),
+                        context.getEditor()
+                ));
+            }
+        }
     }
 
     protected List<Callable> getFromSiblingDefined(PsiElement element) {
