@@ -66,6 +66,10 @@ public abstract class OMTInspectionTestCase extends OMTTestCase {
         assertHasHighlightingMessage(HighlightSeverity.WARNING, message);
     }
 
+    protected void assertHasWarning(String message, String highlightingText) {
+        assertHasHighlightingMessage(HighlightSeverity.WARNING, message, highlightingText);
+    }
+
     protected void assertHasWeakWarning(String message) {
         assertHasHighlightingMessage(HighlightSeverity.WEAK_WARNING, message);
     }
@@ -75,12 +79,24 @@ public abstract class OMTInspectionTestCase extends OMTTestCase {
     }
 
     private void assertHasHighlightingMessage(HighlightSeverity severity, String message) {
+        assertHasHighlightingMessage(severity, message, null);
+    }
+
+    private void assertHasHighlightingMessage(HighlightSeverity severity, String message, String highlightText) {
         final List<HighlightInfo> highlighting = getHighlighting(severity);
         assertTrue(
                 allHighlightingAsMessage(),
                 highlighting.stream().anyMatch(
-                        highlightInfo -> highlightInfo.getDescription() != null && highlightInfo.getDescription().startsWith(message)
+                        highlightInfo -> hasHighlightingDescription(highlightInfo, message, highlightText)
                 ));
+    }
+
+    private boolean hasHighlightingDescription(HighlightInfo highlightInfo, String description, String highlightText) {
+        if (highlightText != null && !highlightInfo.getText().equals(highlightText)) {
+            return false;
+        }
+        return highlightInfo.getDescription() != null &&
+                highlightInfo.getDescription().startsWith(description);
     }
 
     private List<HighlightInfo> getHighlighting(HighlightSeverity severity) {

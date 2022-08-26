@@ -92,7 +92,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            if (predicates.size() == 0) {
+            if (predicates.isEmpty()) {
                 holder.registerProblem(predicateArgument,
                         UNKNOWN_PREDICATE,
                         ProblemHighlightType.ERROR);
@@ -112,7 +112,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
             }
 
             final Set<OntResource> value = call.resolveSignatureArgument(i + 1);
-            TTLValidationUtil.validateCompatibleTypes(object, value, holder, call.getSignatureArgument(i));
+            TTLValidationUtil.validateCompatibleTypes(object, value, holder, call.getSignatureArgument(i + 1));
         }
     }
 }

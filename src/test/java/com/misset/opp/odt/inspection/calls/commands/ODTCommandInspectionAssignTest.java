@@ -25,6 +25,23 @@ class ODTCommandInspectionAssignTest extends OMTInspectionTestCase {
     }
 
     @Test
+    void testHasNoIssues() {
+        String content = insideProcedureRunWithPrefixes("" +
+                "@ASSIGN(/ont:ClassA_INSTANCE, /ont:booleanPredicate, true);");
+        configureByText(content);
+        assertNoErrors();
+        assertNoWarnings();
+    }
+
+    @Test
+    void testHasWrongValueType() {
+        String content = insideProcedureRunWithPrefixes("" +
+                "@ASSIGN(/ont:ClassA_INSTANCE, /ont:booleanPredicate, 'true');");
+        configureByText(content);
+        assertHasWarning("Incompatible types:", "'true'");
+    }
+
+    @Test
     void testRootIndicatorExpected() {
         String content = insideProcedureRunWithPrefixes("" +
                 "@ASSIGN(/ont:ClassA_INSTANCE, ont:booleanPredicate, true);");
