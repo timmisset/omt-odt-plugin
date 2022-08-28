@@ -19,7 +19,7 @@ public class LoadOntologyCommand extends BuiltInCommand {
     public static final LoadOntologyCommand INSTANCE = new LoadOntologyCommand();
 
     @Override
-    public String getDescription(String context, Project project) {
+    public String getDescription(Project project) {
         return DESCRIPTION;
     }
 

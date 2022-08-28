@@ -1,4 +1,4 @@
-package com.misset.opp.shared;
+package com.misset.opp.omt.injection;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiLanguageInjectionHost;

@@ -130,4 +130,5 @@ public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements
     public Scope getScope() {
         return Scope.LOCAL;
     }
+
 }

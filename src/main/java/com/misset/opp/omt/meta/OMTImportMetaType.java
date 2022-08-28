@@ -13,8 +13,9 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.misset.opp.omt.util.OMTImportUtil.getOMTFile;
@@ -37,7 +38,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
         return OMTImportPathMetaType.getInstance();
     }
 
-    public HashMap<String, List<PsiCallable>> getExportedMembersFromOMTFile(YAMLKeyValue keyValue) {
+    public Map<String, Collection<PsiCallable>> getExportedMembersFromOMTFile(YAMLKeyValue keyValue) {
         if (!keyValue.isValid()) {
             return new HashMap<>();
         }

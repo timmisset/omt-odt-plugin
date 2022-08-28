@@ -1,4 +1,4 @@
-package com.misset.opp.odt.completion;
+package com.misset.opp.omt.completion;
 
 import com.misset.opp.testCase.OMTCompletionTestCase;
 import com.misset.opp.testCase.OMTOntologyTestCase;
@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.misset.opp.odt.completion.ODTInjectableSectionCompletion.*;
+import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.*;
 
-class ODTInjectableSectionCompletionTest extends OMTCompletionTestCase {
+class OMTODTInjectableSectionCompletionTest extends OMTCompletionTestCase {
 
     @Test
     void testHasQueryTemplateCompletions() {

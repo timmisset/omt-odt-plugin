@@ -1,6 +1,5 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
@@ -14,7 +13,11 @@ import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.omt.psi.OMTVariable;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -22,13 +25,12 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addInjectedCallablesToMap;
-import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 
 public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implements
         OMTVariableProvider,
@@ -69,8 +71,8 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
-        HashMap<String, List<PsiElement>> variableMap = new HashMap<>();
+    public @NotNull HashMap<String, Collection<PsiVariable>> getVariableMap(YAMLMapping mapping) {
+        HashMap<String, Collection<PsiVariable>> variableMap = new HashMap<>();
         OMTVariableProviderUtil.addSequenceToMap(mapping, "variables", variableMap);
 
         // add the bindings to the map:
@@ -78,28 +80,35 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
         // where the name of the variable that is declared is set using the bindTo property
 
         final YAMLKeyValue bindings = mapping.getKeyValueByKey("bindings");
-        if(bindings != null && bindings.getValue() instanceof YAMLMapping) {
+        if (bindings != null && bindings.getValue() instanceof YAMLMapping) {
             final YAMLMapping bindingsMap = (YAMLMapping) bindings.getValue();
             bindingsMap
                     .getKeyValues()
                     .stream()
                     .map(YAMLKeyValue::getValue)
-                    .forEach(value -> addToGroupedMap(OMTVariableProviderUtil.getVariableName(value, "bindTo"), getBindToValue(value), variableMap));
+                    .forEach(value -> variableMap
+                            .computeIfAbsent(OMTVariableProviderUtil.getVariableName(value, "bindTo"), s -> new ArrayList<>())
+                            .add(getBindToValue(value)));
         }
 
         return variableMap;
     }
 
-    private YAMLValue getBindToValue(YAMLValue value) {
-        if (value instanceof YAMLPlainTextImpl) {
-            return value;
+    private OMTVariable getBindToValue(YAMLValue value) {
+        if (value instanceof YAMLMapping) {
+            YAMLKeyValue bindTo = ((YAMLMapping) value).getKeyValueByKey("bindTo");
+            if (bindTo == null) {
+                return null;
+            }
+            value = bindTo.getValue();
         }
-        return Optional.ofNullable(value)
-                .filter(YAMLMapping.class::isInstance)
-                .map(YAMLMapping.class::cast)
-                .map(mapping -> mapping.getKeyValueByKey("bindTo"))
-                .map(YAMLKeyValue::getValue)
-                .orElse(null);
+        if (value instanceof YAMLPlainTextImpl) {
+            OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate(value);
+            if (delegate instanceof OMTVariable) {
+                return (OMTVariable) delegate;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -113,8 +122,9 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping, PsiLanguageInjectionHost host) {
-        HashMap<String, List<PsiCallable>> map = new HashMap<>();
+    public @NotNull HashMap<String, Collection<PsiCallable>> getCallableMap(YAMLMapping yamlMapping,
+                                                                            PsiLanguageInjectionHost host) {
+        HashMap<String, Collection<PsiCallable>> map = new HashMap<>();
         addInjectedCallablesToMap(yamlMapping, "commands", map, host);
         addInjectedCallablesToMap(yamlMapping, "queries", map, host);
         return map;

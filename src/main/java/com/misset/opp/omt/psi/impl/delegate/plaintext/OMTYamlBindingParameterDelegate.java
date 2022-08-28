@@ -43,4 +43,5 @@ public class OMTYamlBindingParameterDelegate extends OMTYamlVariableDelegate imp
     public String getSource() {
         return "OMT binding";
     }
+
 }

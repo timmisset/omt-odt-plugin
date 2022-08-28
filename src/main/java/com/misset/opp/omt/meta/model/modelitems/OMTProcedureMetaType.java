@@ -1,8 +1,8 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.documentation.OMTDocumented;
+import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
@@ -12,7 +12,6 @@ import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
-import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTReasonMetaType;
 import com.misset.opp.resolvable.Context;
@@ -20,7 +19,9 @@ import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.Commit;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.resolvable.local.Rollback;
+import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiResolvableScript;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,7 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
         OMTMetaCallable,
         OMTDocumented {
     private static final OMTProcedureMetaType INSTANCE = new OMTProcedureMetaType();
+    public static final String PROCEDURE = "Procedure";
 
     public static OMTProcedureMetaType getInstance() {
         return INSTANCE;
@@ -70,10 +72,10 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
-        HashMap<String, List<PsiElement>> variableMap = new HashMap<>();
+    public @NotNull HashMap<String, Collection<PsiVariable>> getVariableMap(YAMLMapping mapping) {
+        HashMap<String, Collection<PsiVariable>> variableMap = new HashMap<>();
         addSequenceToMap(mapping, "variables", variableMap);
-        addSequenceToMap(mapping, "params", variableMap, true);
+        addSequenceToMap(mapping, "params", variableMap);
 
         return variableMap;
     }
@@ -84,8 +86,8 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getPrefixMap(YAMLMapping yamlMapping) {
-        HashMap<String, List<PsiElement>> map = new HashMap<>();
+    public @NotNull Map<String, Collection<PsiPrefix>> getPrefixMap(YAMLMapping yamlMapping) {
+        Map<String, Collection<PsiPrefix>> map = new HashMap<>();
         addPrefixesToMap(yamlMapping, "prefixes", map);
         return map;
     }
@@ -93,14 +95,14 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     @Override
     public HashMap<String, LocalCommand> getLocalCommandsMap() {
         final HashMap<String, LocalCommand> map = new HashMap<>();
-        map.put(Commit.INSTANCE.getCallId(), Commit.INSTANCE);
-        map.put(Rollback.INSTANCE.getCallId(), Rollback.INSTANCE);
+        map.put(Commit.CALLID, new Commit(PROCEDURE));
+        map.put(Rollback.CALLID, new Rollback(PROCEDURE));
         return map;
     }
 
     @Override
     public String getType() {
-        return "PROCEDURE";
+        return PROCEDURE;
     }
 
     @Override
@@ -111,7 +113,7 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
         }
         Set<OntResource> resources = Optional.ofNullable(mapping.getKeyValueByKey("onRun"))
                 .map(YAMLKeyValue::getValue)
-                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableScript.class))
+                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, PsiResolvableScript.class))
                 .stream()
                 .flatMap(Collection::stream)
                 .map(Resolvable::resolve)
@@ -148,6 +150,6 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
 
     @Override
     public String getDocumentationClass() {
-        return "Procedure";
+        return PROCEDURE;
     }
 }

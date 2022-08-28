@@ -1,6 +1,5 @@
 package com.misset.opp.omt.psi.impl;
 
-import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
@@ -23,7 +22,6 @@ import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
-import com.misset.opp.shared.InjectionHost;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLDocument;
@@ -35,10 +33,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
-    private static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> EXPORTING_MEMBERS = new Key<>("EXPORTING_MEMBERS");
-    private static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> EXPORTING_DECLARED_MEMBERS = new Key<>(
+    private static final Key<CachedValue<Map<String, Collection<PsiCallable>>>> EXPORTING_MEMBERS = new Key<>("EXPORTING_MEMBERS");
+    private static final Key<CachedValue<Map<String, Collection<PsiCallable>>>> EXPORTING_DECLARED_MEMBERS = new Key<>(
             "EXPORTING_DECLARED_MEMBERS");
-    private static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> IMPORTING_MEMBERS = new Key<>(
+    private static final Key<CachedValue<Map<String, Collection<PsiCallable>>>> IMPORTING_MEMBERS = new Key<>(
             "IMPORTING_MEMBERS");
     private static final Key<CachedValue<Map<String, List<PsiCall>>>> PSI_CALLS = new Key<>("PSI_CALLS");
 
@@ -67,45 +65,20 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
         return GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.projectScope(getProject()), OMTFileType.INSTANCE);
     }
 
-    @Override
-    public Map<String, List<PsiCall>> getAllInjectedPsiCalls() {
-        return CachedValuesManager.getCachedValue(
-                this,
-                PSI_CALLS,
-                () -> new CachedValueProvider.Result<>(calculateAllInjectedPsiCalls(), this));
-    }
-
-    private Map<String, List<PsiCall>> calculateAllInjectedPsiCalls() {
-        InjectedLanguageManager languageManager = InjectedLanguageManager.getInstance(getProject());
-        return PsiTreeUtil.findChildrenOfType(this, InjectionHost.class)
-                .stream()
-                .map(languageManager::getInjectedPsiFiles)
-                .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
-                .map(pair -> pair.getFirst())
-                .map(this::getCallsFromInjectedFragment)
-                .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(PsiCall::getName));
-    }
-
-    private Collection<PsiCall> getCallsFromInjectedFragment(PsiElement injectedFragment) {
-        return PsiTreeUtil.findChildrenOfType(injectedFragment, PsiCall.class);
-    }
-
     /**
      * Returns all the exportable members of this file, including members that are imported from other files
      */
     @Override
-    public HashMap<String, List<PsiCallable>> getExportingMembersMap() {
+    public Map<String, Collection<PsiCallable>> getExportingMembersMap() {
         return CachedValuesManager.getCachedValue(this, EXPORTING_MEMBERS, () -> {
-            final HashMap<String, List<PsiCallable>> map = Optional.ofNullable(getRootMapping())
+            final HashMap<String, Collection<PsiCallable>> map = Optional.ofNullable(getRootMapping())
                     .map(this::getExportingMembersMap)
                     .orElse(new HashMap<>());
             return new CachedValueProvider.Result<>(map, this);
         });
     }
 
-    private HashMap<String, List<PsiCallable>> getExportingMembersMap(YAMLMapping yamlMapping) {
+    private HashMap<String, Collection<PsiCallable>> getExportingMembersMap(YAMLMapping yamlMapping) {
         return LoggerUtil.computeWithLogger(LOGGER, "getExportingMembersMap", () ->
                 ReadAction.compute(() -> OMTFileMetaType.getInstance().getCallableMap(yamlMapping)));
     }
@@ -114,16 +87,16 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
      * Returns the exportable members that are declared in this file
      */
     @Override
-    public HashMap<String, List<PsiCallable>> getDeclaredExportingMembersMap() {
+    public Map<String, Collection<PsiCallable>> getDeclaredExportingMembersMap() {
         return CachedValuesManager.getCachedValue(this, EXPORTING_DECLARED_MEMBERS, () -> {
-            final HashMap<String, List<PsiCallable>> map = Optional.ofNullable(getRootMapping())
+            final Map<String, Collection<PsiCallable>> map = Optional.ofNullable(getRootMapping())
                     .map(this::getDeclaredExportingMembersMap)
                     .orElse(new HashMap<>());
             return new CachedValueProvider.Result<>(map, this);
         });
     }
 
-    private HashMap<String, List<PsiCallable>> getDeclaredExportingMembersMap(YAMLMapping yamlMapping) {
+    private Map<String, Collection<PsiCallable>> getDeclaredExportingMembersMap(YAMLMapping yamlMapping) {
         return LoggerUtil.computeWithLogger(LOGGER, "getExportingMembersMap", () ->
                 ReadAction.compute(() -> OMTFileMetaType.getInstance().getDeclaredCallableMap(yamlMapping, null)));
     }
@@ -132,30 +105,28 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
      * Returns the exportable members that are declared in this file
      */
     @Override
-    public HashMap<String, List<PsiCallable>> getImportingMembersMap() {
+    public Map<String, Collection<PsiCallable>> getImportingMembersMap() {
         return CachedValuesManager.getCachedValue(this, IMPORTING_MEMBERS, () -> {
-            final HashMap<String, List<PsiCallable>> map = Optional.ofNullable(getRootMapping())
+            final Map<String, Collection<PsiCallable>> map = Optional.ofNullable(getRootMapping())
                     .map(this::getImportingMembersMap)
                     .orElse(new HashMap<>());
             return new CachedValueProvider.Result<>(map, this);
         });
     }
 
-    private HashMap<String, List<PsiCallable>> getImportingMembersMap(YAMLMapping yamlMapping) {
+    private Map<String, Collection<PsiCallable>> getImportingMembersMap(YAMLMapping yamlMapping) {
         return LoggerUtil.computeWithLogger(LOGGER, "getImportingMembersMap", () ->
                 ReadAction.compute(() -> OMTFileMetaType.getInstance().getImportingMembers(yamlMapping)));
     }
 
     @Override
     public Map<String, String> getAvailableNamespaces(PsiElement element) {
-        return OMTMetaTreeUtil.collectMetaParents(element, YAMLMapping.class, OMTPrefixProvider.class, false, Objects::isNull)
+        return OMTMetaTreeUtil.collectMetaParents(element, YAMLMapping.class, OMTPrefixProvider.class)
                 .entrySet()
                 .stream()
                 .map(entry -> entry.getValue().getNamespaces(entry.getKey()))
                 .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (s, s2) -> s));
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (s, s2) -> s));
     }
 
     @Override

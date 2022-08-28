@@ -8,6 +8,6 @@ class BuiltinCommandsTest {
 
     @Test
     void testHasBuiltinCommands() {
-        assertFalse(BuiltinCommands.builtinCommands.isEmpty());
+        assertFalse(BuiltinCommands.getCommands().isEmpty());
     }
 }

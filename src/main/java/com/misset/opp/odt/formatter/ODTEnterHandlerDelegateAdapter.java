@@ -16,6 +16,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTIgnored;
+import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -43,7 +44,7 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
             insert(file.getProject(), editor, "* \n */", caretOffset.get());
             moveCaretAfterInsert = 3;
         }
-        minimalLineOffset = ODTHostFormattingUtil.getMinimalLineOffset(file);
+        minimalLineOffset = OMTODTInjectionUtil.getMinimalLineOffset(file);
         return Result.Continue;
     }
 
@@ -61,7 +62,7 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
                     CaretImpl currentCaret = (CaretImpl) caret;
                     if (currentCaret.getVisualPosition().column == 0) {
                         // known issue with continuation indent when injected
-                        Document hostDocument = ODTHostFormattingUtil.getHostDocument(file);
+                        Document hostDocument = OMTODTInjectionUtil.getHostDocument(file);
                         if (hostDocument == null) {
                             return Result.Continue;
                         }

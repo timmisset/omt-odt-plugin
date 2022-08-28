@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.util;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 
@@ -33,7 +34,8 @@ public class PsiRelationshipUtil {
             // IF true { VAR $variable; } ELSE { @LOG($variable); } <-- failed
             return PsiTreeUtil.getParentOfType(declaringElement, ODTDefineStatement.class, ODTScript.class) == commonParent;
         }
-        return false;
+        // or, if the declaring element is in the root of the file (relative position is already checked in the first assertion)
+        return commonParent instanceof ODTFile;
     }
 
 }

@@ -3,9 +3,10 @@ package com.misset.opp.resolvable.local;
 import com.intellij.openapi.project.Project;
 
 public class Rollback extends LocalCommand {
-    public static Rollback INSTANCE = new Rollback();
+    public static final String CALLID = "@ROLLBACK";
 
-    protected Rollback() {
+    public Rollback(String source) {
+        super(source);
     }
 
     @Override
@@ -14,8 +15,8 @@ public class Rollback extends LocalCommand {
     }
 
     @Override
-    public String getDescription(String context, Project project) {
-        return String.format("Rollback all changes without ending the %s", context);
+    public String getDescription(Project project) {
+        return String.format("Rollback all changes without ending the %s", getSource());
     }
 
     @Override

@@ -8,6 +8,14 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class LocalCommand implements Callable {
+
+    private final String source;
+
+    protected LocalCommand(String source) {
+
+        this.source = source;
+    }
+
     @Override
     public int minNumberOfArguments() {
         return 0;
@@ -53,5 +61,9 @@ public abstract class LocalCommand implements Callable {
     @Override
     public Map<Integer, String> getParameterNames() {
         return new HashMap<>();
+    }
+
+    public String getSource() {
+        return source;
     }
 }

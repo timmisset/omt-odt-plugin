@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.shared.InjectableContentType;
+import com.misset.opp.omt.injection.InjectableContentType;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;

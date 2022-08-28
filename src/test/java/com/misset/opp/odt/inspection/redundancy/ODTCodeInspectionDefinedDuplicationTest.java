@@ -52,7 +52,7 @@ class ODTCodeInspectionDefinedDuplicationTest extends OMTInspectionTestCase {
                 "       onRun: @LOG('hi');\n" +
                 "";
         configureByText(content);
-        assertHasWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_SHADOW);
+        assertHasWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
     }
 
 }

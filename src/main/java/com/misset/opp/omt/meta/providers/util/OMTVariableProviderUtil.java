@@ -1,22 +1,26 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
+import com.misset.opp.omt.psi.OMTVariable;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import org.jetbrains.yaml.psi.*;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
-import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
-
-public class OMTVariableProviderUtil extends OMTProviderUtil {
+public class OMTVariableProviderUtil {
 
     public static String getVariableName(YAMLSequenceItem sequenceItem) {
         return getVariableName(sequenceItem.getValue(), "name");
     }
+
     public static String getVariableName(YAMLValue value, String destructedKeyId) {
-        if(value instanceof YAMLPlainTextImpl) {
+        if (value instanceof YAMLPlainTextImpl) {
             return getVariableName((YAMLPlainTextImpl) value);
         } else if (value instanceof YAMLMapping) {
             return getVariableName((YAMLMapping) value, destructedKeyId);
@@ -37,47 +41,40 @@ public class OMTVariableProviderUtil extends OMTProviderUtil {
 
     public static void addSequenceToMap(YAMLMapping mapping,
                                         String key,
-                                        HashMap<String, List<PsiElement>> map) {
-        addSequenceToMap(mapping, key, map, false);
-    }
-
-    public static void addSequenceToMap(YAMLMapping mapping,
-                                        String key,
-                                        HashMap<String, List<PsiElement>> map,
-                                        boolean isParameter) {
+                                        Map<String, Collection<PsiVariable>> map) {
         final YAMLKeyValue variables = mapping.getKeyValueByKey(key);
         if (variables != null && variables.getValue() instanceof YAMLSequence) {
-            addSequenceToMap((YAMLSequence) variables.getValue(), map, isParameter);
+            addSequenceToMap((YAMLSequence) variables.getValue(), map);
         }
     }
 
     public static void addSequenceToMap(YAMLSequence sequence,
-                                        HashMap<String, List<PsiElement>> map
-    ) {
-        addSequenceToMap(sequence, map, false);
+                                        Map<String, Collection<PsiVariable>> map) {
+        for (YAMLSequenceItem sequenceItem : sequence.getItems()) {
+            String key = getVariableName(sequenceItem);
+            OMTVariable referenceTarget = getReferenceTarget(sequenceItem);
+            map.computeIfAbsent(key, s -> new ArrayList<>()).add(referenceTarget);
+        }
     }
 
-    public static void addSequenceToMap(YAMLSequence sequence,
-                                        HashMap<String, List<PsiElement>> map,
-                                        boolean isParameter) {
-        sequence.getItems()
-                .forEach(sequenceItem -> addToGroupedMap(getVariableName(sequenceItem),
-                        getReferenceTarget(sequenceItem, isParameter),
-                        map));
+    private static OMTVariable getReferenceTarget(YAMLSequenceItem sequenceItem) {
+        return getReferenceTarget(sequenceItem.getValue(), "name");
     }
 
-    private static PsiElement getReferenceTarget(YAMLSequenceItem sequenceItem, boolean isParameter) {
-        final YAMLValue yamlValue = sequenceItem.getValue();
+    public static OMTVariable getReferenceTarget(YAMLValue yamlValue, String nameKeyIfMap) {
         if (yamlValue instanceof YAMLMapping) {
             // destructed notation, return the "name":
             final YAMLMapping yamlMapping = (YAMLMapping) yamlValue;
-            final YAMLKeyValue name = yamlMapping.getKeyValueByKey("name");
-            if (name == null) {
+            final YAMLKeyValue name = yamlMapping.getKeyValueByKey(nameKeyIfMap);
+            if (name == null || !(name.getValue() instanceof YAMLPlainTextImpl)) {
                 return null;
             }
-            return name.getValue();
-        } else {
-            return yamlValue;
+            yamlValue = name.getValue();
         }
+        OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate(yamlValue);
+        if (delegate instanceof OMTVariable) {
+            return (OMTVariable) delegate;
+        }
+        return null;
     }
 }

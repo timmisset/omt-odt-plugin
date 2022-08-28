@@ -7,45 +7,36 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
-import com.misset.opp.odt.ODTInjectionUtil;
-import com.misset.opp.odt.builtin.commands.BuiltinCommands;
-import com.misset.opp.odt.builtin.operators.BuiltinOperators;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
-import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
-import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.misset.opp.omt.meta.OMTMetaTreeUtil.collectLocalCommandProviders;
-
 public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODTCall, ODTResolvable {
-    public ODTResolvableCall(@NotNull ASTNode node) {
+    //    private static final Key<CachedValue<Callable>> CALLABLE = new Key<>("CALLABLE");
+    private static final Key<CachedValue<Set<OntResource>>> RESOLVED = new Key<>("RESOLVED");
+    private final String localCommandProvider = null;
+    private final HashMap<String, Set<OntResource>> parameters = new HashMap<>();
+
+    protected ODTResolvableCall(@NotNull ASTNode node) {
         super(node);
     }
-
-    private static final Key<CachedValue<Callable>> CALLABLE = new Key<>("CALLABLE");
-    private static final Key<CachedValue<Set<OntResource>>> RESOLVED = new Key<>("RESOLVED");
-    private final HashMap<String, Set<OntResource>> parameters = new HashMap<>();
-    private String localCommandProvider = null;
 
     Logger LOGGER = Logger.getInstance(ODTResolvableCall.class);
 
@@ -54,75 +45,76 @@ public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODT
         return new ODTCallReference(this, getCallName().getTextRangeInParent());
     }
 
-    @NotNull
-    public abstract ODTCallName getCallName();
-
-    /**
-     * Distinct name for the call, when calling a command it will include the AT(@) symbol
-     */
-    public abstract String getCallId();
-
     public Callable getCallable() {
-        return CachedValuesManager.getCachedValue(this, CALLABLE, () -> new CachedValueProvider.Result<>(calculateCallable(),
-                getODTFile(),
-                PsiModificationTracker.MODIFICATION_COUNT));
+        PsiFile containingFile = getContainingFile();
+        if (!(containingFile instanceof ODTFile)) {
+            return null;
+        }
+        return ((ODTFile) containingFile).getCallables(getCallId()).stream().findFirst().orElse(null);
+//                .stream()
+//                .map(Callable.class::cast)
+//                .findFirst()
+//                .or(this::getBuiltin)
+//                .orElse(null);
+//        return CachedValuesManager.getCachedValue(this, CALLABLE, () -> new CachedValueProvider.Result<>(calculateCallable(),
+//                getODTFile(),
+//                PsiModificationTracker.MODIFICATION_COUNT));
     }
-
-    private Callable calculateCallable() {
-        return LoggerUtil.computeWithLogger(LOGGER, "Getting callable for call " + getCallId(),
-                () -> getBuiltin()
-                        .or(this::getLocalCommand)
-                        .or(this::resolveFromReference)
-                        .orElse(null));
-    }
-
-    private Optional<Callable> resolveFromReference() {
-        return Optional.ofNullable(getReference())
-                .map(odtCallReference -> odtCallReference.resolve(false))
-                .filter(Callable.class::isInstance)
-                .map(Callable.class::cast);
-    }
+//
+//    private Callable calculateCallable() {
+//        return LoggerUtil.computeWithLogger(LOGGER, "Getting callable for call " + getCallId(),
+//                () -> getBuiltin()
+//                        .or(this::getLocalCommand)
+//                        .or(this::resolveFromReference)
+//                        .orElse(null));
+//    }
+//
+//    private Optional<Callable> resolveFromReference() {
+//        return Optional.ofNullable(getReference())
+//                .map(odtCallReference -> odtCallReference.resolve(false))
+//                .filter(Callable.class::isInstance)
+//                .map(Callable.class::cast);
+//    }
 
     @Override
     public String getName() {
         return getCallName().getText();
     }
-
-    private Optional<Callable> getLocalCommand() {
-        final PsiLanguageInjectionHost injectionHost = ODTInjectionUtil.getInjectionHost(this);
-        if (injectionHost == null) {
-            return Optional.empty();
-        }
-
-        final LinkedHashMap<YAMLMapping, OMTLocalCommandProvider> linkedHashMap = collectLocalCommandProviders(
-                injectionHost);
-        for (YAMLMapping mapping : linkedHashMap.keySet()) {
-            OMTLocalCommandProvider callableProvider = linkedHashMap.get(mapping);
-            final HashMap<String, LocalCommand> callableMap = callableProvider.getLocalCommandsMap();
-            if (callableMap.containsKey(getCallId())) {
-                localCommandProvider = callableProvider.getType();
-                return Optional.of(callableMap.get(getCallId()));
-            }
-        }
-        return Optional.empty();
-    }
+//
+//    private Optional<Callable> getLocalCommand() {
+//        final PsiLanguageInjectionHost injectionHost = ODTInjectionUtil.getInjectionHost(this);
+//        if (injectionHost == null) {
+//            return Optional.empty();
+//        }
+//
+//        final LinkedHashMap<YAMLMapping, OMTLocalCommandProvider> linkedHashMap = collectLocalCommandProviders(
+//                injectionHost);
+//        for (YAMLMapping mapping : linkedHashMap.keySet()) {
+//            OMTLocalCommandProvider callableProvider = linkedHashMap.get(mapping);
+//            final HashMap<String, LocalCommand> callableMap = callableProvider.getLocalCommandsMap();
+//            if (callableMap.containsKey(getCallId())) {
+//                localCommandProvider = callableProvider.getType();
+//                return Optional.of(callableMap.get(getCallId()));
+//            }
+//        }
+//        return Optional.empty();
+//    }
 
     @Override
     public String getLocalCommandProvider() {
         return localCommandProvider;
     }
-
-    private Optional<Callable> getBuiltin() {
-        return Optional.ofNullable(BuiltinCommands.builtinCommands.get(getCallId()))
-                .or(() -> Optional.ofNullable(BuiltinOperators.get(getCallId())));
-    }
+//
+//    private Optional<Callable> getBuiltin() {
+//        return Optional.ofNullable(BuiltinCommands.builtinCommands.get(getCallId()))
+//                .or(() -> Optional.ofNullable(BuiltinOperators.get(getCallId())));
+//    }
 
     @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
         final ODTCallName callName = ODTElementGenerator.getInstance(getProject()).createCallName(name);
         return getCallName().replace(callName);
     }
-
 
     @Override
     public @NotNull Set<OntResource> resolve() {

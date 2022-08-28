@@ -34,6 +34,9 @@
                   language="OMT" extensions="omt"/>
         <notificationGroup id="Import mapping" displayType="BALLOON"/>
         <lang.parserDefinition language="OMT" implementationClass="com.misset.opp.omt.OMTParserDefinition"/>
+        <lang.parserDefinition language="OMTODTFragment"
+                               implementationClass="com.misset.opp.omt.injection.OMTODTFragmentParserDefinition"/>
+        <multiHostInjector implementation="com.misset.opp.omt.injection.OMTODTMultiHostInjector"/>
 
         <lang.findUsagesProvider language="yaml" order="before yamlFindUsagesProvider"
                                  implementationClass="com.misset.opp.omt.OMTFindUsageProvider"/>
@@ -90,7 +93,6 @@
         <!-- ODT -->
         <fileType name="ODT File" implementationClass="com.misset.opp.odt.ODTFileType" fieldName="INSTANCE"
                   language="ODT" extensions="odt"/>
-        <multiHostInjector implementation="com.misset.opp.odt.ODTMultiHostInjector"/>
         <lang.parserDefinition language="ODT"
                                implementationClass="com.misset.opp.odt.ODTParserDefinition"/>
         <lang.findUsagesProvider language="ODT" implementationClass="com.misset.opp.odt.ODTFindUsagesProvider"/>
@@ -122,7 +124,7 @@
 
         <!-- Specific completions that should run first and stop the completion when applicable -->
         <completion.contributor order="first" language="ODT"
-                                implementationClass="com.misset.opp.odt.completion.ODTInjectableSectionCompletion"/>
+                                implementationClass="com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion"/>
         <completion.contributor order="first" language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionAssign"/>
         <completion.contributor order="first" language="ODT"

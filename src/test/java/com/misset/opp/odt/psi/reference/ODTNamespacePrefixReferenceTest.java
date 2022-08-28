@@ -24,7 +24,7 @@ class ODTNamespacePrefixReferenceTest extends OMTTestCase {
                 "           @LOG(/a<caret>bc:test);\n" +
                 "";
         configureByText(content);
-        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret().getParent() instanceof ODTDefinePrefix));
+        ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof ODTDefinePrefix));
     }
 
     @Test

@@ -11,8 +11,8 @@ import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -44,7 +44,9 @@ public abstract class OMTPlainTextReference extends PsiReferenceBase.Poly<YAMLPl
                 .orElse(myElement);
     }
 
-    protected ResolveResult[] toResults(List<? extends PsiElement> resolvedElements, boolean resolveToOriginalElement, boolean resolveToFinalElement) {
+    protected ResolveResult[] toResults(Collection<? extends PsiElement> resolvedElements,
+                                        boolean resolveToOriginalElement,
+                                        boolean resolveToFinalElement) {
         return resolvedElements.stream()
                 .filter(Objects::nonNull)
                 .map(psiCallable -> {
@@ -62,7 +64,7 @@ public abstract class OMTPlainTextReference extends PsiReferenceBase.Poly<YAMLPl
                 .toArray(ResolveResult[]::new);
     }
 
-    protected ResolveResult[] toResults(List<? extends PsiElement> resolvedElements) {
+    protected ResolveResult[] toResults(Collection<? extends PsiElement> resolvedElements) {
         return toResults(resolvedElements, true, true);
     }
 
@@ -80,13 +82,16 @@ public abstract class OMTPlainTextReference extends PsiReferenceBase.Poly<YAMLPl
         if (!(containingFile instanceof OMTFile)) {
             return ResolveResult.EMPTY_ARRAY;
         } else {
-            HashMap<String, List<PsiCallable>> exportingMembersMap = ((OMTFile) containingFile).getExportingMembersMap();
+            Map<String, Collection<PsiCallable>> exportingMembersMap = ((OMTFile) containingFile).getExportingMembersMap();
             String name = element.getName();
             return fromExportableMembersMap(exportingMembersMap, name, true, resolveToFinalElement);
         }
     }
 
-    protected ResolveResult[] fromExportableMembersMap(HashMap<String, List<PsiCallable>> map, String name, boolean resolveToOriginalElement, boolean resolveToFinalElement) {
+    protected ResolveResult[] fromExportableMembersMap(Map<String, Collection<PsiCallable>> map,
+                                                       String name,
+                                                       boolean resolveToOriginalElement,
+                                                       boolean resolveToFinalElement) {
         return Optional.ofNullable(map.get(name))
                 .map(psiCallables -> toResults(psiCallables, resolveToOriginalElement, resolveToFinalElement))
                 .orElse(ResolveResult.EMPTY_ARRAY);

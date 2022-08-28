@@ -28,7 +28,7 @@ class JsonParseCommandTest extends BaseBuiltinTest {
 
     @Test
     void testDescription() {
-        Assertions.assertEquals(JsonParseCommand.DESCRIPTION, JsonParseCommand.INSTANCE.getDescription("", null));
+        Assertions.assertEquals(JsonParseCommand.DESCRIPTION, JsonParseCommand.INSTANCE.getDescription(null));
     }
 
     @Test

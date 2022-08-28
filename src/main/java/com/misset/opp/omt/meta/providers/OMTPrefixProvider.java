@@ -1,28 +1,24 @@
 package com.misset.opp.omt.meta.providers;
 
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.CachedValue;
+import com.misset.opp.resolvable.psi.PsiPrefix;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.Map;
 
 import static com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil.addPrefixesToMap;
 
 public interface OMTPrefixProvider extends OMTMetaTypeStructureProvider {
-    Key<CachedValue<LinkedHashMap<YAMLMapping, OMTPrefixProvider>>> KEY = new Key<>("OMTPrefixProvider");
-
     /**
      * Returns the prefix map from the expected key 'prefixes', since all current providers
      * use the same key and structure to provide the structure, this interface has a default method
      */
-    @NotNull
-    default HashMap<String, List<PsiElement>> getPrefixMap(YAMLMapping yamlMapping) {
-        HashMap<String, List<PsiElement>> map = new HashMap<>();
+    default @NotNull Map<String, Collection<PsiPrefix>> getPrefixMap(YAMLMapping yamlMapping) {
+        HashMap<String, Collection<PsiPrefix>> map = new HashMap<>();
         addPrefixesToMap(yamlMapping, "prefixes", map);
         return map;
     }
@@ -32,12 +28,12 @@ public interface OMTPrefixProvider extends OMTMetaTypeStructureProvider {
      * Use this to create suggestions for creating curies from fully qualified URIs
      */
     @NotNull
-    default HashMap<String, String> getNamespaces(YAMLMapping yamlMapping) {
-        final HashMap<String, List<PsiElement>> prefixMap = getPrefixMap(yamlMapping);
+    default Map<String, String> getNamespaces(YAMLMapping yamlMapping) {
+        final Map<String, Collection<PsiPrefix>> prefixMap = getPrefixMap(yamlMapping);
         HashMap<String, String> namespaces = new HashMap<>();
         prefixMap.forEach((key, psiElements) -> {
             // only namespace should be present per key
-            final PsiElement psiElement = psiElements.get(0);
+            final PsiElement psiElement = psiElements.iterator().next();
             if (psiElement instanceof YAMLKeyValue) {
                 final String iri = ((YAMLKeyValue) psiElement).getValueText();
                 if (iri.length() > 2) {

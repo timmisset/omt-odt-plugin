@@ -48,7 +48,7 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
         sb.append(callable.getName());
         sb.append(DocumentationMarkup.DEFINITION_END);
 
-        String description = callable.getDescription(call.getLocalCommandProvider(), project);
+        String description = callable.getDescription(project);
         if (description != null) {
             sb.append(DocumentationMarkup.CONTENT_START);
             sb.append(description);
@@ -83,7 +83,7 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
     private String getBuiltinDocumentation(Project project, Callable callable, ODTCall call) {
         // static documentation from the API.md
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(callable.getDescription(null, project));
+        stringBuilder.append(callable.getDescription(project));
         appendReturnInformation(callable, call, stringBuilder);
         return stringBuilder.toString();
     }

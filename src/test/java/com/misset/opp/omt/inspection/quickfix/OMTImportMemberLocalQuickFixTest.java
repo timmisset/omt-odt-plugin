@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection.quikfix;
+package com.misset.opp.omt.inspection.quickfix;
 
 import com.intellij.application.options.CodeStyle;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -15,7 +15,7 @@ import org.jetbrains.yaml.formatter.YAMLCodeStyleSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ODTImportMemberLocalQuickFixTest extends OMTTestCase {
+class OMTImportMemberLocalQuickFixTest extends OMTTestCase {
 
     private void setYamlIndentation(OMTFile file) {
         YAMLCodeStyleSettings yamlCodeStyleSettings = CodeStyle.getCustomSettings(file, YAMLCodeStyleSettings.class);
@@ -34,8 +34,8 @@ class ODTImportMemberLocalQuickFixTest extends OMTTestCase {
 
         ProblemDescriptorImpl descriptor = ReadAction.compute(() -> {
             ODTCall call = (ODTCall) myFixture.getElementAtCaret();
-            PsiCallable callable = omtFile.getExportingMembersMap().get("query").get(0);
-            ODTImportMemberLocalQuickFix localQuickFix = new ODTImportMemberLocalQuickFix(omtFile, callable);
+            PsiCallable callable = omtFile.getExportingMembersMap().get("query").iterator().next();
+            OMTImportMemberLocalQuickFix localQuickFix = new OMTImportMemberLocalQuickFix(omtFile, callable);
 
             Assertions.assertEquals("Import as DEFINE QUERY from ./importedFile.omt", localQuickFix.getName());
             Assertions.assertEquals("Import", localQuickFix.getFamilyName());

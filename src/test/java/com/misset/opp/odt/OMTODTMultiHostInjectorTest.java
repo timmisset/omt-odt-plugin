@@ -5,7 +5,7 @@ import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ODTMultiHostInjectorTest extends OMTTestCase {
+class OMTODTMultiHostInjectorTest extends OMTTestCase {
 
     @Test
     void testInjectODTInOnStart() {
@@ -14,7 +14,6 @@ class ODTMultiHostInjectorTest extends OMTTestCase {
                         "   @<caret>LOG('test');"
         ));
         ReadAction.run(() -> Assertions.assertNotNull(getCallByName("LOG")));
-
     }
 
 }

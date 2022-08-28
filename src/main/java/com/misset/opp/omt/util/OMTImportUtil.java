@@ -9,8 +9,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiSearchHelper;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.inspection.quikfix.ODTImportMemberLocalQuickFix;
 import com.misset.opp.omt.OMTFileType;
+import com.misset.opp.omt.inspection.quickfix.OMTImportMemberLocalQuickFix;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
@@ -64,12 +64,12 @@ public class OMTImportUtil {
     }
 
     private static List<LocalQuickFix> getImportQuickFixes(OMTFile importedFile, OMTFile importingFile, PsiCall call) {
-        HashMap<String, List<PsiCallable>> exportedMembers = importedFile.getExportingMembersMap();
+        Map<String, Collection<PsiCallable>> exportedMembers = importedFile.getExportingMembersMap();
         String callId = call.getCallId();
         if (exportedMembers.containsKey(callId)) {
-            List<PsiCallable> psiCallables = exportedMembers.get(callId);
+            Collection<PsiCallable> psiCallables = exportedMembers.get(callId);
             return psiCallables.stream()
-                    .map(psiCallable -> new ODTImportMemberLocalQuickFix(importingFile, psiCallable))
+                    .map(psiCallable -> new OMTImportMemberLocalQuickFix(importingFile, psiCallable))
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();

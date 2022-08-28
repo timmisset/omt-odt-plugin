@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta.scalars.scripts;
 
-import com.misset.opp.shared.InjectableContentType;
+import com.misset.opp.omt.injection.InjectableContentType;
 
 public class OMTQueriesMetaType extends OMTScriptMetaType {
     private static final OMTQueriesMetaType INSTANCE = new OMTQueriesMetaType();

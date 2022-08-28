@@ -2,7 +2,6 @@ package com.misset.opp.omt.meta.actions;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
@@ -15,6 +14,7 @@ import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTActionScriptMetaType;
 import com.misset.opp.resolvable.local.LocalVariable;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -61,9 +61,9 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
-        HashMap<String, List<PsiElement>> variableMap = new HashMap<>();
-        OMTVariableProviderUtil.addSequenceToMap(mapping, "params", variableMap, true);
+    public @NotNull HashMap<String, Collection<PsiVariable>> getVariableMap(YAMLMapping mapping) {
+        HashMap<String, Collection<PsiVariable>> variableMap = new HashMap<>();
+        OMTVariableProviderUtil.addSequenceToMap(mapping, "params", variableMap);
 
         return variableMap;
     }

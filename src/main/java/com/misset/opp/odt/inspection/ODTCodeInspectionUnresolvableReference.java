@@ -7,8 +7,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.javadoc.PsiDocTag;
-import com.misset.opp.odt.ODTInjectionUtil;
-import com.misset.opp.odt.inspection.quikfix.ODTRegisterPrefixLocalQuickFix;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTVariable;
@@ -17,7 +15,6 @@ import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.odt.psi.reference.ODTJavaDocTTLSubjectReference;
 import com.misset.opp.odt.psi.reference.ODTTypePrefixAnnotationReference;
 import com.misset.opp.omt.indexing.OMTPrefixIndex;
-import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.Nls;
@@ -114,11 +111,15 @@ public class ODTCodeInspectionUnresolvableReference extends LocalInspectionTool 
                                         @NotNull PsiReference reference,
                                         @NotNull PsiElement referenceHolder) {
         String prefix = reference.getRangeInElement().substring(referenceHolder.getText());
-        boolean injectedInOMT = ODTInjectionUtil.getInjectionHost(holder.getFile()) != null;
+
+        PsiFile file = holder.getFile();
+        if (!(file instanceof ODTFile)) {
+            return;
+        }
 
         LocalQuickFix[] localQuickFixes = OMTPrefixIndex.getNamespaces(prefix)
                 .stream()
-                .map(namespace -> getLocalQuikFix(injectedInOMT, prefix, namespace))
+                .map(namespace -> ((ODTFile) file).getRegisterPrefixQuickfix(prefix, namespace))
                 .toArray(LocalQuickFix[]::new);
 
         holder.registerProblem(referenceHolder,
@@ -126,13 +127,5 @@ public class ODTCodeInspectionUnresolvableReference extends LocalInspectionTool 
                 ProblemHighlightType.LIKE_UNKNOWN_SYMBOL,
                 reference.getRangeInElement(),
                 localQuickFixes);
-    }
-
-    private LocalQuickFix getLocalQuikFix(boolean injectedInOMT, String prefix, String namespace) {
-        if (injectedInOMT) {
-            return new OMTRegisterPrefixLocalQuickFix(prefix, namespace);
-        } else {
-            return new ODTRegisterPrefixLocalQuickFix(prefix, namespace);
-        }
     }
 }

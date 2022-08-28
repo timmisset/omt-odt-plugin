@@ -9,10 +9,10 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.omt.injection.InjectableContentType;
+import com.misset.opp.omt.injection.InjectionHost;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
-import com.misset.opp.shared.InjectableContentType;
-import com.misset.opp.shared.InjectionHost;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 

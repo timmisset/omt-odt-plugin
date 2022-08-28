@@ -22,7 +22,7 @@ public class JsonParseCommand extends BuiltInCommand {
     public static final JsonParseCommand INSTANCE = new JsonParseCommand();
 
     @Override
-    public String getDescription(String context, Project project) {
+    public String getDescription(Project project) {
         return DESCRIPTION;
     }
 

@@ -7,14 +7,15 @@ import com.misset.opp.omt.inspection.OMTMetaTypeInspectionBase;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
 public class OMTDuplicateVariableInspection extends OMTMetaTypeInspectionBase {
 
@@ -56,17 +57,18 @@ public class OMTDuplicateVariableInspection extends OMTMetaTypeInspectionBase {
             }
         }
 
-        private void inspectMap(HashMap<String, List<PsiElement>> variableMap) {
+        private void inspectMap(Map<String, Collection<PsiVariable>> variableMap) {
             variableMap.values()
                     .stream()
                     .filter(psiElements -> psiElements.size() > 1)
                     .forEach(psiElements -> psiElements.forEach(this::registerProblem));
         }
+
         private void registerProblem(PsiElement psiElement) {
-            if(psiElement == null) { return; }
-            problemsHolder.registerProblem(
-                    psiElement,
-                    "Duplication");
+            if (psiElement == null) {
+                return;
+            }
+            problemsHolder.registerProblem(psiElement.getOriginalElement(), "Duplication");
         }
     }
 }

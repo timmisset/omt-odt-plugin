@@ -1,4 +1,4 @@
-package com.misset.opp.odt.inspection.quikfix;
+package com.misset.opp.omt.inspection.quickfix;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -11,12 +11,12 @@ import com.misset.opp.omt.util.OMTImportUtil;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTImportMemberLocalQuickFix implements LocalQuickFix {
+public class OMTImportMemberLocalQuickFix implements LocalQuickFix {
     private final String importPath;
     private final String memberName;
     private final String type;
 
-    public ODTImportMemberLocalQuickFix(OMTFile omtFile, PsiCallable callable) {
+    public OMTImportMemberLocalQuickFix(OMTFile omtFile, PsiCallable callable) {
         importPath = OMTImportUtil.getImportPath(omtFile, callable);
         memberName = callable.getName();
         type = callable.getType();

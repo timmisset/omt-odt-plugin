@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.resolvable.local.LocalVariable;
+import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class ForEachCommandTest extends BaseBuiltinTest {
     @Test
     void testGetLocalVariablesReturnsLocalVariablesForIndex1() {
         PsiCall call = mock(PsiCall.class);
-        List<LocalVariable> localVariables = ForEachCommand.INSTANCE.getLocalVariables(call, 1);
+        List<Variable> localVariables = ForEachCommand.INSTANCE.getLocalVariables(call, 1);
         Assertions.assertEquals(3, localVariables.size());
         Assertions.assertEquals("$value", localVariables.get(0).getName());
         Assertions.assertEquals("$index", localVariables.get(1).getName());
@@ -42,7 +42,7 @@ class ForEachCommandTest extends BaseBuiltinTest {
     @Test
     void testGetLocalVariablesReturnsNoLocalVariablesForIndexOtherThan1() {
         PsiCall call = mock(PsiCall.class);
-        List<LocalVariable> localVariables = ForEachCommand.INSTANCE.getLocalVariables(call, 0);
+        List<Variable> localVariables = ForEachCommand.INSTANCE.getLocalVariables(call, 0);
         Assertions.assertEquals(0, localVariables.size());
     }
 }

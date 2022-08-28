@@ -7,6 +7,7 @@ import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.omt.meta.OMTMetaMapType;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
+import com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -15,10 +16,8 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
-
-import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addModelItemsToMap;
 
 public class OMTModelMetaType extends OMTMetaMapType implements OMTCallableProvider {
 
@@ -38,10 +37,10 @@ public class OMTModelMetaType extends OMTMetaMapType implements OMTCallableProvi
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping,
-                                                                      PsiLanguageInjectionHost host) {
-        final HashMap<String, List<PsiCallable>> map = new HashMap<>();
-        addModelItemsToMap(yamlMapping, map);
+    public @NotNull HashMap<String, Collection<PsiCallable>> getCallableMap(YAMLMapping yamlMapping,
+                                                                            PsiLanguageInjectionHost host) {
+        final HashMap<String, Collection<PsiCallable>> map = new HashMap<>();
+        yamlMapping.getKeyValues().forEach(keyValue -> OMTCallableProviderUtil.addModelItemToMap(map, keyValue));
         return map;
     }
 

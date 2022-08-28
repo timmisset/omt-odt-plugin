@@ -1,4 +1,4 @@
-package com.misset.opp.odt.completion;
+package com.misset.opp.omt.completion;
 
 import com.google.common.base.Strings;
 import com.intellij.codeInsight.completion.*;
@@ -6,15 +6,17 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Key;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.SharedProcessingContext;
 import com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph;
-import com.misset.opp.odt.formatter.ODTHostFormattingUtil;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.omt.injection.InjectableContentType;
+import com.misset.opp.omt.injection.InjectionHost;
+import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.resolvable.Callable;
-import com.misset.opp.shared.InjectableContentType;
-import com.misset.opp.shared.InjectionHost;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -28,8 +30,10 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 /**
  * Certain injection segments have specific completions (templates).
+ * Since this is driven by the OMT structure where the ODT fragment resides, it is considered
+ * an OMT/ODT completion and not purely an ODT completion.
  */
-public class ODTInjectableSectionCompletion extends CompletionContributor {
+public class OMTODTInjectableSectionCompletion extends CompletionContributor {
     /**
      * Type-filter to filter to completions
      */
@@ -61,7 +65,7 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
 
     public static SharedProcessingContext sharedContext;
 
-    public ODTInjectableSectionCompletion() {
+    public OMTODTInjectableSectionCompletion() {
 
         extend(CompletionType.BASIC, psiElement(), new CompletionProvider<>() {
 
@@ -69,11 +73,16 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
             protected void addCompletions(@NotNull CompletionParameters parameters,
                                           @NotNull ProcessingContext context,
                                           @NotNull CompletionResultSet result) {
-                ODTFile originalFile = (ODTFile) parameters.getOriginalFile();
+
+                PsiLanguageInjectionHost injectionHost = OMTODTInjectionUtil.getInjectionHost(parameters.getPosition());
+                PsiFile originalFile = parameters.getOriginalFile();
+                if (!(injectionHost instanceof InjectionHost || !(originalFile instanceof ODTFile))) {
+                    return;
+                }
                 // set a new sharedContext
                 sharedContext = context.getSharedContext();
 
-                InjectionHost host = originalFile.getHost();
+                InjectionHost host = (InjectionHost) injectionHost;
                 if (host != null) {
                     InjectableContentType injectableContentType = host.getInjectableContentType();
                     if (injectableContentType != InjectableContentType.None) {
@@ -84,12 +93,12 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
                         PsiElement element = parameters.getPosition();
                         switch (injectableContentType) {
                             case QueryBlock:
-                                if (insertQueryTemplate(element, originalFile, result)) {
+                                if (insertQueryTemplate(element, (ODTFile) originalFile, result)) {
                                     result.stopHere();
                                 }
                                 break;
                             case CommandBlock:
-                                if (insertCommandTemplate(element, originalFile, result)) {
+                                if (insertCommandTemplate(element, (ODTFile) originalFile, result)) {
                                     result.stopHere();
                                 }
                                 break;
@@ -146,7 +155,7 @@ public class ODTInjectableSectionCompletion extends CompletionContributor {
             }
 
             private String withIndentation(String template, ODTFile containingFile) {
-                String indent = Strings.repeat(" ", ODTHostFormattingUtil.getMinimalLineOffset(containingFile));
+                String indent = Strings.repeat(" ", OMTODTInjectionUtil.getMinimalLineOffset(containingFile));
                 return template.replace("\n", "\n" + indent);
             }
         });

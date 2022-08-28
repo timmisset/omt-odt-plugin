@@ -4,12 +4,12 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.builtin.Builtin;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTQueryStatement;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTVariableValue;
+import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -52,7 +52,7 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
                     return;
                 }
 
-                final YamlMetaType injectionMetaType = ODTInjectionUtil.getInjectionMetaType(element);
+                final YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(element);
                 if (injectionMetaType != null && !(injectionMetaType instanceof OMTScriptMetaType)) {
                     return;
                 }

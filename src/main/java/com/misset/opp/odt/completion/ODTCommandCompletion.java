@@ -8,16 +8,16 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.misset.opp.odt.builtin.commands.BuiltinCommands;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
-import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.psi.PsiCallable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.yaml.psi.YAMLPsiElement;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -37,6 +37,11 @@ public class ODTCommandCompletion extends ODTCallCompletion {
                                                   @NotNull ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
                         PsiElement position = parameters.getPosition();
+                        if (!(parameters.getOriginalFile() instanceof ODTFile)) {
+                            return;
+                        }
+                        ODTFile file = (ODTFile) parameters.getOriginalFile();
+
                         Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
                         Predicate<Set<OntResource>> precedingFilter = resources -> true;
                         // check if completion was already triggered with @ symbol
@@ -44,24 +49,31 @@ public class ODTCommandCompletion extends ODTCallCompletion {
                                 Optional.ofNullable(PsiTreeUtil.prevLeaf(position)).map(PsiElement::getText).map(s -> s.equals("@")).orElse(false)
                         );
 
-                        // add BuiltinCommands:
-                        addCallables(BuiltinCommands.builtinCommands.values(), result, typeFilter, precedingFilter, context);
+                        // add non-psi callables:
+                        addCallables(file.listCallables(), result, typeFilter, precedingFilter, context);
 
-                        // if inside a queries block, add the preceding sibling statements as callable options
-                        addCallables(getFromSiblingDefined(position), result, typeFilter, precedingFilter, context);
-
-                        // and all that are provided by the (if any) host file:
-                        ODTFile originalFile = (ODTFile) parameters.getOriginalFile();
-                        addCallables(getFromCallableProviders(originalFile), result, typeFilter, precedingFilter, context);
-
-                        // and all local commands available at this point:
-                        LinkedHashMap<YAMLPsiElement, OMTLocalCommandProvider> localCommandProviders = originalFile.getProviders(YAMLPsiElement.class, OMTLocalCommandProvider.class, OMTLocalCommandProvider.KEY);
-                        addCallables(localCommandProviders.values()
-                                .stream()
-                                .map(OMTLocalCommandProvider::getLocalCommandsMap)
-                                .map(HashMap::values)
-                                .flatMap(Collection::stream)
-                                .collect(Collectors.toList()), result, typeFilter, precedingFilter, context);
+                        PsiElement originalPosition = parameters.getOriginalPosition();
+                        if (originalPosition == null) {
+                            return;
+                        }
+                        // add available callables
+                        List<PsiCallable> callables = file.listPsiCallables().stream()
+                                .filter(psiCallable -> file.isAccessible(originalPosition, psiCallable))
+                                .collect(Collectors.toList());
+                        addCallables(callables, result, typeFilter, precedingFilter, context);
+//
+//                        // and all that are provided by the (if any) host file:
+//
+//                        addCallables(file.getCallables(), result, typeFilter, precedingFilter, context);
+//
+//                        // and all local commands available at this point:
+//                        LinkedHashMap<YAMLPsiElement, OMTLocalCommandProvider> localCommandProviders = file.getProviders(YAMLPsiElement.class, OMTLocalCommandProvider.class, OMTLocalCommandProvider.KEY);
+//                        addCallables(localCommandProviders.values()
+//                                .stream()
+//                                .map(OMTLocalCommandProvider::getLocalCommandsMap)
+//                                .map(HashMap::values)
+//                                .flatMap(Collection::stream)
+//                                .collect(Collectors.toList()), result, typeFilter, precedingFilter, context);
                     }
                 });
     }

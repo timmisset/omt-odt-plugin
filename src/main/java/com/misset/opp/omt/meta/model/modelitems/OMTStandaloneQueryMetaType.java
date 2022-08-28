@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.documentation.OMTDocumented;
+import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.model.OMTGraphSelectionMetaType;
@@ -9,22 +9,26 @@ import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
-import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
+import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
+import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiResolvableQuery;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
-import org.jetbrains.yaml.psi.*;
+import org.jetbrains.yaml.psi.YAMLKeyValue;
+import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLSequence;
+import org.jetbrains.yaml.psi.YAMLSequenceItem;
 
 import java.util.*;
 import java.util.function.Supplier;
 
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
-import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
 
 public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaType implements
         OMTVariableProvider,
@@ -57,17 +61,13 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
-        HashMap<String, List<PsiElement>> variableMap = new HashMap<>();
-        addSequenceToMap(mapping, "params", variableMap, true);
-
-        final YAMLKeyValue base = mapping.getKeyValueByKey("base");
-        if (base != null) {
-            // base should adhere to the OMTVariableNameMetaType otherwise it will throw an error on the syntax check
-            YAMLValue value = base.getValue();
-            addToGroupedMap(base.getValueText(), value, variableMap);
+    public @NotNull HashMap<String, Collection<PsiVariable>> getVariableMap(YAMLMapping mapping) {
+        HashMap<String, Collection<PsiVariable>> variableMap = new HashMap<>();
+        addSequenceToMap(mapping, "params", variableMap);
+        OMTVariable baseVariable = OMTVariableProviderUtil.getReferenceTarget(mapping, "base");
+        if (baseVariable != null) {
+            variableMap.computeIfAbsent(baseVariable.getName(), s -> new ArrayList<>()).add(baseVariable);
         }
-
         return variableMap;
     }
 
@@ -99,7 +99,7 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
 
         return Optional.ofNullable(mapping.getKeyValueByKey("query"))
                 .map(YAMLKeyValue::getValue)
-                .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableQuery.class))
+                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, PsiResolvableQuery.class))
                 .stream()
                 .flatMap(Collection::stream)
                 .map(psiResolvable -> psiResolvable.resolve(context))

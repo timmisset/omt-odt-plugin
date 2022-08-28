@@ -4,19 +4,18 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.codeInspection.ex.ProblemDescriptorImpl;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.codeInspection.util.IntentionName;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.ODTElementGenerator;
-import com.misset.opp.odt.inspection.quikfix.ODTRegisterPrefixLocalQuickFix;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableCurieElementStep;
 import com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableIriStep;
 import com.misset.opp.omt.indexing.OMTPrefixIndex;
-import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
-import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,19 +71,22 @@ public class ODTQualifiedURIInspection extends LocalInspectionTool {
                         // register the prefix
                         PsiElement psiElement = descriptor.getPsiElement();
                         ODTFile containingFile = (ODTFile) psiElement.getContainingFile();
-                        OMTFile hostFile = containingFile.getHostFile();
 
                         // replace the current element:
                         ODTResolvableCurieElementStep curie = ODTElementGenerator.getInstance(project)
                                 .fromFile(prefix + ":" + localName, ODTResolvableCurieElementStep.class);
                         if (curie != null) {
-                            psiElement = psiElement.replace(curie);
-                        }
-
-                        if (hostFile == null) {
-                            new ODTRegisterPrefixLocalQuickFix(prefix, namespace).addPrefix(project, psiElement);
-                        } else {
-                            new OMTRegisterPrefixLocalQuickFix(prefix, namespace).addPrefix(project, containingFile.getHost());
+                            PsiElement replacement = psiElement.replace(curie);
+                            ProblemDescriptorImpl newProblemDescriptor = new ProblemDescriptorImpl(
+                                    replacement,
+                                    replacement,
+                                    descriptor.getDescriptionTemplate(),
+                                    new LocalQuickFix[0],
+                                    descriptor.getHighlightType(),
+                                    descriptor.isAfterEndOfLine(),
+                                    TextRange.allOf(curie.getText()),
+                                    false);
+                            containingFile.getRegisterPrefixQuickfix(prefix, namespace).applyFix(project, newProblemDescriptor);
                         }
                     }
                 };

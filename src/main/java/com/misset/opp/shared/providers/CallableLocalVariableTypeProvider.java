@@ -1,6 +1,6 @@
 package com.misset.opp.shared.providers;
 
-import com.misset.opp.resolvable.local.LocalVariable;
+import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -20,12 +20,12 @@ public interface CallableLocalVariableTypeProvider {
                                      PsiCall call,
                                      int argumentIndex) {
         return Optional.ofNullable(getLocalVariable(name, call, argumentIndex))
-                .map(LocalVariable::resolve)
+                .map(Variable::resolve)
                 .map(resources -> resources.isEmpty() ? Set.of((OntResource) OppModelConstants.OWL_THING_INSTANCE) : resources)
                 .orElse(Collections.emptySet());
     }
 
-    default LocalVariable getLocalVariable(String name, PsiCall call, int argumentIndex) {
+    default Variable getLocalVariable(String name, PsiCall call, int argumentIndex) {
         return getLocalVariables(call, argumentIndex)
                 .stream()
                 .filter(localVariable -> localVariable.getName().equals(name))
@@ -33,5 +33,5 @@ public interface CallableLocalVariableTypeProvider {
                 .orElse(null);
     }
 
-    List<LocalVariable> getLocalVariables(PsiCall call, int argumentIndex);
+    List<Variable> getLocalVariables(PsiCall call, int argumentIndex);
 }

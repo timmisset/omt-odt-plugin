@@ -10,9 +10,23 @@ import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.psi.OMTFile;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class OMTTestCase extends BasicTestCase<OMTFile> {
     public OMTTestCase() {
         super(OMTFileType.INSTANCE);
+    }
+
+    protected final static Map<String, String> testPrefixes = new HashMap<>();
+
+    static {
+        testPrefixes.put("ont", "http://ontology#");
+        testPrefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+        testPrefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+        testPrefixes.put("owl", "http://www.w3.org/2002/07/owl#");
+        testPrefixes.put("xsd", "http://www.w3.org/2001/XMLSchema#");
+        testPrefixes.put("unique", "http://unique#");
     }
 
     /**
@@ -80,7 +94,6 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
      * Places the input statement into a template with common prefixes and inside a queries block
      *
      * @param queryStatement only the queryStatement without the define and semicolon
-     * @return
      */
     protected String insideQueryWithPrefixes(String queryStatement, String... params) {
         return insideQueryWithPrefixesNoSemicolonEnding(queryStatement) + ";";

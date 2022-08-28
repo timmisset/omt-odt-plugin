@@ -2,21 +2,18 @@ package com.misset.opp.odt.psi.impl.variable.delegate;
 
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.psi.ODTScript;
-import com.misset.opp.odt.psi.ODTScriptLine;
-import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.ODTVariableAssignment;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
-import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import com.misset.opp.shared.providers.CallableLocalVariableTypeProvider;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,15 +46,14 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
      */
     @Override
     public Set<OntResource> resolve() {
-        return resolveFromOMTLocalVariable()
+        return resolveFromDeclaringVariable()
                 .or(this::resolveFromGlobalVariable)
                 .or(this::resolveFromCallContext)
                 .orElse(resolveFromContext());
     }
 
-
     private Optional<Variable> getUndeclaredVariable() {
-        return getFromOMTLocalVariable()
+        return getDeclaringVariable()
                 .or(this::getFromGlobalVariable);
     }
 
@@ -158,6 +154,11 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
 
     @Override
     public Variable getDeclared() {
+        PsiFile containingFile = getElement().getContainingFile();
+        if (!(containingFile instanceof ODTFile)) {
+            return null;
+        }
+
         return getDeclaredFromReference()
                 .or(this::getUndeclaredVariable)
                 .or(this::getDeclaredFromCallContext)
@@ -175,23 +176,37 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
                 .map(Variable::resolve);
     }
 
-
-    private Optional<Set<OntResource>> resolveFromOMTLocalVariable() {
-        return getFromOMTLocalVariable().map(Variable::resolve);
+    private Optional<Set<OntResource>> resolveFromDeclaringVariable() {
+        return getDeclaringVariable().map(Variable::resolve);
     }
 
-    private Optional<Variable> getFromOMTLocalVariable() {
-        // resolve the type from the local variable
-        // the type is set by OMTLocalVariableTypeProvider corresponding with the OMTLocalVariableProvider
-        return element.getODTFile()
-                .getProviders(YAMLValue.class, OMTLocalVariableProvider.class, OMTLocalVariableProvider.KEY)
-                .entrySet()
-                .stream()
-                // map the Provider and YamlPsiElement (mapping) to resolve to set of local variables that are present
-                .map(entry -> entry.getValue().getLocalVariableMap(entry.getKey()).get(element.getName()))
-                .filter(Objects::nonNull)
-                .map(Variable.class::cast)
-                .findFirst();
+    private Optional<Variable> getDeclaringVariable() {
+        PsiFile containingFile = element.getContainingFile();
+        if (!(containingFile instanceof ODTFile)) {
+            return Optional.empty();
+        }
+        Collection<PsiVariable> variables = ((ODTFile) containingFile)
+                .getVariables(element.getName())
+                .stream().filter(PsiVariable.class::isInstance)
+                .map(PsiVariable.class::cast)
+                .collect(Collectors.toList());
+        if (variables.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(variables.iterator().next());
+        }
+//
+//        // resolve the type from the local variable
+//        // the type is set by OMTLocalVariableTypeProvider corresponding with the OMTLocalVariableProvider
+//        return element.getODTFile()
+//                .getProviders(YAMLValue.class, OMTLocalVariableProvider.class, OMTLocalVariableProvider.KEY)
+//                .entrySet()
+//                .stream()
+//                // map the Provider and YamlPsiElement (mapping) to resolve to set of local variables that are present
+//                .map(entry -> entry.getValue().getLocalVariableMap(entry.getKey()).get(element.getName()))
+//                .filter(Objects::nonNull)
+//                .map(Variable.class::cast)
+//                .findFirst();
     }
 
     private Optional<Set<OntResource>> resolveFromGlobalVariable() {

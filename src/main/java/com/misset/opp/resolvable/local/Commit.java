@@ -3,9 +3,10 @@ package com.misset.opp.resolvable.local;
 import com.intellij.openapi.project.Project;
 
 public class Commit extends LocalCommand {
-    public static Commit INSTANCE = new Commit();
+    public static final String CALLID = "@COMMIT";
 
-    protected Commit() {
+    public Commit(String source) {
+        super(source);
     }
 
     @Override
@@ -14,8 +15,8 @@ public class Commit extends LocalCommand {
     }
 
     @Override
-    public String getDescription(String context, Project project) {
-        return String.format("Commit all changes without ending the %s", context);
+    public String getDescription(Project project) {
+        return String.format("Commit all changes without ending the %s", getSource());
     }
 
     @Override

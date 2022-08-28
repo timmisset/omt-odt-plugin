@@ -3,9 +3,10 @@ package com.misset.opp.resolvable.local;
 import com.intellij.openapi.project.Project;
 
 public class Cancel extends LocalCommand {
-    public static Cancel INSTANCE = new Cancel();
+    public static final String CALLID = "@CANCEL";
 
-    protected Cancel() {
+    public Cancel(String source) {
+        super(source);
     }
 
     @Override
@@ -14,8 +15,8 @@ public class Cancel extends LocalCommand {
     }
 
     @Override
-    public String getDescription(String context, Project project) {
-        return String.format("Dismiss all changes and end the %s", context);
+    public String getDescription(Project project) {
+        return String.format("Dismiss all changes and end the %s", getSource());
     }
 
     @Override

@@ -25,7 +25,6 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
-import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallableImpl;
 import com.misset.opp.shared.refactoring.SupportsSafeDelete;
@@ -65,16 +64,16 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
     abstract public ODTDefineName getDefineName();
 
     @Override
-    public String getDescription(String context, Project project) {
+    public String getDescription(Project project) {
         String javaDocComment = ODTDocumentationUtil.getJavaDocCommentDescription(this);
         return javaDocComment == null || javaDocComment.replace("<br>", "\n").isBlank() ?
-                super.getDescription(context, project) :
+                super.getDescription(project) :
                 javaDocComment;
     }
 
     @Override
     public String getDocumentation(Project project) {
-        return getDescription(null, project);
+        return getDescription(project);
     }
 
     @Override
@@ -97,8 +96,7 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
 
     @Override
     public @NotNull SearchScope getUseScope() {
-        final ODTFile containingFile = getODTFile();
-        return containingFile.getExportingMemberUseScope(getName());
+        return getContainingFile().getUseScope();
     }
 
     @Override
@@ -178,21 +176,6 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
 
     @Override
     public boolean isUnused() {
-        // check if used in file:
-        OMTFile hostFile = getODTFile().getHostFile();
-        if (hostFile != null) {
-            if (hostFile.getAllInjectedPsiCalls()
-                    .getOrDefault(getName(), new ArrayList<>())
-                    .stream()
-                    .anyMatch(call -> call.getCallable() == this)) {
-                // target of a call / namedReference in the host file
-                return false;
-            }
-        }
-
-        // otherwise, check using references, this is a bit slow
-        // if the statement is not hosted in an OMT File the search will be very fast
-        // since the scope is very narrow
         return ReferencesSearch.search(this, getUseScope()).findFirst() == null;
     }
 

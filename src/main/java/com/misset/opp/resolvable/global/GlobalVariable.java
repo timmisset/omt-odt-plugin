@@ -11,7 +11,7 @@ import java.util.Set;
 
 public abstract class GlobalVariable implements Variable {
 
-    private static final HashMap<String, GlobalVariable> globalVariableHashMap = new HashMap<>();
+    private static final HashMap<String, Variable> globalVariableHashMap = new HashMap<>();
 
     @Override
     public boolean isReadonly() {
@@ -179,11 +179,11 @@ public abstract class GlobalVariable implements Variable {
         globalVariableHashMap.put(GEO_API_KEY.getName(), GEO_API_KEY);
     }
 
-    public static GlobalVariable getVariable(String name) {
+    public static Variable getVariable(String name) {
         return globalVariableHashMap.get(name);
     }
 
-    public static Collection<GlobalVariable> getVariables() {
+    public static Collection<Variable> getVariables() {
         return globalVariableHashMap.values();
     }
 

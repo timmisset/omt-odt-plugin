@@ -1,9 +1,9 @@
 package com.misset.opp.omt.psi.impl.yaml;
 
 import com.intellij.openapi.util.TextRange;
+import com.misset.opp.omt.injection.InjectableContentType;
 import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import com.misset.opp.shared.InjectableContentType;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 

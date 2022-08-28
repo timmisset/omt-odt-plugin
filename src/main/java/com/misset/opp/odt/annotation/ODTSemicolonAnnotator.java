@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
-import com.misset.opp.odt.ODTInjectionUtil;
 import com.misset.opp.odt.psi.ODTInterpolation;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTTypes;
+import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,7 @@ public class ODTSemicolonAnnotator implements Annotator {
             }
         } else {
             // depends on the context:
-            final YamlMetaType injectionMetaType = ODTInjectionUtil.getInjectionMetaType(element);
+            final YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(element);
             if (injectionMetaType == null) {
                 if (!hasSemicolonEnding) {
                     // no meta-type, the content is part of an ODT file, should have a semicolon ending in that case

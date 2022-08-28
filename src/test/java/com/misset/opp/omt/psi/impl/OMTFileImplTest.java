@@ -10,8 +10,8 @@ import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
 class OMTFileImplTest extends OMTTestCase {
 
@@ -36,7 +36,7 @@ class OMTFileImplTest extends OMTTestCase {
                 "   DEFINE QUERY exportedQuery => 'hello world';\n" +
                 "";
         final OMTFile omtFile = configureByText(content);
-        final HashMap<String, List<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
+        final Map<String, Collection<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
         assertNotEmpty(exportingMembersMap.keySet());
         Assertions.assertTrue(exportingMembersMap.containsKey("MyActivity"));
         Assertions.assertTrue(exportingMembersMap.containsKey("exportedCommand"));
@@ -63,7 +63,7 @@ class OMTFileImplTest extends OMTTestCase {
                 "   DEFINE QUERY query => 'hello world';\n" +
                 "";
         final OMTFile omtFile = configureByText(importingFile);
-        final HashMap<String, List<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
+        final Map<String, Collection<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
         Assertions.assertTrue(exportingMembersMap.containsKey("MyActivity"));
         Assertions.assertTrue(exportingMembersMap.containsKey("query"));
         Assertions.assertNotNull(exportingMembersMap.get("MyActivity"));
@@ -80,8 +80,8 @@ class OMTFileImplTest extends OMTTestCase {
                 "   - memberB\n");
 
         ReadAction.run(() -> {
-            HashMap<String, List<PsiCallable>> declaredExportingMembersMap = omtFile.getDeclaredExportingMembersMap();
-            HashMap<String, List<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
+            Map<String, Collection<PsiCallable>> declaredExportingMembersMap = omtFile.getDeclaredExportingMembersMap();
+            Map<String, Collection<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
             Assertions.assertTrue(declaredExportingMembersMap.isEmpty());
             Assertions.assertFalse(exportingMembersMap.isEmpty());
             assertContainsElements(exportingMembersMap.keySet(), "memberA", "memberB");

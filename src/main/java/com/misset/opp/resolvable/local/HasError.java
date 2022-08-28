@@ -8,9 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public class HasError extends LocalCommand {
-    public static HasError INSTANCE = new HasError();
+    public static final String CALLID = "@HAS_ERROR";
 
-    protected HasError() {
+    public HasError(String source) {
+        super(source);
     }
 
     @Override
@@ -19,8 +20,8 @@ public class HasError extends LocalCommand {
     }
 
     @Override
-    public String getDescription(String context, Project project) {
-        return String.format("Check if there is an error for the %s", context);
+    public String getDescription(Project project) {
+        return String.format("Check if there is an error for the %s", getSource());
     }
 
     @Override

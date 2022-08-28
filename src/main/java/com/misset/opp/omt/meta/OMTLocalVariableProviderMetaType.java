@@ -3,11 +3,14 @@ package com.misset.opp.omt.meta;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.local.LocalVariable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -38,13 +41,9 @@ public abstract class OMTLocalVariableProviderMetaType extends OMTScriptMetaType
     protected abstract List<String> getLocalVariables(YAMLPsiElement element);
 
     @Override
-    public Map<String, LocalVariable> getLocalVariableMap(YAMLPsiElement element) {
-        final LinkedHashMap<YAMLMapping, OMTLocalVariableTypeProvider> contextProviders = OMTMetaTreeUtil.collectMetaParents(
-                element,
-                YAMLMapping.class,
-                OMTLocalVariableTypeProvider.class,
-                false,
-                Objects::isNull);
+    public Map<String, Variable> getLocalVariableMap(YAMLPsiElement element) {
+        final Map<YAMLMapping, OMTLocalVariableTypeProvider> contextProviders =
+                OMTMetaTreeUtil.collectMetaParents(element, YAMLMapping.class, OMTLocalVariableTypeProvider.class);
         return contextProviders.entrySet().stream()
                 .map(entry -> entry.getValue().getLocalVariables(entry.getKey()))
                 .flatMap(Collection::stream)

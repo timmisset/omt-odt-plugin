@@ -3,9 +3,10 @@ package com.misset.opp.resolvable.local;
 import com.intellij.openapi.project.Project;
 
 public class Done extends LocalCommand {
-    public static Done INSTANCE = new Done();
+    public static final String CALLID = "@DONE";
 
-    protected Done() {
+    public Done(String source) {
+        super(source);
     }
 
     @Override
@@ -14,8 +15,8 @@ public class Done extends LocalCommand {
     }
 
     @Override
-    public String getDescription(String context, Project project) {
-        return String.format("Commit all changes and end the %s", context);
+    public String getDescription(Project project) {
+        return String.format("Commit all changes and end the %s", getSource());
     }
 
     @Override

@@ -6,35 +6,42 @@ import com.intellij.psi.ResolveResult;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.scalars.OMTIriMetaType;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
+import com.misset.opp.resolvable.psi.PsiPrefix;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
-import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
-
-public class OMTPrefixProviderUtil extends OMTProviderUtil {
+public class OMTPrefixProviderUtil {
 
     public static void addPrefixesToMap(YAMLMapping mapping,
                                         String key,
-                                        HashMap<String, List<PsiElement>> map) {
+                                        Map<String, Collection<PsiPrefix>> map) {
         final YAMLKeyValue keyValueByKey = mapping.getKeyValueByKey(key);
-        if(keyValueByKey == null) {
+        if (keyValueByKey == null) {
             return;
         }
 
         final YAMLValue value = keyValueByKey.getValue();
-        if(value instanceof YAMLMapping) {
+        if (value instanceof YAMLMapping) {
             // the prefix block
             // prefix:          <someIri>
             // anotherPrefix:   <anotherIri>
 
             final YAMLMapping prefixBlock = (YAMLMapping) value;
             prefixBlock.getKeyValues().forEach(
-                    prefixDefinition -> addToGroupedMap(prefixDefinition.getKeyText(), prefixDefinition, map)
+                    prefixDefinition -> {
+                        OMTYamlDelegate yamlDelegate = OMTYamlDelegateFactory.createDelegate(prefixDefinition);
+                        if (yamlDelegate instanceof PsiPrefix) {
+                            map.computeIfAbsent(prefixDefinition.getKeyText(), s -> new ArrayList<>()).add((PsiPrefix) yamlDelegate);
+                        }
+                    }
             );
         }
     }
@@ -42,7 +49,7 @@ public class OMTPrefixProviderUtil extends OMTProviderUtil {
     public static String resolveToFullyQualifiedUri(PsiElement element,
                                                     String prefix,
                                                     String localName) {
-        final Optional<List<PsiElement>> resolveResults = OMTMetaTreeUtil.resolveProvider(element,
+        final Optional<Collection<PsiPrefix>> resolveResults = OMTMetaTreeUtil.resolveProvider(element,
                 OMTPrefixProvider.class,
                 prefix,
                 OMTPrefixProvider::getPrefixMap);

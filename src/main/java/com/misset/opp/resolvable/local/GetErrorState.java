@@ -8,9 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public class GetErrorState extends LocalCommand {
-    public static GetErrorState INSTANCE = new GetErrorState();
+    public static final String CALLID = "@GET_ERROR_STATE";
 
-    protected GetErrorState() {
+    public GetErrorState(String source) {
+        super(source);
     }
 
     @Override
@@ -19,8 +20,8 @@ public class GetErrorState extends LocalCommand {
     }
 
     @Override
-    public String getDescription(String context, Project project) {
-        return String.format("Get the current error state for the %s", context);
+    public String getDescription(Project project) {
+        return String.format("Get the current error state for the %s", getSource());
     }
 
     @Override

@@ -31,7 +31,7 @@ public interface Callable extends ContextResolvable {
      * The context might provide some additional information about the location of the call that can be included in the
      * output string. The returned string should be HTML based.
      */
-    String getDescription(String context, Project project);
+    String getDescription(Project project);
 
     /**
      * The id used to call this callable. For example, @Call for commands, Call for operators.

@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 class OMTDeclaredInterfaceMetaTypeTest extends OMTCompletionTestCase {
     @Test
@@ -96,7 +97,7 @@ class OMTDeclaredInterfaceMetaTypeTest extends OMTCompletionTestCase {
                 "queries:\n" +
                 "   DEFINE QUERY query => <caret>memberA;\n");
         ReadAction.run(() -> {
-            HashMap<String, List<PsiCallable>> exportingMembersMap = interfaceFile.getExportingMembersMap();
+            Map<String, Collection<PsiCallable>> exportingMembersMap = interfaceFile.getExportingMembersMap();
             Assertions.assertTrue(exportingMembersMap.containsKey("memberA"));
 
             PsiElement elementAtCaret = myFixture.getElementAtCaret();

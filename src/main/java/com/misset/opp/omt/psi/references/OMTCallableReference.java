@@ -9,8 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-import java.util.LinkedHashMap;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
 
 public class OMTCallableReference extends OMTPlainTextReference {
@@ -37,8 +36,8 @@ public class OMTCallableReference extends OMTPlainTextReference {
 
     private Optional<ResolveResult[]> resolveFromProvider(boolean resolveToOriginalElement,
                                                           boolean resolveToFinalElement) {
-        LinkedHashMap<YAMLMapping, OMTCallableProvider> providerMap =
-                OMTMetaTreeUtil.collectMetaParents(myElement, YAMLMapping.class, OMTCallableProvider.class, false, Objects::isNull);
+        Map<YAMLMapping, OMTCallableProvider> providerMap =
+                OMTMetaTreeUtil.collectMetaParents(myElement, YAMLMapping.class, OMTCallableProvider.class);
         return OMTMetaTreeUtil.resolveProvider(providerMap, myElement.getText(), OMTCallableProvider::getCallableMap)
                 .map(psiCallables -> toResults(psiCallables, resolveToOriginalElement, resolveToFinalElement));
     }

@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemDelegateMetaType;
 import com.misset.opp.omt.psi.impl.OMTCallableImpl;
@@ -12,21 +13,16 @@ import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-
-import static com.misset.opp.util.CollectionUtil.addToGroupedMap;
+import java.util.*;
 
 /**
  * Util class for classes implementing OMTCallableProvider
  */
-public class OMTCallableProviderUtil extends OMTProviderUtil {
+public class OMTCallableProviderUtil {
 
     public static void addInjectedCallablesToMap(YAMLMapping mapping,
                                                  String key,
-                                                 HashMap<String, List<PsiCallable>> map,
+                                                 Map<String, Collection<PsiCallable>> map,
                                                  PsiLanguageInjectionHost host) {
         final YAMLKeyValue callables = mapping.getKeyValueByKey(key);
         if (host != null && PsiTreeUtil.isAncestor(callables, host, true)) {
@@ -36,8 +32,8 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
         if (callables == null || callables.getValue() == null) {
             return;
         }
-        getInjectedContent(callables.getValue(), PsiCallable.class)
-                .forEach(callable -> addToGroupedMap(callable.getName(), callable, map));
+        OMTODTInjectionUtil.getInjectedContent(callables.getValue(), PsiCallable.class)
+                .forEach(callable -> map.computeIfAbsent(callable.getName(), s -> new ArrayList<>()).add(callable));
     }
 
     /**
@@ -48,14 +44,14 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
      * @param map     - the map to add the Callable items to
      */
     public static void addImportStatementsToMap(YAMLMapping mapping,
-                                                HashMap<String, List<PsiCallable>> map) {
+                                                HashMap<String, Collection<PsiCallable>> map) {
         mapping.getKeyValues().forEach(
                 keyValue -> addImportStatementsToMap(keyValue, map)
         );
     }
 
     private static void addImportStatementsToMap(YAMLKeyValue keyValue,
-                                                 HashMap<String, List<PsiCallable>> map) {
+                                                 HashMap<String, Collection<PsiCallable>> map) {
         final YAMLValue value = keyValue.getValue();
         if (value instanceof YAMLSequence) {
             final YAMLSequence sequence = (YAMLSequence) value;
@@ -65,37 +61,30 @@ public class OMTCallableProviderUtil extends OMTProviderUtil {
                     .map(OMTYamlDelegateFactory::createDelegate)
                     .filter(OMTYamlImportMemberDelegate.class::isInstance)
                     .map(OMTYamlImportMemberDelegate.class::cast)
-                    .forEach(importMemberDelegate -> {
-                        String name = importMemberDelegate.getText();
-                        List<PsiCallable> callables = map.getOrDefault(name, new ArrayList<>());
-                        callables.add(importMemberDelegate);
-                        map.put(name, callables);
-                    });
+                    .forEach(importMemberDelegate ->
+                            map.computeIfAbsent(importMemberDelegate.getText(), s -> new ArrayList<>()).add(importMemberDelegate));
         }
     }
 
     public static void addModelItemsToMap(YAMLMapping mapping,
-                                          HashMap<String, List<PsiCallable>> map) {
-        mapping.getKeyValues()
-                .forEach(
-                        keyValue -> {
+                                          Map<String, Collection<PsiCallable>> map) {
+        mapping.getKeyValues().forEach(keyValue -> addModelItemToMap(map, keyValue));
+    }
 
-                            final YAMLValue value = keyValue.getValue();
-                            if (value == null) {
-                                return;
-                            }
-                            final YamlMetaTypeProvider.MetaTypeProxy valueMetaType = OMTMetaTypeProvider.getInstance(value.getProject())
-                                    .getValueMetaType(value);
-                            if (valueMetaType != null) {
-                                final YamlMetaType metaType = valueMetaType.getMetaType();
-                                if (metaType instanceof OMTModelItemDelegateMetaType &&
-                                        ((OMTModelItemDelegateMetaType) metaType).isCallable()) {
-                                    addToGroupedMap(keyValue.getKeyText(), new OMTCallableImpl(keyValue), map);
-                                }
-                            }
-                        }
-                );
-
+    public static void addModelItemToMap(Map<String, Collection<PsiCallable>> map, YAMLKeyValue keyValue) {
+        final YAMLValue value = keyValue.getValue();
+        if (value == null) {
+            return;
+        }
+        final YamlMetaTypeProvider.MetaTypeProxy valueMetaType = OMTMetaTypeProvider.getInstance(value.getProject())
+                .getValueMetaType(value);
+        if (valueMetaType != null) {
+            final YamlMetaType metaType = valueMetaType.getMetaType();
+            if (metaType instanceof OMTModelItemDelegateMetaType &&
+                    ((OMTModelItemDelegateMetaType) metaType).isCallable()) {
+                map.computeIfAbsent(keyValue.getKeyText(), s -> new ArrayList<>()).add(new OMTCallableImpl(keyValue));
+            }
+        }
     }
 
 }

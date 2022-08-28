@@ -39,7 +39,7 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
                 "   DEFINE QUERY query => '';");
 
         ReadAction.run(() -> {
-            PsiCallable callable = importedFile.getExportingMembersMap().get("query").get(0);
+            PsiCallable callable = importedFile.getExportingMembersMap().get("query").iterator().next();
             String importPath = OMTImportUtil.getImportPath(importingFile, callable);
             Assertions.assertEquals("./importedFile.omt", importPath);
         });
@@ -53,7 +53,7 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
                 "   DEFINE QUERY query => '';");
 
         ReadAction.run(() -> {
-            PsiCallable callable = importedFile.getExportingMembersMap().get("query").get(0);
+            PsiCallable callable = importedFile.getExportingMembersMap().get("query").iterator().next();
             String importPath = OMTImportUtil.getImportPath(importingFile, callable);
             Assertions.assertEquals("../folderB/importedFile.omt", importPath);
         });
@@ -75,7 +75,7 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
                     "   DEFINE QUERY query => '';");
 
             ReadAction.run(() -> {
-                PsiCallable callable = importedFile.getExportingMembersMap().get("query").get(0);
+                PsiCallable callable = importedFile.getExportingMembersMap().get("query").iterator().next();
                 String importPath = OMTImportUtil.getImportPath(importingFile, callable);
                 Assertions.assertEquals("'@B/importedFile.omt'", importPath);
             });
@@ -98,7 +98,7 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
                     "   DEFINE QUERY query => '';");
 
             ReadAction.run(() -> {
-                PsiCallable callable = importedFile.getExportingMembersMap().get("query").get(0);
+                PsiCallable callable = importedFile.getExportingMembersMap().get("query").iterator().next();
                 String importPath = OMTImportUtil.getImportPath(importingFile, callable);
                 Assertions.assertEquals("../folderB/importedFile.omt", importPath);
             });

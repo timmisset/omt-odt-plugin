@@ -1,40 +1,39 @@
 package com.misset.opp.odt.psi.reference;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.prefix.ODTBaseNamespacePrefix;
-import com.misset.opp.util.LoggerUtil;
+import com.misset.opp.resolvable.psi.PsiPrefix;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class ODTNamespacePrefixReference extends ODTPrefixReferenceBase<ODTBaseNamespacePrefix> {
-    Logger LOGGER = Logger.getInstance(ODTNamespacePrefixReference.class);
-
+public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTBaseNamespacePrefix> {
     public ODTNamespacePrefixReference(@NotNull ODTBaseNamespacePrefix element) {
         super(element, TextRange.allOf(element.getName()), false);
     }
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        return LoggerUtil.computeWithLogger(LOGGER, "Resolving namespace prefix " + myElement.getName(), () -> {
-            if (!myElement.isValid()) {
-                return ResolveResult.EMPTY_ARRAY;
-            }
-            // resolve in current ODT file
-            // then resolve in OMT using the PrefixProviders
-            return resolveInODT(myElement.getODTFile(), getElement().getName())
-                    .or(this::resolveFromProvider)
-                    .orElse(ResolveResult.EMPTY_ARRAY);
-        });
+        if (!myElement.isValid() || !(myElement.getContainingFile() instanceof ODTFile)) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
+
+        ODTFile file = (ODTFile) myElement.getContainingFile();
+        List<PsiPrefix> prefixes = file.getPrefixes(myElement.getName()).stream()
+                .filter(psiPrefix -> file.isAccessible(myElement, psiPrefix))
+                .collect(Collectors.toList());
+        return toResults(prefixes);
     }
 
-    private Optional<ResolveResult[]> resolveFromProvider() {
-        return Optional.of(toResults(myElement.getODTFile()
-                .getHostPrefixNamespace(myElement.getName())));
+    @Override
+    public @Nullable PsiElement resolve() {
+        return getResultByProximity().getOriginalElement();
     }
 
     @Override

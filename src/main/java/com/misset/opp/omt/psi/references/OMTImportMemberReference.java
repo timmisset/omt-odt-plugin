@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Reference for an imported member
@@ -48,7 +48,8 @@ public class OMTImportMemberReference extends OMTPlainTextReference {
         super(element);
     }
 
-    public ResolveResult @NotNull [] multiResolveToOriginal(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
+    public ResolveResult @NotNull [] multiResolveToOriginal(boolean resolveToOriginalElement,
+                                                            boolean resolveToFinalElement) {
         final YAMLPlainTextImpl element = getElement();
         final YAMLKeyValue keyValue = PsiTreeUtil.getParentOfType(element, YAMLKeyValue.class);
         if (keyValue == null) {
@@ -56,8 +57,8 @@ public class OMTImportMemberReference extends OMTPlainTextReference {
         }
 
         String name = element.getText();
-        final HashMap<String, List<PsiCallable>> exportingMembersMap = OMTImportMetaType.getInstance().getExportedMembersFromOMTFile(
-                keyValue);
+        final Map<String, Collection<PsiCallable>> exportingMembersMap =
+                OMTImportMetaType.getInstance().getExportedMembersFromOMTFile(keyValue);
         return fromExportableMembersMap(exportingMembersMap, name, resolveToOriginalElement, resolveToFinalElement);
     }
 

@@ -2,10 +2,11 @@ package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.resolvable.Callable;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class BuiltinCommands {
-    public static final HashMap<String, Callable> builtinCommands = new HashMap<>();
+    private static final HashMap<String, Callable> builtinCommands = new HashMap<>();
     static void addCommand(BuiltInCommand command) {
         builtinCommands.put(command.getCallId(), command);
     }
@@ -36,5 +37,9 @@ public class BuiltinCommands {
         addCommand(SerialCommand.INSTANCE);
         addCommand(TimeStampCommand.INSTANCE);
         addCommand(WarningCommand.INSTANCE);
+    }
+
+    public static Collection<Callable> getCommands() {
+        return builtinCommands.values();
     }
 }

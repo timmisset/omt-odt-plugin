@@ -15,6 +15,7 @@ import com.misset.opp.omt.meta.model.OMTModelMetaType;
 import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
+import com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil;
 import com.misset.opp.omt.meta.scalars.scripts.OMTExportableCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTExportableQueriesMetaType;
 import com.misset.opp.omt.psi.OMTFile;
@@ -31,15 +32,13 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.*;
-
 /**
  * The OMTFileMetaType is the root for all OMT features
  * Any .omt file that is analysed can contain these features
  */
 public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider, OMTPrefixProvider, OMTDocumented {
     private static final Logger LOGGER = Logger.getInstance(OMTFileMetaType.class);
-    public static final Key<CachedValue<HashMap<String, List<PsiCallable>>>> IMPORTED = new Key<>("IMPORTED");
+    public static final Key<CachedValue<HashMap<String, Collection<PsiCallable>>>> IMPORTED = new Key<>("IMPORTED");
     private static final OMTFileMetaType INSTANCE = new OMTFileMetaType();
 
     public static OMTFileMetaType getInstance() {
@@ -66,13 +65,13 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping,
-                                                                      PsiLanguageInjectionHost host) {
+    public @NotNull HashMap<String, Collection<PsiCallable>> getCallableMap(YAMLMapping yamlMapping,
+                                                                            PsiLanguageInjectionHost host) {
         String filename = getFilename(yamlMapping);
         return LoggerUtil.computeWithLogger(LOGGER,
                 "getCallableMap " + filename,
                 () -> {
-                    final HashMap<String, List<PsiCallable>> map = new HashMap<>();
+                    final HashMap<String, Collection<PsiCallable>> map = new HashMap<>();
                     if (filename.endsWith(".interface.omt")) {
                         map.putAll(getInterfaceMap(yamlMapping));
                     } else {
@@ -101,26 +100,27 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
         return element.getContainingFile().getName();
     }
 
-    public @NotNull HashMap<String, List<PsiCallable>> getDeclaredCallableMap(YAMLMapping mapping,
-                                                                              PsiLanguageInjectionHost host) {
+    public @NotNull Map<String, Collection<PsiCallable>> getDeclaredCallableMap(YAMLMapping mapping,
+                                                                                PsiLanguageInjectionHost host) {
         final YAMLKeyValue model = mapping.getKeyValueByKey("model");
         return LoggerUtil.computeWithLogger(LOGGER, "getDeclaredCallableMap " + getFilename(mapping), () -> {
         /*
             The OMT File will provide the callables for the root elements queries, commands and import
          */
-            final HashMap<String, List<PsiCallable>> map = new HashMap<>();
+            final HashMap<String, Collection<PsiCallable>> map = new HashMap<>();
             // first add the queries and commands, in case of shadowing the same name for imports, the defined statements are used
-            addInjectedCallablesToMap(mapping, "queries", map, host);
-            addInjectedCallablesToMap(mapping, "commands", map, host);
+            OMTCallableProviderUtil.addInjectedCallablesToMap(mapping, "queries", map, host);
+            OMTCallableProviderUtil.addInjectedCallablesToMap(mapping, "commands", map, host);
             if (model != null && model.getValue() instanceof YAMLMapping) {
-                addModelItemsToMap((YAMLMapping) model.getValue(), map);
+                ((YAMLMapping) model.getValue())
+                        .getKeyValues().forEach(keyValue -> OMTCallableProviderUtil.addModelItemToMap(map, keyValue));
             }
             return map;
 
         });
     }
 
-    public @NotNull HashMap<String, List<PsiCallable>> getImportingMembers(YAMLMapping yamlMapping) {
+    public @NotNull Map<String, Collection<PsiCallable>> getImportingMembers(YAMLMapping yamlMapping) {
         PsiFile containingFile = yamlMapping.getContainingFile();
         if (!(containingFile instanceof OMTFile)) {
             return new HashMap<>();
@@ -132,11 +132,11 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
                         () -> new CachedValueProvider.Result<>(getImportingMembers(omtFile), omtFile)));
     }
 
-    private HashMap<String, List<PsiCallable>> getImportingMembers(OMTFile containingFile) {
+    private HashMap<String, Collection<PsiCallable>> getImportingMembers(OMTFile containingFile) {
         final YAMLKeyValue imports = containingFile.getRootMapping().getKeyValueByKey("import");
-        final HashMap<String, List<PsiCallable>> map = new HashMap<>();
+        final HashMap<String, Collection<PsiCallable>> map = new HashMap<>();
         if (imports != null && imports.getValue() instanceof YAMLMapping) {
-            addImportStatementsToMap((YAMLMapping) imports.getValue(), map);
+            OMTCallableProviderUtil.addImportStatementsToMap((YAMLMapping) imports.getValue(), map);
         }
         return map;
     }

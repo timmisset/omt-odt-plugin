@@ -22,7 +22,6 @@ import org.jetbrains.yaml.psi.YAMLSequenceItem;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements SupportsSafeDelete {
@@ -59,8 +58,9 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
     @Override
     public void delete() throws IncorrectOperationException {
         // remove this parameter and all parameters that are part of calls made to the owner of this parameter:
-        Map.Entry<YAMLMapping, OMTMetaCallable> callableEntry = OMTMetaTreeUtil.collectMetaParents(this.value, YAMLMapping.class, OMTMetaCallable.class, false, Objects::isNull)
-                .entrySet().stream().findFirst().orElse(null);
+        Map.Entry<YAMLMapping, OMTMetaCallable> callableEntry =
+                OMTMetaTreeUtil.collectMetaParents(this.value, YAMLMapping.class, OMTMetaCallable.class)
+                        .entrySet().stream().findFirst().orElse(null);
         int parameterIndex = getParameterIndex();
         if (parameterIndex == -1) {
             return;
@@ -96,4 +96,5 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
     public String getSource() {
         return "OMT parameter";
     }
+
 }

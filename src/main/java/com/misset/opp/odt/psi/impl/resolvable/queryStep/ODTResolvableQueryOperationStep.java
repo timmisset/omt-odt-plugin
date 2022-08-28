@@ -7,6 +7,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.*;
@@ -131,9 +132,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
             Set<OntResource> resources = Optional.ofNullable(getQueryStep())
                     .map(ODTResolvable::resolve)
                     .orElse(Collections.emptySet());
-            return getODTFile()
-                    .getCachedValue(resources,
-                            OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
+            return new CachedValueProvider.Result<>(resources, getContainingFile(), OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }
 

@@ -7,32 +7,27 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.util.InspectionMessage;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.codeInspection.util.IntentionName;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.omt.meta.providers.OMTVariableProvider;
-import com.misset.opp.util.LoggerUtil;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> implements LocalQuickFixProvider, EmptyResolveMessageProvider {
-    private static final Key<CachedValue<ResolveResult[]>> RESULT = new Key<>("RESULT");
     private static final Key<ODTVariableReference> REFERENCE = new Key<>("REFERENCE");
-    Logger LOGGER = Logger.getInstance(ODTVariableReference.class);
 
     public static ODTVariableReference forVariable(ODTVariable variable) {
         if (!REFERENCE.isIn(variable)) {
@@ -48,48 +43,24 @@ public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> impl
     }
 
     @Override
+    public @Nullable PsiElement resolve() {
+        return getResultByProximity();
+    }
+
+    @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        return LoggerUtil.computeWithLogger(LOGGER,
-                "Resolving ODTVariableReference for " + getElement().getName(),
-                this::getCachedResultOrResolve);
-    }
-
-    private ResolveResult @NotNull [] getCachedResultOrResolve() {
-        return CachedValuesManager.getCachedValue(getElement(), RESULT, () -> {
-            ResolveResult[] calculate = calculate();
-            return getElement().getODTFile().getCachedValue(calculate);
-        });
-    }
-
-    private ResolveResult @NotNull [] calculate() {
-        if (!getElement().isValid()) {
+        if (!(myElement.getContainingFile() instanceof ODTFile)) {
             return ResolveResult.EMPTY_ARRAY;
+        } else {
+            ODTFile file = (ODTFile) myElement.getContainingFile();
+            List<PsiVariable> variables = file.getVariables(myElement.getName())
+                    .stream()
+                    .filter(PsiVariable.class::isInstance)
+                    .map(PsiVariable.class::cast)
+                    .filter(psiVariable -> file.isAccessible(myElement, psiVariable))
+                    .collect(Collectors.toList());
+            return toResults(variables);
         }
-        return resolveInODT()
-                .or(this::resolveFromProvider)
-                .orElse(ResolveResult.EMPTY_ARRAY);
-    }
-
-    private Optional<ResolveResult[]> resolveFromProvider() {
-        return getElement().getODTFile()
-                .resolveInOMT(OMTVariableProvider.class,
-                        OMTVariableProvider.KEY,
-                        getElement().getName(),
-                        OMTVariableProvider::getVariableMap)
-                .map(this::toResults);
-    }
-
-    private Optional<ResolveResult[]> resolveInODT() {
-        final ODTScript script = PsiTreeUtil.getTopmostParentOfType(getElement(), ODTScript.class);
-        if (script == null) {
-            return Optional.empty();
-        }
-
-        return PsiTreeUtil.findChildrenOfType(script, ODTVariable.class)
-                .stream()
-                .filter(variable -> variable.canBeDeclaredVariable(getElement()))
-                .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
-                .map(PsiElementResolveResult::createResults);
     }
 
     // required to preserve valid reference text range when backspacing an element

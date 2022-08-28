@@ -1,5 +1,6 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.shared.providers.CallableLocalVariableTypeProvider;
@@ -35,7 +36,7 @@ public class MapCommand extends BuiltInCommand implements CallableLocalVariableT
     }
 
     @Override
-    public List<LocalVariable> getLocalVariables(PsiCall call, int argumentIndex) {
+    public List<Variable> getLocalVariables(PsiCall call, int argumentIndex) {
         if (argumentIndex != 1) {
             return Collections.emptyList();
         }

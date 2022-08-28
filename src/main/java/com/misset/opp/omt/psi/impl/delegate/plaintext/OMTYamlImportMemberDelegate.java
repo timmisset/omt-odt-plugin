@@ -1,7 +1,6 @@
 package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -30,8 +29,6 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
         SupportsSafeDelete,
         PsiCallable {
     YAMLPlainTextImpl value;
-
-    private static final Logger LOGGER = Logger.getInstance(OMTYamlImportMemberDelegate.class);
 
     public OMTYamlImportMemberDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
         super(yamlValue.getNode());
@@ -89,7 +86,7 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     // which will return either an actual Callable member or another imported file (i.e. index.omt files)
     private PsiCallable resolveToCallable() {
         return Optional.of(getReference())
-                .map(PsiReference::resolve)
+                .map(reference -> reference.resolve(false))
                 .filter(PsiCallable.class::isInstance)
                 .map(PsiCallable.class::cast)
                 .orElse(null);
@@ -162,13 +159,13 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     }
 
     @Override
-    public String getDescription(String context, Project project) {
-        return computeFromCallable(callable -> callable.getDescription(context, project), null);
+    public String getDescription(Project project) {
+        return computeFromCallable(callable -> callable.getDescription(project), null);
     }
 
     @Override
     public String getCallId() {
-        return computeFromCallable(Callable::getCallId, null);
+        return computeFromCallable(Callable::getCallId, getName());
     }
 
     @Override
@@ -220,4 +217,5 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     public Set<OntResource> getParamType(int index) {
         return computeFromCallable(callable -> callable.getParamType(index), Collections.emptySet());
     }
+
 }

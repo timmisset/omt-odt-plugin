@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.openapi.util.TextRange;
-import com.misset.opp.shared.InjectableContentType;
+import com.misset.opp.omt.injection.InjectableContentType;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
 import java.util.List;

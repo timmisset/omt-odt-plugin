@@ -2,12 +2,10 @@ package com.misset.opp.omt.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 public interface OMTFile extends PsiFile {
@@ -21,13 +19,11 @@ public interface OMTFile extends PsiFile {
 
     YAMLMapping getRootMapping();
 
-    Map<String, List<PsiCall>> getAllInjectedPsiCalls();
+    Map<String, Collection<PsiCallable>> getExportingMembersMap();
 
-    HashMap<String, List<PsiCallable>> getExportingMembersMap();
+    Map<String, Collection<PsiCallable>> getDeclaredExportingMembersMap();
 
-    HashMap<String, List<PsiCallable>> getDeclaredExportingMembersMap();
-
-    HashMap<String, List<PsiCallable>> getImportingMembersMap();
+    Map<String, Collection<PsiCallable>> getImportingMembersMap();
 
     Map<String, String> getAvailableNamespaces(PsiElement element);
 

@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toMap;
 public abstract class Builtin implements Callable {
 
     @Override
-    public String getDescription(String context, Project project) {
+    public String getDescription(Project project) {
         return BuiltinDocumentationService.getInstance(project).getDocumentation(this);
     }
 

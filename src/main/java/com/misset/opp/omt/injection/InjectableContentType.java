@@ -1,4 +1,4 @@
-package com.misset.opp.shared;
+package com.misset.opp.omt.injection;
 
 /**
  * The Injectable (host) position returns a template type that can be used by the hosted language
@@ -9,11 +9,11 @@ public enum InjectableContentType {
     /**
      * The Injectable position is dedicated for Query entries
      */
-    QueryBlock(),
+    QueryBlock(false),
     /**
      * The Injected position is dedicated for Command entries
      */
-    CommandBlock(),
+    CommandBlock(false),
 
     /**
      * Position that expects a query that returns a graphShape
@@ -30,15 +30,11 @@ public enum InjectableContentType {
      */
     Query(true),
 
-    None();
+    None(false);
     private final boolean isQueryStatement;
 
     InjectableContentType(boolean isQueryStatement) {
         this.isQueryStatement = isQueryStatement;
-    }
-
-    InjectableContentType() {
-        this.isQueryStatement = false;
     }
 
     public boolean isQueryStatement() {

@@ -1,8 +1,8 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.omt.documentation.OMTDocumented;
+import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
@@ -13,7 +13,6 @@ import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
-import com.misset.opp.omt.meta.providers.util.OMTProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
@@ -25,6 +24,7 @@ import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.*;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiResolvableQuery;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +45,9 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
         OMTLocalCommandProvider,
         OMTMetaCallable,
         OMTDocumented {
+
+    public static final String ACTIVITY = "Activity";
+
     protected OMTActivityMetaType() {
         super("OMT Activity");
     }
@@ -85,16 +88,17 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiElement>> getVariableMap(YAMLMapping mapping) {
-        HashMap<String, List<PsiElement>> map = new HashMap<>();
+    public @NotNull HashMap<String, Collection<PsiVariable>> getVariableMap(YAMLMapping mapping) {
+        HashMap<String, Collection<PsiVariable>> map = new HashMap<>();
         addSequenceToMap(mapping, "variables", map);
-        addSequenceToMap(mapping, "params", map, true);
+        addSequenceToMap(mapping, "params", map);
         return map;
     }
 
     @Override
-    public @NotNull HashMap<String, List<PsiCallable>> getCallableMap(YAMLMapping yamlMapping, PsiLanguageInjectionHost host) {
-        HashMap<String, List<PsiCallable>> map = new HashMap<>();
+    public @NotNull HashMap<String, Collection<PsiCallable>> getCallableMap(YAMLMapping yamlMapping,
+                                                                            PsiLanguageInjectionHost host) {
+        HashMap<String, Collection<PsiCallable>> map = new HashMap<>();
         addInjectedCallablesToMap(yamlMapping, "commands", map, host);
         addInjectedCallablesToMap(yamlMapping, "queries", map, host);
         return map;
@@ -108,18 +112,18 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
     @Override
     public HashMap<String, LocalCommand> getLocalCommandsMap() {
         final HashMap<String, LocalCommand> map = new HashMap<>();
-        map.put(Cancel.INSTANCE.getCallId(), Cancel.INSTANCE);
-        map.put(Commit.INSTANCE.getCallId(), Commit.INSTANCE);
-        map.put(Done.INSTANCE.getCallId(), Done.INSTANCE);
-        map.put(GetErrorState.INSTANCE.getCallId(), GetErrorState.INSTANCE);
-        map.put(HasError.INSTANCE.getCallId(), HasError.INSTANCE);
-        map.put(Rollback.INSTANCE.getCallId(), Rollback.INSTANCE);
+        map.put(Cancel.CALLID, new Cancel(ACTIVITY));
+        map.put(Commit.CALLID, new Commit(ACTIVITY));
+        map.put(Done.CALLID, new Done(ACTIVITY));
+        map.put(GetErrorState.CALLID, new GetErrorState(ACTIVITY));
+        map.put(HasError.CALLID, new HasError(ACTIVITY));
+        map.put(Rollback.CALLID, new Rollback(ACTIVITY));
         return map;
     }
 
     @Override
     public String getType() {
-        return "ACTIVITY";
+        return ACTIVITY;
     }
 
     @Override
@@ -129,7 +133,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
         } else {
             return Optional.ofNullable(mapping.getKeyValueByKey("returns"))
                     .map(YAMLKeyValue::getValue)
-                    .map(value -> OMTProviderUtil.getInjectedContent(value, PsiResolvableQuery.class))
+                    .map(value -> OMTODTInjectionUtil.getInjectedContent(value, PsiResolvableQuery.class))
                     .stream()
                     .flatMap(Collection::stream)
                     .map(Resolvable::resolve)
@@ -162,6 +166,6 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
 
     @Override
     public String getDocumentationClass() {
-        return "Activity";
+        return ACTIVITY;
     }
 }
