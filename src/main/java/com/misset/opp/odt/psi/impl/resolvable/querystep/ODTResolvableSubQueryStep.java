@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.intellij.lang.ASTNode;
 import com.misset.opp.odt.psi.ODTSubQuery;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public abstract class ODTResolvableSubQueryStep extends ODTResolvableQueryStepBase implements ODTSubQuery {
-    public ODTResolvableSubQueryStep(@NotNull ASTNode node) {
+    protected ODTResolvableSubQueryStep(@NotNull ASTNode node) {
         super(node);
     }
 

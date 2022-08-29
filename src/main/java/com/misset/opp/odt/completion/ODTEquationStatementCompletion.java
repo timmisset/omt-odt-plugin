@@ -25,8 +25,7 @@ import static com.misset.opp.odt.completion.CompletionPatterns.FIRST_QUERY_STEP;
 import static com.misset.opp.odt.completion.CompletionPatterns.INSIDE_EQUATION_STATEMENT;
 
 public class ODTEquationStatementCompletion extends CompletionContributor {
-    ElementPattern<PsiElement> PATTERN =
-            and(INSIDE_EQUATION_STATEMENT, FIRST_QUERY_STEP);
+    private static final ElementPattern<PsiElement> PATTERN = and(INSIDE_EQUATION_STATEMENT, FIRST_QUERY_STEP);
 
     public ODTEquationStatementCompletion() {
         // the position rules where a Traverse and QueryOperator can be suggested is identical

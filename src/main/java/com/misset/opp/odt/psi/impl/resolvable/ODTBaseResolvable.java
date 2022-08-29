@@ -12,8 +12,7 @@ import java.util.Set;
 
 public abstract class ODTBaseResolvable extends ODTASTWrapperPsiElement implements ODTResolvable {
 
-
-    public ODTBaseResolvable(@NotNull ASTNode node) {
+    protected ODTBaseResolvable(@NotNull ASTNode node) {
         super(node);
     }
 

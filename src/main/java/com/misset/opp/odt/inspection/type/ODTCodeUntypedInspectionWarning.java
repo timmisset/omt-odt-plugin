@@ -14,8 +14,8 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableVariableStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep;
 import com.misset.opp.resolvable.Callable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
@@ -29,7 +29,7 @@ public class ODTCodeUntypedInspectionWarning extends LocalInspectionTool {
     /*
      * Not recognized by the PsiModificationTracker itself
      */
-    public static SimpleModificationTracker PARAM_ANNOTATION = new SimpleModificationTracker();
+    public static final SimpleModificationTracker PARAM_ANNOTATION = new SimpleModificationTracker();
 
     protected static final String ANNOTATE_PARAMETER_WITH_TYPE = "Annotate parameter with type";
     protected static final String ANNOTATE_BASE_WITH_TYPE = "Annotate base with type";

@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import org.apache.jena.ontology.OntResource;

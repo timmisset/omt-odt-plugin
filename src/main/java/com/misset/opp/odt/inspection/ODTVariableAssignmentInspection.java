@@ -31,7 +31,9 @@ public class ODTVariableAssignmentInspection extends LocalInspectionTool {
     }
 
     @Override
-    public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly, @NotNull LocalInspectionToolSession session) {
+    public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
+                                                   boolean isOnTheFly,
+                                                   @NotNull LocalInspectionToolSession session) {
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
@@ -54,17 +56,16 @@ public class ODTVariableAssignmentInspection extends LocalInspectionTool {
                 }
             }
 
-            private void inspectVariableAssignment(ODTVariableAssignment variableAssignment, ODTVariable variable, ProblemsHolder holder) {
-                int position = variableAssignment.getVariableList().indexOf(variable);
-                if (position == 1) {
-                    // second variable, check if possible:
-                    if (!inspectCallHasSecondArgumentResponse(variableAssignment, variable)) {
-                        holder.registerProblem(variable, WARNING_NO_SECOND_ARGUMENT, ProblemHighlightType.WARNING);
-                    }
+            private void inspectVariableAssignment(ODTVariableAssignment variableAssignment,
+                                                   ODTVariable variable,
+                                                   ProblemsHolder holder) {
+                if (variableAssignment.getVariableList().indexOf(variable) == 1 &&
+                        !inspectCallHasSecondArgumentResponse(variableAssignment)) {
+                    holder.registerProblem(variable, WARNING_NO_SECOND_ARGUMENT, ProblemHighlightType.WARNING);
                 }
             }
 
-            private boolean inspectCallHasSecondArgumentResponse(ODTVariableAssignment variableAssignment, ODTVariable variable) {
+            private boolean inspectCallHasSecondArgumentResponse(ODTVariableAssignment variableAssignment) {
                 return Optional.of(variableAssignment.getVariableValue().getStatement())
                         .filter(ODTCommandCall.class::isInstance)
                         .map(ODTCommandCall.class::cast)

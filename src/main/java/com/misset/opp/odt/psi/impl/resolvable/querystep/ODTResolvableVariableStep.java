@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.intellij.lang.ASTNode;
 import com.misset.opp.odt.psi.ODTVariableStep;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public abstract class ODTResolvableVariableStep extends ODTResolvableQueryStepBase implements ODTVariableStep {
-    public ODTResolvableVariableStep(@NotNull ASTNode node) {
+    protected ODTResolvableVariableStep(@NotNull ASTNode node) {
         super(node);
     }
 

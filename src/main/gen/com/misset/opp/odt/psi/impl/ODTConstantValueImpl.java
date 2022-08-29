@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableConstantValueStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableConstantValueStep;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTConstantValueImpl extends ODTResolvableConstantValueStep implements ODTConstantValue {

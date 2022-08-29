@@ -60,6 +60,8 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
+    public static final String RETURNS = "returns";
+
     static {
         features.put("title", OMTInterpolatedStringMetaType::getInstance);
         features.put("onDefaultClose", OMTInterpolatedStringMetaType::getInstance);
@@ -76,7 +78,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
         features.put("onCommit", OMTScriptMetaType::getInstance);
         features.put("onCancel", OMTScriptMetaType::getInstance);
         features.put("onDone", OMTScriptMetaType::getInstance);
-        features.put("returns", OMTQueryMetaType::getInstance);
+        features.put(RETURNS, OMTQueryMetaType::getInstance);
         features.put("actions", OMTActionsMapMetaType::getInstance);
         features.put("reason", OMTReasonMetaType::getInstance);
         features.put("payload", OMTPayloadMetaType::getInstance);
@@ -131,7 +133,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
         if (isVoid(mapping)) {
             return Collections.emptySet();
         } else {
-            return Optional.ofNullable(mapping.getKeyValueByKey("returns"))
+            return Optional.ofNullable(mapping.getKeyValueByKey(RETURNS))
                     .map(YAMLKeyValue::getValue)
                     .map(value -> OMTODTInjectionUtil.getInjectedContent(value, PsiResolvableQuery.class))
                     .stream()
@@ -145,7 +147,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
 
     @Override
     public boolean isVoid(YAMLMapping mapping) {
-        return mapping.getKeyValueByKey("returns") == null;
+        return mapping.getKeyValueByKey(RETURNS) == null;
     }
 
     @Override

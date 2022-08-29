@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -35,11 +35,9 @@ import java.util.Set;
  * It is the class that should be used to resolve the query step since it contains the filter
  */
 public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable implements ODTQueryOperationStep, ODTResolvable {
-    public ODTResolvableQueryOperationStep(@NotNull ASTNode node) {
+    protected ODTResolvableQueryOperationStep(@NotNull ASTNode node) {
         super(node);
     }
-
-    private static final Key<CachedValue<Set<OntResource>>> RESOLVED_VALUE = new Key<>("RESOLVED_VALUE");
     private static final Key<CachedValue<Set<OntResource>>> RESOLVED_WITHOUT_FILTER_VALUE = new Key<>("RESOLVED_WITHOUT_FILTER_VALUE");
     private static final Logger LOGGER = Logger.getInstance(ODTResolvableQueryOperationStep.class);
 
@@ -56,6 +54,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
         return getParent().startsWithDelimiter() && isFirstStepInPath();
     }
 
+    @Override
     public Set<OntResource> resolvePreviousStep() {
         return resolvePreviousStep(Collections.emptySet(), null);
     }
@@ -152,6 +151,7 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
      * the possible resources in the final result.
      * Only works checks types filters and includes negation
      */
+    @Override
     public Set<OntResource> filter(Set<OntResource> resources) {
         final List<ODTQueryFilter> queryFilterList = getQueryFilterList();
         if (queryFilterList.isEmpty()) {
@@ -178,10 +178,6 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
             }
             return resources;
         });
-    }
-
-    private boolean isPartOfFilter() {
-        return PsiTreeUtil.getParentOfType(this, ODTQueryFilter.class) != null;
     }
 
     /**

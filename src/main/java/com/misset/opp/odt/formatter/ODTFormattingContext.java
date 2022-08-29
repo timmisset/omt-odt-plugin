@@ -1,6 +1,9 @@
 package com.misset.opp.odt.formatter;
 
-import com.intellij.formatting.*;
+import com.intellij.formatting.Block;
+import com.intellij.formatting.FormattingContext;
+import com.intellij.formatting.Indent;
+import com.intellij.formatting.Spacing;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,10 +29,6 @@ public class ODTFormattingContext {
 
     public Spacing computeSpacing(@NotNull Block parent, @Nullable Block child1, @NotNull Block child2) {
         return formattingSpacing.computeSpacing(parent, child1, child2);
-    }
-
-    public Alignment computeAlignment(@NotNull ASTNode node) {
-        return ODTFormattingAlignment.computeAlignment(node);
     }
 
     public Indent computeIndent(@NotNull ASTNode node) {

@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTIdentifierStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableIdentifierStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableIdentifierStep;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTIdentifierStepImpl extends ODTResolvableIdentifierStep implements ODTIdentifierStep {

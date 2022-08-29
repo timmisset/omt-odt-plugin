@@ -7,6 +7,11 @@ import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTTypes;
 
 public class ODTFormattingWrapping {
+
+    private ODTFormattingWrapping() {
+
+    }
+
     /**
      * Returns true for incomplete containers without closing tag:
      * - { Command Block without }
@@ -20,10 +25,8 @@ public class ODTFormattingWrapping {
         if (lastVisible == null) {
             return false;
         }
-        if (elementType == ODTTypes.SCRIPT_LINE) {
-            if (lastVisible != ODTTypes.SEMICOLON) {
-                return true;
-            }
+        if (elementType == ODTTypes.SCRIPT_LINE && lastVisible != ODTTypes.SEMICOLON) {
+            return true;
         }
         return FormatterUtil.isIncomplete(node);
     }
@@ -35,6 +38,5 @@ public class ODTFormattingWrapping {
         }
         return lastChild != null ? lastChild.getElementType() : null;
     }
-
 
 }

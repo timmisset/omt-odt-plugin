@@ -63,40 +63,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
                         .filter(psiCallable -> file.isAccessible(myElement, psiCallable))
                         .collect(Collectors.toList())
                 , resolveToOriginalElement, resolveToFinalElement);
-//        return toResults()
-//        return resolveInODT(resolveToOriginalElement)
-//                .or(() -> resolveFromProvider(resolveToOriginalElement, resolveToFinalElement))
-//                .orElse(ResolveResult.EMPTY_ARRAY);
     }
-
-//    private Optional<ResolveResult[]> resolveFromProvider(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
-//        Optional<List<PsiCallable>> psiElements = myElement.getODTFile()
-//                .resolveInOMT(OMTCallableProvider.class,
-//                        OMTCallableProvider.KEY,
-//                        myElement.getName(),
-//                        (provider, mapping) -> provider.getCallableMap(mapping, myElement.getODTFile().getHost()));
-//
-//        return psiElements.map(psiCallables -> toResults(psiCallables, resolveToOriginalElement, resolveToFinalElement));
-//    }
-
-//    private Optional<ResolveResult[]> resolveInODT(boolean resolveToOriginalElement) {
-//        final ODTScript script = PsiTreeUtil.getTopmostParentOfType(myElement, ODTScript.class);
-//        ODTDefineStatement defineStatement = PsiTreeUtil.getParentOfType(myElement, ODTDefineStatement.class);
-//        if (script == null) {
-//            return Optional.empty();
-//        }
-//
-//        return PsiTreeUtil.findChildrenOfType(script, ODTDefineStatement.class)
-//                .stream()
-//                // must have the same name and cannot contain itself
-//                // i.e. a call from an ODTDefineStatement must always refer to one listed above it
-//                .filter(odtDefineStatement -> defineStatement != odtDefineStatement &&
-//                        odtDefineStatement.getCallId().equals(myElement.getCallId()) &&
-//                        odtDefineStatement.getTextOffset() < myElement.getTextOffset())
-//                .min((o1, o2) -> Integer.compare(o1.getTextOffset(), o2.getTextOffset()) * -1)
-//                .map(odtDefineStatement -> resolveToOriginalElement ? odtDefineStatement.getOriginalElement() : odtDefineStatement)
-//                .map(PsiElementResolveResult::createResults);
-//    }
 
     @Override
     public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {

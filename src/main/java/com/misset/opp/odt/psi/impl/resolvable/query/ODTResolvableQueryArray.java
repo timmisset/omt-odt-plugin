@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class ODTResolvableQueryArray extends ODTResolvableQuery implements ODTQueryArray {
-    public ODTResolvableQueryArray(@NotNull ASTNode node) {
+    protected ODTResolvableQueryArray(@NotNull ASTNode node) {
         super(node);
     }
 

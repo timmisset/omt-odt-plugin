@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableCurieElementStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableCurieElementStep;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTCurieElementImpl extends ODTResolvableCurieElementStep implements ODTCurieElement {

@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,7 +96,7 @@ public class ODTStyleInspectionUnnecessaryIdentifierOperator extends LocalInspec
     private boolean onlyStepInPath(@NotNull ODTQueryStep queryStep) {
         return Optional.ofNullable(PsiTreeUtil.getParentOfType(queryStep, ODTQueryPath.class))
                 .map(ODTQueryPath::getQueryOperationStepList)
-                .map(ODTQuerySteps -> ODTQuerySteps.size() == 1)
+                .map(steps -> steps.size() == 1)
                 .orElse(false);
     }
 

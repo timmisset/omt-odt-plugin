@@ -18,7 +18,7 @@ public class ODTFormattingBlock extends AbstractBlock {
 
     protected ODTFormattingBlock(@NotNull ASTNode node,
                                  @NotNull ODTFormattingContext formattingContext) {
-        super(node, null, formattingContext.computeAlignment(node));
+        super(node, null, null);
         this.formattingContext = formattingContext;
     }
 
@@ -57,7 +57,7 @@ public class ODTFormattingBlock extends AbstractBlock {
 
     @Override
     public @Nullable Alignment getAlignment() {
-        return formattingContext.computeAlignment(getNode());
+        return null;
     }
 
     @Override

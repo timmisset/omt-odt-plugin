@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class ODTResolvableScript extends ODTBaseResolvable implements PsiResolvableScript {
-    public ODTResolvableScript(@NotNull ASTNode node) {
+    protected ODTResolvableScript(@NotNull ASTNode node) {
         super(node);
     }
 

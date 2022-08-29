@@ -7,7 +7,7 @@ import com.misset.opp.odt.psi.ODTSignature;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ODTCommandCallImpl extends ODTResolvableCall implements ODTCommandCall {
-    public ODTCommandCallImpl(@NotNull ASTNode node) {
+    protected ODTCommandCallImpl(@NotNull ASTNode node) {
         super(node);
     }
 

@@ -43,7 +43,7 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
         PsiJavaDocumentedElement {
     private static final Key<CachedValue<HashMap<Integer, Set<OntResource>>>> PARAMETER_TYPES = new Key<>("PARAMETER_TYPES");
 
-    public ODTDefineStatement(@NotNull ASTNode node) {
+    protected ODTDefineStatement(@NotNull ASTNode node) {
         super(node);
     }
 
@@ -61,7 +61,7 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
     }
 
     @NotNull
-    abstract public ODTDefineName getDefineName();
+    public abstract ODTDefineName getDefineName();
 
     @Override
     public String getDescription(Project project) {
@@ -126,6 +126,7 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
         return false;
     }
 
+    @Override
     public String getName() {
         return getDefineName().getText();
     }

@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTOperatorCall;
 import com.misset.opp.odt.psi.ODTSignature;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ import java.util.Set;
  * The class both extends the QueryStep interface and mixin the abstract class
  */
 public abstract class ODTOperatorCallImpl extends ODTResolvableCall implements ODTOperatorCall {
-    public ODTOperatorCallImpl(@NotNull ASTNode node) {
+    protected ODTOperatorCallImpl(@NotNull ASTNode node) {
         super(node);
     }
 

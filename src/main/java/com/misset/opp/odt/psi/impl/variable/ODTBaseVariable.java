@@ -21,7 +21,7 @@ import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableVariableStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
@@ -52,7 +52,7 @@ public abstract class ODTBaseVariable
     protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
     protected static final Key<CachedValue<Set<OntResource>>> VARIABLE_TYPE = new Key<>("VARIABLE_TYPE");
 
-    public ODTBaseVariable(@NotNull ASTNode node) {
+    protected ODTBaseVariable(@NotNull ASTNode node) {
         super(node);
         this.delegate = getDelegate();
     }

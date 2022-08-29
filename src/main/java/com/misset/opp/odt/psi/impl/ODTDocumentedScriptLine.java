@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class ODTDocumentedScriptLine extends ODTASTWrapperPsiElement implements PsiJavaDocumentedElement {
-    public ODTDocumentedScriptLine(@NotNull ASTNode node) {
+    protected ODTDocumentedScriptLine(@NotNull ASTNode node) {
         super(node);
     }
 

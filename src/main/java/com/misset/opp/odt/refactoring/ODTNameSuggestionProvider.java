@@ -10,7 +10,7 @@ import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -103,7 +103,7 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
                     .map(ODTResolvableQueryPath::getResolvableQueryOperationStepList)
                     .map(steps -> steps.get(steps.size() - 1))
                     .map(ODTQueryOperationStep::getQueryStep)
-                    .filter(step -> step instanceof ODTOperatorCall)
+                    .filter(ODTOperatorCall.class::isInstance)
                     .map(step -> ((ODTOperatorCall) step).getName())
                     .map(this::getNameSuggestions)
                     .orElse(Collections.emptyList());
@@ -115,9 +115,9 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
         String[] strings = stringWithCasing.split("(?=\\p{Lu})");
         // getMyQueryResult == get|My|Query|Result
         // -> result
-        // -> queryResult();
-        // -> myQueryResult();
-        // -> getMyQueryResult();
+        // -> queryResult()
+        // -> myQueryResult()
+        // -> getMyQueryResult()
         List<String> result = new ArrayList<>();
         for (int i = strings.length; i >= 0; i--) {
             String nameSuggestion = Strings.join(Arrays.copyOfRange(strings, i, strings.length));

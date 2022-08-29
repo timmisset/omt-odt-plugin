@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStepBase;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStepBase;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ODTQueryStepImpl extends ODTResolvableQueryStepBase implements ODTQueryStep {

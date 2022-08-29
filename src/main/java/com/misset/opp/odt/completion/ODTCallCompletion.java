@@ -82,39 +82,6 @@ public abstract class ODTCallCompletion extends CompletionContributor {
         }
     }
 
-//    protected List<Callable> getFromSiblingDefined(PsiElement element) {
-//        ODTDefineStatement defineStatement = PsiTreeUtil.getParentOfType(element, ODTDefineStatement.class);
-//        if (defineStatement == null) {
-//            return Collections.emptyList();
-//        }
-//        ODTBaseScriptLine scriptLine = (ODTBaseScriptLine) defineStatement.getParent();
-//        List<Callable> callables = new ArrayList<>();
-//        while (scriptLine != null) {
-//            scriptLine = PsiTreeUtil.getPrevSiblingOfType(scriptLine, ODTBaseScriptLine.class);
-//            if (scriptLine != null) {
-//                callables.add(scriptLine.getDefinedStatement());
-//            }
-//        }
-//        return callables;
-//    }
-//
-//    protected List<PsiCallable> getFromCallableProviders(@NotNull ODTFile file) {
-//        LinkedHashMap<YAMLMapping, OMTCallableProvider> providers = file.getProviders(OMTCallableProvider.class, OMTCallableProvider.KEY);
-//        return providers.entrySet()
-//                .stream()
-//                .map(entry -> getFromCallableProviders(file, entry.getKey(), entry.getValue()))
-//                .flatMap(Collection::stream).collect(Collectors.toList());
-//    }
-//
-//    private List<PsiCallable> getFromCallableProviders(@NotNull ODTFile file,
-//                                                       YAMLMapping mapping,
-//                                                       @NotNull OMTCallableProvider provider) {
-//        HashMap<String, List<PsiCallable>> callableMap = provider.getCallableMap(mapping, file.getHost());
-//        return callableMap.values().stream()
-//                .flatMap(Collection::stream)
-//                .collect(Collectors.toList());
-//    }
-
     protected void addCallables(@NotNull Collection<? extends Callable> callables,
                                 @NotNull CompletionResultSet result,
                                 Predicate<Set<OntResource>> typeFilter,

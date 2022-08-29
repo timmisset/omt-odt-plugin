@@ -10,7 +10,7 @@ import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.resolvable.Callable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;

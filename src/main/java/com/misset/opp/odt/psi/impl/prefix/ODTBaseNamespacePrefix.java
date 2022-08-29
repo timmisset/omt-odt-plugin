@@ -23,7 +23,7 @@ public abstract class ODTBaseNamespacePrefix extends ODTASTWrapperPsiElement imp
         ODTNamespacePrefix,
         PsiNamespacePrefix,
         ODTDocumented {
-    public ODTBaseNamespacePrefix(@NotNull ASTNode node) {
+    protected ODTBaseNamespacePrefix(@NotNull ASTNode node) {
         super(node);
     }
 

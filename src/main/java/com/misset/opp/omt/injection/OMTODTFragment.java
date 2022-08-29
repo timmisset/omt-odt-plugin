@@ -6,6 +6,7 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.search.SearchScope;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
@@ -106,13 +107,13 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
         addToCollectionMap(this.prefixes, prefixes);
     }
 
-    private <T extends PsiElement> void addToCollectionMap(Map<String, Collection<T>> collectionHashMap,
-                                                           Map<String, Collection<T>> newItems) {
-        newItems.forEach((key, psiPrefixes) ->
-                collectionHashMap.computeIfAbsent(key, ignored -> new ArrayList<>())
-                        .addAll(newItems.get(key))
-        );
-        newItems.values().forEach(allInjectedPsiElements::addAll);
+    private synchronized <T extends PsiElement> void addToCollectionMap(Map<String, Collection<T>> collectionHashMap,
+                                                                        Map<String, Collection<T>> newItems) {
+        for (Map.Entry<String, Collection<T>> entry : newItems.entrySet()) {
+            collectionHashMap.computeIfAbsent(entry.getKey(), ignored -> new ArrayList<>())
+                    .addAll(entry.getValue());
+            allInjectedPsiElements.addAll(entry.getValue());
+        }
     }
 
     private OMTFile getHostFile() {
@@ -129,6 +130,11 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
             throw new RuntimeException("Expected ODT fragment to be hosted in OMT host");
         }
         return (InjectionHost) injectionHost;
+    }
+
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        return getHostFile().getUseScope();
     }
 
     @Override

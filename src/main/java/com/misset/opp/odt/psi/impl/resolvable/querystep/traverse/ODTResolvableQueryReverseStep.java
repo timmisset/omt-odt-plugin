@@ -1,12 +1,12 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
+package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTQueryStep;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStepBase;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQualifiedUriStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStepBase;
 import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -20,7 +20,7 @@ import java.util.Set;
  * and the model returns all subjects that point to this object with the specified predicate (the current position)
  */
 public abstract class ODTResolvableQueryReverseStep extends ODTResolvableQueryStepBase implements ODTQueryReverseStep {
-    public ODTResolvableQueryReverseStep(@NotNull ASTNode node) {
+    protected ODTResolvableQueryReverseStep(@NotNull ASTNode node) {
         super(node);
     }
 

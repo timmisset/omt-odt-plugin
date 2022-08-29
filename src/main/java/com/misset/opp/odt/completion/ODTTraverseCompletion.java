@@ -13,7 +13,7 @@ import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
@@ -32,7 +32,7 @@ import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORI
 public class ODTTraverseCompletion extends CompletionContributor {
     private static final Key<Boolean> HAS_CARET = new Key<>("HAS_CARET");
     private static final Key<Boolean> HAS_PREFIX = new Key<>("HAS_PREFIX");
-    ElementPattern<PsiElement> TRAVERSE =
+    private static final ElementPattern<PsiElement> TRAVERSE =
             or(AFTER_FIRST_QUERY_STEP, INSIDE_DEFINED_QUERY, INSIDE_QUERY_FILTER);
 
     public enum TraverseDirection {

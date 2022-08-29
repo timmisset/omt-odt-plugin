@@ -49,9 +49,9 @@ public class ODTStyleInspectionUnnecessaryTrueCondition extends LocalInspectionT
     private void inspectBaseOperator(@NotNull ProblemsHolder holder,
                                      @NotNull ODTResolvableEquationStatement equationStatement) {
 
-        Boolean insideBooleanOperator = Optional.ofNullable(PsiTreeUtil.getParentOfType(equationStatement, ODTCall.class))
+        boolean insideBooleanOperator = Optional.ofNullable(PsiTreeUtil.getParentOfType(equationStatement, ODTCall.class))
                 .map(PsiCall::getCallable)
-                .map(callable -> callable instanceof BuiltInBooleanOperator)
+                .map(BuiltInBooleanOperator.class::isInstance)
                 .orElse(false);
         if (insideBooleanOperator) {
             return;

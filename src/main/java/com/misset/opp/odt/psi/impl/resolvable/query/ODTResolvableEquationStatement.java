@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery implements ODTEquationStatement,
         ODTTypeFilterProvider {
-    public ODTResolvableEquationStatement(@NotNull ASTNode node) {
+    protected ODTResolvableEquationStatement(@NotNull ASTNode node) {
         super(node);
     }
 

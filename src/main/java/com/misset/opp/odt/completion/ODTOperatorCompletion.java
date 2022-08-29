@@ -29,7 +29,7 @@ import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.TY
 import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.sharedContext;
 
 public class ODTOperatorCompletion extends ODTCallCompletion {
-    ElementPattern<PsiElement> BUILTIN_OPERATOR_STRICT =
+    private static final ElementPattern<PsiElement> BUILTIN_OPERATOR_STRICT =
             or(AFTER_FIRST_QUERY_STEP, INSIDE_DEFINED_QUERY, INSIDE_QUERY_FILTER);
 
     public ODTOperatorCompletion() {
@@ -85,12 +85,6 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                 .filter(psiCallable -> file.isAccessible(originalPosition, psiCallable))
                 .collect(Collectors.toList());
         addCallables(callables, result, typeFilter, precedingFilter, context);
-
-//        // if inside a queries block, add the preceding sibling statements as callable options
-//        addCallables(getFromSiblingDefined(position), result, typeFilter, precedingFilter, context);
-//
-//        // and all that are provided by the (if any) host file:
-//        addCallables(getFromCallableProviders((ODTFile) parameters.getOriginalFile()), result, typeFilter, precedingFilter, context);
     }
 
     private void addBuiltinOperators(PsiElement position,

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> implements LocalQuickFixProvider, EmptyResolveMessageProvider {
@@ -44,7 +45,7 @@ public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> impl
 
     @Override
     public @Nullable PsiElement resolve() {
-        return getResultByProximity();
+        return Optional.ofNullable(getResultByProximity()).map(PsiElement::getOriginalElement).orElse(null);
     }
 
     @Override

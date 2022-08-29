@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public abstract class ODTResolvableQueryStatement extends ODTBaseResolvable implements ODTResolvable, ODTQueryStatement {
-    public ODTResolvableQueryStatement(@NotNull ASTNode node) {
+    protected ODTResolvableQueryStatement(@NotNull ASTNode node) {
         super(node);
     }
 

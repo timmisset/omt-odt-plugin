@@ -44,10 +44,7 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
                     Optional.ofNullable(getParamReference(docTag)).ifPresent(referenceList::add);
                     Optional.ofNullable(getTypePrefixReference(docTag, 1)).ifPresent(referenceList::add);
                     Optional.ofNullable(getTypeOntologyReference(docTag, 1)).ifPresent(referenceList::add);
-                } else if (docTag.getName().equals("base") && docTag.getValueElement() != null) {
-                    Optional.ofNullable(getTypePrefixReference(docTag, 0)).ifPresent(referenceList::add);
-                    Optional.ofNullable(getTypeOntologyReference(docTag, 0)).ifPresent(referenceList::add);
-                } else if (docTag.getName().equals("return") && docTag.getValueElement() != null) {
+                } else if (List.of("base", "return").contains(docTag.getName()) && docTag.getValueElement() != null) {
                     Optional.ofNullable(getTypePrefixReference(docTag, 0)).ifPresent(referenceList::add);
                     Optional.ofNullable(getTypeOntologyReference(docTag, 0)).ifPresent(referenceList::add);
                 }

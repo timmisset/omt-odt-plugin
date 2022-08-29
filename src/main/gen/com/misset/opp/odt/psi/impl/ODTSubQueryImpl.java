@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTSubQuery;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableSubQueryStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableSubQueryStep;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTSubQueryImpl extends ODTResolvableSubQueryStep implements ODTSubQuery {

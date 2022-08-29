@@ -14,7 +14,7 @@ import org.jetbrains.yaml.psi.YAMLValue;
 public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
     protected final ODTVariable element;
 
-    public ODTBaseVariableDelegate(ODTVariable element) {
+    protected ODTBaseVariableDelegate(ODTVariable element) {
         this.element = element;
     }
 

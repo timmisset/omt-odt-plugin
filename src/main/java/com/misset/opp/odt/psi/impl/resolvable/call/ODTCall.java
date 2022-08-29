@@ -24,8 +24,6 @@ public interface ODTCall extends PsiCall, PsiNamedElement, ODTResolvable {
     @Nullable
     ODTSignature getSignature();
 
-    String getLocalCommandProvider();
-
     @NotNull
     List<ODTResolvableSignatureArgument> getSignatureArguments();
 

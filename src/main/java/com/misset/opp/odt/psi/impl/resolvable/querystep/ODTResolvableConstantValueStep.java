@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.documentation.DocumentationMarkup;
@@ -18,13 +18,12 @@ import java.util.Collections;
 import java.util.Set;
 
 public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryStepBase implements ODTConstantValue {
-    public ODTResolvableConstantValueStep(@NotNull ASTNode node) {
+    protected ODTResolvableConstantValueStep(@NotNull ASTNode node) {
         super(node);
     }
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        final OppModel oppModel = OppModel.INSTANCE;
         final IElementType elementType = getNode().getFirstChildNode().getElementType();
 
         final OntResource result;

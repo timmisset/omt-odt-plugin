@@ -11,6 +11,11 @@ import com.misset.opp.odt.psi.ODTTypes;
 import java.util.Optional;
 
 public class ODTFormattingIndent {
+
+    private ODTFormattingIndent() {
+        // empty constructor
+    }
+
     private static final TokenSet JAVA_DOC_INDENTED = TokenSet.create(
             JavaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS,
             JavaDocTokenType.DOC_COMMENT_END

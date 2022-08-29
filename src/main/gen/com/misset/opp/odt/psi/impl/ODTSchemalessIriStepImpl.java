@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTSchemalessIriStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableSchemalessIriStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableSchemalessIriStep;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTSchemalessIriStepImpl extends ODTResolvableSchemalessIriStep implements ODTSchemalessIriStep {

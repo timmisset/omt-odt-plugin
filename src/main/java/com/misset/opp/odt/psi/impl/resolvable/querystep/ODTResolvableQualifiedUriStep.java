@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
@@ -28,12 +28,13 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
 
     private static final Key<CachedValue<String>> FULLY_QUALIFIED_URI = new Key<>("FULLY_QUALIFIED_URI");
 
-    public ODTResolvableQualifiedUriStep(@NotNull ASTNode node) {
+    protected ODTResolvableQualifiedUriStep(@NotNull ASTNode node) {
         super(node);
     }
 
     public abstract String calculateFullyQualifiedUri();
 
+    @Override
     public String getFullyQualifiedUri() {
         return CachedValuesManager.getCachedValue(this,
                 FULLY_QUALIFIED_URI,

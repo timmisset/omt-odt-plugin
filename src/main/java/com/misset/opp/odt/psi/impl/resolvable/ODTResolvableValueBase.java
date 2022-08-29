@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class ODTResolvableValueBase extends ODTBaseResolvable implements ODTResolvableValue {
-    public ODTResolvableValueBase(@NotNull ASTNode node) {
+    protected ODTResolvableValueBase(@NotNull ASTNode node) {
         super(node);
     }
 

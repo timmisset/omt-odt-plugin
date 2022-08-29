@@ -68,37 +68,6 @@ public class ODTVariableCompletion extends CompletionContributor {
             }
         });
     }
-//
-//    public void addVariables(@NotNull CompletionResultSet result,
-//                             PsiElement position,
-//                             Predicate<Set<OntResource>> typeFilter,
-//                             ODTFile file) {
-//        // add global variables
-//        addVariables(GlobalVariable.getVariables(), typeFilter, result);
-//
-//        List<PsiVariable> variables = file.listVariables().stream()
-//                .filter(psiVariable -> file.isAccessible(position, psiVariable))
-//                .collect(Collectors.toList());
-//
-//        addVariables(variables, typeFilter, result);
-////
-////        // add variables declared in this file:
-////        // do not use the original file here, the relationship util matches on common parents
-////        // and the original file is not the same as the (temp) completion file
-////        addVariables(PsiTreeUtil.findChildrenOfType(position.getContainingFile(), ODTBaseVariable.class)
-////                .stream()
-////                .filter(odtVariable -> PsiRelationshipUtil.canBeRelatedElement(odtVariable, position))
-////                .collect(Collectors.toList()), typeFilter, result);
-////
-////        // add local variables from commands ($value, $index, $array):
-////        addVariables(getLocalVariablesForCall(position), typeFilter, result);
-////
-////        // add local variables from host providers ($newValue, $oldValue):
-////        addVariables(getLocalVariableProviders(file), typeFilter, result);
-////
-////        // add declared variables from other host providers
-////        addVariables(getDeclaredVariableProviders(file), typeFilter, result);
-//    }
 
     private void addVariables(Collection<? extends Variable> variables,
                               Predicate<Set<OntResource>> typeFilter,
@@ -124,39 +93,6 @@ public class ODTVariableCompletion extends CompletionContributor {
         }
         return Collections.emptyList();
     }
-//
-//    private List<OMTYamlVariableDelegate> getDeclaredVariableProviders(ODTFile originalFile) {
-//        // add variables from host provider:
-//        LinkedHashMap<YAMLMapping, OMTVariableProvider> providers = originalFile.getProviders(OMTVariableProvider.class, OMTVariableProvider.KEY);
-//        return providers.entrySet().stream()
-//                .map(entry -> getDeclaredVariableProviders(entry.getKey(), entry.getValue()))
-//                .flatMap(Collection::stream)
-//                .collect(Collectors.toList());
-//    }
-//
-//    private List<OMTYamlVariableDelegate> getDeclaredVariableProviders(YAMLMapping mapping,
-//                                                                       OMTVariableProvider provider) {
-//        HashMap<String, List<PsiElement>> variableMap = provider.getVariableMap(mapping);
-//        return variableMap.values()
-//                .stream()
-//                .flatMap(Collection::stream)
-//                .filter(YAMLPlainTextImpl.class::isInstance)
-//                .map(YAMLPlainTextImpl.class::cast)
-//                .map(OMTYamlDelegateFactory::createDelegate)
-//                .map(OMTYamlVariableDelegate.class::cast)
-//                .collect(Collectors.toList());
-//    }
-//
-//    private List<LocalVariable> getLocalVariableProviders(ODTFile originalFile) {
-//        // add variables from host provider:
-//        LinkedHashMap<YAMLValue, OMTLocalVariableProvider> providers = originalFile.getProviders(YAMLValue.class, OMTLocalVariableProvider.class, OMTLocalVariableProvider.KEY);
-//        return providers.entrySet()
-//                .stream()
-//                .map(entrySet -> entrySet.getValue().getLocalVariableMap(entrySet.getKey()))
-//                .map(Map::values)
-//                .flatMap(Collection::stream)
-//                .collect(Collectors.toList());
-//    }
 
     private @NotNull LookupElement getLookupElement(Variable variable) {
         LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(variable.getName())

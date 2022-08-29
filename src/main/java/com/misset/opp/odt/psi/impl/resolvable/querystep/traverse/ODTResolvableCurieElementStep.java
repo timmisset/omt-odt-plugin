@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
+package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public abstract class ODTResolvableCurieElementStep extends ODTResolvableQueryForwardStep implements ODTCurieElement {
-    public ODTResolvableCurieElementStep(@NotNull ASTNode node) {
+    protected ODTResolvableCurieElementStep(@NotNull ASTNode node) {
         super(node);
     }
 

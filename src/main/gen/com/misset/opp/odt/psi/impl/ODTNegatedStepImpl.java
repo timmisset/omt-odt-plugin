@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTNegatedStep;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableNegatedStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableNegatedStep;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

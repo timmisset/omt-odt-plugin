@@ -10,6 +10,10 @@ import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTRemoveUnusedLocalQuickFix {
+    private ODTRemoveUnusedLocalQuickFix() {
+        // emptry constructor
+    }
+
     public static LocalQuickFix getRemoveLocalQuickFix(String name) {
         return new LocalQuickFix() {
             @Override

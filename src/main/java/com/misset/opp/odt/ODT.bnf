@@ -23,7 +23,7 @@ namespacePrefix::=                          SYMBOL COLON {
 
 constantValue ::=                          STRING+ | INTEGER | DECIMAL | NULL | BOOLEAN | TYPED_VALUE | PRIMITIVE | interpolatedString {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableConstantValueStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableConstantValueStep"
 }
 interpolatedString ::=                      INTERPOLATED_STRING_START interpolatedStringContent* INTERPOLATED_STRING_END {
     extends=constantValue
@@ -127,17 +127,17 @@ chooseBlock ::=                             CHOOSE_OPERATOR
                                                 otherwisePath?
                                                 endPath? {
                                                     extends=queryStep
-                                                    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableChooseBlockStep"
+                                                    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableChooseBlockStep"
                                                     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
                                                 }
 whenPath ::=                                WHEN_OPERATOR query? LAMBDA? query? {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableWhenPathStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableWhenPathStep"
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
 }
 otherwisePath ::=                           OTHERWISE_OPERATOR LAMBDA? query? {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableOtherwisePathStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableOtherwisePathStep"
     implements="com.misset.opp.odt.psi.impl.resolvable.ODTResolvable"
 }
 endPath ::=                                 END_OPERATOR
@@ -187,41 +187,41 @@ equationStatement ::=                       query CONDITIONAL_OPERATOR query {
 // x == 0 AND NOT y == 1 should resolve in a booleanStatement where the latter contains the negation
 negatedStep ::=                             NOT_OPERATOR (equationStatement | queryPath | queryArray)?  {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableNegatedStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableNegatedStep"
 }
 
 queryOperationStep ::= (queryStep stepDecorator? queryFilter*) | queryFilter {
-    extends="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryOperationStep"
+    extends="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep"
 }
 queryStep ::=
         queryReverseStep | constantValue | variableStep | curieElement | operatorCall | iriStep | identifierStep | schemalessIriStep |
          chooseBlock | negatedStep | subQuery {
-     extends="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStepBase"
-     implements="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStep"
+     extends="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStepBase"
+     implements="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStep"
  }
 variableStep ::= variable {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableVariableStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep"
 }
 iriStep ::= IRI {
     extends=queryStep
-     mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableIriStep"
+     mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableIriStep"
 }
 identifierStep ::= DOT {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableIdentifierStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableIdentifierStep"
 }
 schemalessIriStep ::= SCHEMALESS_IRI {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableSchemalessIriStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableSchemalessIriStep"
 }
 curieElement ::=                            namespacePrefix (SYMBOL | PRIMITIVE) {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableCurieElementStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableCurieElementStep"
 }
 queryReverseStep ::=                        CARET queryStep {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableQueryReverseStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableQueryReverseStep"
 }
 // Decorators for the query steps, can be added to individual steps or subqueries
 // QUESTION_MARK ?  == 0 or 1
@@ -236,7 +236,7 @@ rangeSelection ::=                          INTEGER (COMMA INTEGER)?
 // or be cast to a traverse-like behavior using the ASTERIX and PLUS appendixes
 subQuery ::=                                PARENTHESES_OPEN query PARENTHESES_CLOSE {
     extends=queryStep
-    mixin="com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableSubQueryStep"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableSubQueryStep"
 }
 
 // the assignment statement is used to assign a value to a left-hand target, like a variable or a resolved resource iri

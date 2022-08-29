@@ -7,7 +7,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTVisitor;
 import com.misset.opp.odt.psi.ODTWhenPath;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableWhenPathStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableWhenPathStep;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

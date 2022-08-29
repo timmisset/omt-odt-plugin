@@ -8,7 +8,7 @@ import com.misset.opp.odt.psi.ODTChooseBlock;
 import com.misset.opp.odt.psi.ODTEndPath;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.choose.ODTResolvableChooseBlockStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableChooseBlockStep;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

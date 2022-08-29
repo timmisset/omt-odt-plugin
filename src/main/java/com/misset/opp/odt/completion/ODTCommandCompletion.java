@@ -61,19 +61,6 @@ public class ODTCommandCompletion extends ODTCallCompletion {
                                 .filter(psiCallable -> file.isAccessible(originalPosition, psiCallable))
                                 .collect(Collectors.toList());
                         addCallables(callables, result, typeFilter, precedingFilter, context);
-//
-//                        // and all that are provided by the (if any) host file:
-//
-//                        addCallables(file.getCallables(), result, typeFilter, precedingFilter, context);
-//
-//                        // and all local commands available at this point:
-//                        LinkedHashMap<YAMLPsiElement, OMTLocalCommandProvider> localCommandProviders = file.getProviders(YAMLPsiElement.class, OMTLocalCommandProvider.class, OMTLocalCommandProvider.KEY);
-//                        addCallables(localCommandProviders.values()
-//                                .stream()
-//                                .map(OMTLocalCommandProvider::getLocalCommandsMap)
-//                                .map(HashMap::values)
-//                                .flatMap(Collection::stream)
-//                                .collect(Collectors.toList()), result, typeFilter, precedingFilter, context);
                     }
                 });
     }

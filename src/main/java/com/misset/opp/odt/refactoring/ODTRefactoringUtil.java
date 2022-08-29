@@ -9,6 +9,10 @@ import com.misset.opp.odt.psi.ODTScriptLine;
 
 public class ODTRefactoringUtil {
 
+    private ODTRefactoringUtil() {
+        // emptry constructor
+    }
+
     public static void removeScriptline(PsiElement element) {
         ODTScriptLine scriptLine = PsiTreeUtil.getParentOfType(element, ODTScriptLine.class);
         if (scriptLine == null) {

@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.psi.PsiElement;
@@ -22,6 +22,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ODTResolvableQualifiedUriStepDocumentationUtil {
+
+    private ODTResolvableQualifiedUriStepDocumentationUtil() {
+        // empty constructor
+    }
 
     private static final Pattern pattern = Pattern.compile("\"(.*)\"");
 

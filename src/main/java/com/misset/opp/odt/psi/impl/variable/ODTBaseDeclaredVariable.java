@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  * Helper class for refactoring
  */
 public abstract class ODTBaseDeclaredVariable extends ODTStatementImpl implements ODTDeclareVariable, PsiNameIdentifierOwner {
-    public ODTBaseDeclaredVariable(@NotNull ASTNode node) {
+    protected ODTBaseDeclaredVariable(@NotNull ASTNode node) {
         super(node);
     }
 

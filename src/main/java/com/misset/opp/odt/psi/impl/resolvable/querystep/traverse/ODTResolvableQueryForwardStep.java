@@ -1,7 +1,7 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
+package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
 import com.intellij.lang.ASTNode;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQualifiedUriStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -15,8 +15,7 @@ import java.util.Set;
  * Requires a fully qualified URI as predicate to traverse from the previous step (subject) into the next (object)
  */
 public abstract class ODTResolvableQueryForwardStep extends ODTResolvableQualifiedUriStep {
-
-    public ODTResolvableQueryForwardStep(@NotNull ASTNode node) {
+    protected ODTResolvableQueryForwardStep(@NotNull ASTNode node) {
         super(node);
     }
 

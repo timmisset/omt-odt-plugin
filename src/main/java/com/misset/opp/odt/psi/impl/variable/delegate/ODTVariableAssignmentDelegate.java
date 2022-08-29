@@ -42,7 +42,6 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
 
     @Override
     public Set<OntResource> resolve() {
-        // (VAR) $variableA, $variableB = @SOME_COMMAND();
         final ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(element,
                 ODTVariableAssignment.class);
         if (variableAssignment == null) {

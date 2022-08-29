@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
+package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
@@ -16,7 +16,7 @@ import java.util.Objects;
  * The subject is resolved to instances of http://ontology/classA and the predicate to http://ontology/somePredicate
  */
 public abstract class ODTResolvableSchemalessIriStep extends ODTResolvableQueryForwardStep implements ODTSchemalessIriStep {
-    public ODTResolvableSchemalessIriStep(@NotNull ASTNode node) {
+    protected ODTResolvableSchemalessIriStep(@NotNull ASTNode node) {
         super(node);
     }
 

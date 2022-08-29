@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse;
+package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
@@ -6,7 +6,7 @@ import com.misset.opp.odt.psi.ODTIriStep;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ODTResolvableIriStep extends ODTResolvableQueryForwardStep implements ODTIriStep {
-    public ODTResolvableIriStep(@NotNull ASTNode node) {
+    protected ODTResolvableIriStep(@NotNull ASTNode node) {
         super(node);
     }
 

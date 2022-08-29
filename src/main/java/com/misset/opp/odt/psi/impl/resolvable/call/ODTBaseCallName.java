@@ -21,7 +21,7 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
         ODTCallName,
         ODTDocumented,
         ODTResolvable {
-    public ODTBaseCallName(@NotNull ASTNode node) {
+    protected ODTBaseCallName(@NotNull ASTNode node) {
         super(node);
     }
 

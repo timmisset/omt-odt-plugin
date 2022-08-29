@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class ODTBaseDefineCommandStatement extends ODTDefineStatement implements ODTDefineCommandStatement {
-    public ODTBaseDefineCommandStatement(@NotNull ASTNode node) {
+    protected ODTBaseDefineCommandStatement(@NotNull ASTNode node) {
         super(node);
     }
 

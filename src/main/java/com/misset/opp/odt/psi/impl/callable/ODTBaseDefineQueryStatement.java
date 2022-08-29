@@ -15,7 +15,7 @@ import java.util.Set;
 
 public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement
         implements ODTDefineQueryStatement, ODTResolvable {
-    public ODTBaseDefineQueryStatement(@NotNull ASTNode node) {
+    protected ODTBaseDefineQueryStatement(@NotNull ASTNode node) {
         super(node);
     }
 
@@ -74,7 +74,6 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement
     public boolean isStatic() {
         return true;
     }
-
 
     @Override
     public Set<OntResource> resolvePreviousStep() {

@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery implements ODTBooleanStatement, ODTTypeFilterProvider {
-    public ODTResolvableBooleanStatement(@NotNull ASTNode node) {
+    protected ODTResolvableBooleanStatement(@NotNull ASTNode node) {
         super(node);
     }
 

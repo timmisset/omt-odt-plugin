@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 
 public abstract class ODTResolvableSignatureArgument extends ODTBaseResolvable
         implements ODTSignatureArgument, ODTTypeFilterProvider {
-    public ODTResolvableSignatureArgument(@NotNull ASTNode node) {
+    protected ODTResolvableSignatureArgument(@NotNull ASTNode node) {
         super(node);
     }
 

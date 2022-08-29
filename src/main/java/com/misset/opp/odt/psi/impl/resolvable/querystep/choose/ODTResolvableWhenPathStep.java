@@ -1,10 +1,10 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep.choose;
+package com.misset.opp.odt.psi.impl.resolvable.querystep.choose;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTWhenPath;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableQueryStepBase;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStepBase;
 import com.misset.opp.resolvable.Resolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class ODTResolvableWhenPathStep extends ODTResolvableQueryStepBase implements ODTWhenPath {
-    public ODTResolvableWhenPathStep(@NotNull ASTNode node) {
+    protected ODTResolvableWhenPathStep(@NotNull ASTNode node) {
         super(node);
     }
 

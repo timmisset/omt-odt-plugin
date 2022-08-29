@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class ODTFoldingBuilder extends FoldingBuilderEx implements DumbAware {
     private static final TokenSet COMMAND_BLOCK = TokenSet.create(ODTTypes.SCRIPT);
@@ -29,7 +29,7 @@ public class ODTFoldingBuilder extends FoldingBuilderEx implements DumbAware {
             TokenSet.create(ODTTypes.QUERY_ARRAY, ODTTypes.QUERY_PATH, ODTTypes.EQUATION_STATEMENT, ODTTypes.BOOLEAN_STATEMENT);
     private static final TokenSet DEFAULT_COLLAPSED_PARENTS =
             TokenSet.create(ODTTypes.DEFINE_COMMAND_STATEMENT, ODTTypes.DEFINE_QUERY_STATEMENT);
-    private static final Function<ASTNode, ASTNode> getQueryNode = node -> {
+    private static final UnaryOperator<ASTNode> getQueryNode = node -> {
         ASTNode[] children = node.getChildren(DEFINE_QUERY_STATEMENT);
         return children[0];
     };
@@ -57,7 +57,7 @@ public class ODTFoldingBuilder extends FoldingBuilderEx implements DumbAware {
     private void collectDescriptors(List<FoldingDescriptor> descriptors,
                                     PsiElement root,
                                     Class<? extends PsiElement> clazz,
-                                    Function<ASTNode, ASTNode> nodeToFold,
+                                    UnaryOperator<ASTNode> nodeToFold,
                                     int offset) {
         PsiTreeUtil.findChildrenOfType(root, clazz).forEach(
                 psiElement -> {

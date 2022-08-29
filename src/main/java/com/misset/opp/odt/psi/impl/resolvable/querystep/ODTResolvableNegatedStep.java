@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.resolvable.queryStep;
+package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class ODTResolvableNegatedStep extends ODTResolvableQueryStepBase implements ODTNegatedStep {
-    public ODTResolvableNegatedStep(@NotNull ASTNode node) {
+    protected ODTResolvableNegatedStep(@NotNull ASTNode node) {
         super(node);
     }
 

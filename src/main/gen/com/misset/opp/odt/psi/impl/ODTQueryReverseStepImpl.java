@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableQueryReverseStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableQueryReverseStep;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTQueryReverseStepImpl extends ODTResolvableQueryReverseStep implements ODTQueryReverseStep {

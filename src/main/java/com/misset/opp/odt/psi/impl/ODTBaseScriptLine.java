@@ -3,7 +3,6 @@ package com.misset.opp.odt.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTScriptLine;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -12,17 +11,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class ODTBaseScriptLine extends ODTDocumentedScriptLine implements ODTScriptLine, ODTTypeFilterProvider {
-    public ODTBaseScriptLine(@NotNull ASTNode node) {
+    protected ODTBaseScriptLine(@NotNull ASTNode node) {
         super(node);
-    }
-
-    public ODTDefineStatement getDefinedStatement() {
-        if (getDefineCommandStatement() != null) {
-            return (ODTDefineStatement) getDefineCommandStatement();
-        } else if (getStatement() instanceof ODTDefineStatement) {
-            return (ODTDefineStatement) getStatement();
-        }
-        return null;
     }
 
     /**

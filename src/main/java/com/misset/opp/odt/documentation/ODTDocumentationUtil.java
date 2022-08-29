@@ -1,21 +1,21 @@
 package com.misset.opp.odt.documentation;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.psi.ODTDefinePrefix;
+import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
-import com.misset.opp.odt.psi.impl.prefix.PrefixUtil;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
+import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -26,6 +26,8 @@ public class ODTDocumentationUtil {
     private static final List<Class<? extends PsiElement>> validDocOwners = List.of(
             ODTDefineStatement.class
     );
+
+    private static final Pattern LOCAL_NAME = Pattern.compile("\\(([^:]*):([^)]*)\\)");
 
     @Nullable
     public static String getJavaDocCommentDescription(@NotNull PsiElement element) {
@@ -96,7 +98,9 @@ public class ODTDocumentationUtil {
                 .anyMatch(docOwnerClass -> docOwnerClass.isAssignableFrom(element.getClass()));
     }
 
-    private static final Pattern LOCAL_NAME = Pattern.compile("\\([^:]*:([^)]*)\\)");
+    private ODTDocumentationUtil() {
+        // private constructor
+    }
 
     public static Set<OntResource> getTypeFromDocTag(@Nullable PsiDocTag docTag, int dataElementPosition) {
         if (docTag != null && docTag.getDataElements().length > dataElementPosition) {
@@ -113,17 +117,25 @@ public class ODTDocumentationUtil {
                 final PsiElement prefix = curieReference.get().resolve();
                 final Matcher matcher = LOCAL_NAME.matcher(dataElement.getText());
                 if (matcher.find()) {
-                    String localName = matcher.group(1);
-                    String uri = null;
-                    if (prefix instanceof YAMLKeyValue) {
-                        uri = PrefixUtil.getFullyQualifiedUri((YAMLKeyValue) prefix, localName);
-                    } else if (prefix != null && prefix.getParent() instanceof ODTDefinePrefix) {
-                        uri = PrefixUtil.getFullyQualifiedUri((ODTDefinePrefix) prefix.getParent(), localName);
+                    Optional<String> uri = Optional.empty();
+                    if (prefix instanceof PsiPrefix) {
+                        uri = Optional.of(((PsiPrefix) prefix).getNamespace() + matcher.group(2));
+                    } else {
+                        PsiFile containingFile = docTag.getContainingFile();
+                        if (containingFile instanceof ODTFile) {
+                            uri = ((ODTFile) containingFile).getAvailableNamespaces()
+                                    .entrySet()
+                                    .stream()
+                                    .filter(entry -> entry.getValue().equals(matcher.group(1)))
+                                    .map(Map.Entry::getKey)
+                                    .map(s -> s + matcher.group(2))
+                                    .findFirst();
+                        }
                     }
-                    return Optional.ofNullable(uri)
-                            .map(OppModel.INSTANCE::toIndividuals)
+                    return uri.map(OppModel.INSTANCE::toIndividuals)
+                            .orElse(new HashSet<>())
                             .stream()
-                            .flatMap(Collection::stream)
+                            .map(OntResource.class::cast)
                             .collect(Collectors.toSet());
                 }
             } else {

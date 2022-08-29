@@ -10,7 +10,6 @@ import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
-import com.misset.opp.resolvable.psi.PsiVariable;
 import com.misset.opp.shared.providers.CallableLocalVariableTypeProvider;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
@@ -104,7 +103,7 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
 
         // no self-referencing
         // for example:
-        // VAR $total = $total / PLUS(1);
+        // VAR $total = $total / PLUS(1)
         // the value $total should not be resolved by resolving the assignment
         scriptLine = PsiTreeUtil.getPrevSiblingOfType(scriptLine, ODTScriptLine.class);
 
@@ -121,15 +120,7 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
                     .collect(Collectors.toList()));
             scriptLine = PsiTreeUtil.getPrevSiblingOfType(scriptLine, ODTScriptLine.class);
         }
-        // check if there are parent containers that might include additional assignments to be included
-        // $variable = 'a'; <-- only string at this point
-        // IF true {
-        //    $variable = 1;
-        //    @LOG($variable); <-- can be both string and number at this point
-        // } ELSE {
-        //    @LOG($variable); <-- only string at this point
-        // }
-        // @LOG($variable); <-- and again both string at number at this point
+
         final ODTScriptLine parentScriptline = PsiTreeUtil.getParentOfType(script, ODTScriptLine.class);
         assignmentVariables.addAll(getVariablesFromAssignments(parentScriptline, target));
         return assignmentVariables;
@@ -185,28 +176,12 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
         if (!(containingFile instanceof ODTFile)) {
             return Optional.empty();
         }
-        Collection<PsiVariable> variables = ((ODTFile) containingFile)
-                .getVariables(element.getName())
-                .stream().filter(PsiVariable.class::isInstance)
-                .map(PsiVariable.class::cast)
-                .collect(Collectors.toList());
+        Collection<Variable> variables = ((ODTFile) containingFile).getVariables(element.getName());
         if (variables.isEmpty()) {
             return Optional.empty();
         } else {
             return Optional.of(variables.iterator().next());
         }
-//
-//        // resolve the type from the local variable
-//        // the type is set by OMTLocalVariableTypeProvider corresponding with the OMTLocalVariableProvider
-//        return element.getODTFile()
-//                .getProviders(YAMLValue.class, OMTLocalVariableProvider.class, OMTLocalVariableProvider.KEY)
-//                .entrySet()
-//                .stream()
-//                // map the Provider and YamlPsiElement (mapping) to resolve to set of local variables that are present
-//                .map(entry -> entry.getValue().getLocalVariableMap(entry.getKey()).get(element.getName()))
-//                .filter(Objects::nonNull)
-//                .map(Variable.class::cast)
-//                .findFirst();
     }
 
     private Optional<Set<OntResource>> resolveFromGlobalVariable() {

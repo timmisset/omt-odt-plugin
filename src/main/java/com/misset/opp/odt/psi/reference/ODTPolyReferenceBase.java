@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 public abstract class ODTPolyReferenceBase<T extends PsiElement> extends PsiReferenceBase.Poly<T> implements PsiPolyVariantReference {
-    public ODTPolyReferenceBase(T element, TextRange rangeInElement, boolean soft) {
+    protected ODTPolyReferenceBase(T element, TextRange rangeInElement, boolean soft) {
         super(element, rangeInElement, soft);
     }
 

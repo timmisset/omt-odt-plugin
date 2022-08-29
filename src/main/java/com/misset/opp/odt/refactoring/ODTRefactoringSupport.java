@@ -27,11 +27,6 @@ public class ODTRefactoringSupport extends RefactoringSupportProvider {
     }
 
     @Override
-    public boolean isInplaceIntroduceAvailable(@NotNull PsiElement element, PsiElement context) {
-        return super.isInplaceIntroduceAvailable(element, context);
-    }
-
-    @Override
     public @Nullable RefactoringActionHandler getIntroduceVariableHandler(PsiElement element) {
         return super.getIntroduceVariableHandler(element);
     }
@@ -59,11 +54,6 @@ public class ODTRefactoringSupport extends RefactoringSupportProvider {
     @Override
     public @Nullable RefactoringActionHandler getIntroduceFunctionalParameterHandler() {
         return super.getIntroduceFunctionalParameterHandler();
-    }
-
-    @Override
-    public RefactoringActionHandler getIntroduceFunctionalVariableHandler() {
-        return super.getIntroduceFunctionalVariableHandler();
     }
 
     @Override
@@ -99,10 +89,5 @@ public class ODTRefactoringSupport extends RefactoringSupportProvider {
     @Override
     public @Nullable RefactoringActionHandler getExtractClassHandler() {
         return super.getExtractClassHandler();
-    }
-
-    @Override
-    public boolean isMemberInplaceRenameAvailable(@NotNull PsiElement element, @Nullable PsiElement context) {
-        return super.isMemberInplaceRenameAvailable(element, context);
     }
 }

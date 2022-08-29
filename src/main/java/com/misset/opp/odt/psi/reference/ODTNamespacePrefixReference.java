@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTBaseNamespacePrefix> {
@@ -33,7 +34,7 @@ public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTBaseNam
 
     @Override
     public @Nullable PsiElement resolve() {
-        return getResultByProximity().getOriginalElement();
+        return Optional.ofNullable(getResultByProximity()).map(PsiElement::getOriginalElement).orElse(null);
     }
 
     @Override

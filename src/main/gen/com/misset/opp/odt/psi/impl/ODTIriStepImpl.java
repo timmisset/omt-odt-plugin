@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTIriStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableIriStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableIriStep;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTIriStepImpl extends ODTResolvableIriStep implements ODTIriStep {

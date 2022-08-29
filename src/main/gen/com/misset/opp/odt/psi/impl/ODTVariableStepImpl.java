@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.ODTResolvableVariableStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTVariableStepImpl extends ODTResolvableVariableStep implements ODTVariableStep {

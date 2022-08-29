@@ -6,7 +6,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.resolvable.queryStep.traverse.ODTResolvableCurieElementStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableCurieElementStep;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.testCase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
