@@ -16,7 +16,7 @@ public final class ODTApiDocumentationService extends ApiDocumentationService {
     }
 
     @Override
-    protected Path getPathToApiDocument() {
+    protected @NotNull Path getPathToApiDocument() {
         return Path.of(SettingsState.getInstance(project).odtAPIPath);
     }
 

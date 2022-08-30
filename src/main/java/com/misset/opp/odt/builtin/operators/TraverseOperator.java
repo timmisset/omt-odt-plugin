@@ -1,15 +1,18 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 
-public class TraverseOperator extends BuiltInOperator {
-    private TraverseOperator() { }
+public class TraverseOperator extends AbstractBuiltInOperator {
+    private TraverseOperator() {
+    }
 
     public static final TraverseOperator INSTANCE = new TraverseOperator();
     private static final List<String> PARAMETER_NAMES = List.of("predicate", "backwards");
@@ -36,12 +39,12 @@ public class TraverseOperator extends BuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        validateStringArgument(0, call, holder);
-        validateBooleanArgument(1, call, holder);
+        ArgumentValidator.validateStringArgument(0, call, holder);
+        ArgumentValidator.validateBooleanArgument(1, call, holder);
     }
 
     @Override
-    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+    public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
             return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         } else if (index == 1) {

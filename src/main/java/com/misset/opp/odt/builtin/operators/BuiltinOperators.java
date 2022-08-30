@@ -8,10 +8,16 @@ import java.util.stream.Collectors;
 
 public class BuiltinOperators {
 
-    private static final HashMap<String, Callable> builtinOperators = new HashMap<>();
-    static void addOperator(BuiltInOperator operator) {
-        builtinOperators.put(operator.getCallId(), operator);
+    private static final HashMap<String, Callable> BUILTIN_OPERATORS = new HashMap<>();
+
+    private BuiltinOperators() {
+        // empty constructor
     }
+
+    static void addOperator(AbstractBuiltInOperator operator) {
+        BUILTIN_OPERATORS.put(operator.getCallId(), operator);
+    }
+
     static {
         addOperator(AndOperator.INSTANCE);
         addOperator(BlankNodeOperator.INSTANCE);
@@ -86,18 +92,18 @@ public class BuiltinOperators {
     }
 
     public static Collection<Callable> getStaticOperators() {
-        return builtinOperators.values().stream().filter(Callable::isStatic).collect(Collectors.toList());
+        return BUILTIN_OPERATORS.values().stream().filter(Callable::isStatic).collect(Collectors.toList());
     }
 
     public static Collection<Callable> getNonStaticOperators() {
-        return builtinOperators.values().stream().filter(callable -> !callable.isStatic()).collect(Collectors.toList());
+        return BUILTIN_OPERATORS.values().stream().filter(callable -> !callable.isStatic()).collect(Collectors.toList());
     }
 
     public static Collection<Callable> getOperators() {
-        return builtinOperators.values();
+        return BUILTIN_OPERATORS.values();
     }
 
     public static Callable get(String name) {
-        return builtinOperators.get(name);
+        return BUILTIN_OPERATORS.get(name);
     }
 }

@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class NewCommand extends BuiltInCommand {
+public class NewCommand extends AbstractBuiltInCommand {
 
     private static final List<String> PARAMETER_NAMES = List.of("iri", "graph");
 
@@ -47,8 +48,8 @@ public class NewCommand extends BuiltInCommand {
     @Override
     protected void specificValidation(PsiCall call,
                                       ProblemsHolder holder) {
-        validateClassNameArgument(0, call, holder);
-        validateNamedGraphArgument(1, call, holder);
+        ArgumentValidator.validateClassNameArgument(0, call, holder);
+        ArgumentValidator.validateNamedGraphArgument(1, call, holder);
     }
 
     @Override

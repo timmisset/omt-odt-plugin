@@ -2,6 +2,7 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
@@ -9,8 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MergeOperator extends BuiltInOperator {
-    private MergeOperator() { }
+public class MergeOperator extends AbstractBuiltInOperator {
+    private MergeOperator() {
+    }
 
     public static final MergeOperator INSTANCE = new MergeOperator();
     private static final List<String> PARAMETER_NAMES = List.of("collection", "collection");
@@ -45,7 +47,7 @@ public class MergeOperator extends BuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        validateAllArgumentsCompatible(call, holder);
+        ArgumentValidator.validateAllArgumentsCompatible(call, holder);
         if (call.getNumberOfArguments() >= 2 && !call.resolvePreviousStep().isEmpty()) {
             holder.registerProblem(call, "Using 2 or more arguments will ignore the input value, consider using pipes instead (<query> | <query> | <query>)", ProblemHighlightType.WARNING);
         }

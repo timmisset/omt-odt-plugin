@@ -6,6 +6,7 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -44,9 +45,8 @@ public class MinOperator extends BuiltInCollectionOperator {
                 acceptableTypes);
     }
 
-
     @Override
-    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+    public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
             return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
         }

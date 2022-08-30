@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class MapCommand extends BuiltInCommand implements CallableLocalVariableTypeProvider {
+public class MapCommand extends AbstractBuiltInCommand implements CallableLocalVariableTypeProvider {
 
     private static final List<String> PARAMETER_NAMES = List.of("collection", "command");
     private static final String MAP_VARIABLE = "Map variable";

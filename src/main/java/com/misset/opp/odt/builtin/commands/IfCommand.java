@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -10,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class IfCommand extends BuiltInCommand {
+public class IfCommand extends AbstractBuiltInCommand {
 
     private static final List<String> PARAMETER_NAMES = List.of("condition", "then", "else");
 
@@ -45,7 +46,7 @@ public class IfCommand extends BuiltInCommand {
     @Override
     protected void specificValidation(PsiCall call,
                                       ProblemsHolder holder) {
-        validateBooleanArgument(0, call, holder);
+        ArgumentValidator.validateBooleanArgument(0, call, holder);
     }
 
     @Override

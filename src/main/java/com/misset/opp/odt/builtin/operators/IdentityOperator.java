@@ -4,8 +4,10 @@ import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
 
-public class IdentityOperator extends BuiltInOperator {
-    private IdentityOperator() { }
+public class IdentityOperator extends AbstractBuiltInOperator {
+    private IdentityOperator() {
+    }
+
     public static final IdentityOperator INSTANCE = new IdentityOperator();
 
     @Override

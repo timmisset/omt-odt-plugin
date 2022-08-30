@@ -6,8 +6,10 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
-public class GraphOperator extends BuiltInOperator {
-    private GraphOperator() { }
+public class GraphOperator extends AbstractBuiltInOperator {
+    private GraphOperator() {
+    }
+
     public static final GraphOperator INSTANCE = new GraphOperator();
 
     @Override

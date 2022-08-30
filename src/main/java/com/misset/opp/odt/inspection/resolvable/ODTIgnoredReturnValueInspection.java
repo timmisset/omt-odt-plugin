@@ -4,7 +4,7 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.builtin.Builtin;
+import com.misset.opp.odt.builtin.AbstractBuiltin;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTQueryStatement;
 import com.misset.opp.odt.psi.ODTResolvableValue;
@@ -40,7 +40,7 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
                 if (!(element instanceof ODTCommandCall) && !(element instanceof ODTQueryStatement)) {
                     return;
                 }
-                if (element instanceof ODTCommandCall && ((ODTCommandCall) element).getCallable() instanceof Builtin) {
+                if (element instanceof ODTCommandCall && ((ODTCommandCall) element).getCallable() instanceof AbstractBuiltin) {
                     // don't show warning when command call is made to Builtin commands
                     // users cannot modify their behavior
                     return;

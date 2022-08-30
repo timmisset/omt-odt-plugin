@@ -10,7 +10,7 @@ import org.apache.jena.ontology.OntResource;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class BuiltinMathOperator extends BuiltInOperator {
+public abstract class BuiltinMathOperator extends AbstractBuiltInOperator {
 
     protected static final Set<OntResource> validInputs =
             Set.of(OppModelConstants.XSD_NUMBER_INSTANCE,

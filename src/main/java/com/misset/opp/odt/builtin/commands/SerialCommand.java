@@ -6,7 +6,7 @@ import org.apache.jena.ontology.OntResource;
 import java.util.List;
 import java.util.Set;
 
-public class SerialCommand extends BuiltInCommand {
+public class SerialCommand extends AbstractBuiltInCommand {
 
     private static final List<String> PARAMETER_NAMES = List.of("command");
 

@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.project.Project;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class JsonParseCommand extends BuiltInCommand {
+public class JsonParseCommand extends AbstractBuiltInCommand {
 
     protected static final String DESCRIPTION = "Parse a JSON object to an Ontology class";
     private static final List<String> PARAMETER_NAMES = List.of("json", "class", "namedGraph");
@@ -61,9 +62,9 @@ public class JsonParseCommand extends BuiltInCommand {
     @Override
     protected void specificValidation(PsiCall call,
                                       ProblemsHolder holder) {
-        validateJSONArgument(0, call, holder);
-        validateClassNameArgument(1, call, holder);
-        validateNamedGraphArgument(2, call, holder);
+        ArgumentValidator.validateJSONArgument(0, call, holder);
+        ArgumentValidator.validateClassNameArgument(1, call, holder);
+        ArgumentValidator.validateNamedGraphArgument(2, call, holder);
     }
 
     @Override

@@ -2,15 +2,17 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 
-public class RoundOperator extends BuiltInOperator {
+public class RoundOperator extends AbstractBuiltInOperator {
 
     protected static final String UNNECESSARY_DECIMAL_PLACES_VALUE = "Unnecessary decimalPlaces value";
     protected static final String INPUT_IS_ALREADY_AN_INTEGER = "Input is already an integer";
@@ -54,7 +56,7 @@ public class RoundOperator extends BuiltInOperator {
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         Set<OntResource> callInputType = call.resolvePreviousStep();
         TTLValidationUtil.validateNumber(callInputType, holder, call);
-        validateNumberArgument(0, call, holder);
+        ArgumentValidator.validateNumberArgument(0, call, holder);
 
         if ("0".equals(call.getSignatureValue(0))) {
             holder.registerProblem(call.getCallSignatureArgumentElement(0),
@@ -66,9 +68,8 @@ public class RoundOperator extends BuiltInOperator {
         }
     }
 
-
     @Override
-    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+    public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
             return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
         }

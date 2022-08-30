@@ -10,7 +10,7 @@ import org.apache.jena.rdf.model.Property;
 import java.util.List;
 import java.util.Set;
 
-public class RemoveFromCommand extends BuiltInCommand {
+public class RemoveFromCommand extends AbstractBuiltInCommand {
 
     private static final List<String> PARAMETER_NAMES = List.of("collection", "removal");
 

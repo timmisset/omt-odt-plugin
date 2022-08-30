@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class ForEachCommand extends BuiltInCommand implements CallableLocalVariableTypeProvider {
+public class ForEachCommand extends AbstractBuiltInCommand implements CallableLocalVariableTypeProvider {
 
     private static final List<String> PARAMETER_NAMES = List.of("collection", "command");
     private static final String FOR_EACH_VARIABLE = "ForEach variable";

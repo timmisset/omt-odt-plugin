@@ -10,7 +10,6 @@ import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
@@ -18,10 +17,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
+public abstract class BaseBuiltinTest {
 
     protected OppModel oppModel;
     protected ProblemsHolder holder = mock(ProblemsHolder.class);
@@ -30,17 +30,14 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
     protected PsiElement secondArgument = mock(PsiElement.class);
     protected PsiElement thirdArgument = mock(PsiElement.class);
     protected PsiElement fourthArgument = mock(PsiElement.class);
-    private PsiElement[] mockArguments = new PsiElement[]{firstArgument, secondArgument, thirdArgument, fourthArgument};
+    private final PsiElement[] mockArguments = new PsiElement[]{firstArgument, secondArgument, thirdArgument, fourthArgument};
 
     @BeforeEach
-    @Override
     protected void setUp() {
-        setOntologyModel();
-        oppModel = OppModel.INSTANCE;
+        oppModel = OMTOntologyTestCase.initOntologyModel();
     }
 
     @AfterEach
-    @Override
     protected void tearDown() {
 
     }
@@ -72,14 +69,14 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
     }
 
     @SafeVarargs
-    protected final void assertResolved(Builtin builtin,
+    protected final void assertResolved(AbstractBuiltin builtin,
                                         OntResource expectedResource,
                                         Set<OntResource>... callArguments) {
         assertResolved(builtin, Collections.emptySet(), Set.of(expectedResource), callArguments);
     }
 
     @SafeVarargs
-    protected final void assertResolved(Builtin builtin,
+    protected final void assertResolved(AbstractBuiltin builtin,
                                         OntResource inputResource,
                                         OntResource expectedResource,
                                         Set<OntResource>... callArguments) {
@@ -87,7 +84,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
     }
 
     @SafeVarargs
-    protected final void assertResolved(Builtin builtin,
+    protected final void assertResolved(AbstractBuiltin builtin,
                                         Set<OntResource> inputResources,
                                         Set<OntResource> expectedResources,
                                         Set<OntResource>... callArguments) {
@@ -99,7 +96,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         assertTrue(resources.containsAll(expectedResources));
     }
 
-    protected final void assertCombinesInput(Builtin builtin) {
+    protected final void assertCombinesInput(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
                 Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE,
@@ -108,7 +105,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
                 Set.of(OppModelConstants.XSD_STRING_INSTANCE));
     }
 
-    protected final void assertReturnsFirstArgument(Builtin builtin) {
+    protected final void assertReturnsFirstArgument(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
                 Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
@@ -119,7 +116,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
     /**
      * Checks if the call returns a specific type regardless of the call arguments or input
      */
-    protected final void assertReturns(Builtin builtin, OntResource resource) {
+    protected final void assertReturns(AbstractBuiltin builtin, OntResource resource) {
         assertResolved(builtin,
                 Collections.emptySet(),
                 Set.of(resource),
@@ -127,7 +124,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
                 Set.of(OppModelConstants.XSD_STRING_INSTANCE));
     }
 
-    protected final void assertReturnsVoid(Builtin builtin) {
+    protected final void assertReturnsVoid(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
                 Collections.emptySet(),
@@ -137,7 +134,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
 
     protected abstract void testResolve();
 
-    protected void testArgument(Builtin builtin,
+    protected void testArgument(AbstractBuiltin builtin,
                                 int index,
                                 OntResource expected,
                                 String errorMessage) {
@@ -145,7 +142,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         testArgument(builtin, index, expected, errorMessage, invalidArgument);
     }
 
-    protected void assertValidInput(Builtin builtin,
+    protected void assertValidInput(AbstractBuiltin builtin,
                                     OntResource input) {
         PsiCall call = getCall();
         doReturn(Set.of(input)).when(call).resolvePreviousStep();
@@ -153,7 +150,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         verify(holder, never()).registerProblem(eq(call), anyString(), any(ProblemHighlightType.class));
     }
 
-    protected void assertInvalidInput(Builtin builtin,
+    protected void assertInvalidInput(AbstractBuiltin builtin,
                                       OntResource input,
                                       String errorMessage) {
         PsiCall call = getCall();
@@ -162,7 +159,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         verify(holder).registerProblem(eq(call), startsWith(errorMessage), any(ProblemHighlightType.class));
     }
 
-    protected void testArgument(Builtin builtin,
+    protected void testArgument(AbstractBuiltin builtin,
                                 int index,
                                 OntResource expected,
                                 String errorMessage,
@@ -171,7 +168,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         assertInvalidArgument(builtin, index, invalidArgument, errorMessage);
     }
 
-    private void assertArgument(Builtin builtin,
+    private void assertArgument(AbstractBuiltin builtin,
                                 int index,
                                 OntResource argumentType) {
         reset(holder);
@@ -184,7 +181,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         builtin.validate(invalidCall, holder);
     }
 
-    protected void assertValidArgument(Builtin builtin,
+    protected void assertValidArgument(AbstractBuiltin builtin,
                                        int index,
                                        OntResource argumentType) {
         final PsiElement callArgument = mockArguments[index];
@@ -192,7 +189,7 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         verify(holder, never()).registerProblem(eq(callArgument), anyString(), eq(ProblemHighlightType.ERROR));
     }
 
-    protected void assertInvalidArgument(Builtin builtin,
+    protected void assertInvalidArgument(AbstractBuiltin builtin,
                                          int index,
                                          OntResource argumentType,
                                          String errorMessage) {
@@ -201,27 +198,27 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         verify(holder).registerProblem(eq(callArgument), startsWith(errorMessage), eq(ProblemHighlightType.ERROR));
     }
 
-    protected void assertGetAcceptableArgumentTypeIsNull(Builtin builtin, int index) {
+    protected void assertGetAcceptableArgumentTypeIsNull(AbstractBuiltin builtin, int index) {
         PsiCall call = mock(PsiCall.class);
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
         assertNull(acceptableArgumentTypeWithContext);
     }
 
-    protected void assertGetAcceptableArgumentType(Builtin builtin, int index, OntResource exceptedType) {
+    protected void assertGetAcceptableArgumentType(AbstractBuiltin builtin, int index, OntResource exceptedType) {
         assertGetAcceptableArgumentType(builtin, index, Set.of(exceptedType));
     }
 
-    protected void assertGetAcceptableArgumentType(Builtin builtin, int index, Set<OntResource> exceptedTypes) {
+    protected void assertGetAcceptableArgumentType(AbstractBuiltin builtin, int index, Set<OntResource> exceptedTypes) {
         PsiCall call = mock(PsiCall.class);
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
 
         assertNotNull(acceptableArgumentTypeWithContext);
-        Assertions.assertEquals(exceptedTypes.size(), acceptableArgumentTypeWithContext.size());
+        assertEquals(exceptedTypes.size(), acceptableArgumentTypeWithContext.size());
 
         assertTrue(acceptableArgumentTypeWithContext.containsAll(exceptedTypes));
     }
 
-    protected void assertGetAcceptableArgumentTypeSameAsPreviousStep(Builtin builtin, int index) {
+    protected void assertGetAcceptableArgumentTypeSameAsPreviousStep(AbstractBuiltin builtin, int index) {
         PsiCall call = mock(PsiCall.class);
         Set<OntResource> previousStep = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         doReturn(previousStep).when(call).resolvePreviousStep();
@@ -229,12 +226,12 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
 
         assertNotNull(acceptableArgumentTypeWithContext);
-        Assertions.assertEquals(previousStep.size(), acceptableArgumentTypeWithContext.size());
+        assertEquals(previousStep.size(), acceptableArgumentTypeWithContext.size());
 
         assertTrue(acceptableArgumentTypeWithContext.containsAll(previousStep));
     }
 
-    protected void assertGetAcceptableArgumentTypeSameAsArgument(Builtin builtin, int index, int sameAsIndex) {
+    protected void assertGetAcceptableArgumentTypeSameAsArgument(AbstractBuiltin builtin, int index, int sameAsIndex) {
         PsiCall call = mock(PsiCall.class);
         Set<OntResource> atIndex = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
         doReturn(atIndex).when(call).resolveSignatureArgument(sameAsIndex);
@@ -242,16 +239,16 @@ public abstract class BaseBuiltinTest extends OMTOntologyTestCase {
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
 
         assertNotNull(acceptableArgumentTypeWithContext);
-        Assertions.assertEquals(atIndex.size(), acceptableArgumentTypeWithContext.size());
+        assertEquals(atIndex.size(), acceptableArgumentTypeWithContext.size());
 
         assertTrue(acceptableArgumentTypeWithContext.containsAll(atIndex));
     }
 
-    protected void assertGetAcceptableInputType(Builtin builtin, OntResource resource) {
+    protected void assertGetAcceptableInputType(AbstractBuiltin builtin, OntResource resource) {
         assertGetAcceptableInputType(builtin, Set.of(resource));
     }
 
-    protected void assertGetAcceptableInputType(Builtin builtin, Set<OntResource> resources) {
+    protected void assertGetAcceptableInputType(AbstractBuiltin builtin, Set<OntResource> resources) {
         Set<OntResource> acceptableInputType = builtin.getAcceptableInputType();
         assertTrue(acceptableInputType.containsAll(resources));
     }

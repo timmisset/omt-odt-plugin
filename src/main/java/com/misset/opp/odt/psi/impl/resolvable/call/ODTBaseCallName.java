@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
 import com.misset.opp.documentation.DocumentationProvider;
-import com.misset.opp.odt.builtin.Builtin;
+import com.misset.opp.odt.builtin.AbstractBuiltin;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
@@ -39,7 +39,7 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
         if (callable == null) {
             return null;
         }
-        if (callable instanceof Builtin) {
+        if (callable instanceof AbstractBuiltin) {
             return getBuiltinDocumentation(project, callable, call);
         }
 

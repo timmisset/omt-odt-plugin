@@ -6,7 +6,7 @@ import org.apache.jena.ontology.OntResource;
 import java.util.List;
 import java.util.Set;
 
-public class LogCommand extends BuiltInCommand {
+public class LogCommand extends AbstractBuiltInCommand {
 
     private static final List<String> PARAMETER_NAMES = List.of("command");
 

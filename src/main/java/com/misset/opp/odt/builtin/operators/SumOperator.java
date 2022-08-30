@@ -8,8 +8,10 @@ import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
 
-public class SumOperator extends BuiltInOperator {
-    private SumOperator() { }
+public class SumOperator extends AbstractBuiltInOperator {
+    private SumOperator() {
+    }
+
     public static final SumOperator INSTANCE = new SumOperator();
 
     @Override

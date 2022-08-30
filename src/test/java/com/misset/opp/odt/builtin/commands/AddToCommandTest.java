@@ -84,7 +84,7 @@ class AddToCommandTest extends BaseBuiltinTest {
     void testAbstractMethods() {
         Assertions.assertEquals("@ADD_TO", AddToCommand.INSTANCE.getCallId());
         Assertions.assertTrue(AddToCommand.INSTANCE.isCommand());
-        Assertions.assertEquals(BuiltInCommand.TYPE, AddToCommand.INSTANCE.getType());
+        Assertions.assertEquals(AbstractBuiltInCommand.TYPE, AddToCommand.INSTANCE.getType());
         Assertions.assertFalse(AddToCommand.INSTANCE.canBeAppliedTo(null));
     }
 }

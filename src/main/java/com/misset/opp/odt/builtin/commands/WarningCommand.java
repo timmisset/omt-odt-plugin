@@ -6,7 +6,7 @@ import org.apache.jena.ontology.OntResource;
 import java.util.List;
 import java.util.Set;
 
-public class WarningCommand extends BuiltInCommand {
+public class WarningCommand extends AbstractBuiltInCommand {
 
     private static final List<String> PARAMETER_NAMES = List.of("command");
 

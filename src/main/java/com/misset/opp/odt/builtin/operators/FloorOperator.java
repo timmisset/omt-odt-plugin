@@ -8,7 +8,7 @@ import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
 
-public class FloorOperator extends BuiltInOperator {
+public class FloorOperator extends AbstractBuiltInOperator {
     private FloorOperator() {
     }
 

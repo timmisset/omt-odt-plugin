@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -41,9 +42,9 @@ public class HttpCallCommandGet extends BuiltInHttpCommand {
     @Override
     protected void specificValidation(PsiCall call,
                                       ProblemsHolder holder) {
-        validateStringArgument(0, call, holder);
-        validateJSONArgument(1, call, holder);
-        validateBooleanArgument(2, call, holder);
+        ArgumentValidator.validateStringArgument(0, call, holder);
+        ArgumentValidator.validateJSONArgument(1, call, holder);
+        ArgumentValidator.validateBooleanArgument(2, call, holder);
     }
 
     @Override

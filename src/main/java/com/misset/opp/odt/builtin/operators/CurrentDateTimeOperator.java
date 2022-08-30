@@ -3,8 +3,10 @@ package com.misset.opp.odt.builtin.operators;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
-public class CurrentDateTimeOperator extends BuiltInOperator {
-    private CurrentDateTimeOperator() { }
+public class CurrentDateTimeOperator extends AbstractBuiltInOperator {
+    private CurrentDateTimeOperator() {
+    }
+
     public static final CurrentDateTimeOperator INSTANCE = new CurrentDateTimeOperator();
 
     @Override

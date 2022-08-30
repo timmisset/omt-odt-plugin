@@ -4,13 +4,15 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CatchOperator extends BuiltInOperator {
-    private CatchOperator() { }
+public class CatchOperator extends AbstractBuiltInOperator {
+    private CatchOperator() {
+    }
 
     public static final CatchOperator INSTANCE = new CatchOperator();
     private static final List<String> PARAMETER_NAMES = List.of("whenError");
@@ -48,7 +50,7 @@ public class CatchOperator extends BuiltInOperator {
     }
 
     @Override
-    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+    public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         return call.resolvePreviousStep();
     }
 

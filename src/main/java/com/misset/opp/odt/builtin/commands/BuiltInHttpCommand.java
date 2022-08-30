@@ -5,7 +5,7 @@ import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
 
-public abstract class BuiltInHttpCommand extends BuiltInCommand {
+public abstract class BuiltInHttpCommand extends AbstractBuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {

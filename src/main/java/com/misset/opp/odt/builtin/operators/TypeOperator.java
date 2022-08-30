@@ -9,8 +9,10 @@ import org.apache.jena.ontology.OntResource;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TypeOperator extends BuiltInOperator {
-    private TypeOperator() { }
+public class TypeOperator extends AbstractBuiltInOperator {
+    private TypeOperator() {
+    }
+
     public static final TypeOperator INSTANCE = new TypeOperator();
 
     @Override

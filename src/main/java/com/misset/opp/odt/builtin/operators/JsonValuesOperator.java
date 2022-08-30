@@ -9,7 +9,7 @@ import org.apache.jena.ontology.OntResource;
 import java.util.Collections;
 import java.util.Set;
 
-public class JsonValuesOperator extends BuiltInOperator {
+public class JsonValuesOperator extends AbstractBuiltInOperator {
     private JsonValuesOperator() {
     }
 

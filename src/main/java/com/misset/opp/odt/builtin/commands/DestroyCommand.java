@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
@@ -8,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class DestroyCommand extends BuiltInCommand {
+public class DestroyCommand extends AbstractBuiltInCommand {
 
     private static final List<String> PARAMETER_NAMES = List.of("subject");
 
@@ -30,7 +31,7 @@ public class DestroyCommand extends BuiltInCommand {
     @Override
     protected void specificValidation(PsiCall call,
                                       ProblemsHolder holder) {
-        validateInstancesArgument(0, call, holder);
+        ArgumentValidator.validateInstancesArgument(0, call, holder);
     }
 
     @Override

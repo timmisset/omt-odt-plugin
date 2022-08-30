@@ -85,6 +85,6 @@ class HasOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetFlags() {
-        Assertions.assertEquals(BuiltInOperator.IGNORE_CASE_FLAG, HasOperator.INSTANCE.getFlags());
+        Assertions.assertEquals(AbstractBuiltInOperator.IGNORE_CASE_FLAG, HasOperator.INSTANCE.getFlags());
     }
 }

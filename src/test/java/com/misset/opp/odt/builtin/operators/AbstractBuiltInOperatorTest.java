@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 /**
  * Do not extend for other tests, always extend from BuiltInTest to prevent test duplications
  */
-final class BuiltInOperatorTest extends BaseBuiltinTest {
+final class AbstractBuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testType() {
@@ -51,8 +51,9 @@ final class BuiltInOperatorTest extends BaseBuiltinTest {
     }
 
     @Override
+    @Test
     protected void testResolve() {
-        // not necessary for abstract class
+        Assertions.assertNull(LogOperator.INSTANCE.resolveSingle());
     }
 
     @Test
@@ -71,6 +72,20 @@ final class BuiltInOperatorTest extends BaseBuiltinTest {
                 new Pair<>(withValues, emptySet), call, holder
         );
         verify(holder, never()).registerProblem(any(PsiElement.class), anyString(), any(ProblemHighlightType.class));
+    }
+
+    @Test
+    void testResolveError() {
+        Set<OntResource> resources = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+        Assertions.assertEquals(resources, LogOperator.INSTANCE.resolveError(resources, null));
+    }
+
+    @Test
+    void testSpecificValidationDoesNothing() {
+        PsiCall call = mock(PsiCall.class);
+        LogOperator.INSTANCE.specificValidation(call, holder);
+
+        verify(holder, never()).registerProblem(any(), anyString(), any(ProblemHighlightType.class));
     }
 
 }

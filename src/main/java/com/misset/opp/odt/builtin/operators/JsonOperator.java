@@ -3,8 +3,10 @@ package com.misset.opp.odt.builtin.operators;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
-public class JsonOperator extends BuiltInOperator {
-    private JsonOperator() { }
+public class JsonOperator extends AbstractBuiltInOperator {
+    private JsonOperator() {
+    }
+
     public static final JsonOperator INSTANCE = new JsonOperator();
 
     @Override

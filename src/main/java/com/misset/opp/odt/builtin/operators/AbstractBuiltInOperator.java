@@ -3,7 +3,7 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
-import com.misset.opp.odt.builtin.Builtin;
+import com.misset.opp.odt.builtin.AbstractBuiltin;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public abstract class BuiltInOperator extends Builtin {
+public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
 
     protected static final List<String> IGNORE_CASE_FLAG = List.of("!ignoreCase");
 
@@ -35,6 +35,32 @@ public abstract class BuiltInOperator extends Builtin {
     @Override
     public boolean isStatic() {
         return false;
+    }
+
+    @Override
+    protected OntResource resolveSingle() {
+        return null;
+    }
+
+    @Override
+    protected Set<OntResource> resolveFrom(PsiCall call) {
+        return resolve();
+    }
+
+    @Override
+    protected Set<OntResource> resolveFrom(Set<OntResource> resources) {
+        return resolve();
+    }
+
+    @Override
+    protected Set<OntResource> resolveFrom(Set<OntResource> resources,
+                                           PsiCall call) {
+        return resolveFrom(resources);
+    }
+
+    @Override
+    protected Set<OntResource> resolveError(Set<OntResource> resources, PsiCall call) {
+        return resources;
     }
 
     protected void validateIgnoreCaseFlagUsage(int dynamicArgumentIndex,
@@ -62,6 +88,7 @@ public abstract class BuiltInOperator extends Builtin {
             }
         }
     }
+
     protected void validateIgnoreCaseFlagIsUsedOnStrings(Set<OntResource> resources,
                                                          PsiCall call,
                                                          ProblemsHolder holder) {
@@ -81,12 +108,13 @@ public abstract class BuiltInOperator extends Builtin {
      */
     protected Set<OntResource> validateLeftRightCompatible(PsiCall call, ProblemsHolder holder) {
         Pair<Set<OntResource>, Set<OntResource>> leftRight = getLeftRightFromArguments(call);
-        if(leftRight.getFirst() == null || leftRight.getSecond() == null) {
+        if (leftRight.getFirst() == null || leftRight.getSecond() == null) {
             return Collections.emptySet();
         }
         TTLValidationUtil.validateCompatibleTypes(leftRight.getFirst(), leftRight.getSecond(), holder, call);
         return leftRight.getFirst();
     }
+
     protected Pair<Set<OntResource>, Set<OntResource>> getLeftRightFromArguments(PsiCall call) {
         final Set<OntResource> left;
         final Set<OntResource> right;
@@ -130,5 +158,10 @@ public abstract class BuiltInOperator extends Builtin {
     @Override
     protected List<String> getParameters() {
         return Collections.emptyList();
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        // do nothing if not overridden in implementation class
     }
 }

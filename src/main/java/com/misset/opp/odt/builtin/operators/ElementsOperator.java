@@ -6,8 +6,10 @@ import org.apache.jena.ontology.OntResource;
 /**
  * ELEMENTS turns an OrderedList or JSON Array into a regular RDF array
  */
-public class ElementsOperator extends BuiltInOperator {
-    private ElementsOperator() { }
+public class ElementsOperator extends AbstractBuiltInOperator {
+    private ElementsOperator() {
+    }
+
     public static final ElementsOperator INSTANCE = new ElementsOperator();
 
     @Override

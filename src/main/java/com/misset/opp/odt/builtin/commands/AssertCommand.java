@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class AssertCommand extends BuiltInCommand {
+public class AssertCommand extends AbstractBuiltInCommand {
 
     public static final List<String> PARAMETER_NAMES = List.of("assertion");
 

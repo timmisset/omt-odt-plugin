@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Operator that returns that same type as the input
  */
-public abstract class BuiltInCollectionOperator extends BuiltInOperator {
+public abstract class BuiltInCollectionOperator extends AbstractBuiltInOperator {
 
     @Override
     public Set<OntResource> resolveFrom(Set<OntResource> resources) {

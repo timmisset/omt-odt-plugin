@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
-import com.misset.opp.odt.builtin.Builtin;
+import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.AbstractBuiltin;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
@@ -8,7 +9,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class BuiltInCommand extends Builtin {
+public abstract class AbstractBuiltInCommand extends AbstractBuiltin {
 
     protected static final String TYPE = "Builtin Command";
 
@@ -29,19 +30,30 @@ public abstract class BuiltInCommand extends Builtin {
         return true;
     }
 
-    /**
-     * For CommandCalls, many of the commands do not take input parameters
-     * Instead, resolve only the call arguments
-     *
-     * @param call
-     */
+    @Override
     protected Set<OntResource> resolveFrom(PsiCall call) {
         return resolve();
     }
 
+    @Override
     protected Set<OntResource> resolveFrom(Set<OntResource> resources,
                                            PsiCall call) {
         return resolveFrom(call);
+    }
+
+    @Override
+    protected Set<OntResource> resolveFrom(Set<OntResource> resources) {
+        return resolve();
+    }
+
+    @Override
+    protected Set<OntResource> resolveError(Set<OntResource> resources, PsiCall call) {
+        return resources;
+    }
+
+    @Override
+    protected OntResource resolveSingle() {
+        return null;
     }
 
     protected Set<OntResource> combineArgumentResources(PsiCall call) {
@@ -64,5 +76,10 @@ public abstract class BuiltInCommand extends Builtin {
     @Override
     public boolean isStatic() {
         return true;
+    }
+
+    @Override
+    protected void specificValidation(PsiCall call, ProblemsHolder holder) {
+        // do nothing if not overridden in implementation
     }
 }

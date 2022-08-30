@@ -6,10 +6,16 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class BuiltinCommands {
-    private static final HashMap<String, Callable> builtinCommands = new HashMap<>();
-    static void addCommand(BuiltInCommand command) {
-        builtinCommands.put(command.getCallId(), command);
+    private static final HashMap<String, Callable> BUILTIN_COMMANDS = new HashMap<>();
+
+    private BuiltinCommands() {
+        // empty constructor
     }
+
+    static void addCommand(AbstractBuiltInCommand command) {
+        BUILTIN_COMMANDS.put(command.getCallId(), command);
+    }
+
     static {
         addCommand(AddToCommand.INSTANCE);
         addCommand(AssertCommand.INSTANCE);
@@ -40,6 +46,6 @@ public class BuiltinCommands {
     }
 
     public static Collection<Callable> getCommands() {
-        return builtinCommands.values();
+        return BUILTIN_COMMANDS.values();
     }
 }

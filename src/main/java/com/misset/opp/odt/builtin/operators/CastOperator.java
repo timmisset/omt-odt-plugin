@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CastOperator extends BuiltInOperator {
+public class CastOperator extends AbstractBuiltInOperator {
     private CastOperator() {
     }
 

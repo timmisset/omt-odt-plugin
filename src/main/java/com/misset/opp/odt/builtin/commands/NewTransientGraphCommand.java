@@ -6,7 +6,7 @@ import org.apache.jena.ontology.OntResource;
 import java.util.Collections;
 import java.util.List;
 
-public class NewTransientGraphCommand extends BuiltInCommand {
+public class NewTransientGraphCommand extends AbstractBuiltInCommand {
     private NewTransientGraphCommand() {
     }
 

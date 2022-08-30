@@ -7,7 +7,7 @@ import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
-public abstract class BuiltInBooleanOperator extends BuiltInOperator {
+public abstract class BuiltInBooleanOperator extends AbstractBuiltInOperator {
 
     protected static final String ERROR = "Requires previous step to be a boolean when there is only 1 argument";
 

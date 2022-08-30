@@ -7,8 +7,8 @@ import com.intellij.patterns.PsiJavaElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.misset.opp.odt.builtin.commands.BuiltInCommand;
-import com.misset.opp.odt.builtin.operators.BuiltInOperator;
+import com.misset.opp.odt.builtin.commands.AbstractBuiltInCommand;
+import com.misset.opp.odt.builtin.operators.AbstractBuiltInOperator;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +59,7 @@ public interface CompletionPatterns {
         );
     }
 
-    static ElementPattern<PsiElement> getInsideBuiltinCommandSignaturePattern(BuiltInCommand builtin) {
+    static ElementPattern<PsiElement> getInsideBuiltinCommandSignaturePattern(AbstractBuiltInCommand builtin) {
         return PlatformPatterns.psiElement().inside(ODTSignatureArgument.class).and(PlatformPatterns.psiElement().with(
                 new PatternCondition<>("Builtin command") {
                     @Override
@@ -71,7 +71,7 @@ public interface CompletionPatterns {
         ));
     }
 
-    static ElementPattern<PsiElement> getInsideBuiltinOperatorSignaturePattern(BuiltInOperator operator) {
+    static ElementPattern<PsiElement> getInsideBuiltinOperatorSignaturePattern(AbstractBuiltInOperator operator) {
         return PlatformPatterns.psiElement().inside(ODTSignatureArgument.class).and(PlatformPatterns.psiElement().with(
                 new PatternCondition<>("Builtin operator") {
                     @Override

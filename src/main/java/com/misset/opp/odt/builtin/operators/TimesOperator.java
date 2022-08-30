@@ -1,10 +1,12 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -36,11 +38,11 @@ public class TimesOperator extends BuiltinMathOperator {
         if (call.getNumberOfArguments() == 1) {
             TTLValidationUtil.validateNumber(call.resolvePreviousStep(), holder, call);
         }
-        validateAllArguments(call, holder, this::validateNumberArgument);
+        ArgumentValidator.validateAllArguments(call, holder, ArgumentValidator::validateNumberArgument);
     }
 
     @Override
-    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+    public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE);
     }
 

@@ -3,7 +3,7 @@ package com.misset.opp.odt.builtin.operators;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
-public class BlankNodeOperator extends BuiltInOperator {
+public class BlankNodeOperator extends AbstractBuiltInOperator {
     private BlankNodeOperator() {
     }
 

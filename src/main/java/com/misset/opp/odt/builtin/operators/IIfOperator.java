@@ -2,15 +2,17 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class IIfOperator extends BuiltInOperator {
+public class IIfOperator extends AbstractBuiltInOperator {
     private IIfOperator() {
     }
 
@@ -48,7 +50,7 @@ public class IIfOperator extends BuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        validateBooleanArgument(0, call, holder);
+        ArgumentValidator.validateBooleanArgument(0, call, holder);
         if (call.getNumberOfArguments() == 3) {
             Pair<Set<OntResource>, Set<OntResource>> possibilities = Pair.create(call.resolveSignatureArgument(1), call.resolveSignatureArgument(2));
             validateCompatibleOutcomePossibilities(possibilities, call, holder);
@@ -56,7 +58,7 @@ public class IIfOperator extends BuiltInOperator {
     }
 
     @Override
-    public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
+    public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
             return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
         } else if (index == 1) {

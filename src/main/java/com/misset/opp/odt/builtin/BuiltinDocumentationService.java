@@ -20,11 +20,11 @@ public final class BuiltinDocumentationService {
         this.project = project;
     }
 
-    public String getDocumentation(Builtin builtin) {
+    public String getDocumentation(AbstractBuiltin builtin) {
         ODTApiDocumentationService documentationService = ODTApiDocumentationService.getInstance(project);
 
         String level1 = builtin.isCommand() ? "Commands" : "Operators";
-        String path = level1 + "/" + builtin.getCallId();
+        String path = String.format("%s/%s", level1, builtin.getCallId());
 
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);

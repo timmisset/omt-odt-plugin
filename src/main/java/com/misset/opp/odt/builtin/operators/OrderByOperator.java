@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class OrderByOperator extends BuiltInCollectionOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        validateBooleanArgument(1, call, holder);
+        ArgumentValidator.validateBooleanArgument(1, call, holder);
     }
 
     @Override

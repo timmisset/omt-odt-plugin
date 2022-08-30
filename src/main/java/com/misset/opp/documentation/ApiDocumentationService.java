@@ -10,7 +10,7 @@ public abstract class ApiDocumentationService {
 
     protected Project project;
 
-    public ApiDocumentationService(Project project) {
+    protected ApiDocumentationService(Project project) {
         this.project = project;
     }
 

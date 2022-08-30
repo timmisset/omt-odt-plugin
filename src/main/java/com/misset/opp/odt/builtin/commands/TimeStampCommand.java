@@ -6,7 +6,7 @@ import org.apache.jena.ontology.OntResource;
 import java.util.Collections;
 import java.util.List;
 
-public class TimeStampCommand extends BuiltInCommand {
+public class TimeStampCommand extends AbstractBuiltInCommand {
     private TimeStampCommand() {
     }
 

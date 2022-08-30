@@ -6,11 +6,12 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 
-public class AddToCommand extends BuiltInCommand {
+public class AddToCommand extends AbstractBuiltInCommand {
     private AddToCommand() {
     }
 
@@ -33,6 +34,7 @@ public class AddToCommand extends BuiltInCommand {
     }
 
     @Override
+    @Nullable
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 1) {
             return call.resolveSignatureArgument(0);

@@ -2,7 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.builtin.commands.BuiltInCommand;
+import com.misset.opp.odt.builtin.commands.AbstractBuiltInCommand;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.testCase.OMTTestCase;
@@ -30,7 +30,7 @@ class ODTCommandCallImplTest extends OMTTestCase {
                 "   @<caret>LOG('hello world');\n" +
                 "");
         configureByText(content);
-        ReadAction.run(() -> Assertions.assertTrue(getCallByName("LOG").getCallable() instanceof BuiltInCommand));
+        ReadAction.run(() -> Assertions.assertTrue(getCallByName("LOG").getCallable() instanceof AbstractBuiltInCommand));
     }
 
     @Test

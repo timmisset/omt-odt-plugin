@@ -4,13 +4,14 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AssignCommand extends BuiltInCommand {
+public class AssignCommand extends AbstractBuiltInCommand {
 
     protected static final String EXPECTS_AN_UNEVEN_NUMBER_OF_ARGUMENTS = "Expects an uneven number of arguments";
     private static final List<String> PARAMETER_NAMES = List.of("subject", "property", "value");
@@ -53,11 +54,10 @@ public class AssignCommand extends BuiltInCommand {
     }
 
     @Override
+    @Nullable
     public Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        if (index > 1) {
-            if (index % 2 == 0) {
-                return call.resolveSignatureArgument(index - 1);
-            }
+        if (index > 1 && index % 2 == 0) {
+            return call.resolveSignatureArgument(index - 1);
         }
         return null;
     }
@@ -81,8 +81,6 @@ public class AssignCommand extends BuiltInCommand {
 
     @Override
     public Map<Integer, String> getParameterNames() {
-        // The assign command should return a custom names map because both the property and value should
-        // be shown as a rest parameter. @ASSIGN(subject, ...property, ...value);
         return PARAMETERS_NAMES_MAP;
     }
 }

@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project;
 
 import java.util.List;
 
-public class LoadOntologyCommand extends BuiltInCommand {
+public class LoadOntologyCommand extends AbstractBuiltInCommand {
 
     protected static final String DESCRIPTION = "Unlike normal ontologies, which are loaded with the OMT module, a locally defined ontology has to be explicitly </br>" +
             "loaded. A special ODT command `@LOAD_ONTOLOGY` is used to load an ontology in the current OMT activity, procedure, </br>" +

@@ -6,7 +6,7 @@ import org.apache.jena.ontology.OntResource;
 import java.util.Collections;
 import java.util.List;
 
-public class GuidCommand extends BuiltInCommand {
+public class GuidCommand extends AbstractBuiltInCommand {
     private GuidCommand() {
     }
 

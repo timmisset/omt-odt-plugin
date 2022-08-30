@@ -1,6 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public class ClearGraphCommand extends BuiltInCommand {
+public class ClearGraphCommand extends AbstractBuiltInCommand {
 
     private static final List<String> PARAMETER_NAMES = List.of("graph");
 
@@ -36,7 +37,7 @@ public class ClearGraphCommand extends BuiltInCommand {
     @Override
     public void specificValidation(PsiCall call,
                                    ProblemsHolder holder) {
-        validateNamedGraphArgument(0, call, holder);
+        ArgumentValidator.validateNamedGraphArgument(0, call, holder);
     }
 
     @Override

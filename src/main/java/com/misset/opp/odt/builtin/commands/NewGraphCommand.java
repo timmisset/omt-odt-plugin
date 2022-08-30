@@ -1,13 +1,14 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.List;
 
-public class NewGraphCommand extends BuiltInCommand {
+public class NewGraphCommand extends AbstractBuiltInCommand {
 
     private static final List<String> PARAMETER_NAMES = List.of("graph");
 
@@ -39,7 +40,7 @@ public class NewGraphCommand extends BuiltInCommand {
     @Override
     protected void specificValidation(PsiCall call,
                                       ProblemsHolder holder) {
-        validateGraphShapeArgument(0, call, holder);
+        ArgumentValidator.validateGraphShapeArgument(0, call, holder);
     }
 
     @Override
