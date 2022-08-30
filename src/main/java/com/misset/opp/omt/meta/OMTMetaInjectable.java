@@ -20,7 +20,7 @@ public interface OMTMetaInjectable {
     }
 
     default InjectableContentType getInjectableContentType() {
-        return InjectableContentType.None;
+        return InjectableContentType.NONE;
     }
 
 }

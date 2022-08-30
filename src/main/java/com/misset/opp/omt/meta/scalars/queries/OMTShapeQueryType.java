@@ -33,6 +33,6 @@ public class OMTShapeQueryType extends OMTQueryMetaType {
     @Override
     public InjectableContentType getInjectableContentType() {
         // this makes sure the injected fragment shows only applicable completions (i.e. graphshapes)
-        return InjectableContentType.GraphShapeQuery;
+        return InjectableContentType.GRAPH_SHAPE_QUERY;
     }
 }

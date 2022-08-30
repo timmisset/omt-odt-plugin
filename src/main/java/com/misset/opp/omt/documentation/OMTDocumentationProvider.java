@@ -5,6 +5,7 @@ import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.lang.documentation.DocumentationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.Strings;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
@@ -19,9 +20,15 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
+import java.util.List;
+
 import static com.misset.opp.documentation.DocumentationProvider.addKeyValueSection;
 
 public class OMTDocumentationProvider extends AbstractDocumentationProvider implements DocumentationProvider {
+
+    public static final String CLASSES = "Classes";
+    public static final String DESCRIPTION = "Description";
+    public static final String EXAMPLE = "Example";
 
     @Override
     public @Nullable @Nls String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
@@ -63,51 +70,6 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
         }
     }
 
-    private String getDocumentedAttribute(OMTMetaTypeProvider metaTypeProvider, YAMLKeyValue element) {
-        YamlMetaType parentMetaType = getMetaTypeParent(metaTypeProvider, element);
-        if (parentMetaType instanceof OMTDocumented) {
-            OMTDocumented documented = (OMTDocumented) parentMetaType;
-            String level1Header = documented.getLevel1Header();
-            String type = documented.getDocumentationClass();
-            String attribute = element.getKeyText();
-            OMTApiDocumentationService documentationService = OMTApiDocumentationService.getInstance(element.getProject());
-            String description = documentationService.readApiDocumentation(level1Header + "/" + type + "/" + attribute);
-            String example = documentationService.readApiDocumentation(level1Header + "/" + type + "/" + attribute + "/Example");
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(DocumentationMarkup.DEFINITION_START);
-            sb.append(attribute);
-            sb.append(DocumentationMarkup.DEFINITION_END);
-            sb.append(DocumentationMarkup.CONTENT_START);
-            sb.append(description != null ? description : "Could not find description");
-            sb.append(DocumentationMarkup.CONTENT_END);
-            if (example != null) {
-                addKeyValueSection("Example", example, sb);
-            }
-
-            return sb.toString();
-        }
-        return null;
-    }
-
-    @Override
-    public @Nullable PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement, int targetOffset) {
-        IElementType elementType = PsiUtilCore.getElementType(contextElement);
-        if (elementType == YAMLTokenTypes.SCALAR_KEY || elementType == YAMLTokenTypes.TAG) {
-            // a scalar key, retrieve the key:value to obtain the MetaType information
-            return contextElement.getParent();
-        }
-        return contextElement;
-    }
-
-    /**
-     * Generic documentation retrieval for OMT Classes
-     * Looks for Description, Example, Local Commands
-     */
-    public static String getClassDocumentation(Project project, OMTDocumented omtDocumented) {
-        return getClassDocumentationSB(project, omtDocumented).toString();
-    }
-
     /**
      * Generic documentation retrieval for OMT Classes
      * Looks for Description, Example, Local Commands.
@@ -125,7 +87,7 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
         sb.append(DocumentationMarkup.DEFINITION_END);
         sb.append(DocumentationMarkup.CONTENT_START);
         String description = documentationService.readApiDocumentation(
-                "Classes/" + type + "/Description"
+                documentPath(CLASSES, type, DESCRIPTION)
         );
         sb.append(description != null ? description : "Could not find description");
         sb.append(DocumentationMarkup.CONTENT_END);
@@ -135,7 +97,7 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
         omtDocumented.getAdditionalHeaders()
                 .forEach(header -> addAdditionalField(
                         header,
-                        "Classes/" + type + "/" + header,
+                        documentPath(CLASSES, type, header),
                         sb,
                         documentationService)
                 );
@@ -145,19 +107,60 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
         omtDocumented.getAdditionalDescriptionHeaders()
                 .forEach(header -> addAdditionalField(
                         header,
-                        "Classes/" + type + "/Description/" + header,
+                        documentPath(CLASSES, type, DESCRIPTION, header),
                         sb,
                         documentationService)
                 );
 
         String example = documentationService.readApiDocumentation(
-                "Classes/" + type + "/Description/Example"
+                documentPath(CLASSES, type, DESCRIPTION, EXAMPLE)
         );
         if (example != null) {
-            addKeyValueSection("Example", example, sb);
+            addKeyValueSection(EXAMPLE, example, sb);
         }
 
         return sb;
+    }
+
+    private static String documentPath(String... parts) {
+        return Strings.join(List.of(parts), "/");
+    }
+
+    /**
+     * Generic documentation retrieval for OMT Classes
+     * Looks for Description, Example, Local Commands
+     */
+    public static String getClassDocumentation(Project project, OMTDocumented omtDocumented) {
+        return getClassDocumentationSB(project, omtDocumented).toString();
+    }
+
+    private String getDocumentedAttribute(OMTMetaTypeProvider metaTypeProvider, YAMLKeyValue element) {
+        YamlMetaType parentMetaType = getMetaTypeParent(metaTypeProvider, element);
+        if (parentMetaType instanceof OMTDocumented) {
+            OMTDocumented documented = (OMTDocumented) parentMetaType;
+            String level1Header = documented.getLevel1Header();
+            String type = documented.getDocumentationClass();
+            String attribute = element.getKeyText();
+            OMTApiDocumentationService documentationService = OMTApiDocumentationService.getInstance(element.getProject());
+            String description = documentationService.readApiDocumentation(
+                    documentPath(level1Header, type, attribute));
+            String example = documentationService.readApiDocumentation(
+                    documentPath(level1Header, type, attribute, EXAMPLE));
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(DocumentationMarkup.DEFINITION_START);
+            sb.append(attribute);
+            sb.append(DocumentationMarkup.DEFINITION_END);
+            sb.append(DocumentationMarkup.CONTENT_START);
+            sb.append(description != null ? description : "Could not find description");
+            sb.append(DocumentationMarkup.CONTENT_END);
+            if (example != null) {
+                addKeyValueSection(EXAMPLE, example, sb);
+            }
+
+            return sb.toString();
+        }
+        return null;
     }
 
     private static void addAdditionalField(String header,
@@ -168,5 +171,18 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
         if (content != null) {
             addKeyValueSection(header, content, sb);
         }
+    }
+
+    @Override
+    public @Nullable PsiElement getCustomDocumentationElement(@NotNull Editor editor,
+                                                              @NotNull PsiFile file,
+                                                              @Nullable PsiElement contextElement,
+                                                              int targetOffset) {
+        IElementType elementType = PsiUtilCore.getElementType(contextElement);
+        if (contextElement != null && (elementType == YAMLTokenTypes.SCALAR_KEY || elementType == YAMLTokenTypes.TAG)) {
+            // a scalar key, retrieve the key:value to obtain the MetaType information
+            return contextElement.getParent();
+        }
+        return contextElement;
     }
 }

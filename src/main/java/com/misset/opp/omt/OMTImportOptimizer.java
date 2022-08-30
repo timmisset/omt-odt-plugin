@@ -45,16 +45,15 @@ public class OMTImportOptimizer implements ImportOptimizer {
 
     @Override
     public @NotNull Runnable processFile(@NotNull PsiFile file) {
-        return () -> {
-            // the delegate can determine its own usage and makes sure that an empty import is also removed
-            PsiTreeUtil.findChildrenOfType(file, YAMLSequenceItem.class)
-                    .stream()
-                    .map(YAMLSequenceItem::getValue)
-                    .map(OMTYamlDelegateFactory::createDelegate)
-                    .filter(OMTYamlImportMemberDelegate.class::isInstance)
-                    .map(OMTYamlImportMemberDelegate.class::cast)
-                    .filter(OMTYamlImportMemberDelegate::isUnused)
-                    .forEach(OMTYamlImportMemberDelegate::delete);
-        };
+        return () ->
+                // the delegate can determine its own usage and makes sure that an empty import is also removed
+                PsiTreeUtil.findChildrenOfType(file, YAMLSequenceItem.class)
+                        .stream()
+                        .map(YAMLSequenceItem::getValue)
+                        .map(OMTYamlDelegateFactory::createDelegate)
+                        .filter(OMTYamlImportMemberDelegate.class::isInstance)
+                        .map(OMTYamlImportMemberDelegate.class::cast)
+                        .filter(OMTYamlImportMemberDelegate::isUnused)
+                        .forEach(OMTYamlImportMemberDelegate::delete);
     }
 }

@@ -5,12 +5,13 @@ import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
+@SuppressWarnings("java:S110")
 public class OMTYamlBindingParameterDelegate extends OMTYamlVariableDelegate implements SupportsSafeDelete {
-    YAMLPlainTextImpl value;
+    YAMLPlainTextImpl yamlPlainText;
 
     public OMTYamlBindingParameterDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
         super(yamlValue);
-        this.value = yamlValue;
+        this.yamlPlainText = yamlValue;
     }
 
     @Override
@@ -20,7 +21,7 @@ public class OMTYamlBindingParameterDelegate extends OMTYamlVariableDelegate imp
 
     @Override
     public void delete() throws IncorrectOperationException {
-
+        // don't remove
     }
 
     /**

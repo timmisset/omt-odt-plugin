@@ -53,15 +53,15 @@ public class OMTRegisterPrefixLocalQuickFix implements LocalQuickFix {
         if (rootMapping == null) {
             return;
         }
-        final YAMLKeyValue prefix = createPrefix(project);
+        final YAMLKeyValue yamlKeyValue = createPrefix(project);
         final YAMLKeyValue prefixes = rootMapping.getKeyValueByKey("prefixes");
         if (prefixes != null) {
             final YAMLValue value = prefixes.getValue();
             if (value instanceof YAMLMapping) {
-                ((YAMLMapping) value).putKeyValue(prefix);
+                ((YAMLMapping) value).putKeyValue(yamlKeyValue);
             }
         } else {
-            rootMapping.putKeyValue(createPrefixes(project, prefix));
+            rootMapping.putKeyValue(createPrefixes(project, yamlKeyValue));
         }
     }
 

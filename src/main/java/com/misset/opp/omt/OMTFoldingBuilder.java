@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 public class OMTFoldingBuilder extends YAMLFoldingBuilder {
     private static final ODTFoldingBuilder odtFoldingBuilder = new ODTFoldingBuilder();
@@ -44,22 +44,20 @@ public class OMTFoldingBuilder extends YAMLFoldingBuilder {
             List<Pair<PsiElement, TextRange>> injectedPsiFiles = instance.getInjectedPsiFiles(injectionHost);
             if (injectedPsiFiles != null) {
                 injectedPsiFiles.forEach(
-                        pair -> addInjectedFoldingDescriptors(odtFoldingBuilder, pair, descriptors, injectionHost.getTextOffset())
+                        pair -> addInjectedFoldingDescriptors(pair, descriptors, injectionHost.getTextOffset())
                 );
             }
         }
     }
 
-    private void addInjectedFoldingDescriptors(ODTFoldingBuilder odtFoldingBuilder,
-                                               Pair<PsiElement, TextRange> psiElementTextRangePair,
+    private void addInjectedFoldingDescriptors(Pair<PsiElement, TextRange> psiElementTextRangePair,
                                                @NotNull List<FoldingDescriptor> descriptors,
                                                int hostOffset) {
         PsiElement element = psiElementTextRangePair.first;
         int startOffset = psiElementTextRangePair.second.getStartOffset();
         startOffset += hostOffset;
 
-
-        descriptors.addAll(Arrays.asList(odtFoldingBuilder
+        descriptors.addAll(Arrays.asList(OMTFoldingBuilder.odtFoldingBuilder
                 .buildFoldRegionsWithOffset(element, startOffset)));
     }
 
@@ -76,14 +74,14 @@ public class OMTFoldingBuilder extends YAMLFoldingBuilder {
         return isCollapsedByDefault(node.getPsi(), () -> super.isRegionCollapsedByDefault(node));
     }
 
-    private boolean isCollapsedByDefault(PsiElement element, Supplier<Boolean> ifNotApplicable) {
+    private boolean isCollapsedByDefault(PsiElement element, BooleanSupplier ifNotApplicable) {
         // workaround for:
         // https://youtrack.jetbrains.com/issue/IDEA-289722
         if (element.getLanguage() == ODTLanguage.INSTANCE) {
             return odtFoldingBuilder.isCollapsedByDefault(element.getNode());
         }
         if (!(element instanceof YAMLKeyValue)) {
-            return ifNotApplicable.get();
+            return ifNotApplicable.getAsBoolean();
         }
 
         final JavaCodeFoldingSettings settings = JavaCodeFoldingSettings.getInstance();
@@ -96,6 +94,6 @@ public class OMTFoldingBuilder extends YAMLFoldingBuilder {
                 .map(metaTypeProvider -> metaTypeProvider.getKeyValueMetaType((YAMLKeyValue) element))
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
                 .map(OMTImportMetaType.class::isInstance)
-                .orElse(ifNotApplicable.get());
+                .orElse(ifNotApplicable.getAsBoolean());
     }
 }

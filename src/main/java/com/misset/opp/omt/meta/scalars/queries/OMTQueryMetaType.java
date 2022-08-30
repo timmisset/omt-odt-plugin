@@ -28,7 +28,7 @@ public class OMTQueryMetaType extends YamlScalarType implements OMTMetaInjectabl
 
     @Override
     public InjectableContentType getInjectableContentType() {
-        return InjectableContentType.Query;
+        return InjectableContentType.QUERY;
     }
 
     protected Set<OntResource> resolve(@NotNull YAMLScalar scalarValue) {

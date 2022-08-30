@@ -13,12 +13,19 @@ import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Util class for classes implementing OMTCallableProvider
  */
 public class OMTCallableProviderUtil {
+
+    private OMTCallableProviderUtil() {
+        // empty constructor
+    }
 
     public static void addInjectedCallablesToMap(YAMLMapping mapping,
                                                  String key,
@@ -44,14 +51,14 @@ public class OMTCallableProviderUtil {
      * @param map     - the map to add the Callable items to
      */
     public static void addImportStatementsToMap(YAMLMapping mapping,
-                                                HashMap<String, Collection<PsiCallable>> map) {
+                                                Map<String, Collection<PsiCallable>> map) {
         mapping.getKeyValues().forEach(
                 keyValue -> addImportStatementsToMap(keyValue, map)
         );
     }
 
     private static void addImportStatementsToMap(YAMLKeyValue keyValue,
-                                                 HashMap<String, Collection<PsiCallable>> map) {
+                                                 Map<String, Collection<PsiCallable>> map) {
         final YAMLValue value = keyValue.getValue();
         if (value instanceof YAMLSequence) {
             final YAMLSequence sequence = (YAMLSequence) value;
@@ -64,11 +71,6 @@ public class OMTCallableProviderUtil {
                     .forEach(importMemberDelegate ->
                             map.computeIfAbsent(importMemberDelegate.getText(), s -> new ArrayList<>()).add(importMemberDelegate));
         }
-    }
-
-    public static void addModelItemsToMap(YAMLMapping mapping,
-                                          Map<String, Collection<PsiCallable>> map) {
-        mapping.getKeyValues().forEach(keyValue -> addModelItemToMap(map, keyValue));
     }
 
     public static void addModelItemToMap(Map<String, Collection<PsiCallable>> map, YAMLKeyValue keyValue) {

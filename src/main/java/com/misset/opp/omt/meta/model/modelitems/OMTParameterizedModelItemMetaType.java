@@ -82,6 +82,7 @@ public abstract class OMTParameterizedModelItemMetaType extends OMTModelItemDele
                 () -> new CachedValueProvider.Result<>(mapCallableParameters(calculateParameterTypes(mapping)), mapping.getContainingFile()));
     }
 
+    @SuppressWarnings("java:S2637")
     private String getName(YAMLMapping mapping) {
         return Optional.ofNullable(mapping.getParent())
                 .filter(YAMLKeyValue.class::isInstance)

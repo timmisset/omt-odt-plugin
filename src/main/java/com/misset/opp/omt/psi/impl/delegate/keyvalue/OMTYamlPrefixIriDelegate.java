@@ -19,13 +19,14 @@ public class OMTYamlPrefixIriDelegate extends YAMLKeyValueImpl implements
         PsiPrefix,
         OMTYamlDelegate,
         SupportsSafeDelete {
-    private final YAMLKeyValue keyValue;
+    private final transient YAMLKeyValue keyValue;
 
     public OMTYamlPrefixIriDelegate(YAMLKeyValue keyValue) {
         super(keyValue.getNode());
         this.keyValue = keyValue;
     }
 
+    @Override
     public PsiElement getKey() {
         return keyValue.getKey();
     }

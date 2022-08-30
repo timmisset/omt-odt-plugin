@@ -47,9 +47,11 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
+    private static final String PARAMS = "params";
+
     static {
         features.put("base", OMTBaseParameterMetaType::getInstance);
-        features.put("params", OMTParamsArrayMetaType::getInstance);
+        features.put(PARAMS, OMTParamsArrayMetaType::getInstance);
         features.put("graphs", OMTGraphSelectionMetaType::getInstance);
         features.put("prefixes", OMTPrefixesMetaType::getInstance);
         features.put("query", OMTQueryMetaType::getInstance);
@@ -63,7 +65,7 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
     @Override
     public @NotNull HashMap<String, Collection<PsiVariable>> getVariableMap(YAMLMapping mapping) {
         HashMap<String, Collection<PsiVariable>> variableMap = new HashMap<>();
-        addSequenceToMap(mapping, "params", variableMap);
+        addSequenceToMap(mapping, PARAMS, variableMap);
         OMTVariable baseVariable = OMTVariableProviderUtil.getReferenceTarget(mapping, "base");
         if (baseVariable != null) {
             variableMap.computeIfAbsent(baseVariable.getName(), s -> new ArrayList<>()).add(baseVariable);
@@ -88,7 +90,7 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
             call.setParamType(base.getValueText(), resources);
         }
 
-        final YAMLKeyValue params = mapping.getKeyValueByKey("params");
+        final YAMLKeyValue params = mapping.getKeyValueByKey(PARAMS);
         if (params != null && params.getValue() instanceof YAMLSequence) {
             final List<YAMLSequenceItem> items = ((YAMLSequence) params.getValue()).getItems();
             for (int i = 0; i < items.size(); i++) {

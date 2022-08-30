@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 
 @SimpleInjectable
 public class OMTInterpolatedStringMetaType extends YamlStringType implements OMTMetaInjectable {
-    private final Pattern INTERPOLATION = Pattern.compile("\\$\\{([^}]+)}");
-    private final Pattern TITLE_VARIABLE = Pattern.compile("^(\\$[-A-z]+)$");
+    private static final Pattern INTERPOLATION = Pattern.compile("\\$\\{([^}]+)}");
+    private static final Pattern TITLE_VARIABLE = Pattern.compile("^(\\$[-A-z]+)$");
 
     private static final OMTInterpolatedStringMetaType INSTANCE = new OMTInterpolatedStringMetaType();
 

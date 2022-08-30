@@ -28,9 +28,9 @@ public class OMTYamlGraphShapeHandlerMemberDelegate extends YAMLPlainTextImpl im
 
     @Override
     public PsiElement setName(@NotNull String newName) {
-        final YAMLKeyValue value = YAMLElementGenerator.getInstance(this.value.getProject())
+        final YAMLKeyValue newValue = YAMLElementGenerator.getInstance(this.value.getProject())
                 .createYamlKeyValue("foo", newName);
-        return value.replace(value);
+        return value.replace(newValue);
     }
 
     @Override

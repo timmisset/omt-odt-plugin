@@ -8,6 +8,10 @@ import java.util.regex.Pattern;
 
 public class PatternUtil {
 
+    private PatternUtil() {
+        // empty constructor
+    }
+
     public static Optional<TextRange> getTextRange(String text, Pattern pattern, int group) {
         Matcher matcher = pattern.matcher(text);
         if (matcher.find() && matcher.group(group) != null) {

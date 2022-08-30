@@ -1,7 +1,6 @@
 package com.misset.opp.omt.psi.impl;
 
 import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -20,9 +19,7 @@ import com.misset.opp.omt.meta.OMTFileMetaType;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
-import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLDocument;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -38,9 +35,6 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
             "EXPORTING_DECLARED_MEMBERS");
     private static final Key<CachedValue<Map<String, Collection<PsiCallable>>>> IMPORTING_MEMBERS = new Key<>(
             "IMPORTING_MEMBERS");
-    private static final Key<CachedValue<Map<String, List<PsiCall>>>> PSI_CALLS = new Key<>("PSI_CALLS");
-
-    Logger LOGGER = Logger.getInstance(OMTFileImpl.class);
 
     public OMTFileImpl(FileViewProvider viewProvider) {
         super(viewProvider);
@@ -53,10 +47,9 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
 
     @Override
     public YAMLMapping getRootMapping() {
-        return LoggerUtil.computeWithLogger(LOGGER, "getRootMapping", () ->
-                ReadAction.compute(() -> Optional.ofNullable(PsiTreeUtil.findChildOfType(this, YAMLDocument.class))
-                        .map(yamlDocument -> PsiTreeUtil.findChildOfType(yamlDocument, YAMLMapping.class))
-                        .orElse(null)));
+        return ReadAction.compute(() -> Optional.ofNullable(PsiTreeUtil.findChildOfType(this, YAMLDocument.class))
+                .map(yamlDocument -> PsiTreeUtil.findChildOfType(yamlDocument, YAMLMapping.class))
+                .orElse(null));
     }
 
     @Override
@@ -79,8 +72,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     }
 
     private HashMap<String, Collection<PsiCallable>> getExportingMembersMap(YAMLMapping yamlMapping) {
-        return LoggerUtil.computeWithLogger(LOGGER, "getExportingMembersMap", () ->
-                ReadAction.compute(() -> OMTFileMetaType.getInstance().getCallableMap(yamlMapping)));
+        return ReadAction.compute(() -> OMTFileMetaType.getInstance().getCallableMap(yamlMapping));
     }
 
     /**
@@ -97,8 +89,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     }
 
     private Map<String, Collection<PsiCallable>> getDeclaredExportingMembersMap(YAMLMapping yamlMapping) {
-        return LoggerUtil.computeWithLogger(LOGGER, "getExportingMembersMap", () ->
-                ReadAction.compute(() -> OMTFileMetaType.getInstance().getDeclaredCallableMap(yamlMapping, null)));
+        return ReadAction.compute(() -> OMTFileMetaType.getInstance().getDeclaredCallableMap(yamlMapping, null));
     }
 
     /**
@@ -115,8 +106,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     }
 
     private Map<String, Collection<PsiCallable>> getImportingMembersMap(YAMLMapping yamlMapping) {
-        return LoggerUtil.computeWithLogger(LOGGER, "getImportingMembersMap", () ->
-                ReadAction.compute(() -> OMTFileMetaType.getInstance().getImportingMembers(yamlMapping)));
+        return ReadAction.compute(() -> OMTFileMetaType.getInstance().getImportingMembers(yamlMapping));
     }
 
     @Override
@@ -130,6 +120,7 @@ public class OMTFileImpl extends YAMLFileImpl implements OMTFile {
     }
 
     @Override
+    @SuppressWarnings("java:S2637")
     public String getModuleName() {
         return Optional.ofNullable(PsiTreeUtil.findChildOfType(getModuleFile(), YAMLMapping.class))
                 .map(mapping -> mapping.getKeyValueByKey("moduleName"))

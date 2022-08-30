@@ -14,6 +14,10 @@ import java.util.stream.Collectors;
  */
 public class OMTPrefixIndex {
 
+    private OMTPrefixIndex() {
+        // empty constructor
+    }
+
     private static final HashMap<String, List<String>> map = new HashMap<>();
 
     public static List<String> getNamespaces(String prefix) {

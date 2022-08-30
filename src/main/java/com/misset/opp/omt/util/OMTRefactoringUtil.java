@@ -10,6 +10,10 @@ import org.jetbrains.yaml.psi.YAMLSequenceItem;
 
 public class OMTRefactoringUtil {
 
+    private OMTRefactoringUtil() {
+        // empty constructor
+    }
+
     public static void removeEOLToken(PsiElement element) {
         PsiElement nextLeaf = PsiTreeUtil.nextLeaf(element);
         if (nextLeaf != null && YAMLElementTypes.EOL_ELEMENTS.contains(PsiUtilCore.getElementType(nextLeaf))) {

@@ -20,7 +20,7 @@ import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase {
@@ -73,7 +73,7 @@ public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase 
             visitMetaTypeProxy(keyValue,
                     myMetaTypeProvider,
                     OMTImportMetaType.class,
-                    (metaType) -> visitImport(keyValue));
+                    metaType -> visitImport(keyValue));
         }
 
         private void visitImport(@NotNull YAMLKeyValue keyValue) {
@@ -91,7 +91,7 @@ public class OMTUnnecessaryWrappingInspection extends OMTMetaTypeInspectionBase 
             }
         }
 
-        private LocalQuickFix getUnwrapQuickfix(Function<PsiElement, PsiElement> replacement) {
+        private LocalQuickFix getUnwrapQuickfix(UnaryOperator<PsiElement> replacement) {
             return new LocalQuickFix() {
                 @Override
                 public @IntentionFamilyName @NotNull String getFamilyName() {

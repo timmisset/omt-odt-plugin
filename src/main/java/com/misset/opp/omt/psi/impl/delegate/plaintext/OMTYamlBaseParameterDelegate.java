@@ -7,12 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
+@SuppressWarnings("java:S110")
 public class OMTYamlBaseParameterDelegate extends OMTYamlVariableDelegate implements SupportsSafeDelete {
-    YAMLPlainTextImpl value;
+    YAMLPlainTextImpl yamlPlainText;
 
     public OMTYamlBaseParameterDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
         super(yamlValue);
-        this.value = yamlValue;
+        this.yamlPlainText = yamlValue;
     }
 
     @Override
@@ -22,7 +23,7 @@ public class OMTYamlBaseParameterDelegate extends OMTYamlVariableDelegate implem
 
     @Override
     public void delete() throws IncorrectOperationException {
-        YAMLKeyValue keyValue = PsiTreeUtil.getParentOfType(value, YAMLKeyValue.class);
+        YAMLKeyValue keyValue = PsiTreeUtil.getParentOfType(yamlPlainText, YAMLKeyValue.class);
         if (keyValue != null) {
             keyValue.delete();
         }

@@ -24,9 +24,9 @@ public class ODTOperatorCompletionLoadableContext extends CompletionContributor 
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
                 // get the CommandCall:
-                for (String contextSelector : OMTLoadableMetaType.CONTEXT_SELECTORS.keySet()) {
+                for (String contextSelector : OMTLoadableMetaType.getContextSelectors().keySet()) {
                     String value = "'" + contextSelector + "'";
-                    String description = OMTLoadableMetaType.CONTEXT_SELECTORS.get(contextSelector);
+                    String description = OMTLoadableMetaType.getContextSelectors().get(contextSelector);
                     LookupElementBuilder elementBuilder = LookupElementBuilder.create(value)
                             .withTypeText(description, true)
                             .withLookupString(value)

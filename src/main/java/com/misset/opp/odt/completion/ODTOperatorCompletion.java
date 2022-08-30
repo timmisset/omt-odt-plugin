@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.intellij.util.SharedProcessingContext;
 import com.misset.opp.odt.builtin.operators.BuiltinOperators;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQueryStep;
@@ -42,8 +43,9 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                                           @NotNull CompletionResultSet result) {
                 PsiElement position = parameters.getPosition();
                 Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
-                if (sharedContext != null && sharedContext.get(TYPE_FILTER) != null) {
-                    typeFilter = typeFilter.and(sharedContext.get(TYPE_FILTER));
+                SharedProcessingContext sharedProcessingContext = sharedContext.get();
+                if (sharedProcessingContext != null && sharedProcessingContext.get(TYPE_FILTER) != null) {
+                    typeFilter = typeFilter.and(sharedProcessingContext.get(TYPE_FILTER));
                 }
 
                 ODTQueryStep queryStep = PsiTreeUtil.getParentOfType(position, ODTQueryStep.class, true);

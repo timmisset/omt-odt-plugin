@@ -9,7 +9,7 @@ import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 
 public class OMTYamlDeclaredModuleDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate {
 
-    private final YAMLKeyValue keyValue;
+    private final transient YAMLKeyValue keyValue;
 
     public OMTYamlDeclaredModuleDelegate(YAMLKeyValue keyValue) {
         super(keyValue.getNode());

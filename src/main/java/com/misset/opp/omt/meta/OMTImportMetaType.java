@@ -73,7 +73,7 @@ public class OMTImportMetaType extends OMTMetaMapType {
         if (keyValue.getValue() instanceof YAMLMapping) {
             final OMTImportPathMetaType omtImportPathMetaType = OMTImportPathMetaType.getInstance();
             ((YAMLMapping) keyValue.getValue()).getKeyValues()
-                    .forEach(_keyValue -> omtImportPathMetaType.validateKey(_keyValue, problemsHolder));
+                    .forEach(yamlKeyValue -> omtImportPathMetaType.validateKey(yamlKeyValue, problemsHolder));
         }
     }
 }

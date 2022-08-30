@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.scalars.values;
 
 import com.misset.opp.omt.startup.LoadReasonsStartupActivity;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class OMTReasonMetaType extends OMTFixedValueScalarMetaType {
@@ -22,7 +22,7 @@ public class OMTReasonMetaType extends OMTFixedValueScalarMetaType {
     }
 
     @Override
-    protected HashMap<String, String> getDescribedValues() {
+    protected Map<String, String> getDescribedValues() {
         return LoadReasonsStartupActivity.getReasons();
     }
 }

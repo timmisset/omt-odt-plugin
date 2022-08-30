@@ -37,9 +37,4 @@ public class OMTDeclaredInterfaceReference extends PsiReferenceBase.Poly<YAMLKey
                 .collect(Collectors.toList());
         return PsiElementResolveResult.createResults(elements);
     }
-
-    @Override
-    public boolean isReferenceTo(@NotNull PsiElement element) {
-        return super.isReferenceTo(element);
-    }
 }

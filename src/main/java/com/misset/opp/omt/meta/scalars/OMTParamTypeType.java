@@ -8,7 +8,6 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.codeInspection.util.IntentionName;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -24,7 +23,6 @@ import com.misset.opp.omt.util.PatternUtil;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import com.misset.opp.ttl.util.TTLValueParserUtil;
-import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
@@ -51,7 +49,6 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
     public static final Pattern CURIE_PATTERN = Pattern.compile("([A-z0-9]+):([A-z0-9]+)");
     public static final Pattern URI_PATTERN = Pattern.compile("<([^\\s]*)>");
     private static final Pattern PRIMITIVE_PATTERN = Pattern.compile("[a-z]+");
-    private static final Logger LOGGER = Logger.getInstance(OMTParamTypeType.class);
 
     protected static final String UNKNOWN_PREFIX = "Unknown prefix";
     private static final OMTParamTypeType INSTANCE = new OMTParamTypeType();
@@ -167,7 +164,7 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
         OntResource ontResource = OppModel.INSTANCE.getOntResource(uri, holder.getProject());
         if (ontResource == null) {
             holder.registerProblem(element, "Could not find resource <" + uri + "> in the Opp Model", ProblemHighlightType.ERROR);
-        } else if (!TTLResourceUtil.isType(ontResource) && !OppModel.INSTANCE.isClass(ontResource)) {
+        } else if (!TTLResourceUtil.isType(ontResource) && Boolean.FALSE.equals(OppModel.INSTANCE.isClass(ontResource))) {
             holder.registerProblem(element, "Expected a class or type", ProblemHighlightType.ERROR);
         }
     }
@@ -207,15 +204,12 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
      */
     public static Set<OntResource> resolveType(PsiElement element,
                                                String type) {
-        return LoggerUtil.computeWithLogger(LOGGER, "Calculating param type for " + type, () -> {
-            // resolve from URI
-            return Optional.ofNullable(getQualifiedUri(element, type))
-                    .map(OppModel.INSTANCE::toIndividuals)
-                    .stream()
-                    .flatMap(Collection::stream)
-                    .map(OntResource.class::cast)
-                    .collect(Collectors.toSet());
-        });
+        return Optional.ofNullable(getQualifiedUri(element, type))
+                .map(OppModel.INSTANCE::toIndividuals)
+                .stream()
+                .flatMap(Collection::stream)
+                .map(OntResource.class::cast)
+                .collect(Collectors.toSet());
     }
 
     public static String getQualifiedUri(PsiElement element, String type) {

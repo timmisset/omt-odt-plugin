@@ -24,12 +24,13 @@ import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 import java.util.Map;
 import java.util.Optional;
 
+@SuppressWarnings("java:S110")
 public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements SupportsSafeDelete {
-    YAMLPlainTextImpl value;
+    YAMLPlainTextImpl yamlPlainText;
 
     public OMTYamlParameterDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
         super(yamlValue);
-        this.value = yamlValue;
+        this.yamlPlainText = yamlValue;
     }
 
     @Override
@@ -39,19 +40,19 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
 
     @Override
     public PsiReference @NotNull [] getReferences() {
-        String text = value.getText();
+        String text = yamlPlainText.getText();
         Optional<TextRange> prefixRange = PatternUtil.getTextRange(text, OMTParamMetaType.SHORTHAND_PREFIX_TYPED, 3);
         Optional<TextRange> localNameRange = PatternUtil.getTextRange(text, OMTParamMetaType.SHORTHAND_PREFIX_TYPED, 4);
         if (prefixRange.isPresent() && localNameRange.isPresent()) {
             return new PsiReference[]{
-                    new OMTParamTypePrefixReference(value, prefixRange.get()),
-                    new OMTTTLSubjectReference(value, localNameRange.get())
+                    new OMTParamTypePrefixReference(yamlPlainText, prefixRange.get()),
+                    new OMTTTLSubjectReference(yamlPlainText, localNameRange.get())
             };
         }
 
         Optional<TextRange> textRange = PatternUtil.getTextRange(text, OMTParamMetaType.SHORTHAND_URI_TYPED, 1);
         return textRange.map(range -> new PsiReference[]{
-                new OMTTTLSubjectReference(value, range)
+                new OMTTTLSubjectReference(yamlPlainText, range)
         }).orElse(PsiReference.EMPTY_ARRAY);
     }
 
@@ -59,7 +60,7 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
     public void delete() throws IncorrectOperationException {
         // remove this parameter and all parameters that are part of calls made to the owner of this parameter:
         Map.Entry<YAMLMapping, OMTMetaCallable> callableEntry =
-                OMTMetaTreeUtil.collectMetaParents(this.value, YAMLMapping.class, OMTMetaCallable.class)
+                OMTMetaTreeUtil.collectMetaParents(this.yamlPlainText, YAMLMapping.class, OMTMetaCallable.class)
                         .entrySet().stream().findFirst().orElse(null);
         int parameterIndex = getParameterIndex();
         if (parameterIndex == -1) {
@@ -75,12 +76,12 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
                     .findAll()
                     .forEach(psiReference -> RefactoringUtil.removeParameterFromCall(psiReference, parameterIndex));
         }
-        OMTRefactoringUtil.removeFromSequence(value);
+        OMTRefactoringUtil.removeFromSequence(yamlPlainText);
     }
 
     private int getParameterIndex() {
-        YAMLSequenceItem sequenceItem = PsiTreeUtil.getParentOfType(value, YAMLSequenceItem.class);
-        YAMLSequence sequence = PsiTreeUtil.getParentOfType(value, YAMLSequence.class);
+        YAMLSequenceItem sequenceItem = PsiTreeUtil.getParentOfType(yamlPlainText, YAMLSequenceItem.class);
+        YAMLSequence sequence = PsiTreeUtil.getParentOfType(yamlPlainText, YAMLSequence.class);
         if (sequence == null || sequenceItem == null) {
             return -1;
         }

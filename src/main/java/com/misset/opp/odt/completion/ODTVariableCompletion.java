@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.ProcessingContext;
+import com.intellij.util.SharedProcessingContext;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
@@ -37,8 +38,9 @@ public class ODTVariableCompletion extends CompletionContributor {
 
                 PsiElement position = parameters.getPosition();
                 Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
-                if (sharedContext != null && sharedContext.get(TYPE_FILTER) != null) {
-                    typeFilter = typeFilter.and(sharedContext.get(TYPE_FILTER));
+                SharedProcessingContext sharedProcessingContext = sharedContext.get();
+                if (sharedProcessingContext != null && sharedProcessingContext.get(TYPE_FILTER) != null) {
+                    typeFilter = typeFilter.and(sharedProcessingContext.get(TYPE_FILTER));
                 }
 
                 if (!(parameters.getOriginalFile() instanceof ODTFile)) {

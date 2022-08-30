@@ -55,12 +55,8 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
         super(modelAccess, YAML_MODIFICATION_TRACKER);
     }
 
-    public static OMTMetaTypeProvider INSTANCE = null;
     public static OMTMetaTypeProvider getInstance(@NotNull Project project) {
-        if (INSTANCE == null) {
-            INSTANCE = project.getService(OMTMetaTypeProvider.class);
-        }
-        return INSTANCE;
+        return project.getService(OMTMetaTypeProvider.class);
     }
 
     @Override
@@ -78,6 +74,7 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
         });
     }
 
+    @SuppressWarnings("java:S2637")
     public @Nullable YamlMetaType getResolvedKeyValueMetaTypeMeta(@NotNull YAMLKeyValue keyValue) {
         return Optional.ofNullable(getKeyValueMetaType(keyValue))
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
@@ -132,7 +129,7 @@ public final class OMTMetaTypeProvider extends YamlMetaTypeProvider {
                     .getTag()
                     .getText();
 
-            final OMTMetaTaggedType taggedElementContainer = (OMTMetaTaggedType) metaTypeProxy.getMetaType();
+            final OMTMetaTaggedType<?> taggedElementContainer = (OMTMetaTaggedType<?>) metaTypeProxy.getMetaType();
 
             if (taggedElementContainer.isValidTag(tag)) {
                 Field.Relation relation = Field.Relation.OBJECT_CONTENTS;

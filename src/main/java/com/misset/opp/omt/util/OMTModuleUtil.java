@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
 
 public class OMTModuleUtil {
 
+    private OMTModuleUtil() {
+        // empty constructor
+    }
+
     public static OMTFile getModule(Project project, String name) {
         PsiManager manager = PsiManager.getInstance(project);
         return FilenameIndex.getAllFilesByExt(project, "module.omt")

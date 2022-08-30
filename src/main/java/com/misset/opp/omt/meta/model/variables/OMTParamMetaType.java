@@ -141,6 +141,7 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
                 .orElse(null);
     }
 
+    @SuppressWarnings("java:S2637")
     private String getTypeText(@NotNull YAMLValue value) {
         String textValue = value.getText();
         return PatternUtil.getTextRange(textValue, SHORTHAND, 3)

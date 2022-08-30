@@ -57,7 +57,7 @@ public class OMTYamlDelegateFactory {
             delegate = createPlainTextDelegate((YAMLPlainTextImpl) psiElement);
         }
         if (delegate == null) {
-            delegate = new NOT_A_DELEGATE(psiElement.getNode());
+            delegate = new NotADelegate(psiElement.getNode());
         }
 
         DELEGATE.set(psiElement, delegate);
@@ -110,9 +110,9 @@ public class OMTYamlDelegateFactory {
         return null;
     }
 
-    private static class NOT_A_DELEGATE extends ASTWrapperPsiElement implements OMTYamlDelegate {
+    private static class NotADelegate extends ASTWrapperPsiElement implements OMTYamlDelegate {
 
-        public NOT_A_DELEGATE(@NotNull ASTNode node) {
+        public NotADelegate(@NotNull ASTNode node) {
             super(node);
         }
 

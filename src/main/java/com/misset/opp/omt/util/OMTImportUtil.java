@@ -24,6 +24,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class OMTImportUtil {
+
+    private OMTImportUtil() {
+        // empty constructor
+    }
+
     private static final String MODULE = "module:";
 
     /**
@@ -152,34 +157,42 @@ public class OMTImportUtil {
             importingFile.add(createNewImport(newImport, project));
         } else if (importMap == null) {
             PsiElement insertedImportMap = rootMapping.addBefore(createNewImport(newImport, project), rootMapping.getFirstChild());
-            PsiElement newLine = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
+            PsiElement newLine = PsiParserFacade.getInstance(project).createWhiteSpaceFromText("\n");
             rootMapping.addAfter(newLine, insertedImportMap);
         } else {
-            YAMLValue importMapValue = importMap.getValue();
-            if (importMapValue instanceof YAMLMapping) {
-                YAMLMapping mapping = (YAMLMapping) importMapValue;
-                String resolvedPath = resolveToPath(project, importingFile, importPath);
-                if (resolvedPath == null) {
-                    return;
-                }
-                YAMLKeyValue existingImport = mapping.getKeyValues().stream()
-                        .filter(keyValue -> resolvedPath.equals(resolveToPath(project, importingFile, keyValue.getKeyText())))
-                        .findFirst()
-                        .orElse(null);
-                if (existingImport == null) {
-                    // add new import and sequence item:
-                    PsiElement insertedImportPath = importMapValue.add(newImport);
-                    PsiElement newLine = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
-                    importMapValue.addBefore(newLine, insertedImportPath);
-                } else {
-                    // add sequence item to existing item:
-                    YAMLValue value = existingImport.getValue();
-                    YAMLSequenceItem sequenceItem = PsiTreeUtil.findChildOfType(newImport, YAMLSequenceItem.class);
-                    if (value instanceof YAMLSequence && sequenceItem != null) {
-                        PsiElement insertedSequenceItem = value.add(sequenceItem);
-                        PsiElement newLine = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
-                        value.addBefore(newLine, insertedSequenceItem);
-                    }
+            addImportMap(importingFile, project, importPath, newImport, importMap);
+        }
+    }
+
+    private static void addImportMap(OMTFile importingFile,
+                                     Project project,
+                                     String importPath,
+                                     YAMLKeyValue newImport,
+                                     YAMLKeyValue importMap) {
+        YAMLValue importMapValue = importMap.getValue();
+        if (importMapValue instanceof YAMLMapping) {
+            YAMLMapping mapping = (YAMLMapping) importMapValue;
+            String resolvedPath = resolveToPath(project, importingFile, importPath);
+            if (resolvedPath == null) {
+                return;
+            }
+            YAMLKeyValue existingImport = mapping.getKeyValues().stream()
+                    .filter(keyValue -> resolvedPath.equals(resolveToPath(project, importingFile, keyValue.getKeyText())))
+                    .findFirst()
+                    .orElse(null);
+            if (existingImport == null) {
+                // add new import and sequence item:
+                PsiElement insertedImportPath = importMapValue.add(newImport);
+                PsiElement newLine = PsiParserFacade.getInstance(project).createWhiteSpaceFromText("\n");
+                importMapValue.addBefore(newLine, insertedImportPath);
+            } else {
+                // add sequence item to existing item:
+                YAMLValue value = existingImport.getValue();
+                YAMLSequenceItem sequenceItem = PsiTreeUtil.findChildOfType(newImport, YAMLSequenceItem.class);
+                if (value instanceof YAMLSequence && sequenceItem != null) {
+                    PsiElement insertedSequenceItem = value.add(sequenceItem);
+                    PsiElement newLine = PsiParserFacade.getInstance(project).createWhiteSpaceFromText("\n");
+                    value.addBefore(newLine, insertedSequenceItem);
                 }
             }
         }

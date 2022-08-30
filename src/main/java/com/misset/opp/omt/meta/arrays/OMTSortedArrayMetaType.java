@@ -83,7 +83,7 @@ public abstract class OMTSortedArrayMetaType extends YamlArrayType {
                     List<YAMLSequenceItem> items = getSortedList(yamlSequence);
 
                     final YAMLElementGenerator generator = YAMLElementGenerator.getInstance(project);
-                    PsiParserFacade parserFacade = PsiParserFacade.SERVICE.getInstance(project);
+                    PsiParserFacade parserFacade = PsiParserFacade.getInstance(project);
                     final YAMLSequence newSequence = generator.createEmptySequence();
                     items.forEach(sequenceItem -> {
                         newSequence.add(sequenceItem);

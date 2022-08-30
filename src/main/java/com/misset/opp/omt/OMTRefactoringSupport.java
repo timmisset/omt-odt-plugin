@@ -34,12 +34,15 @@ public class OMTRefactoringSupport extends RefactoringSupportProvider {
 
     @Override
     public boolean isInplaceRenameAvailable(@NotNull PsiElement element, PsiElement context) {
-        OMTYamlDelegate delegate = getDelegate(element);
-        return delegate instanceof OMTYamlVariableDelegate;
+        return isInplaceAvailable(element);
     }
 
     @Override
     public boolean isMemberInplaceRenameAvailable(@NotNull PsiElement element, @Nullable PsiElement context) {
+        return isInplaceAvailable(element);
+    }
+
+    private boolean isInplaceAvailable(@NotNull PsiElement element) {
         OMTYamlDelegate delegate = getDelegate(element);
         return delegate instanceof OMTYamlVariableDelegate;
     }

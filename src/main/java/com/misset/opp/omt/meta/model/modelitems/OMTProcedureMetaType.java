@@ -56,12 +56,14 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     private static final Key<Boolean> UNRESOLVABLE = new Key<>("Unresolvable");
     private static final Key<Long> UNRESOLVABLE_TIMESTAMP = new Key<>("Timestamp");
 
+    private static final String ON_RUN = "onRun";
+
     static {
         features.put("params", OMTParamsArrayMetaType::getInstance);
         features.put("variables", OMTVariablesArrayMetaType::getInstance);
         features.put("graphs", OMTGraphSelectionMetaType::getInstance);
         features.put("prefixes", OMTPrefixesMetaType::getInstance);
-        features.put("onRun", OMTScriptMetaType::getInstance);
+        features.put(ON_RUN, OMTScriptMetaType::getInstance);
         features.put("handlers", OMTMergeHandlerMetaType::getInstance);
         features.put("reason", OMTReasonMetaType::getInstance);
     }
@@ -107,11 +109,11 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
 
     @Override
     public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
-        if (UNRESOLVABLE.get(mapping, false) && UNRESOLVABLE_TIMESTAMP.get(mapping, -1L).equals(
+        if (Boolean.TRUE.equals(UNRESOLVABLE.get(mapping, false)) && UNRESOLVABLE_TIMESTAMP.get(mapping, -1L).equals(
                 mapping.getContainingFile().getModificationStamp())) {
             return Collections.emptySet();
         }
-        Set<OntResource> resources = Optional.ofNullable(mapping.getKeyValueByKey("onRun"))
+        Set<OntResource> resources = Optional.ofNullable(mapping.getKeyValueByKey(ON_RUN))
                 .map(YAMLKeyValue::getValue)
                 .map(value -> OMTODTInjectionUtil.getInjectedContent(value, PsiResolvableScript.class))
                 .stream()
@@ -128,7 +130,7 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
 
     @Override
     public boolean isVoid(YAMLMapping mapping) {
-        return mapping.getKeyValueByKey("onRun") != null;
+        return mapping.getKeyValueByKey(ON_RUN) != null;
     }
 
     @Override

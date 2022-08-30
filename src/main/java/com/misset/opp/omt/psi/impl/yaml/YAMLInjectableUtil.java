@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class YAMLInjectableUtil {
+    private YAMLInjectableUtil() {
+        // empty constructor
+    }
 
     public static List<TextRange> getTextRanges(YAMLScalarImpl yamlScalar) {
         YamlMetaTypeProvider.MetaTypeProxy metaType = OMTMetaTypeProvider.getInstance(yamlScalar.getProject()).getValueMetaType(yamlScalar);
@@ -30,7 +33,7 @@ public class YAMLInjectableUtil {
                 .filter(OMTMetaInjectable.class::isInstance)
                 .map(OMTMetaInjectable.class::cast)
                 .map(OMTMetaInjectable::getInjectableContentType)
-                .orElse(InjectableContentType.None);
+                .orElse(InjectableContentType.NONE);
     }
 
 }

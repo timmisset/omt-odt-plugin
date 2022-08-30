@@ -9,7 +9,7 @@ import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 
 public class OMTYamlImportPathDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate {
 
-    private final YAMLKeyValue keyValue;
+    private final transient YAMLKeyValue keyValue;
 
     public OMTYamlImportPathDelegate(YAMLKeyValue keyValue) {
         super(keyValue.getNode());

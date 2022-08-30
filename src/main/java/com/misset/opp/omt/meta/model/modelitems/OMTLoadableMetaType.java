@@ -30,7 +30,7 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
     protected static final String RELEASE_FLAG_SHOULD_NOT_BE_COMBINED_WITH_OTHER_FLAGS = "!release flag should not be combined with other flags";
     protected static final String CALLING_WITH_RETAIN_OR_RELEASE_FLAG = "Context argument only expected when calling with !retain or !release flag";
 
-    public static final HashMap<String, String> CONTEXT_SELECTORS = new HashMap<>();
+    private static final Map<String, String> CONTEXT_SELECTORS = new HashMap<>();
     public static final List<String> FLAGS = List.of("!silent", "!load", "!release", "!retain");
 
     private OMTLoadableMetaType() {
@@ -41,6 +41,10 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
     private static final HashMap<Integer, String> parameterNames = new HashMap<>();
     private static final HashMap<Integer, Set<OntResource>> parameterTypes = new HashMap<>();
     private static final Set<String> required = Set.of("path", "schema");
+
+    public static Map<String, String> getContextSelectors() {
+        return CONTEXT_SELECTORS;
+    }
 
     static {
         features.put("id", YamlStringType::getInstance);

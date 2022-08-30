@@ -16,6 +16,6 @@ public class OMTCommandsMetaType extends OMTScriptMetaType {
 
     @Override
     public InjectableContentType getInjectableContentType() {
-        return InjectableContentType.CommandBlock;
+        return InjectableContentType.COMMAND_BLOCK;
     }
 }

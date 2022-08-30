@@ -9,28 +9,28 @@ public enum InjectableContentType {
     /**
      * The Injectable position is dedicated for Query entries
      */
-    QueryBlock(false),
+    QUERY_BLOCK(false),
     /**
      * The Injected position is dedicated for Command entries
      */
-    CommandBlock(false),
+    COMMAND_BLOCK(false),
 
     /**
      * Position that expects a query that returns a graphShape
      */
-    GraphShapeQuery(true),
+    GRAPH_SHAPE_QUERY(true),
 
     /**
      * Position that expects a query that returns a boolean
      */
-    BooleanQuery(true),
+    BOOLEAN_QUERY(true),
 
     /**
      * Position that expects a query
      */
-    Query(true),
+    QUERY(true),
 
-    None(false);
+    NONE(false);
     private final boolean isQueryStatement;
 
     InjectableContentType(boolean isQueryStatement) {

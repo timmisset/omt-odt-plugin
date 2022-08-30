@@ -34,7 +34,7 @@ public class YAMLOMTKeyValueImpl extends YAMLKeyValueImpl {
         super(node);
     }
 
-    private OMTYamlDelegate delegate;
+    private transient OMTYamlDelegate delegate;
 
     private OMTYamlDelegate getDelegate() {
         if (delegate == null) {

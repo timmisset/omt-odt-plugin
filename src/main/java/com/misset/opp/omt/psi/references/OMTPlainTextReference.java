@@ -19,12 +19,12 @@ import java.util.Optional;
 public abstract class OMTPlainTextReference extends PsiReferenceBase.Poly<YAMLPlainTextImpl> implements PsiPolyVariantReference {
     protected TextRange textRange;
 
-    public OMTPlainTextReference(@NotNull YAMLPlainTextImpl element) {
+    protected OMTPlainTextReference(@NotNull YAMLPlainTextImpl element) {
         this(element, TextRange.allOf(element.getText()));
     }
 
-    public OMTPlainTextReference(@NotNull YAMLPlainTextImpl element,
-                                 TextRange textRange) {
+    protected OMTPlainTextReference(@NotNull YAMLPlainTextImpl element,
+                                    TextRange textRange) {
         super(element, textRange, false);
         this.textRange = textRange;
     }

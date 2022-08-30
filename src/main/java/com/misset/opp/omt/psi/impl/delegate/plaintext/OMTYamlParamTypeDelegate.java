@@ -30,9 +30,9 @@ public class OMTYamlParamTypeDelegate extends YAMLPlainTextImpl implements OMTYa
 
     @Override
     public PsiElement setName(@NotNull String newName) {
-        final YAMLKeyValue value = YAMLElementGenerator.getInstance(this.value.getProject())
+        final YAMLKeyValue newValue = YAMLElementGenerator.getInstance(this.value.getProject())
                 .createYamlKeyValue("foo", newName);
-        return replace(value);
+        return replace(newValue);
     }
 
     @Override

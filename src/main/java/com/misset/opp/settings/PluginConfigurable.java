@@ -116,7 +116,7 @@ public class PluginConfigurable implements Configurable {
         settingsState.reasonsFolder = settingsComponent.getReasonsRoot();
 
         if (reload) {
-            LoadReasonsStartupActivity.loadReasons(project);
+            LoadReasonsStartupActivity.initReasons(project);
         }
     }
 

@@ -24,9 +24,9 @@ public class OMTYamlPayloadQueryReferenceDelegate extends YAMLPlainTextImpl impl
 
     @Override
     public PsiElement setName(String newName) {
-        final YAMLKeyValue value = YAMLElementGenerator.getInstance(this.value.getProject())
+        final YAMLKeyValue newValue = YAMLElementGenerator.getInstance(this.value.getProject())
                 .createYamlKeyValue("foo", newName);
-        return value.replace(value);
+        return value.replace(newValue);
     }
 
     @Override

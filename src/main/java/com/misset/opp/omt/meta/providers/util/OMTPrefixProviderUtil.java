@@ -20,6 +20,10 @@ import java.util.Optional;
 
 public class OMTPrefixProviderUtil {
 
+    private OMTPrefixProviderUtil() {
+        // empty constructor
+    }
+
     public static void addPrefixesToMap(YAMLMapping mapping,
                                         String key,
                                         Map<String, Collection<PsiPrefix>> map) {

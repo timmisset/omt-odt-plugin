@@ -2,6 +2,7 @@ package com.misset.opp.omt.psi.impl;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.exception.OMTODTPluginException;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
@@ -37,20 +38,21 @@ import java.util.function.Function;
  */
 public class OMTCallableImpl extends PsiCallableImpl implements OMTCallable {
 
-    private final YAMLMapping mapping;
-    private final YAMLKeyValue keyValue;
+    private final transient YAMLMapping mapping;
+    private final transient YAMLKeyValue keyValue;
 
     public OMTCallableImpl(YAMLKeyValue keyValue) {
         super(keyValue.getNode());
 
         if (!(keyValue.getValue() instanceof YAMLMapping)) {
-            throw new RuntimeException("Cannot parse " + keyValue.getValue() + " to map");
+            throw new OMTODTPluginException("Cannot parse " + keyValue.getValue() + " to map");
         }
         this.keyValue = keyValue;
         this.mapping = (YAMLMapping) keyValue.getValue();
     }
 
     @Override
+    @SuppressWarnings("java:S2637")
     public String getName() {
         return Optional.ofNullable(mapping.getParent())
                 .filter(YAMLKeyValue.class::isInstance)
@@ -107,6 +109,7 @@ public class OMTCallableImpl extends PsiCallableImpl implements OMTCallable {
         return computeFromMeta(Callable.class, Callable::isVoid, false);
     }
 
+    @SuppressWarnings("java:S2637")
     private OMTMetaType getMetaType() {
         return (OMTMetaType) Optional.ofNullable(OMTMetaTypeProvider.getInstance(mapping.getProject())
                         .getMetaTypeProxy(mapping))

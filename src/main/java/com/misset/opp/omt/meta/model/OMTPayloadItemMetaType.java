@@ -32,9 +32,13 @@ public class OMTPayloadItemMetaType extends OMTMetaType implements
 
     private static final HashMap<String, Supplier<YamlMetaType>> features = new HashMap<>();
 
+    private static final String VALUE = "value";
+
+    private static final String QUERY = "query";
+
     static {
-        features.put("value", OMTQueryMetaType::getInstance);
-        features.put("query", OMTPayloadQueryReferenceMetaType::getInstance);
+        features.put(VALUE, OMTQueryMetaType::getInstance);
+        features.put(QUERY, OMTPayloadQueryReferenceMetaType::getInstance);
         features.put("list", YamlBooleanType::getSharedInstance);
         features.put("onChange", OMTOnChangeScriptMetaType::getInstance);
     }
@@ -51,10 +55,10 @@ public class OMTPayloadItemMetaType extends OMTMetaType implements
     @Override
     public @NotNull List<String> computeMissingFields(@NotNull Set<String> existingFields) {
         // either query or value is required
-        if (existingFields.contains("query") || existingFields.contains("value")) {
+        if (existingFields.contains(QUERY) || existingFields.contains(VALUE)) {
             return Collections.emptyList();
         }
-        return List.of("value");
+        return List.of(VALUE);
     }
 
     @Override
@@ -62,10 +66,10 @@ public class OMTPayloadItemMetaType extends OMTMetaType implements
                             @NotNull ProblemsHolder problemsHolder) {
         if (keyValue.getValue() instanceof YAMLMapping) {
             final YAMLMapping mapping = (YAMLMapping) keyValue.getValue();
-            if (mapping.getKeyValueByKey("query") != null && mapping.getKeyValueByKey("value") != null) {
+            if (mapping.getKeyValueByKey(QUERY) != null && mapping.getKeyValueByKey(VALUE) != null) {
                 problemsHolder.registerProblem(keyValue, "Use either 'value' or 'query'", ProblemHighlightType.ERROR);
             }
-            if (mapping.getKeyValueByKey("query") != null && mapping.getKeyValueByKey("onChange") != null) {
+            if (mapping.getKeyValueByKey(QUERY) != null && mapping.getKeyValueByKey("onChange") != null) {
                 problemsHolder.registerProblem(keyValue,
                         "Cannot use 'onChange' with payload query",
                         ProblemHighlightType.ERROR);
@@ -83,7 +87,7 @@ public class OMTPayloadItemMetaType extends OMTMetaType implements
     }
 
     public YAMLValue getTypeProviderMap(@NotNull YAMLMapping mapping) {
-        return Optional.ofNullable(mapping.getKeyValueByKey("value"))
+        return Optional.ofNullable(mapping.getKeyValueByKey(VALUE))
                 .map(YAMLKeyValue::getValue)
                 .orElse(null);
     }

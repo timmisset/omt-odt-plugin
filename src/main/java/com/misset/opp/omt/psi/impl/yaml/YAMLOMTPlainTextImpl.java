@@ -33,7 +33,7 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
         return GlobalSearchScope.fileScope(getContainingFile());
     }
 
-    private OMTYamlDelegate delegate;
+    private transient OMTYamlDelegate delegate;
 
     private OMTYamlDelegate getDelegate() {
         if (delegate == null) {

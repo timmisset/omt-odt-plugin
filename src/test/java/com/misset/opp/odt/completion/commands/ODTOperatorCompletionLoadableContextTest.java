@@ -22,7 +22,7 @@ class ODTOperatorCompletionLoadableContextTest extends OMTCompletionTestCase {
         ;
         configureByText(content, true);
         List<String> lookupStrings = getLookupStrings();
-        Assertions.assertEquals(OMTLoadableMetaType.CONTEXT_SELECTORS.size(), lookupStrings.size());
+        Assertions.assertEquals(OMTLoadableMetaType.getContextSelectors().size(), lookupStrings.size());
         assertContainsElements(lookupStrings, "'omt'", "'session'");
     }
 

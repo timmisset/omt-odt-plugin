@@ -46,9 +46,4 @@ public class OMTImportPathReference extends PsiReferenceBase.Poly<YAMLKeyValue> 
         }
         return myElement;
     }
-
-    @Override
-    public boolean isReferenceTo(@NotNull PsiElement element) {
-        return super.isReferenceTo(element);
-    }
 }

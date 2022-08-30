@@ -11,6 +11,10 @@ import java.util.function.BiFunction;
 
 public class OMTMetaTreeUtil {
 
+    private OMTMetaTreeUtil() {
+        // empty constructor
+    }
+
     /**
      * Extension build on top the of the PsiTreeUtil to traverse the PsiTree and collect parents based on the resolved
      * meta type of the parents.
@@ -32,15 +36,6 @@ public class OMTMetaTreeUtil {
                 });
         return linkedHashMap;
     }
-//
-//    public static LinkedHashMap<YAMLMapping, OMTLocalCommandProvider> collectLocalCommandProviders(PsiElement element) {
-//        return collectMetaParents(
-//                element,
-//                YAMLMapping.class,
-//                OMTLocalCommandProvider.class,
-//                false,
-//                Objects::isNull);
-//    }
 
     /**
      * Resolve the provider based on an already available map of providers
@@ -49,9 +44,8 @@ public class OMTMetaTreeUtil {
     public static <T, U extends PsiElement> Optional<Collection<U>> resolveProvider(Map<YAMLMapping, T> linkedHashMap,
                                                                                     String key,
                                                                                     BiFunction<T, YAMLMapping, Map<String, Collection<U>>> mapFunction) {
-        for (YAMLMapping mapping : linkedHashMap.keySet()) {
-            T provider = linkedHashMap.get(mapping);
-            final Map<String, Collection<U>> map = mapFunction.apply(provider, mapping);
+        for (Map.Entry<YAMLMapping, T> entry : linkedHashMap.entrySet()) {
+            final Map<String, Collection<U>> map = mapFunction.apply(entry.getValue(), entry.getKey());
             if (map.containsKey(key)) {
                 return Optional.ofNullable(map.get(key));
             }

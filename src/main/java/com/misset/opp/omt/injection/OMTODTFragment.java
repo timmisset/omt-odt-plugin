@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.search.SearchScope;
+import com.misset.opp.exception.OMTODTPluginException;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
@@ -40,7 +41,7 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
     private final HashMap<String, Collection<? extends Callable>> nonPsiCallables = new HashMap<>();
     private final HashMap<String, Collection<? extends Variable>> nonPsiVariables = new HashMap<>();
 
-    private final List<PsiElement> allInjectedPsiElements = new ArrayList();
+    private final List<PsiElement> allInjectedPsiElements = new ArrayList<>();
 
     private boolean isContextLoaded = false;
 
@@ -119,7 +120,7 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
     private OMTFile getHostFile() {
         PsiFile psiFile = InjectedLanguageManager.getInstance(getProject()).getTopLevelFile(this);
         if (!(psiFile instanceof OMTFile)) {
-            throw new RuntimeException("Expected ODT fragment to be hosted in OMT file");
+            throw new OMTODTPluginException("Expected ODT fragment to be hosted in OMT file");
         }
         return (OMTFile) psiFile;
     }
@@ -127,7 +128,7 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
     private InjectionHost getHost() {
         @Nullable PsiLanguageInjectionHost injectionHost = InjectedLanguageManager.getInstance(getProject()).getInjectionHost(this);
         if (!(injectionHost instanceof InjectionHost)) {
-            throw new RuntimeException("Expected ODT fragment to be hosted in OMT host");
+            throw new OMTODTPluginException("Expected ODT fragment to be hosted in OMT host");
         }
         return (InjectionHost) injectionHost;
     }

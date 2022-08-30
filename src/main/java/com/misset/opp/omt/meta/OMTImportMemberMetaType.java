@@ -19,11 +19,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class OMTImportMemberMetaType extends YamlStringType {
-    protected static final Function<String, String> NOT_AN_EXPORTED_MEMBER = s -> String.format("%s is not an exported member", s);
+    protected static final UnaryOperator<String> NOT_AN_EXPORTED_MEMBER = s -> String.format("%s is not an exported member", s);
     private static final OMTImportMemberMetaType INSTANCE = new OMTImportMemberMetaType();
 
     public static OMTImportMemberMetaType getInstance() {

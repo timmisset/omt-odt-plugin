@@ -15,6 +15,10 @@ import java.util.Optional;
 
 public class OMTVariableProviderUtil {
 
+    private OMTVariableProviderUtil() {
+        // empty constructor
+    }
+
     public static String getVariableName(YAMLSequenceItem sequenceItem) {
         return getVariableName(sequenceItem.getValue(), "name");
     }

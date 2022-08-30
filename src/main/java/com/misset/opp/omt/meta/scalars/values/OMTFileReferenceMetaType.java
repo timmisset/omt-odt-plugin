@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public abstract class OMTFileReferenceMetaType extends YamlStringType {
     private final String extension;
 
-    public OMTFileReferenceMetaType(String extension) {
+    protected OMTFileReferenceMetaType(String extension) {
         super();
         this.extension = extension;
     }

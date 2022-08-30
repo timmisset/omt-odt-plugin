@@ -10,6 +10,9 @@ import com.misset.opp.omt.OMTRefactoringSupport;
 import org.jetbrains.annotations.NotNull;
 
 public class OMTRemoveQuickFix {
+    private OMTRemoveQuickFix() {
+        // empty constructor
+    }
 
     public static LocalQuickFix getRemoveLocalQuickFix(String type) {
         OMTRefactoringSupport omtRefactoringSupport = new OMTRefactoringSupport();

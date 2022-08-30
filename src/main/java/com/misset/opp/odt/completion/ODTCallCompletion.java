@@ -5,6 +5,7 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.ProcessingContext;
+import com.intellij.util.SharedProcessingContext;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
@@ -87,8 +88,9 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                                 Predicate<Set<OntResource>> precedingFilter,
                                 @NotNull ProcessingContext context) {
         Predicate<Callable> callableFilter = selectionFilter;
-        if (sharedContext != null && sharedContext.get(CALLABLE_FILTER) != null) {
-            callableFilter = callableFilter.and(sharedContext.get(CALLABLE_FILTER));
+        SharedProcessingContext sharedProcessingContext = sharedContext.get();
+        if (sharedProcessingContext != null && sharedProcessingContext.get(CALLABLE_FILTER) != null) {
+            callableFilter = callableFilter.and(sharedProcessingContext.get(CALLABLE_FILTER));
         }
 
         callables.stream()

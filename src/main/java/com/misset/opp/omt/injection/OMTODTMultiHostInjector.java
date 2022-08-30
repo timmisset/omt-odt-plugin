@@ -2,7 +2,6 @@ package com.misset.opp.omt.injection;
 
 import com.intellij.lang.injection.MultiHostInjector;
 import com.intellij.lang.injection.MultiHostRegistrar;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
@@ -15,8 +14,6 @@ import java.util.List;
  * The OMTMetaTypeProvider contains the entire OMT structure and has specific Scalar types that are recognized to be injectable
  */
 public class OMTODTMultiHostInjector implements MultiHostInjector {
-    private static final Logger LOGGER = Logger.getInstance(OMTODTMultiHostInjector.class);
-
     @Override
     public void getLanguagesToInject(@NotNull MultiHostRegistrar registrar,
                                      @NotNull PsiElement context) {

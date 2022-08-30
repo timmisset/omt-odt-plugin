@@ -15,6 +15,6 @@ public class OMTExportableQueriesMetaType extends OMTScriptMetaType {
 
     @Override
     public InjectableContentType getInjectableContentType() {
-        return InjectableContentType.QueryBlock;
+        return InjectableContentType.QUERY_BLOCK;
     }
 }

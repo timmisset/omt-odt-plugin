@@ -18,9 +18,9 @@ import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate,
         SupportsSafeDelete {
 
-    private final YAMLKeyValue keyValue;
-    private YAMLMapping mapping = null;
-    private final OMTModelItemMetaType metaType = OMTModelItemMetaType.getInstance();
+    private final transient YAMLKeyValue keyValue;
+    private final transient OMTModelItemMetaType metaType = OMTModelItemMetaType.getInstance();
+    private transient YAMLMapping mapping = null;
 
     public OMTYamlModelItemDelegate(YAMLKeyValue keyValue) {
         super(keyValue.getNode());
@@ -38,6 +38,7 @@ public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYam
         return metaType.isCallable(mapping);
     }
 
+    @Override
     public PsiElement getKey() {
         return keyValue.getKey();
     }
