@@ -68,11 +68,9 @@ public class ODTFormattingSpacing {
                 // relational operators
                 .around(ODTTokenSets.RELATIONAL_OPERATORS).spaces(1)
 
-
                 // make sure inserted javadoc elements are automatically formatted correctly
                 .before(JavaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS).spacing(0, 0, 1, false, 1)
                 .before(JavaDocTokenType.DOC_COMMENT_END).spacing(0, 0, 1, false, 1)
-
 
                 ;
     }
@@ -84,12 +82,14 @@ public class ODTFormattingSpacing {
         return spacingBuilder.getSpacing(parent, child1, child2);
     }
 
+    @SuppressWarnings("java:S3011")
     public Block unwrap(Block block) {
         if (block instanceof ODTFormattingBlock) {
             return block;
         }
         try {
             Method getOriginal = block.getClass().getDeclaredMethod("getOriginal");
+            // suppressing warning S3011, this is a workaround for a known bug
             getOriginal.setAccessible(true);
             return (Block) getOriginal.invoke(block);
         } catch (Exception e) {

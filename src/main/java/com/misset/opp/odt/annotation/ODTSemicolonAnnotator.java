@@ -32,7 +32,7 @@ public class ODTSemicolonAnnotator implements Annotator {
                          @NotNull AnnotationHolder holder) {
         IElementType elementType = PsiUtilCore.getElementType(element);
         if (elementType == ODTTypes.SCRIPT_LINE) {
-            LoggerUtil.runWithLogger(LOGGER, "Annotate scriptline", () -> annotateScriptLine(element, holder));
+            LoggerUtil.runWithLogger(LOGGER, "Annotate scriptline", () -> annotateScriptLine((ODTScriptLine) element, holder));
         } else if (elementType == ODTTypes.SEMICOLON) {
             LoggerUtil.runWithLogger(LOGGER, "Annotate semicolon", () -> {
                 PsiElement prevVisibleLeaf = PsiTreeUtil.prevVisibleLeaf(element);
@@ -43,35 +43,21 @@ public class ODTSemicolonAnnotator implements Annotator {
         }
     }
 
-    private void annotateScriptLine(PsiElement element, AnnotationHolder holder) {
-        final boolean hasSemicolonEnding = hasSemicolonEnding(element);
-        final ODTScriptLine scriptLine = (ODTScriptLine) element;
-        if (PsiTreeUtil.getParentOfType(scriptLine, ODTInterpolation.class) != null) {
-            if (hasSemicolonEnding) {
-                holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
-            }
-        } else if (scriptLine.getStatement() == null) {
-            // only statements should ever end with a semicolon:
-            if (hasSemicolonEnding) {
-                holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
-            }
+    private void annotateScriptLine(ODTScriptLine scriptLine, AnnotationHolder holder) {
+        final boolean hasSemicolonEnding = hasSemicolonEnding(scriptLine);
+        if (PsiTreeUtil.getParentOfType(scriptLine, ODTInterpolation.class) != null ||
+                scriptLine.getStatement() == null) {
+            validateHasNoIllegalSemicolon(hasSemicolonEnding, holder);
         } else {
             // depends on the context:
-            final YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(element);
+            final YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(scriptLine);
             if (injectionMetaType == null) {
-                if (!hasSemicolonEnding) {
-                    // no meta-type, the content is part of an ODT file, should have a semicolon ending in that case
-                    holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_REQUIRED).create();
-                }
+                validateHasRequiredSemicolon(hasSemicolonEnding, holder);
             } else {
-                if (!injectionMetaType.getClass()
-                        .isAnnotationPresent(SimpleInjectable.class) && !hasSemicolonEnding) {
-                    // should have a semicolon on every scriptline:
-                    holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_REQUIRED).create();
-                } else if (injectionMetaType.getClass()
-                        .isAnnotationPresent(SimpleInjectable.class) && hasSemicolonEnding) {
-                    // should not have a semicolon ending:
-                    holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
+                if (injectionMetaType.getClass().isAnnotationPresent(SimpleInjectable.class)) {
+                    validateHasNoIllegalSemicolon(hasSemicolonEnding, holder);
+                } else {
+                    validateHasRequiredSemicolon(hasSemicolonEnding, holder);
                 }
             }
         }
@@ -80,5 +66,17 @@ public class ODTSemicolonAnnotator implements Annotator {
     private boolean hasSemicolonEnding(PsiElement element) {
         return element.getLastChild() != null && element.getLastChild().getNode()
                 .getElementType() == ODTTypes.SEMICOLON;
+    }
+
+    private void validateHasNoIllegalSemicolon(boolean hasSemicolonEnding, AnnotationHolder holder) {
+        if (hasSemicolonEnding) {
+            holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
+        }
+    }
+
+    private void validateHasRequiredSemicolon(boolean hasSemicolonEnding, AnnotationHolder holder) {
+        if (!hasSemicolonEnding) {
+            holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_REQUIRED).create();
+        }
     }
 }

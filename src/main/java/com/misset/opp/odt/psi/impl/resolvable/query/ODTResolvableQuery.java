@@ -8,18 +8,11 @@ import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import com.misset.opp.ttl.util.TTLValidationUtil;
-import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Set;
 
 public abstract class ODTResolvableQuery extends ODTBaseResolvable implements ODTQuery, ODTResolvable, PsiResolvableQuery {
     protected ODTResolvableQuery(@NotNull ASTNode node) {
         super(node);
-    }
-
-    public Set<OntResource> resolveFromSet(Set<OntResource> fromSet) {
-        return resolve();
     }
 
     @Override

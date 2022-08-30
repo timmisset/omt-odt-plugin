@@ -41,62 +41,69 @@ public class ODTCodeUntypedInspectionWarning extends LocalInspectionTool {
     }
 
     @Override
-    public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly, @NotNull LocalInspectionToolSession session) {
+    public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder,
+                                                   boolean isOnTheFly,
+                                                   @NotNull LocalInspectionToolSession session) {
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTVariable) {
-                    ODTVariable variable = (ODTVariable) element;
-                    if (variable.canBeAnnotated() && variable.resolve().isEmpty()) {
-                        holder.registerProblem(
-                                element,
-                                ANNOTATE_PARAMETER_WITH_TYPE,
-                                getParamAnnotationBlockQuickFix()
-                        );
-                    }
+                    visitVariable(element, holder);
                 } else if (element instanceof ODTDefineQueryStatement) {
-                    ODTDefineQueryStatement queryStatement = (ODTDefineQueryStatement) element;
-                    ODTQuery query = queryStatement.getQuery();
-                    Set<OntResource> previousStep = query.resolvePreviousStep();
-                    if (!previousStep.isEmpty()) {
-                        return;
-                    }
-
-                    if (!(query instanceof ODTQueryPath)) {
-                        return;
-                    }
-                    ODTQueryPath queryPath = (ODTQueryPath) query;
-                    ODTQueryOperationStep odtQueryOperationStep = queryPath.getQueryOperationStepList().get(0);
-                    ODTQueryStep queryStep = odtQueryOperationStep.getQueryStep();
-                    if (queryStep != null &&
-                            queryStep.resolvePreviousStep().isEmpty() &&
-                            query.resolve().isEmpty() &&
-                            PsiTreeUtil.getDeepestFirst(queryStep).equals(PsiTreeUtil.getDeepestFirst(query)) &&
-                            canBeBaseAnnotated(queryStep)) {
-                        // a @base annotation is applicable
-                        holder.registerProblem(
-                                queryStatement.getDefineName(),
-                                ANNOTATE_BASE_WITH_TYPE,
-                                getBaseAnnotationBlockQuickFix()
-                        );
-                    }
+                    visitDefinedQueryStatement((ODTDefineQueryStatement) element, holder);
                 }
-
-
-            }
-
-            private boolean canBeBaseAnnotated(ODTResolvableQueryStep queryStep) {
-                if (queryStep instanceof ODTResolvableVariableStep) {
-                    return false;
-                }
-                if (queryStep instanceof ODTOperatorCall) {
-                    ODTOperatorCall operatorCall = (ODTOperatorCall) queryStep;
-                    Callable callable = operatorCall.getCallable();
-                    return callable != null && !callable.isStatic();
-                }
-                return true;
             }
         };
+    }
+
+    private void visitVariable(@NotNull PsiElement element, @NotNull ProblemsHolder holder) {
+        ODTVariable variable = (ODTVariable) element;
+        if (variable.canBeAnnotated() && variable.resolve().isEmpty()) {
+            holder.registerProblem(
+                    element,
+                    ANNOTATE_PARAMETER_WITH_TYPE,
+                    getParamAnnotationBlockQuickFix()
+            );
+        }
+    }
+
+    private void visitDefinedQueryStatement(ODTDefineQueryStatement element, @NotNull ProblemsHolder holder) {
+        ODTQuery query = element.getQuery();
+        Set<OntResource> previousStep = query.resolvePreviousStep();
+        if (!previousStep.isEmpty()) {
+            return;
+        }
+
+        if (!(query instanceof ODTQueryPath)) {
+            return;
+        }
+        ODTQueryPath queryPath = (ODTQueryPath) query;
+        ODTQueryOperationStep odtQueryOperationStep = queryPath.getQueryOperationStepList().get(0);
+        ODTQueryStep queryStep = odtQueryOperationStep.getQueryStep();
+        if (queryStep != null &&
+                queryStep.resolvePreviousStep().isEmpty() &&
+                query.resolve().isEmpty() &&
+                PsiTreeUtil.getDeepestFirst(queryStep).equals(PsiTreeUtil.getDeepestFirst(query)) &&
+                canBeBaseAnnotated(queryStep)) {
+            // a @base annotation is applicable
+            holder.registerProblem(
+                    element.getDefineName(),
+                    ANNOTATE_BASE_WITH_TYPE,
+                    getBaseAnnotationBlockQuickFix()
+            );
+        }
+    }
+
+    private boolean canBeBaseAnnotated(ODTResolvableQueryStep queryStep) {
+        if (queryStep instanceof ODTResolvableVariableStep) {
+            return false;
+        }
+        if (queryStep instanceof ODTOperatorCall) {
+            ODTOperatorCall operatorCall = (ODTOperatorCall) queryStep;
+            Callable callable = operatorCall.getCallable();
+            return callable != null && !callable.isStatic();
+        }
+        return true;
     }
 
     private LocalQuickFix getBaseAnnotationBlockQuickFix() {
@@ -135,7 +142,6 @@ public class ODTCodeUntypedInspectionWarning extends LocalInspectionTool {
                 ODTVariable variable = (ODTVariable) descriptor.getPsiElement();
                 addAnnotation(project, descriptor, "param", variable.getName());
             }
-
 
         };
     }
@@ -184,10 +190,9 @@ public class ODTCodeUntypedInspectionWarning extends LocalInspectionTool {
         } else {
             PsiElement newComment = defineStatementLine.addBefore(javaDocs, firstChild);
             defineStatementLine.addAfter(
-                    PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n"),
+                    PsiParserFacade.getInstance(project).createWhiteSpaceFromText("\n"),
                     newComment);
         }
-
         PARAM_ANNOTATION.incModificationCount();
     }
 

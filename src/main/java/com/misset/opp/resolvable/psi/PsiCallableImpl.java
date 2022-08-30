@@ -79,4 +79,9 @@ public abstract class PsiCallableImpl extends ASTWrapperPsiElement implements Ps
     public String getDescription(Project project) {
         return null;
     }
+
+    @Override
+    public boolean isBuiltin() {
+        return false;
+    }
 }

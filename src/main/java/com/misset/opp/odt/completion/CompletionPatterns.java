@@ -20,11 +20,11 @@ import static com.intellij.patterns.PsiJavaPatterns.psiElement;
 public interface CompletionPatterns {
 
     enum COMPLETION_PRIORITY {
-        Callable(0),
-        VariableLocal(1),
-        VariableGlobal(0),
-        Traverse(2),
-        RootElement(3);
+        CALLABLE(0),
+        VARIABLE_LOCAL(1),
+        VARIABLE_GLOBAL(0),
+        TRAVERSE(2),
+        ROOT_ELEMENT(3);
 
         private final int value;
 

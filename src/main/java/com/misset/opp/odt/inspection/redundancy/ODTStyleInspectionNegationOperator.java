@@ -111,68 +111,68 @@ public class ODTStyleInspectionNegationOperator extends LocalInspectionTool {
                     removeTrailing(project, call);
                 }
             }
-
-            private void removeTrailing(Project project, ODTOperatorCall call) {
-                Optional.ofNullable(getOppositeCall(project, call))
-                        .ifPresent(oppositeCall -> doRemoveTrailing(project, call, oppositeCall));
-            }
-
-            private void doRemoveTrailing(Project project, ODTOperatorCall call, ODTCall oppositeCall) {
-                PsiElement replacedCall = call.replace(oppositeCall);
-                PsiElement psiElement = PsiTreeUtil.nextVisibleLeaf(replacedCall);
-                if (psiElement != null && PsiUtilCore.getElementType(psiElement) == ODTTypes.FORWARD_SLASH) {
-                    psiElement.delete();
-                    psiElement = PsiTreeUtil.nextVisibleLeaf(replacedCall);
-                }
-                if (psiElement != null && PsiUtilCore.getElementType(psiElement) == ODTTypes.NOT_OPERATOR) {
-                    psiElement.delete();
-                }
-
-                // the white-space formatting is now off, the easiest fix is it to replace the parent script with itself
-                // which will trigger a reformatting
-                ODTScriptLine scriptLine = PsiTreeUtil.getParentOfType(replacedCall, ODTScriptLine.class);
-                if (scriptLine != null) {
-                    ODTScriptLine replacementScript = ODTElementGenerator.getInstance(project).fromFile(scriptLine.getText(), ODTScriptLine.class);
-                    scriptLine.replace(replacementScript);
-                }
-            }
-
-            private void replaceKeyword(Project project, ODTOperatorCall call) {
-                ODTNegatedStep negatedStep = PsiTreeUtil.getParentOfType(call, ODTNegatedStep.class);
-                ODTCall oppositeCall = getOppositeCall(project, call);
-                if (negatedStep != null && oppositeCall != null) {
-                    negatedStep.replace(oppositeCall);
-                }
-            }
-
-            private void replaceOperator(Project project, ODTOperatorCall call) {
-                ODTCall oppositeCall = getOppositeCall(project, call);
-                if (oppositeCall != null) {
-                    PsiElement replacedCall = call.replace(oppositeCall);
-                    ODTCall notCall = PsiTreeUtil.getParentOfType(replacedCall, ODTCall.class);
-                    ODTSignatureArgument signatureArgument = PsiTreeUtil.getParentOfType(replacedCall, ODTSignatureArgument.class);
-
-                    if (notCall != null && signatureArgument != null && notCall.getName().equals(NotOperator.INSTANCE.getName())) {
-                        notCall.replace(signatureArgument);
-                    } else {
-                        // something is wrong, restore:
-                        replacedCall.replace(call);
-                    }
-                }
-            }
-
-            private ODTCall getOppositeCall(Project project, ODTCall call) {
-                String newName = getNewName(call);
-                return ODTElementGenerator.getInstance(project).createCall(newName, null);
-            }
-
-            private String getNewName(ODTCall call) {
-                if (call.getName().equals(ExistsOperator.INSTANCE.getName())) {
-                    return EmptyOperator.INSTANCE.getName();
-                } else {
-                    return ExistsOperator.INSTANCE.getName();
-                }
-            }
         };
+    }
+
+    private void removeTrailing(Project project, ODTOperatorCall call) {
+        Optional.ofNullable(getOppositeCall(project, call))
+                .ifPresent(oppositeCall -> doRemoveTrailing(project, call, oppositeCall));
+    }
+
+    private void doRemoveTrailing(Project project, ODTOperatorCall call, ODTCall oppositeCall) {
+        PsiElement replacedCall = call.replace(oppositeCall);
+        PsiElement psiElement = PsiTreeUtil.nextVisibleLeaf(replacedCall);
+        if (psiElement != null && PsiUtilCore.getElementType(psiElement) == ODTTypes.FORWARD_SLASH) {
+            psiElement.delete();
+            psiElement = PsiTreeUtil.nextVisibleLeaf(replacedCall);
+        }
+        if (psiElement != null && PsiUtilCore.getElementType(psiElement) == ODTTypes.NOT_OPERATOR) {
+            psiElement.delete();
+        }
+
+        // the white-space formatting is now off, the easiest fix is it to replace the parent script with itself
+        // which will trigger a reformatting
+        ODTScriptLine scriptLine = PsiTreeUtil.getParentOfType(replacedCall, ODTScriptLine.class);
+        if (scriptLine != null) {
+            ODTScriptLine replacementScript = ODTElementGenerator.getInstance(project).fromFile(scriptLine.getText(), ODTScriptLine.class);
+            scriptLine.replace(replacementScript);
+        }
+    }
+
+    private void replaceKeyword(Project project, ODTOperatorCall call) {
+        ODTNegatedStep negatedStep = PsiTreeUtil.getParentOfType(call, ODTNegatedStep.class);
+        ODTCall oppositeCall = getOppositeCall(project, call);
+        if (negatedStep != null && oppositeCall != null) {
+            negatedStep.replace(oppositeCall);
+        }
+    }
+
+    private void replaceOperator(Project project, ODTOperatorCall call) {
+        ODTCall oppositeCall = getOppositeCall(project, call);
+        if (oppositeCall != null) {
+            PsiElement replacedCall = call.replace(oppositeCall);
+            ODTCall notCall = PsiTreeUtil.getParentOfType(replacedCall, ODTCall.class);
+            ODTSignatureArgument signatureArgument = PsiTreeUtil.getParentOfType(replacedCall, ODTSignatureArgument.class);
+
+            if (notCall != null && signatureArgument != null && notCall.getName().equals(NotOperator.INSTANCE.getName())) {
+                notCall.replace(signatureArgument);
+            } else {
+                // something is wrong, restore:
+                replacedCall.replace(call);
+            }
+        }
+    }
+
+    private ODTCall getOppositeCall(Project project, ODTCall call) {
+        String newName = getNewName(call);
+        return ODTElementGenerator.getInstance(project).createCall(newName, null);
+    }
+
+    private String getNewName(ODTCall call) {
+        if (call.getName().equals(ExistsOperator.INSTANCE.getName())) {
+            return EmptyOperator.INSTANCE.getName();
+        } else {
+            return ExistsOperator.INSTANCE.getName();
+        }
     }
 }

@@ -50,56 +50,55 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
                 }
                 return referenceList.toArray(PsiReference[]::new);
             }
-
-            private PsiReference getParamReference(PsiDocTag docTag) {
-                // @param $param (ont:Class)
-                // the valueElement == $param
-                // create a reference which might be resolvable to the adjacent docOwner such as ODTDefineStatement that contains matching input parameters
-                return Optional.ofNullable(docTag.getValueElement())
-                        .map(psiDocTagValue -> new ODTParameterAnnotationReference(docTag, psiDocTagValue.getTextRangeInParent()))
-                        .orElse(null);
-            }
-
-            private PsiReference getTypePrefixReference(PsiDocTag docTag, int position) {
-                if (docTag.getDataElements().length > position) {
-                    final PsiElement dataElement = docTag.getDataElements()[position];
-                    // @param $param (ont:Class)
-                    // the dataElement == (ont:Class)
-                    // Use the RegEx to determine the from-to range within the dataElement to cutOut: ont
-
-                    // only when the dataElement contains a prefix a reference will be created
-                    // for primitives there is no reference
-                    final Matcher matcher = PREFIX.matcher(dataElement.getText());
-                    if (matcher.find()) {
-                        // valid match
-                        return new ODTTypePrefixAnnotationReference(docTag,
-                                TextRange.create(matcher.start(1), matcher.end(1))
-                                        .shiftRight(dataElement.getStartOffsetInParent()));
-                    }
-                }
-                return null;
-            }
-
-            private PsiReference getTypeOntologyReference(PsiDocTag docTag, int position) {
-                if (docTag.getDataElements().length > position) {
-                    final PsiElement dataElement = docTag.getDataElements()[position];
-                    // @param $param (ont:Class)
-                    // the dataElement == (ont:Class)
-                    // Use the RegEx to determine the from-to range within the dataElement to cutOut: Class
-
-                    // only when the dataElement contains a prefix a reference will be created
-                    // for primitives there is no reference
-                    final Matcher matcher = ONTOLOGY.matcher(dataElement.getText());
-                    if (matcher.find()) {
-                        // valid match
-                        return new ODTJavaDocTTLSubjectReference(docTag,
-                                TextRange.create(matcher.start(1), matcher.end(1))
-                                        .shiftRight(dataElement.getStartOffsetInParent()), position);
-                    }
-                }
-                return null;
-            }
         });
     }
 
+    private PsiReference getParamReference(PsiDocTag docTag) {
+        // @param $param (ont:Class)
+        // the valueElement == $param
+        // create a reference which might be resolvable to the adjacent docOwner such as ODTDefineStatement that contains matching input parameters
+        return Optional.ofNullable(docTag.getValueElement())
+                .map(psiDocTagValue -> new ODTParameterAnnotationReference(docTag, psiDocTagValue.getTextRangeInParent()))
+                .orElse(null);
+    }
+
+    private PsiReference getTypePrefixReference(PsiDocTag docTag, int position) {
+        if (docTag.getDataElements().length > position) {
+            final PsiElement dataElement = docTag.getDataElements()[position];
+            // @param $param (ont:Class)
+            // the dataElement == (ont:Class)
+            // Use the RegEx to determine the from-to range within the dataElement to cutOut: ont
+
+            // only when the dataElement contains a prefix a reference will be created
+            // for primitives there is no reference
+            final Matcher matcher = PREFIX.matcher(dataElement.getText());
+            if (matcher.find()) {
+                // valid match
+                return new ODTTypePrefixAnnotationReference(docTag,
+                        TextRange.create(matcher.start(1), matcher.end(1))
+                                .shiftRight(dataElement.getStartOffsetInParent()));
+            }
+        }
+        return null;
+    }
+
+    private PsiReference getTypeOntologyReference(PsiDocTag docTag, int position) {
+        if (docTag.getDataElements().length > position) {
+            final PsiElement dataElement = docTag.getDataElements()[position];
+            // @param $param (ont:Class)
+            // the dataElement == (ont:Class)
+            // Use the RegEx to determine the from-to range within the dataElement to cutOut: Class
+
+            // only when the dataElement contains a prefix a reference will be created
+            // for primitives there is no reference
+            final Matcher matcher = ONTOLOGY.matcher(dataElement.getText());
+            if (matcher.find()) {
+                // valid match
+                return new ODTJavaDocTTLSubjectReference(docTag,
+                        TextRange.create(matcher.start(1), matcher.end(1))
+                                .shiftRight(dataElement.getStartOffsetInParent()), position);
+            }
+        }
+        return null;
+    }
 }

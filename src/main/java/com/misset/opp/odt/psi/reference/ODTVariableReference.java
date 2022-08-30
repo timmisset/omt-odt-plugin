@@ -75,14 +75,6 @@ public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> impl
         return getElement().setName(newElementName);
     }
 
-    // override required to allow caching mechanism
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof ODTVariableReference &&
-                ((ODTVariableReference) obj).getElement().equals(getElement());
-    }
-
-
     @Override
     public @InspectionMessage @NotNull String getUnresolvedMessagePattern() {
         return "Cannot resolve variable '" + getElement().getName() + "'";

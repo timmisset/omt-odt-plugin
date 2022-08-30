@@ -25,8 +25,15 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
 
     private int moveCaretAfterInsert = 0;
     private int minimalLineOffset = 0;
+
     @Override
-    public Result preprocessEnter(@NotNull PsiFile file, @NotNull Editor editor, @NotNull Ref<Integer> caretOffset, @NotNull Ref<Integer> caretAdvance, @NotNull DataContext dataContext, EditorActionHandler originalHandler) {
+    @SuppressWarnings("java:S2637")
+    public Result preprocessEnter(@NotNull PsiFile file,
+                                  @NotNull Editor editor,
+                                  @NotNull Ref<Integer> caretOffset,
+                                  @NotNull Ref<Integer> caretAdvance,
+                                  @NotNull DataContext dataContext,
+                                  EditorActionHandler originalHandler) {
         if (!(file instanceof ODTFile)) {
             return Result.Continue;
         }
@@ -37,6 +44,7 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
                 .map(PsiElement::getPrevSibling)
                 .map(PsiElement::getNode)
                 .map(ASTNode::getElementType)
+                // suppressing warning S2637
                 .orElse(null);
 
         if (prevElementType == ODTIgnored.DOC_COMMENT_START) {
@@ -56,16 +64,20 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
         if (moveCaretAfterInsert > 0) {
             editor.getCaretModel().getCurrentCaret().moveCaretRelatively(moveCaretAfterInsert, 0, false, true);
         } else {
-            if (minimalLineOffset > 0) {
-                Object caret = dataContext.getData("caret");
-                if (caret instanceof CaretImpl) {
-                    CaretImpl currentCaret = (CaretImpl) caret;
-                    if (currentCaret.getVisualPosition().column == 0) {
-                        // known issue with continuation indent when injected
-                        Document hostDocument = OMTODTInjectionUtil.getHostDocument(file);
-                        if (hostDocument == null) {
-                            return Result.Continue;
-                        }
+            moveIndent(dataContext, file);
+        }
+        return Result.Continue;
+    }
+
+    private void moveIndent(@NotNull DataContext dataContext, @NotNull PsiFile file) {
+        if (minimalLineOffset > 0) {
+            Object caret = dataContext.getData("caret");
+            if (caret instanceof CaretImpl) {
+                CaretImpl currentCaret = (CaretImpl) caret;
+                if (currentCaret.getVisualPosition().column == 0) {
+                    // known issue with continuation indent when injected
+                    Document hostDocument = OMTODTInjectionUtil.getHostDocument(file);
+                    if (hostDocument != null) {
                         int indentSize = minimalLineOffset + 4; // + 4 is fixed size for continuation indent
                         insert(file.getProject(),
                                 hostDocument,
@@ -75,12 +87,6 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
                 }
             }
         }
-        return Result.Continue;
-    }
-
-    @Override
-    public boolean invokeInsideIndent(int newLineCharOffset, @NotNull Editor editor, @NotNull DataContext dataContext) {
-        return super.invokeInsideIndent(newLineCharOffset, editor, dataContext);
     }
 
     private void insert(Project project,

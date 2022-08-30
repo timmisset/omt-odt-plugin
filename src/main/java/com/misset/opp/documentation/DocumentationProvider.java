@@ -3,6 +3,11 @@ package com.misset.opp.documentation;
 import com.intellij.lang.documentation.DocumentationMarkup;
 
 public class DocumentationProvider {
+
+    private DocumentationProvider() {
+        // empty constructor
+    }
+
     /**
      * Creates a key/value row for the rendered documentation.
      */
@@ -13,5 +18,14 @@ public class DocumentationProvider {
         sb.append("<p>");
         sb.append(value);
         sb.append(DocumentationMarkup.SECTION_END);
+    }
+
+    public static String getKeyValueSection(String key, String value) {
+        return DocumentationMarkup.SECTION_HEADER_START +
+                key +
+                DocumentationMarkup.SECTION_SEPARATOR +
+                "<p>" +
+                value +
+                DocumentationMarkup.SECTION_END;
     }
 }

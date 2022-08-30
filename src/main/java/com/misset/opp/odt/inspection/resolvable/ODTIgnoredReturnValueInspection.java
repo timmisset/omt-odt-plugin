@@ -4,13 +4,13 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.builtin.AbstractBuiltin;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTQueryStatement;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTVariableValue;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
+import com.misset.opp.resolvable.psi.PsiResolvable;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
@@ -37,41 +37,43 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (!(element instanceof ODTCommandCall) && !(element instanceof ODTQueryStatement)) {
-                    return;
-                }
-                if (element instanceof ODTCommandCall && ((ODTCommandCall) element).getCallable() instanceof AbstractBuiltin) {
-                    // don't show warning when command call is made to Builtin commands
-                    // users cannot modify their behavior
-                    return;
-                }
-                PsiElement parent = element.getParent();
-                if (parent instanceof ODTVariableValue || parent instanceof ODTResolvableValue) {
-                    // when part of a ResolvableValue or VariableValue, it is either used as the value part in an
-                    // assignment or a call signature argument. In any case, it's being used.
-                    return;
-                }
-
-                final YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(element);
-                if (injectionMetaType != null && !(injectionMetaType instanceof OMTScriptMetaType)) {
-                    return;
-                }
-
-                // now we need to check if the value actually resolves to something:
-                Set<OntResource> resolved;
                 if (element instanceof ODTCommandCall) {
-                    resolved = ((ODTCommandCall) element).resolve();
-                } else {
-                    resolved = ((ODTQueryStatement) element).getQuery().resolve();
+                    validateCall((ODTCommandCall) element, holder);
                 }
-
-                if (!resolved.isEmpty() && !resolved.contains(OppModelConstants.VOID)) {
-                    // something is being returned, show warning:
-                    holder.registerProblem(element, RESULT_IS_IGNORED, WEAK_WARNING);
+                if (element instanceof ODTQueryStatement) {
+                    validateQueryStatement((ODTQueryStatement) element, holder);
                 }
             }
-
-
         };
+    }
+
+    private void validateCall(ODTCommandCall call, @NotNull ProblemsHolder holder) {
+        if (call.getCallable().isBuiltin()) {
+            return;
+        }
+        validateReturnValue(call, holder);
+    }
+
+    private void validateQueryStatement(@NotNull ODTQueryStatement queryStatement, @NotNull ProblemsHolder holder) {
+        PsiElement parent = queryStatement.getParent();
+        if (parent instanceof ODTVariableValue || parent instanceof ODTResolvableValue) {
+            // when part of a ResolvableValue or VariableValue, it is either used as the value part in an
+            // assignment or a call signature argument. In any case, it's being used.
+            return;
+        }
+
+        final YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(queryStatement);
+        if (injectionMetaType != null && !(injectionMetaType instanceof OMTScriptMetaType)) {
+            return;
+        }
+        validateReturnValue(queryStatement.getQuery(), holder);
+    }
+
+    private void validateReturnValue(PsiResolvable resolvable, @NotNull ProblemsHolder holder) {
+        Set<OntResource> resolved = resolvable.resolve();
+        if (!resolved.isEmpty() && !resolved.contains(OppModelConstants.VOID)) {
+            // something is being returned, show warning:
+            holder.registerProblem(resolvable, RESULT_IS_IGNORED, WEAK_WARNING);
+        }
     }
 }

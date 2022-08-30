@@ -8,6 +8,10 @@ import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 
 public class PsiRelationshipUtil {
 
+    private PsiRelationshipUtil() {
+        // empty constructor
+    }
+
     /**
      * Determines if there can be a declaration/usage relationship between 2 elements based solely on
      * their position in the PsiTree. Taking script block structures and declaration before usage

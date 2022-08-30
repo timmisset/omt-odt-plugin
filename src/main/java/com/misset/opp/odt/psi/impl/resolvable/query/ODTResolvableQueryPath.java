@@ -40,13 +40,12 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
                 .orElse(Collections.emptySet());
     }
 
-    private Set<OntResource> fromSet;
+    private transient Set<OntResource> fromSet;
 
     /**
      * Resolves the query with a given input, the provided set is evaluated once,
      * after which the fromSet reset
      */
-    @Override
     public Set<OntResource> resolveFromSet(Set<OntResource> fromSet) {
         this.fromSet = fromSet;
         final Set<OntResource> resolve = resolve();

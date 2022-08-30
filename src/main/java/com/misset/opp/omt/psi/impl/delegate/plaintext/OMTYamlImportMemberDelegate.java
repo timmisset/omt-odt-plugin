@@ -214,6 +214,11 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     }
 
     @Override
+    public boolean isBuiltin() {
+        return false;
+    }
+
+    @Override
     public Set<OntResource> getParamType(int index) {
         return computeFromCallable(callable -> callable.getParamType(index), Collections.emptySet());
     }

@@ -27,7 +27,6 @@ import java.util.function.Predicate;
 
 import static com.intellij.patterns.StandardPatterns.or;
 import static com.misset.opp.odt.completion.CompletionPatterns.*;
-import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.Traverse;
 
 public class ODTTraverseCompletion extends CompletionContributor {
     private static final Key<Boolean> HAS_CARET = new Key<>("HAS_CARET");
@@ -127,9 +126,9 @@ public class ODTTraverseCompletion extends CompletionContributor {
                             direction,
                             curie);
 
-                    LookupElement withPriority = PrioritizedLookupElement.withPriority(predicateLookupElement, Traverse.getValue());
+                    LookupElement withPriority = PrioritizedLookupElement.withPriority(predicateLookupElement, COMPLETION_PRIORITY.TRAVERSE.getValue());
                     String curieCompletion = prefix + prefixMatcher; // i.e. ont:cla<caret>
-                    if (curieCompletion.startsWith("^") && !context.get(HAS_CARET)) {
+                    if (curieCompletion.startsWith("^") && Boolean.FALSE.equals(context.get(HAS_CARET))) {
                         curieCompletion = curieCompletion.substring(1);
                     }
 

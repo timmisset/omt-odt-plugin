@@ -42,9 +42,11 @@ public class ODTFormattingIndent {
         return null;
     }
 
+    @SuppressWarnings("java:S2637")
     private static IElementType getParentType(ASTNode node) {
         return Optional.ofNullable(node.getTreeParent())
                 .map(ASTNode::getElementType)
+                // suppressing warning 2637
                 .orElse(null);
     }
 

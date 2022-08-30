@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.psi.PsiElement;
+import com.jgoodies.common.base.Strings;
 import com.misset.opp.documentation.DocumentationProvider;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.impl.ODTQueryOperationStepImpl;
@@ -16,6 +17,7 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,7 +55,9 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         sb.append(fullyQualifiedUri);
         sb.append(DocumentationMarkup.DEFINITION_END);
         sb.append(DocumentationMarkup.CONTENT_START);
-        sb.append("An instance of " + ontClass.getURI());
+        if (ontClass != null) {
+            sb.append("An instance of ").append(ontClass.getURI());
+        }
         sb.append(DocumentationMarkup.CONTENT_END);
 
         sb.append(DocumentationMarkup.SECTIONS_START);
@@ -95,39 +99,49 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
     private static void setPredicateInfo(OntResource resource, String header, StringBuilder sb) {
         Set<Property> properties = getProperties(resource);
-        if (properties.isEmpty()) {
-            return;
+
+        String propertiesMap = properties.stream()
+                .map(property -> getPropertyInfo(resource, property))
+                .filter(Strings::isNotBlank)
+                .collect(Collectors.joining());
+        if (Strings.isNotBlank(propertiesMap)) {
+            String propertiesTable = "<table>" + propertiesMap + "</table>";
+            DocumentationProvider.addKeyValueSection(header, propertiesTable, sb);
         }
-        StringBuilder predicatesTable = new StringBuilder();
-        predicatesTable.append("<table>");
-        boolean hasValues = false;
-        for (Property property : properties) {
-            if (!property.equals(OppModelConstants.RDF_TYPE)) {
-                RDFNode propertyValue = resource.getPropertyValue(property);
-                if (propertyValue == null && resource instanceof OntClass) {
-                    propertyValue = getFromSuperclass((OntClass) resource, property);
-                }
-                if (propertyValue != null) {
-                    String value = null;
-                    if (propertyValue.isLiteral()) {
-                        value = propertyValue.asLiteral().getValue().toString();
-                    } else if (propertyValue.isResource()) {
-                        value = propertyValue.asResource().getLocalName();
-                    }
-                    if (value != null) {
-                        hasValues = true;
-                        predicatesTable.append("<tr><td style=\"padding-right: 5px\">")
-                                .append(property.getLocalName())
-                                .append("</td><td>")
-                                .append(extractValue(value))
-                                .append("</td></tr>");
-                    }
-                }
+    }
+
+    private static String getPropertyInfo(OntResource resource,
+                                          Property property) {
+        if (!property.equals(OppModelConstants.RDF_TYPE)) {
+            RDFNode propertyValue = resource.getPropertyValue(property);
+            if (propertyValue == null && resource instanceof OntClass) {
+                propertyValue = getFromSuperclass((OntClass) resource, property);
             }
+
+            return Optional.ofNullable(propertyValue)
+                    .map(ODTResolvableQualifiedUriStepDocumentationUtil::getQualifiedPropertyName)
+                    .map(propertyUri -> getPropertyDescription(property.getLocalName(), propertyUri))
+                    .orElse(null);
+
         }
-        predicatesTable.append("</table>");
-        if (hasValues) {
-            DocumentationProvider.addKeyValueSection(header, predicatesTable.toString(), sb);
+        return null;
+    }
+
+    private static String getPropertyDescription(String localname, String propertyUri) {
+        return "<tr><td style=\"padding-right: 5px\">" +
+                localname +
+                "</td><td>" +
+                extractValue(propertyUri)
+                + "</td></tr>";
+    }
+
+    private static String getQualifiedPropertyName(RDFNode propertyValue) {
+        if (propertyValue.isLiteral()) {
+            return propertyValue.asLiteral().getValue().toString();
+        } else if (propertyValue.isResource()) {
+            return propertyValue.asResource().getLocalName();
+        } else {
+            return null;
         }
     }
 
@@ -205,20 +219,63 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         Set<OntResource> filtered = step.getResolvableParent().filter(unfiltered);
         String fullyQualifiedUri = step.getFullyQualifiedUri();
 
-        String cardinality;
-        if (parent instanceof ODTQueryOperationStepImpl) {
-            Set<OntResource> previous = ((ODTQueryOperationStepImpl) parent).resolvePreviousStep();
-            cardinality = TTLResourceUtil.getCardinalityLabel(previous, OppModel.INSTANCE.getProperty(step.getFullyQualifiedUri()));
-        } else if (isReversed) {
-            cardinality = TTLResourceUtil.getCardinalityLabel(filtered, OppModel.INSTANCE.getProperty(step.getFullyQualifiedUri()));
-        } else {
-            cardinality = null;
-        }
-
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
-        sb.append("Predicate: ");
-        sb.append(fullyQualifiedUri);
+        sb.append("Predicate: ").append(fullyQualifiedUri);
+        addCardinality(parent, step, filtered, isReversed, sb);
+        sb.append(DocumentationMarkup.DEFINITION_END);
+
+        sb.append(DocumentationMarkup.CONTENT_START);
+        sb.append(getContentMessage(isReversed));
+        sb.append(DocumentationMarkup.CONTENT_END);
+
+        sb.append(DocumentationMarkup.SECTIONS_START);
+        sb.append(DocumentationProvider.getKeyValueSection("Direction:", isReversed ? "Reverse" : "Forward"));
+        addNextStep(fullyQualifiedUri, isReversed, unfiltered, filtered, sb);
+        addPreviousStep(step, isReversed, sb);
+
+        sb.append(DocumentationMarkup.SECTIONS_END);
+        return sb.toString();
+    }
+
+    private static void addNextStep(String fullyQualifiedUri,
+                                    boolean isReversed,
+                                    Set<OntResource> unfiltered,
+                                    Set<OntResource> filtered,
+                                    StringBuilder sb) {
+        if (OppModel.INSTANCE.getProperty(fullyQualifiedUri) != null) {
+            String label = isReversed ? "Subject(s)" : "Object(s)";
+            sb.append(DocumentationProvider.getKeyValueSection("Result", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(filtered, "<br>", false)));
+            if (unfiltered.size() != filtered.size()) {
+                sb.append(DocumentationProvider.getKeyValueSection("Unfiltered:", TTLResourceUtil.describeUrisJoined(unfiltered, "<br>", false)));
+            }
+        }
+    }
+
+    private static void addPreviousStep(ODTResolvableQualifiedUriStep step, boolean isReversed, StringBuilder sb) {
+        Set<OntResource> previousStep = step.resolvePreviousStep();
+        if (!previousStep.isEmpty()) {
+            String label = isReversed ? "Object(s)" : "Subject(s)";
+            sb.append(DocumentationProvider.getKeyValueSection("Previous step", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(previousStep, "<br>", false)));
+        }
+    }
+
+    private static String getContentMessage(boolean reversed) {
+        if (reversed) {
+            return "When traversing the model <u>reversed</u>, the query will return anything in the TTL ontology which " +
+                    "has the predicate (sh:path) and has the previous query step as object (sh:dataType / sh:class)";
+        } else {
+            return "When traversing the model, the query will return the object (sh:dataType / sh:class) of the " +
+                    "previous query step (subject) using the predicate (sh:path)";
+        }
+    }
+
+    private static void addCardinality(PsiElement parent,
+                                       ODTResolvableQualifiedUriStep step,
+                                       Set<OntResource> filtered,
+                                       boolean isReversed,
+                                       StringBuilder sb) {
+        String cardinality = getCardinality(parent, step, filtered, isReversed);
         if (cardinality != null) {
             sb.append("<br>Cardinality");
             if (!cardinality.equals("1")) {
@@ -226,40 +283,19 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
             }
             sb.append(": ");
             sb.append(getCardinalityDetail(cardinality)).append(" ");
-
         }
-        sb.append(DocumentationMarkup.DEFINITION_END);
-        sb.append(DocumentationMarkup.CONTENT_START);
-        final String content;
-        if (isReversed) {
-            content = "When traversing the model <u>reversed</u>, the query will return anything in the TTL ontology which " +
-                    "has the predicate (sh:path) and has the previous query step as object (sh:dataType / sh:class)";
+    }
+
+    private static String getCardinality(PsiElement parent, ODTResolvableQualifiedUriStep step,
+                                         Set<OntResource> filtered, boolean isReversed) {
+        if (parent instanceof ODTQueryOperationStepImpl) {
+            Set<OntResource> previous = ((ODTQueryOperationStepImpl) parent).resolvePreviousStep();
+            return TTLResourceUtil.getCardinalityLabel(previous, OppModel.INSTANCE.getProperty(step.getFullyQualifiedUri()));
+        } else if (isReversed) {
+            return TTLResourceUtil.getCardinalityLabel(filtered, OppModel.INSTANCE.getProperty(step.getFullyQualifiedUri()));
         } else {
-            content = "When traversing the model, the query will return the object (sh:dataType / sh:class) of the " +
-                    "previous query step (subject) using the predicate (sh:path)";
+            return null;
         }
-        sb.append(content);
-        sb.append(DocumentationMarkup.CONTENT_END);
-        sb.append(DocumentationMarkup.SECTIONS_START);
-
-        DocumentationProvider.addKeyValueSection("Direction:", isReversed ? "Reverse" : "Forward", sb);
-
-        if (OppModel.INSTANCE.getProperty(fullyQualifiedUri) != null) {
-            String label = isReversed ? "Subject(s)" : "Object(s)";
-            DocumentationProvider.addKeyValueSection("Result", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(filtered, "<br>", false), sb);
-            if (unfiltered.size() != filtered.size()) {
-                DocumentationProvider.addKeyValueSection("Unfiltered:", TTLResourceUtil.describeUrisJoined(unfiltered, "<br>", false), sb);
-            }
-        }
-
-        Set<OntResource> previousStep = step.resolvePreviousStep();
-        if (!previousStep.isEmpty()) {
-            String label = isReversed ? "Object(s)" : "Subject(s)";
-            DocumentationProvider.addKeyValueSection("Previous step", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(previousStep, "<br>", false), sb);
-        }
-
-        sb.append(DocumentationMarkup.SECTIONS_END);
-        return sb.toString();
     }
 
     private static boolean isClassUri(ODTResolvableQualifiedUriStep step) {

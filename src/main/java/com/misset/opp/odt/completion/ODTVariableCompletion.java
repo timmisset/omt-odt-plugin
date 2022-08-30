@@ -103,8 +103,8 @@ public class ODTVariableCompletion extends CompletionContributor {
                 .withTypeText(TTLResourceUtil.describeUrisForLookupJoined(variable.resolve()));
 
         double priority = variable.getScope() == Variable.Scope.GLOBAL ?
-                CompletionPatterns.COMPLETION_PRIORITY.VariableGlobal.getValue() :
-                CompletionPatterns.COMPLETION_PRIORITY.VariableLocal.getValue();
+                CompletionPatterns.COMPLETION_PRIORITY.VARIABLE_GLOBAL.getValue() :
+                CompletionPatterns.COMPLETION_PRIORITY.VARIABLE_LOCAL.getValue();
         return PrioritizedLookupElement.withPriority(lookupElementBuilder, priority);
     }
 

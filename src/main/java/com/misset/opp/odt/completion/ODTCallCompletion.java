@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.Callable;
+import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.CALLABLE;
 import static com.misset.opp.odt.completion.ODTCommandCompletion.HAS_AT_SYMBOL;
 import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.CALLABLE_FILTER;
 import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.sharedContext;
@@ -32,7 +32,6 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .orElse(null);
     }
 
-    @NotNull
     private LookupElementBuilder createLookupElement(Callable callable, String callId) {
         StringBuilder signature = new StringBuilder();
         Map<Integer, String> parameterNames = callable.getParameterNames();
@@ -108,8 +107,8 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                              @NotNull ProcessingContext context) {
         LookupElement lookupElement = getLookupElement(callable);
         if (lookupElement != null) {
-            LookupElement withPriority = PrioritizedLookupElement.withPriority(lookupElement, Callable.getValue());
-            if (callable.isCommand() && context.get(HAS_AT_SYMBOL)) {
+            LookupElement withPriority = PrioritizedLookupElement.withPriority(lookupElement, CALLABLE.getValue());
+            if (callable.isCommand() && Boolean.TRUE.equals(context.get(HAS_AT_SYMBOL))) {
                 result.withPrefixMatcher("@" + result.getPrefixMatcher().getPrefix()).addElement(withPriority);
             } else {
                 result.addElement(withPriority);

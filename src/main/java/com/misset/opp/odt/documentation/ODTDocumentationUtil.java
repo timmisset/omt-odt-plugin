@@ -117,26 +117,7 @@ public class ODTDocumentationUtil {
                 final PsiElement prefix = curieReference.get().resolve();
                 final Matcher matcher = LOCAL_NAME.matcher(dataElement.getText());
                 if (matcher.find()) {
-                    Optional<String> uri = Optional.empty();
-                    if (prefix instanceof PsiPrefix) {
-                        uri = Optional.of(((PsiPrefix) prefix).getNamespace() + matcher.group(2));
-                    } else {
-                        PsiFile containingFile = docTag.getContainingFile();
-                        if (containingFile instanceof ODTFile) {
-                            uri = ((ODTFile) containingFile).getAvailableNamespaces()
-                                    .entrySet()
-                                    .stream()
-                                    .filter(entry -> entry.getValue().equals(matcher.group(1)))
-                                    .map(Map.Entry::getKey)
-                                    .map(s -> s + matcher.group(2))
-                                    .findFirst();
-                        }
-                    }
-                    return uri.map(OppModel.INSTANCE::toIndividuals)
-                            .orElse(new HashSet<>())
-                            .stream()
-                            .map(OntResource.class::cast)
-                            .collect(Collectors.toSet());
+                    return getType(docTag, prefix, matcher);
                 }
             } else {
                 // no curie reference, probably a primitive type:
@@ -149,5 +130,29 @@ public class ODTDocumentationUtil {
             }
         }
         return Collections.emptySet();
+    }
+
+    @NotNull
+    private static Set<OntResource> getType(@NotNull PsiDocTag docTag, PsiElement prefix, Matcher matcher) {
+        Optional<String> uri = Optional.empty();
+        if (prefix instanceof PsiPrefix) {
+            uri = Optional.of(((PsiPrefix) prefix).getNamespace() + matcher.group(2));
+        } else {
+            PsiFile containingFile = docTag.getContainingFile();
+            if (containingFile instanceof ODTFile) {
+                uri = ((ODTFile) containingFile).getAvailableNamespaces()
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> entry.getValue().equals(matcher.group(1)))
+                        .map(Map.Entry::getKey)
+                        .map(s -> s + matcher.group(2))
+                        .findFirst();
+            }
+        }
+        return uri.map(OppModel.INSTANCE::toIndividuals)
+                .orElse(new HashSet<>())
+                .stream()
+                .map(OntResource.class::cast)
+                .collect(Collectors.toSet());
     }
 }

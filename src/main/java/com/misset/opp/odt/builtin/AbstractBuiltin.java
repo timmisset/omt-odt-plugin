@@ -129,4 +129,9 @@ public abstract class AbstractBuiltin implements Callable {
     protected boolean hasFixedReturnType() {
         return false;
     }
+
+    @Override
+    public boolean isBuiltin() {
+        return true;
+    }
 }

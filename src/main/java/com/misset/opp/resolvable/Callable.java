@@ -169,4 +169,9 @@ public interface Callable extends ContextResolvable {
     default boolean callCompletionOnInsert() {
         return false;
     }
+
+    /**
+     * Returns true if the Callable is part of the Builtin/Global Callables
+     */
+    boolean isBuiltin();
 }

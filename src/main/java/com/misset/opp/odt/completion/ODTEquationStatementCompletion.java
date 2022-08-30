@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.patterns.StandardPatterns.and;
-import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.RootElement;
+import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.ROOT_ELEMENT;
 import static com.misset.opp.odt.completion.CompletionPatterns.FIRST_QUERY_STEP;
 import static com.misset.opp.odt.completion.CompletionPatterns.INSIDE_EQUATION_STATEMENT;
 
@@ -77,7 +77,7 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                                 resource -> TTLResourceUtil
                                         .getRootLookupElement(resource, "Class", availableNamespaces))
                         .filter(Objects::nonNull)
-                        .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, RootElement.getValue()))
+                        .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, ROOT_ELEMENT.getValue()))
                         .forEach(result::addElement);
             }
 
@@ -97,7 +97,7 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                                 resource -> TTLResourceUtil
                                         .getRootLookupElement(resource, "Instance", availableNamespaces))
                         .filter(Objects::nonNull)
-                        .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, RootElement.getValue()))
+                        .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, ROOT_ELEMENT.getValue()))
                         .forEach(result::addElement);
             }
 

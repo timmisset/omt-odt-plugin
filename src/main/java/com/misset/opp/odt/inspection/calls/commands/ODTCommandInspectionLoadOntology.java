@@ -9,11 +9,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.builtin.commands.LoadOntologyCommand;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgument;
-import com.misset.opp.omt.psi.OMTCallable;
+import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyMetaType;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * Code inspection for the specific Builtin Command LoadOntology which requires detailed information about the Call, rather than the
@@ -35,23 +38,18 @@ public class ODTCommandInspectionLoadOntology extends LocalInspectionTool {
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (element instanceof ODTCall) {
-                    if (((ODTCall) element).getCallable() != LoadOntologyCommand.INSTANCE) {
-                        return;
-                    }
-
+                if (element instanceof ODTCall && ((ODTCall) element).getCallable() == LoadOntologyCommand.INSTANCE) {
                     final ODTCall call = (ODTCall) element;
 
                     final ODTResolvableSignatureArgument signatureArgument = call.getSignatureArgument(0);
                     final ODTCall signatureCall = PsiTreeUtil.findChildOfType(signatureArgument, ODTCall.class);
                     if (signatureCall != null) {
-                        final Callable callable = signatureCall.getCallable();
-                        if (callable instanceof OMTCallable) {
-                            final OMTCallable omtCallable = (OMTCallable) callable;
-                            if (!omtCallable.getType().equals("Ontology")) {
-                                registerProblem(signatureCall);
-                            }
-                        } else {
+                        Boolean isValid = Optional.of(signatureCall)
+                                .map(PsiCall::getCallable)
+                                .map(Callable::getType)
+                                .map(OMTOntologyMetaType.ONTOLOGY::equals)
+                                .orElse(false);
+                        if (Boolean.FALSE.equals(isValid)) {
                             registerProblem(signatureCall);
                         }
                     }

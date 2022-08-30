@@ -2,7 +2,6 @@ package com.misset.opp.odt.psi.impl.variable;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.documentation.DocumentationMarkup;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
@@ -48,13 +47,13 @@ public abstract class ODTBaseVariable
         PsiNameIdentifierOwner,
         ODTDocumented,
         SupportsSafeDelete {
-    private final ODTVariableDelegate delegate;
+    private transient ODTVariableDelegate delegate;
     protected static final Key<CachedValue<Boolean>> IS_DECLARED_VARIABLE = new Key<>("IS_DECLARED_VARIABLE");
     protected static final Key<CachedValue<Set<OntResource>>> VARIABLE_TYPE = new Key<>("VARIABLE_TYPE");
 
     protected ODTBaseVariable(@NotNull ASTNode node) {
         super(node);
-        this.delegate = getDelegate();
+        setDelegate();
     }
 
     @Override
@@ -69,29 +68,31 @@ public abstract class ODTBaseVariable
 
     @Override
     public ODTVariableDelegate getDelegate() {
-        return ReadAction.compute(() -> {
-            /*
+        return delegate;
+    }
+
+    private void setDelegate() {
+        /*
                 VAR $variable;                          // wrapped in DECLARE_VARIABLE
                 VAR $variable = 'Hello world';          // wrapped first in VARIABLE_ASSIGNMENT
                 $variable = 'Hello brave new world';    // wrapped in VARIABLE_ASSIGNMENT
                 VAR $newVariable = $variable            // wrapped in VARIABLE_VALUE
                 @LOG($variable);                        // only VARIABLE
             */
-            PsiElement parentType = PsiTreeUtil.getParentOfType(this,
-                    ODTVariableValue.class,
-                    ODTVariableAssignment.class,
-                    ODTDefineParam.class,
-                    ODTDeclareVariable.class);
-            if (parentType instanceof ODTDeclareVariable) {
-                return new ODTDeclaredVariableDelegate(this);
-            } else if (parentType instanceof ODTVariableAssignment) {
-                return new ODTVariableAssignmentDelegate(this);
-            } else if (parentType instanceof ODTDefineParam) {
-                return new ODTDefineInputParamDelegate(this);
-            } else {
-                return new ODTUsageVariableDelegate(this);
-            }
-        });
+        PsiElement parentType = PsiTreeUtil.getParentOfType(this,
+                ODTVariableValue.class,
+                ODTVariableAssignment.class,
+                ODTDefineParam.class,
+                ODTDeclareVariable.class);
+        if (parentType instanceof ODTDeclareVariable) {
+            delegate = new ODTDeclaredVariableDelegate(this);
+        } else if (parentType instanceof ODTVariableAssignment) {
+            delegate = new ODTVariableAssignmentDelegate(this);
+        } else if (parentType instanceof ODTDefineParam) {
+            delegate = new ODTDefineInputParamDelegate(this);
+        } else {
+            delegate = new ODTUsageVariableDelegate(this);
+        }
     }
 
     public boolean isDeclaredVariable() {

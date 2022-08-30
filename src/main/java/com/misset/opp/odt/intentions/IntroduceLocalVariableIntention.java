@@ -52,7 +52,7 @@ public class IntroduceLocalVariableIntention implements IntentionAction, Refacto
     public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
         return Optional.ofNullable(getStatement(editor, file))
                 .map(statement -> PsiTreeUtil.getNonStrictParentOfType(statement, NON_STRICT_PARENTS))
-                .map(container -> container instanceof ODTScript)
+                .map(ODTScript.class::isInstance)
                 .orElse(false);
     }
 
@@ -112,7 +112,7 @@ public class IntroduceLocalVariableIntention implements IntentionAction, Refacto
                 .filter(distinctByStatement())
                 .collect(Collectors.toList());
 
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             getIntroducer(project, editor, statement, PsiElement.EMPTY_ARRAY, OccurrencesChooser.ReplaceChoice.ALL).startInplaceIntroduceTemplate();
         } else {
             List<PsiElement> occurrences = new ArrayList<>(elements);

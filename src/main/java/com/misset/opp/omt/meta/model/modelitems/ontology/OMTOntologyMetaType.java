@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 public class OMTOntologyMetaType extends OMTModelItemDelegateMetaType implements OMTDocumented {
     private static final OMTOntologyMetaType INSTANCE = new OMTOntologyMetaType();
+    public static final String ONTOLOGY = "Ontology";
 
     public static OMTOntologyMetaType getInstance() {
         return INSTANCE;
@@ -46,11 +47,11 @@ public class OMTOntologyMetaType extends OMTModelItemDelegateMetaType implements
 
     @Override
     public String getType() {
-        return "Ontology";
+        return ONTOLOGY;
     }
 
     @Override
     public String getDocumentationClass() {
-        return "Ontology";
+        return ONTOLOGY;
     }
 }

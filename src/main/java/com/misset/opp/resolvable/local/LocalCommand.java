@@ -66,4 +66,9 @@ public abstract class LocalCommand implements Callable {
     public String getSource() {
         return source;
     }
+
+    @Override
+    public boolean isBuiltin() {
+        return true;
+    }
 }

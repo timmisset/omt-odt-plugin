@@ -1,6 +1,7 @@
 package com.misset.opp.documentation;
 
 import com.intellij.openapi.project.Project;
+import com.misset.opp.exception.OMTODTPluginException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public abstract class ApiDocumentationService {
     public String readApiDocumentation(String contentPath) {
         Path path = getPathToApiDocument();
         if (!path.toFile().exists()) {
-            throw new RuntimeException("Could not find or process API.md, please correct this in the plugin settings\n" +
+            throw new OMTODTPluginException("Could not find or process API.md, please correct this in the plugin settings\n" +
                     "Provided value was: " + path);
         }
         try {

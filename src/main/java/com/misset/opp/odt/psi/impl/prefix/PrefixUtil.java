@@ -11,6 +11,10 @@ import java.util.Optional;
 
 public class PrefixUtil {
 
+    private PrefixUtil() {
+        // empty constructor
+    }
+
     private static final Logger LOGGER = Logger.getInstance(ODTResolvableCurieElementStep.class);
 
     public static String getFullyQualifiedUri(YAMLKeyValue prefix,
