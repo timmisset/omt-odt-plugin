@@ -40,10 +40,10 @@ public class FindSubjectsOperator extends AbstractBuiltInOperator {
         final int numberOfArguments = call.getNumberOfArguments();
         if (numberOfArguments == 1) {
             // only a predicate:
-            return OppModel.INSTANCE.filterSubjects(resources, call.resolveSignatureArgument(0));
+            return OppModel.getInstance().filterSubjects(resources, call.resolveSignatureArgument(0));
         } else if (numberOfArguments >= 2) {
             // predicate + object OR predicate + object + graphname (ignored)
-            return OppModel.INSTANCE.filterSubjects(resources,
+            return OppModel.getInstance().filterSubjects(resources,
                     call.resolveSignatureArgument(0),
                     call.resolveSignatureArgument(1));
         }
@@ -58,7 +58,7 @@ public class FindSubjectsOperator extends AbstractBuiltInOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 2) {
-            return Set.of(OppModelConstants.NAMED_GRAPH);
+            return Set.of(OppModelConstants.getNamedGraph());
         }
         return null;
     }

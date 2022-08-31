@@ -18,33 +18,33 @@ class CatchOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         // no known error state, return input + catch
         assertResolved(CatchOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE,
-                        OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance(),
+                        OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     void testResolveWithError() {
         // known error, return
         assertResolved(CatchOperator.INSTANCE,
-                Set.of(OppModelConstants.ERROR),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getError()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     void testArgumentTypesCompatibleTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
-        doReturn(Set.of(OppModelConstants.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()));
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
         CatchOperator.INSTANCE.specificValidation(call, holder);
         verify(holder, never()).registerProblem(any(), any(), any(ProblemHighlightType.class));
     }
 
     @Test
     void testArgumentTypesInCompatibleTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
-        doReturn(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()));
+        doReturn(Set.of(OppModelConstants.getXsdBooleanInstance())).when(call).resolvePreviousStep();
         CatchOperator.INSTANCE.specificValidation(call, holder);
         verify(holder).registerProblem(eq(call), startsWith("Possible outcomes are incompatible"), any(ProblemHighlightType.class));
     }

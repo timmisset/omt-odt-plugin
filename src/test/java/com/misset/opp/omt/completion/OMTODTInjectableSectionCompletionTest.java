@@ -80,7 +80,7 @@ class OMTODTInjectableSectionCompletionTest extends OMTCompletionTestCase {
     @Test
     void testHasGraphShapeCompletions() {
         OMTOntologyTestCase.initOntologyModel();
-        OppModelConstants.GRAPH_SHAPE.createIndividual("http://data/graphshape");
+        OppModelConstants.getGraphShape().createIndividual("http://data/graphshape");
         String content = "model:\n" +
                 "   GraphShapeHandler: !GraphShapeHandlers\n" +
                 "       id: test\n" +

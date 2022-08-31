@@ -23,7 +23,7 @@ public class OMTBooleanQueryType extends OMTQueryMetaType {
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,
                                        @NotNull ProblemsHolder holder) {
         final Set<OntResource> resolve = resolve(scalarValue);
-        if (resolve.isEmpty() || resolve.stream().allMatch(OppModelConstants.XSD_BOOLEAN_INSTANCE::equals)) {
+        if (resolve.isEmpty() || resolve.stream().allMatch(OppModelConstants.getXsdBooleanInstance()::equals)) {
             return;
         }
         holder.registerProblem(scalarValue, "Expected a query that resolves to a boolean");

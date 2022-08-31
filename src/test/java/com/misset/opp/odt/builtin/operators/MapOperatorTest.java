@@ -13,9 +13,9 @@ class MapOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(MapOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test

@@ -38,8 +38,8 @@ public class TTLStubFileElementType extends IStubFileElementType<TTLFileStub> {
     }
 
     @Override
-    public void serialize(TTLFileStub stub,
-                          @NotNull StubOutputStream dataStream) {
+    public void serialize(TTLFileStub stub, @NotNull StubOutputStream dataStream) {
+        // not used
     }
 
     @NotNull

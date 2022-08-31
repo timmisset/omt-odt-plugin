@@ -24,7 +24,7 @@ public abstract class ODTResolvableQueryForwardStep extends ODTResolvableQualifi
         final String fullyQualifiedUri = getFullyQualifiedUri();
         if(fullyQualifiedUri == null) { return Collections.emptySet(); }
 
-        final OppModel model = OppModel.INSTANCE;
+        final OppModel model = OppModel.getInstance();
         if (isRootStep()) {
             // when the path start with a root curie, resolve the curie and return it:
             final OntResource resource = model.getOntResource(fullyQualifiedUri, getProject());

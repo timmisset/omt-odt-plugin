@@ -26,7 +26,7 @@ public class GetErrorState extends LocalCommand {
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+        return Set.of(OppModelConstants.getXsdStringInstance());
     }
 
     @Override

@@ -131,7 +131,7 @@ public interface Callable extends ContextResolvable {
      * Should return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE) when any input is acceptable
      */
     default Set<OntResource> getAcceptableArgumentType(int index, PsiCall call) {
-        return getParameterTypes().getOrDefault(index, Set.of(OppModelConstants.OWL_THING_INSTANCE));
+        return getParameterTypes().getOrDefault(index, Set.of(OppModelConstants.getOwlThingInstance()));
     }
 
     /**
@@ -139,7 +139,7 @@ public interface Callable extends ContextResolvable {
      * Should return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE) when any input is acceptable
      */
     default Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.OWL_THING_INSTANCE);
+        return Set.of(OppModelConstants.getOwlThingInstance());
     }
 
     default HashMap<Integer, Set<OntResource>> mapCallableParameters(List<Set<OntResource>> resources) {

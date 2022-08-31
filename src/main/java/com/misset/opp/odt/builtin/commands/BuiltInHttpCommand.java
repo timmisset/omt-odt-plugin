@@ -9,11 +9,11 @@ public abstract class BuiltInHttpCommand extends AbstractBuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.JSON_OBJECT;
+        return OppModelConstants.getJsonObject();
     }
 
     @Override
     public Set<OntResource> getSecondReturnArgument() {
-        return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
+        return Set.of(OppModelConstants.getXsdIntegerInstance());
     }
 }

@@ -1,8 +1,7 @@
 package com.misset.opp.ttl.model;
 
-import com.intellij.openapi.components.Service;
 import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.io.FileUtil;
 import com.misset.opp.ttl.TTLFileType;
 import com.misset.opp.ttl.model.constants.OWL;
@@ -18,24 +17,28 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
 
-@Service
 /*
   Helper class to generate a OntologyModel (Apache Jena) with all imports recursively processed as SubModels
   The default import handler doesn't work with the current setup of the Opp Model
  */
 public final class OppModelLoader {
 
+    private static final OppModelLoader INSTANCE = new OppModelLoader();
+    private Collection<File> modelFiles = Collections.emptyList();
+
     private static final String TTL = "TTL";
     private static final String MISSET_IT_NL = "https://misset-it.nl";
     private static final String REFERENTIEDATA = "http://ontologie.politie.nl/referentiedata";
     private final HashMap<Resource, OntModel> ontologies = new HashMap<>();
-    private final List<Resource> processed = new ArrayList<>();
+    private ProgressIndicator indicator = ProgressIndicatorProvider.getGlobalProgressIndicator();
+    private OppModel currentModel;
 
-    private static OntModel model;
-    private static Collection<File> modelFiles = Collections.emptyList();
-    private ProgressIndicator indicator = ProgressManager.getGlobalProgressIndicator();
+    private OppModelLoader() {
 
-    public OppModelLoader() {
+    }
+
+    public static OppModelLoader getInstance() {
+        return INSTANCE;
     }
 
     public OppModel read(File file) {
@@ -44,13 +47,18 @@ public final class OppModelLoader {
 
     public OppModel read(File file, ProgressIndicator indicator) {
         this.indicator = indicator;
-        model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        init(file);
-        return new OppModel(model);
+        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        init(file, model);
+        currentModel = new OppModel(model);
+        return currentModel;
     }
 
-    public static Collection<File> getModelFiles() {
+    public Collection<File> getModelFiles() {
         return modelFiles;
+    }
+
+    public OppModel getCurrentModel() {
+        return currentModel;
     }
 
     private void setIndicatorText(String text) {
@@ -67,7 +75,7 @@ public final class OppModelLoader {
         indicator.setText2(text);
     }
 
-    private void init(File rootFile) {
+    private void init(File rootFile, OntModel model) {
         if (!rootFile.exists()) {
             return;
         }
@@ -77,28 +85,31 @@ public final class OppModelLoader {
         modelFiles
                 .stream()
                 .filter(file -> !FileUtil.filesEqual(file, rootFile))
-                .peek(file -> setIndicatorText2(file.getName()))
+                .map(file -> {
+                    setIndicatorText2(file.getName());
+                    return file;
+                })
                 .map(this::readFile)
                 .filter(Objects::nonNull)
                 .map(this::getSubmodel)
                 .forEach(subModel -> ontologies.put(getOntologyResource(subModel), subModel));
         ontologies.keySet().forEach(resource -> model.addLoadedImport(resource.getURI()));
         model.read(readFile(rootFile), MISSET_IT_NL, TTL);
-        processImports(model);
-        processData();
+        processImports(model, new ArrayList<>());
+        processData(model);
     }
 
-    private void processImports(OntModel model) {
+    private void processImports(OntModel model, List<Resource> processed) {
         final Resource ontologyResource = getOntologyResource(model);
         // add first to prevent recursion
         processed.add(ontologyResource);
         final Property imports = model.createProperty(OWL.IMPORTS.getUri());
         model.getOntResource(ontologyResource)
                 .listProperties(imports)
-                .forEach(statement -> bindImports(model, statement));
+                .forEach(statement -> bindImports(model, statement, processed));
     }
 
-    private void processData() {
+    private void processData(OntModel model) {
         // todo: replace with configuration
         final Resource modelResource = model.getResource(REFERENTIEDATA);
         // the data files are loaded separately from the model, they are not part of the ontology import tree
@@ -108,14 +119,14 @@ public final class OppModelLoader {
         }
     }
 
-    private void bindImports(OntModel model, Statement statement) {
+    private void bindImports(OntModel model, Statement statement, List<Resource> processed) {
         Optional.ofNullable(statement.getObject())
                 .map(RDFNode::asResource)
                 .map(ontologies::get)
                 .filter(subModel -> !processed.contains(getOntologyResource(subModel)))
                 .ifPresent(subModel -> {
                     model.addSubModel(subModel);
-                    processImports(subModel);
+                    processImports(subModel, processed);
                 });
     }
 
@@ -127,8 +138,8 @@ public final class OppModelLoader {
 
     private Resource getOntologyResource(OntModel model) {
         final Property rdtType = model.createProperty(RDF.TYPE.getUri());
-        final Property Ontology = model.createProperty(OWL.ONTOLOGY.getUri());
-        final ResIterator resIterator = model.listSubjectsWithProperty(rdtType, Ontology);
+        final Property ontology = model.createProperty(OWL.ONTOLOGY.getUri());
+        final ResIterator resIterator = model.listSubjectsWithProperty(rdtType, ontology);
         return resIterator.hasNext() ? resIterator.next() : model.createResource();
     }
 

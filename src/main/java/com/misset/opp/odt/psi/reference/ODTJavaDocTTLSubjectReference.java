@@ -35,7 +35,7 @@ public class ODTJavaDocTTLSubjectReference extends PsiReferenceBase.Poly<PsiDocT
     public OntClass getClassFromModel() {
         return ODTDocumentationUtil.getTypeFromDocTag(getElement(), position)
                 .stream()
-                .map(OppModel.INSTANCE::toClass)
+                .map(OppModel.getInstance()::toClass)
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);

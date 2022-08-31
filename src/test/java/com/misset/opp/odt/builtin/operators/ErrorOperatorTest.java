@@ -17,7 +17,7 @@ class ErrorOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(ErrorOperator.INSTANCE, OppModelConstants.ERROR);
+        assertResolved(ErrorOperator.INSTANCE, OppModelConstants.getError());
     }
 
     @Test
@@ -33,13 +33,13 @@ class ErrorOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(ErrorOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(ErrorOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(ErrorOperator.INSTANCE, 1);
     }
 
     @Test
     void testSpecificValidationNoErrorWhenValid() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()));
 
         ErrorOperator.INSTANCE.specificValidation(call, holder);
         verify(holder, never()).registerProblem(any(PsiElement.class), anyString(), eq(ProblemHighlightType.ERROR));
@@ -47,7 +47,7 @@ class ErrorOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationErrorWhenNotValid() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
 
         ErrorOperator.INSTANCE.specificValidation(call, holder);
         verify(holder, times(1)).registerProblem(any(PsiElement.class), anyString(), eq(ProblemHighlightType.ERROR));

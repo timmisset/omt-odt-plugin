@@ -22,7 +22,7 @@ public abstract class BuiltInBooleanOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.XSD_BOOLEAN_INSTANCE;
+        return OppModelConstants.getXsdBooleanInstance();
     }
 
     @Override

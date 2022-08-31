@@ -58,9 +58,9 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                             .stream()
                             .map(RDFNode::asResource)
                             .collect(Collectors.toSet());
-                    Set<Property> predicates = OppModel.INSTANCE.listPredicates(subject)
+                    Set<Property> predicates = OppModel.getInstance().listPredicates(subject)
                             .stream()
-                            .filter(property -> !OppModelConstants.CLASS_MODEL_PROPERTIES.contains(property))
+                            .filter(property -> !OppModelConstants.getClassModelProperties().contains(property))
                             .filter(property -> !existingPredicates.contains(property))
                             .collect(Collectors.toSet());
 

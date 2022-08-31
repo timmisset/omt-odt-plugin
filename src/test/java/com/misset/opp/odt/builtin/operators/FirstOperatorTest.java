@@ -11,15 +11,15 @@ class FirstOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(FirstOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertResolved(FirstOperator.INSTANCE, OppModelConstants.XSD_DATE, OppModelConstants.XSD_DATE);
-        assertResolved(FirstOperator.INSTANCE, OppModelConstants.XSD_INTEGER, OppModelConstants.XSD_INTEGER);
+        assertResolved(FirstOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdBooleanInstance());
+        assertResolved(FirstOperator.INSTANCE, OppModelConstants.getXsdDate(), OppModelConstants.getXsdDate());
+        assertResolved(FirstOperator.INSTANCE, OppModelConstants.getXsdInteger(), OppModelConstants.getXsdInteger());
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(FirstOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertInvalidArgument(FirstOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(FirstOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertInvalidArgument(FirstOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
@@ -35,7 +35,7 @@ class FirstOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(FirstOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(FirstOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(FirstOperator.INSTANCE, 1);
     }
 }

@@ -7,7 +7,7 @@ public abstract class BuiltInIntegerOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.XSD_INTEGER_INSTANCE;
+        return OppModelConstants.getXsdIntegerInstance();
     }
 
     @Override

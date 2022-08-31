@@ -34,18 +34,18 @@ class MoveToGraphCommandTest extends BaseBuiltinTest {
     void testArgumentTypes() {
         testArgument(MoveToGraphCommand.INSTANCE,
                 0,
-                OppModelConstants.XSD_STRING_INSTANCE,
+                OppModelConstants.getXsdStringInstance(),
                 TTLValidationUtil.ERROR_MESSAGE_INSTANCES,
-                OppModelConstants.XSD_STRING);
+                OppModelConstants.getXsdString());
         testArgument(MoveToGraphCommand.INSTANCE,
                 1,
-                OppModelConstants.MEDEWERKER_GRAPH,
+                OppModelConstants.getMedewerkerGraph(),
                 TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(MoveToGraphCommand.INSTANCE, 1, OppModelConstants.NAMED_GRAPH);
+        assertGetAcceptableArgumentType(MoveToGraphCommand.INSTANCE, 1, OppModelConstants.getNamedGraph());
         assertGetAcceptableArgumentTypeIsNull(MoveToGraphCommand.INSTANCE, 0);
     }
 }

@@ -21,7 +21,7 @@ class ODTResolvableQueryArrayTest extends OMTOntologyTestCase {
     void testPropertiesResolve() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / ont:booleanPredicate | ont:classPredicate");
         Assertions.assertTrue(resources.contains(createResource("ClassBSub_INSTANCE")));
-        Assertions.assertTrue(resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
     }
 
 }

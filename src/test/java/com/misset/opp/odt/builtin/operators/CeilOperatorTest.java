@@ -11,15 +11,15 @@ class CeilOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(CeilOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
-        assertResolved(CeilOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertResolved(CeilOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance(), OppModelConstants.getXsdIntegerInstance());
+        assertResolved(CeilOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testArgumentTypes() {
-        assertValidInput(CeilOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
-        assertInvalidInput(CeilOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
-        assertInvalidInput(CeilOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertValidInput(CeilOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
+        assertInvalidInput(CeilOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertInvalidInput(CeilOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
     }
 
     @Test
@@ -35,6 +35,6 @@ class CeilOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(CeilOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
+        assertGetAcceptableInputType(CeilOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
     }
 }

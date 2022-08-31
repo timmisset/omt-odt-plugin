@@ -13,10 +13,10 @@ import java.util.Set;
 public abstract class BuiltinMathOperator extends AbstractBuiltInOperator {
 
     protected static final Set<OntResource> validInputs =
-            Set.of(OppModelConstants.XSD_NUMBER_INSTANCE,
-                    OppModelConstants.XSD_DATE_INSTANCE,
-                    OppModelConstants.XSD_DATETIME_INSTANCE,
-                    OppModelConstants.XSD_DURATION_INSTANCE);
+            Set.of(OppModelConstants.getXsdNumberInstance(),
+                    OppModelConstants.getXsdDateInstance(),
+                    OppModelConstants.getXsdDatetimeInstance(),
+                    OppModelConstants.getXsdDurationInstance());
     protected static final TriConsumer<Integer, PsiCall, ProblemsHolder> validator = (i, call, holder) -> {
         Set<OntResource> ontResources = call.resolveSignatureArgument(i);
         TTLValidationUtil.validateRequiredTypes(validInputs, ontResources, holder, call.getCallSignatureArgumentElement(i));
@@ -35,10 +35,10 @@ public abstract class BuiltinMathOperator extends AbstractBuiltInOperator {
             values.addAll(call.resolveSignatureArgument(0));
             values.addAll(call.resolveSignatureArgument(1));
         }
-        if (values.stream().allMatch(OppModelConstants.XSD_INTEGER_INSTANCE::equals)) {
-            return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
+        if (values.stream().allMatch(OppModelConstants.getXsdIntegerInstance()::equals)) {
+            return Set.of(OppModelConstants.getXsdIntegerInstance());
         } else {
-            return Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
+            return Set.of(OppModelConstants.getXsdDecimalInstance());
         }
     }
 

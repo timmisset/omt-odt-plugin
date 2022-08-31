@@ -13,27 +13,27 @@ class PlusOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(PlusOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance())
         );
     }
 
     @Test
     protected void testResolveDecimal() {
         assertResolved(PlusOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
-                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE)
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdDecimalInstance()),
+                Set.of(OppModelConstants.getXsdDecimalInstance())
         );
     }
 
     @Test
     protected void testResolveDecimalLeading() {
         assertResolved(PlusOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
-                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.getXsdDecimalInstance()),
+                Set.of(OppModelConstants.getXsdDecimalInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance())
         );
     }
 

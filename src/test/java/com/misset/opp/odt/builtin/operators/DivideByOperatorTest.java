@@ -11,23 +11,23 @@ class DivideByOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(DivideByOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
-        assertResolved(DivideByOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
+        assertResolved(DivideByOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdDecimalInstance());
+        assertResolved(DivideByOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance(), OppModelConstants.getXsdDecimalInstance());
     }
 
     @Test
     void testValidInputs() {
-        assertValidInput(DivideByOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
-        assertValidInput(DivideByOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
-        assertValidInput(DivideByOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertValidInput(DivideByOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
+        assertValidInput(DivideByOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance());
+        assertValidInput(DivideByOperator.INSTANCE, OppModelConstants.getXsdNumberInstance());
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(DivideByOperator.INSTANCE, 0, OppModelConstants.XSD_DECIMAL_INSTANCE);
-        assertValidArgument(DivideByOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
-        assertValidArgument(DivideByOperator.INSTANCE, 0, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertInvalidArgument(DivideByOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NUMBER);
+        assertValidArgument(DivideByOperator.INSTANCE, 0, OppModelConstants.getXsdDecimalInstance());
+        assertValidArgument(DivideByOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
+        assertValidArgument(DivideByOperator.INSTANCE, 0, OppModelConstants.getXsdNumberInstance());
+        assertInvalidArgument(DivideByOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_NUMBER);
     }
 
     @Test
@@ -43,13 +43,13 @@ class DivideByOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(DivideByOperator.INSTANCE, 0, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableArgumentType(DivideByOperator.INSTANCE, 0, OppModelConstants.getXsdNumberInstance());
         assertGetAcceptableArgumentTypeIsNull(DivideByOperator.INSTANCE, 1);
     }
 
     @Test
     void testGetAcceptableInput() {
-        assertGetAcceptableInputType(DivideByOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableInputType(DivideByOperator.INSTANCE, OppModelConstants.getXsdNumberInstance());
     }
 
 }

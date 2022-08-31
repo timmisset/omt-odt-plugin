@@ -26,7 +26,7 @@ class OppModelLoaderTest {
 
     @Test
     void testLoadModelWithRecursion() {
-        final OntModel ontModel = new OppModelLoader()
+        final OntModel ontModel = OppModelLoader.getInstance()
                 .read(getRootPath("model-with-recursion", "root.ttl"))
                 .getShaclModel();
         Assertions.assertEquals(1, ontModel.listSubModels().toList().size());
@@ -36,14 +36,14 @@ class OppModelLoaderTest {
     @Ignore("Add a full ontology to the test folder before enabling this test, not included in the repo")
     void testLoadFullOntology() {
         Assertions.assertDoesNotThrow(() -> {
-            new OppModelLoader()
+            OppModelLoader.getInstance()
                     .read(getRootPath("full-opp-model", "root.ttl"))
                     .getShaclModel();
         });
     }
 
     private OntModel getOntologyModel() {
-        return new OppModelLoader().read(getRootPath()).getShaclModel();
+        return OppModelLoader.getInstance().read(getRootPath()).getShaclModel();
     }
 
     private File getRootPath() {

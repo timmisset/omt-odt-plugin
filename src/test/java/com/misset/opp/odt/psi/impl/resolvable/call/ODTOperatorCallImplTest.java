@@ -47,7 +47,7 @@ class ODTOperatorCallImplTest extends OMTOntologyTestCase {
                 "   DEFINE QUERY query => 'string value';\n" +
                 "   DEFINE QUERY <caret>callingQuery => query;\n");
         assertContainsElements(resolveQueryAtCaret(content),
-                OppModelConstants.XSD_STRING_INSTANCE);
+                OppModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -56,18 +56,18 @@ class ODTOperatorCallImplTest extends OMTOntologyTestCase {
                 "   DEFINE QUERY query($param) => $param;\n" +
                 "   DEFINE QUERY <caret>callingQuery => query('test');\n");
         assertContainsElements(resolveQueryAtCaret(content),
-                OppModelConstants.XSD_STRING_INSTANCE);
+                OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testResolveOperatorCallWithInput() {
-        Assertions.assertEquals(OppModelConstants.XSD_STRING_INSTANCE,
+        Assertions.assertEquals(OppModelConstants.getXsdStringInstance(),
                 resolveQueryStatementToSingleResult("'test' / FIRST"));
     }
 
     @Test
     void testResolveOperatorCallWithCallContent() {
-        Assertions.assertEquals(OppModelConstants.XSD_BOOLEAN_INSTANCE,
+        Assertions.assertEquals(OppModelConstants.getXsdBooleanInstance(),
                 resolveQueryStatementToSingleResult("'test' / MAP(true)"));
     }
 }

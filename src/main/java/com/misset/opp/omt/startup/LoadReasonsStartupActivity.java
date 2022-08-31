@@ -71,7 +71,7 @@ public class LoadReasonsStartupActivity implements StartupActivity {
     }
 
     private static Optional<VirtualFile> getReasonFolder(Project project) {
-        return Optional.of(SettingsState.getInstance(project).reasonsFolder)
+        return Optional.of(SettingsState.getInstance(project).getReasonsFolder())
                 .filter(s -> !s.isBlank())
                 .map(Path::of)
                 .map(VirtualFileManager.getInstance()::findFileByNioPath);

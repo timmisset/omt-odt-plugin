@@ -10,9 +10,9 @@ class LogOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(LogOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertResolved(LogOperator.INSTANCE, OppModelConstants.XSD_DATE, OppModelConstants.XSD_DATE);
-        assertResolved(LogOperator.INSTANCE, OppModelConstants.XSD_INTEGER, OppModelConstants.XSD_INTEGER);
+        assertResolved(LogOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdBooleanInstance());
+        assertResolved(LogOperator.INSTANCE, OppModelConstants.getXsdDate(), OppModelConstants.getXsdDate());
+        assertResolved(LogOperator.INSTANCE, OppModelConstants.getXsdInteger(), OppModelConstants.getXsdInteger());
     }
 
     @Test

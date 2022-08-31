@@ -24,6 +24,7 @@ import static com.misset.opp.ttl.psi.TTLTypes.*;
 public class TTLColorAnnotator implements Annotator {
 
     @Override
+    @SuppressWarnings("java:S2637")
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         IElementType elementType = element.getNode().getElementType();
         if (elementType == IRI) {

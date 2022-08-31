@@ -10,7 +10,7 @@ class BlankNodeOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(BlankNodeOperator.INSTANCE, OppModelConstants.BLANK_NODE);
+        assertResolved(BlankNodeOperator.INSTANCE, OppModelConstants.getBlankNode());
     }
 
     @Test

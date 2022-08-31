@@ -13,12 +13,12 @@ class TypeOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TypeOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_DATE_INSTANCE),
-                Set.of(OppModelConstants.XSD_DATE));
+                Set.of(OppModelConstants.getXsdDateInstance()),
+                Set.of(OppModelConstants.getXsdDate()));
 
         assertResolved(TypeOperator.INSTANCE,
-                Set.of(OppModelConstants.MEDEWERKER_GRAPH),
-                Set.of(OppModelConstants.IRI));
+                Set.of(OppModelConstants.getMedewerkerGraph()),
+                Set.of(OppModelConstants.getIri()));
     }
 
     @Test

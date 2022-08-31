@@ -10,12 +10,12 @@ class ODTResolvableSchemalessIriStepTest extends OMTOntologyTestCase {
     @Test
     void testSchemalessIriInstance() {
         final OntResource resource = resolveQueryStatementToSingleResult("/ont:ClassA / ^rdf:type / <booleanPredicate>");
-        Assertions.assertEquals(OppModelConstants.XSD_BOOLEAN_INSTANCE, resource);
+        Assertions.assertEquals(OppModelConstants.getXsdBooleanInstance(), resource);
     }
 
     @Test
     void testSchemalessIriClass() {
         final OntResource resource = resolveQueryStatementToSingleResult("/ont:ClassA / <booleanPredicate>");
-        Assertions.assertEquals(OppModelConstants.XSD_BOOLEAN, resource);
+        Assertions.assertEquals(OppModelConstants.getXsdBoolean(), resource);
     }
 }

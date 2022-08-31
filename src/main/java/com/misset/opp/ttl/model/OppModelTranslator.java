@@ -10,6 +10,11 @@ import org.apache.jena.rdf.model.Statement;
 import java.util.*;
 
 public class OppModelTranslator {
+
+    private OppModelTranslator() {
+        // empty constructor
+    }
+
     private static final Logger logger = Logger.getInstance(OppModelTranslator.class);
     private static OppModel oppmodel;
     private static OppModelCache modelCache;
@@ -41,7 +46,7 @@ public class OppModelTranslator {
 
     private static Set<OntClass> listShaclClasses() {
         return shaclModel
-                .listSubjectsWithProperty(OppModelConstants.RDF_TYPE, OppModelConstants.OWL_CLASS)
+                .listSubjectsWithProperty(OppModelConstants.getRdfType(), OppModelConstants.getOwlClass())
                 .mapWith(resource -> shaclModel.createClass(resource.getURI()))
                 .toSet();
     }
@@ -50,7 +55,7 @@ public class OppModelTranslator {
         return shaclModel
                 .listStatements()
                 .filterKeep(statement -> statement.getPredicate()
-                        .equals(OppModelConstants.RDF_TYPE) && ontologyModel.getOntClass(statement.getObject().asResource().getURI()) != null)
+                        .equals(OppModelConstants.getRdfType()) && ontologyModel.getOntClass(statement.getObject().asResource().getURI()) != null)
                 .mapWith(statement -> shaclModel.getIndividual(statement.getSubject().getURI()))
                 .filterKeep(OntResource::isIndividual)
                 .toSet();
@@ -59,8 +64,8 @@ public class OppModelTranslator {
     private static Set<Resource> listGraphshapes() {
         return shaclModel
                 .listStatements()
-                .filterKeep(statement -> statement.getPredicate().equals(OppModelConstants.RDF_TYPE) && statement.getObject()
-                        .equals(OppModelConstants.GRAPH_SHAPE))
+                .filterKeep(statement -> statement.getPredicate().equals(OppModelConstants.getRdfType()) && statement.getObject()
+                        .equals(OppModelConstants.getGraphShape()))
                 .mapWith(Statement::getSubject)
                 .toSet();
     }
@@ -70,20 +75,20 @@ public class OppModelTranslator {
         final OntClass simpleModelClass = oppmodel.createClass(ontClass.getURI(), ontologyModel);
         // create one individual per class, this is used as a mock when traversing the paths
         // and discriminate between classes and instances of the class being visited.
-        final List<Statement> superClasses = ontClass.listProperties(OppModelConstants.RDFS_SUBCLASS_OF).toList();
+        final List<Statement> superClasses = ontClass.listProperties(OppModelConstants.getRdfsSubclassOf()).toList();
         if (superClasses.isEmpty()) {
             // base class in the model, subclass of Owl:Thing
-            simpleModelClass.addSuperClass(OppModelConstants.OWL_THING_CLASS);
+            simpleModelClass.addSuperClass(OppModelConstants.getOwlThingClass());
         } else {
             superClasses.forEach(statement -> simpleModelClass.addSuperClass(statement.getObject().asResource()));
         }
 
         // translate the SHACL PATH properties into simple predicate-object statements for this class
-        ontClass.listProperties(OppModelConstants.SHACL_PROPERTY)
+        ontClass.listProperties(OppModelConstants.getShaclProperty())
                 .mapWith(Statement::getObject)
                 .mapWith(RDFNode::asResource)
-                .filterKeep(resource -> resource.getProperty(OppModelConstants.RDF_TYPE).getObject().equals(OppModelConstants.SHACL_PROPERYSHAPE))
-                .forEach((shaclPropertyShape) -> getSimpleResourceStatement(ontologyModel, simpleModelClass, shaclPropertyShape));
+                .filterKeep(resource -> resource.getProperty(OppModelConstants.getRdfType()).getObject().equals(OppModelConstants.getShaclProperyshape()))
+                .forEach(shaclPropertyShape -> getSimpleResourceStatement(ontologyModel, simpleModelClass, shaclPropertyShape));
 
         modelCache.cache(simpleModelClass);
 
@@ -106,19 +111,19 @@ public class OppModelTranslator {
 
     private static void loadGraphShapes(OntModel ontologyModel, Resource resource) {
         if (ontologyModel.getOntResource(resource.getURI()) == null) {
-            oppmodel.createIndividual(OppModelConstants.GRAPH_SHAPE, resource.getURI());
+            oppmodel.createIndividual(OppModelConstants.getGraphShape(), resource.getURI());
         }
     }
 
     private static void getSimpleResourceStatement(OntModel ontologyModel,
                                                    OntClass subject,
                                                    Resource shaclPropertyShape) {
-        if (!shaclPropertyShape.hasProperty(OppModelConstants.SHACL_PATH)) {
+        if (!shaclPropertyShape.hasProperty(OppModelConstants.getShaclPath())) {
             return;
         }
 
         // the predicate is extracted from the SHACL PATH and translated into a model property
-        final Property predicate = ontologyModel.createProperty(shaclPropertyShape.getProperty(OppModelConstants.SHACL_PATH)
+        final Property predicate = ontologyModel.createProperty(shaclPropertyShape.getProperty(OppModelConstants.getShaclPath())
                 .getObject()
                 .asResource()
                 .getURI());
@@ -132,8 +137,8 @@ public class OppModelTranslator {
         modelCache.cache(subject, predicate, object.asResource());
 
         // cardinality:
-        int min = getShaclPropertyInteger(shaclPropertyShape, OppModelConstants.SHACL_MINCOUNT);
-        int max = getShaclPropertyInteger(shaclPropertyShape, OppModelConstants.SHACL_MAXCOUNT);
+        int min = getShaclPropertyInteger(shaclPropertyShape, OppModelConstants.getShaclMincount());
+        int max = getShaclPropertyInteger(shaclPropertyShape, OppModelConstants.getShaclMaxcount());
         if (min == 1) {
             addToMapCollection(required, subject, predicate);
         }
@@ -145,10 +150,10 @@ public class OppModelTranslator {
     }
 
     private static RDFNode getObjectDefinition(Resource shaclPropertyShape) {
-        if (shaclPropertyShape.hasProperty(OppModelConstants.SHACL_CLASS)) {
-            return shaclPropertyShape.getProperty(OppModelConstants.SHACL_CLASS).getObject();
-        } else if (shaclPropertyShape.hasProperty(OppModelConstants.SHACL_DATATYPE)) {
-            return shaclPropertyShape.getProperty(OppModelConstants.SHACL_DATATYPE).getObject();
+        if (shaclPropertyShape.hasProperty(OppModelConstants.getShaclClass())) {
+            return shaclPropertyShape.getProperty(OppModelConstants.getShaclClass()).getObject();
+        } else if (shaclPropertyShape.hasProperty(OppModelConstants.getShaclDatatype())) {
+            return shaclPropertyShape.getProperty(OppModelConstants.getShaclDatatype()).getObject();
         }
         return null;
     }

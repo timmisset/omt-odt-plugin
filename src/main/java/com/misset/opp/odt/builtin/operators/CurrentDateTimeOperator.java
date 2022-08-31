@@ -21,7 +21,7 @@ public class CurrentDateTimeOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.XSD_DATETIME_INSTANCE;
+        return OppModelConstants.getXsdDatetimeInstance();
     }
 
     @Override

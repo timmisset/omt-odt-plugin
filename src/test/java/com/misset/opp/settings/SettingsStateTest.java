@@ -14,7 +14,7 @@ class SettingsStateTest {
     @BeforeEach
     void setUp() {
         settingsState = new SettingsState();
-        settingsState.tsConfigPath = Paths.get("src", "test", "resources", "tsconfig.base.json").toAbsolutePath().toString();
+        settingsState.setTsConfigPath(Paths.get("src", "test", "resources", "tsconfig.base.json").toAbsolutePath().toString());
     }
 
     @Test

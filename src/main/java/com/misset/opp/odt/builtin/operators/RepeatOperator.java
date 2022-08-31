@@ -48,7 +48,7 @@ public class RepeatOperator extends AbstractBuiltInOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 1 || index == 2) {
-            return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE);
+            return Set.of(OppModelConstants.getXsdNumberInstance());
         }
         return null;
     }

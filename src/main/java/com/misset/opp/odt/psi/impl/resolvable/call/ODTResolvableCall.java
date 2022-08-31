@@ -17,6 +17,7 @@ import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperat
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -61,7 +62,7 @@ public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODT
     @Override
     public @NotNull Set<OntResource> resolve() {
         return CachedValuesManager.getCachedValue(this, RESOLVED, () -> {
-            Context context = Context.fromCall(this);
+            Context context = ContextFactory.fromCall(this);
             final Set<OntResource> resources = Optional.ofNullable(getCallable())
                     .map(callable -> callable.resolve(context))
                     .orElse(Collections.emptySet());

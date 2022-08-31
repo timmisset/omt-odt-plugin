@@ -11,14 +11,14 @@ class ClearGraphCommandTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(ClearGraphCommand.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertReturns(ClearGraphCommand.INSTANCE, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testArgumentTypes() {
         testArgument(ClearGraphCommand.INSTANCE,
                 0,
-                OppModelConstants.MEDEWERKER_GRAPH,
+                OppModelConstants.getMedewerkerGraph(),
                 TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
@@ -34,7 +34,7 @@ class ClearGraphCommandTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(ClearGraphCommand.INSTANCE, 0, OppModelConstants.NAMED_GRAPH);
+        assertGetAcceptableArgumentType(ClearGraphCommand.INSTANCE, 0, OppModelConstants.getNamedGraph());
         assertGetAcceptableArgumentTypeIsNull(ClearGraphCommand.INSTANCE, 1);
     }
 

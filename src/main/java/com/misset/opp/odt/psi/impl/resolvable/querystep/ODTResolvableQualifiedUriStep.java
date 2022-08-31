@@ -60,7 +60,7 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
     private void inspectIri(ProblemsHolder holder) {
         final String fullyQualifiedUri = getFullyQualifiedUri();
         if (fullyQualifiedUri != null) {
-            final Resource resource = OppModel.INSTANCE.getOntResource(fullyQualifiedUri, getProject());
+            final Resource resource = OppModel.getInstance().getOntResource(fullyQualifiedUri, getProject());
             if (resource == null) {
                 // unknown Iri
                 holder.registerProblem(

@@ -45,7 +45,7 @@ class OMTParamMetaTypeOntologyTest extends OMTOntologyTestCase {
             final ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
             final Set<OntResource> resolve = defineStatement.resolve();
             Assertions.assertFalse(resolve.isEmpty());
-            Assertions.assertEquals(OppModelConstants.XSD_STRING_INSTANCE, resolve.toArray()[0]);
+            Assertions.assertEquals(OppModelConstants.getXsdStringInstance(), resolve.toArray()[0]);
         });
     }
 
@@ -64,7 +64,7 @@ class OMTParamMetaTypeOntologyTest extends OMTOntologyTestCase {
             final ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
             final Set<OntResource> resolve = defineStatement.resolve();
             Assertions.assertFalse(resolve.isEmpty());
-            Assertions.assertEquals(OppModelConstants.XSD_STRING_INSTANCE, resolve.toArray()[0]);
+            Assertions.assertEquals(OppModelConstants.getXsdStringInstance(), resolve.toArray()[0]);
         });
     }
 

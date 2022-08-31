@@ -141,7 +141,7 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     @Override
     public Set<OntResource> getSecondReturnArgument() {
         // $committed value
-        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.getXsdBooleanInstance());
     }
 
     @Override

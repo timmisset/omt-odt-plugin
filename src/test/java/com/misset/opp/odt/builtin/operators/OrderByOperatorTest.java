@@ -13,8 +13,8 @@ class OrderByOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(OrderByOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -30,6 +30,6 @@ class OrderByOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(OrderByOperator.INSTANCE, 1, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertValidArgument(OrderByOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
     }
 }

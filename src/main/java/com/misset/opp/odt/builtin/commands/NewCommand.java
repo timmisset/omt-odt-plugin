@@ -39,7 +39,7 @@ public class NewCommand extends AbstractBuiltInCommand {
     @Override
     protected Set<OntResource> resolveFrom(PsiCall call) {
         // create an instance from the class
-        return OppModel.INSTANCE.toIndividuals(call.resolveSignatureArgument(0))
+        return OppModel.getInstance().toIndividuals(call.resolveSignatureArgument(0))
                 .stream()
                 .map(OntResource.class::cast)
                 .collect(Collectors.toSet());
@@ -55,7 +55,7 @@ public class NewCommand extends AbstractBuiltInCommand {
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 1) {
-            return Set.of(OppModelConstants.NAMED_GRAPH);
+            return Set.of(OppModelConstants.getNamedGraph());
         }
         return null;
     }

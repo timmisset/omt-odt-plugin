@@ -21,7 +21,7 @@ class ODTDefineInputParamDelegateTest extends OMTOntologyTestCase {
                 "    */\n" +
                 "   DEFINE QUERY <caret>query($param) => $param;");
         assertContainsElements(resolveQueryAtCaret(content),
-                OppModelConstants.XSD_STRING_INSTANCE);
+                OppModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -33,7 +33,7 @@ class ODTDefineInputParamDelegateTest extends OMTOntologyTestCase {
                 "    */\n" +
                 "   DEFINE QUERY <caret>query($param) => $param;");
         assertContainsElements(resolveQueryAtCaret(content),
-                OppModel.INSTANCE.getIndividual("http://ontology#ClassA_InstanceA"));
+                OppModel.getInstance().getIndividual("http://ontology#ClassA_InstanceA"));
     }
 
     @Test

@@ -65,6 +65,6 @@ public abstract class ODTResolvableSignatureArgument extends ODTBaseResolvable
         int argumentIndexOf = call.getArgumentIndexOf(element);
         Set<OntResource> acceptableArgumentType = callable.getAcceptableArgumentType(argumentIndexOf, call);
 
-        return resources -> resources.isEmpty() || OppModel.INSTANCE.areCompatible(acceptableArgumentType, resources);
+        return resources -> resources.isEmpty() || OppModel.getInstance().areCompatible(acceptableArgumentType, resources);
     }
 }

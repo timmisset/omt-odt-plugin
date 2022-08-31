@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.OppModel;
@@ -90,7 +91,7 @@ public abstract class BaseBuiltinTest {
                                         Set<OntResource>... callArguments) {
         final PsiCall call = getCall(callArguments);
         doReturn(inputResources).when(call).resolvePreviousStep();
-        Context context = Context.fromCall(call);
+        Context context = ContextFactory.fromCall(call);
         final Set<OntResource> resources = builtin.resolve(context);
         assertEquals(expectedResources.size(), resources.size());
         assertTrue(resources.containsAll(expectedResources));
@@ -99,18 +100,18 @@ public abstract class BaseBuiltinTest {
     protected final void assertCombinesInput(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE,
-                        OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance(),
+                        OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance()));
     }
 
     protected final void assertReturnsFirstArgument(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance()));
     }
 
     /**
@@ -120,16 +121,16 @@ public abstract class BaseBuiltinTest {
         assertResolved(builtin,
                 Collections.emptySet(),
                 Set.of(resource),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance()));
     }
 
     protected final void assertReturnsVoid(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
                 Collections.emptySet(),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance()));
     }
 
     protected abstract void testResolve();
@@ -138,7 +139,7 @@ public abstract class BaseBuiltinTest {
                                 int index,
                                 OntResource expected,
                                 String errorMessage) {
-        OntResource invalidArgument = expected.equals(OppModelConstants.XSD_BOOLEAN_INSTANCE) ? OppModelConstants.XSD_STRING_INSTANCE : OppModelConstants.XSD_BOOLEAN_INSTANCE;
+        OntResource invalidArgument = expected.equals(OppModelConstants.getXsdBooleanInstance()) ? OppModelConstants.getXsdStringInstance() : OppModelConstants.getXsdBooleanInstance();
         testArgument(builtin, index, expected, errorMessage, invalidArgument);
     }
 
@@ -220,7 +221,7 @@ public abstract class BaseBuiltinTest {
 
     protected void assertGetAcceptableArgumentTypeSameAsPreviousStep(AbstractBuiltin builtin, int index) {
         PsiCall call = mock(PsiCall.class);
-        Set<OntResource> previousStep = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+        Set<OntResource> previousStep = Set.of(OppModelConstants.getXsdStringInstance());
         doReturn(previousStep).when(call).resolvePreviousStep();
 
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
@@ -233,7 +234,7 @@ public abstract class BaseBuiltinTest {
 
     protected void assertGetAcceptableArgumentTypeSameAsArgument(AbstractBuiltin builtin, int index, int sameAsIndex) {
         PsiCall call = mock(PsiCall.class);
-        Set<OntResource> atIndex = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+        Set<OntResource> atIndex = Set.of(OppModelConstants.getXsdStringInstance());
         doReturn(atIndex).when(call).resolveSignatureArgument(sameAsIndex);
 
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);

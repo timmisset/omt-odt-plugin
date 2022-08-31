@@ -132,7 +132,7 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
 
     private List<String> getTypeSuggestions(Resolvable resolvable) {
         return resolvable.resolve().stream()
-                .map(OppModel.INSTANCE::toClass)
+                .map(OppModel.getInstance()::toClass)
                 .map(this::getSuperClasses)
                 .flatMap(Collection::stream)
                 .distinct()
@@ -150,8 +150,8 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
         List<String> classLocalNames = new ArrayList<>();
         classLocalNames.add(ontClass.getLocalName());
         classLocalNames.addAll(ontClasses.stream()
-                .filter(superClass -> superClass != OppModelConstants.OWL_CLASS &&
-                        superClass != OppModelConstants.OWL_THING_CLASS)
+                .filter(superClass -> superClass != OppModelConstants.getOwlClass() &&
+                        superClass != OppModelConstants.getOwlThingClass())
                 .map(Resource::getLocalName)
                 .collect(Collectors.toList()));
         return classLocalNames;

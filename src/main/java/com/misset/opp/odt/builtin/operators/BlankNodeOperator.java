@@ -21,6 +21,6 @@ public class BlankNodeOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.BLANK_NODE;
+        return OppModelConstants.getBlankNode();
     }
 }

@@ -14,7 +14,6 @@ import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.ttl.model.OppModelConstants;
 import net.minidev.json.JSONArray;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,23 +37,15 @@ import java.util.stream.Collectors;
 public final class SettingsState implements PersistentStateComponent<SettingsState> {
 
     public static final String NAMED_GRAPH_URI_PREFIX = "http:\\/\\/data\\.politie\\.nl\\/19000000000000_\\S*";
-    public String ontologyModelRootPath = "";
-    public String reasonsFolder = "";
-    public String referencesFolder = "";
-    public String tsConfigPath = "";
-    public String omtAPIPath = "";
-    public String odtAPIPath = "";
-    public Map<String, String> modelInstanceMapping = new HashMap<>();
-    public HashMap<String, String> knownInstances = new HashMap<>();
-    public boolean referenceDetails = false;
-    private Project project;
-
-    public static SettingsState getInstance(Project project) {
-        SettingsState settingsState = project.getService(SettingsState.class);
-        initDefaultForNulls(settingsState, project);
-        settingsState.project = project;
-        return settingsState;
-    }
+    private String ontologyModelRootPath = "";
+    private String reasonsFolder = "";
+    private String referencesFolder = "";
+    private String tsConfigPath = "";
+    private String omtAPIPath = "";
+    private String odtAPIPath = "";
+    private Map<String, String> modelInstanceMapping = new HashMap<>();
+    private Map<String, String> knownInstances = new HashMap<>();
+    private boolean referenceDetails = false;
 
     private static void initDefaultForNulls(SettingsState settingsState, Project project) {
         if (settingsState.referencesFolder.isBlank()) {
@@ -78,12 +69,93 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
         }
 
         if (!settingsState.modelInstanceMapping.containsKey(NAMED_GRAPH_URI_PREFIX) &&
-                OppModelConstants.NAMED_GRAPH_CLASS != null) {
+                OppModelConstants.getNamedGraphClass() != null) {
             settingsState.modelInstanceMapping.put(
                     NAMED_GRAPH_URI_PREFIX,
-                    OppModelConstants.NAMED_GRAPH_CLASS.getURI()
+                    OppModelConstants.getNamedGraphClass().getURI()
             );
         }
+    }
+
+    public String getOntologyModelRootPath() {
+        return ontologyModelRootPath;
+    }
+
+    public void setOntologyModelRootPath(String ontologyModelRootPath) {
+        this.ontologyModelRootPath = ontologyModelRootPath;
+    }
+
+    public String getReasonsFolder() {
+        return reasonsFolder;
+    }
+
+    public void setReasonsFolder(String reasonsFolder) {
+        this.reasonsFolder = reasonsFolder;
+    }
+
+    public String getReferencesFolder() {
+        return referencesFolder;
+    }
+
+    public void setReferencesFolder(String referencesFolder) {
+        this.referencesFolder = referencesFolder;
+    }
+
+    public String getTsConfigPath() {
+        return tsConfigPath;
+    }
+
+    public void setTsConfigPath(String tsConfigPath) {
+        this.tsConfigPath = tsConfigPath;
+    }
+
+    public String getOmtAPIPath() {
+        return omtAPIPath;
+    }
+
+    public void setOmtAPIPath(String omtAPIPath) {
+        this.omtAPIPath = omtAPIPath;
+    }
+
+    public String getOdtAPIPath() {
+        return odtAPIPath;
+    }
+
+    public void setOdtAPIPath(String odtAPIPath) {
+        this.odtAPIPath = odtAPIPath;
+    }
+
+    public Map<String, String> getModelInstanceMapping() {
+        return modelInstanceMapping;
+    }
+
+    public void setModelInstanceMapping(Map<String, String> modelInstanceMapping) {
+        this.modelInstanceMapping = modelInstanceMapping;
+    }
+
+    public Map<String, String> getKnownInstances() {
+        return knownInstances;
+    }
+
+    public void setKnownInstances(Map<String, String> knownInstances) {
+        this.knownInstances = knownInstances;
+    }
+
+    public boolean getReferenceDetails() {
+        return referenceDetails;
+    }
+
+    private Project project;
+
+    public static SettingsState getInstance(Project project) {
+        SettingsState settingsState = project.getService(SettingsState.class);
+        initDefaultForNulls(settingsState, project);
+        settingsState.project = project;
+        return settingsState;
+    }
+
+    public void setReferenceDetails(boolean referenceDetails) {
+        this.referenceDetails = referenceDetails;
     }
 
     public String getMappingPath(String path) {
@@ -93,7 +165,7 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
             String remainder = Arrays.stream(parts).skip(1).collect(Collectors.joining("/"));
             File file = new File(tsConfigPath);
             JSONArray array = JsonPath.parse(file).read("$..['paths']" + domain + "/*[0]");
-            if (array.size() >= 1) {
+            if (!array.isEmpty()) {
                 String mappingPath = (String) array.get(0);
                 return Path.of(file.getParent() + "/" + mappingPath.replace("/*", "") + "/" + remainder).toAbsolutePath().toString();
             }
@@ -135,7 +207,7 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
     }
 
     private String getInvertedMapPath(JSONArray array) {
-        if (array == null || array.size() == 0) {
+        if (array == null || array.isEmpty()) {
             return null;
         }
         String path = array.get(0).toString().replace("/*", "");
@@ -143,9 +215,8 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
         return Path.of(parent.toString() + "/" + path).toString();
     }
 
-    @Nullable
     @Override
-    public SettingsState getState() {
+    public @NotNull SettingsState getState() {
         return this;
     }
 
@@ -156,6 +227,6 @@ public final class SettingsState implements PersistentStateComponent<SettingsSta
 
     @Override
     public void initializeComponent() {
-
+        // do nothing
     }
 }

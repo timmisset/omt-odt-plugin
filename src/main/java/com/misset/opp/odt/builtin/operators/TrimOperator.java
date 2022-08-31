@@ -29,6 +29,6 @@ public class TrimOperator extends BuiltInStringOperator {
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+        return Set.of(OppModelConstants.getXsdStringInstance());
     }
 }

@@ -10,7 +10,7 @@ class TrimOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(TrimOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(TrimOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -26,11 +26,11 @@ class TrimOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(TrimOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertValidInput(TrimOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(TrimOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableInputType(TrimOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 }

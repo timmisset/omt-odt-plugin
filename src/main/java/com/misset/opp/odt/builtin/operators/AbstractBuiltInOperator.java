@@ -96,7 +96,7 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
         if (!resources.isEmpty() &&
                 flag != null &&
                 flag.contains("!ignoreCase") &&
-                !resources.contains(OppModelConstants.XSD_STRING_INSTANCE)) {
+                !resources.contains(OppModelConstants.getXsdStringInstance())) {
             holder.registerProblem(call.getFlagElement(), "Using ignoreCase on non-string values", ProblemHighlightType.WARNING);
         }
     }
@@ -137,7 +137,7 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
             return;
         }
 
-        boolean b = OppModel.INSTANCE.areCompatible(possibilities.getFirst(), possibilities.getSecond());
+        boolean b = OppModel.getInstance().areCompatible(possibilities.getFirst(), possibilities.getSecond());
         if (!b) {
             holder.registerProblem(call,
                     "Possible outcomes are incompatible, not illegal but it smells fishy",

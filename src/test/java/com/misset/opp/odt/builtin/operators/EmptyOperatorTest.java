@@ -10,7 +10,7 @@ class EmptyOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(EmptyOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(EmptyOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test

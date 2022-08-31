@@ -26,7 +26,7 @@ public class FloorOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.XSD_INTEGER_INSTANCE;
+        return OppModelConstants.getXsdIntegerInstance();
     }
 
     @Override
@@ -36,6 +36,6 @@ public class FloorOperator extends AbstractBuiltInOperator {
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
+        return Set.of(OppModelConstants.getXsdDecimalInstance());
     }
 }

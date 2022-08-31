@@ -18,7 +18,7 @@ public abstract class ODTResolvableNegatedStep extends ODTResolvableQueryStepBas
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.getXsdBooleanInstance());
     }
 
     @Override

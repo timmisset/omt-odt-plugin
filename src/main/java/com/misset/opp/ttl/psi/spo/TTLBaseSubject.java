@@ -12,15 +12,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public abstract class TTLBaseSubject extends StubBasedPsiElementBase<TTLSubjectStub> implements TTLSubject {
-    public TTLBaseSubject(@NotNull TTLSubjectStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    protected TTLBaseSubject(@NotNull TTLSubjectStub stub, @NotNull IStubElementType<?, ?> nodeType) {
         super(stub, nodeType);
     }
 
-    public TTLBaseSubject(@NotNull ASTNode node) {
+    protected TTLBaseSubject(@NotNull ASTNode node) {
         super(node);
     }
 
-    public TTLBaseSubject(TTLSubjectStub stub, IElementType nodeType, ASTNode node) {
+    protected TTLBaseSubject(TTLSubjectStub stub, IElementType nodeType, ASTNode node) {
         super(stub, nodeType, node);
     }
 

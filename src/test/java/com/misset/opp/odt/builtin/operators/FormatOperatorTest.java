@@ -20,12 +20,12 @@ class FormatOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(FormatOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(FormatOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testUnequalNumberOfArguments() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()));
         doReturn("Test %s").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
@@ -34,7 +34,7 @@ class FormatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testWrongTypesString() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_INTEGER_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdIntegerInstance()));
         doReturn("Test %s").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
@@ -43,7 +43,7 @@ class FormatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testWrongTypesNumber() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
         doReturn("Test %d").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
@@ -63,7 +63,7 @@ class FormatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(FormatOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(FormatOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(FormatOperator.INSTANCE, 1);
     }
 

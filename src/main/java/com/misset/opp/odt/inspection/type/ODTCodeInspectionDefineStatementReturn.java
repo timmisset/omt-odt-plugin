@@ -58,7 +58,7 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
                 returnType, resolve, holder, defineQueryStatement
         );
 
-        if (returnType.contains(OppModelConstants.VOID)) {
+        if (returnType.contains(OppModelConstants.getVoidResponse())) {
             holder.registerProblem(defineQueryStatement,
                     "A query should not be typed void",
                     ProblemHighlightType.WARNING);
@@ -82,7 +82,7 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
                     returnType, resources, holder, returnStatement
             );
 
-            if (returnType.contains(OppModelConstants.VOID)) {
+            if (returnType.contains(OppModelConstants.getVoidResponse())) {
                 holder.registerProblem(returnStatement,
                         "A void command should not contain RETURN statements",
                         ProblemHighlightType.WARNING);

@@ -38,7 +38,7 @@ class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
     @Test
     void testCurieStepResolves() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / ont:booleanPredicate");
-        Assertions.assertTrue(resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -63,19 +63,19 @@ class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
     @Test
     void testNegatedStep() {
         final Set<OntResource> resources = resolveQueryStatement("NOT IN(/ont:ClassA)");
-        Assertions.assertTrue(resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     void testNegatedStepTerminal() {
         final Set<OntResource> resources = resolveQueryStatement("IN(/ont:ClassA) / NOT");
-        Assertions.assertTrue(resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     void testSubqueryWithoutPath() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / (ont:booleanPredicate)*");
-        Assertions.assertTrue(resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test

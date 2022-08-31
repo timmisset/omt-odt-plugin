@@ -10,7 +10,7 @@ class TimestampCommandTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(TimeStampCommand.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertReturns(TimeStampCommand.INSTANCE, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test

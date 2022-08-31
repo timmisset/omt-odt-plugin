@@ -11,14 +11,14 @@ class CountOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(CountOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertResolved(CountOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testArgumentTypes() {
         testArgument(CountOperator.INSTANCE,
                 0,
-                OppModelConstants.XSD_BOOLEAN_INSTANCE,
+                OppModelConstants.getXsdBooleanInstance(),
                 TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 

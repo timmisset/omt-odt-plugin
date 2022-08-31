@@ -12,7 +12,7 @@ class NewGraphCommandTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(NewGraphCommand.INSTANCE, OppModelConstants.NAMED_GRAPH);
+        assertReturns(NewGraphCommand.INSTANCE, OppModelConstants.getNamedGraph());
     }
 
     @Test
@@ -34,7 +34,7 @@ class NewGraphCommandTest extends BaseBuiltinTest {
     @Test
     void testArgumentTypes() {
         final Individual shapeIndividual =
-                oppModel.createIndividual(OppModelConstants.GRAPH_SHAPE, "http://ontology#someGraphShape");
+                oppModel.createIndividual(OppModelConstants.getGraphShape(), "http://ontology#someGraphShape");
         testArgument(NewGraphCommand.INSTANCE, 0, shapeIndividual, TTLValidationUtil.ERROR_MESSAGE_GRAPH_SHAPE);
     }
 

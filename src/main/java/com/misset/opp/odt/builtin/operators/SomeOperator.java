@@ -45,14 +45,14 @@ public class SomeOperator extends BuiltInBooleanOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+            return Set.of(OppModelConstants.getXsdBooleanInstance());
         }
         return null;
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.getXsdBooleanInstance());
     }
 
     @Override

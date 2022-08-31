@@ -69,10 +69,10 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                                     Map<String, String> availableNamespaces,
                                     CompletionResultSet result) {
                 Set<OntClass> classes = leftSideResolved.stream()
-                        .filter(OppModel.INSTANCE::isClass)
-                        .map(OppModel.INSTANCE::toClass)
+                        .filter(OppModel.getInstance()::isClass)
+                        .map(OppModel.getInstance()::toClass)
                         .collect(Collectors.toCollection(HashSet::new));
-                classes.addAll(OppModel.INSTANCE.listSubclasses(classes));
+                classes.addAll(OppModel.getInstance().listSubclasses(classes));
                 classes.stream().map(
                                 resource -> TTLResourceUtil
                                         .getRootLookupElement(resource, "Class", availableNamespaces))
@@ -85,12 +85,12 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                                       Map<String, String> availableNamespaces,
                                       CompletionResultSet result) {
                 leftSideResolved.stream()
-                        .filter(OppModel.INSTANCE::isIndividual)
+                        .filter(OppModel.getInstance()::isIndividual)
                         .map(Individual.class::cast)
                         .map(Individual::getOntClass)
                         .map(Resource::getURI)
                         .filter(Objects::nonNull)
-                        .map(OppModel.INSTANCE::toIndividuals)
+                        .map(OppModel.getInstance()::toIndividuals)
                         .flatMap(Collection::stream)
                         .filter(this::isRealInstance)
                         .map(

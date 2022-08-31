@@ -27,7 +27,7 @@ final class AbstractBuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testCanBeAppliedTo() {
-        Assertions.assertTrue(LogOperator.INSTANCE.canBeAppliedTo(Set.of(OppModelConstants.XSD_STRING_INSTANCE)));
+        Assertions.assertTrue(LogOperator.INSTANCE.canBeAppliedTo(Set.of(OppModelConstants.getXsdStringInstance())));
     }
 
     @Test
@@ -58,7 +58,7 @@ final class AbstractBuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidateCompatibleOutcomePossibilitiesReturnsWithoutValidationWhenResourceEmpty() {
-        Set<OntResource> withValues = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+        Set<OntResource> withValues = Set.of(OppModelConstants.getXsdStringInstance());
         Set<OntResource> emptySet = Collections.emptySet();
 
         PsiCall call = mock(PsiCall.class);
@@ -76,7 +76,7 @@ final class AbstractBuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testResolveError() {
-        Set<OntResource> resources = Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+        Set<OntResource> resources = Set.of(OppModelConstants.getXsdStringInstance());
         Assertions.assertEquals(resources, LogOperator.INSTANCE.resolveError(resources, null));
     }
 

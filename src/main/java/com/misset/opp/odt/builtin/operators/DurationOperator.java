@@ -29,7 +29,7 @@ public class DurationOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.XSD_DURATION_INSTANCE;
+        return OppModelConstants.getXsdDurationInstance();
     }
 
     @Override
@@ -41,9 +41,9 @@ public class DurationOperator extends AbstractBuiltInOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE);
+            return Set.of(OppModelConstants.getXsdNumberInstance());
         } else if (index == 1) {
-            return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+            return Set.of(OppModelConstants.getXsdStringInstance());
         }
         return null;
     }

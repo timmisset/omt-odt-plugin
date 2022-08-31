@@ -41,7 +41,7 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
         Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
         // show all graphshape instances:
-        OppModelConstants.GRAPH_SHAPE.listInstances().mapWith(
+        OppModelConstants.getGraphShape().listInstances().mapWith(
                         resource -> TTLResourceUtil
                                 .getRootLookupElement(resource, "Graphshape", availableNamespaces))
                 .forEachRemaining(result::addElement);

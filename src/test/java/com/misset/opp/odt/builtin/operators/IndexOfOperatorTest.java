@@ -11,7 +11,7 @@ class IndexOfOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(IndexOfOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertResolved(IndexOfOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
@@ -27,15 +27,15 @@ class IndexOfOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(IndexOfOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(IndexOfOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(IndexOfOperator.INSTANCE, 1);
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(IndexOfOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
-        assertInvalidArgument(IndexOfOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
-        assertValidInput(IndexOfOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
-        assertInvalidInput(IndexOfOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidArgument(IndexOfOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertInvalidArgument(IndexOfOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidInput(IndexOfOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertInvalidInput(IndexOfOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 }

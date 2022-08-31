@@ -18,18 +18,18 @@ class CopyInGraphCommandTest extends BaseBuiltinTest {
     void testArgumentTypes() {
         testArgument(CopyInGraphCommand.INSTANCE,
                 0,
-                OppModelConstants.XSD_STRING_INSTANCE,
+                OppModelConstants.getXsdStringInstance(),
                 TTLValidationUtil.ERROR_MESSAGE_INSTANCES,
-                OppModelConstants.XSD_STRING);
+                OppModelConstants.getXsdString());
 
         testArgument(CopyInGraphCommand.INSTANCE,
                 1,
-                OppModelConstants.MEDEWERKER_GRAPH,
+                OppModelConstants.getMedewerkerGraph(),
                 TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
 
         testArgument(CopyInGraphCommand.INSTANCE,
                 2,
-                OppModelConstants.XSD_BOOLEAN_INSTANCE,
+                OppModelConstants.getXsdBooleanInstance(),
                 TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
@@ -40,8 +40,8 @@ class CopyInGraphCommandTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 1, OppModelConstants.NAMED_GRAPH);
-        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 2, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 1, OppModelConstants.getNamedGraph());
+        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 2, OppModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(CopyInGraphCommand.INSTANCE, 3);
     }
 

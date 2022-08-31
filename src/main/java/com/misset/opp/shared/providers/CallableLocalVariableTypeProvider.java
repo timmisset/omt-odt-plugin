@@ -21,7 +21,7 @@ public interface CallableLocalVariableTypeProvider {
                                      int argumentIndex) {
         return Optional.ofNullable(getLocalVariable(name, call, argumentIndex))
                 .map(Variable::resolve)
-                .map(resources -> resources.isEmpty() ? Set.of((OntResource) OppModelConstants.OWL_THING_INSTANCE) : resources)
+                .map(resources -> resources.isEmpty() ? Set.of((OntResource) OppModelConstants.getOwlThingInstance()) : resources)
                 .orElse(Collections.emptySet());
     }
 

@@ -46,7 +46,7 @@ class ODTCommandCallImplTest extends OMTTestCase {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
             Set<OntResource> variableType = ((ODTVariable) elementAtCaret).resolve();
-            assertContainsElements(variableType, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+            assertContainsElements(variableType, OppModelConstants.getXsdBooleanInstance());
         });
     }
 

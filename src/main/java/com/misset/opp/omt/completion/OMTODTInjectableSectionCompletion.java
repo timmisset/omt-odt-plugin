@@ -117,7 +117,7 @@ public class OMTODTInjectableSectionCompletion extends CompletionContributor {
                 result.addElement(PrioritizedLookupElement.withPriority(
                         LookupElementBuilder.create("false"), 100
                 ));
-                sharedContext.get().put(TYPE_FILTER, resources -> OppModel.INSTANCE.areCompatible(Collections.singleton(OppModelConstants.XSD_BOOLEAN_INSTANCE), resources));
+                sharedContext.get().put(TYPE_FILTER, resources -> OppModel.getInstance().areCompatible(Collections.singleton(OppModelConstants.getXsdBooleanInstance()), resources));
                 break;
             case NONE:
             default:

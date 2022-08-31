@@ -17,7 +17,7 @@ public final class OMTApiDocumentationService extends ApiDocumentationService {
 
     @Override
     protected @NotNull Path getPathToApiDocument() {
-        return Path.of(SettingsState.getInstance(project).omtAPIPath);
+        return Path.of(SettingsState.getInstance(project).getOmtAPIPath());
     }
 
     public static OMTApiDocumentationService getInstance(@NotNull Project project) {

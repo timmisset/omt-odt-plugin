@@ -10,7 +10,12 @@ import java.nio.file.Path;
 
 public class ImportUtil {
 
-    public @Nullable static VirtualFile getFile(String path) {
+    private ImportUtil() {
+        // empty constructor
+    }
+
+    @Nullable
+    public static VirtualFile getFile(String path) {
         if (path == null) {
             return null;
         }

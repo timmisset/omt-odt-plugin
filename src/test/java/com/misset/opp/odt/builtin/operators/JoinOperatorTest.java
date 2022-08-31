@@ -11,7 +11,7 @@ class JoinOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(JoinOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(JoinOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -27,15 +27,15 @@ class JoinOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(JoinOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
-        assertInvalidArgument(JoinOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
-        assertValidInput(JoinOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
-        assertInvalidInput(JoinOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidArgument(JoinOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertInvalidArgument(JoinOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidInput(JoinOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertInvalidInput(JoinOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(JoinOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(JoinOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(JoinOperator.INSTANCE, 1);
     }
 

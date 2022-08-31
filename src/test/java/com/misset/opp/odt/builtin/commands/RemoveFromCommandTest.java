@@ -44,7 +44,7 @@ class RemoveFromCommandTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasWarningWhenNonMultiple() {
-        PsiCall call = getCall(Set.of(OppModelConstants.OWL_THING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getOwlThingInstance()));
         PsiElement element = call.getCallSignatureElement();
 
         Pair<Set<OntResource>, Property> pair = mock(Pair.class);

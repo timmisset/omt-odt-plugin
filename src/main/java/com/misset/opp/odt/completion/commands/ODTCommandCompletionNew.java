@@ -43,7 +43,7 @@ public class ODTCommandCompletionNew extends CompletionContributor {
             Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
             // show all classes instances:
-            OppModel.INSTANCE.listClasses().stream().map(
+            OppModel.getInstance().listClasses().stream().map(
                             resource -> TTLResourceUtil
                                     .getRootLookupElement(resource, "Class", availableNamespaces))
                     .filter(Objects::nonNull)

@@ -33,14 +33,14 @@ public class TruncOperator extends BuiltInCollectionOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+            return Set.of(OppModelConstants.getXsdStringInstance());
         }
         return null;
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_DATETIME_INSTANCE);
+        return Set.of(OppModelConstants.getXsdDatetimeInstance());
     }
 
     @Override

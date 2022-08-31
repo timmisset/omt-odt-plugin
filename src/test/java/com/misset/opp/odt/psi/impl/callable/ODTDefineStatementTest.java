@@ -49,7 +49,7 @@ class ODTDefineStatementTest extends ODTTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
-            Assertions.assertEquals(Set.of(OppModelConstants.XSD_STRING_INSTANCE), defineStatement.getParamType(0));
+            Assertions.assertEquals(Set.of(OppModelConstants.getXsdStringInstance()), defineStatement.getParamType(0));
         });
     }
 
@@ -95,7 +95,7 @@ class ODTDefineStatementTest extends ODTTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
-            Assertions.assertEquals(Set.of(OppModelConstants.XSD_INTEGER_INSTANCE), defineStatement.resolve());
+            Assertions.assertEquals(Set.of(OppModelConstants.getXsdIntegerInstance()), defineStatement.resolve());
         });
     }
 
@@ -114,7 +114,7 @@ class ODTDefineStatementTest extends ODTTestCase {
         ReadAction.run(() -> {
             ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
             Set<OntResource> resolve = defineStatement.resolve();
-            Assertions.assertEquals(OppModel.INSTANCE.toIndividuals("http://ontology#ClassA"), resolve);
+            Assertions.assertEquals(OppModel.getInstance().toIndividuals("http://ontology#ClassA"), resolve);
         });
     }
 }

@@ -24,7 +24,7 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.getXsdBooleanInstance());
     }
 
     @Override
@@ -74,19 +74,19 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
         }
 
         // check if owl:Thing is part of the equation
-        if (leftSide.stream().anyMatch(OppModelConstants.OWL_THING_INSTANCE::equals)) {
-            return OppModel.INSTANCE.toType(rightSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
-        } else if (rightSide.stream().anyMatch(OppModelConstants.OWL_THING_INSTANCE::equals)) {
-            return OppModel.INSTANCE.toType(leftSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
+        if (leftSide.stream().anyMatch(OppModelConstants.getOwlThingInstance()::equals)) {
+            return OppModel.getInstance().toType(rightSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
+        } else if (rightSide.stream().anyMatch(OppModelConstants.getOwlThingInstance()::equals)) {
+            return OppModel.getInstance().toType(leftSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
         }
 
         // not a direct match, there might be match based on class types. If the left-side is a subclass of the right-side
         // or the other way around, this is also acceptable. It is similar to 'Class instance X' and then casting it to the more
         // specific class rather than the generic super class type it had before the filter
-        if (leftSide.stream().allMatch(OppModel.INSTANCE::isClass) &&
-                rightSide.stream().allMatch(OppModel.INSTANCE::isClass)) {
-            Set<OntClass> ontClasses = intersectBothSideSuperClasses(OppModel.INSTANCE.toClasses(leftSide), OppModel.INSTANCE.toClasses(rightSide));
-            return OppModel.INSTANCE.toType(ontClasses, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
+        if (leftSide.stream().allMatch(OppModel.getInstance()::isClass) &&
+                rightSide.stream().allMatch(OppModel.getInstance()::isClass)) {
+            Set<OntClass> ontClasses = intersectBothSideSuperClasses(OppModel.getInstance().toClasses(leftSide), OppModel.getInstance().toClasses(rightSide));
+            return OppModel.getInstance().toType(ontClasses, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
         }
         return Collections.emptySet();
     }
@@ -105,7 +105,7 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
         return sideA.stream()
                 .map(OntClass.class::cast)
                 .filter(leftResource -> {
-                    Set<OntClass> superClasses = OppModel.INSTANCE.getSuperClasses(leftResource);
+                    Set<OntClass> superClasses = OppModel.getInstance().getSuperClasses(leftResource);
                     return sideB.stream().anyMatch(superClasses::contains);
                 })
                 .collect(Collectors.toSet());
@@ -119,6 +119,6 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
         Set<OntResource> oppositeResources = opposite.resolve();
 
         return resources -> resources.isEmpty() || oppositeResources.isEmpty() ||
-                OppModel.INSTANCE.areCompatible(oppositeResources, resources);
+                OppModel.getInstance().areCompatible(oppositeResources, resources);
     }
 }

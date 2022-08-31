@@ -22,7 +22,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
         });
     }
 
@@ -38,7 +38,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
         });
     }
 
@@ -49,7 +49,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
         });
     }
 
@@ -60,7 +60,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.XSD_INTEGER_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdIntegerInstance());
         });
     }
 
@@ -73,7 +73,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
         });
     }
 
@@ -86,7 +86,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.XSD_STRING_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
         });
     }
 
@@ -101,23 +101,23 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.XSD_INTEGER_INSTANCE);
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdIntegerInstance());
         });
     }
 
     @Test
     void testGetTypeFromGlobalVariableMedewerkerGraph() {
-        assertEquals(OppModelConstants.MEDEWERKER_GRAPH, resolveQueryStatementToSingleResult("$medewerkerGraph"));
+        assertEquals(OppModelConstants.getMedewerkerGraph(), resolveQueryStatementToSingleResult("$medewerkerGraph"));
     }
 
     @Test
     void testGetTypeFromGlobalVariableUsername() {
-        assertEquals(OppModelConstants.XSD_STRING_INSTANCE, resolveQueryStatementToSingleResult("$username"));
+        assertEquals(OppModelConstants.getXsdStringInstance(), resolveQueryStatementToSingleResult("$username"));
     }
 
     @Test
     void testGetTypeFromGlobalVariableOffline() {
-        assertEquals(OppModelConstants.XSD_BOOLEAN_INSTANCE, resolveQueryStatementToSingleResult("$offline"));
+        assertEquals(OppModelConstants.getXsdBooleanInstance(), resolveQueryStatementToSingleResult("$offline"));
     }
 
 }

@@ -12,13 +12,13 @@ class CastOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(CastOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, Set.of(OppModelConstants.XSD_INTEGER));
-        assertResolved(CastOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE, Set.of(OppModelConstants.XSD_DECIMAL));
-        assertResolved(CastOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE, Set.of(OppModelConstants.XSD_DATETIME));
-        assertResolved(CastOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_DATE_INSTANCE, Set.of(OppModelConstants.XSD_DATE));
-        assertResolved(CastOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, Set.of(OppModelConstants.XSD_BOOLEAN));
-        assertResolved(CastOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.OWL_THING_INSTANCE, Set.of(IriOperator.INSTANCE.resolveSingle()));
-        assertResolved(CastOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.JSON_OBJECT, Set.of(JsonOperator.INSTANCE.resolveSingle()));
+        assertResolved(CastOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdIntegerInstance(), Set.of(OppModelConstants.getXsdInteger()));
+        assertResolved(CastOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdDecimalInstance(), Set.of(OppModelConstants.getXsdDecimal()));
+        assertResolved(CastOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdDatetimeInstance(), Set.of(OppModelConstants.getXsdDatetime()));
+        assertResolved(CastOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdDateInstance(), Set.of(OppModelConstants.getXsdDate()));
+        assertResolved(CastOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdBooleanInstance(), Set.of(OppModelConstants.getXsdBoolean()));
+        assertResolved(CastOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), OppModelConstants.getOwlThingInstance(), Set.of(IriOperator.INSTANCE.resolveSingle()));
+        assertResolved(CastOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), OppModelConstants.getJsonObject(), Set.of(JsonOperator.INSTANCE.resolveSingle()));
     }
 
     @Test

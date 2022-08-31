@@ -30,11 +30,11 @@ public class TypeOperator extends AbstractBuiltInOperator {
         return resources.stream().map(this::mapToType).collect(Collectors.toSet());
     }
     private OntResource mapToType(OntResource resource) {
-        OntClass ontClass = OppModel.INSTANCE.toClass(resource);
+        OntClass ontClass = OppModel.getInstance().toClass(resource);
         if (TTLResourceUtil.isType(ontClass)) {
             return ontClass;
         } else {
-            return OppModelConstants.IRI;
+            return OppModelConstants.getIri();
         }
     }
 }

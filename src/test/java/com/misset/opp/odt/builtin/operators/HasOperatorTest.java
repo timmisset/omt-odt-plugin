@@ -19,13 +19,13 @@ class HasOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(HasOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(HasOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testFlagShowsWarningWhenUsedOnNonStringValuesDefault() {
         PsiElement flagElement = mock(PsiElement.class);
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
         doReturn(flagElement).when(call).getFlagElement();
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
@@ -36,7 +36,7 @@ class HasOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationShowsWarningWhenIncompatibleArgumentTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 
@@ -46,7 +46,7 @@ class HasOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationShowsNoWarningWhenTooManyArgumentsToCompare() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 
@@ -56,8 +56,8 @@ class HasOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationShowsWarningWhenIncompatiblePreviousStepAndArgumentTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
-        doReturn(Set.of(OppModelConstants.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 

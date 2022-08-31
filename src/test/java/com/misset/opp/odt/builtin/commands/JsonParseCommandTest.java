@@ -15,10 +15,10 @@ class JsonParseCommandTest extends BaseBuiltinTest {
     protected void testResolve() {
         assertResolved(JsonParseCommand.INSTANCE,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.JSON_OBJECT),
-                Set.of(OppModelConstants.XSD_STRING),
-                Set.of(OppModelConstants.NAMED_GRAPH));
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getJsonObject()),
+                Set.of(OppModelConstants.getXsdString()),
+                Set.of(OppModelConstants.getNamedGraph()));
     }
 
     @Test
@@ -48,14 +48,14 @@ class JsonParseCommandTest extends BaseBuiltinTest {
 //        testArgument(JsonParseCommand.INSTANCE, 1, oppModel.XSD_STRING, TTLValidationUtil.ERROR_MESSAGE_CLASSNAME);
         testArgument(JsonParseCommand.INSTANCE,
                 2,
-                OppModelConstants.MEDEWERKER_GRAPH,
+                OppModelConstants.getMedewerkerGraph(),
                 TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(JsonParseCommand.INSTANCE, 0, OppModelConstants.JSON_OBJECT);
-        assertGetAcceptableArgumentType(JsonParseCommand.INSTANCE, 2, OppModelConstants.NAMED_GRAPH);
+        assertGetAcceptableArgumentType(JsonParseCommand.INSTANCE, 0, OppModelConstants.getJsonObject());
+        assertGetAcceptableArgumentType(JsonParseCommand.INSTANCE, 2, OppModelConstants.getNamedGraph());
         assertGetAcceptableArgumentTypeIsNull(JsonParseCommand.INSTANCE, 1);
     }
 }

@@ -21,8 +21,8 @@ class FindSubjectsOperatorTest extends BaseBuiltinTest {
         final OntClass classWithoutPredicate = oppModel.createClass("http://classWithoutPredicate");
         final OntClass classWithPredicateWithoutObject = oppModel.createClass("http://classWithPredicateWithoutObject");
         final OntProperty property = oppModel.createProperty("http://property");
-        oppModel.createStatement(classWithPredicateWithObject, property, OppModelConstants.XSD_INTEGER_INSTANCE);
-        oppModel.createStatement(classWithPredicateWithoutObject, property, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        oppModel.createStatement(classWithPredicateWithObject, property, OppModelConstants.getXsdIntegerInstance());
+        oppModel.createStatement(classWithPredicateWithoutObject, property, OppModelConstants.getXsdBooleanInstance());
 
         final OntResource individualWithClass = oppModel.createIndividual(classWithPredicateWithObject);
         final Set<OntResource> individuals = Set.of(individualWithClass,
@@ -30,13 +30,13 @@ class FindSubjectsOperatorTest extends BaseBuiltinTest {
                 oppModel.createIndividual(classWithoutPredicate));
 
         // return a class that has the property and object (xsd_integer_instance)
-        assertResolved(FindSubjectsOperator.INSTANCE, individuals, Set.of(individualWithClass), Set.of(property), Set.of(OppModelConstants.XSD_INTEGER_INSTANCE));
+        assertResolved(FindSubjectsOperator.INSTANCE, individuals, Set.of(individualWithClass), Set.of(property), Set.of(OppModelConstants.getXsdIntegerInstance()));
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(FindSubjectsOperator.INSTANCE, 2, OppModelConstants.NAMED_GRAPH);
-        assertInvalidArgument(FindSubjectsOperator.INSTANCE, 2, OppModelConstants.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
+        assertValidArgument(FindSubjectsOperator.INSTANCE, 2, OppModelConstants.getNamedGraph());
+        assertInvalidArgument(FindSubjectsOperator.INSTANCE, 2, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     @Test
@@ -52,7 +52,7 @@ class FindSubjectsOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(FindSubjectsOperator.INSTANCE, 2, OppModelConstants.NAMED_GRAPH);
+        assertGetAcceptableArgumentType(FindSubjectsOperator.INSTANCE, 2, OppModelConstants.getNamedGraph());
         assertGetAcceptableArgumentTypeIsNull(FindSubjectsOperator.INSTANCE, 1);
     }
 

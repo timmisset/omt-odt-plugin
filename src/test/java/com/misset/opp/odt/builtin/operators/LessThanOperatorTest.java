@@ -12,15 +12,15 @@ class LessThanOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(LessThanOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(LessThanOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(LessThanOperator.INSTANCE, 1, OppModelConstants.XSD_STRING_INSTANCE);
-        assertValidArgument(LessThanOperator.INSTANCE, 1, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertValidArgument(LessThanOperator.INSTANCE, 1, OppModelConstants.XSD_INTEGER_INSTANCE);
-        assertValidArgument(LessThanOperator.INSTANCE, 1, OppModelConstants.XSD_DECIMAL_INSTANCE);
+        assertValidArgument(LessThanOperator.INSTANCE, 1, OppModelConstants.getXsdStringInstance());
+        assertValidArgument(LessThanOperator.INSTANCE, 1, OppModelConstants.getXsdNumberInstance());
+        assertValidArgument(LessThanOperator.INSTANCE, 1, OppModelConstants.getXsdIntegerInstance());
+        assertValidArgument(LessThanOperator.INSTANCE, 1, OppModelConstants.getXsdDecimalInstance());
     }
 
     @Test
@@ -36,12 +36,12 @@ class LessThanOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(LessThanOperator.INSTANCE, 0, Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE));
-        assertGetAcceptableArgumentType(LessThanOperator.INSTANCE, 1, Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE));
+        assertGetAcceptableArgumentType(LessThanOperator.INSTANCE, 0, Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdNumberInstance()));
+        assertGetAcceptableArgumentType(LessThanOperator.INSTANCE, 1, Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdNumberInstance()));
     }
 
     @Test
     void testGetAcceptableInput() {
-        assertGetAcceptableInputType(LessThanOperator.INSTANCE, Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE));
+        assertGetAcceptableInputType(LessThanOperator.INSTANCE, Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdNumberInstance()));
     }
 }

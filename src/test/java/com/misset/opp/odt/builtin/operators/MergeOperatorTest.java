@@ -21,19 +21,19 @@ class MergeOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         // combine input + argument
         assertResolved(MergeOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     protected void testResolveTwoOrMoreArguments() {
         // combine arguments
         assertResolved(MergeOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE, OppModelConstants.XSD_DATE_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_DATE_INSTANCE));
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdDateInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdDateInstance()));
     }
 
     @Test
@@ -49,7 +49,7 @@ class MergeOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationsHasWarningWhenNotAllArgumentsAreEqual() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
         MergeOperator.INSTANCE.validate(call, holder);
 
         verify(holder).registerProblem(eq(call.getCallSignatureElement()), startsWith("Incompatible types:"), eq(ProblemHighlightType.WARNING));
@@ -57,8 +57,8 @@ class MergeOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationsHasWarningWhenInputAndArgumentAreNotEqual() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
-        doReturn(Set.of(OppModelConstants.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
         MergeOperator.INSTANCE.validate(call, holder);
 
         verify(holder).registerProblem(eq(call), startsWith("Incompatible types:"), eq(ProblemHighlightType.WARNING));
@@ -66,8 +66,8 @@ class MergeOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasWarningWhen2OrMoreArgumentsAreCombinedWithAnInput() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
-        doReturn(Set.of(OppModelConstants.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
         MergeOperator.INSTANCE.validate(call, holder);
 
         verify(holder).registerProblem(eq(call), startsWith("Using 2 or more arguments will ignore the input value"), eq(ProblemHighlightType.WARNING));

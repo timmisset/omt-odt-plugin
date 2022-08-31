@@ -23,6 +23,6 @@ public class JsonOperator extends AbstractBuiltInOperator {
     public OntResource resolveSingle() {
         // The JSON operator is only ever used in the CAST operator
         // it should cast to an JSON_OBJECT
-        return OppModelConstants.JSON_OBJECT;
+        return OppModelConstants.getJsonObject();
     }
 }

@@ -19,7 +19,8 @@ class BuiltinDocumentationServiceTest extends OMTTestCase {
         LogOperator logOperator = spy(LogOperator.INSTANCE);
         doReturn("OPERATOR").when(logOperator).getName();
 
-        SettingsState.getInstance(getProject()).odtAPIPath = Path.of("src/test/resources/ODT-API.md").toString();
+        SettingsState.getInstance(getProject()).setOdtAPIPath(
+                Path.of("src/test/resources/ODT-API.md").toString());
 
         BuiltinDocumentationService documentationService = BuiltinDocumentationService.getInstance(getProject());
         String documentation = documentationService.getDocumentation(logOperator);
@@ -33,7 +34,8 @@ class BuiltinDocumentationServiceTest extends OMTTestCase {
         doReturn("OPERATOR").when(logOperator).getName();
         doReturn(List.of("!FlagA", "!FlagB")).when(logOperator).getFlags();
 
-        SettingsState.getInstance(getProject()).odtAPIPath = Path.of("src/test/resources/ODT-API.md").toString();
+        SettingsState.getInstance(getProject())
+                .setOdtAPIPath(Path.of("src/test/resources/ODT-API.md").toString());
 
         BuiltinDocumentationService documentationService = BuiltinDocumentationService.getInstance(getProject());
         String documentation = documentationService.getDocumentation(logOperator);

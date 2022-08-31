@@ -18,7 +18,7 @@ class OrOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(OrOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(OrOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
@@ -34,25 +34,25 @@ class OrOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(OrOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(OrOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(OrOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableInputType(OrOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testArgumentTypes() {
-        testArgument(OrOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
-        testArgument(OrOperator.INSTANCE, 1, OppModelConstants.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
-        testArgument(OrOperator.INSTANCE, 2, OppModelConstants.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        testArgument(OrOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        testArgument(OrOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        testArgument(OrOperator.INSTANCE, 2, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testValidateSingleArgumentInputBoolean() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
-        doReturn(Set.of(OppModelConstants.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
         ProblemsHolder problemsHolder = mock(ProblemsHolder.class);
 
         OrOperator.INSTANCE.validateSingleArgumentInputBoolean(call, problemsHolder);

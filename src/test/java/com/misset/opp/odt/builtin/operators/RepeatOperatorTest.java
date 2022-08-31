@@ -14,10 +14,10 @@ class RepeatOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         // no known error state, return input + catch
         assertResolved(RepeatOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE,
-                        OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance(),
+                        OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -33,14 +33,14 @@ class RepeatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(RepeatOperator.INSTANCE, 1, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertValidArgument(RepeatOperator.INSTANCE, 2, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertValidArgument(RepeatOperator.INSTANCE, 1, OppModelConstants.getXsdNumberInstance());
+        assertValidArgument(RepeatOperator.INSTANCE, 2, OppModelConstants.getXsdNumberInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 1, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 2, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 1, OppModelConstants.getXsdNumberInstance());
+        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 2, OppModelConstants.getXsdNumberInstance());
         assertGetAcceptableArgumentTypeIsNull(RepeatOperator.INSTANCE, 0);
     }
 }

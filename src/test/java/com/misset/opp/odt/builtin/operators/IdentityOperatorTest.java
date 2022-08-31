@@ -10,9 +10,9 @@ class IdentityOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(IdentityOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertResolved(IdentityOperator.INSTANCE, OppModelConstants.XSD_DATE, OppModelConstants.XSD_DATE);
-        assertResolved(IdentityOperator.INSTANCE, OppModelConstants.XSD_INTEGER, OppModelConstants.XSD_INTEGER);
+        assertResolved(IdentityOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdBooleanInstance());
+        assertResolved(IdentityOperator.INSTANCE, OppModelConstants.getXsdDate(), OppModelConstants.getXsdDate());
+        assertResolved(IdentityOperator.INSTANCE, OppModelConstants.getXsdInteger(), OppModelConstants.getXsdInteger());
     }
 
     @Test

@@ -25,7 +25,7 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateShowsWarningWhenDifferentTypes() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
         AddToCommand.INSTANCE.validate(call, holder);
         verify(holder).registerProblem(eq(signature),
                 startsWith("Incompatible types"),
@@ -34,7 +34,7 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateShowsNoWarningWhenCompatibleTypes() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
         AddToCommand.INSTANCE.validate(call, holder);
         verify(holder, never()).registerProblem(eq(signature),
                 startsWith("Incompatible types"),
@@ -43,7 +43,7 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateShowsWarningWhenNonMultiple() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
         doReturn(new Pair<>(oppModel.toIndividuals("http://ontology#ClassA"),
                 oppModel.getProperty("http://ontology#classPredicate")))
                 .when(call).getSignatureLeadingInformation(0);
@@ -55,11 +55,11 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testAcceptableArgumentType() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()));
         Assertions.assertTrue(AddToCommand.INSTANCE.getAcceptableArgumentType(1, call)
-                .contains(OppModelConstants.XSD_STRING_INSTANCE));
+                .contains(OppModelConstants.getXsdStringInstance()));
         Assertions.assertFalse(AddToCommand.INSTANCE.getAcceptableArgumentType(1, call)
-                .contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                .contains(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test

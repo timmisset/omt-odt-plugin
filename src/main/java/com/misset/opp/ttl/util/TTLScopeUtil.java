@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TTLScopeUtil {
+
+    private TTLScopeUtil() {
+        // empty constructor
+    }
+
     private static long modelVersion = -1;
     private static List<VirtualFile> virtualFiles = Collections.emptyList();
 
@@ -23,7 +28,7 @@ public class TTLScopeUtil {
         long modificationCount = OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER.getModificationCount();
         if (modelVersion != modificationCount) {
             VirtualFileManager fileManager = VirtualFileManager.getInstance();
-            virtualFiles = OppModelLoader.getModelFiles().stream()
+            virtualFiles = OppModelLoader.getInstance().getModelFiles().stream()
                     .map(file -> fileManager.findFileByNioPath(file.toPath()))
                     .collect(Collectors.toList());
             modelVersion = modificationCount;

@@ -62,7 +62,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
                                @NotNull ODTCall call) {
         if (call.getNumberOfArguments() >= 3 && call.getNumberOfArguments() % 2 != 0) {
             final Set<OntResource> subject = call.resolveSignatureArgument(0);
-            if (!subject.isEmpty() && !subject.contains(OppModelConstants.OWL_THING_INSTANCE)) {
+            if (!subject.isEmpty() && !subject.contains(OppModelConstants.getOwlThingInstance())) {
                 inspectSubject(holder, call, subject);
             }
         }
@@ -88,7 +88,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
 
             final List<Property> predicates = call.resolveSignatureArgument(i)
                     .stream()
-                    .map(resource -> OppModel.INSTANCE.getProperty(resource))
+                    .map(resource -> OppModel.getInstance().getProperty(resource))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
@@ -105,7 +105,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
             }
             final Property predicate = predicates.get(0);
 
-            final Set<OntResource> object = OppModel.INSTANCE.listObjects(subject, predicate);
+            final Set<OntResource> object = OppModel.getInstance().listObjects(subject, predicate);
             if (object.isEmpty()) {
                 holder.registerProblem(predicateArgument,
                         "Could not traverse FORWARD using predicate: " + predicate.toString());

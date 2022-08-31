@@ -26,9 +26,9 @@ public class SumOperator extends AbstractBuiltInOperator {
 
     @Override
     protected Set<OntResource> resolveFrom(Set<OntResource> resources) {
-        return resources.stream().allMatch(OppModelConstants.XSD_INTEGER_INSTANCE::equals) ?
+        return resources.stream().allMatch(OppModelConstants.getXsdIntegerInstance()::equals) ?
                 resources :
-                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
+                Set.of(OppModelConstants.getXsdDecimalInstance());
     }
 
     @Override
@@ -38,6 +38,6 @@ public class SumOperator extends AbstractBuiltInOperator {
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE);
+        return Set.of(OppModelConstants.getXsdNumberInstance());
     }
 }

@@ -13,8 +13,8 @@ class MaxOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(MaxOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -30,23 +30,23 @@ class MaxOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(MaxOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertValidInput(MaxOperator.INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
-        assertInvalidInput(MaxOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, "Acceptable types:");
+        assertValidInput(MaxOperator.INSTANCE, OppModelConstants.getXsdNumberInstance());
+        assertValidInput(MaxOperator.INSTANCE, OppModelConstants.getXsdDatetimeInstance());
+        assertInvalidInput(MaxOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), "Acceptable types:");
 
-        assertValidArgument(MaxOperator.INSTANCE, 0, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertValidArgument(MaxOperator.INSTANCE, 0, OppModelConstants.XSD_DATETIME_INSTANCE);
-        assertInvalidArgument(MaxOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE, "Acceptable types:");
+        assertValidArgument(MaxOperator.INSTANCE, 0, OppModelConstants.getXsdNumberInstance());
+        assertValidArgument(MaxOperator.INSTANCE, 0, OppModelConstants.getXsdDatetimeInstance());
+        assertInvalidArgument(MaxOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance(), "Acceptable types:");
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(MaxOperator.INSTANCE, Set.of(OppModelConstants.XSD_NUMBER_INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE));
+        assertGetAcceptableInputType(MaxOperator.INSTANCE, Set.of(OppModelConstants.getXsdNumberInstance(), OppModelConstants.getXsdDatetimeInstance()));
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(MaxOperator.INSTANCE, 0, Set.of(OppModelConstants.XSD_NUMBER_INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE));
+        assertGetAcceptableArgumentType(MaxOperator.INSTANCE, 0, Set.of(OppModelConstants.getXsdNumberInstance(), OppModelConstants.getXsdDatetimeInstance()));
         assertGetAcceptableArgumentTypeIsNull(MaxOperator.INSTANCE, 1);
     }
 }

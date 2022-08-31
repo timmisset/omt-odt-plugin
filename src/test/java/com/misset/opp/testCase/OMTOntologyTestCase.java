@@ -46,7 +46,7 @@ public abstract class OMTOntologyTestCase extends OMTTestCase {
      * this method can be used to load the ontology and return the OppModel
      */
     public static OppModel initOntologyModel() {
-        return new OppModelLoader().read(getRootPath());
+        return OppModelLoader.getInstance().read(getRootPath());
     }
 
     private static File getRootPath() {

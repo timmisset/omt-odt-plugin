@@ -46,7 +46,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModelConstants.MEDEWERKER_GRAPH);
+            return Set.of(OppModelConstants.getMedewerkerGraph());
         }
     };
     private static final GlobalVariable USERNAME = new GlobalVariable() {
@@ -62,7 +62,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+            return Set.of(OppModelConstants.getXsdStringInstance());
         }
     };
 
@@ -79,7 +79,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModelConstants.OWL_THING_INSTANCE);
+            return Set.of(OppModelConstants.getOwlThingInstance());
         }
     };
 
@@ -96,7 +96,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModelConstants.JSON_OBJECT);
+            return Set.of(OppModelConstants.getJsonObject());
         }
     };
 
@@ -113,7 +113,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+            return Set.of(OppModelConstants.getXsdBooleanInstance());
         }
     };
 
@@ -130,7 +130,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+            return Set.of(OppModelConstants.getXsdBooleanInstance());
         }
     };
 
@@ -147,7 +147,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModelConstants.JSON_OBJECT);
+            return Set.of(OppModelConstants.getJsonObject());
         }
     };
 
@@ -164,7 +164,7 @@ public abstract class GlobalVariable implements Variable {
 
         @Override
         public @NotNull Set<OntResource> resolve() {
-            return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+            return Set.of(OppModelConstants.getXsdStringInstance());
         }
     };
 

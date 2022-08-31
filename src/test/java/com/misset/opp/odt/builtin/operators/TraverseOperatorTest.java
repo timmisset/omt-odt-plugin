@@ -13,8 +13,8 @@ class TraverseOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TraverseOperator.INSTANCE,
-                Set.of(OppModelConstants.OWL_THING_INSTANCE),
-                Set.of(OppModelConstants.OWL_THING_INSTANCE));
+                Set.of(OppModelConstants.getOwlThingInstance()),
+                Set.of(OppModelConstants.getOwlThingInstance()));
     }
 
     @Test
@@ -30,14 +30,14 @@ class TraverseOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(TraverseOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
-        assertValidArgument(TraverseOperator.INSTANCE, 1, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertValidArgument(TraverseOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertValidArgument(TraverseOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
-        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 1, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(TraverseOperator.INSTANCE, 2);
     }
 }

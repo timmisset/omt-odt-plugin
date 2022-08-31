@@ -18,10 +18,10 @@ class IfEmptyOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         // no known error state, return input + catch
         assertResolved(IfEmptyOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE,
-                        OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance(),
+                        OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -42,8 +42,8 @@ class IfEmptyOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationThrowsWarningOnDifferentTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
-        doReturn(Set.of(OppModelConstants.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
 
         IfEmptyOperator.INSTANCE.specificValidation(call, holder);
         verify(holder).registerProblem(call, "Possible outcomes are incompatible, not illegal but it smells fishy", ProblemHighlightType.WEAK_WARNING);
@@ -51,8 +51,8 @@ class IfEmptyOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationThrowsNoWarningOnIdenticalTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
-        doReturn(Set.of(OppModelConstants.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()));
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
 
         IfEmptyOperator.INSTANCE.specificValidation(call, holder);
         verify(holder, never()).registerProblem(call, "Possible outcomes are incompatible, not illegal but it smells fishy", ProblemHighlightType.WEAK_WARNING);

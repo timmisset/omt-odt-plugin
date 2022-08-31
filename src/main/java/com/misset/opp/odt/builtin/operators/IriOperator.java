@@ -21,6 +21,6 @@ public class IriOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.IRI;
+        return OppModelConstants.getIri();
     }
 }

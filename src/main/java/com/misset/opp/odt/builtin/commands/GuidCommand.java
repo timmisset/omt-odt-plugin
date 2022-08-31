@@ -29,7 +29,7 @@ public class GuidCommand extends AbstractBuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.XSD_STRING_INSTANCE;
+        return OppModelConstants.getXsdStringInstance();
     }
 
     @Override

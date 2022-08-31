@@ -13,8 +13,8 @@ class SkipOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(SkipOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -30,12 +30,12 @@ class SkipOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(SkipOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertValidArgument(SkipOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(SkipOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertGetAcceptableArgumentType(SkipOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
         assertGetAcceptableArgumentTypeIsNull(SkipOperator.INSTANCE, 1);
     }
 

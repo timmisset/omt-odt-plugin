@@ -34,12 +34,12 @@ public class AndOperator extends BuiltInBooleanOperator {
 
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.getXsdBooleanInstance());
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.getXsdBooleanInstance());
     }
 
     @Override

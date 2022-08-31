@@ -52,7 +52,7 @@ public class JsonParseCommand extends AbstractBuiltInCommand {
                                         PsiCall call) {
         return call.resolveSignatureArgument(1).stream()
                 .map(Objects::toString)
-                .map(OppModel.INSTANCE::toIndividuals)
+                .map(OppModel.getInstance()::toIndividuals)
                 .flatMap(Collection::stream)
                 .map(individual -> Set.of((OntResource) individual))
                 .findFirst()
@@ -70,9 +70,9 @@ public class JsonParseCommand extends AbstractBuiltInCommand {
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.JSON_OBJECT);
+            return Set.of(OppModelConstants.getJsonObject());
         } else if (index == 2) {
-            return Set.of(OppModelConstants.NAMED_GRAPH);
+            return Set.of(OppModelConstants.getNamedGraph());
         }
         return null;
     }

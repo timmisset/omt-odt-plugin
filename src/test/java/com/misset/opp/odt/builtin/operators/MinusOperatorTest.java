@@ -13,38 +13,38 @@ class MinusOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(MinusOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance())
         );
     }
 
     @Test
     protected void testResolveDecimal() {
         assertResolved(MinusOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
-                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE)
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdDecimalInstance()),
+                Set.of(OppModelConstants.getXsdDecimalInstance())
         );
     }
 
     @Test
     protected void testResolveDecimalLeading() {
         assertResolved(MinusOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
-                Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.getXsdDecimalInstance()),
+                Set.of(OppModelConstants.getXsdDecimalInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance())
         );
     }
 
     @Test
     protected void testResolveMoreThan2Arguments() {
         assertResolved(MinusOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance())
         );
     }
 

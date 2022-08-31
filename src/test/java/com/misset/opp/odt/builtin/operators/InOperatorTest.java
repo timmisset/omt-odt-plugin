@@ -19,7 +19,7 @@ class InOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(InOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(InOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
@@ -40,8 +40,8 @@ class InOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationShowsWarningWhenIncompatiblePreviousStepAndArgumentTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
-        doReturn(Set.of(OppModelConstants.XSD_STRING_INSTANCE)).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 

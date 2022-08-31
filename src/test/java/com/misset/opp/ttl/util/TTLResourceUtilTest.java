@@ -19,7 +19,7 @@ class TTLResourceUtilTest {
     @BeforeEach
     void setUp() {
         OMTOntologyTestCase.initOntologyModel();
-        oppModel = OppModel.INSTANCE;
+        oppModel = OppModel.getInstance();
     }
 
     @ParameterizedTest

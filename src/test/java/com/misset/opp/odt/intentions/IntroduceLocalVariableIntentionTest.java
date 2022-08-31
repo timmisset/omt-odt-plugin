@@ -24,7 +24,7 @@ class IntroduceLocalVariableIntentionTest extends ODTTestCase {
     @Disabled("Unit-test doesn't work due to the in-place refactoring mechanism")
     void testInvokeHasClassName() {
         OMTOntologyTestCase.initOntologyModel();
-        configureByText(String.format("<caret>/<http://ontology#ClassA> / ^<%s>;", OppModelConstants.RDF_TYPE.getURI()));
+        configureByText(String.format("<caret>/<http://ontology#ClassA> / ^<%s>;", OppModelConstants.getRdfType().getURI()));
         IntentionAction singleIntention = myFixture.findSingleIntention(IntroduceLocalVariableIntention.TEXT);
         WriteCommandAction.runWriteCommandAction(getProject(), () -> singleIntention.invoke(getProject(), getEditor(), getFile()));
         String text = ReadAction.compute(() -> getFile().getText());

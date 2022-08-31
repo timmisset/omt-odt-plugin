@@ -28,22 +28,22 @@ public abstract class ODTResolvableConstantValueStep extends ODTResolvableQueryS
 
         final OntResource result;
         if (elementType == ODTTypes.BOOLEAN) {
-            result = OppModelConstants.XSD_BOOLEAN_INSTANCE;
+            result = OppModelConstants.getXsdBooleanInstance();
         } else if (elementType == ODTTypes.STRING) {
-            result = OppModelConstants.XSD_STRING_INSTANCE;
+            result = OppModelConstants.getXsdStringInstance();
         } else if (elementType == ODTTypes.INTEGER) {
-            result = OppModelConstants.XSD_INTEGER_INSTANCE;
+            result = OppModelConstants.getXsdIntegerInstance();
         } else if (elementType == ODTTypes.DECIMAL) {
-            result = OppModelConstants.XSD_DECIMAL_INSTANCE;
+            result = OppModelConstants.getXsdDecimalInstance();
         } else if (elementType == ODTTypes.INTERPOLATED_STRING) {
-            result = OppModelConstants.XSD_STRING_INSTANCE;
+            result = OppModelConstants.getXsdStringInstance();
         } else if (elementType == ODTTypes.NULL) {
             result = null; // returns an emptySet which is the ODT equivalent of null
         } else if (elementType == ODTTypes.PRIMITIVE) {
             final Individual individual = TTLValueParserUtil.parsePrimitive(getText());
-            result = individual != null ? OppModel.INSTANCE.toClass(individual) : null;
+            result = individual != null ? OppModel.getInstance().toClass(individual) : null;
         } else {
-            result = OppModelConstants.OWL_THING_INSTANCE;
+            result = OppModelConstants.getOwlThingInstance();
         }
 
         // a constant value, like a string, boolean, number etc is considered

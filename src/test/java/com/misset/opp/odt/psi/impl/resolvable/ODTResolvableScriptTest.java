@@ -18,7 +18,7 @@ class ODTResolvableScriptTest extends OMTOntologyTestCase {
         );
         configureByText(content);
         Set<OntResource> resources = ReadAction.compute(() -> ((ODTScript) myFixture.getFile().getFirstChild()).resolve());
-        assertContainsElements(resources, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertContainsElements(resources, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
@@ -26,7 +26,7 @@ class ODTResolvableScriptTest extends OMTOntologyTestCase {
         String content = insideStandaloneQueryWithPrefixes("query: '<caret>'");
         configureByText(content);
         Set<OntResource> resources = ReadAction.compute(() -> ((ODTScript) myFixture.getFile().getFirstChild()).resolve());
-        assertDoesntContain(resources, OppModelConstants.XSD_STRING_INSTANCE);
+        assertDoesntContain(resources, OppModelConstants.getXsdStringInstance());
     }
 
 }

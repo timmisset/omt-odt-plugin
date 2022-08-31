@@ -43,12 +43,12 @@ public class RoundOperator extends AbstractBuiltInOperator {
                                            PsiCall call) {
         final int numberOfArguments = call.getNumberOfArguments();
         if (numberOfArguments == 0) {
-            return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
+            return Set.of(OppModelConstants.getXsdIntegerInstance());
         } else {
             if ("0".equals(call.getSignatureValue(0))) {
-                return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
+                return Set.of(OppModelConstants.getXsdIntegerInstance());
             }
-            return Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
+            return Set.of(OppModelConstants.getXsdDecimalInstance());
         }
     }
 
@@ -62,7 +62,7 @@ public class RoundOperator extends AbstractBuiltInOperator {
             holder.registerProblem(call.getCallSignatureArgumentElement(0),
                     UNNECESSARY_DECIMAL_PLACES_VALUE, ProblemHighlightType.WEAK_WARNING);
         }
-        if (!callInputType.isEmpty() && callInputType.stream().allMatch(OppModelConstants.XSD_INTEGER_INSTANCE::equals)) {
+        if (!callInputType.isEmpty() && callInputType.stream().allMatch(OppModelConstants.getXsdIntegerInstance()::equals)) {
             holder.registerProblem(call,
                     INPUT_IS_ALREADY_AN_INTEGER, ProblemHighlightType.WEAK_WARNING);
         }
@@ -71,14 +71,14 @@ public class RoundOperator extends AbstractBuiltInOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
+            return Set.of(OppModelConstants.getXsdIntegerInstance());
         }
         return null;
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
+        return Set.of(OppModelConstants.getXsdDecimalInstance());
     }
 
     @Override

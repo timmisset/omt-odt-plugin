@@ -6,6 +6,10 @@ import com.misset.opp.resolvable.psi.PsiCall;
 
 public class RefactoringUtil {
 
+    private RefactoringUtil() {
+        // empty constructor
+    }
+
     public static void removeParameterFromCall(PsiReference reference, int index) {
         PsiElement element = reference.getElement();
         if (element instanceof PsiCall) {

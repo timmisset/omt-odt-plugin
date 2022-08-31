@@ -141,7 +141,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
                     .map(Resolvable::resolve)
                     .filter(resources -> !resources.isEmpty())
                     .findFirst()
-                    .orElse(Set.of(OppModelConstants.OWL_THING_INSTANCE));
+                    .orElse(Set.of(OppModelConstants.getOwlThingInstance()));
         }
     }
 
@@ -158,7 +158,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
     @Override
     public Set<OntResource> getSecondReturnArgument() {
         // $committed value
-        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.getXsdBooleanInstance());
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public class TTLSubjectStubImpl extends StubBase<TTLSubject> implements TTLSubjectStub {
     private final String iri;
 
-    protected TTLSubjectStubImpl(@Nullable StubElement parent, String iri) {
+    protected TTLSubjectStubImpl(@Nullable StubElement<?> parent, String iri) {
         super(parent, (TTLSubjectStubElementType) TTLTypes.SUBJECT);
         this.iri = iri;
     }

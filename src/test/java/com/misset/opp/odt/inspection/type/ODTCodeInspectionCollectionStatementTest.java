@@ -51,8 +51,8 @@ class ODTCodeInspectionCollectionStatementTest extends OMTInspectionTestCase {
 
     @Test
     void testHasNoWarningWhenAssigningSubClass() {
-        final OntClass classBSub = OppModel.INSTANCE.getClass("http://ontology#ClassBSub");
-        final OntClass subclassOfClassBSub = OppModel.INSTANCE.getModel()
+        final OntClass classBSub = OppModel.getInstance().getClass("http://ontology#ClassBSub");
+        final OntClass subclassOfClassBSub = OppModel.getInstance().getModel()
                 .createClass(classBSub.getNameSpace() + "#SubclassOfClassBSub");
         subclassOfClassBSub.addSuperClass(classBSub);
         assertHasNoTypeWarning("/ont:ClassA / ^rdf:type / ont:classPredicate = /ont:SubclassOfClassBSub / ^rdf:type;");

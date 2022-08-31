@@ -30,7 +30,7 @@ public abstract class ODTResolvableScript extends ODTBaseResolvable implements P
     public @NotNull Set<OntResource> resolve() {
         Collection<ODTReturnStatement> returnStatements = PsiTreeUtil.findChildrenOfType(this, ODTReturnStatement.class);
         if (returnStatements.isEmpty()) {
-            return Collections.singleton(OppModelConstants.VOID);
+            return Collections.singleton(OppModelConstants.getVoidResponse());
         }
         return returnStatements
                 .stream()

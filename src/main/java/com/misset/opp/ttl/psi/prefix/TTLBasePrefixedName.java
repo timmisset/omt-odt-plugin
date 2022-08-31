@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public abstract class TTLBasePrefixedName extends ASTWrapperPsiElement implements TTLPrefixedNameHolder, TTLPrefixedName, PsiNamedElement {
-    public TTLBasePrefixedName(@NotNull ASTNode node) {
+    protected TTLBasePrefixedName(@NotNull ASTNode node) {
         super(node);
     }
 

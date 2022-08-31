@@ -8,6 +8,10 @@ import java.time.ZonedDateTime;
 
 public class LoggerUtil {
 
+    private LoggerUtil() {
+        // empty constructor
+    }
+
     public static void runWithLogger(Logger logger, String methodName, Runnable runnable) {
         ZonedDateTime start = ZonedDateTime.now();
         runnable.run();

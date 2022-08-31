@@ -10,7 +10,7 @@ class AssertCommandTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(AssertCommand.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(AssertCommand.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test

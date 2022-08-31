@@ -11,13 +11,13 @@ class GraphOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(GraphOperator.INSTANCE, OppModelConstants.NAMED_GRAPH);
+        assertResolved(GraphOperator.INSTANCE, OppModelConstants.getNamedGraph());
     }
 
     @Test
     void testInputArgumentsRequiresInstances() {
-        assertValidInput(GraphOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
-        assertInvalidInput(GraphOperator.INSTANCE, OppModelConstants.XSD_STRING, TTLValidationUtil.ERROR_MESSAGE_INSTANCES);
+        assertValidInput(GraphOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertInvalidInput(GraphOperator.INSTANCE, OppModelConstants.getXsdString(), TTLValidationUtil.ERROR_MESSAGE_INSTANCES);
     }
 
     @Test

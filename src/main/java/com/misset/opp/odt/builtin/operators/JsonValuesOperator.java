@@ -27,7 +27,7 @@ public class JsonValuesOperator extends AbstractBuiltInOperator {
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Collections.singleton(OppModelConstants.JSON_OBJECT);
+        return Collections.singleton(OppModelConstants.getJsonObject());
     }
 
     @Override
@@ -37,6 +37,6 @@ public class JsonValuesOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.OWL_THING_INSTANCE;
+        return OppModelConstants.getOwlThingInstance();
     }
 }

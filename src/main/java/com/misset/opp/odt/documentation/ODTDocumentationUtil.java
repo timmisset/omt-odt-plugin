@@ -149,7 +149,7 @@ public class ODTDocumentationUtil {
                         .findFirst();
             }
         }
-        return uri.map(OppModel.INSTANCE::toIndividuals)
+        return uri.map(OppModel.getInstance()::toIndividuals)
                 .orElse(new HashSet<>())
                 .stream()
                 .map(OntResource.class::cast)

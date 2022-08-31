@@ -10,7 +10,7 @@ import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.resolvable.Callable;
-import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -90,7 +90,7 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
 
     private void appendReturnInformation(Callable callable, ODTCall call, StringBuilder sb) {
         if (!callable.isVoid()) {
-            Set<OntResource> resolve = callable.resolve(Context.fromCall(call));
+            Set<OntResource> resolve = callable.resolve(ContextFactory.fromCall(call));
             DocumentationProvider.addKeyValueSection("Returns:", resolve.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(resolve), sb);
             if (!callable.getSecondReturnArgument().isEmpty()) {
                 DocumentationProvider.addKeyValueSection("Secondary return:", TTLResourceUtil.describeUrisForLookupJoined(callable.getSecondReturnArgument()), sb);

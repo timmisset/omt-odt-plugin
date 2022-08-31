@@ -11,13 +11,13 @@ class LengthOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(LengthOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertResolved(LengthOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testValidArguments() {
-        assertValidInput(LengthOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
-        assertInvalidInput(LengthOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidInput(LengthOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertInvalidInput(LengthOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test
@@ -33,6 +33,6 @@ class LengthOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(LengthOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableInputType(LengthOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 }

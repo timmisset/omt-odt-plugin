@@ -11,6 +11,10 @@ import java.util.List;
 
 public class CallableUtil {
 
+    private CallableUtil() {
+        // empty constructor
+    }
+
     private static boolean passesMinArguments(Callable callable, int numberOfArguments) {
         return numberOfArguments >= callable.minNumberOfArguments();
     }
@@ -24,15 +28,15 @@ public class CallableUtil {
         int maxNumberOfArguments = callable.maxNumberOfArguments();
         if (minNumberOfArguments == 0) {
             if (maxNumberOfArguments > -1) {
-                return "at most " + maxNumberOfArguments + " arguments";
+                return String.format("at most %s arguments", maxNumberOfArguments);
             } else {
                 return "no arguments";
             }
         } else if (minNumberOfArguments > 0) {
             if (maxNumberOfArguments == -1) {
-                return "at least " + minNumberOfArguments + " arguments";
+                return String.format("at least %s arguments", minNumberOfArguments);
             } else {
-                return "between " + minNumberOfArguments + " and " + maxNumberOfArguments + " arguments";
+                return String.format("between %s and %s arguments", minNumberOfArguments, maxNumberOfArguments);
             }
         }
         return null;

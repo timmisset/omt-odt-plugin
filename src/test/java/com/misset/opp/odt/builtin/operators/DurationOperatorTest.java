@@ -11,17 +11,17 @@ class DurationOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(DurationOperator.INSTANCE, OppModelConstants.XSD_DURATION_INSTANCE);
+        assertResolved(DurationOperator.INSTANCE, OppModelConstants.getXsdDurationInstance());
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.XSD_DECIMAL_INSTANCE);
-        assertValidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
-        assertValidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertInvalidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_NUMBER);
-        assertValidArgument(DurationOperator.INSTANCE, 1, OppModelConstants.XSD_STRING_INSTANCE);
-        assertInvalidArgument(DurationOperator.INSTANCE, 1, OppModelConstants.XSD_NUMBER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdDecimalInstance());
+        assertValidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
+        assertValidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdNumberInstance());
+        assertInvalidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_NUMBER);
+        assertValidArgument(DurationOperator.INSTANCE, 1, OppModelConstants.getXsdStringInstance());
+        assertInvalidArgument(DurationOperator.INSTANCE, 1, OppModelConstants.getXsdNumberInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test
@@ -37,8 +37,8 @@ class DurationOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 0, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 1, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdNumberInstance());
+        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 1, OppModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(DurationOperator.INSTANCE, 2);
     }
 

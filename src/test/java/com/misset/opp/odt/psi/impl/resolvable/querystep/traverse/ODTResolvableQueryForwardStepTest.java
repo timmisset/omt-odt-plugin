@@ -22,7 +22,7 @@ class ODTResolvableQueryForwardStepTest extends OMTOntologyTestCase {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassD / ^rdf:type / ont:classB");
         Assertions.assertTrue(resources.contains(createResource("ClassB_INSTANCE")));
         Assertions.assertTrue(resources.contains(createResource("ClassBSub_INSTANCE")));
-        Assertions.assertTrue(resources.stream().allMatch(OppModel.INSTANCE::isIndividual));
+        Assertions.assertTrue(resources.stream().allMatch(OppModel.getInstance()::isIndividual));
     }
 
     @Test
@@ -35,6 +35,6 @@ class ODTResolvableQueryForwardStepTest extends OMTOntologyTestCase {
     void testResolveWithoutTypeShouldResolveToClass() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassD / ont:classB");
         Assertions.assertTrue(resources.contains(createResource("ClassB")));
-        Assertions.assertTrue(resources.stream().allMatch(OppModel.INSTANCE::isClass));
+        Assertions.assertTrue(resources.stream().allMatch(OppModel.getInstance()::isClass));
     }
 }

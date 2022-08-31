@@ -63,7 +63,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
 
     @Test
     void testResolvesToJson() {
-        Assertions.assertEquals(Set.of(OppModelConstants.JSON_OBJECT), OMTLoadableMetaType.getInstance().resolve(null, null));
+        Assertions.assertEquals(Set.of(OppModelConstants.getJsonObject()), OMTLoadableMetaType.getInstance().resolve(null, null));
     }
 
     @Test

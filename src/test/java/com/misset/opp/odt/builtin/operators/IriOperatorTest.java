@@ -10,7 +10,7 @@ class IriOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(IriOperator.INSTANCE, OppModelConstants.IRI);
+        assertResolved(IriOperator.INSTANCE, OppModelConstants.getIri());
     }
 
     @Test

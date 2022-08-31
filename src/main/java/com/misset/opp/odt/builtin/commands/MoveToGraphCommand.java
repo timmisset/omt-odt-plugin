@@ -49,7 +49,7 @@ public class MoveToGraphCommand extends AbstractBuiltInCommand {
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 1) {
-            return Set.of(OppModelConstants.NAMED_GRAPH);
+            return Set.of(OppModelConstants.getNamedGraph());
         }
         return null;
     }

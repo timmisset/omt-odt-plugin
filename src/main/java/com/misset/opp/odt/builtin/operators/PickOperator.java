@@ -34,7 +34,7 @@ public class PickOperator extends BuiltInCollectionOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
+            return Set.of(OppModelConstants.getXsdIntegerInstance());
         }
         return null;
     }

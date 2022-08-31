@@ -50,9 +50,9 @@ public class CopyInGraphCommand extends AbstractBuiltInCommand {
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 1) {
-            return Set.of(OppModelConstants.NAMED_GRAPH);
+            return Set.of(OppModelConstants.getNamedGraph());
         } else if (index == 2) {
-            return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+            return Set.of(OppModelConstants.getXsdBooleanInstance());
         }
         return null;
     }

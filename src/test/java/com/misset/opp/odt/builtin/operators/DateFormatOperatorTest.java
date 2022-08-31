@@ -11,7 +11,7 @@ class DateFormatOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(DateFormatOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(DateFormatOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -27,19 +27,19 @@ class DateFormatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testArgumentTypes() {
-        assertValidInput(DateFormatOperator.INSTANCE, OppModelConstants.XSD_DATE_INSTANCE);
-        assertValidInput(DateFormatOperator.INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
-        testArgument(DateFormatOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidInput(DateFormatOperator.INSTANCE, OppModelConstants.getXsdDateInstance());
+        assertValidInput(DateFormatOperator.INSTANCE, OppModelConstants.getXsdDatetimeInstance());
+        testArgument(DateFormatOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(DateFormatOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(DateFormatOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(DateFormatOperator.INSTANCE, 1);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(DateFormatOperator.INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
+        assertGetAcceptableInputType(DateFormatOperator.INSTANCE, OppModelConstants.getXsdDatetimeInstance());
     }
 }

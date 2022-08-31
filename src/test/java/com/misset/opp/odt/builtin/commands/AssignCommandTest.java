@@ -22,16 +22,16 @@ class AssignCommandTest extends BaseBuiltinTest {
 
     @Test
     void testAcceptableArgumentType() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
 
         Assertions.assertTrue(AssignCommand.INSTANCE.getAcceptableArgumentType(0, call)
-                .contains(OppModelConstants.OWL_THING_INSTANCE));
+                .contains(OppModelConstants.getOwlThingInstance()));
         Assertions.assertTrue(AssignCommand.INSTANCE.getAcceptableArgumentType(1, call)
-                .contains(OppModelConstants.OWL_THING_INSTANCE));
+                .contains(OppModelConstants.getOwlThingInstance()));
         Assertions.assertTrue(AssignCommand.INSTANCE.getAcceptableArgumentType(2, call)
-                .contains(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                .contains(OppModelConstants.getXsdBooleanInstance()));
         Assertions.assertFalse(AssignCommand.INSTANCE.getAcceptableArgumentType(2, call)
-                .contains(OppModelConstants.XSD_STRING_INSTANCE));
+                .contains(OppModelConstants.getXsdStringInstance()));
     }
 
     @Test

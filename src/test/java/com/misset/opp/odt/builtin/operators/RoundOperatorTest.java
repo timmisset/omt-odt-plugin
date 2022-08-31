@@ -2,7 +2,7 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -30,19 +30,19 @@ class RoundOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(RoundOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertValidArgument(RoundOperator.INSTANCE, 0, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertValidInput(RoundOperator.INSTANCE, OppModelConstants.getXsdNumberInstance());
+        assertValidArgument(RoundOperator.INSTANCE, 0, OppModelConstants.getXsdNumberInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(RoundOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertGetAcceptableArgumentType(RoundOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
         assertGetAcceptableArgumentTypeIsNull(RoundOperator.INSTANCE, 1);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(RoundOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
+        assertGetAcceptableInputType(RoundOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
     }
 
     @Override
@@ -50,29 +50,29 @@ class RoundOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         // default rounds to 0 decimals, so returns type integer
         assertResolved(RoundOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE));
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdIntegerInstance()));
     }
 
     @Test
     void testResolveWithDecimal0Value() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_INTEGER_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdIntegerInstance()));
         doReturn("0").when(call).getSignatureValue(0);
-        final Set<OntResource> resolve = RoundOperator.INSTANCE.resolve(Context.fromCall(call));
-        Assertions.assertTrue(resolve.stream().allMatch(OppModelConstants.XSD_INTEGER_INSTANCE::equals));
+        final Set<OntResource> resolve = RoundOperator.INSTANCE.resolve(ContextFactory.fromCall(call));
+        Assertions.assertTrue(resolve.stream().allMatch(OppModelConstants.getXsdIntegerInstance()::equals));
     }
 
     @Test
     void testResolveWithDecimal1Value() {
         final PsiCall call = getCall(Collections.emptySet());
         doReturn("1").when(call).getSignatureValue(0);
-        final Set<OntResource> resolve = RoundOperator.INSTANCE.resolve(Context.fromCall(call));
-        Assertions.assertTrue(resolve.stream().allMatch(OppModelConstants.XSD_DECIMAL_INSTANCE::equals));
+        final Set<OntResource> resolve = RoundOperator.INSTANCE.resolve(ContextFactory.fromCall(call));
+        Assertions.assertTrue(resolve.stream().allMatch(OppModelConstants.getXsdDecimalInstance()::equals));
     }
 
     @Test
     void testSpecificValidationHasWarningWhenRoundingTo0Decimals() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_INTEGER_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdIntegerInstance()));
         doReturn("0").when(call).getSignatureValue(0);
         RoundOperator.INSTANCE.validate(call, holder);
 
@@ -82,9 +82,9 @@ class RoundOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasWarningWhenInputIsAlreadyAllIntegers() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_INTEGER_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdIntegerInstance()));
         doReturn("0").when(call).getSignatureValue(0);
-        doReturn(Set.of(OppModelConstants.XSD_INTEGER_INSTANCE)).when(call).resolvePreviousStep();
+        doReturn(Set.of(OppModelConstants.getXsdIntegerInstance())).when(call).resolvePreviousStep();
         RoundOperator.INSTANCE.validate(call, holder);
 
         verify(holder).registerProblem(call,

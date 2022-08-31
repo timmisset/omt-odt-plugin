@@ -72,7 +72,7 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
         Predicate<Set<OntResource>> precedingFilter;
         Set<OntResource> previousStep = queryStep.resolvePreviousStep();
         precedingFilter = acceptableInput -> previousStep.isEmpty() ||
-                OppModel.INSTANCE.areCompatible(acceptableInput, previousStep);
+                OppModel.getInstance().areCompatible(acceptableInput, previousStep);
 
         // add BuiltinOperators
         addBuiltinOperators(position, result, context, typeFilter, precedingFilter);

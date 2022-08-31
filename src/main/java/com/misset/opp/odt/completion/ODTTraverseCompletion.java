@@ -64,19 +64,19 @@ public class ODTTraverseCompletion extends CompletionContributor {
                 HashMap<Property, Set<OntResource>> reversePredicates = new HashMap<>();
                 if (subjects.isEmpty()) {
                     // cannot establish subject, only show the rdf:type predicates
-                    forwardPredicates.put(OppModelConstants.RDF_TYPE, Collections.emptySet());
-                    reversePredicates.put(OppModelConstants.RDF_TYPE, Collections.emptySet());
+                    forwardPredicates.put(OppModelConstants.getRdfType(), Collections.emptySet());
+                    reversePredicates.put(OppModelConstants.getRdfType(), Collections.emptySet());
                 } else {
-                    OppModel.INSTANCE.listPredicates(subjects)
+                    OppModel.getInstance().listPredicates(subjects)
                             .forEach(property -> {
-                                Set<OntResource> predicateObjects = OppModel.INSTANCE.listObjects(subjects, property);
+                                Set<OntResource> predicateObjects = OppModel.getInstance().listObjects(subjects, property);
                                 if (typeFilter.test(predicateObjects)) {
                                     forwardPredicates.put(property, predicateObjects);
                                 }
                             });
-                    OppModel.INSTANCE.listReversePredicates(subjects)
+                    OppModel.getInstance().listReversePredicates(subjects)
                             .forEach(property -> {
-                                Set<OntResource> predicateSubjects = OppModel.INSTANCE.listSubjects(property, subjects);
+                                Set<OntResource> predicateSubjects = OppModel.getInstance().listSubjects(property, subjects);
                                 if (typeFilter.test(predicateSubjects)) {
                                     reversePredicates.put(property, predicateSubjects);
                                 }

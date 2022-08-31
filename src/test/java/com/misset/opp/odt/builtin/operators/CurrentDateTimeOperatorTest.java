@@ -10,7 +10,7 @@ class CurrentDateTimeOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(CurrentDateTimeOperator.INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
+        assertResolved(CurrentDateTimeOperator.INSTANCE, OppModelConstants.getXsdDatetimeInstance());
     }
 
     @Test

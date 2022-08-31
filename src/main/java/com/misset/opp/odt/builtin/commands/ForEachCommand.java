@@ -42,7 +42,7 @@ public class ForEachCommand extends AbstractBuiltInCommand implements CallableLo
         }
         return List.of(
                 new LocalVariable("$value", "iterator value", call.resolveSignatureArgument(0), FOR_EACH_VARIABLE),
-                new LocalVariable("$index", "iterator index", Set.of(OppModelConstants.XSD_INTEGER_INSTANCE), FOR_EACH_VARIABLE),
+                new LocalVariable("$index", "iterator index", Set.of(OppModelConstants.getXsdIntegerInstance()), FOR_EACH_VARIABLE),
                 new LocalVariable("$array", "all input values", call.resolveSignatureArgument(0), FOR_EACH_VARIABLE)
         );
     }

@@ -20,9 +20,9 @@ class IfCommandTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         // IF(<boolean>, THEN) => THEN
-        assertResolved(IfCommand.INSTANCE, Collections.emptySet(), Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        assertResolved(IfCommand.INSTANCE, Collections.emptySet(), Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
         // IF(<boolean>, THEN, ELSE) => THEN | ELSE
-        assertResolved(IfCommand.INSTANCE, Collections.emptySet(), Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_INTEGER_INSTANCE));
+        assertResolved(IfCommand.INSTANCE, Collections.emptySet(), Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdIntegerInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdIntegerInstance()));
     }
 
     @Test
@@ -38,7 +38,7 @@ class IfCommandTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasErrorWhenCalledWithNonBooleanArgument() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()));
         ProblemsHolder holder = mock(ProblemsHolder.class);
 
         IfCommand.INSTANCE.specificValidation(call, holder);
@@ -48,7 +48,7 @@ class IfCommandTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasNoErrorWhenCalledWithBooleanArgument() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
         ProblemsHolder holder = mock(ProblemsHolder.class);
 
         IfCommand.INSTANCE.specificValidation(call, holder);
@@ -58,7 +58,7 @@ class IfCommandTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(IfCommand.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(IfCommand.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(IfCommand.INSTANCE, 1);
     }
 }

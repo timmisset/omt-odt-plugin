@@ -9,52 +9,56 @@ import org.apache.jena.rdf.model.Property;
 import java.util.List;
 import java.util.Set;
 
-public class OppModelConstants {
-    public static Property SHACL_PATH;
-    public static Property SHACL_CLASS;
-    public static Property SHACL_MINCOUNT;
-    public static Property SHACL_MAXCOUNT;
-    public static Property SHACL_DATATYPE;
-    public static Property SHACL_PROPERTY;
-    public static Property SHACL_PROPERYSHAPE;
-    public static Property RDFS_SUBCLASS_OF;
-    public static Property RDF_TYPE;
-    public static List<Property> CLASS_MODEL_PROPERTIES;
-    public static OntClass RDFS_CLASS;
-    public static OntClass RDFS_RESOURCE;
-    public static OntClass OWL_CLASS;
-    public static OntClass OWL_THING_CLASS;
-    public static Individual OWL_THING_INSTANCE;
-    public static OntClass OPP_CLASS;
-    public static OntClass JSON;
-    public static OntClass GRAPH_SHAPE;
-    public static OntClass GRAPH_CLASS;
-    public static OntClass NAMED_GRAPH_CLASS;
-    public static OntClass TRANSIENT_GRAPH_CLASS;
-    public static Individual IRI;
-    public static Individual JSON_OBJECT;
-    public static Individual BLANK_NODE;
-    public static Individual ERROR;
-    public static Individual NAMED_GRAPH;
-    public static Individual TRANSIENT_GRAPH;
-    public static Individual MEDEWERKER_GRAPH;
-    public static Individual VOID;
-    public static OntClass XSD_BOOLEAN;
-    public static OntClass XSD_STRING;
-    public static OntClass XSD_NUMBER;
-    public static OntClass XSD_INTEGER;
-    public static OntClass XSD_DECIMAL;
-    public static OntClass XSD_DATE;
-    public static OntClass XSD_DATETIME;
-    public static OntClass XSD_DURATION;
-    public static Individual XSD_BOOLEAN_INSTANCE;
-    public static Individual XSD_STRING_INSTANCE;
-    public static Individual XSD_NUMBER_INSTANCE;
-    public static Individual XSD_INTEGER_INSTANCE;
-    public static Individual XSD_DECIMAL_INSTANCE;
-    public static Individual XSD_DATE_INSTANCE;
-    public static Individual XSD_DATETIME_INSTANCE;
-    public static Individual XSD_DURATION_INSTANCE;
+public final class OppModelConstants {
+    private static Property shaclPath;
+    private static Property shaclClass;
+    private static Property shaclMincount;
+    private static Property shaclMaxcount;
+    private static Property shaclDatatype;
+    private static Property shaclProperty;
+    private static Property shaclProperyshape;
+    private static Property rdfsSubclassOf;
+    private static Property rdfType;
+    private static List<Property> classModelProperties;
+    private static OntClass rdfsClass;
+    private static OntClass rdfsResource;
+    private static OntClass owlClass;
+    private static OntClass owlThingClass;
+    private static Individual owlThingInstance;
+    private static OntClass oppClass;
+    private static OntClass json;
+    private static OntClass graphShape;
+    private static OntClass graphClass;
+    private static OntClass namedGraphClass;
+    private static OntClass transientGraphClass;
+    private static Individual iri;
+    private static Individual jsonObject;
+    private static Individual blankNode;
+    private static Individual error;
+    private static Individual namedGraph;
+    private static Individual transientGraph;
+    private static Individual medewerkerGraph;
+    private static Individual voidResponse;
+    private static OntClass xsdBoolean;
+    private static OntClass xsdString;
+    private static OntClass xsdNumber;
+    private static OntClass xsdInteger;
+    private static OntClass xsdDecimal;
+    private static OntClass xsdDate;
+    private static OntClass xsdDatetime;
+    private static OntClass xsdDuration;
+    private static Individual xsdBooleanInstance;
+    private static Individual xsdStringInstance;
+    private static Individual xsdNumberInstance;
+    private static Individual xsdIntegerInstance;
+    private static Individual xsdDecimalInstance;
+    private static Individual xsdDateInstance;
+    private static Individual xsdDatetimeInstance;
+    private static Individual xsdDurationInstance;
+
+    private OppModelConstants() {
+        // empty constructor
+    }
 
     public static void setConstants(OppModel model, OntModel ontologyModel) {
         setProperties(model, ontologyModel);
@@ -64,87 +68,267 @@ public class OppModelConstants {
     }
 
     private static void setPrimitives(OppModel model, OntModel ontologyModel) {
-        XSD_BOOLEAN = model.createClass(XSD.BOOLEAN.getUri(), ontologyModel, OWL_THING_CLASS);
-        XSD_BOOLEAN_INSTANCE = model.createIndividual(XSD_BOOLEAN, XSD.BOOLEAN_INSTANCE.getUri());
+        xsdBoolean = model.createClass(XSD.BOOLEAN.getUri(), ontologyModel, getOwlThingClass());
+        xsdBooleanInstance = model.createIndividual(getXsdBoolean(), XSD.BOOLEAN_INSTANCE.getUri());
 
-        XSD_STRING = model.createClass(XSD.STRING.getUri(), ontologyModel, OWL_THING_CLASS);
-        XSD_STRING_INSTANCE = model.createIndividual(XSD_STRING, XSD.STRING_INSTANCE.getUri());
+        xsdString = model.createClass(XSD.STRING.getUri(), ontologyModel, getOwlThingClass());
+        xsdStringInstance = model.createIndividual(getXsdString(), XSD.STRING_INSTANCE.getUri());
 
-        XSD_NUMBER = model.createClass(XSD.NUMBER.getUri(), ontologyModel, OWL_THING_CLASS);
-        XSD_NUMBER_INSTANCE = model.createIndividual(XSD_NUMBER, XSD.NUMBER_INSTANCE.getUri());
+        xsdNumber = model.createClass(XSD.NUMBER.getUri(), ontologyModel, getOwlThingClass());
+        xsdNumberInstance = model.createIndividual(getXsdNumber(), XSD.NUMBER_INSTANCE.getUri());
 
-        XSD_DECIMAL = model.createClass(XSD.DECIMAL.getUri(), ontologyModel, List.of(OWL_THING_CLASS, XSD_NUMBER));
-        XSD_DECIMAL_INSTANCE = model.createIndividual(XSD_DECIMAL, XSD.DECIMAL_INSTANCE.getUri());
+        xsdDecimal = model.createClass(XSD.DECIMAL.getUri(), ontologyModel, List.of(getOwlThingClass(), getXsdNumber()));
+        xsdDecimalInstance = model.createIndividual(getXsdDecimal(), XSD.DECIMAL_INSTANCE.getUri());
 
-        XSD_INTEGER = model.createClass(XSD.INTEGER.getUri(), ontologyModel, List.of(OWL_THING_CLASS, XSD_DECIMAL));
+        xsdInteger = model.createClass(XSD.INTEGER.getUri(), ontologyModel, List.of(getOwlThingClass(), getXsdDecimal()));
         // by making XSD_INTEGER a subclass of XSD_DECIMAL, it will allow type checking
         // to accept an integer at a decimal position, but not the other way around
-        XSD_INTEGER_INSTANCE = model.createIndividual(XSD_INTEGER, XSD.INTEGER_INSTANCE.getUri());
+        xsdIntegerInstance = model.createIndividual(getXsdInteger(), XSD.INTEGER_INSTANCE.getUri());
 
-        XSD_DATETIME = model.createClass(XSD.DATETIME.getUri(), ontologyModel, OWL_THING_CLASS);
-        XSD_DATETIME_INSTANCE = model.createIndividual(XSD_DATETIME, XSD.DATETIME_INSTANCE.getUri());
+        xsdDatetime = model.createClass(XSD.DATETIME.getUri(), ontologyModel, getOwlThingClass());
+        xsdDatetimeInstance = model.createIndividual(getXsdDatetime(), XSD.DATETIME_INSTANCE.getUri());
 
-        XSD_DATE = model.createClass(XSD.DATE.getUri(), ontologyModel, List.of(OWL_THING_CLASS, XSD_DATETIME));
+        xsdDate = model.createClass(XSD.DATE.getUri(), ontologyModel, List.of(getOwlThingClass(), getXsdDatetime()));
         // by making XSD_DATE a subclass of XSD_DATETIME, it will allow type checking
         // to accept a date at a datetime position, but not the other way around
-        XSD_DATE_INSTANCE = model.createIndividual(XSD_DATE, XSD.DATE_INSTANCE.getUri());
+        xsdDateInstance = model.createIndividual(getXsdDate(), XSD.DATE_INSTANCE.getUri());
 
-        XSD_DURATION = model.createClass(XSD.DURATION.getUri(), ontologyModel, OWL_THING_CLASS);
-        XSD_DURATION_INSTANCE = model.createIndividual(XSD_DURATION, XSD.DURATION_INSTANCE.getUri());
+        xsdDuration = model.createClass(XSD.DURATION.getUri(), ontologyModel, getOwlThingClass());
+        xsdDurationInstance = model.createIndividual(getXsdDuration(), XSD.DURATION_INSTANCE.getUri());
     }
 
     private static void setProperties(OppModel model, OntModel ontologyModel) {
-        SHACL_PATH = model.createProperty(SHACL.PATH.getUri(), ontologyModel);
-        SHACL_CLASS = model.createProperty(SHACL.CLASS.getUri(), ontologyModel);
-        SHACL_DATATYPE = model.createProperty(SHACL.DATATYPE.getUri(), ontologyModel);
-        SHACL_MINCOUNT = model.createProperty(SHACL.MIN_COUNT.getUri(), ontologyModel);
-        SHACL_MAXCOUNT = model.createProperty(SHACL.MAX_COUNT.getUri(), ontologyModel);
-        SHACL_PROPERTY = model.createProperty(SHACL.PROPERTY.getUri(), ontologyModel);
-        SHACL_PROPERYSHAPE = model.createProperty(SHACL.PROPERTY_SHAPE.getUri(), ontologyModel);
+        shaclPath = model.createProperty(SHACL.PATH.getUri(), ontologyModel);
+        shaclClass = model.createProperty(SHACL.CLASS.getUri(), ontologyModel);
+        shaclDatatype = model.createProperty(SHACL.DATATYPE.getUri(), ontologyModel);
+        shaclMincount = model.createProperty(SHACL.MIN_COUNT.getUri(), ontologyModel);
+        shaclMaxcount = model.createProperty(SHACL.MAX_COUNT.getUri(), ontologyModel);
+        shaclProperty = model.createProperty(SHACL.PROPERTY.getUri(), ontologyModel);
+        shaclProperyshape = model.createProperty(SHACL.PROPERTY_SHAPE.getUri(), ontologyModel);
 
-        RDFS_SUBCLASS_OF = model.createProperty(RDFS.SUBCLASS_OF.getUri(), ontologyModel);
-        RDF_TYPE = model.createProperty(RDF.TYPE.getUri(), ontologyModel);
+        rdfsSubclassOf = model.createProperty(RDFS.SUBCLASS_OF.getUri(), ontologyModel);
+        rdfType = model.createProperty(RDF.TYPE.getUri(), ontologyModel);
 
-        CLASS_MODEL_PROPERTIES = List.of(RDFS_SUBCLASS_OF, RDF_TYPE);
+        classModelProperties = List.of(getRdfsSubclassOf(), getRdfType());
     }
 
     private static void setIndividuals(OppModel model) {
-        OWL_THING_INSTANCE = model.createIndividual(OWL_THING_CLASS, OWL.THING_INSTANCE.getUri());
+        owlThingInstance = model.createIndividual(getOwlThingClass(), OWL.THING_INSTANCE.getUri());
 
-        JSON_OBJECT = model.createIndividual(JSON, PLATFORM.JSON_OBJECT.getUri());
-        IRI = model.createIndividual(OPP_CLASS, PLATFORM.IRI.getUri());
-        ERROR = model.createIndividual(OPP_CLASS, PLATFORM.ERROR.getUri());
-        VOID = model.createIndividual(OPP_CLASS, PLATFORM.VOID.getUri());
+        jsonObject = model.createIndividual(getJson(), PLATFORM.JSON_OBJECT.getUri());
+        iri = model.createIndividual(getOppClass(), PLATFORM.IRI.getUri());
+        error = model.createIndividual(getOppClass(), PLATFORM.ERROR.getUri());
+        voidResponse = model.createIndividual(getOppClass(), PLATFORM.VOID.getUri());
 
-        NAMED_GRAPH = model.createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_INSTANCE");
-        MEDEWERKER_GRAPH = model.createIndividual(NAMED_GRAPH_CLASS, NAMED_GRAPH_CLASS.getURI() + "_MEDEWERKERGRAPH");
-        TRANSIENT_GRAPH = model.createIndividual(TRANSIENT_GRAPH_CLASS, TRANSIENT_GRAPH_CLASS.getURI() + "_INSTANCE");
-        BLANK_NODE = model.createIndividual(OPP_CLASS, PLATFORM.BLANK_NODE.getUri());
+        namedGraph = model.createIndividual(getNamedGraphClass(), getNamedGraphClass().getURI() + "_INSTANCE");
+        medewerkerGraph = model.createIndividual(getNamedGraphClass(), getNamedGraphClass().getURI() + "_MEDEWERKERGRAPH");
+        transientGraph = model.createIndividual(getTransientGraphClass(), getTransientGraphClass().getURI() + "_INSTANCE");
+        blankNode = model.createIndividual(getOppClass(), PLATFORM.BLANK_NODE.getUri());
     }
 
     private static void setClasses(OppModel model, OntModel ontologyModel) {
-        RDFS_RESOURCE = model.createClass(RDFS.RESOURCE.getUri(), ontologyModel);
-        RDFS_CLASS = model.createClass(RDFS.CLASS.getUri(), ontologyModel, RDFS_RESOURCE);
-        OWL_CLASS = model.createClass(OWL.CLASS.getUri(), ontologyModel, RDFS_CLASS);
-        OWL_THING_CLASS = model.createClass(OWL.THING.getUri(), ontologyModel);
-        OWL_THING_CLASS.setRDFType(OWL_CLASS);
+        rdfsResource = model.createClass(RDFS.RESOURCE.getUri(), ontologyModel);
+        rdfsClass = model.createClass(RDFS.CLASS.getUri(), ontologyModel, getRdfsResource());
+        owlClass = model.createClass(OWL.CLASS.getUri(), ontologyModel, getRdfsClass());
+        owlThingClass = model.createClass(OWL.THING.getUri(), ontologyModel);
+        getOwlThingClass().setRDFType(getOwlClass());
 
-        OPP_CLASS = model.createClass(PLATFORM.CLASS.getUri(), ontologyModel, OWL_THING_CLASS);
-        JSON = model.createClass(PLATFORM.JSON.getUri(), ontologyModel, OWL_THING_CLASS);
-        GRAPH_CLASS = model.createClass(PLATFORM.GRAPH.getUri(), ontologyModel, OWL_THING_CLASS);
-        NAMED_GRAPH_CLASS = model.createClass(PLATFORM.NAMED_GRAPH.getUri(), ontologyModel, OWL_THING_CLASS);
-        GRAPH_SHAPE = model.createClass(PLATFORM.GRAPH_SHAPE.getUri(), ontologyModel, OWL_THING_CLASS);
-        TRANSIENT_GRAPH_CLASS = model.createClass(com.misset.opp.ttl.model.constants.PLATFORM.TRANSIENT_GRAPH.getUri(), ontologyModel, OWL_THING_CLASS);
+        oppClass = model.createClass(PLATFORM.CLASS.getUri(), ontologyModel, getOwlThingClass());
+        json = model.createClass(PLATFORM.JSON.getUri(), ontologyModel, getOwlThingClass());
+        graphClass = model.createClass(PLATFORM.GRAPH.getUri(), ontologyModel, getOwlThingClass());
+        namedGraphClass = model.createClass(PLATFORM.NAMED_GRAPH.getUri(), ontologyModel, getOwlThingClass());
+        graphShape = model.createClass(PLATFORM.GRAPH_SHAPE.getUri(), ontologyModel, getOwlThingClass());
+        transientGraphClass = model.createClass(com.misset.opp.ttl.model.constants.PLATFORM.TRANSIENT_GRAPH.getUri(), ontologyModel, getOwlThingClass());
     }
 
     public static Set<OntClass> listXSDTypes() {
         return Set.of(
-                XSD_BOOLEAN,
-                XSD_STRING,
-                XSD_INTEGER,
-                XSD_DECIMAL,
-                XSD_DATETIME,
-                XSD_DATE,
-                XSD_DURATION);
+                getXsdBoolean(),
+                getXsdString(),
+                getXsdInteger(),
+                getXsdDecimal(),
+                getXsdDatetime(),
+                getXsdDate(),
+                getXsdDuration());
+    }
+
+    public static Property getShaclPath() {
+        return shaclPath;
+    }
+
+    public static Property getShaclClass() {
+        return shaclClass;
+    }
+
+    public static Property getShaclMincount() {
+        return shaclMincount;
+    }
+
+    public static Property getShaclMaxcount() {
+        return shaclMaxcount;
+    }
+
+    public static Property getShaclDatatype() {
+        return shaclDatatype;
+    }
+
+    public static Property getShaclProperty() {
+        return shaclProperty;
+    }
+
+    public static Property getShaclProperyshape() {
+        return shaclProperyshape;
+    }
+
+    public static Property getRdfsSubclassOf() {
+        return rdfsSubclassOf;
+    }
+
+    public static Property getRdfType() {
+        return rdfType;
+    }
+
+    public static List<Property> getClassModelProperties() {
+        return classModelProperties;
+    }
+
+    public static OntClass getRdfsClass() {
+        return rdfsClass;
+    }
+
+    public static OntClass getRdfsResource() {
+        return rdfsResource;
+    }
+
+    public static OntClass getOwlClass() {
+        return owlClass;
+    }
+
+    public static OntClass getOwlThingClass() {
+        return owlThingClass;
+    }
+
+    public static Individual getOwlThingInstance() {
+        return owlThingInstance;
+    }
+
+    public static OntClass getOppClass() {
+        return oppClass;
+    }
+
+    public static OntClass getJson() {
+        return json;
+    }
+
+    public static OntClass getGraphShape() {
+        return graphShape;
+    }
+
+    public static OntClass getGraphClass() {
+        return graphClass;
+    }
+
+    public static OntClass getNamedGraphClass() {
+        return namedGraphClass;
+    }
+
+    public static OntClass getTransientGraphClass() {
+        return transientGraphClass;
+    }
+
+    public static Individual getIri() {
+        return iri;
+    }
+
+    public static Individual getJsonObject() {
+        return jsonObject;
+    }
+
+    public static Individual getBlankNode() {
+        return blankNode;
+    }
+
+    public static Individual getError() {
+        return error;
+    }
+
+    public static Individual getNamedGraph() {
+        return namedGraph;
+    }
+
+    public static Individual getTransientGraph() {
+        return transientGraph;
+    }
+
+    public static Individual getMedewerkerGraph() {
+        return medewerkerGraph;
+    }
+
+    public static Individual getVoidResponse() {
+        return voidResponse;
+    }
+
+    public static OntClass getXsdBoolean() {
+        return xsdBoolean;
+    }
+
+    public static OntClass getXsdString() {
+        return xsdString;
+    }
+
+    public static OntClass getXsdNumber() {
+        return xsdNumber;
+    }
+
+    public static OntClass getXsdInteger() {
+        return xsdInteger;
+    }
+
+    public static OntClass getXsdDecimal() {
+        return xsdDecimal;
+    }
+
+    public static OntClass getXsdDate() {
+        return xsdDate;
+    }
+
+    public static OntClass getXsdDatetime() {
+        return xsdDatetime;
+    }
+
+    public static OntClass getXsdDuration() {
+        return xsdDuration;
+    }
+
+    public static Individual getXsdBooleanInstance() {
+        return xsdBooleanInstance;
+    }
+
+    public static Individual getXsdStringInstance() {
+        return xsdStringInstance;
+    }
+
+    public static Individual getXsdNumberInstance() {
+        return xsdNumberInstance;
+    }
+
+    public static Individual getXsdIntegerInstance() {
+        return xsdIntegerInstance;
+    }
+
+    public static Individual getXsdDecimalInstance() {
+        return xsdDecimalInstance;
+    }
+
+    public static Individual getXsdDateInstance() {
+        return xsdDateInstance;
+    }
+
+    public static Individual getXsdDatetimeInstance() {
+        return xsdDatetimeInstance;
+    }
+
+    public static Individual getXsdDurationInstance() {
+        return xsdDurationInstance;
     }
 }

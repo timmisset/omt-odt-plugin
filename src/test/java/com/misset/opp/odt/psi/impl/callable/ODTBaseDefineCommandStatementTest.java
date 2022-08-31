@@ -24,7 +24,7 @@ class ODTBaseDefineCommandStatementTest extends ODTTestCase {
         configureByText(content);
         ODTDefineStatement defineStatement = (ODTDefineStatement) ReadAction.compute(myFixture::getElementAtCaret);
         Set<OntResource> resolve = ReadAction.compute(defineStatement::resolve);
-        assertContainsElements(resolve, OppModelConstants.XSD_STRING_INSTANCE);
+        assertContainsElements(resolve, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -34,7 +34,7 @@ class ODTBaseDefineCommandStatementTest extends ODTTestCase {
         configureByText(content);
         ODTDefineStatement defineStatement = (ODTDefineStatement) ReadAction.compute(myFixture::getElementAtCaret);
         Set<OntResource> resolve = ReadAction.compute(defineStatement::resolve);
-        assertContainsElements(resolve, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertContainsElements(resolve, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdIntegerInstance());
     }
 
 }

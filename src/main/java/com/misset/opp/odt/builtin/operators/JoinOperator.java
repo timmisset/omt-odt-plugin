@@ -42,7 +42,7 @@ public class JoinOperator extends BuiltInStringOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+            return Set.of(OppModelConstants.getXsdStringInstance());
         }
         return null;
     }

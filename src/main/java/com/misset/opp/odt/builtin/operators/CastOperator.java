@@ -29,10 +29,10 @@ public class CastOperator extends AbstractBuiltInOperator {
     public Set<OntResource> resolveFrom(Set<OntResource> resources,
                                         PsiCall call) {
         Set<OntResource> argument = call.resolveSignatureArgument(0);
-        if (argument.contains(OppModelConstants.IRI)) {
-            return Set.of(OppModelConstants.OWL_THING_INSTANCE);
+        if (argument.contains(OppModelConstants.getIri())) {
+            return Set.of(OppModelConstants.getOwlThingInstance());
         }
-        return OppModel.INSTANCE.toIndividuals(argument)
+        return OppModel.getInstance().toIndividuals(argument)
                 .stream()
                 .map(OntResource.class::cast)
                 .collect(Collectors.toSet());

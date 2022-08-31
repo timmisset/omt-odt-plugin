@@ -10,7 +10,7 @@ class SplitOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(SplitOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(SplitOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -26,18 +26,18 @@ class SplitOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(SplitOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
-        assertValidArgument(SplitOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertValidInput(SplitOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertValidArgument(SplitOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(SplitOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableInputType(SplitOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(SplitOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(SplitOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(SplitOperator.INSTANCE, 1);
     }
 }

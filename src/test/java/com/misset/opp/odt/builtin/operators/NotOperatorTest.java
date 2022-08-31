@@ -10,7 +10,7 @@ class NotOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(NotOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(NotOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
@@ -26,18 +26,18 @@ class NotOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(NotOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertValidArgument(NotOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertValidInput(NotOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
+        assertValidArgument(NotOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(NotOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableInputType(NotOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(NotOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(NotOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(NotOperator.INSTANCE, 1);
     }
 }

@@ -11,13 +11,13 @@ class UpperCaseOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(UpperCaseOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(UpperCaseOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testValidArguments() {
-        assertValidInput(UpperCaseOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
-        assertInvalidInput(UpperCaseOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidInput(UpperCaseOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertInvalidInput(UpperCaseOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test
@@ -33,6 +33,6 @@ class UpperCaseOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(UpperCaseOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableInputType(UpperCaseOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 }

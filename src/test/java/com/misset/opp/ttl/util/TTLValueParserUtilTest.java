@@ -27,29 +27,29 @@ class TTLValueParserUtilTest {
 
     private static Stream<Arguments> getInstances() {
         return Stream.of(
-                Arguments.of("string", OppModelConstants.XSD_STRING_INSTANCE),
-                Arguments.of("boolean", OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Arguments.of("number", OppModelConstants.XSD_NUMBER_INSTANCE),
-                Arguments.of("integer", OppModelConstants.XSD_INTEGER_INSTANCE),
-                Arguments.of("decimal", OppModelConstants.XSD_DECIMAL_INSTANCE),
-                Arguments.of("dateTime", OppModelConstants.XSD_DATETIME_INSTANCE),
-                Arguments.of("date", OppModelConstants.XSD_DATE_INSTANCE),
-                Arguments.of("void", OppModelConstants.VOID),
-                Arguments.of("json", OppModelConstants.JSON_OBJECT),
+                Arguments.of("string", OppModelConstants.getXsdStringInstance()),
+                Arguments.of("boolean", OppModelConstants.getXsdBooleanInstance()),
+                Arguments.of("number", OppModelConstants.getXsdNumberInstance()),
+                Arguments.of("integer", OppModelConstants.getXsdIntegerInstance()),
+                Arguments.of("decimal", OppModelConstants.getXsdDecimalInstance()),
+                Arguments.of("dateTime", OppModelConstants.getXsdDatetimeInstance()),
+                Arguments.of("date", OppModelConstants.getXsdDateInstance()),
+                Arguments.of("void", OppModelConstants.getVoidResponse()),
+                Arguments.of("json", OppModelConstants.getJsonObject()),
                 Arguments.of("unknown", null)
         );
     }
 
     private static Stream<Arguments> getClasses() {
         return Stream.of(
-                Arguments.of("string", OppModelConstants.XSD_STRING),
-                Arguments.of("boolean", OppModelConstants.XSD_BOOLEAN),
-                Arguments.of("number", OppModelConstants.XSD_NUMBER),
-                Arguments.of("integer", OppModelConstants.XSD_INTEGER),
-                Arguments.of("decimal", OppModelConstants.XSD_DECIMAL),
-                Arguments.of("dateTime", OppModelConstants.XSD_DATETIME),
-                Arguments.of("date", OppModelConstants.XSD_DATE),
-                Arguments.of("json", OppModelConstants.JSON),
+                Arguments.of("string", OppModelConstants.getXsdString()),
+                Arguments.of("boolean", OppModelConstants.getXsdBoolean()),
+                Arguments.of("number", OppModelConstants.getXsdNumber()),
+                Arguments.of("integer", OppModelConstants.getXsdInteger()),
+                Arguments.of("decimal", OppModelConstants.getXsdDecimal()),
+                Arguments.of("dateTime", OppModelConstants.getXsdDatetime()),
+                Arguments.of("date", OppModelConstants.getXsdDate()),
+                Arguments.of("json", OppModelConstants.getJson()),
                 Arguments.of("unknown", null)
         );
     }

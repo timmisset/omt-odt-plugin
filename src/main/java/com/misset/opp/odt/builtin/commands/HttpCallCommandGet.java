@@ -50,11 +50,11 @@ public class HttpCallCommandGet extends BuiltInHttpCommand {
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+            return Set.of(OppModelConstants.getXsdStringInstance());
         } else if (index == 1) {
-            return Set.of(OppModelConstants.JSON_OBJECT);
+            return Set.of(OppModelConstants.getJsonObject());
         } else if (index == 2) {
-            return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+            return Set.of(OppModelConstants.getXsdBooleanInstance());
         }
         return null;
     }

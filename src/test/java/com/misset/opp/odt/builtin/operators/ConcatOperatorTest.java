@@ -12,11 +12,11 @@ class ConcatOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(ConcatOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(ConcatOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdStringInstance());
         assertResolved(ConcatOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_INTEGER_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.getXsdIntegerInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance()));
     }
 
     @Test

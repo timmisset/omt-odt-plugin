@@ -29,7 +29,7 @@ public class NewTransientGraphCommand extends AbstractBuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.NAMED_GRAPH;
+        return OppModelConstants.getNamedGraph();
     }
 
     @Override

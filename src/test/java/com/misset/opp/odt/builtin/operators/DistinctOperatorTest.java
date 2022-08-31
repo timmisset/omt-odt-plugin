@@ -17,14 +17,14 @@ class DistinctOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(DistinctOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertResolved(DistinctOperator.INSTANCE, OppModelConstants.XSD_DATE, OppModelConstants.XSD_DATE);
-        assertResolved(DistinctOperator.INSTANCE, OppModelConstants.XSD_INTEGER, OppModelConstants.XSD_INTEGER);
+        assertResolved(DistinctOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdBooleanInstance());
+        assertResolved(DistinctOperator.INSTANCE, OppModelConstants.getXsdDate(), OppModelConstants.getXsdDate());
+        assertResolved(DistinctOperator.INSTANCE, OppModelConstants.getXsdInteger(), OppModelConstants.getXsdInteger());
     }
 
     @Test
     void testFlagShowsWarningWhenDefault() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 

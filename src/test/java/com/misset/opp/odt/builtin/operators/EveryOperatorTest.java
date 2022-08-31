@@ -11,19 +11,19 @@ class EveryOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(EveryOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(EveryOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testValidInputs() {
-        assertValidInput(EveryOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertInvalidInput(EveryOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidInput(EveryOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
+        assertInvalidInput(EveryOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(EveryOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertInvalidArgument(EveryOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(EveryOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertInvalidArgument(EveryOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
@@ -39,12 +39,12 @@ class EveryOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(EveryOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertGetAcceptableArgumentType(EveryOperator.INSTANCE, 1, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(EveryOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(EveryOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(EveryOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableInputType(EveryOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 }

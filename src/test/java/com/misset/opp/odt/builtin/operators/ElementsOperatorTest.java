@@ -10,7 +10,7 @@ class ElementsOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(ElementsOperator.INSTANCE, OppModelConstants.OWL_THING_INSTANCE);
+        assertResolved(ElementsOperator.INSTANCE, OppModelConstants.getOwlThingInstance());
     }
 
     @Test

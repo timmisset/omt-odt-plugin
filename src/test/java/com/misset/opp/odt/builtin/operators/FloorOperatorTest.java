@@ -11,14 +11,14 @@ class FloorOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(FloorOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
-        assertResolved(FloorOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertResolved(FloorOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance(), OppModelConstants.getXsdIntegerInstance());
+        assertResolved(FloorOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testValidInputs() {
-        assertValidInput(FloorOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
-        assertInvalidInput(FloorOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertValidInput(FloorOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
+        assertInvalidInput(FloorOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
     }
 
     @Test
@@ -34,6 +34,6 @@ class FloorOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableInput() {
-        assertGetAcceptableInputType(FloorOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
+        assertGetAcceptableInputType(FloorOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
     }
 }

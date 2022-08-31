@@ -12,7 +12,7 @@ public class TTLObjectStubImpl extends StubBase<TTLObject> implements TTLObjectS
     private final boolean isObject;
     private final String subjectIri;
 
-    protected TTLObjectStubImpl(@Nullable StubElement parent,
+    protected TTLObjectStubImpl(@Nullable StubElement<?> parent,
                                 String iri,
                                 boolean isPredicate,
                                 boolean isObject,

@@ -104,7 +104,10 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                         FilenameIndex.getAllFilesByExt(project, "ttl")
                                 .stream()
                                 .filter(virtualFile -> virtualFile.getName().equals("root.ttl"))
-                                .peek(virtualFile -> state.ontologyModelRootPath = virtualFile.getPath())
+                                .map(virtualFile -> {
+                                    state.setOntologyModelRootPath(virtualFile.getPath());
+                                    return virtualFile;
+                                })
                                 .findFirst()
                                 .orElse(null)
                 );
@@ -131,14 +134,8 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
 
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                final SettingsState state = Optional.of(SettingsState.getInstance(project))
-                        .map(SettingsState::getState)
-                        .orElse(null);
-                if (state == null) {
-                    return;
-                }
-
-                final String ontologyModelRootPath = state.ontologyModelRootPath;
+                final SettingsState state = SettingsState.getInstance(project).getState();
+                final String ontologyModelRootPath = state.getOntologyModelRootPath();
                 VirtualFile file = ontologyModelRootPath.isBlank() ? getFileFromIndex(state) : getFileFromSettings(
                         ontologyModelRootPath);
                 if (file != null) {
@@ -161,7 +158,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
             }
 
             private void loadOntology(VirtualFile rootFile) {
-                new OppModelLoader().read(rootFile.toNioPath().toFile());
+                OppModelLoader.getInstance().read(rootFile.toNioPath().toFile());
             }
         };
     }
@@ -171,11 +168,11 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 SettingsState instance = SettingsState.getInstance(project);
-                instance.knownInstances.forEach(
+                instance.getKnownInstances().forEach(
                         (instanceUri, typeUri) -> {
-                            OntClass ontClass = OppModel.INSTANCE.getClass(typeUri);
+                            OntClass ontClass = OppModel.getInstance().getClass(typeUri);
                             if (ontClass != null) {
-                                OppModel.INSTANCE.createIndividual(ontClass, instanceUri);
+                                OppModel.getInstance().createIndividual(ontClass, instanceUri);
                             }
                         }
                 );
@@ -195,7 +192,10 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                 getReferenceFiles(project)
                         .forEach(file -> processJson(file, references));
                 SettingsState instance = SettingsState.getInstance(project);
-                OppModel.INSTANCE.addFromJson(references, indicator, instance.referenceDetails);
+                OppModel oppModel = OppModel.getInstance();
+                if (oppModel != null) {
+                    oppModel.addFromJson(references, indicator, instance.getReferenceDetails());
+                }
             }
 
             private Collection<File> getReferenceFiles(Project project) {
@@ -208,7 +208,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
             }
 
             private Optional<VirtualFile> getReferencesFolder(Project project) {
-                return Optional.of(SettingsState.getInstance(project).referencesFolder)
+                return Optional.of(SettingsState.getInstance(project).getReferencesFolder())
                         .filter(s -> !s.isBlank())
                         .map(Path::of)
                         .map(VirtualFileManager.getInstance()::findFileByNioPath);
@@ -238,6 +238,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                         references.add(type, jsonObject.get("triples"));
                     }
                 } catch (Exception ignored) {
+                    // ignored
                 }
             }
         };

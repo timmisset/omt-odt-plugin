@@ -6,46 +6,50 @@ import org.apache.jena.ontology.OntClass;
 
 public class TTLValueParserUtil {
 
+    private TTLValueParserUtil() {
+        // empty constructor
+    }
+
     public static Individual parsePrimitive(String description) {
         if ("string".equals(description)) {
-            return OppModelConstants.XSD_STRING_INSTANCE;
+            return OppModelConstants.getXsdStringInstance();
         } else if ("boolean".equals(description)) {
-            return OppModelConstants.XSD_BOOLEAN_INSTANCE;
+            return OppModelConstants.getXsdBooleanInstance();
         } else if ("number".equals(description)) {
-            return OppModelConstants.XSD_NUMBER_INSTANCE;
+            return OppModelConstants.getXsdNumberInstance();
         } else if ("integer".equals(description)) {
-            return OppModelConstants.XSD_INTEGER_INSTANCE;
+            return OppModelConstants.getXsdIntegerInstance();
         } else if ("decimal".equals(description)) {
-            return OppModelConstants.XSD_DECIMAL_INSTANCE;
+            return OppModelConstants.getXsdDecimalInstance();
         } else if ("dateTime".equals(description)) {
-            return OppModelConstants.XSD_DATETIME_INSTANCE;
+            return OppModelConstants.getXsdDatetimeInstance();
         } else if ("date".equals(description)) {
-            return OppModelConstants.XSD_DATE_INSTANCE;
+            return OppModelConstants.getXsdDateInstance();
         } else if ("void".equals(description)) {
-            return OppModelConstants.VOID;
+            return OppModelConstants.getVoidResponse();
         } else if ("json".equals(description)) {
-            return OppModelConstants.JSON_OBJECT;
+            return OppModelConstants.getJsonObject();
         }
         return null; // unknown
     }
 
     public static OntClass parsePrimitiveClass(String description) {
         if ("string".equals(description)) {
-            return OppModelConstants.XSD_STRING;
+            return OppModelConstants.getXsdString();
         } else if ("boolean".equals(description)) {
-            return OppModelConstants.XSD_BOOLEAN;
+            return OppModelConstants.getXsdBoolean();
         } else if ("number".equals(description)) {
-            return OppModelConstants.XSD_NUMBER;
+            return OppModelConstants.getXsdNumber();
         } else if ("integer".equals(description)) {
-            return OppModelConstants.XSD_INTEGER;
+            return OppModelConstants.getXsdInteger();
         } else if ("decimal".equals(description)) {
-            return OppModelConstants.XSD_DECIMAL;
+            return OppModelConstants.getXsdDecimal();
         } else if ("dateTime".equals(description)) {
-            return OppModelConstants.XSD_DATETIME;
+            return OppModelConstants.getXsdDatetime();
         } else if ("date".equals(description)) {
-            return OppModelConstants.XSD_DATE;
+            return OppModelConstants.getXsdDate();
         } else if ("json".equals(description)) {
-            return OppModelConstants.JSON;
+            return OppModelConstants.getJson();
         }
         return null; // unknown
     }

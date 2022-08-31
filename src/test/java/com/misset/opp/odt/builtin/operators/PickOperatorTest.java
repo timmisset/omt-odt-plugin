@@ -20,17 +20,17 @@ class PickOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(PickOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertValidArgument(PickOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(PickOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertGetAcceptableArgumentType(PickOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
         assertGetAcceptableArgumentTypeIsNull(PickOperator.INSTANCE, 1);
     }
 
     @Override
     protected void testResolve() {
-        assertResolved(PickOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(PickOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdStringInstance());
     }
 }

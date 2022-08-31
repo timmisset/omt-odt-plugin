@@ -12,9 +12,10 @@ import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.misset.opp.odt.completion.ODTTraverseCompletion.isForward;
@@ -24,28 +25,23 @@ import static com.misset.opp.odt.completion.ODTTraverseCompletion.isForward;
  * Not used for validation, resolving etc.
  */
 public class TTLResourceUtil {
+
+    private TTLResourceUtil() {
+        // empty constructor
+    }
+
     private static final HashMap<Resource, String> descriptions = new HashMap<>();
     private static final HashMap<Resource, String> descriptionsWithType = new HashMap<>();
     private static final HashMap<Resource, Boolean> isType = new HashMap<>();
     private static final HashMap<Resource, Boolean> isXSDType = new HashMap<>();
 
-    private static boolean is(Resource resource, HashMap<Resource, Boolean> cache, Function<Resource, Boolean> orElse) {
-        if (cache.containsKey(resource)) {
-            return cache.get(resource);
-        }
-        Boolean result = orElse.apply(resource);
-        cache.put(resource, result);
-        return result;
-    }
-
     public static boolean isType(Resource resource) {
-        return is(resource, isType, _resource ->
-                _resource instanceof OntResource &&
-                        OppModel.INSTANCE.isClass((OntResource) _resource) && isXSDType(_resource));
+        return isType.computeIfAbsent(resource, r -> r instanceof OntResource &&
+                OppModel.getInstance().isClass((OntResource) r) && isXSDType(r));
     }
 
     public static boolean isXSDType(Resource resource) {
-        return is(resource, isXSDType, _resource -> _resource.getNameSpace().equals(XSD.NAMESPACE));
+        return isXSDType.computeIfAbsent(resource, r -> r.getNameSpace().equals(XSD.NAMESPACE));
     }
 
     public static String describeUrisJoined(Set<? extends Resource> resources) {
@@ -76,30 +72,39 @@ public class TTLResourceUtil {
 
     private static String doDescribeUri(Resource resource, boolean withType) {
         if (resource instanceof OntResource && ((OntResource) resource).isClass()) {
-            if (resource.getNameSpace().equals(XSD.NAMESPACE)) {
-                return resource.getURI() + (withType ? " (TYPE)" : "");
-            }
-            return resource.getURI() + (withType ? " (CLASS)" : "");
+            return describeClass(resource, withType);
         } else if (resource instanceof Individual) {
-            final Individual individual = (Individual) resource;
-            OntClass ontClass = OppModel.INSTANCE.toClass(individual);
-            if (ontClass == null) {
-                return null;
-            }
-            if (isXSDType(ontClass)) {
-                return ontClass.getURI() + (withType ? " (VALUE)" : "");
-            } else if (ontClass.equals(OppModelConstants.OPP_CLASS)) {
-                // Specific OPP_CLASS instances that describe non-ontology values such as ERROR etc
-                return individual.getURI();
-            } else if (individual.getNameSpace() != null &&
-                    individual.getLocalName() != null &&
-                    !individual.getLocalName().endsWith("_INSTANCE")) {
-                return individual.getURI();
-            }
-            return ontClass.getURI() + (withType ? " (INSTANCE)" : "");
+            return describeIndividual((Individual) resource, withType);
         } else {
             return resource.getURI();
         }
+    }
+
+    @Nullable
+    private static String describeIndividual(Individual resource, boolean withType) {
+        OntClass ontClass = OppModel.getInstance().toClass(resource);
+        if (ontClass == null) {
+            return null;
+        }
+        if (isXSDType(ontClass)) {
+            return ontClass.getURI() + (withType ? " (VALUE)" : "");
+        } else if (ontClass.equals(OppModelConstants.getOppClass())) {
+            // Specific OPP_CLASS instances that describe non-ontology values such as ERROR etc
+            return resource.getURI();
+        } else if (resource.getNameSpace() != null &&
+                resource.getLocalName() != null &&
+                !resource.getLocalName().endsWith("_INSTANCE")) {
+            return resource.getURI();
+        }
+        return ontClass.getURI() + (withType ? " (INSTANCE)" : "");
+    }
+
+    @NotNull
+    private static String describeClass(Resource resource, boolean withType) {
+        if (resource.getNameSpace().equals(XSD.NAMESPACE)) {
+            return resource.getURI() + (withType ? " (TYPE)" : "");
+        }
+        return resource.getURI() + (withType ? " (CLASS)" : "");
     }
 
     public static String fromIriRef(String iriRef) {
@@ -126,8 +131,8 @@ public class TTLResourceUtil {
     }
 
     public static String describeUriForLookup(OntResource resource) {
-        return Optional.ofNullable(OppModel.INSTANCE.toClass(resource))
-                .map(ontClass -> ontClass.equals(OppModelConstants.OPP_CLASS) ? resource : ontClass)
+        return Optional.ofNullable(OppModel.getInstance().toClass(resource))
+                .map(ontClass -> ontClass.equals(OppModelConstants.getOppClass()) ? resource : ontClass)
                 .map(Resource::getLocalName)
                 .orElse("Ontology class could not be found in the model");
     }
@@ -137,7 +142,7 @@ public class TTLResourceUtil {
             return null;
         }
         if (resources.isEmpty()) {
-            OntResource unambigiousResource = OppModel.INSTANCE.getUnambigiousResource(property);
+            OntResource unambigiousResource = OppModel.getInstance().getUnambigiousResource(property);
             if (unambigiousResource == null) {
                 return null;
             }
@@ -169,7 +174,7 @@ public class TTLResourceUtil {
                                                                  Set<OntResource> objects,
                                                                  ODTTraverseCompletion.TraverseDirection direction,
                                                                  String title) {
-        if (title == null) {
+        if (title == null || property == null) {
             return null;
         }
         String cardinality = isForward(direction) ? getCardinalityLabel(subjects, property) : getCardinalityLabel(objects, property);

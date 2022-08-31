@@ -10,7 +10,7 @@ class JsonOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(JsonOperator.INSTANCE, OppModelConstants.JSON_OBJECT);
+        assertResolved(JsonOperator.INSTANCE, OppModelConstants.getJsonObject());
     }
 
     @Test

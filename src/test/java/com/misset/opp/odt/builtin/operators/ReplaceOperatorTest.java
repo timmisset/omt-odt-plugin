@@ -19,23 +19,23 @@ class ReplaceOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(ReplaceOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
-        assertValidArgument(ReplaceOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
-        assertValidArgument(ReplaceOperator.INSTANCE, 1, OppModelConstants.XSD_STRING_INSTANCE);
+        assertValidInput(ReplaceOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertValidArgument(ReplaceOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertValidArgument(ReplaceOperator.INSTANCE, 1, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(ReplaceOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableInputType(ReplaceOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(ReplaceOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(ReplaceOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
     }
 
     @Override
     protected void testResolve() {
-        assertResolved(PickOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(PickOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdStringInstance());
     }
 }

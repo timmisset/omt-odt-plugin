@@ -11,13 +11,13 @@ class ContainsOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(ContainsOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(ContainsOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testArgumentTypes() {
-        assertValidInput(ContainsOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
-        assertInvalidInput(ContainsOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidInput(ContainsOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertInvalidInput(ContainsOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test
@@ -33,14 +33,14 @@ class ContainsOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(ContainsOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
-        assertGetAcceptableArgumentType(ContainsOperator.INSTANCE, 1, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(ContainsOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(ContainsOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(ContainsOperator.INSTANCE, 2);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(ContainsOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableInputType(ContainsOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test

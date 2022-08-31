@@ -10,7 +10,7 @@ class SubtringOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(SubstringOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertResolved(SubstringOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -26,18 +26,18 @@ class SubtringOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(SubstringOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
-        assertValidArgument(SubstringOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
-        assertValidArgument(SubstringOperator.INSTANCE, 1, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertValidInput(SubstringOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertValidArgument(SubstringOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
+        assertValidArgument(SubstringOperator.INSTANCE, 1, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(SubstringOperator.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableInputType(SubstringOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(SubstringOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertGetAcceptableArgumentType(SubstringOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
     }
 }

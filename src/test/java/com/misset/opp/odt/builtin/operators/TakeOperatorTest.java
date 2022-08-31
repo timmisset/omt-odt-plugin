@@ -13,8 +13,8 @@ class TakeOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TakeOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -30,12 +30,12 @@ class TakeOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(TakeOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertValidArgument(TakeOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(TakeOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE);
+        assertGetAcceptableArgumentType(TakeOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
         assertGetAcceptableArgumentTypeIsNull(TakeOperator.INSTANCE, 1);
     }
 }

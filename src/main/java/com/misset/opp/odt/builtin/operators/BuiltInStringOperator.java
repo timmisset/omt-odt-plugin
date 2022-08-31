@@ -7,6 +7,6 @@ public abstract class BuiltInStringOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.XSD_STRING_INSTANCE;
+        return OppModelConstants.getXsdStringInstance();
     }
 }

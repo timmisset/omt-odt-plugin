@@ -10,7 +10,7 @@ class GuidCommandTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(GuidCommand.INSTANCE, OppModelConstants.XSD_STRING_INSTANCE);
+        assertReturns(GuidCommand.INSTANCE, OppModelConstants.getXsdStringInstance());
     }
 
     @Test

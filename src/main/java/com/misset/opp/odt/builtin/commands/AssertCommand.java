@@ -34,6 +34,6 @@ public class AssertCommand extends AbstractBuiltInCommand {
 
     @Override
     protected Set<OntResource> resolveFrom(PsiCall call) {
-        return Collections.singleton(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return Collections.singleton(OppModelConstants.getXsdBooleanInstance());
     }
 }

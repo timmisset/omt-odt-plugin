@@ -10,7 +10,7 @@ class NewTransientGraphCommandTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(NewTransientGraphCommand.INSTANCE, OppModelConstants.NAMED_GRAPH);
+        assertReturns(NewTransientGraphCommand.INSTANCE, OppModelConstants.getNamedGraph());
     }
 
     @Test

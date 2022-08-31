@@ -13,15 +13,15 @@ class TruncOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TruncOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_DATE_INSTANCE),
-                Set.of(OppModelConstants.XSD_DATE_INSTANCE));
+                Set.of(OppModelConstants.getXsdDateInstance()),
+                Set.of(OppModelConstants.getXsdDateInstance()));
     }
 
     @Test
     protected void testResolveDateTime() {
         assertResolved(TruncOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_DATETIME_INSTANCE),
-                Set.of(OppModelConstants.XSD_DATETIME_INSTANCE));
+                Set.of(OppModelConstants.getXsdDatetimeInstance()),
+                Set.of(OppModelConstants.getXsdDatetimeInstance()));
     }
 
     @Test
@@ -37,18 +37,18 @@ class TruncOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(TruncOperator.INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
-        assertValidArgument(TruncOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertValidInput(TruncOperator.INSTANCE, OppModelConstants.getXsdDatetimeInstance());
+        assertValidArgument(TruncOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(TruncOperator.INSTANCE, OppModelConstants.XSD_DATETIME_INSTANCE);
+        assertGetAcceptableInputType(TruncOperator.INSTANCE, OppModelConstants.getXsdDatetimeInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(TruncOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
+        assertGetAcceptableArgumentType(TruncOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(TruncOperator.INSTANCE, 1);
     }
 }

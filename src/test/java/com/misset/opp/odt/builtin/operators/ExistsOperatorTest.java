@@ -10,7 +10,7 @@ class ExistsOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(ExistsOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(ExistsOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test

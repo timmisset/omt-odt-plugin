@@ -29,6 +29,6 @@ public class CeilOperator extends BuiltInIntegerOperator {
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE);
+        return Set.of(OppModelConstants.getXsdDecimalInstance());
     }
 }

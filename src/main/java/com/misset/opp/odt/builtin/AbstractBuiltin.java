@@ -50,7 +50,7 @@ public abstract class AbstractBuiltin implements Callable {
     protected abstract Set<OntResource> resolveError(Set<OntResource> resources, PsiCall call);
 
     private boolean hasError(Set<OntResource> resources) {
-        return resources.stream().anyMatch(OppModelConstants.ERROR::equals);
+        return resources.stream().anyMatch(OppModelConstants.getError()::equals);
     }
 
     @Override

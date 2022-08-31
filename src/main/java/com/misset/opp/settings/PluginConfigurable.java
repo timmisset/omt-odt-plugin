@@ -54,19 +54,19 @@ public class PluginConfigurable implements Configurable {
     @Override
     public boolean isModified() {
         SettingsState settingsState = getState();
-        boolean modified = !settingsComponent.getOntologyModelRootPath().equals(settingsState.ontologyModelRootPath);
+        boolean modified = !settingsComponent.getOntologyModelRootPath().equals(settingsState.getOntologyModelRootPath());
         modified |= isModelInstanceMappingModified(settingsState);
-        modified |= !settingsComponent.getReasonsRoot().equals(settingsState.reasonsFolder);
-        modified |= !settingsComponent.getReferencesRoot().equals(settingsState.referencesFolder);
-        modified |= !settingsComponent.getTsConfigPath().equals(settingsState.tsConfigPath);
-        modified |= !settingsComponent.getODTAPIPath().equals(settingsState.odtAPIPath);
-        modified |= !settingsComponent.getOMTAPIPath().equals(settingsState.omtAPIPath);
-        modified |= settingsComponent.getReferenceDetails() != settingsState.referenceDetails;
+        modified |= !settingsComponent.getReasonsRoot().equals(settingsState.getReasonsFolder());
+        modified |= !settingsComponent.getReferencesRoot().equals(settingsState.getReferencesFolder());
+        modified |= !settingsComponent.getTsConfigPath().equals(settingsState.getTsConfigPath());
+        modified |= !settingsComponent.getODTAPIPath().equals(settingsState.getOdtAPIPath());
+        modified |= !settingsComponent.getOMTAPIPath().equals(settingsState.getOmtAPIPath());
+        modified |= settingsComponent.getReferenceDetails() != settingsState.getReferenceDetails();
         return modified;
     }
 
     private boolean isModelInstanceMappingModified(SettingsState settingsState) {
-        final Map<String, String> modelInstanceMapping = settingsState.modelInstanceMapping;
+        final Map<String, String> modelInstanceMapping = settingsState.getModelInstanceMapping();
         if (settingsComponent.getModelInstanceMapper().size() != modelInstanceMapping.size()) {
             return true;
         }
@@ -92,28 +92,25 @@ public class PluginConfigurable implements Configurable {
      * this method should run combined
      */
     private void saveOntologyAndReferencesState(SettingsState settingsState) {
-        boolean reloadOntology = false;
-        if (!settingsState.ontologyModelRootPath.equals(settingsComponent.getOntologyModelRootPath())) {
+        boolean reloadOntology = !settingsState.getOntologyModelRootPath().equals(settingsComponent.getOntologyModelRootPath());
+        if (!settingsState.getReferencesFolder().equals(settingsComponent.getReferencesRoot())) {
             reloadOntology = true;
         }
-        if (!settingsState.referencesFolder.equals(settingsComponent.getReferencesRoot())) {
-            reloadOntology = true;
-        }
-        if (settingsState.referenceDetails != settingsComponent.getReferenceDetails() &&
+        if (settingsState.getReferenceDetails() != settingsComponent.getReferenceDetails() &&
                 settingsComponent.getReferenceDetails()) {
             reloadOntology = true;
         }
-        settingsState.referencesFolder = settingsComponent.getReferencesRoot();
-        settingsState.ontologyModelRootPath = settingsComponent.getOntologyModelRootPath();
-        settingsState.referenceDetails = settingsComponent.getReferenceDetails();
+        settingsState.setReferencesFolder(settingsComponent.getReferencesRoot());
+        settingsState.setOntologyModelRootPath(settingsComponent.getOntologyModelRootPath());
+        settingsState.setReferenceDetails(settingsComponent.getReferenceDetails());
         if (reloadOntology) {
             LoadOntologyStartupActivity.loadOntology(project);
         }
     }
 
     private void saveReasonsState(SettingsState settingsState) {
-        boolean reload = !settingsState.reasonsFolder.equals(settingsComponent.getReasonsRoot());
-        settingsState.reasonsFolder = settingsComponent.getReasonsRoot();
+        boolean reload = !settingsState.getReasonsFolder().equals(settingsComponent.getReasonsRoot());
+        settingsState.setReasonsFolder(settingsComponent.getReasonsRoot());
 
         if (reload) {
             LoadReasonsStartupActivity.initReasons(project);
@@ -121,9 +118,9 @@ public class PluginConfigurable implements Configurable {
     }
 
     private void savePaths(SettingsState settingsState) {
-        settingsState.tsConfigPath = settingsComponent.getTsConfigPath();
-        settingsState.omtAPIPath = settingsComponent.getOMTAPIPath();
-        settingsState.odtAPIPath = settingsComponent.getODTAPIPath();
+        settingsState.setTsConfigPath(settingsComponent.getTsConfigPath());
+        settingsState.setOmtAPIPath(settingsComponent.getOMTAPIPath());
+        settingsState.setOdtAPIPath(settingsComponent.getODTAPIPath());
     }
 
     private void saveModelInstanceMappingState(SettingsState settingsState) {
@@ -134,20 +131,20 @@ public class PluginConfigurable implements Configurable {
             }
         }
         settingsComponent.setModelInstanceMapper(mapping);
-        settingsState.modelInstanceMapping = mapping;
+        settingsState.setModelInstanceMapping(mapping);
     }
 
     @Override
     public void reset() {
         SettingsState settingsState = getState();
-        settingsComponent.setOntologyModelRootPath(settingsState.ontologyModelRootPath);
-        settingsComponent.setReasonsRoot(settingsState.reasonsFolder);
-        settingsComponent.setReferencesRoot(settingsState.referencesFolder);
-        settingsComponent.setModelInstanceMapper(settingsState.modelInstanceMapping);
-        settingsComponent.setReferenceDetails(settingsState.referenceDetails);
-        settingsComponent.setTsConfigPath(settingsState.tsConfigPath);
-        settingsComponent.setODTAPIPath(settingsState.odtAPIPath);
-        settingsComponent.setOMTAPIPath(settingsState.omtAPIPath);
+        settingsComponent.setOntologyModelRootPath(settingsState.getOntologyModelRootPath());
+        settingsComponent.setReasonsRoot(settingsState.getReasonsFolder());
+        settingsComponent.setReferencesRoot(settingsState.getReferencesFolder());
+        settingsComponent.setModelInstanceMapper(settingsState.getModelInstanceMapping());
+        settingsComponent.setReferenceDetails(settingsState.getReferenceDetails());
+        settingsComponent.setTsConfigPath(settingsState.getTsConfigPath());
+        settingsComponent.setODTAPIPath(settingsState.getOdtAPIPath());
+        settingsComponent.setOMTAPIPath(settingsState.getOmtAPIPath());
     }
 
     @Override

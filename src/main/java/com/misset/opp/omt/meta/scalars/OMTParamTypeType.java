@@ -161,35 +161,12 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
     }
 
     public static void validateResource(String uri, PsiElement element, ProblemsHolder holder) {
-        OntResource ontResource = OppModel.INSTANCE.getOntResource(uri, holder.getProject());
+        OntResource ontResource = OppModel.getInstance().getOntResource(uri, holder.getProject());
         if (ontResource == null) {
             holder.registerProblem(element, "Could not find resource <" + uri + "> in the Opp Model", ProblemHighlightType.ERROR);
-        } else if (!TTLResourceUtil.isType(ontResource) && Boolean.FALSE.equals(OppModel.INSTANCE.isClass(ontResource))) {
+        } else if (!TTLResourceUtil.isType(ontResource) && Boolean.FALSE.equals(OppModel.getInstance().isClass(ontResource))) {
             holder.registerProblem(element, "Expected a class or type", ProblemHighlightType.ERROR);
         }
-    }
-
-
-
-    @Override
-    public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar, @Nullable CompletionContext completionContext) {
-        // add completions for classes and types:
-        PsiFile containingFile = insertedScalar.getContainingFile();
-        if (containingFile instanceof OMTFile) {
-            ArrayList<LookupElementBuilder> list = OppModel.INSTANCE.listClasses().stream()
-                    .map(ontClass -> TTLResourceUtil.getTypeLookupElement(ontClass, ((OMTFile) containingFile)
-                            .getAvailableNamespaces(insertedScalar)))
-                    .collect(Collectors.toCollection(ArrayList::new));
-            list.add(LookupElementBuilder.create("string"));
-            list.add(LookupElementBuilder.create("boolean"));
-            list.add(LookupElementBuilder.create("integer"));
-            list.add(LookupElementBuilder.create("decimal"));
-            list.add(LookupElementBuilder.create("date"));
-            list.add(LookupElementBuilder.create("dateTime"));
-            list.add(LookupElementBuilder.create("number"));
-            return list;
-        }
-        return Collections.emptyList();
     }
 
     /**
@@ -205,11 +182,33 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
     public static Set<OntResource> resolveType(PsiElement element,
                                                String type) {
         return Optional.ofNullable(getQualifiedUri(element, type))
-                .map(OppModel.INSTANCE::toIndividuals)
+                .map(OppModel.getInstance()::toIndividuals)
                 .stream()
                 .flatMap(Collection::stream)
                 .map(OntResource.class::cast)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar,
+                                                                  @Nullable CompletionContext completionContext) {
+        // add completions for classes and types:
+        PsiFile containingFile = insertedScalar.getContainingFile();
+        if (containingFile instanceof OMTFile) {
+            ArrayList<LookupElementBuilder> list = OppModel.getInstance().listClasses().stream()
+                    .map(ontClass -> TTLResourceUtil.getTypeLookupElement(ontClass, ((OMTFile) containingFile)
+                            .getAvailableNamespaces(insertedScalar)))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            list.add(LookupElementBuilder.create("string"));
+            list.add(LookupElementBuilder.create("boolean"));
+            list.add(LookupElementBuilder.create("integer"));
+            list.add(LookupElementBuilder.create("decimal"));
+            list.add(LookupElementBuilder.create("date"));
+            list.add(LookupElementBuilder.create("dateTime"));
+            list.add(LookupElementBuilder.create("number"));
+            return list;
+        }
+        return Collections.emptyList();
     }
 
     public static String getQualifiedUri(PsiElement element, String type) {

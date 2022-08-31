@@ -29,7 +29,7 @@ public interface Resolvable {
      */
     default boolean isBoolean() {
         final Set<OntResource> resolved = resolve();
-        return resolved.size() == 1 && resolved.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return resolved.size() == 1 && resolved.contains(OppModelConstants.getXsdBooleanInstance());
     }
 
     /**

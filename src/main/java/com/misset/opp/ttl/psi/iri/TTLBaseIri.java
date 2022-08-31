@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public abstract class TTLBaseIri extends ASTWrapperPsiElement implements TTLIri, PsiNamedElement {
-    public TTLBaseIri(@NotNull ASTNode node) {
+    protected TTLBaseIri(@NotNull ASTNode node) {
         super(node);
     }
 

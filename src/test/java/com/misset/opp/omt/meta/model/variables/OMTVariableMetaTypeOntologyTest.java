@@ -46,7 +46,7 @@ class OMTVariableMetaTypeOntologyTest extends OMTOntologyTestCase {
             final Set<OntResource> resolve = defineStatement.resolve();
             // no type is provided, should be an empty collection
             Assertions.assertFalse(resolve.isEmpty());
-            Assertions.assertEquals(OppModelConstants.XSD_STRING_INSTANCE, resolve.toArray()[0]);
+            Assertions.assertEquals(OppModelConstants.getXsdStringInstance(), resolve.toArray()[0]);
         });
     }
 
@@ -66,7 +66,7 @@ class OMTVariableMetaTypeOntologyTest extends OMTOntologyTestCase {
             final Set<OntResource> resolve = defineStatement.resolve();
             // no type is provided, should be an empty collection
             Assertions.assertFalse(resolve.isEmpty());
-            Assertions.assertEquals(OppModelConstants.XSD_STRING_INSTANCE, resolve.toArray()[0]);
+            Assertions.assertEquals(OppModelConstants.getXsdStringInstance(), resolve.toArray()[0]);
         });
     }
 

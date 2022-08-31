@@ -41,12 +41,12 @@ public class SubstringOperator extends BuiltInStringOperator {
 
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        return Set.of(OppModelConstants.XSD_INTEGER_INSTANCE);
+        return Set.of(OppModelConstants.getXsdIntegerInstance());
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_STRING_INSTANCE);
+        return Set.of(OppModelConstants.getXsdStringInstance());
     }
 
     @Override

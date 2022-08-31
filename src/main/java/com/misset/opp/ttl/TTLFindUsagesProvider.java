@@ -42,7 +42,7 @@ public class TTLFindUsagesProvider implements FindUsagesProvider {
         } else if (element instanceof TTLSubject) {
             return "subject";
         } else if (element instanceof TTLSPO) {
-            TTLSPO ttlSPO = (TTLSPO) element;
+            TTLSPO<?> ttlSPO = (TTLSPO<?>) element;
             if (ttlSPO.isSubject()) {
                 return "subject";
             } else if (ttlSPO.isPredicate()) {

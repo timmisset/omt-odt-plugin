@@ -23,8 +23,8 @@ class DestroyCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateThrowsErrorWhenNotInstances() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_NUMBER),
-                Set.of(OppModelConstants.XSD_NUMBER_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdNumber()),
+                Set.of(OppModelConstants.getXsdNumberInstance()));
         DestroyCommand.INSTANCE.validate(call, holder);
         verify(holder).registerProblem(firstArgument,
                 TTLValidationUtil.ERROR_MESSAGE_INSTANCES,
@@ -33,8 +33,8 @@ class DestroyCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateThrowsNoErrorWhenInstances() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.XSD_NUMBER_INSTANCE),
-                Set.of(OppModelConstants.XSD_NUMBER_INSTANCE));
+        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdNumberInstance()),
+                Set.of(OppModelConstants.getXsdNumberInstance()));
         DestroyCommand.INSTANCE.validate(call, holder);
         verify(holder, never()).registerProblem(firstArgument,
                 TTLValidationUtil.ERROR_MESSAGE_INSTANCES,

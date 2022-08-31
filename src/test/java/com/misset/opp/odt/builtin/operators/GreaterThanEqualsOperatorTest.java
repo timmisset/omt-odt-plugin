@@ -12,15 +12,15 @@ class GreaterThanEqualsOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(GreaterThanEqualsOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertResolved(GreaterThanEqualsOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(GreaterThanEqualsOperator.INSTANCE, 1, OppModelConstants.XSD_STRING_INSTANCE);
-        assertValidArgument(GreaterThanEqualsOperator.INSTANCE, 1, OppModelConstants.XSD_NUMBER_INSTANCE);
-        assertValidArgument(GreaterThanEqualsOperator.INSTANCE, 1, OppModelConstants.XSD_INTEGER_INSTANCE);
-        assertValidArgument(GreaterThanEqualsOperator.INSTANCE, 1, OppModelConstants.XSD_DECIMAL_INSTANCE);
+        assertValidArgument(GreaterThanEqualsOperator.INSTANCE, 1, OppModelConstants.getXsdStringInstance());
+        assertValidArgument(GreaterThanEqualsOperator.INSTANCE, 1, OppModelConstants.getXsdNumberInstance());
+        assertValidArgument(GreaterThanEqualsOperator.INSTANCE, 1, OppModelConstants.getXsdIntegerInstance());
+        assertValidArgument(GreaterThanEqualsOperator.INSTANCE, 1, OppModelConstants.getXsdDecimalInstance());
     }
 
     @Test
@@ -36,12 +36,12 @@ class GreaterThanEqualsOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(GreaterThanEqualsOperator.INSTANCE, 0, Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE));
-        assertGetAcceptableArgumentType(GreaterThanEqualsOperator.INSTANCE, 1, Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE));
+        assertGetAcceptableArgumentType(GreaterThanEqualsOperator.INSTANCE, 0, Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdNumberInstance()));
+        assertGetAcceptableArgumentType(GreaterThanEqualsOperator.INSTANCE, 1, Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdNumberInstance()));
     }
 
     @Test
     void testGetAcceptableInput() {
-        assertGetAcceptableInputType(GreaterThanEqualsOperator.INSTANCE, Set.of(OppModelConstants.XSD_STRING_INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE));
+        assertGetAcceptableInputType(GreaterThanEqualsOperator.INSTANCE, Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdNumberInstance()));
     }
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.*;
+import com.misset.opp.exception.OMTODTPluginException;
 import com.misset.opp.ttl.TTLLanguage;
 import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.psi.impl.TTLObjectImpl;
@@ -52,7 +53,7 @@ public class TTLObjectStubElementType extends IStubElementType<TTLObjectStub, TT
     public @NotNull TTLObjectStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         String s = dataStream.readNameString();
         if (s == null) {
-            throw new RuntimeException("Could not find stub information");
+            throw new OMTODTPluginException("Could not find stub information");
         }
         JsonObject json = JsonParser.parseString(s).getAsJsonObject();
         return new TTLObjectStubImpl(parentStub,

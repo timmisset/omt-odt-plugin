@@ -23,7 +23,7 @@ public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery i
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return Set.of(OppModelConstants.getXsdBooleanInstance());
     }
 
     @Override
@@ -52,6 +52,6 @@ public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery i
 
     @Override
     public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {
-        return resources -> resources.isEmpty() || resources.contains(OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        return resources -> resources.isEmpty() || resources.contains(OppModelConstants.getXsdBooleanInstance());
     }
 }

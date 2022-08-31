@@ -31,7 +31,7 @@ public class ClearGraphCommand extends AbstractBuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.XSD_INTEGER_INSTANCE;
+        return OppModelConstants.getXsdIntegerInstance();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ClearGraphCommand extends AbstractBuiltInCommand {
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.NAMED_GRAPH);
+            return Set.of(OppModelConstants.getNamedGraph());
         }
         return null;
     }

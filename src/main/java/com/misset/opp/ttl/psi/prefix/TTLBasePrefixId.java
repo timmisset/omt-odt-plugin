@@ -20,7 +20,7 @@ import java.util.Optional;
 public abstract class TTLBasePrefixId extends ASTWrapperPsiElement implements PsiNameIdentifierOwner, TTLPrefixHolder {
     private static final TokenSet IRIREF = TokenSet.create(TTLTypes.IRIREF);
 
-    public TTLBasePrefixId(@NotNull ASTNode node) {
+    protected TTLBasePrefixId(@NotNull ASTNode node) {
         super(node);
     }
 

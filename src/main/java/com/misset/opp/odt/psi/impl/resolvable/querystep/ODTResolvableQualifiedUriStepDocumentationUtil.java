@@ -43,11 +43,11 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
     private static String getIndividualDocumentation(ODTResolvableQualifiedUriStep step) {
         String fullyQualifiedUri = step.getFullyQualifiedUri();
-        @Nullable Individual individual = OppModel.INSTANCE.getIndividual(fullyQualifiedUri);
+        @Nullable Individual individual = OppModel.getInstance().getIndividual(fullyQualifiedUri);
         if (individual == null) {
             return null;
         }
-        OntClass ontClass = OppModel.INSTANCE.toClass(individual);
+        OntClass ontClass = OppModel.getInstance().toClass(individual);
 
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
@@ -69,7 +69,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
     private static String getClassDocumentation(ODTResolvableQualifiedUriStep step) {
         String fullyQualifiedUri = step.getFullyQualifiedUri();
-        OntClass ontClass = OppModel.INSTANCE.getClass(fullyQualifiedUri);
+        OntClass ontClass = OppModel.getInstance().getClass(fullyQualifiedUri);
         if (ontClass == null) {
             return null;
         }
@@ -85,7 +85,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
         sb.append(DocumentationMarkup.SECTIONS_START);
         setClassInfo(ontClass, sb);
-        Set<? extends OntResource> instances = OppModel.INSTANCE.toIndividuals(ontClass).stream()
+        Set<? extends OntResource> instances = OppModel.getInstance().toIndividuals(ontClass).stream()
                 .filter(resource -> resource.getURI() != null && !resource.getURI().endsWith("_INSTANCE"))
                 .collect(Collectors.toSet());
         if (!instances.isEmpty()) {
@@ -112,7 +112,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
 
     private static String getPropertyInfo(OntResource resource,
                                           Property property) {
-        if (!property.equals(OppModelConstants.RDF_TYPE)) {
+        if (!property.equals(OppModelConstants.getRdfType())) {
             RDFNode propertyValue = resource.getPropertyValue(property);
             if (propertyValue == null && resource instanceof OntClass) {
                 propertyValue = getFromSuperclass((OntClass) resource, property);
@@ -146,7 +146,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
     }
 
     private static RDFNode getFromSuperclass(OntClass ontClass, Property property) {
-        return OppModel.INSTANCE.listSuperClasses(ontClass)
+        return OppModel.getInstance().listSuperClasses(ontClass)
                 .stream()
                 .map(superClass -> superClass.getPropertyValue(property))
                 .filter(Objects::nonNull)
@@ -164,15 +164,15 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
     }
 
     private static Set<Property> getProperties(OntResource resource) {
-        return OppModel.INSTANCE.listPredicates(OppModel.INSTANCE.toClass(resource))
+        return OppModel.getInstance().listPredicates(OppModel.getInstance().toClass(resource))
                 .stream()
-                .filter(property -> !OppModelConstants.CLASS_MODEL_PROPERTIES.contains(property))
+                .filter(property -> !OppModelConstants.getClassModelProperties().contains(property))
                 .collect(Collectors.toSet());
     }
 
     private static void setClassInfo(OntClass ontClass, StringBuilder sb) {
         // the order is important for super and subclasses, use list instead of set
-        Set<OntClass> superClasses = OppModel.INSTANCE.listSuperClasses(ontClass);
+        Set<OntClass> superClasses = OppModel.getInstance().listSuperClasses(ontClass);
         if (!superClasses.isEmpty()) {
             DocumentationProvider.addKeyValueSection("Superclasses:",
                     superClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))
@@ -181,7 +181,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
                     , sb);
         }
 
-        Set<OntClass> subClasses = OppModel.INSTANCE.listSubclasses(ontClass);
+        Set<OntClass> subClasses = OppModel.getInstance().listSubclasses(ontClass);
         if (!subClasses.isEmpty()) {
             DocumentationProvider.addKeyValueSection("Subclasses:",
                     subClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))
@@ -243,7 +243,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
                                     Set<OntResource> unfiltered,
                                     Set<OntResource> filtered,
                                     StringBuilder sb) {
-        if (OppModel.INSTANCE.getProperty(fullyQualifiedUri) != null) {
+        if (OppModel.getInstance().getProperty(fullyQualifiedUri) != null) {
             String label = isReversed ? "Subject(s)" : "Object(s)";
             sb.append(DocumentationProvider.getKeyValueSection("Result", "<u>" + label + "</u><br>" + TTLResourceUtil.describeUrisJoined(filtered, "<br>", false)));
             if (unfiltered.size() != filtered.size()) {
@@ -290,20 +290,20 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
                                          Set<OntResource> filtered, boolean isReversed) {
         if (parent instanceof ODTQueryOperationStepImpl) {
             Set<OntResource> previous = ((ODTQueryOperationStepImpl) parent).resolvePreviousStep();
-            return TTLResourceUtil.getCardinalityLabel(previous, OppModel.INSTANCE.getProperty(step.getFullyQualifiedUri()));
+            return TTLResourceUtil.getCardinalityLabel(previous, OppModel.getInstance().getProperty(step.getFullyQualifiedUri()));
         } else if (isReversed) {
-            return TTLResourceUtil.getCardinalityLabel(filtered, OppModel.INSTANCE.getProperty(step.getFullyQualifiedUri()));
+            return TTLResourceUtil.getCardinalityLabel(filtered, OppModel.getInstance().getProperty(step.getFullyQualifiedUri()));
         } else {
             return null;
         }
     }
 
     private static boolean isClassUri(ODTResolvableQualifiedUriStep step) {
-        return OppModel.INSTANCE.getClass(step.getFullyQualifiedUri()) != null;
+        return OppModel.getInstance().getClass(step.getFullyQualifiedUri()) != null;
     }
 
     private static boolean isIndividualUri(ODTResolvableQualifiedUriStep step) {
-        return OppModel.INSTANCE.getIndividual(step.getFullyQualifiedUri()) != null;
+        return OppModel.getInstance().getIndividual(step.getFullyQualifiedUri()) != null;
     }
 
 }

@@ -11,15 +11,15 @@ class FilterOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(FilterOperator.INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertResolved(FilterOperator.INSTANCE, OppModelConstants.XSD_DATE, OppModelConstants.XSD_DATE);
-        assertResolved(FilterOperator.INSTANCE, OppModelConstants.XSD_INTEGER, OppModelConstants.XSD_INTEGER);
+        assertResolved(FilterOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdBooleanInstance());
+        assertResolved(FilterOperator.INSTANCE, OppModelConstants.getXsdDate(), OppModelConstants.getXsdDate());
+        assertResolved(FilterOperator.INSTANCE, OppModelConstants.getXsdInteger(), OppModelConstants.getXsdInteger());
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(FilterOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertInvalidArgument(FilterOperator.INSTANCE, 0, OppModelConstants.XSD_INTEGER_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(FilterOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertInvalidArgument(FilterOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
@@ -35,7 +35,7 @@ class FilterOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(FilterOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertGetAcceptableArgumentType(FilterOperator.INSTANCE, 1, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(FilterOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(FilterOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
     }
 }

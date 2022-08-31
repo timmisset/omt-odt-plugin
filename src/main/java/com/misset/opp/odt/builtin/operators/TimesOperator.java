@@ -43,12 +43,12 @@ public class TimesOperator extends BuiltinMathOperator {
 
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE);
+        return Set.of(OppModelConstants.getXsdNumberInstance());
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.XSD_NUMBER_INSTANCE);
+        return Set.of(OppModelConstants.getXsdNumberInstance());
     }
 
     @Override

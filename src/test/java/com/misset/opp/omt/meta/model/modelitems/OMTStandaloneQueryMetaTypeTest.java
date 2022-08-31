@@ -3,6 +3,7 @@ package com.misset.opp.omt.meta.model.modelitems;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.OppModel;
@@ -25,7 +26,7 @@ class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
                 "   /ont:ClassA"));
         assertResolvedContainsResource(Collections.emptySet(),
                 mock(PsiCall.class),
-                OppModel.INSTANCE.getClass("http://ontology#ClassA"));
+                OppModel.getInstance().getClass("http://ontology#ClassA"));
     }
 
     @Test
@@ -35,13 +36,13 @@ class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
                 "query: $paramA"));
         assertResolvedContainsResource(Collections.emptySet(),
                 mock(PsiCall.class),
-                OppModel.INSTANCE.getIndividual("http://ontology#ClassA_INSTANCE"));
+                OppModel.getInstance().getIndividual("http://ontology#ClassA_INSTANCE"));
     }
 
     @Test
     void testResolveStandaloneQueryWithNonAnnotatedParameters() {
         final PsiCall call = mock(PsiCall.class);
-        final Individual individual = OppModel.INSTANCE.getIndividual("http://ontology#ClassA_INSTANCE");
+        final Individual individual = OppModel.getInstance().getIndividual("http://ontology#ClassA_INSTANCE");
         final Set<OntResource> resources = Set.of(individual);
         doReturn(resources).when(call).resolveSignatureArgument(0);
         doReturn(resources).when(call).getParamType("$paramA");
@@ -65,7 +66,7 @@ class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
                     .findFirst()
                     .orElse(null);
             doReturn(resources).when(call).resolvePreviousStep();
-            Context context = Context.fromCall(call);
+            Context context = ContextFactory.fromCall(call);
             final Set<OntResource> resolved = OMTStandaloneQueryMetaType.getInstance().resolve(mapping, context);
             assertContainsElements(resolved, resource);
         });

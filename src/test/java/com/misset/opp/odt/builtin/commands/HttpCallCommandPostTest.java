@@ -14,7 +14,7 @@ class HttpCallCommandPostTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(HttpCallCommandPost.INSTANCE, OppModelConstants.JSON_OBJECT);
+        assertReturns(HttpCallCommandPost.INSTANCE, OppModelConstants.getJsonObject());
     }
 
     @Test
@@ -31,7 +31,7 @@ class HttpCallCommandPostTest extends BaseBuiltinTest {
     protected void testReturnsSecondArgument() {
         final Set<OntResource> secondReturnArgument = HttpCallCommandPost.INSTANCE.getSecondReturnArgument();
         Assertions.assertEquals(1, secondReturnArgument.size());
-        Assertions.assertTrue(secondReturnArgument.contains(OppModelConstants.XSD_INTEGER_INSTANCE));
+        Assertions.assertTrue(secondReturnArgument.contains(OppModelConstants.getXsdIntegerInstance()));
     }
 
     @Test
@@ -44,28 +44,28 @@ class HttpCallCommandPostTest extends BaseBuiltinTest {
     void testArgumentTypes() {
         testArgument(HttpCallCommandPost.INSTANCE,
                 0,
-                OppModelConstants.XSD_STRING_INSTANCE,
+                OppModelConstants.getXsdStringInstance(),
                 TTLValidationUtil.ERROR_MESSAGE_STRING);
         testArgument(HttpCallCommandPost.INSTANCE,
                 1,
-                OppModelConstants.JSON_OBJECT,
+                OppModelConstants.getJsonObject(),
                 TTLValidationUtil.ERROR_MESSAGE_JSON);
         testArgument(HttpCallCommandPost.INSTANCE,
                 2,
-                OppModelConstants.XSD_BOOLEAN_INSTANCE,
+                OppModelConstants.getXsdBooleanInstance(),
                 TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
         testArgument(HttpCallCommandPost.INSTANCE,
                 3,
-                OppModelConstants.JSON_OBJECT,
+                OppModelConstants.getJsonObject(),
                 TTLValidationUtil.ERROR_MESSAGE_JSON);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(HttpCallCommandPost.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE);
-        assertGetAcceptableArgumentType(HttpCallCommandPost.INSTANCE, 1, OppModelConstants.JSON_OBJECT);
-        assertGetAcceptableArgumentType(HttpCallCommandPost.INSTANCE, 2, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertGetAcceptableArgumentType(HttpCallCommandPost.INSTANCE, 3, OppModelConstants.JSON_OBJECT);
+        assertGetAcceptableArgumentType(HttpCallCommandPost.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(HttpCallCommandPost.INSTANCE, 1, OppModelConstants.getJsonObject());
+        assertGetAcceptableArgumentType(HttpCallCommandPost.INSTANCE, 2, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(HttpCallCommandPost.INSTANCE, 3, OppModelConstants.getJsonObject());
         assertGetAcceptableArgumentTypeIsNull(HttpCallCommandPost.INSTANCE, 4);
     }
 }

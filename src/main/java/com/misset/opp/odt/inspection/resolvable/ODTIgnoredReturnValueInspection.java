@@ -71,7 +71,7 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
 
     private void validateReturnValue(PsiResolvable resolvable, @NotNull ProblemsHolder holder) {
         Set<OntResource> resolved = resolvable.resolve();
-        if (!resolved.isEmpty() && !resolved.contains(OppModelConstants.VOID)) {
+        if (!resolved.isEmpty() && !resolved.contains(OppModelConstants.getVoidResponse())) {
             // something is being returned, show warning:
             holder.registerProblem(resolvable, RESULT_IS_IGNORED, WEAK_WARNING);
         }

@@ -28,15 +28,15 @@ import java.util.function.Supplier;
  * - sh:class / sh:datatype OBJECT <-- this is the object in the simplified model
  */
 public abstract class TTLBaseObject extends StubBasedPsiElementBase<TTLObjectStub> implements TTLObject {
-    public TTLBaseObject(@NotNull TTLObjectStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    protected TTLBaseObject(@NotNull TTLObjectStub stub, @NotNull IStubElementType<?, ?> nodeType) {
         super(stub, nodeType);
     }
 
-    public TTLBaseObject(@NotNull ASTNode node) {
+    protected TTLBaseObject(@NotNull ASTNode node) {
         super(node);
     }
 
-    public TTLBaseObject(TTLObjectStub stub, IElementType nodeType, ASTNode node) {
+    protected TTLBaseObject(TTLObjectStub stub, IElementType nodeType, ASTNode node) {
         super(stub, nodeType, node);
     }
 
@@ -67,7 +67,7 @@ public abstract class TTLBaseObject extends StubBasedPsiElementBase<TTLObjectStu
     @Override
     public boolean isPredicate() {
         return getFromStubOrPsi(TTLObjectStub::isPredicate,
-                () -> hasShaclPredicate(OppModelConstants.SHACL_PATH.getURI()));
+                () -> hasShaclPredicate(OppModelConstants.getShaclPath().getURI()));
     }
 
     @Override
@@ -90,7 +90,7 @@ public abstract class TTLBaseObject extends StubBasedPsiElementBase<TTLObjectStu
     @Override
     public boolean isObjectClass() {
         return getFromStubOrPsi(TTLObjectStub::isPredicate,
-                () -> hasShaclPredicate(OppModelConstants.SHACL_CLASS.getURI()));
+                () -> hasShaclPredicate(OppModelConstants.getShaclClass().getURI()));
     }
 
     private boolean hasShaclPredicate(String iri) {

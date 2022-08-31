@@ -13,8 +13,8 @@ class ReverseOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(ReverseOperator.INSTANCE,
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test

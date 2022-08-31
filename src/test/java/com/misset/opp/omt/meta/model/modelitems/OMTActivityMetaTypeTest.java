@@ -43,7 +43,7 @@ class OMTActivityMetaTypeTest extends OMTCompletionTestCase {
         ReadAction.run(() -> {
             YAMLMapping value = (YAMLMapping) ((YAMLKeyValue) myFixture.getElementAtCaret()).getValue();
             Set<OntResource> resolve = new OMTActivityMetaType().resolve(value, null);
-            Assertions.assertTrue(resolve.stream().anyMatch(OppModelConstants.XSD_BOOLEAN_INSTANCE::equals));
+            Assertions.assertTrue(resolve.stream().anyMatch(OppModelConstants.getXsdBooleanInstance()::equals));
         });
     }
 
@@ -58,7 +58,7 @@ class OMTActivityMetaTypeTest extends OMTCompletionTestCase {
         ReadAction.run(() -> {
             YAMLMapping value = (YAMLMapping) ((YAMLKeyValue) myFixture.getElementAtCaret()).getValue();
             Set<OntResource> resolve = new OMTActivityMetaType().resolve(value, null);
-            Assertions.assertTrue(resolve.stream().anyMatch(OppModelConstants.OWL_THING_INSTANCE::equals));
+            Assertions.assertTrue(resolve.stream().anyMatch(OppModelConstants.getOwlThingInstance()::equals));
         });
     }
 

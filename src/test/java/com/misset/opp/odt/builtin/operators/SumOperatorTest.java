@@ -12,9 +12,9 @@ class SumOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(SumOperator.INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_INTEGER_INSTANCE);
-        assertResolved(SumOperator.INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE);
-        assertResolved(SumOperator.INSTANCE, Set.of(OppModelConstants.XSD_INTEGER_INSTANCE, OppModelConstants.XSD_DECIMAL_INSTANCE), Set.of(OppModelConstants.XSD_DECIMAL_INSTANCE));
+        assertResolved(SumOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdIntegerInstance());
+        assertResolved(SumOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance(), OppModelConstants.getXsdDecimalInstance());
+        assertResolved(SumOperator.INSTANCE, Set.of(OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdDecimalInstance()), Set.of(OppModelConstants.getXsdDecimalInstance()));
     }
 
     @Test
@@ -30,11 +30,11 @@ class SumOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(SumOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertValidInput(SumOperator.INSTANCE, OppModelConstants.getXsdNumberInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(SumOperator.INSTANCE, OppModelConstants.XSD_NUMBER_INSTANCE);
+        assertGetAcceptableInputType(SumOperator.INSTANCE, OppModelConstants.getXsdNumberInstance());
     }
 }

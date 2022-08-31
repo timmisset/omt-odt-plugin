@@ -24,7 +24,7 @@ public class GraphOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.NAMED_GRAPH;
+        return OppModelConstants.getNamedGraph();
     }
 
     @Override

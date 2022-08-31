@@ -21,19 +21,19 @@ class IIFOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         assertResolved(IIfOperator.INSTANCE,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE, OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE));
+                Set.of(OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     protected void testResolveSingleArgument() {
         assertResolved(IIfOperator.INSTANCE,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE),
-                Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE),
-                Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+                Set.of(OppModelConstants.getXsdStringInstance()),
+                Set.of(OppModelConstants.getXsdBooleanInstance()),
+                Set.of(OppModelConstants.getXsdStringInstance()));
     }
 
     @Test
@@ -49,7 +49,7 @@ class IIFOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(IIfOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
+        assertGetAcceptableArgumentType(IIfOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeSameAsArgument(IIfOperator.INSTANCE, 1, 2);
         assertGetAcceptableArgumentTypeSameAsArgument(IIfOperator.INSTANCE, 2, 1);
         assertGetAcceptableArgumentTypeIsNull(IIfOperator.INSTANCE, 3);
@@ -57,13 +57,13 @@ class IIFOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(IIfOperator.INSTANCE, 0, OppModelConstants.XSD_BOOLEAN_INSTANCE);
-        assertInvalidArgument(IIfOperator.INSTANCE, 0, OppModelConstants.XSD_STRING_INSTANCE, TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(IIfOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertInvalidArgument(IIfOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testSpecificValidationHasWarningWhenIncompatibleTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE), Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
         IIfOperator.INSTANCE.validate(call, holder);
         verify(holder)
                 .registerProblem(call, "Possible outcomes are incompatible, not illegal but it smells fishy", ProblemHighlightType.WEAK_WARNING);
@@ -71,7 +71,7 @@ class IIFOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasNoWarningWhenNoIncompatibleTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.XSD_BOOLEAN_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE), Set.of(OppModelConstants.XSD_STRING_INSTANCE));
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
         IIfOperator.INSTANCE.validate(call, holder);
         verify(holder, never())
                 .registerProblem(call, "Possible outcomes are incompatible, not illegal but it smells fishy", ProblemHighlightType.WEAK_WARNING);

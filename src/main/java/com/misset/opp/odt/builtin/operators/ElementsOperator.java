@@ -24,6 +24,6 @@ public class ElementsOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.OWL_THING_INSTANCE;
+        return OppModelConstants.getOwlThingInstance();
     }
 }

@@ -56,16 +56,16 @@ class OppModelTest extends OMTOntologyTestCase {
     void listPredicateOnClass() {
         final Set<Property> predicates = oppModel.listPredicates(CLASS_A);
         Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
-        Assertions.assertTrue(predicates.contains(OppModelConstants.RDF_TYPE));
-        Assertions.assertTrue(predicates.contains(OppModelConstants.RDFS_SUBCLASS_OF));
+        Assertions.assertTrue(predicates.contains(OppModelConstants.getRdfType()));
+        Assertions.assertTrue(predicates.contains(OppModelConstants.getRdfsSubclassOf()));
     }
 
     @Test
     void listPredicateOnIndividual() {
         final Set<Property> predicates = oppModel.listPredicates(CLASS_A_INDIVIDUAL);
         Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
-        Assertions.assertTrue(predicates.contains(OppModelConstants.RDF_TYPE));
-        Assertions.assertFalse(predicates.contains(OppModelConstants.RDFS_SUBCLASS_OF));
+        Assertions.assertTrue(predicates.contains(OppModelConstants.getRdfType()));
+        Assertions.assertFalse(predicates.contains(OppModelConstants.getRdfsSubclassOf()));
     }
 
     @Test
@@ -74,7 +74,7 @@ class OppModelTest extends OMTOntologyTestCase {
                 Set.of(CLASS_A, createClass("ClassB")));
         Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
         Assertions.assertTrue(predicates.contains(createProperty("stringPredicate")));
-        Assertions.assertTrue(predicates.contains(OppModelConstants.RDF_TYPE));
+        Assertions.assertTrue(predicates.contains(OppModelConstants.getRdfType()));
     }
 
     @Test
@@ -86,7 +86,7 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void testListSubjectsRdfType() {
-        final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.RDF_TYPE, Set.of(CLASS_A));
+        final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.getRdfType(), Set.of(CLASS_A));
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof Individual && ((Individual) resource).hasOntClass(CLASS_A)
         ));
@@ -101,7 +101,7 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void testListSubjectsClassPredicate() {
-        final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.RDFS_SUBCLASS_OF,
+        final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.getRdfsSubclassOf(),
                 Set.of(createResource("ClassB")));
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof OntClass && resource.equals(createResource(
@@ -114,7 +114,7 @@ class OppModelTest extends OMTOntologyTestCase {
         final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
                 createProperty("booleanPredicate"));
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> resource.equals(OppModelConstants.XSD_BOOLEAN_INSTANCE)
+                resource -> resource.equals(OppModelConstants.getXsdBooleanInstance())
         ));
     }
 
@@ -130,7 +130,7 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void testListObjectsRdfTypeOnIndividual() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), OppModelConstants.RDF_TYPE);
+        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), OppModelConstants.getRdfType());
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> resource.equals(CLASS_A))
         );
@@ -138,9 +138,9 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void testListObjectsRdfTypeOnClass() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A), OppModelConstants.RDF_TYPE);
+        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A), OppModelConstants.getRdfType());
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> resource.equals(OppModelConstants.OWL_CLASS))
+                resource -> resource.equals(OppModelConstants.getOwlClass()))
         );
     }
 
@@ -157,21 +157,21 @@ class OppModelTest extends OMTOntologyTestCase {
     @Test
     void testAnOppClassIsAnOwlClass() {
         final OntClass ontClass = oppModel.getClass(CLASS_A.getURI());
-        assertEquals(ontClass.getRDFType(), OppModelConstants.OWL_CLASS);
+        assertEquals(ontClass.getRDFType(), OppModelConstants.getOwlClass());
     }
 
     @Test
     void testAnOppClassIsNotASubclassOfAnOwlClass() {
         final Individual individual = oppModel.getIndividual(CLASS_A_INSTANCE_A);
         OntClass ontClass = oppModel.toClass(individual);
-        assertFalse(ontClass.listSuperClasses(false).toList().contains(OppModelConstants.OWL_CLASS));
+        assertFalse(ontClass.listSuperClasses(false).toList().contains(OppModelConstants.getOwlClass()));
     }
 
     @Test
     void testAnOppClassIsASubclassOfAnOwlThing() {
         final Individual individual = oppModel.getIndividual(CLASS_A_INSTANCE_A);
         OntClass ontClass = oppModel.toClass(individual);
-        assertTrue(ontClass.listSuperClasses(false).toList().contains(OppModelConstants.OWL_THING_CLASS));
+        assertTrue(ontClass.listSuperClasses(false).toList().contains(OppModelConstants.getOwlThingClass()));
     }
 
     @Test
@@ -181,32 +181,32 @@ class OppModelTest extends OMTOntologyTestCase {
 
     @Test
     void testAreCompatibleTrueInstanceWithOWLThing() {
-        Assertions.assertTrue(areCompatible(OppModelConstants.OWL_THING_INSTANCE.getURI(), CLASS_A_INSTANCE_A));
-        Assertions.assertTrue(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.OWL_THING_INSTANCE.getURI()));
+        Assertions.assertTrue(areCompatible(OppModelConstants.getOwlThingInstance().getURI(), CLASS_A_INSTANCE_A));
+        Assertions.assertTrue(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.getOwlThingInstance().getURI()));
     }
 
     @Test
     void testAreCompatibleFalseInstanceWithOWLClass() {
-        Assertions.assertFalse(areCompatible(OppModelConstants.OWL_CLASS.getURI(), CLASS_A_INSTANCE_A));
-        Assertions.assertFalse(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.OWL_CLASS.getURI()));
+        Assertions.assertFalse(areCompatible(OppModelConstants.getOwlClass().getURI(), CLASS_A_INSTANCE_A));
+        Assertions.assertFalse(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.getOwlClass().getURI()));
     }
 
     @Test
     void testAreCompatibleTrueClassWithOWLClass() {
-        Assertions.assertTrue(areCompatible(OppModelConstants.OWL_CLASS.getURI(), CLASS_A.getURI()));
-        Assertions.assertTrue(areCompatible(OppModelConstants.RDFS_CLASS.getURI(), CLASS_A.getURI()));
-        Assertions.assertTrue(areCompatible(OppModelConstants.RDFS_RESOURCE.getURI(), CLASS_A.getURI()));
+        Assertions.assertTrue(areCompatible(OppModelConstants.getOwlClass().getURI(), CLASS_A.getURI()));
+        Assertions.assertTrue(areCompatible(OppModelConstants.getRdfsClass().getURI(), CLASS_A.getURI()));
+        Assertions.assertTrue(areCompatible(OppModelConstants.getRdfsResource().getURI(), CLASS_A.getURI()));
     }
 
     @Test
     void testAreCompatibleFalseOWLClassWithClass() {
-        Assertions.assertFalse(areCompatible(CLASS_A.getURI(), OppModelConstants.OWL_CLASS.getURI()));
+        Assertions.assertFalse(areCompatible(CLASS_A.getURI(), OppModelConstants.getOwlClass().getURI()));
     }
 
     @Test
     void testAreCompatibleFalseClassWithOWLThing() {
-        Assertions.assertFalse(areCompatible(OppModelConstants.OWL_THING_INSTANCE.getURI(), ONTOLOGY_CLASS_A));
-        Assertions.assertFalse(areCompatible(ONTOLOGY_CLASS_A, OppModelConstants.OWL_THING_INSTANCE.getURI()));
+        Assertions.assertFalse(areCompatible(OppModelConstants.getOwlThingInstance().getURI(), ONTOLOGY_CLASS_A));
+        Assertions.assertFalse(areCompatible(ONTOLOGY_CLASS_A, OppModelConstants.getOwlThingInstance().getURI()));
     }
 
     @Test
