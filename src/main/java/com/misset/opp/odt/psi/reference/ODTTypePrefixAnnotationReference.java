@@ -20,9 +20,7 @@ public class ODTTypePrefixAnnotationReference extends ODTPolyReferenceBase<PsiEl
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        final ODTFile containingFile = (ODTFile) myElement.getContainingFile();
-        String prefix = textRange.substring(myElement.getText());
-        return toResults(containingFile.getPrefixes(prefix));
+        return multiResolve(true, true);
     }
 
     @Override
@@ -30,5 +28,22 @@ public class ODTTypePrefixAnnotationReference extends ODTPolyReferenceBase<PsiEl
         String psiDocTag = getRangeInElement().replace(getElement().getText(), newElementName);
         return myElement.replace(ODTElementGenerator.getInstance(getElement().getProject())
                 .fromFile("/**\n * " + psiDocTag + "\n */", PsiDocTag.class));
+    }
+
+    @Override
+    public PsiElement resolve(boolean resolveToOriginalElement) {
+        return resolve();
+    }
+
+    @Override
+    public PsiElement resolve(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
+        return resolve();
+    }
+
+    @Override
+    public ResolveResult[] multiResolve(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
+        final ODTFile containingFile = (ODTFile) myElement.getContainingFile();
+        String prefix = textRange.substring(myElement.getText());
+        return toResults(containingFile.getPrefixes(prefix));
     }
 }

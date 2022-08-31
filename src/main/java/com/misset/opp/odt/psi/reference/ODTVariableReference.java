@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> implements LocalQuickFixProvider, EmptyResolveMessageProvider {
@@ -45,11 +44,25 @@ public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> impl
 
     @Override
     public @Nullable PsiElement resolve() {
-        return Optional.ofNullable(getResultByProximity()).map(PsiElement::getOriginalElement).orElse(null);
+        return resolve(true);
+    }
+
+    @Override
+    public PsiElement resolve(boolean resolveToOriginalElement) {
+        return resolve(resolveToOriginalElement, true);
+    }
+
+    @Override
+    public PsiElement resolve(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
+        return getResultByProximity(resolveToOriginalElement, resolveToFinalElement);
     }
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
+        return multiResolve(true, true);
+    }
+
+    public ResolveResult @NotNull [] multiResolve(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
         if (!(myElement.getContainingFile() instanceof ODTFile)) {
             return ResolveResult.EMPTY_ARRAY;
         } else {
@@ -60,7 +73,7 @@ public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> impl
                     .map(PsiVariable.class::cast)
                     .filter(psiVariable -> file.isAccessible(myElement, psiVariable))
                     .collect(Collectors.toList());
-            return toResults(variables);
+            return toResults(variables, resolveToOriginalElement, resolveToFinalElement);
         }
     }
 
@@ -112,4 +125,5 @@ public class ODTVariableReference extends ODTPolyReferenceBase<ODTVariable> impl
                 }
         };
     }
+
 }

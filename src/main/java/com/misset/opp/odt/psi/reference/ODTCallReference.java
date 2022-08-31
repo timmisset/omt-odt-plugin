@@ -12,8 +12,8 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
-import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlImportMemberDelegate;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.ReferencedElement;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,13 +35,13 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
 
     public PsiElement resolve(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
         return LoggerUtil.computeWithLogger(LOGGER, "Resolving ODTCallReference " + myElement.getCallId(), () -> {
-            ResolveResult[] resolveResults = multiResolveToOriginal(resolveToOriginalElement, resolveToFinalElement);
+            ResolveResult[] resolveResults = multiResolve(resolveToOriginalElement, resolveToFinalElement);
             return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
         });
     }
 
-    private ResolveResult @NotNull [] multiResolveToOriginal(boolean resolveToOriginalElement,
-                                                             boolean resolveToFinalElement) {
+    public ResolveResult @NotNull [] multiResolve(boolean resolveToOriginalElement,
+                                                  boolean resolveToFinalElement) {
         // An ODT call is made to either an OMT Callable element such as an Activity, Procedure within the host OMT file
         // or directly to a built-in command-call or operator
 
@@ -72,7 +72,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        return multiResolveToOriginal(true, true);
+        return multiResolve(true, true);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
 
     @Override
     public boolean isReferenceTo(@NotNull PsiElement element) {
-        boolean resolveToFinalElement = !(element instanceof OMTYamlImportMemberDelegate);
+        boolean resolveToFinalElement = !(element instanceof ReferencedElement);
         return Optional.ofNullable(resolve(true, resolveToFinalElement))
                 .map(element.getOriginalElement()::equals)
                 .orElse(false);

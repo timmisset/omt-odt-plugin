@@ -30,8 +30,11 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
     @Override
     public Variable getDeclared() {
         return isDeclaredVariable() ? element : Optional.ofNullable(getReference())
-                .map(PsiReference::resolve)
-                .map(this::getWrapper)
+                .filter(ODTVariableReference.class::isInstance)
+                .map(ODTVariableReference.class::cast)
+                .map(odtVariableReference -> odtVariableReference.resolve(false, false))
+                .filter(Variable.class::isInstance)
+                .map(Variable.class::cast)
                 .orElse(null);
     }
 

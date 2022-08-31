@@ -1,15 +1,11 @@
 package com.misset.opp.odt.psi.impl.variable.delegate;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
 import com.misset.opp.odt.psi.ODTVariableValue;
 import com.misset.opp.odt.psi.util.PsiRelationshipUtil;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.resolvable.psi.PsiVariable;
-import org.jetbrains.yaml.psi.YAMLValue;
 
 public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
     protected final ODTVariable element;
@@ -37,15 +33,6 @@ public abstract class ODTBaseVariableDelegate implements ODTVariableDelegate {
     @Override
     public Variable getDeclared() {
         return element;
-    }
-
-    protected PsiVariable getWrapper(PsiElement element) {
-        if (element instanceof PsiVariable) {
-            return (PsiVariable) element;
-        } else if (element instanceof YAMLValue) {
-            return (PsiVariable) OMTYamlDelegateFactory.createDelegate((YAMLValue) element);
-        }
-        return null;
     }
 
     @Override

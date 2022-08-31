@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlImportMemberDelegate;
+import com.misset.opp.resolvable.psi.ReferencedElement;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,8 +24,8 @@ public abstract class ODTPolyReferenceBase<T extends PsiElement> extends PsiRefe
                 .filter(Objects::nonNull)
                 .map(psiElement -> {
                     PsiElement element = psiElement;
-                    if (psiElement instanceof OMTYamlImportMemberDelegate && resolveToFinalElement) {
-                        element = ((OMTYamlImportMemberDelegate) psiElement).getFinalElement();
+                    if (psiElement instanceof ReferencedElement && resolveToFinalElement) {
+                        element = ((ReferencedElement) psiElement).getFinalElement();
                     }
                     return element != null && resolveToOriginalElement ? element.getOriginalElement() : element;
                 })
@@ -46,8 +46,8 @@ public abstract class ODTPolyReferenceBase<T extends PsiElement> extends PsiRefe
      * - psiTree deep is preferred over shallow
      * - element offset high score is preferred over low score
      */
-    protected PsiElement getResultByProximity() {
-        ResolveResult[] resolveResults = multiResolve(false);
+    protected PsiElement getResultByProximity(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
+        ResolveResult[] resolveResults = multiResolve(resolveToOriginalElement, resolveToFinalElement);
         if (resolveResults.length == 1) {
             return resolveResults[0].getElement();
         }
@@ -57,6 +57,12 @@ public abstract class ODTPolyReferenceBase<T extends PsiElement> extends PsiRefe
         Arrays.sort(resolveResults, this::compareResolveResult);
         return resolveResults[0].getElement();
     }
+
+    public abstract PsiElement resolve(boolean resolveToOriginalElement);
+
+    public abstract PsiElement resolve(boolean resolveToOriginalElement, boolean resolveToFinalElement);
+
+    public abstract ResolveResult[] multiResolve(boolean resolveToOriginalElement, boolean resolveToFinalElement);
 
     private int compareResolveResult(ResolveResult resultA, ResolveResult resultB) {
         PsiFile containingFile = myElement.getContainingFile();

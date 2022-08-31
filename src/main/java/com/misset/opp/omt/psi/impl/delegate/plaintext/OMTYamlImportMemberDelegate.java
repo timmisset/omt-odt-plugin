@@ -13,6 +13,7 @@ import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.ReferencedElement;
 import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ import java.util.function.Function;
 public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
         OMTYamlDelegate,
         SupportsSafeDelete,
+        ReferencedElement,
         PsiCallable {
     YAMLPlainTextImpl value;
 

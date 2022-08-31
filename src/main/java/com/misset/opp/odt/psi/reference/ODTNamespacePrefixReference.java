@@ -21,6 +21,31 @@ public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTBaseNam
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
+        return multiResolve(true, true);
+    }
+
+    @Override
+    public @Nullable PsiElement resolve() {
+        return resolve(true);
+    }
+
+    @Override
+    public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
+        return myElement.setName(newElementName);
+    }
+
+    @Override
+    public PsiElement resolve(boolean resolveToOriginalElement) {
+        return resolve(resolveToOriginalElement, true);
+    }
+
+    @Override
+    public PsiElement resolve(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
+        return Optional.ofNullable(getResultByProximity(resolveToOriginalElement, resolveToFinalElement)).map(PsiElement::getOriginalElement).orElse(null);
+    }
+
+    @Override
+    public ResolveResult[] multiResolve(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
         if (!myElement.isValid() || !(myElement.getContainingFile() instanceof ODTFile)) {
             return ResolveResult.EMPTY_ARRAY;
         }
@@ -30,15 +55,5 @@ public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTBaseNam
                 .filter(psiPrefix -> file.isAccessible(myElement, psiPrefix))
                 .collect(Collectors.toList());
         return toResults(prefixes);
-    }
-
-    @Override
-    public @Nullable PsiElement resolve() {
-        return Optional.ofNullable(getResultByProximity()).map(PsiElement::getOriginalElement).orElse(null);
-    }
-
-    @Override
-    public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
-        return myElement.setName(newElementName);
     }
 }

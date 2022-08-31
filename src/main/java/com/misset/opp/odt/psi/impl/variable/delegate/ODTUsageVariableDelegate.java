@@ -4,6 +4,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiVariable;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
@@ -70,8 +71,11 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
         // of this variable to determine the type
         // the 'other' variable must resolve to the same declared variable as this instance
         final PsiElement resolve = Optional.ofNullable(getReference())
-                .map(PsiReference::resolve)
-                .map(this::getWrapper)
+                .filter(ODTVariableReference.class::isInstance)
+                .map(ODTVariableReference.class::cast)
+                .map(odtVariableReference -> odtVariableReference.resolve(false, false))
+                .filter(PsiVariable.class::isInstance)
+                .map(PsiVariable.class::cast)
                 .orElse(null);
 
         if (resolve == null) {
@@ -137,8 +141,11 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
     private boolean hasSameTarget(ODTVariable variable,
                                   PsiElement target) {
         return variable == target || Optional.ofNullable(variable.getReference())
-                .map(PsiReference::resolve)
-                .map(this::getWrapper)
+                .filter(ODTVariableReference.class::isInstance)
+                .map(ODTVariableReference.class::cast)
+                .map(odtVariableReference -> odtVariableReference.resolve(false, false))
+                .filter(Variable.class::isInstance)
+                .map(Variable.class::cast)
                 .map(target::equals)
                 .orElse(false);
     }
@@ -158,8 +165,11 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
 
     private Optional<Variable> getDeclaredFromReference() {
         return Optional.ofNullable(getReference())
-                .map(PsiReference::resolve)
-                .map(this::getWrapper);
+                .filter(ODTVariableReference.class::isInstance)
+                .map(ODTVariableReference.class::cast)
+                .map(odtVariableReference -> odtVariableReference.resolve(false, false))
+                .filter(Variable.class::isInstance)
+                .map(Variable.class::cast);
     }
 
     private Optional<Set<OntResource>> getTypeFromDeclaration() {
