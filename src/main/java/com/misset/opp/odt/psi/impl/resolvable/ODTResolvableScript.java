@@ -6,7 +6,6 @@ import com.misset.opp.odt.psi.ODTReturnStatement;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiResolvable;
-import com.misset.opp.resolvable.psi.PsiResolvableScript;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class ODTResolvableScript extends ODTBaseResolvable implements PsiResolvableScript {
+public abstract class ODTResolvableScript extends ODTBaseResolvable {
     protected ODTResolvableScript(@NotNull ASTNode node) {
         super(node);
     }

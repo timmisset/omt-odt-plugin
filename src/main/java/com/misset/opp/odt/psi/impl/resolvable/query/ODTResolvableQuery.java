@@ -6,11 +6,10 @@ import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
-import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ODTResolvableQuery extends ODTBaseResolvable implements ODTQuery, ODTResolvable, PsiResolvableQuery {
+public abstract class ODTResolvableQuery extends ODTBaseResolvable implements ODTQuery, ODTResolvable {
     protected ODTResolvableQuery(@NotNull ASTNode node) {
         super(node);
     }

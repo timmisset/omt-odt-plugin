@@ -1,11 +1,11 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.omt.injection.InjectableContentType;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import com.misset.opp.resolvable.Resolvable;
-import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlScalarType;
@@ -32,7 +32,7 @@ public class OMTQueryMetaType extends YamlScalarType implements OMTMetaInjectabl
     }
 
     protected Set<OntResource> resolve(@NotNull YAMLScalar scalarValue) {
-        return OMTODTInjectionUtil.getInjectedContent(scalarValue, PsiResolvableQuery.class)
+        return OMTODTInjectionUtil.getInjectedContent(scalarValue, ODTResolvableQuery.class)
                 .stream()
                 .map(Resolvable::resolve)
                 .findFirst()

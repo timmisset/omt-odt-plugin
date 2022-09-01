@@ -1,9 +1,9 @@
 package com.misset.opp.omt.meta.providers;
 
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.LocalVariable;
-import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
@@ -26,7 +26,7 @@ public interface OMTLocalVariableTypeProvider extends OMTMetaTypeStructureProvid
     default Set<OntResource> getType(YAMLMapping mapping) {
         final YAMLValue yamlValue = getTypeProviderMap(mapping);
         return Optional.ofNullable(yamlValue)
-                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, PsiResolvableQuery.class))
+                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTResolvableQuery.class))
                 .orElse(Collections.emptySet())
                 .stream()
                 .map(Resolvable::resolve)

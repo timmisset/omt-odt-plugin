@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaCallable;
@@ -16,7 +17,6 @@ import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.resolvable.psi.PsiResolvableQuery;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -102,7 +102,7 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
 
         return Optional.ofNullable(mapping.getKeyValueByKey("query"))
                 .map(YAMLKeyValue::getValue)
-                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, PsiResolvableQuery.class))
+                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTResolvableQuery.class))
                 .stream()
                 .flatMap(Collection::stream)
                 .map(psiResolvable -> psiResolvable.resolve(context))

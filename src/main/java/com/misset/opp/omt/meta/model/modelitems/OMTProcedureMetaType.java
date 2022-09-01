@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.util.Key;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableScript;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaCallable;
@@ -21,7 +22,6 @@ import com.misset.opp.resolvable.local.Commit;
 import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.resolvable.local.Rollback;
 import com.misset.opp.resolvable.psi.PsiPrefix;
-import com.misset.opp.resolvable.psi.PsiResolvableScript;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -116,7 +116,7 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
         }
         Set<OntResource> resources = Optional.ofNullable(mapping.getKeyValueByKey(ON_RUN))
                 .map(YAMLKeyValue::getValue)
-                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, PsiResolvableScript.class))
+                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTResolvableScript.class))
                 .stream()
                 .flatMap(Collection::stream)
                 .map(Resolvable::resolve)
