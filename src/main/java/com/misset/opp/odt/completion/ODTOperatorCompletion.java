@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 
 import static com.intellij.patterns.StandardPatterns.or;
 import static com.misset.opp.odt.completion.CompletionPatterns.*;
-import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.TYPE_FILTER;
-import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.sharedContext;
+import static com.misset.opp.odt.completion.ODTSharedCompletion.TYPE_FILTER;
+import static com.misset.opp.odt.completion.ODTSharedCompletion.sharedContext;
 
 public class ODTOperatorCompletion extends ODTCallCompletion {
     private static final ElementPattern<PsiElement> BUILTIN_OPERATOR_STRICT =

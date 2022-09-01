@@ -156,6 +156,16 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     }
 
     @Override
+    public boolean isStatement() {
+        return false;
+    }
+
+    @Override
+    public int getLineOffsetInParent() {
+        return 0;
+    }
+
+    @Override
     public Collection<LocalQuickFix> getRegisterImportQuickfixes(PsiCall callable) {
         return Collections.emptyList();
     }

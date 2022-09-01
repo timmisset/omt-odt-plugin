@@ -2,6 +2,7 @@ package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.odt.builtin.AbstractBuiltin;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 
@@ -10,8 +11,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class AbstractBuiltInCommand extends AbstractBuiltin {
-
-    protected static final String TYPE = "Builtin Command";
 
     @Override
     public boolean isCommand() {
@@ -64,8 +63,8 @@ public abstract class AbstractBuiltInCommand extends AbstractBuiltin {
     }
 
     @Override
-    public String getType() {
-        return TYPE;
+    public CallableType getType() {
+        return CallableType.BUILTIN_COMMAND;
     }
 
     @Override

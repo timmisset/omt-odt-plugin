@@ -13,7 +13,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import com.misset.opp.omt.indexing.OMTPrefixIndex;
+import com.misset.opp.indexing.PrefixIndex;
 import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
 import com.misset.opp.omt.meta.OMTOntologyTypeProvider;
 import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
@@ -95,7 +95,7 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
         }
         // If the namespace is already available as prefix somewhere, show a warning to convert
         // the fully qualified notation to a prefix notation
-        List<String> prefixes = OMTPrefixIndex.getPrefixes(namespace);
+        List<String> prefixes = PrefixIndex.getPrefixes(namespace);
         if (!prefixes.isEmpty()) {
             holder.registerProblem(element, "Using fully qualified URI",
                     ProblemHighlightType.WARNING,
@@ -149,7 +149,7 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
         String text = plainText.getText();
         String prefix = reference.getRangeInElement().substring(text);
 
-        LocalQuickFix[] localQuickFixes = OMTPrefixIndex.getNamespaces(prefix).stream()
+        LocalQuickFix[] localQuickFixes = PrefixIndex.getNamespaces(prefix).stream()
                 .map(iri -> new OMTRegisterPrefixLocalQuickFix(prefix, iri))
                 .toArray(LocalQuickFix[]::new);
         holder.registerProblem(

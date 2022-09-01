@@ -7,6 +7,7 @@ import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.scalars.values.OMTLoadablePathMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTLoadableSchemaMetaType;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -97,8 +98,8 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
     }
 
     @Override
-    public String getType() {
-        return "Loadable";
+    public CallableType getType() {
+        return CallableType.LOADABLE;
     }
 
     @Override

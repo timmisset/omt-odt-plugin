@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
+import com.misset.opp.resolvable.CallableType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +17,7 @@ public abstract class OMTModelItemDelegateMetaType extends OMTMetaType implement
 
     public abstract boolean isCallable();
 
-    public abstract String getType();
+    public abstract CallableType getType();
 
     @Override
     public List<String> getAdditionalDescriptionHeaders() {

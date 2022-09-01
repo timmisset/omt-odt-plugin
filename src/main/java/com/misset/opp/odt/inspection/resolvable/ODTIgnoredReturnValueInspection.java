@@ -4,19 +4,14 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.psi.ODTCommandCall;
-import com.misset.opp.odt.psi.ODTQueryStatement;
-import com.misset.opp.odt.psi.ODTResolvableValue;
-import com.misset.opp.odt.psi.ODTVariableValue;
-import com.misset.opp.omt.injection.OMTODTInjectionUtil;
-import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
+import com.intellij.psi.PsiFile;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.resolvable.psi.PsiResolvable;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.Set;
 
@@ -62,8 +57,8 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
             return;
         }
 
-        final YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(queryStatement);
-        if (injectionMetaType != null && !(injectionMetaType instanceof OMTScriptMetaType)) {
+        PsiFile containingFile = queryStatement.getContainingFile();
+        if (containingFile instanceof ODTFile && ((ODTFile) containingFile).isStatement()) {
             return;
         }
         validateReturnValue(queryStatement.getQuery(), holder);

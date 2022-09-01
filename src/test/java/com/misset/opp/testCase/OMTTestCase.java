@@ -2,12 +2,13 @@ package com.misset.opp.testCase;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiFile;
+import com.misset.opp.indexing.PrefixIndex;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.OMTFileType;
-import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.omt.startup.IndexOMTPrefixes;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.HashMap;
@@ -84,12 +85,6 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
                         "        %s\n", componentContent));
     }
 
-    protected String inModel(String content) {
-        return String.format("model:\n" +
-                "    Activiteit: !Activity\n" +
-                "        %s", content.replace("\n", "\n        "));
-    }
-
     /**
      * Places the input statement into a template with common prefixes and inside a queries block
      *
@@ -127,8 +122,8 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
     @Override
     protected void buildIndexes(OMTFile file) {
         ReadAction.run(() -> {
-            OMTPrefixIndex.analyse(file);
-            OMTPrefixIndex.orderIndexByFrequency();
+            IndexOMTPrefixes.analyse(file);
+            PrefixIndex.orderIndexByFrequency();
         });
     }
 
@@ -136,6 +131,6 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
     @BeforeEach
     protected void setUp() {
         super.setUp();
-        OMTPrefixIndex.clear();
+        PrefixIndex.clear();
     }
 }

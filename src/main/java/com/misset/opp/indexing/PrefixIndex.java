@@ -1,9 +1,4 @@
-package com.misset.opp.omt.indexing;
-
-import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.omt.psi.OMTFile;
-import org.jetbrains.yaml.psi.YAMLKeyValue;
-import org.jetbrains.yaml.psi.YAMLMapping;
+package com.misset.opp.indexing;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,9 +7,9 @@ import java.util.stream.Collectors;
  * Index that holds is run once to determine all existing prefix-namespace mappings in the OMT files
  * Used to suggest registering prefixes in OMT files when the prefix is unknown or a fully qualified uri is used
  */
-public class OMTPrefixIndex {
+public class PrefixIndex {
 
-    private OMTPrefixIndex() {
+    private PrefixIndex() {
         // empty constructor
     }
 
@@ -28,40 +23,8 @@ public class OMTPrefixIndex {
         return map.getOrDefault(namespace, Collections.emptyList());
     }
 
-    /**
-     * Analyse and index all prefixes in the OMT file
-     * Call orderIndexByFrequency() when all files are processed to sort the index by frequency
-     */
-    public static void analyse(OMTFile file) {
-        if (!file.isValid()) {
-            return;
-        }
-        PsiTreeUtil.findChildrenOfType(file, YAMLKeyValue.class)
-                .stream()
-                .filter(keyValue -> keyValue.getKeyText().equals("prefixes"))
-                .map(YAMLKeyValue::getValue)
-                .filter(YAMLMapping.class::isInstance)
-                .map(YAMLMapping.class::cast)
-                .forEach(OMTPrefixIndex::addToIndex);
-    }
-
-    private static void addToIndex(YAMLMapping mapping) {
-        mapping.getKeyValues().forEach(OMTPrefixIndex::addToIndex);
-    }
-
-    private static void addToIndex(YAMLKeyValue keyValue) {
-        addToIndex(keyValue.getKeyText(), trimValue(keyValue.getValueText()));
-        addToIndex(trimValue(keyValue.getValueText()), keyValue.getKeyText());
-    }
-
-    private static void addToIndex(String key, String value) {
-        List<String> valuesForKey = map.getOrDefault(key, new ArrayList<>());
-        valuesForKey.add(value);
-        map.put(key, valuesForKey);
-    }
-
-    private static String trimValue(String valueText) {
-        return valueText.substring(1, valueText.length() - 1);
+    public static void addToIndex(String key, String value) {
+        map.computeIfAbsent(key, s -> new ArrayList<>()).add(value);
     }
 
     public static void orderIndexByFrequency() {

@@ -56,7 +56,7 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
         }
 
         sb.append(DocumentationMarkup.SECTIONS_START);
-        DocumentationProvider.addKeyValueSection("Type: ", callable.getType(), sb);
+        DocumentationProvider.addKeyValueSection("Type: ", callable.getType().getDescription(), sb);
         List<String> params = new ArrayList<>();
         Map<Integer, String> parameterNames = callable.getParameterNames();
         HashMap<Integer, Set<OntResource>> parameterTypes = callable.getParameterTypes();

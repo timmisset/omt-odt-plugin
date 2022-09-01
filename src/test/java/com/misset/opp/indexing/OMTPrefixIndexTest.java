@@ -1,4 +1,4 @@
-package com.misset.opp.omt.indexing;
+package com.misset.opp.indexing;
 
 import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +11,7 @@ class OMTPrefixIndexTest extends OMTTestCase {
     @Test
     void testRegistersPrefixes() {
         configureByText(insideActivityWithPrefixes(""));
-        final List<String> xsd = OMTPrefixIndex.getNamespaces("xsd");
+        final List<String> xsd = PrefixIndex.getNamespaces("xsd");
         assertNotEmpty(xsd);
     }
 
@@ -22,7 +22,7 @@ class OMTPrefixIndexTest extends OMTTestCase {
                 "   prefix: <http://a>\n" +
                 "   prefix: <http://a>\n"
         );
-        final List<String> prefixes = OMTPrefixIndex.getNamespaces("prefix");
+        final List<String> prefixes = PrefixIndex.getNamespaces("prefix");
         Assertions.assertEquals(2, prefixes.size());
         Assertions.assertEquals("http://a", prefixes.get(0));
         Assertions.assertEquals("http://b", prefixes.get(1));

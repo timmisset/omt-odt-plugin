@@ -3,6 +3,7 @@ package com.misset.opp.odt.psi.impl.callable;
 import com.intellij.lang.ASTNode;
 import com.misset.opp.odt.psi.ODTCommandBlock;
 import com.misset.opp.odt.psi.ODTDefineCommandStatement;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Resolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +46,8 @@ public abstract class ODTBaseDefineCommandStatement extends ODTDefineStatement i
     }
 
     @Override
-    public String getType() {
-        return "DEFINE COMMAND";
+    public CallableType getType() {
+        return CallableType.DEFINE_COMMAND;
     }
 
     @Override

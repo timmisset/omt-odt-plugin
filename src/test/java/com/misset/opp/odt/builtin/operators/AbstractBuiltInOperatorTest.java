@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -22,7 +23,7 @@ final class AbstractBuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testType() {
-        Assertions.assertEquals("Builtin Operator", LogOperator.INSTANCE.getType());
+        Assertions.assertEquals(CallableType.BUILTIN_OPERATOR, LogOperator.INSTANCE.getType());
     }
 
     @Test

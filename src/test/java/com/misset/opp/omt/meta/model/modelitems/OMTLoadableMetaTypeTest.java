@@ -81,11 +81,6 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
         Assertions.assertEquals(Collections.emptySet(), OMTLoadableMetaType.getInstance().getSecondReturnArgument());
     }
 
-    @Test
-    void testGetType() {
-        Assertions.assertEquals("Loadable", OMTLoadableMetaType.getInstance().getType());
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"!silent", "!load", "!release", "!retain", "!load!retain", "!retain!load"})
     void testAcceptsFlag(String flag) {

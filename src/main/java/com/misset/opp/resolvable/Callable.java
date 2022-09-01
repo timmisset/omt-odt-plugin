@@ -153,7 +153,7 @@ public interface Callable extends ContextResolvable {
     /**
      * The type of callable
      */
-    String getType();
+    CallableType getType();
 
     /**
      * If the callable (as operator) can be applied on the resources.

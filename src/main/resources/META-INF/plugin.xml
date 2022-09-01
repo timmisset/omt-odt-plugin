@@ -132,7 +132,7 @@
         <completion.contributor order="first" language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionNew"/>
         <completion.contributor order="first" language="ODT"
-                                implementationClass="com.misset.opp.odt.completion.operators.ODTOperatorCompletionLoadableContext"/>
+                                implementationClass="com.misset.opp.omt.completion.OMTCompletionLoadableContext"/>
         <completion.contributor order="first" language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.operators.ODTOperatorCompletionCast"/>
 

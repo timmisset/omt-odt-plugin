@@ -19,6 +19,7 @@ import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTReasonMetaType;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.*;
@@ -124,8 +125,8 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
     }
 
     @Override
-    public String getType() {
-        return ACTIVITY;
+    public CallableType getType() {
+        return CallableType.ACTIVITY;
     }
 
     @Override

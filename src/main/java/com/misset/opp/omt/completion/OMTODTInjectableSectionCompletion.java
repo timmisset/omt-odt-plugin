@@ -3,29 +3,23 @@ package com.misset.opp.omt.completion;
 import com.google.common.base.Strings;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.util.Key;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.util.ProcessingContext;
-import com.intellij.util.SharedProcessingContext;
+import com.misset.opp.odt.completion.ODTSharedCompletion;
 import com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
 import com.misset.opp.omt.injection.InjectableContentType;
 import com.misset.opp.omt.injection.InjectionHost;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
-import com.misset.opp.resolvable.Callable;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
-import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -35,17 +29,8 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
  * an OMT/ODT completion and not purely an ODT completion.
  */
 public class OMTODTInjectableSectionCompletion extends CompletionContributor {
-    /**
-     * Type-filter to filter to completions
-     */
-    public static final Key<Predicate<Set<OntResource>>> TYPE_FILTER = new Key<>("TYPE_FILTER");
 
-    /**
-     * Type-filter to filter callables by type (Operators/Commands);
-     */
-    public static final Key<Predicate<Callable>> CALLABLE_FILTER = new Key<>("CALLABLE_FILTER");
     protected static final String QUERY_SIMPLE_TEMPLATE = "DEFINE QUERY simpleQuery => 'Hello world';";
-    public static final AtomicReference<SharedProcessingContext> sharedContext = new AtomicReference<>();
     private static final String JAVADOC_START = "/**\n";
     private static final String JAVADOC_END = " */\n";
     protected static final String QUERY_PARAMETER_TEMPLATE = "" +
@@ -80,7 +65,7 @@ public class OMTODTInjectableSectionCompletion extends CompletionContributor {
                 PsiFile originalFile = parameters.getOriginalFile();
                 if (injectionHost instanceof InjectionHost && originalFile instanceof ODTFile) {
                     // set a new sharedContext
-                    sharedContext.set(context.getSharedContext());
+                    ODTSharedCompletion.sharedContext.set(context.getSharedContext());
                     addInjectableSectionCompletions(parameters, result, ((InjectionHost) injectionHost).getInjectableContentType(), (ODTFile) originalFile);
                 }
             }
@@ -92,7 +77,7 @@ public class OMTODTInjectableSectionCompletion extends CompletionContributor {
                                                  InjectableContentType injectableContentType,
                                                  ODTFile originalFile) {
         if (injectableContentType.isQueryStatement()) {
-            sharedContext.get().put(CALLABLE_FILTER, callable -> !callable.isCommand());
+            ODTSharedCompletion.sharedContext.get().put(ODTSharedCompletion.CALLABLE_FILTER, callable -> !callable.isCommand());
         }
         PsiElement element = parameters.getPosition();
         switch (injectableContentType) {
@@ -117,7 +102,7 @@ public class OMTODTInjectableSectionCompletion extends CompletionContributor {
                 result.addElement(PrioritizedLookupElement.withPriority(
                         LookupElementBuilder.create("false"), 100
                 ));
-                sharedContext.get().put(TYPE_FILTER, resources -> OppModel.getInstance().areCompatible(Collections.singleton(OppModelConstants.getXsdBooleanInstance()), resources));
+                ODTSharedCompletion.sharedContext.get().put(ODTSharedCompletion.TYPE_FILTER, resources -> OppModel.getInstance().areCompatible(Collections.singleton(OppModelConstants.getXsdBooleanInstance()), resources));
                 break;
             case NONE:
             default:
@@ -158,7 +143,7 @@ public class OMTODTInjectableSectionCompletion extends CompletionContributor {
     }
 
     private String withIndentation(String template, ODTFile containingFile) {
-        String indent = Strings.repeat(" ", OMTODTInjectionUtil.getMinimalLineOffset(containingFile));
+        String indent = Strings.repeat(" ", containingFile.getLineOffsetInParent());
         return template.replace("\n", "\n" + indent);
     }
 

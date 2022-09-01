@@ -4,6 +4,8 @@ import com.misset.opp.ttl.model.constants.*;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 
 import java.util.List;
@@ -55,6 +57,14 @@ public final class OppModelConstants {
     private static Individual xsdDateInstance;
     private static Individual xsdDatetimeInstance;
     private static Individual xsdDurationInstance;
+
+    static {
+        // create the static members with an initial model. Once the OppModel is actually loaded
+        // these resources have to be registered there to be part of the caching mechanism
+        OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        OppModel oppModel = new OppModel(ontModel);
+        setConstants(oppModel, ontModel);
+    }
 
     private OppModelConstants() {
         // empty constructor

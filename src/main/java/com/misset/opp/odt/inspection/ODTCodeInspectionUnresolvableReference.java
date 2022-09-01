@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.javadoc.PsiDocTag;
+import com.misset.opp.indexing.PrefixIndex;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTVariable;
@@ -14,7 +15,6 @@ import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.odt.psi.reference.ODTJavaDocTTLSubjectReference;
 import com.misset.opp.odt.psi.reference.ODTTypePrefixAnnotationReference;
-import com.misset.opp.omt.indexing.OMTPrefixIndex;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.Nls;
@@ -117,7 +117,7 @@ public class ODTCodeInspectionUnresolvableReference extends LocalInspectionTool 
             return;
         }
 
-        LocalQuickFix[] localQuickFixes = OMTPrefixIndex.getNamespaces(prefix)
+        LocalQuickFix[] localQuickFixes = PrefixIndex.getNamespaces(prefix)
                 .stream()
                 .map(namespace -> ((ODTFile) file).getRegisterPrefixQuickfix(prefix, namespace))
                 .toArray(LocalQuickFix[]::new);

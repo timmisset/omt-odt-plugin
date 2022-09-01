@@ -35,8 +35,6 @@ public interface OMTMetaCallable {
 
     Set<OntResource> getSecondReturnArgument();
 
-    String getType();
-
     default List<String> getFlags() {
         return Collections.emptyList();
     }

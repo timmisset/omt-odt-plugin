@@ -9,8 +9,8 @@ import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemDelegateMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTProcedureMetaType;
-import com.misset.opp.omt.psi.OMTCallable;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallableImpl;
@@ -36,7 +36,7 @@ import java.util.function.Function;
  * with a YAMLMapping element on method that requires information specific an instance of the MetaType in the
  * PsiTree. Therefore, the OTMCallableImpl is basically a proxy between the PsiCallable and OMTMetaTypes
  */
-public class OMTCallableImpl extends PsiCallableImpl implements OMTCallable {
+public class OMTCallableImpl extends PsiCallableImpl implements Callable {
 
     private final transient YAMLMapping mapping;
     private final transient YAMLKeyValue keyValue;
@@ -67,8 +67,8 @@ public class OMTCallableImpl extends PsiCallableImpl implements OMTCallable {
     }
 
     @Override
-    public String getType() {
-        return computeFromMeta(OMTModelItemDelegateMetaType.class, OMTModelItemDelegateMetaType::getType, "OMT Callable");
+    public CallableType getType() {
+        return computeFromMeta(OMTModelItemDelegateMetaType.class, OMTModelItemDelegateMetaType::getType, CallableType.UNKNOWN);
     }
 
     @Override

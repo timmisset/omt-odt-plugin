@@ -10,12 +10,13 @@ import com.misset.opp.odt.builtin.commands.ForEachCommand;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTAssignmentStatementImpl;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
-import com.misset.opp.omt.psi.impl.OMTCallableImpl;
+import com.misset.opp.resolvable.CallableType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Code inspection for the specific Builtin Command ForEach which requires detailed information about the Call, rather than the
@@ -24,7 +25,7 @@ import java.util.List;
  * Basic validation on call signature (number of arguments etc.) is already handled by the Builtin Command
  */
 public class ODTCommandInspectionForEach extends LocalInspectionTool {
-    protected static final String CANNOT_CALL_PROCEDURE_INSIDE_FOR_EACH = "Cannot call a Procedure within a ForEach command";
+    protected static final String CANNOT_CALL_PROCEDURE_INSIDE_FOR_EACH = "You should only call other ODT DEFINE COMMANDS/QUERIES or Builtin Commands/Operators from ForEach";
     protected static final String ALL_VALUES_ARE_TREATED_EQUAL = "Unnecessary usage of FOREACH, all values are treated equal. Assign values to the entire collection directly.";
 
     @Override
@@ -80,7 +81,9 @@ public class ODTCommandInspectionForEach extends LocalInspectionTool {
 
     private boolean illegalNestedCall(@NotNull ODTCall call) {
         // cannot call a procedure, activity etc. anything that is part of the OMT structure
-        return call.getCallable() instanceof OMTCallableImpl;
+        CallableType type = call.getCallable().getType();
+        return !Set.of(CallableType.BUILTIN_COMMAND, CallableType.BUILTIN_OPERATOR, CallableType.DEFINE_QUERY, CallableType.DEFINE_COMMAND)
+                .contains(type);
     }
 
     private boolean isEncapsulatedByLogicalBlockOrCall(@NotNull ODTVariable variable,

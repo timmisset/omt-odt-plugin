@@ -4,6 +4,7 @@ import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTShapeQueryType;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -71,8 +72,8 @@ public class OMTGraphShapeHandlerMetaType extends OMTParameterizedModelItemMetaT
     }
 
     @Override
-    public String getType() {
-        return "GraphShapeHandler";
+    public CallableType getType() {
+        return CallableType.GRAPH_SHAPE_HANDLER;
     }
 
     @Override

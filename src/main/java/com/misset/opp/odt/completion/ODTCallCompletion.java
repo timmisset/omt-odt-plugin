@@ -16,8 +16,7 @@ import java.util.function.Predicate;
 
 import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.CALLABLE;
 import static com.misset.opp.odt.completion.ODTCommandCompletion.HAS_AT_SYMBOL;
-import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.CALLABLE_FILTER;
-import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.sharedContext;
+import static com.misset.opp.odt.completion.ODTSharedCompletion.sharedContext;
 
 public abstract class ODTCallCompletion extends CompletionContributor {
 
@@ -89,8 +88,8 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                                 @NotNull ProcessingContext context) {
         Predicate<Callable> callableFilter = selectionFilter;
         SharedProcessingContext sharedProcessingContext = sharedContext.get();
-        if (sharedProcessingContext != null && sharedProcessingContext.get(CALLABLE_FILTER) != null) {
-            callableFilter = callableFilter.and(sharedProcessingContext.get(CALLABLE_FILTER));
+        if (sharedProcessingContext != null && sharedProcessingContext.get(ODTSharedCompletion.CALLABLE_FILTER) != null) {
+            callableFilter = callableFilter.and(sharedProcessingContext.get(ODTSharedCompletion.CALLABLE_FILTER));
         }
 
         callables.stream()

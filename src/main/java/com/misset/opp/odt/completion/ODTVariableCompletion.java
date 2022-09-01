@@ -25,8 +25,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.TYPE_FILTER;
-import static com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion.sharedContext;
+import static com.misset.opp.odt.completion.ODTSharedCompletion.TYPE_FILTER;
+import static com.misset.opp.odt.completion.ODTSharedCompletion.sharedContext;
 
 public class ODTVariableCompletion extends CompletionContributor {
     public ODTVariableCompletion() {

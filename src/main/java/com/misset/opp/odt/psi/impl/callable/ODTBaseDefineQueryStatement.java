@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -54,8 +55,8 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement
     }
 
     @Override
-    public String getType() {
-        return "DEFINE QUERY";
+    public CallableType getType() {
+        return CallableType.DEFINE_QUERY;
     }
 
     @Override

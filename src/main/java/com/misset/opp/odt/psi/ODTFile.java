@@ -78,4 +78,10 @@ public interface ODTFile extends PsiFile {
      */
     LocalQuickFix getRegisterPrefixQuickfix(String prefix, String namespace);
 
+    /**
+     * Returns true if the ODTFile is used as a statement to return a value
+     */
+    boolean isStatement();
+
+    int getLineOffsetInParent();
 }

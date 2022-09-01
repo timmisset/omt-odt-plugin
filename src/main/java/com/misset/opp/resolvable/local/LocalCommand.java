@@ -1,6 +1,7 @@
 package com.misset.opp.resolvable.local;
 
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.CallableType;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashMap;
@@ -39,8 +40,8 @@ public abstract class LocalCommand implements Callable {
     }
 
     @Override
-    public String getType() {
-        return "Local Command";
+    public CallableType getType() {
+        return CallableType.LOCAL_COMMAND;
     }
 
     @Override

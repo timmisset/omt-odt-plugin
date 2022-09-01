@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
 import com.misset.opp.odt.builtin.AbstractBuiltin;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -146,8 +147,8 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
     }
 
     @Override
-    public String getType() {
-        return "Builtin Operator";
+    public CallableType getType() {
+        return CallableType.BUILTIN_OPERATOR;
     }
 
     @Override

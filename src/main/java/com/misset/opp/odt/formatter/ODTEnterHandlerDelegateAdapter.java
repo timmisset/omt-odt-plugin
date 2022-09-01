@@ -3,6 +3,7 @@ package com.misset.opp.odt.formatter;
 import com.google.common.base.Strings;
 import com.intellij.codeInsight.editorActions.enter.EnterHandlerDelegateAdapter;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -16,7 +17,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTIgnored;
-import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -37,9 +37,10 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
         if (!(file instanceof ODTFile)) {
             return Result.Continue;
         }
+        ODTFile odtFile = (ODTFile) file;
         moveCaretAfterInsert = 0;
 
-        PsiElement elementAt = file.findElementAt(caretOffset.get());
+        PsiElement elementAt = odtFile.findElementAt(caretOffset.get());
         IElementType prevElementType = Optional.ofNullable(elementAt)
                 .map(PsiElement::getPrevSibling)
                 .map(PsiElement::getNode)
@@ -49,10 +50,10 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
 
         if (prevElementType == ODTIgnored.DOC_COMMENT_START) {
             // insert javadoc block, an already complete block would not be parsed to this element type
-            insert(file.getProject(), editor, "* \n */", caretOffset.get());
+            insert(odtFile.getProject(), editor, "* \n */", caretOffset.get());
             moveCaretAfterInsert = 3;
         }
-        minimalLineOffset = OMTODTInjectionUtil.getMinimalLineOffset(file);
+        minimalLineOffset = odtFile.getLineOffsetInParent();
         return Result.Continue;
     }
 
@@ -75,15 +76,11 @@ public class ODTEnterHandlerDelegateAdapter extends EnterHandlerDelegateAdapter 
             if (caret instanceof CaretImpl) {
                 CaretImpl currentCaret = (CaretImpl) caret;
                 if (currentCaret.getVisualPosition().column == 0) {
+                    PsiFile topLevelFile = InjectedLanguageManager.getInstance(file.getProject()).getTopLevelFile(file);
+                    Document document = PsiDocumentManager.getInstance(file.getProject()).getDocument(topLevelFile);
                     // known issue with continuation indent when injected
-                    Document hostDocument = OMTODTInjectionUtil.getHostDocument(file);
-                    if (hostDocument != null) {
-                        int indentSize = minimalLineOffset + 4; // + 4 is fixed size for continuation indent
-                        insert(file.getProject(),
-                                hostDocument,
-                                Strings.repeat(" ", indentSize),
-                                currentCaret.getOffset());
-                    }
+                    int indentSize = minimalLineOffset + 4; // + 4 is fixed size for continuation indent
+                    insert(file.getProject(), document, Strings.repeat(" ", indentSize), currentCaret.getOffset());
                 }
             }
         }

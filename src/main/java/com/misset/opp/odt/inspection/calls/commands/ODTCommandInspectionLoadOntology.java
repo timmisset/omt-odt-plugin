@@ -9,8 +9,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.builtin.commands.LoadOntologyCommand;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgument;
-import com.misset.opp.omt.meta.model.modelitems.ontology.OMTOntologyMetaType;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +47,7 @@ public class ODTCommandInspectionLoadOntology extends LocalInspectionTool {
                         Boolean isValid = Optional.of(signatureCall)
                                 .map(PsiCall::getCallable)
                                 .map(Callable::getType)
-                                .map(OMTOntologyMetaType.ONTOLOGY::equals)
+                                .map(CallableType.ONTOLOGY::equals)
                                 .orElse(false);
                         if (Boolean.FALSE.equals(isValid)) {
                             registerProblem(signatureCall);

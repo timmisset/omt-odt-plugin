@@ -5,17 +5,16 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
+import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTInterpolation;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTTypes;
-import com.misset.opp.omt.injection.OMTODTInjectionUtil;
-import com.misset.opp.omt.meta.model.SimpleInjectable;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 /**
  * Semicolon usage is not caught by the Lexer by design. This would mean having to insert
@@ -50,11 +49,9 @@ public class ODTSemicolonAnnotator implements Annotator {
             validateHasNoIllegalSemicolon(hasSemicolonEnding, holder);
         } else {
             // depends on the context:
-            final YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(scriptLine);
-            if (injectionMetaType == null) {
-                validateHasRequiredSemicolon(hasSemicolonEnding, holder);
-            } else {
-                if (injectionMetaType.getClass().isAnnotationPresent(SimpleInjectable.class)) {
+            PsiFile containingFile = scriptLine.getContainingFile();
+            if (containingFile instanceof ODTFile) {
+                if (((ODTFile) containingFile).isStatement()) {
                     validateHasNoIllegalSemicolon(hasSemicolonEnding, holder);
                 } else {
                     validateHasRequiredSemicolon(hasSemicolonEnding, holder);

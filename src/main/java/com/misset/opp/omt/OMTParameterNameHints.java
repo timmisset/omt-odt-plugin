@@ -7,6 +7,7 @@ import com.misset.opp.omt.meta.OMTImportMemberMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.psi.references.OMTImportMemberReference;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -34,7 +35,8 @@ public class OMTParameterNameHints implements InlayParameterHintsProvider {
                     .filter(PsiCallable.class::isInstance)
                     .map(PsiCallable.class::cast)
                     .map(Callable::getType)
-                    .orElse("unknown");
+                    .orElse(CallableType.UNKNOWN)
+                    .getDescription();
             return List.of(
                     new InlayInfo(
                             type, element.getTextOffset() + element.getTextLength(), false, false, true));

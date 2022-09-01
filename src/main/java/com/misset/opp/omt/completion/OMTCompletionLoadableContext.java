@@ -1,4 +1,4 @@
-package com.misset.opp.odt.completion.operators;
+package com.misset.opp.omt.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -12,17 +12,20 @@ import com.misset.opp.odt.psi.ODTOperatorCall;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.omt.meta.model.modelitems.OMTLoadableMetaType;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class ODTOperatorCompletionLoadableContext extends CompletionContributor {
+public class OMTCompletionLoadableContext extends CompletionContributor {
 
-    public ODTOperatorCompletionLoadableContext() {
+    public OMTCompletionLoadableContext() {
         extend(CompletionType.BASIC, getInsideLoadableOperator(), new CompletionProvider<>() {
             @Override
-            protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
+            protected void addCompletions(@NotNull CompletionParameters parameters,
+                                          @NotNull ProcessingContext context,
+                                          @NotNull CompletionResultSet result) {
                 // get the CommandCall:
                 for (String contextSelector : OMTLoadableMetaType.getContextSelectors().keySet()) {
                     String value = "'" + contextSelector + "'";
@@ -50,7 +53,7 @@ public class ODTOperatorCompletionLoadableContext extends CompletionContributor 
                                 .map(argument -> PsiTreeUtil.getParentOfType(argument, ODTOperatorCall.class))
                                 .map(PsiCall::getCallable)
                                 .map(Callable::getType)
-                                .map("Loadable"::equals)
+                                .map(CallableType.LOADABLE::equals)
                                 .orElse(false);
                     }
                 }

@@ -16,6 +16,7 @@ import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
@@ -117,8 +118,8 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
     }
 
     @Override
-    public String getType() {
-        return "Component";
+    public CallableType getType() {
+        return CallableType.COMPONENT;
     }
 
     @Override

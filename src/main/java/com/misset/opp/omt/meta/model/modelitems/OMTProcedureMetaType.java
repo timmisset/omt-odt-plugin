@@ -14,6 +14,7 @@ import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTReasonMetaType;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.Commit;
@@ -103,8 +104,8 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     }
 
     @Override
-    public String getType() {
-        return PROCEDURE;
+    public CallableType getType() {
+        return CallableType.PROCEDURE;
     }
 
     @Override

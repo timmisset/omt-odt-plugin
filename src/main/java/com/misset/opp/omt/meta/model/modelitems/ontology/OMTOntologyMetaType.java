@@ -4,6 +4,7 @@ import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.arrays.OMTOntologyClassesArrayMetaType;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemDelegateMetaType;
 import com.misset.opp.omt.meta.scalars.OMTOntologyPrefixMetaType;
+import com.misset.opp.resolvable.CallableType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
 import java.util.HashMap;
@@ -46,8 +47,8 @@ public class OMTOntologyMetaType extends OMTModelItemDelegateMetaType implements
     }
 
     @Override
-    public String getType() {
-        return ONTOLOGY;
+    public CallableType getType() {
+        return CallableType.ONTOLOGY;
     }
 
     @Override

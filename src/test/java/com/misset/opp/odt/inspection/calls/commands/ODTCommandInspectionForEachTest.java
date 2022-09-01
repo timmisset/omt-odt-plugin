@@ -61,6 +61,7 @@ class ODTCommandInspectionForEachTest extends OMTInspectionTestCase {
     @Test
     void testForEachCommandUnnecessaryUsageOfForEachShowsNoWarningWhenInsideCall() {
         String content = insideProcedureRunWithPrefixes("" +
+                "DEFINE COMMAND SomeCommand() => {}\n" +
                 "@FOREACH('', { @SomeCommand($value); });");
         configureByText(content);
         assertNoWarning(ALL_VALUES_ARE_TREATED_EQUAL);

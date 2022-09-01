@@ -13,6 +13,7 @@ import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.psi.OMTVariable;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiResolvableQuery;
@@ -125,8 +126,8 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
     }
 
     @Override
-    public String getType() {
-        return "StandaloneQuery";
+    public CallableType getType() {
+        return CallableType.STANDALONE_QUERY;
     }
 
     @Override

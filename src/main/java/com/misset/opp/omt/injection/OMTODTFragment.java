@@ -2,10 +2,9 @@ package com.misset.opp.omt.injection;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.lang.injection.InjectedLanguageManager;
-import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.*;
 import com.intellij.psi.search.SearchScope;
 import com.misset.opp.exception.OMTODTPluginException;
 import com.misset.opp.odt.psi.ODTFile;
@@ -13,6 +12,7 @@ import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.providers.*;
+import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.util.OMTImportUtil;
 import com.misset.opp.resolvable.Callable;
@@ -23,8 +23,10 @@ import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
+import org.jetbrains.yaml.psi.impl.YAMLScalarListImpl;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -149,6 +151,12 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
     }
 
     @Override
+    public boolean isStatement() {
+        final YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(this);
+        return injectionMetaType != null && !(injectionMetaType instanceof OMTScriptMetaType);
+    }
+
+    @Override
     public void clearCaches() {
         allInjectedPsiElements.clear();
         psiVariables.clear();
@@ -211,5 +219,31 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
         prefixProviders.entrySet().stream()
                 .map(entry -> entry.getValue().getPrefixMap(entry.getKey()))
                 .forEach(this::addPrefixes);
+    }
+
+    @Override
+    public int getLineOffsetInParent() {
+        int textOffset = getInjectionStart();
+        Document hostDocument = getHostDocument();
+        if (hostDocument == null) {
+            return 0;
+        }
+
+        int lineNumber = hostDocument.getLineNumber(textOffset);
+        return textOffset - hostDocument.getLineStartOffset(lineNumber);
+    }
+
+    private int getInjectionStart() {
+        if (getHost() instanceof YAMLScalarListImpl) {
+            List<TextRange> contentRanges = ((YAMLScalarListImpl) getHost()).getTextEvaluator().getContentRanges();
+            if (!contentRanges.isEmpty()) {
+                return getHost().getTextOffset() + contentRanges.get(0).getStartOffset();
+            }
+        }
+        return getHost().getTextOffset();
+    }
+
+    public Document getHostDocument() {
+        return PsiDocumentManager.getInstance(getProject()).getDocument(getHostFile());
     }
 }

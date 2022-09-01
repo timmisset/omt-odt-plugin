@@ -1,20 +1,15 @@
 package com.misset.opp.omt.injection;
 
 import com.intellij.lang.injection.InjectedLanguageManager;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLValue;
-import org.jetbrains.yaml.psi.impl.YAMLScalarListImpl;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -41,38 +36,6 @@ public class OMTODTInjectionUtil {
                         .getValueMetaType(yamlPsiElement))
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
                 .orElse(null);
-    }
-
-    public static int getMinimalLineOffset(@NotNull PsiFile file) {
-        PsiLanguageInjectionHost host = getInjectionHost(file);
-        if (host == null) {
-            return 0;
-        }
-        int textOffset = getInjectionStart(host);
-        Document hostDocument = getHostDocument(file);
-        if (hostDocument == null) {
-            return 0;
-        }
-        int lineNumber = hostDocument.getLineNumber(textOffset);
-        return textOffset - hostDocument.getLineStartOffset(lineNumber);
-    }
-
-    private static int getInjectionStart(PsiLanguageInjectionHost host) {
-        if (host instanceof YAMLScalarListImpl) {
-            List<TextRange> contentRanges = ((YAMLScalarListImpl) host).getTextEvaluator().getContentRanges();
-            if (!contentRanges.isEmpty()) {
-                return host.getTextOffset() + contentRanges.get(0).getStartOffset();
-            }
-        }
-        return host.getTextOffset();
-    }
-
-    public static Document getHostDocument(@NotNull PsiFile file) {
-        PsiLanguageInjectionHost host = getInjectionHost(file);
-        if (host == null) {
-            return null;
-        }
-        return PsiDocumentManager.getInstance(file.getProject()).getDocument(host.getContainingFile());
     }
 
     /**

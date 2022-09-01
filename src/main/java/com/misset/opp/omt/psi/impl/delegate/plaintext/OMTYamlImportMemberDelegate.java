@@ -10,6 +10,7 @@ import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTImportMemberReference;
 import com.misset.opp.omt.util.OMTRefactoringUtil;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
@@ -206,8 +207,8 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     }
 
     @Override
-    public String getType() {
-        return computeFromCallable(Callable::getType, null);
+    public CallableType getType() {
+        return computeFromCallable(Callable::getType, CallableType.UNKNOWN);
     }
 
     @Override

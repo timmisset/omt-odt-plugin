@@ -1,4 +1,4 @@
-package com.misset.opp.odt.completion.commands;
+package com.misset.opp.omt.completion;
 
 import com.misset.opp.omt.meta.model.modelitems.OMTLoadableMetaType;
 import com.misset.opp.testCase.OMTCompletionTestCase;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class ODTOperatorCompletionLoadableContextTest extends OMTCompletionTestCase {
+class OMTCompletionLoadableContextTest extends OMTCompletionTestCase {
 
     @Test
     void testShowsContextOptions() {

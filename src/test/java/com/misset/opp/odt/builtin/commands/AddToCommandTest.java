@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin.commands;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.openapi.util.Pair;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -84,7 +85,7 @@ class AddToCommandTest extends BaseBuiltinTest {
     void testAbstractMethods() {
         Assertions.assertEquals("@ADD_TO", AddToCommand.INSTANCE.getCallId());
         Assertions.assertTrue(AddToCommand.INSTANCE.isCommand());
-        Assertions.assertEquals(AbstractBuiltInCommand.TYPE, AddToCommand.INSTANCE.getType());
+        Assertions.assertEquals(CallableType.BUILTIN_COMMAND, AddToCommand.INSTANCE.getType());
         Assertions.assertFalse(AddToCommand.INSTANCE.canBeAppliedTo(null));
     }
 }
