@@ -36,7 +36,7 @@ public abstract class ODTResolvableSignatureArgument extends ODTBaseResolvable
     }
 
     private Optional<Set<OntResource>> resolveCommandBlock() {
-        // todo: try to resolve the command block
+        // open issue: https://github.com/timmisset/omt-odt-plugin/issues/127
         return Optional.of(Collections.emptySet());
     }
 

@@ -56,7 +56,7 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
         }
 
         sb.append(DocumentationMarkup.SECTIONS_START);
-        DocumentationProvider.addKeyValueSection("Type: ", callable.getType().getDescription(), sb);
+        sb.append(DocumentationProvider.getKeyValueSection("Type: ", callable.getType().getDescription()));
         List<String> params = new ArrayList<>();
         Map<Integer, String> parameterNames = callable.getParameterNames();
         HashMap<Integer, Set<OntResource>> parameterTypes = callable.getParameterTypes();
@@ -66,11 +66,11 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
                                 parameterNames.get(i) + " (" + TTLResourceUtil.describeUrisForLookupJoined(parameterTypes.get(i)) + ")")
         );
         if (!params.isEmpty()) {
-            DocumentationProvider.addKeyValueSection("Params: ", String.join("<br>", params), sb);
+            sb.append(DocumentationProvider.getKeyValueSection("Params: ", String.join("<br>", params)));
         }
         List<String> flags = callable.getFlags();
         if (!flags.isEmpty()) {
-            DocumentationProvider.addKeyValueSection("Flags: ", String.join("<br>", flags), sb);
+            sb.append(DocumentationProvider.getKeyValueSection("Flags: ", String.join("<br>", flags)));
         }
 
         appendReturnInformation(callable, call, sb);
@@ -91,9 +91,14 @@ public abstract class ODTBaseCallName extends ODTBaseResolvable implements
     private void appendReturnInformation(Callable callable, ODTCall call, StringBuilder sb) {
         if (!callable.isVoid()) {
             Set<OntResource> resolve = callable.resolve(ContextFactory.fromCall(call));
-            DocumentationProvider.addKeyValueSection("Returns:", resolve.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(resolve), sb);
+            sb.append(
+                    DocumentationProvider.getKeyValueSection("Returns:",
+                            resolve.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(resolve))
+            );
             if (!callable.getSecondReturnArgument().isEmpty()) {
-                DocumentationProvider.addKeyValueSection("Secondary return:", TTLResourceUtil.describeUrisForLookupJoined(callable.getSecondReturnArgument()), sb);
+                sb.append(
+                        DocumentationProvider.getKeyValueSection("Secondary return:",
+                                TTLResourceUtil.describeUrisForLookupJoined(callable.getSecondReturnArgument())));
             }
         }
     }

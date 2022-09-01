@@ -22,9 +22,9 @@ import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
+import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.global.GlobalVariable;
-import com.misset.opp.shared.refactoring.SupportsSafeDelete;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
@@ -189,12 +189,16 @@ public abstract class ODTBaseVariable
         Set<OntResource> filtered = variableStep != null ? variableStep.getResolvableParent().filter(unfiltered) : unfiltered;
         sb.append(DocumentationMarkup.SECTIONS_START);
         String typeLabel = filtered.size() == 1 ? "Type:" : "Types:";
-        DocumentationProvider.addKeyValueSection(typeLabel, filtered.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(filtered), sb);
+        sb.append(
+                DocumentationProvider.getKeyValueSection(typeLabel,
+                        filtered.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(filtered)));
         if (!unfiltered.equals(filtered)) {
-            DocumentationProvider.addKeyValueSection("Unfiltered:", TTLResourceUtil.describeUrisForLookupJoined(unfiltered, "<br>"), sb);
+            sb.append(
+                    DocumentationProvider.getKeyValueSection("Unfiltered:",
+                            TTLResourceUtil.describeUrisForLookupJoined(unfiltered, "<br>")));
         }
-        DocumentationProvider.addKeyValueSection("Scope:", isGlobal() ? "Global" : "Local", sb);
-        DocumentationProvider.addKeyValueSection("Readonly:", isGlobal() || isReadonly() ? "Yes" : "No", sb);
+        sb.append(DocumentationProvider.getKeyValueSection("Scope:", isGlobal() ? "Global" : "Local"));
+        sb.append(DocumentationProvider.getKeyValueSection("Readonly:", isGlobal() || isReadonly() ? "Yes" : "No"));
         sb.append(DocumentationMarkup.SECTIONS_END);
         return sb.toString();
     }

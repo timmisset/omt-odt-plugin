@@ -1,4 +1,4 @@
-package com.misset.opp.shared.providers;
+package com.misset.opp.odt.builtin.commands;
 
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.psi.PsiCall;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface CallableLocalVariableTypeProvider {
+public interface CommandVariableTypeProvider {
     /**
      * Returns an empty Set when the name doesn't match any local variable for this Callable
      * Returns a set of owl:Thing when the name matches a local variable but the type cannot

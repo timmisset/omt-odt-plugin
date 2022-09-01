@@ -2,7 +2,6 @@ package com.misset.opp.omt.documentation;
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.lang.documentation.DocumentationMarkup;
-import com.intellij.lang.documentation.DocumentationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.Strings;
@@ -11,6 +10,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
+import com.misset.opp.documentation.DocumentationProvider;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -22,9 +22,7 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.List;
 
-import static com.misset.opp.documentation.DocumentationProvider.addKeyValueSection;
-
-public class OMTDocumentationProvider extends AbstractDocumentationProvider implements DocumentationProvider {
+public class OMTDocumentationProvider extends AbstractDocumentationProvider implements com.intellij.lang.documentation.DocumentationProvider {
 
     public static final String CLASSES = "Classes";
     public static final String DESCRIPTION = "Description";
@@ -94,29 +92,28 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
 
         // Some API documentation sections have additional headers that should be included
         // as separate documentation segments
-        omtDocumented.getAdditionalHeaders()
-                .forEach(header -> addAdditionalField(
+        omtDocumented.getAdditionalHeaders().stream()
+                .map(header -> addAdditionalField(
                         header,
                         documentPath(CLASSES, type, header),
-                        sb,
                         documentationService)
-                );
+                ).forEach(sb::append);
 
         // Some API documentation sections have additional description headers that should be included
         // as separate documentation segments
         omtDocumented.getAdditionalDescriptionHeaders()
-                .forEach(header -> addAdditionalField(
+                .stream()
+                .map(header -> addAdditionalField(
                         header,
                         documentPath(CLASSES, type, DESCRIPTION, header),
-                        sb,
                         documentationService)
-                );
+                ).forEach(sb::append);
 
         String example = documentationService.readApiDocumentation(
                 documentPath(CLASSES, type, DESCRIPTION, EXAMPLE)
         );
         if (example != null) {
-            addKeyValueSection(EXAMPLE, example, sb);
+            sb.append(DocumentationProvider.getKeyValueSection(EXAMPLE, example));
         }
 
         return sb;
@@ -132,6 +129,16 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
      */
     public static String getClassDocumentation(Project project, OMTDocumented omtDocumented) {
         return getClassDocumentationSB(project, omtDocumented).toString();
+    }
+
+    private static String addAdditionalField(String header,
+                                             String path,
+                                             OMTApiDocumentationService documentationService) {
+        String content = documentationService.readApiDocumentation(path);
+        if (content != null) {
+            return DocumentationProvider.getKeyValueSection(header, content);
+        }
+        return null;
     }
 
     private String getDocumentedAttribute(OMTMetaTypeProvider metaTypeProvider, YAMLKeyValue element) {
@@ -155,22 +162,12 @@ public class OMTDocumentationProvider extends AbstractDocumentationProvider impl
             sb.append(description != null ? description : "Could not find description");
             sb.append(DocumentationMarkup.CONTENT_END);
             if (example != null) {
-                addKeyValueSection(EXAMPLE, example, sb);
+                sb.append(DocumentationProvider.getKeyValueSection(EXAMPLE, example));
             }
 
             return sb.toString();
         }
         return null;
-    }
-
-    private static void addAdditionalField(String header,
-                                           String path,
-                                           StringBuilder sb,
-                                           OMTApiDocumentationService documentationService) {
-        String content = documentationService.readApiDocumentation(path);
-        if (content != null) {
-            addKeyValueSection(header, content, sb);
-        }
     }
 
     @Override

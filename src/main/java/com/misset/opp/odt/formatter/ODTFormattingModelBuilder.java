@@ -31,11 +31,8 @@ public class ODTFormattingModelBuilder implements FormattingModelBuilder {
         });
     }
 
-    /**
-     * Set the ODT indent sizes as common language settings
-     * todo: make this a configuration setting to be less opinionated
-     */
     private void setIndentAndContinuationIndent(Project project) {
+        // Open issue: https://github.com/timmisset/omt-odt-plugin/issues/126
         CodeStyleSettings settings = CodeStyle.getSettings(project);
         CommonCodeStyleSettings commonSettings = settings.getCommonSettings(ODTLanguage.INSTANCE);
         CommonCodeStyleSettings.IndentOptions indentOptions = commonSettings.getIndentOptions();

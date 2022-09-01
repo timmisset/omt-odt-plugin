@@ -38,17 +38,17 @@ public final class BuiltinDocumentationService {
             sb.append(DocumentationMarkup.CONTENT_END);
         }
 
-        DocumentationProvider.addKeyValueSection("Type:", builtin.isCommand() ? "Command" : "Operator", sb);
-        DocumentationProvider.addKeyValueSection("Min parameters:", String.valueOf(builtin.minNumberOfArguments()), sb);
-        DocumentationProvider.addKeyValueSection("Max parameters:", String.valueOf(builtin.maxNumberOfArguments()), sb);
+        sb.append(DocumentationProvider.getKeyValueSection("Type:", builtin.isCommand() ? "Command" : "Operator"));
+        sb.append(DocumentationProvider.getKeyValueSection("Min parameters:", String.valueOf(builtin.minNumberOfArguments())));
+        sb.append(DocumentationProvider.getKeyValueSection("Max parameters:", String.valueOf(builtin.maxNumberOfArguments())));
 
         if (!builtin.getFlags().isEmpty()) {
-            DocumentationProvider.addKeyValueSection("Flags:", Strings.join(builtin.getFlags(), ", "), sb);
+            sb.append(DocumentationProvider.getKeyValueSection("Flags:", Strings.join(builtin.getFlags(), ", ")));
         }
 
         String examples = documentationService.readApiDocumentation(path + "/Examples");
         if (examples != null) {
-            DocumentationProvider.addKeyValueSection("Example(s):", examples, sb);
+            sb.append(DocumentationProvider.getKeyValueSection("Example(s):", examples));
         }
 
         return sb.toString();

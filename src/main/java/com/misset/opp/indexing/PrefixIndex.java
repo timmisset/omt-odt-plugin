@@ -38,8 +38,8 @@ public class PrefixIndex {
                 entry.setValue(orderedList);
             }
         } catch (IllegalArgumentException ignored) {
-            // todo: find a better fix than catch & ignore
-            // sometimes the ordering fails due to a TimSort contract violation. However, this is not reproducable in dev
+            // open issue: https://github.com/timmisset/omt-odt-plugin/issues/130
+            // sometimes the ordering fails due to a TimSort contract violation. However, this is not reproducible in dev
             // mode and therefor is quite difficult to fix
         }
 

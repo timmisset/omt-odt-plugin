@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public class FilterOperator extends BuiltInCollectionOperator {
-    // todo: move the querystep filter mechanism to this class
+    // open issue: https://github.com/timmisset/omt-odt-plugin/issues/125
     private FilterOperator() {
     }
 

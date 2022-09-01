@@ -15,8 +15,8 @@ import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
-import com.misset.opp.shared.refactoring.RefactoringUtil;
 import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 
@@ -79,7 +79,11 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
         // remove parameter from calls
         ReferencesSearch.search(callable, callable.getUseScope())
                 .findAll()
-                .forEach(psiReference -> RefactoringUtil.removeParameterFromCall(psiReference, parameterIndex));
+                .stream()
+                .map(PsiReference::getElement)
+                .filter(PsiCall.class::isInstance)
+                .map(PsiCall.class::cast)
+                .forEach(call -> call.removeArgument(parameterIndex));
 
         // remove tag
         Optional.ofNullable(getDocTag()).ifPresent(ODTDocumentationUtil::removeDocTag);

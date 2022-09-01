@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.SharedProcessingContext;
+import com.misset.opp.odt.builtin.commands.CommandVariableTypeProvider;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
@@ -16,7 +17,6 @@ import com.misset.opp.odt.psi.util.PsiRelationshipUtil;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.psi.PsiVariable;
-import com.misset.opp.shared.providers.CallableLocalVariableTypeProvider;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -90,8 +90,8 @@ public class ODTVariableCompletion extends CompletionContributor {
 
     private List<Variable> getLocalVariablesForCall(ODTCall call, PsiElement element) {
         Callable callable = call.getCallable();
-        if (callable instanceof CallableLocalVariableTypeProvider) {
-            return ((CallableLocalVariableTypeProvider) callable).getLocalVariables(call, call.getArgumentIndexOf(element));
+        if (callable instanceof CommandVariableTypeProvider) {
+            return ((CommandVariableTypeProvider) callable).getLocalVariables(call, call.getArgumentIndexOf(element));
         }
         return Collections.emptyList();
     }

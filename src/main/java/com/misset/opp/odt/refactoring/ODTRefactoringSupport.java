@@ -6,7 +6,7 @@ import com.intellij.refactoring.RefactoringActionHandler;
 import com.intellij.refactoring.changeSignature.ChangeSignatureHandler;
 import com.misset.opp.odt.intentions.IntroduceLocalVariableIntention;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.shared.refactoring.SupportsSafeDelete;
+import com.misset.opp.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -110,7 +110,7 @@ public final class OppModelLoader {
     }
 
     private void processData(OntModel model) {
-        // todo: replace with configuration
+        // open issue: https://github.com/timmisset/omt-odt-plugin/issues/129
         final Resource modelResource = model.getResource(REFERENTIEDATA);
         // the data files are loaded separately from the model, they are not part of the ontology import tree
         final OntModel data = ontologies.get(modelResource);

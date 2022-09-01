@@ -2,7 +2,7 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.shared.refactoring.SupportsSafeDelete;
+import com.misset.opp.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;

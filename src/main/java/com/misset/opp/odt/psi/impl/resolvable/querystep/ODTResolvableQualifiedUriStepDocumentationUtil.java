@@ -89,9 +89,8 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
                 .filter(resource -> resource.getURI() != null && !resource.getURI().endsWith("_INSTANCE"))
                 .collect(Collectors.toSet());
         if (!instances.isEmpty()) {
-            DocumentationProvider.addKeyValueSection("Instances:",
-                    TTLResourceUtil.describeUrisJoined(instances, "<br>", false)
-                    , sb);
+            sb.append(DocumentationProvider.getKeyValueSection("Instances:",
+                    TTLResourceUtil.describeUrisJoined(instances, "<br>", false)));
         }
         sb.append(DocumentationMarkup.SECTIONS_END);
         return sb.toString();
@@ -106,7 +105,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
                 .collect(Collectors.joining());
         if (Strings.isNotBlank(propertiesMap)) {
             String propertiesTable = "<table>" + propertiesMap + "</table>";
-            DocumentationProvider.addKeyValueSection(header, propertiesTable, sb);
+            sb.append(DocumentationProvider.getKeyValueSection(header, propertiesTable));
         }
     }
 
@@ -174,20 +173,18 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
         // the order is important for super and subclasses, use list instead of set
         Set<OntClass> superClasses = OppModel.getInstance().listSuperClasses(ontClass);
         if (!superClasses.isEmpty()) {
-            DocumentationProvider.addKeyValueSection("Superclasses:",
+            sb.append(DocumentationProvider.getKeyValueSection("Superclasses:",
                     superClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))
                             .distinct()
-                            .collect(Collectors.joining("<br>"))
-                    , sb);
+                            .collect(Collectors.joining("<br>"))));
         }
 
         Set<OntClass> subClasses = OppModel.getInstance().listSubclasses(ontClass);
         if (!subClasses.isEmpty()) {
-            DocumentationProvider.addKeyValueSection("Subclasses:",
+            sb.append(DocumentationProvider.getKeyValueSection("Subclasses:",
                     subClasses.stream().map(uri -> TTLResourceUtil.describeUri(uri, false))
                             .distinct()
-                            .collect(Collectors.joining("<br>"))
-                    , sb);
+                            .collect(Collectors.joining("<br>"))));
         }
 
         setPredicateInfo(ontClass, "Predicates", sb);

@@ -116,8 +116,6 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
 
     @Override
     public Set<OntResource> filter(Set<OntResource> resources) {
-        // todo: not supported yet
-        // possibility: $input[NOT rdf:type == /ont:ClassA]
         return Optional.ofNullable(getLastOperation())
                 .map(ODTQueryOperationStep::getQueryStep)
                 .map(odtQueryStep -> odtQueryStep.filter(resources))

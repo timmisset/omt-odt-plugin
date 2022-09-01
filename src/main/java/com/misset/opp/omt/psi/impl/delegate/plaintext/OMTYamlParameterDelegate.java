@@ -12,8 +12,8 @@ import com.misset.opp.omt.psi.references.OMTParamTypePrefixReference;
 import com.misset.opp.omt.psi.references.OMTTTLSubjectReference;
 import com.misset.opp.omt.util.OMTRefactoringUtil;
 import com.misset.opp.omt.util.PatternUtil;
-import com.misset.opp.shared.refactoring.RefactoringUtil;
-import com.misset.opp.shared.refactoring.SupportsSafeDelete;
+import com.misset.opp.refactoring.SupportsSafeDelete;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -74,7 +74,11 @@ public class OMTYamlParameterDelegate extends OMTYamlVariableDelegate implements
             }
             ReferencesSearch.search(callable, callable.getUseScope())
                     .findAll()
-                    .forEach(psiReference -> RefactoringUtil.removeParameterFromCall(psiReference, parameterIndex));
+                    .stream()
+                    .map(PsiReference::getElement)
+                    .filter(PsiCall.class::isInstance)
+                    .map(PsiCall.class::cast)
+                    .forEach(call -> call.removeArgument(parameterIndex));
         }
         OMTRefactoringUtil.removeFromSequence(yamlPlainText);
     }

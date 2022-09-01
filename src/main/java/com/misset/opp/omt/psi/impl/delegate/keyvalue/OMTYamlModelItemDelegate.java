@@ -8,7 +8,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.util.OMTRefactoringUtil;
-import com.misset.opp.shared.refactoring.SupportsSafeDelete;
+import com.misset.opp.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
