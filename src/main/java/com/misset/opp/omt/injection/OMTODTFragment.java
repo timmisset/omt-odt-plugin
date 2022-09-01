@@ -163,6 +163,7 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
         prefixes.clear();
         psiCallables.clear();
         isContextLoaded = false;
+        super.clearCaches();
     }
 
     private void initContext() {

@@ -169,4 +169,12 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     public Collection<LocalQuickFix> getRegisterImportQuickfixes(PsiCall callable) {
         return Collections.emptyList();
     }
+
+    @Override
+    public void clearCaches() {
+        prefixes.clear();
+        allVariables.clear();
+        allCallables.clear();
+        super.clearCaches();
+    }
 }
