@@ -109,6 +109,8 @@
         <lang.commenter language="ODT" implementationClass="com.misset.opp.odt.ODTCommenter"/>
         <codeInsight.parameterNameHints language="ODT" implementationClass="com.misset.opp.odt.ODTParameterNameHints"/>
         <lang.foldingBuilder language="ODT" implementationClass="com.misset.opp.odt.ODTFoldingBuilder"/>
+        <typedHandler implementation="com.misset.opp.odt.completion.ODTTypedHandlerDelegate"/>
+
         <!-- Completions -->
         <completion.contributor language="ODT" order="after ODTEquationStatementCompletion" id="ODTTraverseCompletion"
                                 implementationClass="com.misset.opp.odt.completion.ODTTraverseCompletion"/>
