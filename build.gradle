@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.26'
+version '5.27'
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,9 +59,8 @@ patchPluginXml {
     sinceBuild = '222'
 
     changeNotes = """
-        <h1>Update 5.26</h1>
-        See <a href="https://github.com/timmisset/omt-odt-plugin/milestone/12?closed=1">milestone 5.26</a> for all items in this release.<br>
-        For some reason the <a href="https://github.com/timmisset/omt-odt-plugin/milestone/3?closed=1">milestone 5.19</a> was never merged into master, this is now also done.
+        <h1>Update 5.27</h1>
+        See <a href="https://github.com/timmisset/omt-odt-plugin/milestone/13?closed=1">milestone 5.27</a> for all items in this release.<br>
         """
 }
 tasks {
