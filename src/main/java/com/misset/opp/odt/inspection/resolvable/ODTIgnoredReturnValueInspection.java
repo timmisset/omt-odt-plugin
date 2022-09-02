@@ -43,7 +43,7 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
     }
 
     private void validateCall(ODTCommandCall call, @NotNull ProblemsHolder holder) {
-        if (call.getCallable().isBuiltin()) {
+        if (call.getCallable() == null || call.getCallable().isBuiltin()) {
             return;
         }
         validateReturnValue(call, holder);

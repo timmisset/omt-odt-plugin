@@ -99,8 +99,8 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
                 .collect(Collectors.toList());
     }
 
-    private <T extends PsiElement> Collection<T> joinedCollection(Collection<T> collectionA,
-                                                                  Collection<Collection<T>> collectionB) {
+    private synchronized <T extends PsiElement> Collection<T> joinedCollection(Collection<T> collectionA,
+                                                                               Collection<Collection<T>> collectionB) {
         return Stream.concat(collectionA.stream(), collectionB.stream().flatMap(Collection::stream))
                 .filter(distinctByKey(PsiElement::getOriginalElement))
                 .collect(Collectors.toList());

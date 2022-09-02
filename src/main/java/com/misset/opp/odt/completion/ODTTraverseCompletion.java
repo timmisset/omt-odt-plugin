@@ -12,6 +12,7 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
+import com.misset.opp.odt.psi.impl.ODTQueryPathImpl;
 import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
 import com.misset.opp.ttl.model.OppModel;
@@ -29,8 +30,9 @@ import static com.intellij.patterns.StandardPatterns.or;
 import static com.misset.opp.odt.completion.CompletionPatterns.*;
 
 public class ODTTraverseCompletion extends CompletionContributor {
-    private static final Key<Boolean> HAS_CARET = new Key<>("HAS_CARET");
-    private static final Key<Boolean> HAS_PREFIX = new Key<>("HAS_PREFIX");
+    public static final Key<Boolean> HAS_CARET = new Key<>("HAS_CARET");
+    public static final Key<Boolean> HAS_ROOT_INDICATOR = new Key<>("HAS_ROOT");
+    public static final Key<Boolean> HAS_PREFIX = new Key<>("HAS_PREFIX");
     private static final ElementPattern<PsiElement> TRAVERSE =
             or(AFTER_FIRST_QUERY_STEP, INSIDE_DEFINED_QUERY, INSIDE_QUERY_FILTER);
 
@@ -49,86 +51,113 @@ public class ODTTraverseCompletion extends CompletionContributor {
             protected void addCompletions(@NotNull CompletionParameters parameters,
                                           @NotNull ProcessingContext context,
                                           @NotNull CompletionResultSet result) {
+                if (!(parameters.getOriginalFile() instanceof ODTFile)) {
+                    return;
+                }
                 final ODTFile originalFile = (ODTFile) parameters.getOriginalFile();
                 final Map<String, String> availableNamespaces = originalFile.getAvailableNamespaces();
 
                 PsiElement position = parameters.getPosition();
-                Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
-                context.put(HAS_PREFIX, position.getPrevSibling() instanceof ODTNamespacePrefix);
-                context.put(HAS_CARET, PsiTreeUtil.getParentOfType(position.getPrevSibling(), ODTQueryReverseStep.class, true, ODTQuery.class) != null);
+                setProcessingContext(context, position);
+
                 final Set<OntResource> subjects = Optional.of(position)
                         .map(element -> PsiTreeUtil.getParentOfType(element, ODTResolvableQueryOperationStep.class))
                         .map(ODTResolvableQueryOperationStep::resolvePreviousStep)
                         .orElse(Collections.emptySet());
-                HashMap<Property, Set<OntResource>> forwardPredicates = new HashMap<>();
-                HashMap<Property, Set<OntResource>> reversePredicates = new HashMap<>();
-                if (subjects.isEmpty()) {
-                    // cannot establish subject, only show the rdf:type predicates
-                    forwardPredicates.put(OppModelConstants.getRdfType(), Collections.emptySet());
-                    reversePredicates.put(OppModelConstants.getRdfType(), Collections.emptySet());
-                } else {
-                    OppModel.getInstance().listPredicates(subjects)
-                            .forEach(property -> {
-                                Set<OntResource> predicateObjects = OppModel.getInstance().listObjects(subjects, property);
-                                if (typeFilter.test(predicateObjects)) {
-                                    forwardPredicates.put(property, predicateObjects);
-                                }
-                            });
-                    OppModel.getInstance().listReversePredicates(subjects)
-                            .forEach(property -> {
-                                Set<OntResource> predicateSubjects = OppModel.getInstance().listSubjects(property, subjects);
-                                if (typeFilter.test(predicateSubjects)) {
-                                    reversePredicates.put(property, predicateSubjects);
-                                }
-                            });
-                }
 
                 // add model options
                 addModelTraverseLookupElements(
                         subjects,
-                        forwardPredicates,
+                        getForwardPredicates(ODTTypeFilterProvider.getFirstTypeFilter(position), subjects),
                         TraverseDirection.FORWARD,
                         availableNamespaces,
                         result,
-                        context);
+                        context,
+                        false);
                 addModelTraverseLookupElements(
                         subjects,
-                        reversePredicates,
+                        getReversePredicates(ODTTypeFilterProvider.getFirstTypeFilter(position), subjects),
                         TraverseDirection.REVERSE,
                         availableNamespaces,
                         result,
-                        context);
+                        context,
+                        false);
 
             }
         });
     }
 
-    private void addModelTraverseLookupElements(
+    public static void setProcessingContext(@NotNull ProcessingContext context, PsiElement position) {
+        context.put(HAS_PREFIX, position.getPrevSibling() instanceof ODTNamespacePrefix);
+        context.put(HAS_CARET, PsiTreeUtil.getParentOfType(position.getPrevSibling(), ODTQueryReverseStep.class, true, ODTQuery.class) != null);
+        ODTQueryPathImpl queryPath = PsiTreeUtil.getParentOfType(position, ODTQueryPathImpl.class, true, ODTQuery.class);
+        context.put(HAS_ROOT_INDICATOR, queryPath != null && queryPath.getRootIndicator() != null);
+    }
+
+    public static Map<Property, Set<OntResource>> getReversePredicates(Predicate<Set<OntResource>> typeFilter,
+                                                                       Set<OntResource> subjects) {
+        HashMap<Property, Set<OntResource>> predicates = new HashMap<>();
+        if (subjects.isEmpty()) {
+            predicates.put(OppModelConstants.getRdfType(), Collections.emptySet());
+        } else {
+            Set<Property> properties = OppModel.getInstance().listReversePredicates(subjects);
+            for (Property property : properties) {
+                Set<OntResource> predicateSubjects = OppModel.getInstance().listSubjects(property, subjects);
+                if (typeFilter.test(predicateSubjects)) {
+                    predicates.put(property, predicateSubjects);
+                }
+            }
+        }
+        return predicates;
+    }
+
+    public static Map<Property, Set<OntResource>> getForwardPredicates(Predicate<Set<OntResource>> typeFilter,
+                                                                       Set<OntResource> subjects) {
+        HashMap<Property, Set<OntResource>> predicates = new HashMap<>();
+        if (subjects.isEmpty()) {
+            predicates.put(OppModelConstants.getRdfType(), Collections.emptySet());
+        } else {
+            Set<Property> properties = OppModel.getInstance().listPredicates(subjects);
+            for (Property property : properties) {
+                Set<OntResource> predicateObjects = OppModel.getInstance().listObjects(subjects, property);
+                if (typeFilter.test(predicateObjects)) {
+                    predicates.put(property, predicateObjects);
+                }
+            }
+        }
+        return predicates;
+    }
+
+    public static void addModelTraverseLookupElements(
             Set<OntResource> subjects,
-            HashMap<Property, Set<OntResource>> predicateObjects,
+            Map<Property, Set<OntResource>> predicates,
             TraverseDirection direction,
             Map<String, String> availableNamespaces,
             CompletionResultSet result,
-            ProcessingContext context) {
+            ProcessingContext context,
+            boolean rootIndicator) {
         String prefixMatcher = result.getPrefixMatcher().getPrefix();
-        predicateObjects.keySet()
+        predicates.keySet()
                 .forEach(predicate -> {
                     String curie = ODTTraverseCompletion.parseToCurie(predicate, availableNamespaces);
-                    if (!isForward(direction)) {
+                    if (direction == TraverseDirection.REVERSE) {
                         curie = "^" + curie;
+                    } else if (rootIndicator) {
+                        curie = "/" + curie;
                     }
                     String prefix = curie.contains(":") ? curie.substring(0, curie.indexOf(":") + 1) : null;
 
-                    LookupElementBuilder predicateLookupElement = TTLResourceUtil.getPredicateLookupElement(
-                            subjects,
-                            predicate,
-                            predicateObjects.get(predicate),
-                            direction,
-                            curie);
+                    LookupElementBuilder predicateLookupElement =
+                            TTLResourceUtil.getPredicateLookupElement(subjects, predicate, predicates.get(predicate), direction, curie);
 
-                    LookupElement withPriority = PrioritizedLookupElement.withPriority(predicateLookupElement, COMPLETION_PRIORITY.TRAVERSE.getValue());
+                    LookupElement withPriority =
+                            PrioritizedLookupElement.withPriority(predicateLookupElement, COMPLETION_PRIORITY.TRAVERSE.getValue());
+
                     String curieCompletion = prefix + prefixMatcher; // i.e. ont:cla<caret>
-                    if (curieCompletion.startsWith("^") && Boolean.FALSE.equals(context.get(HAS_CARET))) {
+                    if (
+                            (curieCompletion.startsWith("^") && Boolean.FALSE.equals(context.get(HAS_CARET))) ||
+                                    (curieCompletion.startsWith("/") && Boolean.FALSE.equals(context.get(HAS_ROOT_INDICATOR)))
+                    ) {
                         curieCompletion = curieCompletion.substring(1);
                     }
 

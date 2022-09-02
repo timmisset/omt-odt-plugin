@@ -18,8 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.misset.opp.odt.completion.ODTTraverseCompletion.isForward;
-
 /**
  * Helper class that is particularly to describe resources for documentation, completion and error/warning messages
  * Not used for validation, resolving etc.
@@ -177,7 +175,7 @@ public class TTLResourceUtil {
         if (title == null || property == null) {
             return null;
         }
-        String cardinality = isForward(direction) ? getCardinalityLabel(subjects, property) : getCardinalityLabel(objects, property);
+        String cardinality = direction == ODTTraverseCompletion.TraverseDirection.FORWARD ? getCardinalityLabel(subjects, property) : getCardinalityLabel(objects, property);
         if (cardinality == null) {
             cardinality = "";
         }
@@ -190,7 +188,7 @@ public class TTLResourceUtil {
         }
         return LookupElementBuilder.create(title)
                 .withLookupStrings(Set.of(property.getURI(), property.getLocalName()))
-                .withTailText((isForward(direction) ? " -> forward " : " <- reverse ") + cardinality)
+                .withTailText((direction == ODTTraverseCompletion.TraverseDirection.FORWARD ? " -> forward " : " <- reverse ") + cardinality)
                 .withTypeText(typeText)
                 .withIcon(Icons.TTLFile)
                 .withPresentableText(title);
