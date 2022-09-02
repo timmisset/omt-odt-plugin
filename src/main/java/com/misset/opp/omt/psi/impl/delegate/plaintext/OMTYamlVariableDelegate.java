@@ -37,7 +37,6 @@ public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements
         OMTVariable,
         OMTYamlDelegate,
         SupportsSafeDelete {
-    public static final String VARIABLE = "variable";
     YAMLPlainTextImpl value;
 
     public OMTYamlVariableDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
@@ -115,10 +114,6 @@ public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements
     @Override
     public void delete() throws IncorrectOperationException {
         removeFromSequence(value);
-    }
-
-    public String getType() {
-        return VARIABLE;
     }
 
     @Override

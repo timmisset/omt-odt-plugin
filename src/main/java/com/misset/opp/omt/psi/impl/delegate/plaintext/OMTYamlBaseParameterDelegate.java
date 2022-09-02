@@ -30,11 +30,6 @@ public class OMTYamlBaseParameterDelegate extends OMTYamlVariableDelegate implem
     }
 
     @Override
-    public String getType() {
-        return "base parameter";
-    }
-
-    @Override
     public String getSource() {
         return "OMT parameter";
     }

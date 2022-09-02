@@ -36,11 +36,6 @@ public class OMTYamlBindingParameterDelegate extends OMTYamlVariableDelegate imp
     }
 
     @Override
-    public String getType() {
-        return "binding parameter";
-    }
-
-    @Override
     public String getSource() {
         return "OMT binding";
     }

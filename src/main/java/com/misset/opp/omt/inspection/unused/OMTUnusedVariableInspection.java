@@ -37,7 +37,7 @@ public class OMTUnusedVariableInspection extends LocalInspectionTool {
                         holder.registerProblem(element,
                                 warning,
                                 LIKE_UNUSED_SYMBOL,
-                                OMTRemoveQuickFix.getRemoveLocalQuickFix((variableDelegate).getType()));
+                                OMTRemoveQuickFix.getRemoveLocalQuickFix((variableDelegate).getSource()));
                     }
                 }
             }
