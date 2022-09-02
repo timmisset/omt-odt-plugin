@@ -13,7 +13,6 @@ import com.misset.opp.odt.psi.ODTDefinePrefix;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.reference.ODTNamespacePrefixReference;
-import com.misset.opp.resolvable.PsiNamespacePrefix;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
@@ -21,7 +20,6 @@ import java.util.Optional;
 
 public abstract class ODTBaseNamespacePrefix extends ODTASTWrapperPsiElement implements
         ODTNamespacePrefix,
-        PsiNamespacePrefix,
         ODTDocumented {
     protected ODTBaseNamespacePrefix(@NotNull ASTNode node) {
         super(node);

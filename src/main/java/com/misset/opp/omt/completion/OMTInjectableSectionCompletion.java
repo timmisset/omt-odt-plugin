@@ -12,7 +12,6 @@ import com.misset.opp.odt.completion.ODTSharedCompletion;
 import com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
-import com.misset.opp.omt.injection.InjectionHost;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTShapeQueryType;
@@ -32,7 +31,7 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
  * Since this is driven by the OMT structure where the ODT fragment resides, it is considered
  * an OMT/ODT completion and not purely an ODT completion.
  */
-public class OMTODTInjectableSectionCompletion extends CompletionContributor {
+public class OMTInjectableSectionCompletion extends CompletionContributor {
 
     protected static final String QUERY_SIMPLE_TEMPLATE = "DEFINE QUERY simpleQuery => 'Hello world';";
     private static final String JAVADOC_START = "/**\n";
@@ -56,7 +55,7 @@ public class OMTODTInjectableSectionCompletion extends CompletionContributor {
             JAVADOC_END +
             "DEFINE COMMAND commandWithParameter($param) => { RETURN $param; }";
 
-    public OMTODTInjectableSectionCompletion() {
+    public OMTInjectableSectionCompletion() {
 
         extend(CompletionType.BASIC, psiElement(), new CompletionProvider<>() {
 
@@ -68,7 +67,7 @@ public class OMTODTInjectableSectionCompletion extends CompletionContributor {
                 PsiLanguageInjectionHost injectionHost = OMTODTInjectionUtil.getInjectionHost(parameters.getPosition());
                 PsiFile originalFile = parameters.getOriginalFile();
 
-                if (injectionHost instanceof InjectionHost && originalFile instanceof ODTFile) {
+                if (injectionHost != null && originalFile instanceof ODTFile) {
                     ODTSharedCompletion.sharedContext.set(context.getSharedContext());
                     YamlMetaType injectionMetaType = OMTODTInjectionUtil.getInjectionMetaType(parameters.getPosition());
                     addInjectableSectionCompletions(parameters, result, injectionMetaType, (ODTFile) originalFile);

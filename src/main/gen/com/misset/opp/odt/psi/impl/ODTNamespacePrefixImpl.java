@@ -10,18 +10,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class ODTNamespacePrefixImpl extends ODTBaseNamespacePrefix implements ODTNamespacePrefix {
 
-  public ODTNamespacePrefixImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTNamespacePrefixImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitNamespacePrefix(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitNamespacePrefix(this);
+    }
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
-    else super.accept(visitor);
-  }
-
+    @Override
+    public void accept(@NotNull PsiElementVisitor visitor) {
+        if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
+        else super.accept(visitor);
+    }
 }

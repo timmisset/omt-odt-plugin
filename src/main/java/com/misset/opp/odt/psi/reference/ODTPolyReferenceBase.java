@@ -3,7 +3,7 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.resolvable.psi.ReferencedElement;
+import com.misset.opp.resolvable.psi.PsiReferencedElement;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,8 +24,8 @@ public abstract class ODTPolyReferenceBase<T extends PsiElement> extends PsiRefe
                 .filter(Objects::nonNull)
                 .map(psiElement -> {
                     PsiElement element = psiElement;
-                    if (psiElement instanceof ReferencedElement && resolveToFinalElement) {
-                        element = ((ReferencedElement) psiElement).getFinalElement();
+                    if (psiElement instanceof PsiReferencedElement && resolveToFinalElement) {
+                        element = ((PsiReferencedElement) psiElement).getFinalElement();
                     }
                     return element != null && resolveToOriginalElement ? element.getOriginalElement() : element;
                 })

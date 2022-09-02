@@ -8,10 +8,10 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTFoldingBuilder;
 import com.misset.opp.odt.ODTLanguage;
-import com.misset.opp.omt.injection.InjectionHost;
 import com.misset.opp.omt.meta.OMTImportMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import org.jetbrains.annotations.NotNull;
@@ -36,11 +36,11 @@ public class OMTFoldingBuilder extends YAMLFoldingBuilder {
         // append with foldings from inject language
         InjectedLanguageManager instance = InjectedLanguageManager.getInstance(root.getProject());
 
-        Collection<InjectionHost> injectionHosts = PsiTreeUtil.findChildrenOfType(root, InjectionHost.class);
+        Collection<PsiLanguageInjectionHost> injectionHosts = PsiTreeUtil.findChildrenOfType(root, PsiLanguageInjectionHost.class);
 
         // workaround for:
         // https://youtrack.jetbrains.com/issue/IDEA-289722
-        for (InjectionHost injectionHost : injectionHosts) {
+        for (PsiLanguageInjectionHost injectionHost : injectionHosts) {
             List<Pair<PsiElement, TextRange>> injectedPsiFiles = instance.getInjectedPsiFiles(injectionHost);
             if (injectedPsiFiles != null) {
                 injectedPsiFiles.forEach(

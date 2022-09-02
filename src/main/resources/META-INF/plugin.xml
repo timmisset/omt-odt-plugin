@@ -124,7 +124,7 @@
 
         <!-- Specific completions that should run first and stop the completion when applicable -->
         <completion.contributor order="first" language="ODT"
-                                implementationClass="com.misset.opp.omt.completion.OMTODTInjectableSectionCompletion"/>
+                                implementationClass="com.misset.opp.omt.completion.OMTInjectableSectionCompletion"/>
         <completion.contributor order="first" language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.commands.ODTCommandCompletionAssign"/>
         <completion.contributor order="first" language="ODT"

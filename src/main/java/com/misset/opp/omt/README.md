@@ -96,6 +96,4 @@ $param in the scope of the file.
 Since the OMT language depends heavily on the injected language fragments to determine what Callable elements are
 available, it is not possible to use the IntelliJ Indexing mechanism. This is because the StubIndex doesn't run on
 injected fragments. Actually, language injection is performed after indexing on the file is already done, so it's even
-not possible to provide this ourselves. Instead, using the IndexOMTStartupActivity, all OMT files are indexed after the
-initial indexing and language injection. This results in a bit of a slow start of IntelliJ (10sec) but it greatly
-improves performance afterwards. 
+not possible to provide this ourselves.

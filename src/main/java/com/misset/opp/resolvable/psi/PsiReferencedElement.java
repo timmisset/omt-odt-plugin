@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
  * For example, an import statement. The usage of the import references the import member but the import member
  * itself is not the final element. Another usage is !Ref elements in OMT (currently not supported yet).
  */
-public interface ReferencedElement {
+public interface PsiReferencedElement extends PsiElement {
 
     PsiElement getFinalElement();
 

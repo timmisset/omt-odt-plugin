@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
@@ -17,7 +18,6 @@ import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
-import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,7 +57,7 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements
     }
 
     @Override
-    public List<TextRange> getTextRanges(YAMLScalarImpl host) {
+    public List<TextRange> getTextRanges(PsiElement host) {
         // only the value part of the assignment is injectable and to be resolved by the injected language
         final Matcher matcher = SHORTHAND.matcher(host.getText());
         if (matcher.find() && matcher.group(2) != null && !matcher.group(2).isBlank()) {

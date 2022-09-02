@@ -1,10 +1,10 @@
 package com.misset.opp.omt.meta.scalars;
 
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import org.jetbrains.yaml.meta.model.YamlStringType;
-import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,7 @@ public class OMTInterpolatedStringMetaType extends YamlStringType implements OMT
     }
 
     @Override
-    public List<TextRange> getTextRanges(YAMLScalarImpl host) {
+    public List<TextRange> getTextRanges(PsiElement host) {
         /*
             The InterpolatedString can be injected by using a ${}. Unfortunately, the language also
             supports the option to add a variable directly as value for the property

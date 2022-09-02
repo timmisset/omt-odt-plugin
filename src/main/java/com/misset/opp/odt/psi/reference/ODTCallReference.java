@@ -13,7 +13,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
-import com.misset.opp.resolvable.psi.ReferencedElement;
+import com.misset.opp.resolvable.psi.PsiReferencedElement;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -92,7 +92,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
 
     @Override
     public boolean isReferenceTo(@NotNull PsiElement element) {
-        boolean resolveToFinalElement = !(element instanceof ReferencedElement);
+        boolean resolveToFinalElement = !(element instanceof PsiReferencedElement);
         return Optional.ofNullable(resolve(true, resolveToFinalElement))
                 .map(element.getOriginalElement()::equals)
                 .orElse(false);

@@ -9,6 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
+import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.Collection;
@@ -29,10 +30,11 @@ public class OMTODTInjectionUtil {
 
     @SuppressWarnings("java:S2637")
     public static YamlMetaType getInjectionMetaType(PsiElement element) {
-        return Optional.ofNullable(getInjectionHost(element))
+        PsiElement yamlElement = element instanceof YAMLPsiElement ? element : getInjectionHost(element);
+        return Optional.ofNullable(yamlElement)
                 .filter(YAMLValue.class::isInstance)
                 .map(YAMLValue.class::cast)
-                .map(yamlPsiElement -> OMTMetaTypeProvider.getInstance(element.getProject())
+                .map(yamlPsiElement -> OMTMetaTypeProvider.getInstance(yamlElement.getProject())
                         .getValueMetaType(yamlPsiElement))
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
                 .orElse(null);

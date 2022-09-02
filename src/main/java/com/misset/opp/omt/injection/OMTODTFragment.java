@@ -127,12 +127,12 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
         return (OMTFile) psiFile;
     }
 
-    private InjectionHost getHost() {
+    private PsiLanguageInjectionHost getHost() {
         @Nullable PsiLanguageInjectionHost injectionHost = InjectedLanguageManager.getInstance(getProject()).getInjectionHost(this);
-        if (!(injectionHost instanceof InjectionHost)) {
+        if (injectionHost == null) {
             throw new OMTODTPluginException("Expected ODT fragment to be hosted in OMT host");
         }
-        return (InjectionHost) injectionHost;
+        return injectionHost;
     }
 
     @Override

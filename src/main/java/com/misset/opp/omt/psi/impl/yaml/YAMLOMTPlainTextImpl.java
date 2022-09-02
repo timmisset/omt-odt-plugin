@@ -2,27 +2,25 @@ package com.misset.opp.omt.psi.impl.yaml;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.NlsSafe;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.injection.InjectionHost;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
-
-import java.util.List;
 
 /**
  * By overriding the default YAMLPlainTextImpl we can implement PsiNamedElement and use the
  * refactor-rename, find-usage etc.
  */
 @OMTOverride
-public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedElement, InjectionHost {
+public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedElement, PsiLanguageInjectionHost, YAMLScalar {
     public YAMLOMTPlainTextImpl(@NotNull ASTNode node) {
         super(node);
     }
@@ -54,21 +52,6 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
     @Override
     public String getName() {
         return getDelegate().getName();
-    }
-
-    @Override
-    public List<TextRange> getTextRanges() {
-        return YAMLInjectableUtil.getTextRanges(this);
-    }
-
-    @Override
-    public String getPrefix() {
-        return null;
-    }
-
-    @Override
-    public String getSuffix() {
-        return null;
     }
 
     @Override
