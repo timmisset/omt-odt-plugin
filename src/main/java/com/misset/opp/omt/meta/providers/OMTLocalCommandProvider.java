@@ -4,6 +4,6 @@ import com.misset.opp.resolvable.local.LocalCommand;
 
 import java.util.HashMap;
 
-public interface OMTLocalCommandProvider extends OMTMetaTypeStructureProvider {
+public interface OMTLocalCommandProvider {
     HashMap<String, LocalCommand> getLocalCommandsMap();
 }

@@ -58,13 +58,14 @@ file. This helps to resolve declared module imports (module:MyModule) in omt fil
 
 Although most of the YAML language could be used as-is, there were some issues when working with declarations that were
 declared inside YAMLPlainText. Since declared elements should implement PsiNamedElement, and YAMLPlainText is not such
-an implementation it's creation process intercepted by the YAMLOMTParserDefinition. This is also done for the
+an implementation its creation process is intercepted by the YAMLOMTParserDefinition. This is also done for the
 YAMLKeyValue for convenience, it turned out it's much easier to provide references directly from the generated
 PsiElement than using the ReferenceProvider structure. It also gives a bit more control of the element.
 
 ### Delegates
 
-There a number of delegates used to facilitate the mechanism described above. These are located at psi/impl/delegate and
+There are a number of delegates used to facilitate the mechanism described above. These are located at psi/impl/delegate
+and
 are hooked to the original YamlPsiElement used the UserDataHolder extension available in all PsiElements. This makes
 sure the delegate is set only once and reusable afterwards. The delegate can resolve certain methods directly and defers
 more complex requests to MetaType instances that reflect the delegate.

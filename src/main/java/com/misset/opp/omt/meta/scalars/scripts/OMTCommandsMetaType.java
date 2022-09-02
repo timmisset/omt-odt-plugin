@@ -1,7 +1,5 @@
 package com.misset.opp.omt.meta.scalars.scripts;
 
-import com.misset.opp.omt.injection.InjectableContentType;
-
 public class OMTCommandsMetaType extends OMTScriptMetaType {
 
     private static final OMTCommandsMetaType INSTANCE = new OMTCommandsMetaType();
@@ -14,8 +12,4 @@ public class OMTCommandsMetaType extends OMTScriptMetaType {
         super();
     }
 
-    @Override
-    public InjectableContentType getInjectableContentType() {
-        return InjectableContentType.COMMAND_BLOCK;
-    }
 }

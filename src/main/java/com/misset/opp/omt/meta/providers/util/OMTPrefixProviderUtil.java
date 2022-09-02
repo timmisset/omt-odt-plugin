@@ -9,14 +9,12 @@ import com.misset.opp.omt.meta.scalars.OMTIriMetaType;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.resolvable.psi.PsiPrefix;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class OMTPrefixProviderUtil {
 
@@ -70,4 +68,27 @@ public class OMTPrefixProviderUtil {
         return null;
     }
 
+    @NotNull
+    public static Map<String, Collection<PsiPrefix>> getPrefixMap(YAMLMapping yamlMapping) {
+        HashMap<String, Collection<PsiPrefix>> map = new HashMap<>();
+        addPrefixesToMap(yamlMapping, "prefixes", map);
+        return map;
+    }
+
+    public static Map<String, String> getNamespaces(YAMLMapping yamlMapping) {
+        final Map<String, Collection<PsiPrefix>> prefixMap = getPrefixMap(yamlMapping);
+        HashMap<String, String> namespaces = new HashMap<>();
+        prefixMap.forEach((key, psiElements) -> {
+            // only namespace should be present per key
+            final PsiElement psiElement = psiElements.iterator().next();
+            if (psiElement instanceof YAMLKeyValue) {
+                final String iri = ((YAMLKeyValue) psiElement).getValueText();
+                if (iri.length() > 2) {
+                    namespaces.put(iri.substring(1, iri.length() - 1), key);
+                }
+            }
+
+        });
+        return namespaces;
+    }
 }

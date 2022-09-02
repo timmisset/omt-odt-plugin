@@ -1,13 +1,14 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.openapi.util.TextRange;
-import com.misset.opp.omt.injection.InjectableContentType;
 import org.jetbrains.yaml.psi.impl.YAMLScalarImpl;
 
 import java.util.List;
 
+/**
+ * All meta types for which the corresponding PsiElement can be used to inject ODT fragments implements this interface
+ */
 public interface OMTMetaInjectable {
-
     default List<TextRange> getTextRanges(YAMLScalarImpl host) {
         int startOffset = host.getContentRanges()
                 .stream()
@@ -18,9 +19,4 @@ public interface OMTMetaInjectable {
         int endOffset = host.getTextLength();
         return List.of(TextRange.create(startOffset, endOffset));
     }
-
-    default InjectableContentType getInjectableContentType() {
-        return InjectableContentType.NONE;
-    }
-
 }

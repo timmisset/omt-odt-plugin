@@ -2,7 +2,6 @@ package com.misset.opp.omt.psi.impl.yaml;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
-import com.misset.opp.omt.injection.InjectableContentType;
 import com.misset.opp.omt.injection.InjectionHost;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLQuotedText;
@@ -59,8 +58,4 @@ public class YAMLOMTQuotedStringImpl extends YAMLScalarImpl implements YAMLQuote
         return delegate.isMultiline();
     }
 
-    @Override
-    public InjectableContentType getInjectableContentType() {
-        return YAMLInjectableUtil.getContentType(this);
-    }
 }

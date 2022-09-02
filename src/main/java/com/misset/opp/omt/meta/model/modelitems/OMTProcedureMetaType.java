@@ -13,6 +13,7 @@ import com.misset.opp.omt.meta.model.handlers.OMTMergeHandlerMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTReasonMetaType;
 import com.misset.opp.resolvable.CallableType;
@@ -33,7 +34,6 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil.addPrefixesToMap;
 import static com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil.addSequenceToMap;
 
 public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType implements
@@ -90,9 +90,7 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
 
     @Override
     public @NotNull Map<String, Collection<PsiPrefix>> getPrefixMap(YAMLMapping yamlMapping) {
-        Map<String, Collection<PsiPrefix>> map = new HashMap<>();
-        addPrefixesToMap(yamlMapping, "prefixes", map);
-        return map;
+        return OMTPrefixProviderUtil.getPrefixMap(yamlMapping);
     }
 
     @Override
@@ -150,9 +148,13 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
         return List.of("!nested", "!sibling", "!siblingCommit", "!autonomous");
     }
 
-
     @Override
     public String getDocumentationClass() {
         return PROCEDURE;
+    }
+
+    @Override
+    public @NotNull Map<String, String> getNamespaces(YAMLMapping yamlMapping) {
+        return OMTPrefixProviderUtil.getNamespaces(yamlMapping);
     }
 }

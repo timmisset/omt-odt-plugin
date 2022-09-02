@@ -1,7 +1,6 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.omt.injection.InjectableContentType;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -30,9 +29,4 @@ public class OMTShapeQueryType extends OMTQueryMetaType {
         holder.registerProblem(scalarValue, "Expected a query that resolves to a GraphShape");
     }
 
-    @Override
-    public InjectableContentType getInjectableContentType() {
-        // this makes sure the injected fragment shows only applicable completions (i.e. graphshapes)
-        return InjectableContentType.GRAPH_SHAPE_QUERY;
-    }
 }

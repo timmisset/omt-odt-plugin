@@ -9,7 +9,6 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.injection.InjectableContentType;
 import com.misset.opp.omt.injection.InjectionHost;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
@@ -70,11 +69,6 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
     @Override
     public String getSuffix() {
         return null;
-    }
-
-    @Override
-    public InjectableContentType getInjectableContentType() {
-        return YAMLInjectableUtil.getContentType(this);
     }
 
     @Override

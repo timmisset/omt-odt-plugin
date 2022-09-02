@@ -1,8 +1,6 @@
 package com.misset.opp.omt.meta.providers;
 
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.util.CachedValue;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,10 +8,8 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
-public interface OMTCallableProvider extends OMTMetaTypeStructureProvider {
-    Key<CachedValue<LinkedHashMap<YAMLMapping, OMTCallableProvider>>> KEY = new Key<>("OMTCallableProvider");
+public interface OMTCallableProvider {
 
     /**
      * Returns a map with Callable items

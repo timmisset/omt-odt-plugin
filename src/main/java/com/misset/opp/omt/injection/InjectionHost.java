@@ -22,10 +22,4 @@ public interface InjectionHost extends PsiLanguageInjectionHost {
      */
     String getSuffix();
 
-    /**
-     * The specific content type that is expected at the injectable segment
-     * For example, a set with only queries, only commands etc.
-     */
-    InjectableContentType getInjectableContentType();
-
 }

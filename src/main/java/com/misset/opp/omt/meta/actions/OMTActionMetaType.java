@@ -9,6 +9,7 @@ import com.misset.opp.omt.meta.arrays.OMTParamsArrayMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
+import com.misset.opp.omt.meta.providers.util.OMTVariableTypeProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
@@ -115,6 +116,11 @@ public class OMTActionMetaType extends OMTMetaType implements OMTVariableProvide
         return Optional.ofNullable(mapping.getKeyValueByKey(DYNAMIC_ACTION_QUERY))
                 .map(YAMLKeyValue::getValue)
                 .orElse(null);
+    }
+
+    @Override
+    public Set<OntResource> getType(YAMLMapping mapping) {
+        return OMTVariableTypeProviderUtil.getType(this, mapping);
     }
 
     @Override

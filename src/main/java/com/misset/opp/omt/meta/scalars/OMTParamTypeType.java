@@ -9,7 +9,6 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.codeInspection.util.IntentionName;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
@@ -41,9 +40,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * The Meta-type for a OMTParamMetaType
- */
 public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeProvider {
 
     public static final Pattern CURIE_PATTERN = Pattern.compile("([A-z0-9]+):([A-z0-9]+)");
@@ -272,11 +268,4 @@ public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeP
         return getQualifiedUri(value, value.getTextValue());
     }
 
-    @Override
-    public TextRange getOntologyTypeTextRange(YAMLPlainTextImpl value) {
-        String text = value.getText();
-        return PatternUtil.getTextRange(text, URI_PATTERN, 1)
-                .or(() -> PatternUtil.getTextRange(text, CURIE_PATTERN, 2))
-                .orElse(TextRange.EMPTY_RANGE);
-    }
 }

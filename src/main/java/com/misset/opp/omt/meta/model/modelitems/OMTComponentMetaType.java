@@ -8,6 +8,7 @@ import com.misset.opp.omt.meta.model.*;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
@@ -18,6 +19,7 @@ import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -29,6 +31,7 @@ import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil.addInjectedCallablesToMap;
@@ -134,5 +137,15 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
     @Override
     public String getDocumentationClass() {
         return "Component";
+    }
+
+    @Override
+    public @NotNull Map<String, Collection<PsiPrefix>> getPrefixMap(YAMLMapping yamlMapping) {
+        return OMTPrefixProviderUtil.getPrefixMap(yamlMapping);
+    }
+
+    @Override
+    public @NotNull Map<String, String> getNamespaces(YAMLMapping yamlMapping) {
+        return OMTPrefixProviderUtil.getNamespaces(yamlMapping);
     }
 }

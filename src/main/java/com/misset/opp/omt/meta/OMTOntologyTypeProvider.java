@@ -1,6 +1,5 @@
 package com.misset.opp.omt.meta;
 
-import com.intellij.openapi.util.TextRange;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 /**
@@ -12,7 +11,5 @@ import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 public interface OMTOntologyTypeProvider {
 
     String getFullyQualifiedURI(YAMLPlainTextImpl value);
-
-    TextRange getOntologyTypeTextRange(YAMLPlainTextImpl value);
 
 }

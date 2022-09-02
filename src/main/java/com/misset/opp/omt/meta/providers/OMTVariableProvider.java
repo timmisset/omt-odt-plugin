@@ -7,7 +7,7 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import java.util.Collection;
 import java.util.HashMap;
 
-public interface OMTVariableProvider extends OMTMetaTypeStructureProvider {
+public interface OMTVariableProvider {
     @NotNull
     HashMap<String, Collection<PsiVariable>> getVariableMap(YAMLMapping yamlMapping);
 }

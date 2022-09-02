@@ -10,6 +10,7 @@ import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
@@ -17,6 +18,7 @@ import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
+import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -133,5 +135,15 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
     @Override
     public String getDocumentationClass() {
         return "StandaloneQuery";
+    }
+
+    @Override
+    public @NotNull Map<String, Collection<PsiPrefix>> getPrefixMap(YAMLMapping yamlMapping) {
+        return OMTPrefixProviderUtil.getPrefixMap(yamlMapping);
+    }
+
+    @Override
+    public @NotNull Map<String, String> getNamespaces(YAMLMapping yamlMapping) {
+        return OMTPrefixProviderUtil.getNamespaces(yamlMapping);
     }
 }

@@ -3,6 +3,7 @@ package com.misset.opp.omt.meta.model;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
+import com.misset.opp.omt.meta.providers.util.OMTVariableTypeProviderUtil;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTOnChangeScriptMetaType;
 import com.misset.opp.resolvable.local.LocalVariable;
@@ -63,4 +64,10 @@ public class OMTQueryWatcherMetaType extends OMTMetaType implements
     public String getDocumentationClass() {
         return "QueryWatcher";
     }
+
+    @Override
+    public Set<OntResource> getType(YAMLMapping mapping) {
+        return OMTVariableTypeProviderUtil.getType(this, mapping);
+    }
+
 }

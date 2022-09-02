@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
+import com.misset.opp.omt.meta.providers.util.OMTVariableTypeProviderUtil;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.references.OMTPayloadQueryReferenceMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTOnChangeScriptMetaType;
@@ -90,6 +91,11 @@ public class OMTPayloadItemMetaType extends OMTMetaType implements
         return Optional.ofNullable(mapping.getKeyValueByKey(VALUE))
                 .map(YAMLKeyValue::getValue)
                 .orElse(null);
+    }
+
+    @Override
+    public Set<OntResource> getType(YAMLMapping mapping) {
+        return OMTVariableTypeProviderUtil.getType(this, mapping);
     }
 
 }

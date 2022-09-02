@@ -1,7 +1,6 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
-import com.misset.opp.omt.injection.InjectableContentType;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
@@ -24,11 +23,6 @@ public class OMTQueryMetaType extends YamlScalarType implements OMTMetaInjectabl
 
     protected OMTQueryMetaType() {
         super("Query");
-    }
-
-    @Override
-    public InjectableContentType getInjectableContentType() {
-        return InjectableContentType.QUERY;
     }
 
     protected Set<OntResource> resolve(@NotNull YAMLScalar scalarValue) {

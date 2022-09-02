@@ -5,7 +5,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.misset.opp.omt.injection.InjectableContentType;
 import com.misset.opp.omt.injection.InjectionHost;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
@@ -34,11 +33,6 @@ public class YAMLOMTScalarList extends YAMLScalarListImpl implements InjectionHo
     @Override
     public String getSuffix() {
         return null;
-    }
-
-    @Override
-    public InjectableContentType getInjectableContentType() {
-        return YAMLInjectableUtil.getContentType(this);
     }
 
     @Override

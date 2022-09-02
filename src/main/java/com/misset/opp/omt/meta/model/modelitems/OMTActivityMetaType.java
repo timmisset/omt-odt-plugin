@@ -14,6 +14,7 @@ import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalCommandProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.OMTVariableProvider;
+import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
@@ -25,6 +26,7 @@ import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.*;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -170,5 +172,15 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
     @Override
     public String getDocumentationClass() {
         return ACTIVITY;
+    }
+
+    @Override
+    public @NotNull Map<String, Collection<PsiPrefix>> getPrefixMap(YAMLMapping yamlMapping) {
+        return OMTPrefixProviderUtil.getPrefixMap(yamlMapping);
+    }
+
+    @Override
+    public @NotNull Map<String, String> getNamespaces(YAMLMapping yamlMapping) {
+        return OMTPrefixProviderUtil.getNamespaces(yamlMapping);
     }
 }

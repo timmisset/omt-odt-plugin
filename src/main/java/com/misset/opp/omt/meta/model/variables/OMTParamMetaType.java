@@ -150,15 +150,6 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
     }
 
     @Override
-    public TextRange getOntologyTypeTextRange(YAMLPlainTextImpl value) {
-        String text = value.getText();
-        return getTextRange(text, SHORTHAND_PREFIX_TYPED, 4)
-                .or(() -> getTextRange(text, SHORTHAND_URI_TYPED, 2))
-                .orElse(TextRange.EMPTY_RANGE);
-    }
-
-
-    @Override
     public String getDocumentationClass() {
         return "Param";
     }

@@ -5,6 +5,6 @@ import org.jetbrains.yaml.psi.YAMLPsiElement;
 
 import java.util.Map;
 
-public interface OMTLocalVariableProvider extends OMTMetaTypeStructureProvider {
+public interface OMTLocalVariableProvider {
     Map<String, Variable> getLocalVariableMap(YAMLPsiElement element);
 }

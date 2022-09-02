@@ -16,12 +16,14 @@ import com.misset.opp.omt.meta.model.OMTPrefixesMetaType;
 import com.misset.opp.omt.meta.providers.OMTCallableProvider;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.providers.util.OMTCallableProviderUtil;
-import com.misset.opp.omt.meta.scalars.scripts.OMTExportableCommandsMetaType;
-import com.misset.opp.omt.meta.scalars.scripts.OMTExportableQueriesMetaType;
+import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
+import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
+import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.references.OMTDeclaredInterfaceReference;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -54,8 +56,8 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
     static {
         features.put("import", OMTImportMetaType::getInstance);
         features.put("model", OMTModelMetaType::getInstance);
-        features.put("queries", OMTExportableQueriesMetaType::getInstance);
-        features.put("commands", OMTExportableCommandsMetaType::getInstance);
+        features.put("queries", OMTQueriesMetaType::getInstance);
+        features.put("commands", OMTCommandsMetaType::getInstance);
         features.put("prefixes", OMTPrefixesMetaType::getInstance);
     }
 
@@ -149,5 +151,15 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
     @Override
     public String getLevel1Header() {
         return "Documents";
+    }
+
+    @Override
+    public @NotNull Map<String, Collection<PsiPrefix>> getPrefixMap(YAMLMapping yamlMapping) {
+        return OMTPrefixProviderUtil.getPrefixMap(yamlMapping);
+    }
+
+    @Override
+    public @NotNull Map<String, String> getNamespaces(YAMLMapping yamlMapping) {
+        return OMTPrefixProviderUtil.getNamespaces(yamlMapping);
     }
 }

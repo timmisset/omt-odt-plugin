@@ -13,8 +13,4 @@ public class OMTScriptMetaType extends YamlScalarType implements OMTMetaInjectab
     protected OMTScriptMetaType() {
         super("Script");
     }
-
-    public boolean isExportable() {
-        return false;
-    }
 }

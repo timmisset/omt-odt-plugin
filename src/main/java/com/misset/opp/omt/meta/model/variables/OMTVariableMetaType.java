@@ -6,6 +6,7 @@ import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.model.SimpleInjectable;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
+import com.misset.opp.omt.meta.providers.util.OMTVariableTypeProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTOnChangeScriptMetaType;
@@ -148,5 +149,10 @@ public class OMTVariableMetaType extends OMTMetaShorthandType implements
     @Override
     public String getDocumentationClass() {
         return "VariableDeclaration";
+    }
+
+    @Override
+    public Set<OntResource> getType(YAMLMapping mapping) {
+        return OMTVariableTypeProviderUtil.getType(this, mapping);
     }
 }

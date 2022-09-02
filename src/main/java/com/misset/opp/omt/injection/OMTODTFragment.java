@@ -225,7 +225,7 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
     @Override
     public int getLineOffsetInParent() {
         int textOffset = getInjectionStart();
-        Document hostDocument = getHostDocument();
+        Document hostDocument = PsiDocumentManager.getInstance(getProject()).getDocument(getHostFile());
         if (hostDocument == null) {
             return 0;
         }
@@ -242,9 +242,5 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
             }
         }
         return getHost().getTextOffset();
-    }
-
-    public Document getHostDocument() {
-        return PsiDocumentManager.getInstance(getProject()).getDocument(getHostFile());
     }
 }
