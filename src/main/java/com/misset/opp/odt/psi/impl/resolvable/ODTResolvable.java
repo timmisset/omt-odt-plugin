@@ -2,13 +2,12 @@ package com.misset.opp.odt.psi.impl.resolvable;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.odt.documentation.ODTDocumented;
-import com.misset.opp.odt.psi.ODTPsiElement;
 import com.misset.opp.resolvable.psi.PsiResolvable;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
 
-public interface ODTResolvable extends PsiResolvable, ODTPsiElement, ODTDocumented {
+public interface ODTResolvable extends PsiResolvable, ODTDocumented {
 
     default Set<OntResource> filter(Set<OntResource> resources) {
         return resources;

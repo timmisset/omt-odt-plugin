@@ -5,10 +5,7 @@ import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiReference;
+import com.intellij.psi.*;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
@@ -31,6 +28,7 @@ import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -96,10 +94,14 @@ public abstract class ODTBaseVariable
     }
 
     public boolean isDeclaredVariable() {
+        PsiFile containingFile = getContainingFile();
+        if (containingFile == null) {
+            return false;
+        }
         return CachedValuesManager.getCachedValue(this,
                 IS_DECLARED_VARIABLE,
                 () -> new CachedValueProvider.Result<>(delegate.isDeclaredVariable(),
-                        getODTFile(),
+                        containingFile,
                         PsiModificationTracker.MODIFICATION_COUNT));
     }
 
@@ -151,10 +153,14 @@ public abstract class ODTBaseVariable
 
     @Override
     public @NotNull Set<OntResource> resolve() {
+        PsiFile containingFile = getContainingFile();
+        if (containingFile == null) {
+            return Collections.emptySet();
+        }
         return CachedValuesManager.getCachedValue(this, VARIABLE_TYPE, () -> {
             final Set<OntResource> type = delegate.resolve();
             return new CachedValueProvider.Result<>(type,
-                    getODTFile(),
+                    containingFile,
                     PsiModificationTracker.MODIFICATION_COUNT,
                     ODTCodeUntypedInspectionWarning.PARAM_ANNOTATION,
                     OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
@@ -223,7 +229,7 @@ public abstract class ODTBaseVariable
 
     @Override
     public @NotNull SearchScope getUseScope() {
-        return new LocalSearchScope(getODTFile());
+        return new LocalSearchScope(getContainingFile());
     }
 
     @Override

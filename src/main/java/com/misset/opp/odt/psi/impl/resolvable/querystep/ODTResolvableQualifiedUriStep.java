@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
@@ -36,10 +37,14 @@ public abstract class ODTResolvableQualifiedUriStep extends ODTResolvableQuerySt
 
     @Override
     public String getFullyQualifiedUri() {
+        PsiFile containingFile = getContainingFile();
+        if (containingFile == null) {
+            return null;
+        }
         return CachedValuesManager.getCachedValue(this,
                 FULLY_QUALIFIED_URI,
                 () -> new CachedValueProvider.Result<>(calculateFullyQualifiedUri(),
-                        getODTFile(),
+                        containingFile,
                         PsiModificationTracker.MODIFICATION_COUNT));
     }
 

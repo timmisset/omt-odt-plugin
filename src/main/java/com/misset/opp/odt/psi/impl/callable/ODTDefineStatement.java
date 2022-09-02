@@ -4,10 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaDocumentedElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
@@ -21,7 +18,6 @@ import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTDefineName;
 import com.misset.opp.odt.psi.ODTDefineParam;
-import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
@@ -100,13 +96,8 @@ public abstract class ODTDefineStatement extends PsiCallableImpl implements
     }
 
     @Override
-    public ODTFile getODTFile() {
-        return (ODTFile) super.getContainingFile();
-    }
-
-    @Override
     public HashMap<Integer, Set<OntResource>> getParameterTypes() {
-        ODTFile containingFile = getODTFile();
+        PsiFile containingFile = getContainingFile();
         if (containingFile == null) {
             return new HashMap<>();
         }

@@ -1,6 +1,8 @@
 // This is a generated file. Not intended for manual editing.
 package com.misset.opp.odt.psi;
 
-public interface ODTEndPath extends ODTPsiElement {
+import com.intellij.psi.PsiElement;
+
+public interface ODTEndPath extends PsiElement {
 
 }

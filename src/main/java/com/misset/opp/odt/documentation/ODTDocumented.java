@@ -1,9 +1,9 @@
 package com.misset.opp.odt.documentation;
 
 import com.intellij.openapi.project.Project;
-import com.misset.opp.odt.psi.ODTPsiElement;
+import com.intellij.psi.PsiElement;
 
-public interface ODTDocumented extends ODTPsiElement {
+public interface ODTDocumented extends PsiElement {
 
     String getDocumentation(Project project);
 }

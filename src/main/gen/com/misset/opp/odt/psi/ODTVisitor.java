@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package com.misset.opp.odt.psi;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.PsiNamedElement;
@@ -274,7 +275,7 @@ public class ODTVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitPsiElement(@NotNull ODTPsiElement o) {
+  public void visitPsiElement(@NotNull PsiElement o) {
     visitElement(o);
   }
 

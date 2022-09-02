@@ -66,7 +66,7 @@ public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODT
             final Set<OntResource> resources = Optional.ofNullable(getCallable())
                     .map(callable -> callable.resolve(context))
                     .orElse(Collections.emptySet());
-            PsiFile[] files = context.getFilesInScope().toArray(PsiFile[]::new);
+            PsiFile[] files = context.getFilesInScope().stream().filter(Objects::nonNull).toArray(PsiFile[]::new);
             return new CachedValueProvider.Result<>(resources,
                     // if resolved, only depend on the included files, otherwise stay safe with the entire PsiModificationTracker
                     // this is required to dump the cache after a broken import link is repaired (for example)

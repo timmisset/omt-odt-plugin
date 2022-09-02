@@ -2,7 +2,7 @@
   parserClass="org.intellij.sdk.language.parser.ODTParser"
 
   extends="com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement"
-  implements="com.misset.opp.odt.psi.ODTPsiElement"
+  implements="com.intellij.psi.PsiElement"
 
   psiClassPrefix="ODT"
   psiImplClassSuffix="Impl"

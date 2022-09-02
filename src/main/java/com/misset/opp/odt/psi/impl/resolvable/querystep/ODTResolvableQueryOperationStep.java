@@ -6,6 +6,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
@@ -127,11 +128,15 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
     }
 
     public Set<OntResource> resolveWithoutFilter() {
+        PsiFile containingFile = getContainingFile();
+        if (containingFile == null) {
+            return Collections.emptySet();
+        }
         return CachedValuesManager.getCachedValue(this, RESOLVED_WITHOUT_FILTER_VALUE, () -> {
             Set<OntResource> resources = Optional.ofNullable(getQueryStep())
                     .map(ODTResolvable::resolve)
                     .orElse(Collections.emptySet());
-            return new CachedValueProvider.Result<>(resources, getContainingFile(), OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
+            return new CachedValueProvider.Result<>(resources, containingFile, OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }
 

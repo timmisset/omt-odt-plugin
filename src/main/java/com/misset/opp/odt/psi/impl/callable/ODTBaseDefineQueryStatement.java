@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.callable;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiFile;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
@@ -43,7 +44,12 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement
 
     @Override
     public @NotNull Set<OntResource> resolve(Context context) {
-        context.getFilesInScope().add(getODTFile());
+        PsiFile containingFile = getContainingFile();
+        if (containingFile == null) {
+            return Collections.emptySet();
+        }
+
+        context.getFilesInScope().add(containingFile);
         decorateCall(context.getCall());
         return Optional.ofNullable(getReturnType())
                 .orElseGet(() -> getQuery().resolve(context));

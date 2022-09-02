@@ -4,6 +4,7 @@ import com.intellij.extapi.psi.ASTDelegatePsiElement;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.search.LocalSearchScope;
@@ -38,9 +39,14 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
 
     @Override
     public Set<OntResource> resolve() {
+        PsiFile containingFile = element.getContainingFile();
+        if (containingFile == null) {
+            return Collections.emptySet();
+        }
+
         return CachedValuesManager.getCachedValue(element, ONT_TYPE, () ->
                 new CachedValueProvider.Result<>(calculateType(),
-                        element.getODTFile(),
+                        containingFile,
                         OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
     }
 
