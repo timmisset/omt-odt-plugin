@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.openapi.application.ReadAction;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;

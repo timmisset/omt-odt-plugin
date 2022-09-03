@@ -2,7 +2,7 @@ package com.misset.opp.testCase;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelLoader;
 import org.apache.jena.ontology.Individual;

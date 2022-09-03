@@ -6,6 +6,7 @@ import com.jgoodies.common.base.Strings;
 import com.misset.opp.documentation.DocumentationProvider;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.impl.ODTQueryOperationStepImpl;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
@@ -212,7 +213,7 @@ public class ODTResolvableQualifiedUriStepDocumentationUtil {
     private static String getTraverseDocumentation(ODTResolvableQualifiedUriStep step) {
         PsiElement parent = step.getParent();
         boolean isReversed = parent instanceof ODTQueryReverseStep;
-        Set<OntResource> unfiltered = isReversed ? ((ODTResolvableQueryStep) parent).resolve() : step.resolve();
+        Set<OntResource> unfiltered = isReversed ? ((ODTResolvable) parent).resolve() : step.resolve();
         Set<OntResource> filtered = step.getResolvableParent().filter(unfiltered);
         String fullyQualifiedUri = step.getFullyQualifiedUri();
 

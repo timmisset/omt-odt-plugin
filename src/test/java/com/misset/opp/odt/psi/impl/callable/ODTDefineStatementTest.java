@@ -2,6 +2,7 @@ package com.misset.opp.odt.psi.impl.callable;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.testCase.ODTTestCase;
 import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.OppModel;

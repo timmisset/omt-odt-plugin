@@ -11,7 +11,6 @@ import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStep;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -88,13 +87,13 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
             return null;
         }
 
-        ODTResolvableQueryStep subject = getStepMovingBackward(1);
+        ODTResolvable subject = getStepMovingBackward(1);
         final Set<OntResource> subjectResolved = subject != null ? subject.resolve() : Collections.emptySet();
         if (subjectResolved.isEmpty()) {
             return null;
         }
 
-        ODTResolvableQueryStep predicate = getStepMovingBackward(0);
+        ODTResolvable predicate = getStepMovingBackward(0);
         if (predicate instanceof ODTResolvableQualifiedUriStep) {
             final ODTResolvableQualifiedUriStep qualifiedUriStep = (ODTResolvableQualifiedUriStep) predicate;
             final String fullyQualifiedUri = qualifiedUriStep.getFullyQualifiedUri();
