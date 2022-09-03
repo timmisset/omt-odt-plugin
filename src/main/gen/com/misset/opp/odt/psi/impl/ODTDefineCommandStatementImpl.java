@@ -4,7 +4,7 @@ package com.misset.opp.odt.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement;
+import com.misset.opp.odt.psi.impl.resolvable.callable.ODTBaseDefineCommandStatement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

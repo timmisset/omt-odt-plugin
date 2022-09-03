@@ -8,7 +8,7 @@ import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
 import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.ttl.model.OppModel;

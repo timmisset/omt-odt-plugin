@@ -14,7 +14,7 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStep;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep;
 import com.misset.opp.resolvable.Callable;
 import org.apache.jena.ontology.OntResource;
@@ -94,7 +94,7 @@ public class ODTCodeUntypedInspectionWarning extends LocalInspectionTool {
         }
     }
 
-    private boolean canBeBaseAnnotated(ODTResolvableQueryStep queryStep) {
+    private boolean canBeBaseAnnotated(ODTResolvable queryStep) {
         if (queryStep instanceof ODTResolvableVariableStep) {
             return false;
         }

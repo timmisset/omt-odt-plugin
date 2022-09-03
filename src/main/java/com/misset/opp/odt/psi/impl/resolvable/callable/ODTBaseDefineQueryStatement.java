@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl.callable;
+package com.misset.opp.odt.psi.impl.resolvable.callable;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
@@ -15,8 +15,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement
-        implements ODTDefineQueryStatement, ODTResolvable {
+public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement implements ODTDefineQueryStatement, ODTResolvable {
     protected ODTBaseDefineQueryStatement(@NotNull ASTNode node) {
         super(node);
     }

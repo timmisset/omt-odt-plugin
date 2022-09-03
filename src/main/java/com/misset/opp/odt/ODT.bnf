@@ -82,10 +82,10 @@ queryStatement ::=                          query {
 defineName ::=                              SYMBOL
 defineQueryStatement ::=                    DEFINE_START DEFINE_QUERY defineName defineParam? LAMBDA query  {
     extends=statement
-    mixin="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.callable.ODTBaseDefineQueryStatement"
 }
 defineCommandStatement ::=                  DEFINE_START DEFINE_COMMAND defineName defineParam? LAMBDA commandBlock {
-    mixin="com.misset.opp.odt.psi.impl.callable.ODTBaseDefineCommandStatement"
+    mixin="com.misset.opp.odt.psi.impl.resolvable.callable.ODTBaseDefineCommandStatement"
 }
 definePrefix ::=                            PREFIX_DEFINE_START namespacePrefix IRI {
     extends=statement
@@ -197,7 +197,7 @@ queryStep ::=
         queryReverseStep | constantValue | variableStep | curieElement | operatorCall | iriStep | identifierStep | schemalessIriStep |
          chooseBlock | negatedStep | subQuery {
      extends="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStepBase"
-     implements="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStep"
+     implements="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvable"
  }
 variableStep ::= variable {
     extends=queryStep

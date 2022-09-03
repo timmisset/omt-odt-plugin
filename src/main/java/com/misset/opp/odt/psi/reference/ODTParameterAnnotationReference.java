@@ -7,7 +7,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
