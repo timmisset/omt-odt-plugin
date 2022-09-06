@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.psi.ODTCommandBlock;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
@@ -12,6 +13,7 @@ import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +25,10 @@ import java.util.function.Predicate;
 
 public abstract class ODTResolvableSignatureArgument extends ODTBaseResolvable
         implements ODTSignatureArgument, ODTTypeFilterProvider {
+
+    private static final Predicate<Set<OntResource>> ACCEPT_NON_VOID =
+            resources -> !resources.contains(OppModelConstants.getVoidResponse());
+
     protected ODTResolvableSignatureArgument(@NotNull ASTNode node) {
         super(node);
     }
@@ -36,8 +42,9 @@ public abstract class ODTResolvableSignatureArgument extends ODTBaseResolvable
     }
 
     private Optional<Set<OntResource>> resolveCommandBlock() {
-        // open issue: https://github.com/timmisset/omt-odt-plugin/issues/127
-        return Optional.of(Collections.emptySet());
+        return Optional.ofNullable(getCommandBlock())
+                .map(ODTCommandBlock::getScript)
+                .map(Resolvable::resolve);
     }
 
     public boolean isPrimitiveArgument() {
@@ -54,17 +61,19 @@ public abstract class ODTResolvableSignatureArgument extends ODTBaseResolvable
     public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {
         ODTCall call = PsiTreeUtil.getParentOfType(element, ODTCall.class, true);
         if (call == null) {
-            return ODTTypeFilterProvider.ACCEPT_ALL;
+            return ACCEPT_NON_VOID;
         }
 
         Callable callable = call.getCallable();
         if (callable == null) {
-            return ODTTypeFilterProvider.ACCEPT_ALL;
+            return ACCEPT_NON_VOID;
         }
 
         int argumentIndexOf = call.getArgumentIndexOf(element);
         Set<OntResource> acceptableArgumentType = callable.getAcceptableArgumentType(argumentIndexOf, call);
 
-        return resources -> resources.isEmpty() || OppModel.getInstance().areCompatible(acceptableArgumentType, resources);
+        return ACCEPT_NON_VOID.and(
+                resources -> resources.isEmpty() || OppModel.getInstance().areCompatible(acceptableArgumentType, resources)
+        );
     }
 }

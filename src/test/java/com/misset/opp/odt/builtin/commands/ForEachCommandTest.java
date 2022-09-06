@@ -45,4 +45,9 @@ class ForEachCommandTest extends BaseBuiltinTest {
         List<Variable> localVariables = ForEachCommand.INSTANCE.getLocalVariables(call, 0);
         Assertions.assertEquals(0, localVariables.size());
     }
+
+    @Test
+    void testIsVoid() {
+        Assertions.assertTrue(ForEachCommand.INSTANCE.isVoid());
+    }
 }

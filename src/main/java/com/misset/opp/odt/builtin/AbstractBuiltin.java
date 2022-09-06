@@ -54,7 +54,15 @@ public abstract class AbstractBuiltin implements Callable {
     }
 
     @Override
+    public boolean isVoid() {
+        return false;
+    }
+
+    @Override
     public final @NotNull Set<OntResource> resolve(Context context) {
+        if (isVoid()) {
+            return Collections.singleton(OppModelConstants.getVoidResponse());
+        }
         if (hasFixedReturnType()) {
             return resolve();
         }

@@ -45,4 +45,9 @@ class DestroyCommandTest extends BaseBuiltinTest {
     void testName() {
         Assertions.assertEquals("DESTROY", DestroyCommand.INSTANCE.getName());
     }
+
+    @Test
+    void testIsVoid() {
+        Assertions.assertTrue(ForEachCommand.INSTANCE.isVoid());
+    }
 }

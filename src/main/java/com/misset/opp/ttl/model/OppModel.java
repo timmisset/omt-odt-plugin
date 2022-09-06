@@ -547,7 +547,7 @@ public class OppModel {
      * Returns true if the resource is an instance of the provided class or any of its superclasses
      */
     public boolean isInstanceOf(@Nullable OntResource resource, @Nullable OntClass ontClass) {
-        if (resource == null || ontClass == null) {
+        if (resource == null || ontClass == null || OppModelConstants.getVoidResponse().equals(resource)) {
             return false;
         }
 

@@ -24,11 +24,6 @@ class MapCommandTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testIsVoid() {
-        Assertions.assertTrue(MapCommand.INSTANCE.isVoid());
-    }
-
-    @Test
     void testNumberOfArguments() {
         Assertions.assertEquals(2, MapCommand.INSTANCE.minNumberOfArguments());
         Assertions.assertEquals(2, MapCommand.INSTANCE.maxNumberOfArguments());

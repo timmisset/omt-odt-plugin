@@ -34,11 +34,6 @@ public class AssignCommand extends AbstractBuiltInCommand {
     }
 
     @Override
-    public boolean isVoid() {
-        return false;
-    }
-
-    @Override
     public int maxNumberOfArguments() {
         return -1;
     }

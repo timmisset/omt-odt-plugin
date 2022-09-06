@@ -18,11 +18,6 @@ class SerialCommandTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testIsVoid() {
-        Assertions.assertTrue(SerialCommand.INSTANCE.isVoid());
-    }
-
-    @Test
     void testNumberOfArguments() {
         Assertions.assertEquals(-1, SerialCommand.INSTANCE.minNumberOfArguments());
         Assertions.assertEquals(-1, SerialCommand.INSTANCE.maxNumberOfArguments());

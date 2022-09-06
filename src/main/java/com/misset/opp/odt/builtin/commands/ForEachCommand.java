@@ -31,6 +31,11 @@ public class ForEachCommand extends AbstractBuiltInCommand implements CommandVar
     }
 
     @Override
+    public boolean isVoid() {
+        return true;
+    }
+
+    @Override
     protected Set<OntResource> resolveFrom(PsiCall call) {
         return Collections.emptySet();
     }

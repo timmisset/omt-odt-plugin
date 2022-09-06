@@ -38,4 +38,9 @@ public class DestroyCommand extends AbstractBuiltInCommand {
     protected List<String> getParameters() {
         return PARAMETER_NAMES;
     }
+
+    @Override
+    public boolean isVoid() {
+        return true;
+    }
 }

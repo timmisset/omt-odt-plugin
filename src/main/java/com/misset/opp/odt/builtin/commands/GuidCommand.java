@@ -18,11 +18,6 @@ public class GuidCommand extends AbstractBuiltInCommand {
     }
 
     @Override
-    public boolean isVoid() {
-        return false;
-    }
-
-    @Override
     public int minNumberOfArguments() {
         return 0;
     }
