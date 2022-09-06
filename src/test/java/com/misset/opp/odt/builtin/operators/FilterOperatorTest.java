@@ -1,10 +1,18 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.odt.psi.ODTResolvableValue;
+import com.misset.opp.odt.psi.ODTSignatureArgument;
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
+import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
-import org.junit.jupiter.api.Assertions;
+import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Test;
+
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class FilterOperatorTest extends BaseBuiltinTest {
 
@@ -19,23 +27,52 @@ class FilterOperatorTest extends BaseBuiltinTest {
     @Test
     void testValidArguments() {
         assertValidArgument(FilterOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
-        assertInvalidArgument(FilterOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(FilterOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testName() {
-        Assertions.assertEquals("FILTER", FilterOperator.INSTANCE.getName());
+        assertEquals("FILTER", FilterOperator.INSTANCE.getName());
     }
 
     @Test
     void testNumberOfArguments() {
-        Assertions.assertEquals(1, FilterOperator.INSTANCE.minNumberOfArguments());
-        Assertions.assertEquals(1, FilterOperator.INSTANCE.maxNumberOfArguments());
+        assertEquals(1, FilterOperator.INSTANCE.minNumberOfArguments());
+        assertEquals(1, FilterOperator.INSTANCE.maxNumberOfArguments());
     }
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(FilterOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
-        assertGetAcceptableArgumentType(FilterOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(FilterOperator.INSTANCE, 0, Set.of(OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdIntegerInstance()));
+    }
+
+    @Test
+    void testFiltersByNumber() {
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdIntegerInstance()));
+        Set<OntResource> resources = Set.of(OppModelConstants.getXsdStringInstance());
+        Set<OntResource> filtered = FilterOperator.INSTANCE.resolveFrom(resources, call);
+        assertEquals(resources, filtered);
+    }
+
+    @Test
+    void testFiltersByBoolean() {
+        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
+        ODTSignatureArgument signatureArgument = mock(ODTSignatureArgument.class);
+        ODTResolvableValue resolvableValue = mock(ODTResolvableValue.class);
+        ODTResolvableQuery query = mock(ODTResolvableQuery.class);
+        doReturn(signatureArgument).when(call).getCallSignatureArgumentElement(0);
+        doReturn(resolvableValue).when(signatureArgument).getResolvableValue();
+        doReturn(query).when(resolvableValue).getQuery();
+        doReturn(true).when(query).isBoolean();
+        Set<OntResource> resources = Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdDate());
+
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(query).filter(resources);
+
+        Set<OntResource> filtered = FilterOperator.INSTANCE.resolveFrom(resources, call);
+        assertNotEquals(resources, filtered);
+        assertTrue(filtered.stream().noneMatch(resource -> resource.equals(OppModelConstants.getXsdDate())));
+        assertTrue(filtered.stream().allMatch(resource -> resource.equals(OppModelConstants.getXsdStringInstance())));
+
+        verify(query).filter(resources);
     }
 }

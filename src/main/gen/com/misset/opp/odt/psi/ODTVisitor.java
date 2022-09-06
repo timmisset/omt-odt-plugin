@@ -7,7 +7,6 @@ import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStep;
 import com.misset.opp.odt.psi.impl.variable.ODTVariableWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -267,7 +266,7 @@ public class ODTVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitResolvableQueryStep(@NotNull ODTResolvableQueryStep o) {
+  public void visitResolvableQueryStep(@NotNull ODTResolvable o) {
     visitPsiElement(o);
   }
 

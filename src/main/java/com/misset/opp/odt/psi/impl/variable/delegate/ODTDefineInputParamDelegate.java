@@ -15,7 +15,7 @@ import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.ttl.model.OppModel;

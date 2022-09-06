@@ -13,9 +13,9 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTQueryArrayImpl;
-import com.misset.opp.odt.psi.impl.callable.ODTBaseDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTBaseResolvable;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.impl.resolvable.callable.ODTBaseDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.resolvable.Context;
@@ -171,8 +171,6 @@ public abstract class ODTResolvableQueryOperationStep extends ODTBaseResolvable 
     private Set<OntResource> filter(Set<OntResource> resources,
                                     ODTQueryFilter filter) {
         return LoggerUtil.computeWithLogger(LOGGER, "Filtering resources", () -> {
-            // range selection filtering has no impact on the performance and
-            // can be done without the settings check
             if (filter.getRangeSelection() != null) {
                 return resources;
             }
