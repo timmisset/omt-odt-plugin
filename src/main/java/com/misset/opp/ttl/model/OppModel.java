@@ -368,7 +368,8 @@ public class OppModel {
     }
 
     public boolean isIndividual(OntResource resource) {
-        return modelCache.isIndividual(getResourceId(resource));
+        return !resource.equals(OppModelConstants.getVoidResponse()) &&
+                modelCache.isIndividual(getResourceId(resource));
     }
 
     public Boolean isPredicate(OntResource resource) {
@@ -547,7 +548,7 @@ public class OppModel {
      * Returns true if the resource is an instance of the provided class or any of its superclasses
      */
     public boolean isInstanceOf(@Nullable OntResource resource, @Nullable OntClass ontClass) {
-        if (resource == null || ontClass == null) {
+        if (resource == null || ontClass == null || OppModelConstants.getVoidResponse().equals(resource)) {
             return false;
         }
 

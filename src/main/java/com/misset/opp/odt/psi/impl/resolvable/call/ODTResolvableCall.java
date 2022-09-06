@@ -173,7 +173,7 @@ public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODT
     @Override
     public int getArgumentIndexOf(PsiElement element) {
         return getSignatureArguments().stream()
-                .filter(argument -> PsiTreeUtil.isAncestor(argument, element, true))
+                .filter(argument -> PsiTreeUtil.isAncestor(argument, element, false))
                 .map(getSignatureArguments()::indexOf)
                 .findFirst()
                 .orElse(-1);
@@ -200,8 +200,6 @@ public abstract class ODTResolvableCall extends ODTBaseResolvable implements ODT
             signature.replace(call.getSignature());
         }
     }
-
-    protected abstract void removeAllSignatureArguments();
 
     @Override
     public Set<OntResource> resolvePreviousStep() {

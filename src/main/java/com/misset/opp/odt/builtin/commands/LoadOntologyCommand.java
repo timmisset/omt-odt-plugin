@@ -39,6 +39,11 @@ public class LoadOntologyCommand extends AbstractBuiltInCommand {
     }
 
     @Override
+    public boolean isVoid() {
+        return true;
+    }
+
+    @Override
     protected List<String> getParameters() {
         return PARAMETER_NAMES;
     }

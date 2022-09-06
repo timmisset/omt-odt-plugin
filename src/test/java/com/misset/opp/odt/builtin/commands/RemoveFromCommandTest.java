@@ -32,11 +32,6 @@ class RemoveFromCommandTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testIsVoid() {
-        Assertions.assertTrue(RemoveFromCommand.INSTANCE.isVoid());
-    }
-
-    @Test
     void testNumberOfArguments() {
         Assertions.assertEquals(2, RemoveFromCommand.INSTANCE.minNumberOfArguments());
         Assertions.assertEquals(2, RemoveFromCommand.INSTANCE.maxNumberOfArguments());

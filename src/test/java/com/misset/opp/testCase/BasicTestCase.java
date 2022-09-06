@@ -10,16 +10,23 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.ttl.model.OppModel;
+import com.misset.opp.ttl.model.OppModelLoader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsightFixtureTestCase {
 
+    protected OppModel oppModel;
+
     @BeforeEach
     protected void setUp() {
-        try{
+        try {
             super.setUp();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -109,6 +116,27 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
         ProgressManager.getInstance().runProcessWithProgressSynchronously(
                 runnable, "Test", false, getProject()
         );
+    }
+
+    /**
+     * When the ontology is required in a test that is not inheriting from OMTOntologyTestCase
+     * this method can be used to load the ontology and return the OppModel
+     */
+    public static OppModel initOntologyModel() {
+        return OppModelLoader.getInstance().read(getRootPath());
+    }
+
+    private static File getRootPath() {
+        return getRootPath("model", "root.ttl");
+    }
+
+    private static File getRootPath(String folder, String file) {
+        Path resourceDirectory = Paths.get("src", "test", "resources", folder, file);
+        return resourceDirectory.toFile();
+    }
+
+    protected void setOntologyModel() {
+        oppModel = initOntologyModel();
     }
 
 }

@@ -3,7 +3,6 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTOperatorCall;
-import com.misset.opp.odt.psi.ODTSignature;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +36,4 @@ public abstract class ODTOperatorCallImpl extends ODTResolvableCall implements O
                 .orElse(Collections.emptySet());
     }
 
-    @Override
-    protected void removeAllSignatureArguments() {
-        ODTSignature signature = getSignature();
-        if (signature != null) {
-            signature.delete();
-        }
-    }
 }

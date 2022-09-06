@@ -18,11 +18,6 @@ class LogCommandTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testIsVoid() {
-        Assertions.assertTrue(LogCommand.INSTANCE.isVoid());
-    }
-
-    @Test
     void testNumberOfArguments() {
         Assertions.assertEquals(-1, LogCommand.INSTANCE.minNumberOfArguments());
         Assertions.assertEquals(-1, LogCommand.INSTANCE.maxNumberOfArguments());

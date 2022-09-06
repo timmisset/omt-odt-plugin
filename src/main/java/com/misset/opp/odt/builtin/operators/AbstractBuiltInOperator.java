@@ -24,11 +24,6 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
         return false;
     }
 
-    @Override
-    public boolean isVoid() {
-        return false;
-    }
-
     public String getCallId() {
         return getName();
     }

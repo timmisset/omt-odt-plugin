@@ -128,7 +128,7 @@ public abstract class BaseBuiltinTest {
     protected final void assertReturnsVoid(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
-                Collections.emptySet(),
+                Set.of(OppModelConstants.getVoidResponse()),
                 Set.of(OppModelConstants.getXsdBooleanInstance()),
                 Set.of(OppModelConstants.getXsdStringInstance()));
     }

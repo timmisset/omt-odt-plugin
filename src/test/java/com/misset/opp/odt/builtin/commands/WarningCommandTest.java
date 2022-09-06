@@ -18,11 +18,6 @@ class WarningCommandTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testIsVoid() {
-        Assertions.assertTrue(WarningCommand.INSTANCE.isVoid());
-    }
-
-    @Test
     void testNumberOfArguments() {
         Assertions.assertEquals(-1, WarningCommand.INSTANCE.minNumberOfArguments());
         Assertions.assertEquals(-1, WarningCommand.INSTANCE.maxNumberOfArguments());

@@ -3,8 +3,6 @@ package com.misset.opp.testCase;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelLoader;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -14,15 +12,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Set;
 
 public abstract class OMTOntologyTestCase extends OMTTestCase {
-
-    protected OppModel oppModel;
 
     @Override
     @BeforeEach
@@ -35,27 +28,6 @@ public abstract class OMTOntologyTestCase extends OMTTestCase {
     @AfterEach
     protected void tearDown() {
         super.tearDown();
-    }
-
-    protected void setOntologyModel() {
-        oppModel = initOntologyModel();
-    }
-
-    /**
-     * When the ontology is required in a test that is not inheriting from OMTOntologyTestCase
-     * this method can be used to load the ontology and return the OppModel
-     */
-    public static OppModel initOntologyModel() {
-        return OppModelLoader.getInstance().read(getRootPath());
-    }
-
-    private static File getRootPath() {
-        return getRootPath("model", "root.ttl");
-    }
-
-    private static File getRootPath(String folder, String file) {
-        Path resourceDirectory = Paths.get("src","test","resources", folder, file);
-        return resourceDirectory.toFile();
     }
 
     protected OntResource createResource(String localName) {
