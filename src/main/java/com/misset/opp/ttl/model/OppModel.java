@@ -368,7 +368,8 @@ public class OppModel {
     }
 
     public boolean isIndividual(OntResource resource) {
-        return modelCache.isIndividual(getResourceId(resource));
+        return !resource.equals(OppModelConstants.getVoidResponse()) &&
+                modelCache.isIndividual(getResourceId(resource));
     }
 
     public Boolean isPredicate(OntResource resource) {
