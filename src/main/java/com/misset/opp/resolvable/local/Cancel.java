@@ -23,4 +23,9 @@ public class Cancel extends LocalCommand {
     public boolean isVoid() {
         return true;
     }
+
+    @Override
+    public boolean isFinalCommand() {
+        return true;
+    }
 }

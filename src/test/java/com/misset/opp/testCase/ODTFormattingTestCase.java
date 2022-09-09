@@ -11,6 +11,8 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.testFramework.fixtures.JavaCodeInsightTestFixture;
+import com.misset.opp.odt.ODTFileTestImpl;
+import com.misset.opp.odt.ODTTestCase;
 import com.misset.opp.odt.psi.ODTFile;
 import org.junit.jupiter.api.Assertions;
 
@@ -32,7 +34,7 @@ public class ODTFormattingTestCase extends ODTTestCase {
     }
 
     @Override
-    protected ODTFile configureByText(String content) {
+    protected ODTFileTestImpl configureByText(String content) {
         // todo: make indentation a setting
         ODTFile odtFile = super.configureByText(content, true);
         CodeStyleSettings settings = CodeStyle.getSettings(odtFile);
@@ -40,7 +42,7 @@ public class ODTFormattingTestCase extends ODTTestCase {
         indentOptions.INDENT_SIZE = INDENT_SIZE;
         indentOptions.CONTINUATION_INDENT_SIZE = INDENT_SIZE;
 
-        return odtFile;
+        return (ODTFileTestImpl) odtFile;
     }
 
     protected String getDocumentText() {

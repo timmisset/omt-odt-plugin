@@ -1,54 +1,44 @@
 package com.misset.opp.odt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.odt.ODTFileTestImpl;
+import com.misset.opp.odt.ODTTestCase;
+import com.misset.opp.resolvable.Callable;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionUnreachable.WARNING_MESSAGE;
+import static com.misset.opp.odt.inspection.redundancy.ODTCodeInspectionUnreachable.UNREACHABLE_CODE;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
-class ODTCodeInspectionUnreachableTest extends OMTInspectionTestCase {
+class ODTCodeInspectionUnreachableTest extends ODTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTCodeInspectionUnreachable.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTCodeInspectionUnreachable.class));
     }
 
     @Test
     void testHasWarningOnUnreachableCodeReturn() {
-        configureByText(insideProcedureRunWithPrefixes("RETURN 1; @LOG('test');"));
-        assertHasWarning(WARNING_MESSAGE);
+        configureByText("RETURN 1; @LOG('test');");
+        inspection.assertHasWarning(UNREACHABLE_CODE);
     }
 
     @Test
-    void testHasWarningOnUnreachableCodeDone() {
-        configureByText(insideProcedureRunWithPrefixes("@DONE(); @LOG('test');"));
-        assertHasWarning(WARNING_MESSAGE);
-    }
-
-    @Test
-    void testHasWarningOnUnreachableCodeCancel() {
-        configureByText(insideProcedureRunWithPrefixes("@CANCEL(); @LOG('test');"));
-        assertHasWarning(WARNING_MESSAGE);
+    void testHasWarningOnUnreachableCodeAfterFinalCommand() {
+        ODTFileTestImpl odtFileTest = configureByText("@FINAL(); @LOG('test');");
+        Callable callable = mock(Callable.class);
+        doReturn("@FINAL").when(callable).getCallId();
+        doReturn(true).when(callable).isFinalCommand();
+        odtFileTest.addCallable(callable);
+        inspection.assertHasWarning(UNREACHABLE_CODE);
     }
 
     @Test
     void testHasNoWarningOnUnreachableCodeReturn() {
-        configureByText(insideProcedureRunWithPrefixes("@LOG('test'); RETURN 1;"));
-        assertNoWarning(WARNING_MESSAGE);
-    }
-
-    @Test
-    void testHasNoWarningOnUnreachableCodeDone() {
-        configureByText(insideProcedureRunWithPrefixes("@LOG('test'); DONE();"));
-        assertNoWarning(WARNING_MESSAGE);
-    }
-
-    @Test
-    void testHasNoWarningOnUnreachableCodeCancel() {
-        configureByText(insideProcedureRunWithPrefixes("@LOG('test'); CANCEL();"));
-        assertNoWarning(WARNING_MESSAGE);
+        configureByText("@LOG('test'); RETURN 1;");
+        inspection.assertNoWarning(UNREACHABLE_CODE);
     }
 }

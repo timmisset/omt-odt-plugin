@@ -13,7 +13,6 @@ public abstract class LocalCommand implements Callable {
     private final String source;
 
     protected LocalCommand(String source) {
-
         this.source = source;
     }
 
@@ -50,8 +49,8 @@ public abstract class LocalCommand implements Callable {
     }
 
     @Override
-    public boolean isStatic() {
-        return true;
+    public boolean requiresInput() {
+        return false;
     }
 
     @Override

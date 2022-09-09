@@ -1,55 +1,49 @@
 package com.misset.opp.odt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
-import org.junit.jupiter.api.Assertions;
+import com.misset.opp.odt.ODTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class ODTStyleInspectionUnnecessaryTrueConditionTest extends OMTInspectionTestCase {
+class ODTStyleInspectionUnnecessaryTrueConditionTest extends ODTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTStyleInspectionUnnecessaryTrueCondition.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTStyleInspectionUnnecessaryTrueCondition.class));
     }
 
     @Test
     void testShowsWarningWhenUnnecessaryTrueConditionOnLeftside() {
-        String content = insideProcedureRunWithPrefixes("IF true == $x { }");
-        configureByText(content);
-        assertHasWarning("true == $x can be simplified to $x");
+        configureByText("IF true == $x { }");
+        inspection.assertHasWarning("true == $x can be simplified to $x");
     }
 
     @Test
     void testShowsWarningWhenUnnecessaryTrueConditionOnRightside() {
-        String content = insideProcedureRunWithPrefixes("IF $x == true { }");
-        configureByText(content);
-        assertHasWarning("$x == true can be simplified to $x");
+        configureByText("IF $x == true { }");
+        inspection.assertHasWarning("$x == true can be simplified to $x");
     }
 
     @Test
     void testShowsWarningWhenInsideQuery() {
-        String content = insideQueryWithPrefixes("$x == true AND $y == true");
-        configureByText(content);
-        assertHasWarning("$x == true can be simplified to $x");
-        assertHasWarning("$y == true can be simplified to $y");
+        configureByText("$x == true AND $y == true");
+        inspection.assertHasWarning("$x == true can be simplified to $x");
+        inspection.assertHasWarning("$y == true can be simplified to $y");
     }
 
     @Test
     void testShowsNoWarningWhenInsideBooleanOperator() {
-        String content = insideQueryWithPrefixes("AND($x == true, $y == true)");
-        configureByText(content);
-        assertNoWarning("$x == true can be simplified to $x");
-        assertNoWarning("$y == true can be simplified to $y");
+        configureByText("AND($x == true, $y == true)");
+        inspection.assertNoWarning("$x == true can be simplified to $x");
+        inspection.assertNoWarning("$y == true can be simplified to $y");
     }
 
     @Test
     void testAppliesQuickfix() {
-        configureByText(insideProcedureRunWithPrefixes("IF $x == true { }"));
-        invokeQuickFixIntention("Replace with: $x");
-        Assertions.assertFalse(getFile().getText().contains("IF $x == true { }"));
-        Assertions.assertTrue(getFile().getText().contains("IF $x { }"));
+        configureByText("IF $x == true { }");
+        inspection.invokeQuickFixIntention("Replace with: $x");
+        assertEquals("IF $x { }", getFile().getText());
     }
 }

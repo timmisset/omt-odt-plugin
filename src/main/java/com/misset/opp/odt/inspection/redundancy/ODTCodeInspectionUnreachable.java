@@ -9,6 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTReturnStatement;
 import com.misset.opp.odt.psi.ODTScriptLine;
+import com.misset.opp.resolvable.Callable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +21,7 @@ import java.util.Optional;
  */
 public class ODTCodeInspectionUnreachable extends LocalInspectionTool {
 
-    protected static final String WARNING_MESSAGE = "Unreachable code";
+    protected static final String UNREACHABLE_CODE = "Unreachable code";
 
     @Override
     public @Nullable @Nls String getStaticDescription() {
@@ -44,7 +45,8 @@ public class ODTCodeInspectionUnreachable extends LocalInspectionTool {
 
     private void inspectCall(@NotNull ProblemsHolder holder,
                              @NotNull ODTCommandCall commandCall) {
-        if (commandCall.getName().equals("DONE") || commandCall.getName().equals("CANCEL")) {
+        Callable callable = commandCall.getCallable();
+        if (callable != null && callable.isFinalCommand()) {
             inspectScriptline(holder, commandCall);
         }
     }
@@ -60,6 +62,6 @@ public class ODTCodeInspectionUnreachable extends LocalInspectionTool {
         PsiTreeUtil.findChildrenOfType(scriptLine.getParent(), ODTScriptLine.class)
                 .stream()
                 .filter(sibling -> sibling.getTextOffset() > scriptLine.getTextOffset())
-                .forEach(sibling -> holder.registerProblem(sibling, WARNING_MESSAGE, ProblemHighlightType.WARNING));
+                .forEach(sibling -> holder.registerProblem(sibling, UNREACHABLE_CODE, ProblemHighlightType.WARNING));
     }
 }

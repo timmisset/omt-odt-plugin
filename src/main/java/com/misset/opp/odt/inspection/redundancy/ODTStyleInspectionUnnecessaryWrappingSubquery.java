@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 public class ODTStyleInspectionUnnecessaryWrappingSubquery extends LocalInspectionTool {
 
-    protected static final String WARNING = "Unnecessary wrapping of Subquery";
+    protected static final String UNNECESSARY_WRAPPING_OF_SUBQUERY = "Unnecessary wrapping of Subquery";
 
     @Override
     @Nullable
@@ -50,7 +50,7 @@ public class ODTStyleInspectionUnnecessaryWrappingSubquery extends LocalInspecti
         if (shouldBeWrapped(subQuery)) {
             return;
         }
-        holder.registerProblem(subQuery, WARNING, ProblemHighlightType.WARNING, getReplaceQuickFix());
+        holder.registerProblem(subQuery, UNNECESSARY_WRAPPING_OF_SUBQUERY, ProblemHighlightType.WARNING, getReplaceQuickFix());
     }
 
     private LocalQuickFix getReplaceQuickFix() {

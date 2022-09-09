@@ -11,30 +11,13 @@ import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.startup.IndexOMTPrefixes;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class OMTTestCase extends BasicTestCase<OMTFile> {
     public OMTTestCase() {
         super(OMTFileType.INSTANCE);
     }
 
-    protected final static Map<String, String> testPrefixes = new HashMap<>();
-
-    static {
-        testPrefixes.put("ont", "http://ontology#");
-        testPrefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-        testPrefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-        testPrefixes.put("owl", "http://www.w3.org/2002/07/owl#");
-        testPrefixes.put("xsd", "http://www.w3.org/2001/XMLSchema#");
-        testPrefixes.put("unique", "http://unique#");
-    }
-
     /**
      * Provides prefixes ont, rdf and rdfs in a root prefixes block
-     *
-     * @param content
-     * @return
      */
     protected String withPrefixes(String content) {
         return String.format("prefixes:\n" +

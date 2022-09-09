@@ -169,8 +169,8 @@ public class OMTCallableImpl extends PsiCallableImpl implements Callable {
     }
 
     @Override
-    public boolean isStatic() {
-        return true;
+    public boolean requiresInput() {
+        return false;
     }
 
     @Override

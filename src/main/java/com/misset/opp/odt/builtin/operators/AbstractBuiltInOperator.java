@@ -29,8 +29,8 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
     }
 
     @Override
-    public boolean isStatic() {
-        return false;
+    public boolean requiresInput() {
+        return true;
     }
 
     @Override

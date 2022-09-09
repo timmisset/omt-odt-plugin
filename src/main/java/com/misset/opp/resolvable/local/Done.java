@@ -23,4 +23,9 @@ public class Done extends LocalCommand {
     public boolean isVoid() {
         return true;
     }
+
+    @Override
+    public boolean isFinalCommand() {
+        return true;
+    }
 }

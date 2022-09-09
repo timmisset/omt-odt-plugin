@@ -101,7 +101,7 @@ public class ODTCodeUntypedInspectionWarning extends LocalInspectionTool {
         if (queryStep instanceof ODTOperatorCall) {
             ODTOperatorCall operatorCall = (ODTOperatorCall) queryStep;
             Callable callable = operatorCall.getCallable();
-            return callable != null && !callable.isStatic();
+            return callable != null && callable.requiresInput();
         }
         return true;
     }

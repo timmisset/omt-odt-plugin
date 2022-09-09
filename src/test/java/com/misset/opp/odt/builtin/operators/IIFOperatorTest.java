@@ -78,7 +78,7 @@ class IIFOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testIsStatic() {
-        Assertions.assertTrue(IIfOperator.INSTANCE.isStatic());
+    void testRequiresInput() {
+        Assertions.assertFalse(IIfOperator.INSTANCE.requiresInput());
     }
 }

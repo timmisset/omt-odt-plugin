@@ -192,8 +192,8 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     }
 
     @Override
-    public boolean isStatic() {
-        return computeFromCallable(Callable::isStatic, false);
+    public boolean requiresInput() {
+        return computeFromCallable(Callable::requiresInput, false);
     }
 
     @Override

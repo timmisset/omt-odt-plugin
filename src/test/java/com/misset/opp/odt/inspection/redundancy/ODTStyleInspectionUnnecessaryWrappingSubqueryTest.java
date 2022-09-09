@@ -1,67 +1,49 @@
 package com.misset.opp.odt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
-import org.junit.jupiter.api.Assertions;
+import com.misset.opp.odt.ODTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-import static com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryWrappingSubquery.WARNING;
+import static com.misset.opp.odt.inspection.redundancy.ODTStyleInspectionUnnecessaryWrappingSubquery.UNNECESSARY_WRAPPING_OF_SUBQUERY;
 
-class ODTStyleInspectionUnnecessaryWrappingSubqueryTest extends OMTInspectionTestCase {
+class ODTStyleInspectionUnnecessaryWrappingSubqueryTest extends ODTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTStyleInspectionUnnecessaryWrappingSubquery.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTStyleInspectionUnnecessaryWrappingSubquery.class));
     }
 
     @Test
     void testWrappedSubquery() {
-        String content = insideQueryWithPrefixes("('' == '') AND ('' == '')");
-        configureByText(content);
-        assertHasWarning(WARNING);
-    }
-
-    @Test
-    void testWrappedSubqueryNoWarningForParameterType() {
-        String content = insideActivityWithPrefixes(
-                "params:\n" +
-                        "- $param (ont:ClassA)"
-        );
-        configureByText(content);
-        assertNoWarning(WARNING);
+        configureByText("('' == '') AND ('' == '')");
+        inspection.assertHasWarning(UNNECESSARY_WRAPPING_OF_SUBQUERY);
     }
 
     @Test
     void testWrappedSubqueryNoWarning() {
-        String content = insideQueryWithPrefixes("('' == '' OR '' == '') AND ('' == '' AND '' == '')");
-        configureByText(content);
-        assertNoWarning(WARNING);
+        configureByText("('' == '' OR '' == '') AND ('' == '' AND '' == '')");
+        inspection.assertNoWarning(UNNECESSARY_WRAPPING_OF_SUBQUERY);
     }
 
     @Test
     void testDecoratedWrappedSubqueryNoWarning() {
-        String content = insideQueryWithPrefixes("(/ont:ClassA / ^rdfs:subclassOf)*");
-        configureByText(content);
-        assertNoWarning(WARNING);
+        configureByText("(/ont:ClassA / ^rdfs:subclassOf)*");
+        inspection.assertNoWarning(UNNECESSARY_WRAPPING_OF_SUBQUERY);
     }
 
     @Test
     void testWrappedSubqueryInIFBlock() {
-        String content = insideProcedureRunWithPrefixes("IF ('' == '') { @LOG('test'); }");
-        configureByText(content);
-        assertHasWarning(WARNING);
+        configureByText("IF ('' == '') { @LOG('test'); }");
+        inspection.assertHasWarning(UNNECESSARY_WRAPPING_OF_SUBQUERY);
     }
 
     @Test
     void testUnwrapSubquery() {
-        String content = insideQueryWithPrefixes("('' == '')");
-        configureByText(content);
-        Assertions.assertTrue(getFile().getText().contains("('' == '')"));
-        invokeQuickFixIntention("Unwrap");
-        Assertions.assertTrue(getFile().getText().contains("'' == ''"));
-        Assertions.assertFalse(getFile().getText().contains("('' == '')"));
+        configureByText("('' == '')");
+        inspection.invokeQuickFixIntention("Unwrap");
+        assertEquals("'' == ''", getFile().getText());
     }
 }
