@@ -1,11 +1,11 @@
 package com.misset.opp.omt.meta;
 
-import com.misset.opp.testCase.OMTCompletionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class OMTImportedMemberRefMetaTypeTest extends OMTCompletionTestCase {
+class OMTImportedMemberRefMetaTypeTest extends OMTTestCase {
 
     @Test
     void testShowsImportedMembers() {
@@ -19,7 +19,7 @@ class OMTImportedMemberRefMetaTypeTest extends OMTCompletionTestCase {
                         "- queryA\n" +
                         "");
 
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         assertContainsElements(lookupStrings, "commandA");
         assertDoesntContain(lookupStrings, "queryA");
     }

@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin;
 
-import com.misset.opp.odt.ODTTestCase;
 import com.misset.opp.odt.builtin.operators.LogOperator;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.settings.SettingsState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

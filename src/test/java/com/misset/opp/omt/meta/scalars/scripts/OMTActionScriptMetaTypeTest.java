@@ -1,20 +1,20 @@
 package com.misset.opp.omt.meta.scalars.scripts;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.odt.inspection.ODTCodeInspectionUnresolvableReference;
 import com.misset.opp.odt.inspection.calls.ODTCallInspection;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Set;
 
-class OMTActionScriptMetaTypeTest extends OMTInspectionTestCase {
+class OMTActionScriptMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Set.of(OMTValueInspection.class, ODTCallInspection.class, ODTCodeInspectionUnresolvableReference.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Set.of(OMTValueInspection.class, ODTCallInspection.class, ODTCodeInspectionUnresolvableReference.class));
     }
 
     @Test
@@ -27,7 +27,7 @@ class OMTActionScriptMetaTypeTest extends OMTInspectionTestCase {
                 "       onSelect: |\n" +
                 "           @LOG($value);";
         configureByText("my.module.omt", content);
-        assertNoErrors();
+        inspection.assertNoErrors();
     }
 
     @Test
@@ -38,7 +38,7 @@ class OMTActionScriptMetaTypeTest extends OMTInspectionTestCase {
                 "   -   onSelect: |\n" +
                 "           @LOG($value);";
         configureByText("my.module.omt", content);
-        assertHasError("Cannot resolve variable '$value'");
+        inspection.assertHasError("Cannot resolve variable '$value'");
     }
 
 }

@@ -25,6 +25,7 @@ public class PrefixIndex {
 
     public static void addToIndex(String key, String value) {
         map.computeIfAbsent(key, s -> new ArrayList<>()).add(value);
+        map.computeIfAbsent(value, s -> new ArrayList<>()).add(key);
     }
 
     public static void orderIndexByFrequency() {

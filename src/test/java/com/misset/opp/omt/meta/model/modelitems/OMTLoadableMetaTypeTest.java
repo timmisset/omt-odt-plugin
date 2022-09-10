@@ -1,30 +1,28 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.inspection.calls.ODTCallInspection;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlModelItemDelegate;
 import com.misset.opp.omt.psi.impl.yaml.YAMLOMTKeyValueImpl;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
-class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
+class OMTLoadableMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return List.of(OMTMissingKeysInspection.class,
-                ODTCallInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Set.of(OMTMissingKeysInspection.class, ODTCallInspection.class));
     }
 
     @Test
@@ -33,7 +31,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "   MyLoadable: !Loadable\n" +
                 "       id: test\n";
         configureByText(content);
-        assertHasError("Missing required key(s): 'path, schema'");
+        inspection.assertHasError("Missing required key(s): 'path, schema'");
     }
 
     @Test
@@ -43,7 +41,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "       id: test\n" +
                 "       path: test.json\n";
         configureByText(content);
-        assertHasError("Missing required key(s): 'schema'");
+        inspection.assertHasError("Missing required key(s): 'schema'");
     }
 
     @Test
@@ -53,7 +51,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "       id: test\n" +
                 "       schema: test.json\n";
         configureByText(content);
-        assertHasError("Missing required key(s): 'path'");
+        inspection.assertHasError("Missing required key(s): 'path'");
     }
 
     @Test
@@ -93,7 +91,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "       onRun:\n" +
                 "           VAR $data = MyLoadable%s;", flag);
         configureByText(content);
-        assertNoErrors();
+        inspection.assertNoErrors();
     }
 
     @Test
@@ -107,7 +105,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "       onRun:\n" +
                 "           VAR $data = MyLoadable!illegalFlag;";
         configureByText(content);
-        assertHasError("Illegal flag, options are: ");
+        inspection.assertHasError("Illegal flag, options are: ");
     }
 
     @ParameterizedTest
@@ -122,7 +120,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "       onRun:\n" +
                 "           VAR $data = MyLoadable('%s');", value);
         configureByText(content);
-        assertNoErrors();
+        inspection.assertNoErrors();
     }
 
     @Test
@@ -136,7 +134,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "       onRun:\n" +
                 "           VAR $data = MyLoadable!retain('oops');";
         configureByText(content);
-        assertHasError("Incompatible value, expected: ");
+        inspection.assertHasError("Incompatible value, expected: ");
     }
 
     @Test
@@ -151,7 +149,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "           VAR $value = 'omt';\n" +
                 "           VAR $data = MyLoadable!retain($value);";
         configureByText(content);
-        assertNoError("Incompatible value, expected: ");
+        inspection.assertNoError("Incompatible value, expected: ");
     }
 
     @Test
@@ -166,7 +164,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "           VAR $value = 'omt';\n" +
                 "           VAR $data = MyLoadable!retain('oops' / CAST(xsd:string));";
         configureByText(content);
-        assertNoError("Incompatible value, expected: ");
+        inspection.assertNoError("Incompatible value, expected: ");
     }
 
     @Test
@@ -180,7 +178,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "       onRun:\n" +
                 "           VAR $data = MyLoadable!load('omt');";
         configureByText(content);
-        assertHasWarning(OMTLoadableMetaType.CALLING_WITH_RETAIN_OR_RELEASE_FLAG);
+        inspection.assertHasWarning(OMTLoadableMetaType.CALLING_WITH_RETAIN_OR_RELEASE_FLAG);
     }
 
     @Test
@@ -194,7 +192,7 @@ class OMTLoadableMetaTypeTest extends OMTInspectionTestCase {
                 "       onRun:\n" +
                 "           VAR $data = MyLoadable!release!load;";
         configureByText(content);
-        assertHasWarning(OMTLoadableMetaType.RELEASE_FLAG_SHOULD_NOT_BE_COMBINED_WITH_OTHER_FLAGS);
+        inspection.assertHasWarning(OMTLoadableMetaType.RELEASE_FLAG_SHOULD_NOT_BE_COMBINED_WITH_OTHER_FLAGS);
     }
 
     private OMTYamlModelItemDelegate getDelegate() {

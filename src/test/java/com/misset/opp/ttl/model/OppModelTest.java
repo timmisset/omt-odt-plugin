@@ -3,8 +3,8 @@ package com.misset.opp.ttl.model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.intellij.openapi.progress.ProgressIndicator;
-import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.constants.XSD;
+import com.misset.opp.ttl.testcase.TTLTestCase;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -19,7 +19,7 @@ import java.util.Set;
 
 import static org.mockito.Mockito.mock;
 
-class OppModelTest extends OMTOntologyTestCase {
+class OppModelTest extends TTLTestCase {
     public static final String CLASS_A_INSTANCE_A = "http://ontology#ClassA_InstanceA";
     public static final String ONTOLOGY_CLASS_A = "http://ontology#ClassA";
     public static final String ONTOLOGY_CLASS_B = "http://ontology#ClassB";
@@ -32,7 +32,7 @@ class OppModelTest extends OMTOntologyTestCase {
     private Individual CLASS_BSUB_INDIVIDUAL;
 
     @BeforeEach
-    protected void setUp() {
+    public void setUp() {
         setOntologyModel();
         CLASS_A = createClass("ClassA");
         CLASS_B = createClass("ClassB");

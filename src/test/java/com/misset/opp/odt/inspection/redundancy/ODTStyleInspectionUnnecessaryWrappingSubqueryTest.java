@@ -1,6 +1,6 @@
 package com.misset.opp.odt.inspection.redundancy;
 
-import com.misset.opp.odt.ODTTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

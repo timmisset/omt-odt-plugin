@@ -35,6 +35,7 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
                 .map(odtVariableReference -> odtVariableReference.resolve(false, false))
                 .filter(Variable.class::isInstance)
                 .map(Variable.class::cast)
+                .or(this::getFromFile)
                 .orElse(null);
     }
 

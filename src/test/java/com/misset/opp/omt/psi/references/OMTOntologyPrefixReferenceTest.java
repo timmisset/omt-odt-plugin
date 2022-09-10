@@ -3,12 +3,10 @@ package com.misset.opp.omt.psi.references;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.testCase.OMTTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class OMTOntologyPrefixReferenceTest extends OMTTestCase {
 

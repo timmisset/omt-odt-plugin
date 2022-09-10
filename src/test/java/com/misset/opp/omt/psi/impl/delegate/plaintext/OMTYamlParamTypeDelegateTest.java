@@ -5,14 +5,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.misset.opp.omt.psi.references.OMTParamTypePrefixReference;
 import com.misset.opp.omt.psi.references.OMTTTLSubjectReference;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-class OMTYamlParamTypeDelegateTest extends OMTOntologyTestCase {
+class OMTYamlParamTypeDelegateTest extends OMTTestCase {
 
     @Test
     void testUriHasReferenceToModel() {

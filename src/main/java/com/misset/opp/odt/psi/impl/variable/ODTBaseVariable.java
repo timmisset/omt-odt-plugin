@@ -21,7 +21,6 @@ import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableSte
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.resolvable.global.GlobalVariable;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
@@ -211,7 +210,10 @@ public abstract class ODTBaseVariable
 
     @Override
     public boolean isGlobal() {
-        return GlobalVariable.getVariable(getName()) != null;
+        return Optional.ofNullable(getDeclared())
+                .filter(variable -> variable != this)
+                .map(Variable::isGlobal)
+                .orElse(false);
     }
 
     @Override

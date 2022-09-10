@@ -8,7 +8,7 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.testCase.OMTTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;

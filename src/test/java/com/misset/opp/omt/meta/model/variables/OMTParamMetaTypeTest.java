@@ -1,21 +1,21 @@
 package com.misset.opp.omt.meta.model.variables;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import static com.misset.opp.omt.meta.model.variables.OMTParamMetaType.SYNTAX_ERROR;
 
-class OMTParamMetaTypeTest extends OMTInspectionTestCase {
+class OMTParamMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return List.of(OMTUnkownKeysInspection.class, OMTValueInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Set.of(OMTUnkownKeysInspection.class, OMTValueInspection.class));
     }
 
     @Test
@@ -26,7 +26,7 @@ class OMTParamMetaTypeTest extends OMTInspectionTestCase {
                 "       -   $param\n" +
                 "";
         configureByText(content);
-        assertNoErrors();
+        inspection.assertNoErrors();
     }
 
     @Test
@@ -37,7 +37,7 @@ class OMTParamMetaTypeTest extends OMTInspectionTestCase {
                 "       -   $param (ty\n" +
                 "";
         configureByText(content);
-        assertHasError(SYNTAX_ERROR);
+        inspection.assertHasError(SYNTAX_ERROR);
     }
 
     @Test
@@ -48,7 +48,7 @@ class OMTParamMetaTypeTest extends OMTInspectionTestCase {
                 "       -   $param type\n" +
                 "";
         configureByText(content);
-        assertHasError(SYNTAX_ERROR);
+        inspection.assertHasError(SYNTAX_ERROR);
     }
 
     @Test
@@ -60,7 +60,7 @@ class OMTParamMetaTypeTest extends OMTInspectionTestCase {
                 "           type: SomeType\n" +
                 "";
         configureByText(content);
-        assertNoError("Key"); // no errors that indicate a missing key
+        inspection.assertNoError("Key"); // no errors that indicate a missing key
     }
 
     @Test
@@ -72,6 +72,6 @@ class OMTParamMetaTypeTest extends OMTInspectionTestCase {
                 "           typo: SomeType\n" +
                 "";
         configureByText(content);
-        assertHasError("Key 'typo' is not expected here");
+        inspection.assertHasError("Key 'typo' is not expected here");
     }
 }

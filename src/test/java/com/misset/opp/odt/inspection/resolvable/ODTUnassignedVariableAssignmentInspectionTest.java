@@ -1,8 +1,8 @@
 package com.misset.opp.odt.inspection.resolvable;
 
-import com.misset.opp.odt.ODTFileTestImpl;
-import com.misset.opp.odt.ODTTestCase;
 import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.resolvable.Variable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

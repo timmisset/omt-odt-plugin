@@ -1,6 +1,7 @@
-package com.misset.opp.testCase;
+package com.misset.opp.omt.testcase;
 
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.misset.opp.indexing.PrefixIndex;
 import com.misset.opp.odt.psi.ODTCallName;
@@ -8,10 +9,29 @@ import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.startup.IndexOMTPrefixes;
+import com.misset.opp.testcase.BasicTestCase;
+import com.misset.opp.testcase.CompletionUtil;
+import com.misset.opp.testcase.InspectionUtil;
+import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.junit.jupiter.api.BeforeEach;
 
-public class OMTTestCase extends BasicTestCase<OMTFile> {
+public abstract class OMTTestCase extends BasicTestCase<OMTFile> {
+
+    protected InspectionUtil inspection;
+    protected CompletionUtil completion;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        PrefixIndex.clear();
+        setOntologyModel();
+        inspection = new InspectionUtil(myFixture);
+        completion = new CompletionUtil(myFixture);
+    }
+
     public OMTTestCase() {
         super(OMTFileType.INSTANCE);
     }
@@ -110,10 +130,13 @@ public class OMTTestCase extends BasicTestCase<OMTFile> {
         });
     }
 
-    @Override
-    @BeforeEach
-    protected void setUp() {
-        super.setUp();
-        PrefixIndex.clear();
+    protected OMTYamlDelegate getDelegateAtCaret() {
+        return ReadAction.compute(() -> {
+            PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            if (elementAtCaret instanceof YAMLPsiElement) {
+                return OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) elementAtCaret);
+            }
+            return null;
+        });
     }
 }

@@ -1,28 +1,28 @@
 package com.misset.opp.omt.meta.model;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.local.LocalVariable;
-import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-class OMTPayloadItemMetaTypeTest extends OMTInspectionTestCase {
+class OMTPayloadItemMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Set.of(OMTUnkownKeysInspection.class, OMTMissingKeysInspection.class, OMTValueInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Set.of(OMTUnkownKeysInspection.class, OMTMissingKeysInspection.class, OMTValueInspection.class));
     }
 
     @Test
@@ -30,7 +30,7 @@ class OMTPayloadItemMetaTypeTest extends OMTInspectionTestCase {
         configureByText(insideActivityWithPrefixes("payload:\n" +
                 "   payloadItem:\n" +
                 "       list: true"));
-        assertHasError("Missing required key(s): 'value'");
+        inspection.assertHasError("Missing required key(s): 'value'");
     }
 
     @Test
@@ -39,7 +39,7 @@ class OMTPayloadItemMetaTypeTest extends OMTInspectionTestCase {
                 "   payloadItem:\n" +
                 "       value: true\n" +
                 "       list: true"));
-        assertNoError("Missing required key(s): 'value'");
+        inspection.assertNoError("Missing required key(s): 'value'");
     }
 
     @Test
@@ -48,7 +48,7 @@ class OMTPayloadItemMetaTypeTest extends OMTInspectionTestCase {
                 "   payloadItem:\n" +
                 "       query: true\n" +
                 "       list: true"));
-        assertNoError("Missing required key(s): 'value'");
+        inspection.assertNoError("Missing required key(s): 'value'");
     }
 
     @Test
@@ -58,7 +58,7 @@ class OMTPayloadItemMetaTypeTest extends OMTInspectionTestCase {
                 "       query: true\n" +
                 "       value: true\n" +
                 "       list: true"));
-        assertHasError("Use either 'value' or 'query'");
+        inspection.assertHasError("Use either 'value' or 'query'");
     }
 
     @Test
@@ -69,7 +69,7 @@ class OMTPayloadItemMetaTypeTest extends OMTInspectionTestCase {
                 "       onChange: |\n" +
                 "           @LOG($newValue);\n" +
                 "       list: true"));
-        assertHasError("Cannot use 'onChange' with payload query");
+        inspection.assertHasError("Cannot use 'onChange' with payload query");
     }
 
     @Test
@@ -80,7 +80,7 @@ class OMTPayloadItemMetaTypeTest extends OMTInspectionTestCase {
                 "       onChange: |\n" +
                 "           @LOG($newValue);\n" +
                 "       list: true"));
-        assertNoError("Cannot use 'onChange' with payload query");
+        inspection.assertNoError("Cannot use 'onChange' with payload query");
     }
 
     @Test

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.testcase.BasicTestCase;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -35,7 +35,7 @@ public abstract class BaseBuiltinTest {
 
     @BeforeEach
     protected void setUp() {
-        oppModel = OMTOntologyTestCase.initOntologyModel();
+        oppModel = BasicTestCase.initOntologyModel();
     }
 
     @AfterEach

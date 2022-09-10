@@ -1,6 +1,6 @@
 package com.misset.opp.odt.completion.commands;
 
-import com.misset.opp.odt.ODTTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

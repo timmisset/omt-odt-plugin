@@ -1,13 +1,13 @@
 package com.misset.opp.omt.completion;
 
 import com.misset.opp.omt.meta.model.modelitems.OMTLoadableMetaType;
-import com.misset.opp.testCase.OMTCompletionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class OMTCompletionLoadableContextTest extends OMTCompletionTestCase {
+class OMTCompletionLoadableContextTest extends OMTTestCase {
 
     @Test
     void testShowsContextOptions() {
@@ -21,7 +21,7 @@ class OMTCompletionLoadableContextTest extends OMTCompletionTestCase {
                 "           VAR $data = MyLoadable!retain(<caret>);";
         ;
         configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         Assertions.assertEquals(OMTLoadableMetaType.getContextSelectors().size(), lookupStrings.size());
         assertContainsElements(lookupStrings, "'omt'", "'session'");
     }

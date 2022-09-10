@@ -1,20 +1,20 @@
 package com.misset.opp.omt.meta.model.handlers;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
-class OMTForbiddenPredicatesMetaTypeTest extends OMTInspectionTestCase {
+class OMTForbiddenPredicatesMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return List.of(OMTMissingKeysInspection.class, OMTUnkownKeysInspection.class, OMTValueInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Set.of(OMTMissingKeysInspection.class, OMTUnkownKeysInspection.class, OMTValueInspection.class));
     }
 
     @Test
@@ -26,7 +26,7 @@ class OMTForbiddenPredicatesMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertHasError("Missing required key(s): 'predicates'");
+        inspection.assertHasError("Missing required key(s): 'predicates'");
     }
 
     @Test
@@ -39,6 +39,6 @@ class OMTForbiddenPredicatesMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertNoError("Missing required key(s):");
+        inspection.assertNoError("Missing required key(s):");
     }
 }

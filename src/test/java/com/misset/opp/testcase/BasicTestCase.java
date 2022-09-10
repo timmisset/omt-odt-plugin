@@ -1,4 +1,4 @@
-package com.misset.opp.testCase;
+package com.misset.opp.testcase;
 
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ReadAction;
@@ -149,6 +149,10 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
 
     protected void setOntologyModel() {
         oppModel = initOntologyModel();
+    }
+
+    protected String createOntologyUri(String localName) {
+        return "http://ontology#" + localName;
     }
 
 }

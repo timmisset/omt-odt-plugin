@@ -1,6 +1,6 @@
 package com.misset.opp.odt.inspection.calls.operators;
 
-import com.misset.opp.odt.ODTTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

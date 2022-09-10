@@ -1,4 +1,4 @@
-package com.misset.opp.testCase;
+package com.misset.opp.odt.testcase;
 
 import com.google.common.base.Strings;
 import com.intellij.application.options.CodeStyle;
@@ -11,8 +11,6 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.testFramework.fixtures.JavaCodeInsightTestFixture;
-import com.misset.opp.odt.ODTFileTestImpl;
-import com.misset.opp.odt.ODTTestCase;
 import com.misset.opp.odt.psi.ODTFile;
 import org.junit.jupiter.api.Assertions;
 

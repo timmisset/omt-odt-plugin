@@ -1,7 +1,7 @@
 package com.misset.opp.odt.completion;
 
-import com.misset.opp.odt.ODTFileTestImpl;
-import com.misset.opp.odt.ODTTestCase;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.resolvable.Variable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

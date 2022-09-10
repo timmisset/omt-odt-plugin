@@ -8,7 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableCurieElementStep;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.testCase.OMTTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.junit.jupiter.api.Assertions;

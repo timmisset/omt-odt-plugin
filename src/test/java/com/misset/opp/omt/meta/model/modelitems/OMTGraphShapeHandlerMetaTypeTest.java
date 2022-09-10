@@ -1,12 +1,12 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.misset.opp.testCase.OMTCompletionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class OMTGraphShapeHandlerMetaTypeTest extends OMTCompletionTestCase {
+class OMTGraphShapeHandlerMetaTypeTest extends OMTTestCase {
 
     @Test
     void testComputeKeyCompletions() {
@@ -17,7 +17,7 @@ class OMTGraphShapeHandlerMetaTypeTest extends OMTCompletionTestCase {
                 "       <caret>\n" +
                 "\n";
         configureByText(content);
-        final List<String> completionList = getLookupStrings();
+        final List<String> completionList = completion.getLookupStrings();
         OMTGraphShapeHandlerMetaType.getInstance().getFeatures()
                 .keySet()
                 .stream()

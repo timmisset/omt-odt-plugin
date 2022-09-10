@@ -1,4 +1,4 @@
-package com.misset.opp.testCase;
+package com.misset.opp.odt.testcase;
 
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.ODTLexerAdapter;
@@ -10,9 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ODTLexerTestCase extends OMTTestCase {
+public class ODTLexerTestCase extends ODTTestCase {
     @BeforeEach
-    protected void setUp() {
+    public void setUp() {
         // no fixture required, don't call super
         // extends OMTTestCase for assertion support
     }

@@ -1,17 +1,18 @@
 package com.misset.opp.omt.meta.actions;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTDossierActionMetaTypeTest extends OMTInspectionTestCase {
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTUnkownKeysInspection.class);
+class OMTDossierActionMetaTypeTest extends OMTTestCase {
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTUnkownKeysInspection.class));
     }
 
     @Test
@@ -22,7 +23,7 @@ class OMTDossierActionMetaTypeTest extends OMTInspectionTestCase {
                 "     icon: icon\n" +
                 "     params:\n" +
                 "     - $paramA\n");
-        assertNoErrors();
+        inspection.assertNoErrors();
     }
 
     @Test
@@ -34,7 +35,7 @@ class OMTDossierActionMetaTypeTest extends OMTInspectionTestCase {
                 "     disabled: true\n" +
                 "     params:\n" +
                 "     - $paramA\n");
-        assertHasError("Key 'disabled' is not expected here");
+        inspection.assertHasError("Key 'disabled' is not expected here");
     }
 
 }

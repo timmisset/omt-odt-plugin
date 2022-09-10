@@ -1,6 +1,6 @@
 package com.misset.opp.ttl.util;
 
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.testcase.BasicTestCase;
 import com.misset.opp.ttl.model.OppModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +18,7 @@ class TTLResourceUtilTest {
 
     @BeforeEach
     void setUp() {
-        OMTOntologyTestCase.initOntologyModel();
+        BasicTestCase.initOntologyModel();
         oppModel = OppModel.getInstance();
     }
 

@@ -1,27 +1,27 @@
 package com.misset.opp.omt.meta.actions;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.local.LocalVariable;
-import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-class OMTActionMetaTypeTest extends OMTInspectionTestCase {
+class OMTActionMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Set.of(OMTValueInspection.class, OMTMissingKeysInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Set.of(OMTValueInspection.class, OMTMissingKeysInspection.class));
     }
 
     @Test
@@ -46,7 +46,7 @@ class OMTActionMetaTypeTest extends OMTInspectionTestCase {
                 "    notifications:\n" +
                 "    - id: id\n" +
                 "    - id: id\n");
-        assertHasError("Duplicate");
+        inspection.assertHasError("Duplicate");
     }
 
     @Test

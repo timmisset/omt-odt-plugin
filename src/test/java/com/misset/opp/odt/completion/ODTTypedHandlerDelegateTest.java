@@ -4,8 +4,8 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import com.misset.opp.odt.ODTTestCase;
 import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Test;
 
 class ODTTypedHandlerDelegateTest extends ODTTestCase {

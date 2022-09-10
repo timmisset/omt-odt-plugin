@@ -5,9 +5,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.references.OMTDeclaredInterfaceReference;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiCallableImpl;
-import com.misset.opp.testCase.OMTCompletionTestCase;
 import org.jetbrains.yaml.psi.YAMLValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-class OMTDeclaredInterfaceMetaTypeTest extends OMTCompletionTestCase {
+class OMTDeclaredInterfaceMetaTypeTest extends OMTTestCase {
     @Test
     void testShowsCompletionsForExportedMembers() {
         myFixture.addFileToProject("some.module.omt", "moduleName: SomeModule\n" +
@@ -28,7 +28,7 @@ class OMTDeclaredInterfaceMetaTypeTest extends OMTCompletionTestCase {
                 "declare:\n" +
                         "   SomeModule:\n" +
                         "       <caret>");
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         assertContainsElements(lookupStrings, "memberA", "memberB");
     }
 

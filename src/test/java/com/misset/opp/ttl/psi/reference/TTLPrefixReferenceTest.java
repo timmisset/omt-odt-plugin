@@ -4,8 +4,8 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
-import com.misset.opp.testCase.TTLTestCase;
 import com.misset.opp.ttl.psi.TTLPrefixId;
+import com.misset.opp.ttl.testcase.TTLTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

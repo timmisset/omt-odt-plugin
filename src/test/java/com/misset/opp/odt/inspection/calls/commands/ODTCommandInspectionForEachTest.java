@@ -1,7 +1,7 @@
 package com.misset.opp.odt.inspection.calls.commands;
 
-import com.misset.opp.odt.ODTFileTestImpl;
-import com.misset.opp.odt.ODTTestCase;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.CallableType;
 import org.junit.jupiter.api.BeforeEach;

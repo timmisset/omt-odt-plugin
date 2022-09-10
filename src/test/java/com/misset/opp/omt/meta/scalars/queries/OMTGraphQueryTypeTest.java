@@ -1,27 +1,17 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTGraphQueryTypeTest extends OMTInspectionTestCase {
-
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTValueInspection.class);
-    }
-
-    @Override
+class OMTGraphQueryTypeTest extends OMTTestCase {
     @BeforeEach
-    protected void setUp() {
+    public void setUp() {
         super.setUp();
-        OMTOntologyTestCase.initOntologyModel();
+        myFixture.enableInspections(Collections.singleton(OMTValueInspection.class));
     }
 
     @Test
@@ -29,7 +19,7 @@ class OMTGraphQueryTypeTest extends OMTInspectionTestCase {
         configureByText(insideActivityWithPrefixes("graphs:\n" +
                 "   live:\n" +
                 "   - /ont:ClassA"));
-        assertHasError("Expected a query that resolves to a graph");
+        inspection.assertHasError("Expected a query that resolves to a graph");
     }
 
     @Test
@@ -37,6 +27,6 @@ class OMTGraphQueryTypeTest extends OMTInspectionTestCase {
         configureByText(insideActivityWithPrefixes("graphs:\n" +
                 "   live:\n" +
                 "   - $medewerkerGraph"));
-        assertNoError("Expected a query that resolves to a graph");
+        inspection.assertNoError("Expected a query that resolves to a graph");
     }
 }

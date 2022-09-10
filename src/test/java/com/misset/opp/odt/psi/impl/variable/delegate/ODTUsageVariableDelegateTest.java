@@ -3,38 +3,29 @@ package com.misset.opp.odt.psi.impl.variable.delegate;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
+import com.misset.opp.resolvable.Variable;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
+import java.util.Set;
+
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+
+class ODTUsageVariableDelegateTest extends ODTTestCase {
 
     @Test
-    void testGetTypeFromLocalVariableNewValue() {
-        String content = insideActivityWithPrefixes(
-                "payload:\n" +
-                        "   item:\n" +
-                        "       value: 'test'\n" +
-                        "       onChange: $<caret>newValue"
-        );
-        configureByText(content);
-        ReadAction.run(() -> {
-            final PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
-        });
-    }
+    void testGetTypeFromExternalVariable() {
+        String content = "$<caret>variable";
+        ODTFileTestImpl odtFileTest = configureByText(content);
 
-    @Test
-    void testGetTypeFromLocalVariableOldValue() {
-        String content = insideActivityWithPrefixes(
-                "payload:\n" +
-                        "   item:\n" +
-                        "       value: 'test'\n" +
-                        "       onChange: $<caret>oldValue"
-        );
-        configureByText(content);
+        Variable variable = mock(Variable.class);
+        doReturn("$variable").when(variable).getName();
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(variable).resolve();
+        odtFileTest.addVariable(variable);
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
@@ -44,8 +35,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
 
     @Test
     void testGetTypeFromLocalVariableFromCallableValue() {
-        String content = insideProcedureRunWithPrefixes("@FOREACH('test', $<caret>value);");
-        configureByText(content);
+        configureByText("@FOREACH('test', $<caret>value);");
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
@@ -55,8 +45,7 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
 
     @Test
     void testGetTypeFromLocalVariableFromCallableIndex() {
-        String content = insideProcedureRunWithPrefixes("@FOREACH('test', $<caret>index);");
-        configureByText(content);
+        configureByText("@FOREACH('test', $<caret>index);");
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
@@ -66,9 +55,8 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
 
     @Test
     void testGetTypeFromAssignment() {
-        String content = insideProcedureRunWithPrefixes("" +
-                "VAR $values = 'test';\n" +
-                "@FOREACH($values, $<caret>value);");
+        String content = "VAR $values = 'test';\n" +
+                "@FOREACH($values, $<caret>value);";
         configureByText(content);
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
@@ -79,9 +67,8 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
 
     @Test
     void testGetTypeFromMultipleAssignments() {
-        String content = insideProcedureRunWithPrefixes("" +
-                "VAR $values = 'test';\n" +
-                "@FOREACH($values, $<caret>value);");
+        String content = "VAR $values = 'test';\n" +
+                "@FOREACH($values, $<caret>value);";
         configureByText(content);
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
@@ -93,10 +80,9 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
     @Test
     void testGetTypeReassignment() {
         // this test's actual purpose is to validate that there is no stackoverflow
-        // caused by the the value trying to resolve itself by the not yet resolved assignment
-        String content = insideProcedureRunWithPrefixes("" +
-                "VAR $total = 1;\n" +
-                "$total = $<caret>total / PLUS(1);");
+        // caused by the value trying to resolve itself by the not yet resolved assignment
+        String content = "VAR $total = 1;\n" +
+                "$total = $<caret>total / PLUS(1);";
         configureByText(content);
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
@@ -104,20 +90,4 @@ class ODTUsageVariableDelegateTest extends OMTOntologyTestCase {
             assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdIntegerInstance());
         });
     }
-
-    @Test
-    void testGetTypeFromGlobalVariableMedewerkerGraph() {
-        assertEquals(OppModelConstants.getMedewerkerGraph(), resolveQueryStatementToSingleResult("$medewerkerGraph"));
-    }
-
-    @Test
-    void testGetTypeFromGlobalVariableUsername() {
-        assertEquals(OppModelConstants.getXsdStringInstance(), resolveQueryStatementToSingleResult("$username"));
-    }
-
-    @Test
-    void testGetTypeFromGlobalVariableOffline() {
-        assertEquals(OppModelConstants.getXsdBooleanInstance(), resolveQueryStatementToSingleResult("$offline"));
-    }
-
 }

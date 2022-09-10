@@ -3,13 +3,13 @@ package com.misset.opp.omt.meta.module;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.testCase.OMTCompletionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class OMTDeclareMetaTypeTest extends OMTCompletionTestCase {
+class OMTDeclareMetaTypeTest extends OMTTestCase {
 
     @Test
     void testShowsSuggestionForDeclared() {
@@ -17,7 +17,7 @@ class OMTDeclareMetaTypeTest extends OMTCompletionTestCase {
         myFixture.addFileToProject("another.module.omt", "moduleName: AnotherModule");
         configureByText("current.interface.omt",
                 "<caret>\n");
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         assertContainsElements(lookupStrings, "declare");
     }
 
@@ -28,7 +28,7 @@ class OMTDeclareMetaTypeTest extends OMTCompletionTestCase {
         configureByText("current.interface.omt",
                 "declare:\n" +
                         "   <caret>");
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         assertContainsElements(lookupStrings, "SomeModule", "AnotherModule");
         assertDoesntContain(lookupStrings, "CurrentModule");
     }

@@ -1,47 +1,46 @@
-package com.misset.opp.testCase;
+package com.misset.opp.testcase;
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.testFramework.fixtures.JavaCodeInsightTestFixture;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class OMTInspectionTestCase extends OMTTestCase {
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-    protected abstract Collection<Class<? extends LocalInspectionTool>> getEnabledInspections();
+public class InspectionUtil {
 
-    @Override
-    @BeforeEach
-    protected void setUp() {
-        super.setUp();
-        myFixture.enableInspections(getEnabledInspections());
+    private final JavaCodeInsightTestFixture fixture;
+
+    public InspectionUtil(JavaCodeInsightTestFixture fixture) {
+        this.fixture = fixture;
     }
 
-    protected void assertNoErrors() {
+    public void assertNoErrors() {
         assertNoHighlighting(HighlightSeverity.ERROR);
     }
 
-    protected void assertNoWarnings() {
+    public void assertNoWarnings() {
         assertNoHighlighting(HighlightSeverity.WARNING);
     }
 
-    protected void assertNoWarning(String warning) {
+    public void assertNoWarning(String warning) {
         assertNoHighlighting(HighlightSeverity.WARNING, warning);
     }
 
-    protected void assertNoWeakWarning(String warning) {
+    public void assertNoWeakWarning(String warning) {
         assertNoHighlighting(HighlightSeverity.WEAK_WARNING, warning);
     }
 
-    protected void assertNoError(String error) {
+    public void assertNoError(String error) {
         assertNoHighlighting(HighlightSeverity.ERROR, error);
     }
 
@@ -58,23 +57,23 @@ public abstract class OMTInspectionTestCase extends OMTTestCase {
         }
     }
 
-    protected void assertHasError(String message) {
+    public void assertHasError(String message) {
         assertHasHighlightingMessage(HighlightSeverity.ERROR, message);
     }
 
-    protected void assertHasWarning(String message) {
+    public void assertHasWarning(String message) {
         assertHasHighlightingMessage(HighlightSeverity.WARNING, message);
     }
 
-    protected void assertHasWarning(String message, String highlightingText) {
+    public void assertHasWarning(String message, String highlightingText) {
         assertHasHighlightingMessage(HighlightSeverity.WARNING, message, highlightingText);
     }
 
-    protected void assertHasWeakWarning(String message) {
+    public void assertHasWeakWarning(String message) {
         assertHasHighlightingMessage(HighlightSeverity.WEAK_WARNING, message);
     }
 
-    protected void assertHasInformation(String message) {
+    public void assertHasInformation(String message) {
         assertHasHighlightingMessage(HighlightSeverity.INFORMATION, message);
     }
 
@@ -114,24 +113,24 @@ public abstract class OMTInspectionTestCase extends OMTTestCase {
 
     private @NotNull List<HighlightInfo> getHighlighting() {
         try {
-            return myFixture.doHighlighting();
+            return fixture.doHighlighting();
         } catch (IllegalStateException e) {
             throw new RuntimeException("Don't wrap highlight assertions in ReadAction.read locks");
         }
     }
 
-    protected @NotNull List<IntentionAction> getAllQuickFixes() {
-        final String fileName = getFile().getName();
+    public @NotNull List<IntentionAction> getAllQuickFixes() {
+        final String fileName = fixture.getFile().getName();
         return
                 Stream.of(
-                                myFixture.getAllQuickFixes(fileName),
-                                myFixture.getAvailableIntentions(fileName))
+                                fixture.getAllQuickFixes(fileName),
+                                fixture.getAvailableIntentions(fileName))
                         .flatMap(Collection::stream)
                         .distinct()
                         .collect(Collectors.toList());
     }
 
-    protected IntentionAction getQuickFixIntention(String description) {
+    public IntentionAction getQuickFixIntention(String description) {
         return getAllQuickFixes()
                 .stream()
                 .filter(intentionAction -> intentionAction.getText().equals(description))
@@ -139,14 +138,14 @@ public abstract class OMTInspectionTestCase extends OMTTestCase {
                 .orElse(null);
     }
 
-    protected List<IntentionAction> getQuickFixIntentions(String description) {
+    public List<IntentionAction> getQuickFixIntentions(String description) {
         return getAllQuickFixes()
                 .stream()
                 .filter(intentionAction -> intentionAction.getText().equals(description))
                 .collect(Collectors.toList());
     }
 
-    protected void invokeQuickFixIntention(String description) {
+    public void invokeQuickFixIntention(String description) {
         final IntentionAction quickFixIntention = getQuickFixIntention(description);
         if (quickFixIntention == null) {
             fail("Could not find quickfix with description " + description);
@@ -154,9 +153,10 @@ public abstract class OMTInspectionTestCase extends OMTTestCase {
         invokeQuickFixIntention(quickFixIntention);
     }
 
-    protected void invokeQuickFixIntention(IntentionAction intentionAction) {
+    public void invokeQuickFixIntention(IntentionAction intentionAction) {
         WriteCommandAction.runWriteCommandAction(
-                getProject(), () -> intentionAction.invoke(getProject(), getEditor(), getFile())
+                fixture.getProject(), () -> intentionAction.invoke(fixture.getProject(), fixture.getEditor(), fixture.getFile())
         );
     }
+
 }

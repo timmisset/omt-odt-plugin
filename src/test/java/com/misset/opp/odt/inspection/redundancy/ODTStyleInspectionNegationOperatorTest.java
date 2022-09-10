@@ -1,7 +1,7 @@
 package com.misset.opp.odt.inspection.redundancy;
 
 import com.intellij.openapi.application.ReadAction;
-import com.misset.opp.odt.ODTTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

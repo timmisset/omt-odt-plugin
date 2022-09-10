@@ -1,4 +1,4 @@
-package com.misset.opp.testCase;
+package com.misset.opp.testcase;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.testFramework.fixtures.JavaCodeInsightTestFixture;

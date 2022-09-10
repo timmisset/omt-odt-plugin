@@ -1,7 +1,7 @@
-package com.misset.opp.odt;
+package com.misset.opp.omt.injection;
 
 import com.intellij.openapi.application.ReadAction;
-import com.misset.opp.testCase.OMTTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

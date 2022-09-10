@@ -1,7 +1,7 @@
 package com.misset.opp.odt.lexer;
 
 import com.misset.opp.odt.psi.ODTTypes;
-import com.misset.opp.testCase.ODTLexerTestCase;
+import com.misset.opp.odt.testcase.ODTLexerTestCase;
 import org.junit.jupiter.api.Test;
 
 class ODTPrimitiveTest extends ODTLexerTestCase {

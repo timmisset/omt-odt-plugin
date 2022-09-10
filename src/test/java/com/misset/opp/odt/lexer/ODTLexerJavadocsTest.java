@@ -1,7 +1,7 @@
 package com.misset.opp.odt.lexer;
 
 import com.intellij.psi.impl.source.tree.JavaDocElementType;
-import com.misset.opp.testCase.ODTLexerTestCase;
+import com.misset.opp.odt.testcase.ODTLexerTestCase;
 import org.junit.jupiter.api.Test;
 
 public class ODTLexerJavadocsTest extends ODTLexerTestCase {
