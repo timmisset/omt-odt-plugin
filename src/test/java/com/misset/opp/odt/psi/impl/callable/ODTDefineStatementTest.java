@@ -3,8 +3,7 @@ package com.misset.opp.odt.psi.impl.callable;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
-import com.misset.opp.testCase.ODTTestCase;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -102,8 +101,6 @@ class ODTDefineStatementTest extends ODTTestCase {
 
     @Test
     void testReturnTypeReturnsUriType() {
-        OMTOntologyTestCase.initOntologyModel();
-
         String content = "" +
                 "PREFIX ont: <http://ontology#>\n" +
                 "/**\n" +

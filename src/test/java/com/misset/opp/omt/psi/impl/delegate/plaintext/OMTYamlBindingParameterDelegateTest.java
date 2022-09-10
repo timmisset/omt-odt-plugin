@@ -3,11 +3,11 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.testCase.OMTDelegateTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class OMTYamlBindingParameterDelegateTest extends OMTDelegateTestCase {
+class OMTYamlBindingParameterDelegateTest extends OMTTestCase {
 
     @Test
     void testIsParameter() {

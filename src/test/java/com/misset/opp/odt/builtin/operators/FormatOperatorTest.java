@@ -38,7 +38,7 @@ class FormatOperatorTest extends BaseBuiltinTest {
         doReturn("Test %s").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
-        verify(holder).registerProblem(eq(secondArgument), eq(TTLValidationUtil.ERROR_MESSAGE_STRING), eq(ProblemHighlightType.ERROR));
+        verify(holder).registerProblem(secondArgument, TTLValidationUtil.ERROR_MESSAGE_STRING, ProblemHighlightType.ERROR);
     }
 
     @Test
@@ -47,7 +47,7 @@ class FormatOperatorTest extends BaseBuiltinTest {
         doReturn("Test %d").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
-        verify(holder).registerProblem(eq(secondArgument), eq(TTLValidationUtil.ERROR_MESSAGE_NUMBER), eq(ProblemHighlightType.ERROR));
+        verify(holder).registerProblem(secondArgument, TTLValidationUtil.ERROR_MESSAGE_NUMBER, ProblemHighlightType.ERROR);
     }
 
     @Test

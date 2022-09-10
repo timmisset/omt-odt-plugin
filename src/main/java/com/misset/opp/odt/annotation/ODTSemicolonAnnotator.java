@@ -3,7 +3,6 @@ package com.misset.opp.odt.annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
@@ -13,7 +12,6 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTInterpolation;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTTypes;
-import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,8 +19,6 @@ import org.jetbrains.annotations.NotNull;
  * it anywhere where completion is triggered to generate a valid completion PsiFile
  */
 public class ODTSemicolonAnnotator implements Annotator {
-    private static final Logger LOGGER = Logger.getInstance(ODTSemicolonAnnotator.class);
-
     protected static final String SEMICOLON_REQUIRED = "Semicolon required";
     protected static final String SEMICOLON_ILLEGAL = "Should not contain a semicolon";
 
@@ -31,14 +27,10 @@ public class ODTSemicolonAnnotator implements Annotator {
                          @NotNull AnnotationHolder holder) {
         IElementType elementType = PsiUtilCore.getElementType(element);
         if (elementType == ODTTypes.SCRIPT_LINE) {
-            LoggerUtil.runWithLogger(LOGGER, "Annotate scriptline", () -> annotateScriptLine((ODTScriptLine) element, holder));
-        } else if (elementType == ODTTypes.SEMICOLON) {
-            LoggerUtil.runWithLogger(LOGGER, "Annotate semicolon", () -> {
-                PsiElement prevVisibleLeaf = PsiTreeUtil.prevVisibleLeaf(element);
-                if (prevVisibleLeaf != null && prevVisibleLeaf.getNode().getElementType() == ODTTypes.SEMICOLON) {
-                    holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
-                }
-            });
+            annotateScriptLine((ODTScriptLine) element, holder);
+        } else if (elementType == ODTTypes.SEMICOLON &&
+                PsiUtilCore.getElementType(PsiTreeUtil.prevVisibleLeaf(element)) == ODTTypes.SEMICOLON) {
+            holder.newAnnotation(HighlightSeverity.ERROR, SEMICOLON_ILLEGAL).create();
         }
     }
 

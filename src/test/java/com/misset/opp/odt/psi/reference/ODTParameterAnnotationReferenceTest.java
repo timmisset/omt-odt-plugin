@@ -2,13 +2,13 @@ package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.psi.PsiFile;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.testCase.OMTTestCase;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ODTParameterAnnotationReferenceTest extends OMTTestCase {
+class ODTParameterAnnotationReferenceTest extends ODTTestCase {
 
     @Test
     void testHasReferenceToParameter() {
@@ -17,7 +17,7 @@ class ODTParameterAnnotationReferenceTest extends OMTTestCase {
                 " * @param $pa<caret>ram (string)\n" +
                 " */\n" +
                 "DEFINE QUERY query($param) => 'hello world';";
-        myFixture.configureByText("test.odt", content);
+        configureByText(content);
         ReadAction.run(() -> Assertions.assertTrue(myFixture.getElementAtCaret() instanceof ODTVariable));
     }
 
@@ -28,7 +28,7 @@ class ODTParameterAnnotationReferenceTest extends OMTTestCase {
                 " * @param $pa<caret>ram (string)\n" +
                 " */\n" +
                 "DEFINE QUERY query($param) => 'hello world';";
-        final PsiFile psiFile = myFixture.configureByText("test.odt", content);
+        ODTFileTestImpl odtFileTest = configureByText(content);
         WriteCommandAction.runWriteCommandAction(getProject(),
                 () -> {
                     myFixture.renameElementAtCaret("$newParameterName");
@@ -36,7 +36,7 @@ class ODTParameterAnnotationReferenceTest extends OMTTestCase {
                             " * bla bla bla\n" +
                             " * @param $newParameterName (string)\n" +
                             " */\n" +
-                            "DEFINE QUERY query($newParameterName) => 'hello world';", psiFile.getText());
+                            "DEFINE QUERY query($newParameterName) => 'hello world';", odtFileTest.getText());
                 });
     }
 

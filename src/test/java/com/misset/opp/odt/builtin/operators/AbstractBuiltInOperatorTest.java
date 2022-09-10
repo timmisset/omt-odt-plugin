@@ -37,8 +37,8 @@ final class AbstractBuiltInOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testIsStatic() {
-        Assertions.assertFalse(LogOperator.INSTANCE.isStatic());
+    void testRequiresInput() {
+        Assertions.assertTrue(LogOperator.INSTANCE.requiresInput());
     }
 
     @Test

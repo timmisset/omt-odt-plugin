@@ -2,8 +2,8 @@ package com.misset.opp.omt.psi.references;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.psi.PsiCallable;
-import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

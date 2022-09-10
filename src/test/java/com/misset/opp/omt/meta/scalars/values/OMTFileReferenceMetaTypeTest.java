@@ -1,6 +1,5 @@
 package com.misset.opp.omt.meta.scalars.values;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -9,18 +8,19 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesProcessor;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTFileReferenceMetaTypeTest extends OMTInspectionTestCase {
+class OMTFileReferenceMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTValueInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTValueInspection.class));
     }
 
     @Test
@@ -29,7 +29,7 @@ class OMTFileReferenceMetaTypeTest extends OMTInspectionTestCase {
                 "   MyLoadable: !Loadable\n" +
                 "       path: test.txt";
         configureByText(content);
-        assertHasError(".json file required");
+        inspection.assertHasError(".json file required");
     }
 
     @Test
@@ -38,7 +38,7 @@ class OMTFileReferenceMetaTypeTest extends OMTInspectionTestCase {
                 "   MyLoadable: !Loadable\n" +
                 "       path: test.json";
         configureByText(content);
-        assertNoError(".json file required");
+        inspection.assertNoError(".json file required");
     }
 
     @Test
@@ -47,7 +47,7 @@ class OMTFileReferenceMetaTypeTest extends OMTInspectionTestCase {
                 "   MyLoadable: !Loadable\n" +
                 "       path: test.json";
         configureByText(content);
-        assertHasError("Cannot find file");
+        inspection.assertHasError("Cannot find file");
     }
 
     @Test
@@ -57,7 +57,7 @@ class OMTFileReferenceMetaTypeTest extends OMTInspectionTestCase {
                 "   MyLoadable: !Loadable\n" +
                 "       path: test.json";
         configureByText(content);
-        assertNoError("Cannot find file");
+        inspection.assertNoError("Cannot find file");
     }
 
     @Test

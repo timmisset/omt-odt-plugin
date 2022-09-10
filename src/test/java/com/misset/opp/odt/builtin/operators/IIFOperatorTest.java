@@ -28,7 +28,7 @@ class IIFOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveSingleArgument() {
+    void testResolveSingleArgument() {
         assertResolved(IIfOperator.INSTANCE,
                 Collections.emptySet(),
                 Set.of(OppModelConstants.getXsdStringInstance()),
@@ -78,7 +78,7 @@ class IIFOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testIsStatic() {
-        Assertions.assertTrue(IIfOperator.INSTANCE.isStatic());
+    void testRequiresInput() {
+        Assertions.assertFalse(IIfOperator.INSTANCE.requiresInput());
     }
 }

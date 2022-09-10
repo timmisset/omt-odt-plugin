@@ -1,27 +1,27 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.ttl.model.OppModelConstants;
-import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class ODTResolvableQueryArrayTest extends OMTOntologyTestCase {
+class ODTResolvableQueryArrayTest extends ODTTestCase {
 
     @Test
     void testRootPathResolves() {
-        final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA | /ont:ClassB");
-        Assertions.assertTrue(resources.contains(createResource("ClassA")));
-        Assertions.assertTrue(resources.contains(createResource("ClassB")));
+        final Set<String> resources = getUris(resolveQueryStatement("/ont:ClassA | /ont:ClassB"));
+        Assertions.assertTrue(resources.contains(createOntologyUri("ClassA")));
+        Assertions.assertTrue(resources.contains(createOntologyUri("ClassB")));
     }
 
     @Test
     void testPropertiesResolve() {
-        final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / ont:booleanPredicate | ont:classPredicate");
-        Assertions.assertTrue(resources.contains(createResource("ClassBSub_INSTANCE")));
-        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
+        final Set<String> resources = getUris(
+                resolveQueryStatement("/ont:ClassA / ^rdf:type / ont:booleanPredicate | ont:classPredicate"));
+        Assertions.assertTrue(resources.contains(createOntologyUri("ClassBSub_INSTANCE")));
+        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance().getURI()));
     }
 
 }

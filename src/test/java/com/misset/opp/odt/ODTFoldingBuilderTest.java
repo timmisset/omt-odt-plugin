@@ -6,7 +6,7 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTTypes;
-import com.misset.opp.testCase.ODTTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

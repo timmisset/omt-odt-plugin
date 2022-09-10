@@ -25,7 +25,7 @@ class CurrentDateOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testIsStatic() {
-        Assertions.assertTrue(CurrentDateOperator.INSTANCE.isStatic());
+    void testRequiresInput() {
+        Assertions.assertFalse(CurrentDateOperator.INSTANCE.requiresInput());
     }
 }

@@ -77,8 +77,8 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
     }
 
     @Override
-    public boolean isStatic() {
-        return true;
+    public boolean requiresInput() {
+        return false;
     }
 
     @Override

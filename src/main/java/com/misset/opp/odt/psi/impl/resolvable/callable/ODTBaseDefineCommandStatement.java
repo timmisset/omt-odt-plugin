@@ -56,7 +56,7 @@ public abstract class ODTBaseDefineCommandStatement extends ODTDefineStatement i
     }
 
     @Override
-    public boolean isStatic() {
-        return true;
+    public boolean requiresInput() {
+        return false;
     }
 }

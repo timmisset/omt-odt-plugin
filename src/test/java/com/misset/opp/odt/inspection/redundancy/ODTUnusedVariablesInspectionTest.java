@@ -1,18 +1,18 @@
 package com.misset.opp.odt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class ODTUnusedVariablesInspectionTest extends OMTInspectionTestCase {
+class ODTUnusedVariablesInspectionTest extends ODTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTUnusedVariablesInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTUnusedVariablesInspection.class));
     }
 
     @Test
@@ -22,26 +22,24 @@ class ODTUnusedVariablesInspectionTest extends OMTInspectionTestCase {
 
     @Test
     void testHasWarningWhenUnusedVariable() {
-        String content = insideProcedureRunWithPrefixes("VAR $variable = true;");
-        configureByText(content);
-        assertHasWarning("$variable is never used");
+        configureByText("VAR $variable = true;");
+        inspection.assertHasWarning("$variable is never used");
     }
 
     @Test
     void testHasNoWarningWhenVariableIsUsed() {
-        String content = insideProcedureRunWithPrefixes("VAR $variable = true;\n" +
-                "@LOG($variable);");
+        String content = "VAR $variable = true; @LOG($variable);";
         configureByText(content);
-        assertNoWarning("$variable is never used");
+        inspection.assertNoWarning("$variable is never used");
     }
 
     @Test
     void testRemovesUnusedVariable() {
-        String content = insideProcedureRunWithPrefixes("VAR $variable = true;\n" +
+        String content = "VAR $variable = true;\n" +
                 "VAR $usedVariable = true;\n" +
-                "@LOG($usedVariable);");
+                "@LOG($usedVariable);";
         configureByText(content);
-        invokeQuickFixIntention("Remove $variable");
+        inspection.invokeQuickFixIntention("Remove $variable");
 
         Assertions.assertFalse(getFile().getText().contains("VAR $variable = true;"));
     }

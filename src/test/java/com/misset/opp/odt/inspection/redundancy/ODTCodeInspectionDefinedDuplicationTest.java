@@ -1,58 +1,48 @@
 package com.misset.opp.odt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
+import com.misset.opp.resolvable.Callable;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class ODTCodeInspectionDefinedDuplicationTest extends OMTInspectionTestCase {
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTCodeInspectionDefinedDuplication.class);
+class ODTCodeInspectionDefinedDuplicationTest extends ODTTestCase {
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTCodeInspectionDefinedDuplication.class));
     }
 
     @Test
     void testHasDuplicationWarningInFile() {
-        String content = "queries: |\n" +
-                "   DEFINE QUERY query => 'a';\n" +
-                "   DEFINE QUERY query => 'b';";
+        String content = "DEFINE QUERY query => 'a';\n" +
+                "DEFINE QUERY query => 'b';";
         configureByText(content);
-        assertHasWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
+        inspection.assertHasWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
     }
 
     @Test
     void testHasNoDuplicationWarningOnDifferentNamesInFile() {
-        String content = "queries: |\n" +
-                "   DEFINE QUERY queryA => 'a';\n" +
-                "   DEFINE QUERY queryB => 'b';";
+        String content = "DEFINE QUERY queryA => 'a';\n" +
+                "DEFINE QUERY queryB => 'b';";
         configureByText(content);
-        assertNoWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
+        inspection.assertNoWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
     }
 
     @Test
-    void testHasNoDuplicationWarningInFile() {
-        String content = "queries: |\n" +
-                "   DEFINE QUERY sameName => 'a';\n" +
-                "commands: |\n" +
-                "   DEFINE COMMAND sameName => { }";
-        configureByText(content);
-        assertNoWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
-    }
-
-    @Test
-    void testHasShadowWarningInOMTFile() {
-        String content = "commands: |\n" +
-                "   DEFINE COMMAND sameName => { }\n" +
-                "\n" +
-                "model:\n" +
-                "   sameName: !Procedure\n" +
-                "       onRun: @LOG('hi');\n" +
-                "";
-        configureByText(content);
-        assertHasWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
+    void testHasDuplicationWarningWhenAlsoAvailableExternally() {
+        String content = "DEFINE COMMAND sameName => { }";
+        ODTFileTestImpl odtFileTest = configureByText(content);
+        Callable callable = mock(Callable.class);
+        doReturn("@sameName").when(callable).getCallId();
+        odtFileTest.addCallable(callable);
+        inspection.assertHasWarning(ODTCodeInspectionDefinedDuplication.WARNING_MESSAGE_DUPLICATION);
     }
 
 }

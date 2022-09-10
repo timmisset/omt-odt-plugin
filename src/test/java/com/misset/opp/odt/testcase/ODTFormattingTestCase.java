@@ -1,4 +1,4 @@
-package com.misset.opp.testCase;
+package com.misset.opp.odt.testcase;
 
 import com.google.common.base.Strings;
 import com.intellij.application.options.CodeStyle;
@@ -14,7 +14,7 @@ import com.intellij.testFramework.fixtures.JavaCodeInsightTestFixture;
 import com.misset.opp.odt.psi.ODTFile;
 import org.junit.jupiter.api.Assertions;
 
-public class ODTFormattingTestCase extends ODTTestCase {
+public abstract class ODTFormattingTestCase extends ODTTestCase {
 
     private static final int INDENT_SIZE = 4;
 
@@ -32,7 +32,7 @@ public class ODTFormattingTestCase extends ODTTestCase {
     }
 
     @Override
-    protected ODTFile configureByText(String content) {
+    protected ODTFileTestImpl configureByText(String content) {
         // todo: make indentation a setting
         ODTFile odtFile = super.configureByText(content, true);
         CodeStyleSettings settings = CodeStyle.getSettings(odtFile);
@@ -40,7 +40,7 @@ public class ODTFormattingTestCase extends ODTTestCase {
         indentOptions.INDENT_SIZE = INDENT_SIZE;
         indentOptions.CONTINUATION_INDENT_SIZE = INDENT_SIZE;
 
-        return odtFile;
+        return (ODTFileTestImpl) odtFile;
     }
 
     protected String getDocumentText() {

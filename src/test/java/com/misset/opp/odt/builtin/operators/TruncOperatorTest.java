@@ -18,7 +18,7 @@ class TruncOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveDateTime() {
+    void testResolveDateTime() {
         assertResolved(TruncOperator.INSTANCE,
                 Set.of(OppModelConstants.getXsdDatetimeInstance()),
                 Set.of(OppModelConstants.getXsdDatetimeInstance()));

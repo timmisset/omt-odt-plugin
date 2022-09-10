@@ -3,12 +3,12 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.refactoring.SupportsSafeDelete;
-import com.misset.opp.testCase.OMTDelegateTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class OMTYamlParameterDelegateTest extends OMTDelegateTestCase {
+class OMTYamlParameterDelegateTest extends OMTTestCase {
 
     @Test
     void testIsUnusedForUnusedParameter() {

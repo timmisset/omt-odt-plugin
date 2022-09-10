@@ -55,8 +55,8 @@ class AssignCommandTest extends BaseBuiltinTest {
     }
 
     @Test
-    void testReturnsTrueForIsStatic() {
-        Assertions.assertTrue(AssignCommand.INSTANCE.isStatic());
+    void testReturnsTrueForRequiresInput() {
+        Assertions.assertFalse(AssignCommand.INSTANCE.requiresInput());
     }
 
     @Test

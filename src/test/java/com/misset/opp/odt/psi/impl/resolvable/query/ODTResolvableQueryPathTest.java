@@ -1,21 +1,23 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.ttl.model.OppModelConstants;
+import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
+class ODTResolvableQueryPathTest extends ODTTestCase {
 
     @Test
     void testRootPathResolves() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA");
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> resource.equals(createClass("ClassA")) && resource instanceof OntClass)
+                resource -> resource.getURI().equals(createOntologyUri("ClassA")) && resource instanceof OntClass)
         );
     }
 
@@ -23,7 +25,7 @@ class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
     void testRootPathResolvesTypeReverse() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type");
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> isIndividualOfClass(resource, createClass("ClassA"))
+                resource -> isIndividualOfClass(resource, createOntologyUri("ClassA"))
         ));
     }
 
@@ -31,8 +33,7 @@ class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
     void testRootPathResolvesTypeForward() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / rdf:type");
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> createClass("ClassA").equals(resource))
-        );
+                resource -> createOntologyUri("ClassA").equals(resource.getURI())));
     }
 
     @Test
@@ -82,7 +83,7 @@ class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
     void testSubqueryWithPath() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / (ont:booleanPredicate / ^ont:booleanPredicate)*");
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> isIndividualOfClass(resource, createClass("ClassA"))
+                resource -> isIndividualOfClass(resource, createOntologyUri("ClassA"))
         ));
     }
 
@@ -90,8 +91,14 @@ class ODTResolvableQueryPathTest extends OMTOntologyTestCase {
     void testSubqueryWithPathAndFilter() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / (ont:booleanPredicate / ^ont:booleanPredicate[rdf:type == /ont:ClassA])*");
         Assertions.assertTrue(resources.stream().anyMatch(
-                resource -> isIndividualOfClass(resource, createClass("ClassA"))
+                resource -> isIndividualOfClass(resource, createOntologyUri("ClassA"))
         ));
     }
 
+    private boolean isIndividualOfClass(Resource resource, String classResource) {
+        if (resource instanceof Individual) {
+            return ((Individual) resource).getOntClass().getURI().equals(classResource);
+        }
+        return false;
+    }
 }

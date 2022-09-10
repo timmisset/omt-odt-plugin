@@ -1,7 +1,7 @@
 package com.misset.opp.odt.formatter;
 
 import com.intellij.openapi.application.ReadAction;
-import com.misset.opp.testCase.ODTFormattingTestCase;
+import com.misset.opp.odt.testcase.ODTFormattingTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

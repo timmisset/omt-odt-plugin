@@ -94,10 +94,17 @@ public interface Callable extends ContextResolvable {
     }
 
     /**
-     * Returns true of the callable can be placed anywhere without any leading information
-     * usually true for all commands but also queries and some operators can be static.
+     * Returns true if the Callable requires an input parameter aside from arguments.
      */
-    boolean isStatic();
+    boolean requiresInput();
+
+    /**
+     * Returns true if the callable closes the script. No more code should be present after
+     * a call to this Callable has been made.
+     */
+    default boolean isFinalCommand() {
+        return false;
+    }
 
     /**
      * Default method to validate a call made by a PsiCall

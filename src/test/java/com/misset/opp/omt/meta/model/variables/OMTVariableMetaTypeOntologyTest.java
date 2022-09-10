@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class OMTVariableMetaTypeOntologyTest extends OMTOntologyTestCase {
+class OMTVariableMetaTypeOntologyTest extends OMTTestCase {
 
     @Test
     void testResolveVariableTypeHasNoType() {
@@ -85,7 +85,8 @@ class OMTVariableMetaTypeOntologyTest extends OMTOntologyTestCase {
             final Set<OntResource> resolve = defineStatement.resolve();
             // no type is provided, should be an empty collection
             Assertions.assertFalse(resolve.isEmpty());
-            Assertions.assertEquals(createClass("ClassA"), ((OntResource) resolve.toArray()[0]).asIndividual().getOntClass());
+            Assertions.assertEquals(createOntologyUri("ClassA"),
+                    ((OntResource) resolve.toArray()[0]).asIndividual().getOntClass().getURI());
         });
     }
 

@@ -1,20 +1,20 @@
 package com.misset.opp.omt.meta.scalars;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import static com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType.SYNTAX_ERROR;
 
-class OMTVariableNameTest extends OMTInspectionTestCase {
+class OMTVariableNameTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTValueInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTValueInspection.class));
     }
 
     @Test
@@ -26,7 +26,7 @@ class OMTVariableNameTest extends OMTInspectionTestCase {
                 "       -   name: $\n" +
                 "";
         configureByText(content);
-        assertHasError(SYNTAX_ERROR);
+        inspection.assertHasError(SYNTAX_ERROR);
     }
 
     @Test
@@ -38,7 +38,7 @@ class OMTVariableNameTest extends OMTInspectionTestCase {
                 "       -   name: param\n" +
                 "";
         configureByText(content);
-        assertHasError(SYNTAX_ERROR);
+        inspection.assertHasError(SYNTAX_ERROR);
     }
 
     @Test
@@ -50,6 +50,6 @@ class OMTVariableNameTest extends OMTInspectionTestCase {
                 "       -   name: $param\n" +
                 "";
         configureByText(content);
-        assertNoErrors();
+        inspection.assertNoErrors();
     }
 }

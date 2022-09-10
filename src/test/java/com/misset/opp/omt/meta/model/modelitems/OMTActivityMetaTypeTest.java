@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.application.ReadAction;
-import com.misset.opp.testCase.OMTCompletionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
-class OMTActivityMetaTypeTest extends OMTCompletionTestCase {
+class OMTActivityMetaTypeTest extends OMTTestCase {
 
     @Test
     void testComputeKeyCompletions() {
@@ -23,7 +23,7 @@ class OMTActivityMetaTypeTest extends OMTCompletionTestCase {
                 "       <caret>\n" +
                 "\n";
         configureByText(content);
-        final List<String> completionList = getLookupStrings();
+        final List<String> completionList = completion.getLookupStrings();
         new OMTActivityMetaType().getFeatures()
                 .keySet()
                 .stream()

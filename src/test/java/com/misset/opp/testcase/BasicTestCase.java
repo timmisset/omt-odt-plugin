@@ -1,4 +1,4 @@
-package com.misset.opp.testCase;
+package com.misset.opp.testcase;
 
 import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ReadAction;
@@ -18,11 +18,24 @@ import org.junit.jupiter.api.BeforeEach;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsightFixtureTestCase {
 
     protected OppModel oppModel;
+
+    protected final static Map<String, String> testPrefixes = new HashMap<>();
+
+    static {
+        testPrefixes.put("ont", "http://ontology#");
+        testPrefixes.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+        testPrefixes.put("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+        testPrefixes.put("owl", "http://www.w3.org/2002/07/owl#");
+        testPrefixes.put("xsd", "http://www.w3.org/2001/XMLSchema#");
+        testPrefixes.put("unique", "http://unique#");
+    }
 
     @BeforeEach
     protected void setUp() {
@@ -42,8 +55,7 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
         }
     }
 
-
-    private FileType fileType;
+    private final FileType fileType;
     public BasicTestCase(FileType fileType) {
         this.fileType = fileType;
     }
@@ -137,6 +149,10 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
 
     protected void setOntologyModel() {
         oppModel = initOntologyModel();
+    }
+
+    protected String createOntologyUri(String localName) {
+        return "http://ontology#" + localName;
     }
 
 }

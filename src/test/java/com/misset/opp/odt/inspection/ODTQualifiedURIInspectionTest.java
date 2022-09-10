@@ -1,56 +1,38 @@
 package com.misset.opp.odt.inspection;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.openapi.application.ReadAction;
-import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.omt.startup.IndexOMTPrefixes;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.indexing.PrefixIndex;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import static com.misset.opp.odt.inspection.ODTQualifiedURIInspection.WEAK_WARNING;
 
-class ODTQualifiedURIInspectionTest extends OMTInspectionTestCase {
-
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTQualifiedURIInspection.class);
-    }
+class ODTQualifiedURIInspectionTest extends ODTTestCase {
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        OMTFile omtFile = (OMTFile) myFixture.addFileToProject("dummy.omt", "prefixes:\n" +
-                "   ont: <http://ontology#>");
-        ReadAction.run(() -> IndexOMTPrefixes.analyse(omtFile));
-
+        myFixture.enableInspections(Collections.singleton(ODTQualifiedURIInspection.class));
+        PrefixIndex.addToIndex("ont", "http://ontology#");
     }
 
     @Test
     void testHasWarning() {
-        String content = "queries:\n" +
-                "   DEFINE QUERY query => <http://ontology#ClassA>";
+        String content = "DEFINE QUERY query => <http://ontology#ClassA>";
         configureByText(content);
-        assertHasWarning(WEAK_WARNING);
+        inspection.assertHasWarning(WEAK_WARNING);
     }
 
     @Test
     void testReplacesUriWithCurie() {
-        String content = "queries:\n" +
-                "   DEFINE QUERY query => <http://ontology#ClassA>";
+        String content = "DEFINE QUERY query => <http://ontology#ClassA>";
         configureByText(content);
-        assertHasWarning(WEAK_WARNING);
-        invokeQuickFixIntention(getAllQuickFixes().get(0));
-        ReadAction.run(() -> {
-            String text = getFile().getText();
-            Assertions.assertEquals("queries:\n" +
-                    "  DEFINE QUERY query => ont:ClassA\n" +
-                    "prefixes:\n" +
-                    "  ont: <http://ontology#>", text);
-        });
+        inspection.assertHasWarning(WEAK_WARNING);
+        inspection.invokeQuickFixIntention(inspection.getAllQuickFixes().get(0));
+        Assertions.assertEquals("PREFIX ont: <http://ontology#>;\n" +
+                "DEFINE QUERY query => ont:ClassA", getFile().getText());
     }
 }

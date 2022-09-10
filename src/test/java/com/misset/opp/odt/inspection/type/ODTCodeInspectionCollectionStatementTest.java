@@ -1,27 +1,19 @@
 package com.misset.opp.odt.inspection.type;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class ODTCodeInspectionCollectionStatementTest extends OMTInspectionTestCase {
-
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTCodeInspectionCollectionStatement.class);
-    }
+class ODTCodeInspectionCollectionStatementTest extends ODTTestCase {
 
     @BeforeEach
-    protected void setUp() {
+    public void setUp() {
         super.setUp();
-        OMTOntologyTestCase.initOntologyModel();
+        myFixture.enableInspections(Collections.singleton(ODTCodeInspectionCollectionStatement.class));
     }
 
     @Test
@@ -59,17 +51,13 @@ class ODTCodeInspectionCollectionStatementTest extends OMTInspectionTestCase {
     }
 
     private void assertHasTypeWarning(String assignmentToTest) {
-        setContent(assignmentToTest);
-        assertHasWarning("Incompatible types");
+        configureByText(withPrefixes(assignmentToTest));
+        inspection.assertHasWarning("Incompatible types");
     }
 
     private void assertHasNoTypeWarning(String assignmentToTest) {
-        setContent(assignmentToTest);
-        assertNoWarning("Incompatible types");
+        configureByText(withPrefixes(assignmentToTest));
+        inspection.assertNoWarning("Incompatible types");
     }
 
-    private void setContent(String assignmentToTest) {
-        String content = insideProcedureRunWithPrefixes(assignmentToTest);
-        configureByText(content);
-    }
 }

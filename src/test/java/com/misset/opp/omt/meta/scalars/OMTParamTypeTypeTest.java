@@ -1,32 +1,24 @@
 package com.misset.opp.omt.meta.scalars;
 
 import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.misset.opp.omt.meta.scalars.OMTParamTypeType.UNKNOWN_PREFIX;
 
-class OMTParamTypeTypeTest extends OMTInspectionTestCase {
-
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Set.of(OMTValueInspection.class);
-    }
+class OMTParamTypeTypeTest extends OMTTestCase {
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        OMTOntologyTestCase.initOntologyModel();
+        myFixture.enableInspections(Collections.singleton(OMTValueInspection.class));
     }
 
     @Test
@@ -37,7 +29,7 @@ class OMTParamTypeTypeTest extends OMTInspectionTestCase {
                 "       - $param (ont:ClassA)\n" +
                 "";
         configureByText(content);
-        assertHasError(UNKNOWN_PREFIX);
+        inspection.assertHasError(UNKNOWN_PREFIX);
     }
 
     @Test
@@ -49,7 +41,7 @@ class OMTParamTypeTypeTest extends OMTInspectionTestCase {
                 "         type: ont:ClassA\n" +
                 "";
         configureByText(content);
-        assertHasError(UNKNOWN_PREFIX);
+        inspection.assertHasError(UNKNOWN_PREFIX);
     }
 
     @Test
@@ -59,7 +51,7 @@ class OMTParamTypeTypeTest extends OMTInspectionTestCase {
                 "  type: ont:ClassUnknown\n" +
                 "");
         configureByText(content);
-        assertHasError("Could not find resource <http://ontology#ClassUnknown> in the Opp Model");
+        inspection.assertHasError("Could not find resource <http://ontology#ClassUnknown> in the Opp Model");
     }
 
     @Test
@@ -69,7 +61,7 @@ class OMTParamTypeTypeTest extends OMTInspectionTestCase {
                 "  type: <http://ontology#ClassUnknown>\n" +
                 "");
         configureByText(content);
-        assertHasError("Could not find resource <http://ontology#ClassUnknown> in the Opp Model");
+        inspection.assertHasError("Could not find resource <http://ontology#ClassUnknown> in the Opp Model");
     }
 
     @Test
@@ -79,7 +71,7 @@ class OMTParamTypeTypeTest extends OMTInspectionTestCase {
                 "  type: <http://ontology#booleanPredicate>\n" +
                 "");
         configureByText(content);
-        assertHasError("Expected a class or type");
+        inspection.assertHasError("Expected a class or type");
     }
 
     @Test

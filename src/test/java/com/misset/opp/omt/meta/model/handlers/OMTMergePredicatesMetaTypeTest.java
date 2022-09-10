@@ -1,23 +1,23 @@
 package com.misset.opp.omt.meta.model.handlers;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import static com.misset.opp.omt.meta.model.handlers.OMTMergePredicatesMetaType.USE_IS_ONLY_AVAILABLE;
 import static com.misset.opp.omt.meta.model.handlers.OMTMergePredicatesMetaType.USE_IS_REQUIRED;
 
-class OMTMergePredicatesMetaTypeTest extends OMTInspectionTestCase {
+class OMTMergePredicatesMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return List.of(OMTMissingKeysInspection.class, OMTUnkownKeysInspection.class, OMTValueInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Set.of(OMTMissingKeysInspection.class, OMTUnkownKeysInspection.class, OMTValueInspection.class));
     }
 
     @Test
@@ -31,7 +31,7 @@ class OMTMergePredicatesMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertHasError(USE_IS_REQUIRED);
+        inspection.assertHasError(USE_IS_REQUIRED);
     }
 
     @Test
@@ -46,7 +46,7 @@ class OMTMergePredicatesMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertNoErrors();
+        inspection.assertNoErrors();
     }
 
     @Test
@@ -61,7 +61,7 @@ class OMTMergePredicatesMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertHasError(USE_IS_ONLY_AVAILABLE);
+        inspection.assertHasError(USE_IS_ONLY_AVAILABLE);
     }
 
     @Test
@@ -74,8 +74,8 @@ class OMTMergePredicatesMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertHasError("Missing required key(s): 'subjects'");
-        assertHasError(OMTMergePredicatesMetaType.ANY_PREDICATE_OR_PREDICATES_IS_REQUIRED);
+        inspection.assertHasError("Missing required key(s): 'subjects'");
+        inspection.assertHasError(OMTMergePredicatesMetaType.ANY_PREDICATE_OR_PREDICATES_IS_REQUIRED);
     }
 
     @Test
@@ -90,7 +90,7 @@ class OMTMergePredicatesMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertHasError("Missing required key(s): 'subjects'");
-        assertHasError(OMTMergePredicatesMetaType.CANNOT_COMBINE_ANY_PREDICATE_AND_PREDICATES);
+        inspection.assertHasError("Missing required key(s): 'subjects'");
+        inspection.assertHasError(OMTMergePredicatesMetaType.CANNOT_COMBINE_ANY_PREDICATE_AND_PREDICATES);
     }
 }

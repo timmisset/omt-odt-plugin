@@ -1,6 +1,6 @@
 package com.misset.opp.odt.formatter;
 
-import com.misset.opp.testCase.ODTFormattingTestCase;
+import com.misset.opp.odt.testcase.ODTFormattingTestCase;
 import org.junit.jupiter.api.Test;
 
 class ODTFormattingSpacingTest extends ODTFormattingTestCase {

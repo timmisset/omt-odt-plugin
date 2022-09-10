@@ -5,8 +5,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.SearchScope;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.psi.PsiCallable;
-import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

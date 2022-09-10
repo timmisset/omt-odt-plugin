@@ -62,7 +62,7 @@ public abstract class ODTBaseNamespacePrefix extends ODTASTWrapperPsiElement imp
                 .map(PsiReference::resolve)
                 .map(element -> element instanceof YAMLKeyValue ?
                         PrefixUtil.getFullyQualifiedUri((YAMLKeyValue) element, localName) :
-                        PrefixUtil.getFullyQualifiedUri((ODTDefinePrefix) element.getParent(), localName))
+                        PrefixUtil.getFullyQualifiedUri((ODTDefinePrefix) element, localName))
                 .orElse(null);
     }
 

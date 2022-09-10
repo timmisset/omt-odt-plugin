@@ -1,22 +1,21 @@
 package com.misset.opp.omt.util;
 
 import com.intellij.application.options.CodeStyle;
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.inspection.ODTCodeInspectionUnresolvableReference;
 import com.misset.opp.omt.psi.OMTFile;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.settings.SettingsState;
-import com.misset.opp.testCase.OMTInspectionTestCase;
 import org.jetbrains.yaml.formatter.YAMLCodeStyleSettings;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +23,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-class OMTImportUtilTest extends OMTInspectionTestCase {
+class OMTImportUtilTest extends OMTTestCase {
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTCodeInspectionUnresolvableReference.class));
+    }
 
     private void setYamlIndentation(OMTFile file) {
         YAMLCodeStyleSettings yamlCodeStyleSettings = CodeStyle.getCustomSettings(file, YAMLCodeStyleSettings.class);
@@ -153,7 +158,7 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
                 "   DEFINE QUERY queryA => queryB;");
 
         setYamlIndentation(importingFile);
-        invokeQuickFixIntention("Import as DEFINE QUERY from ./importedFile.omt");
+        inspection.invokeQuickFixIntention("Import as DEFINE QUERY from ./importedFile.omt");
 
         ReadAction.run(() -> Assertions.assertEquals("import:\n" +
                 "  ./importedFile.omt:\n" +
@@ -175,7 +180,7 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
                 "   DEFINE QUERY queryA => queryB;");
 
         setYamlIndentation(importingFile);
-        invokeQuickFixIntention("Import as DEFINE QUERY from ./importedFile.omt");
+        inspection.invokeQuickFixIntention("Import as DEFINE QUERY from ./importedFile.omt");
 
         ReadAction.run(() -> Assertions.assertEquals("import:\n" +
                 "  ./importedFile.omt:\n" +
@@ -197,7 +202,7 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
                 "   DEFINE QUERY queryA => queryB;");
 
         setYamlIndentation(importingFile);
-        invokeQuickFixIntention("Import as DEFINE QUERY from ./importedFile.omt");
+        inspection.invokeQuickFixIntention("Import as DEFINE QUERY from ./importedFile.omt");
 
         ReadAction.run(() -> Assertions.assertEquals("import:\n" +
                 "  ./fakeFile.omt:\n" +
@@ -206,11 +211,5 @@ class OMTImportUtilTest extends OMTInspectionTestCase {
                 "  - queryB\n" +
                 "queries:\n" +
                 "   DEFINE QUERY queryA => queryB;", importingFile.getText()));
-    }
-
-
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTCodeInspectionUnresolvableReference.class);
     }
 }

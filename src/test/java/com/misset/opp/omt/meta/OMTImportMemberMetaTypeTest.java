@@ -1,25 +1,25 @@
 package com.misset.opp.omt.meta;
 
 import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.misset.opp.omt.meta.OMTImportMemberMetaType.NOT_AN_EXPORTED_MEMBER;
 
-class OMTImportMemberMetaTypeTest extends OMTInspectionTestCase {
+class OMTImportMemberMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTValueInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTValueInspection.class));
     }
 
     @Test
@@ -71,8 +71,8 @@ class OMTImportMemberMetaTypeTest extends OMTInspectionTestCase {
                 "   - queryB\n" +
                 "   - queryC\n" +
                 "");
-        assertNoError(NOT_AN_EXPORTED_MEMBER.apply("queryA"));
-        assertNoError(NOT_AN_EXPORTED_MEMBER.apply("queryB"));
-        assertHasError(NOT_AN_EXPORTED_MEMBER.apply("queryC"));
+        inspection.assertNoError(NOT_AN_EXPORTED_MEMBER.apply("queryA"));
+        inspection.assertNoError(NOT_AN_EXPORTED_MEMBER.apply("queryB"));
+        inspection.assertHasError(NOT_AN_EXPORTED_MEMBER.apply("queryC"));
     }
 }

@@ -1,14 +1,17 @@
-package com.misset.opp.odt.formatter;
+package com.misset.opp.omt.formatter;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.misset.opp.odt.testcase.ODTFormattingTestCase;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.testCase.ODTFormattingTestCase;
-import com.misset.opp.testCase.OMTTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ODTHostedFormattingNestedTest extends OMTTestCase {
+/**
+ * Additional test to confirm formatting is correctly applied when ODT fragments are nested in OMT
+ */
+class OMTODTHostedFormattingNestedTest extends OMTTestCase {
 
     @Test
     void testIndentNested() {

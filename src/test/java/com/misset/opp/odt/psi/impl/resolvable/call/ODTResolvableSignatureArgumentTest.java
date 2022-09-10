@@ -4,7 +4,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.testCase.ODTTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Test;

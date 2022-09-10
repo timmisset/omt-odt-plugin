@@ -35,7 +35,6 @@ public class IndexOMTPrefixes {
 
     private static void addToIndex(YAMLKeyValue keyValue) {
         PrefixIndex.addToIndex(keyValue.getKeyText(), trimValue(keyValue.getValueText()));
-        PrefixIndex.addToIndex(trimValue(keyValue.getValueText()), keyValue.getKeyText());
     }
 
     private static String trimValue(String valueText) {

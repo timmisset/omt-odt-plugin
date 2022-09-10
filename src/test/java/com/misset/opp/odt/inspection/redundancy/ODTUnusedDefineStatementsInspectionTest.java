@@ -1,18 +1,18 @@
 package com.misset.opp.odt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class ODTUnusedDefineStatementsInspectionTest extends OMTInspectionTestCase {
+class ODTUnusedDefineStatementsInspectionTest extends ODTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTUnusedDefineStatementsInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTUnusedDefineStatementsInspection.class));
     }
 
     @Test
@@ -22,36 +22,32 @@ class ODTUnusedDefineStatementsInspectionTest extends OMTInspectionTestCase {
 
     @Test
     void testHasWarningWhenUnusedCommand() {
-        String content = "commands:\n" +
-                "   DEFINE COMMAND command => { }\n";
+        String content = "DEFINE COMMAND command => { }";
         configureByText(content);
-        assertHasWarning("command is never used");
+        inspection.assertHasWarning("command is never used");
     }
 
     @Test
     void testHasWarningWhenUnusedQuery() {
-        String content = "queries:\n" +
-                "   DEFINE QUERY query => '';\n";
+        String content = "DEFINE QUERY query => '';\n";
         configureByText(content);
-        assertHasWarning("query is never used");
+        inspection.assertHasWarning("query is never used");
     }
 
     @Test
     void testHasNoWarningWhenUsedCommand() {
-        String content = "commands:\n" +
-                "   DEFINE COMMAND command => { }\n" +
+        String content = "DEFINE COMMAND command => { }\n" +
                 "   DEFINE COMMAND command2 => { @command(); }";
         configureByText(content);
-        assertNoWarning("command is never used");
+        inspection.assertNoWarning("command is never used");
     }
 
     @Test
     void testRemovesUnusedCommand() {
-        String content = "commands:\n" +
-                "   DEFINE COMMAND command => { }\n" +
+        String content = "DEFINE COMMAND command => { }\n" +
                 "   DEFINE COMMAND command2 => { }";
         configureByText(content);
-        invokeQuickFixIntention("Remove command");
+        inspection.invokeQuickFixIntention("Remove command");
 
         Assertions.assertFalse(getFile().getText().contains("DEFINE COMMAND command => { }"));
     }

@@ -2,8 +2,8 @@ package com.misset.opp.resolvable.global;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

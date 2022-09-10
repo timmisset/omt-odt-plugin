@@ -1,103 +1,72 @@
 package com.misset.opp.odt.inspection.resolvable;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
+import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.Context;
+import com.misset.opp.ttl.model.OppModelConstants;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
-class ODTIgnoredReturnValueInspectionTest extends OMTInspectionTestCase {
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTIgnoredReturnValueInspection.class);
+class ODTIgnoredReturnValueInspectionTest extends ODTTestCase {
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTIgnoredReturnValueInspection.class));
     }
 
     @Test
     void testHasWarningWhenIgnoredQuery() {
-        String content = insideProcedureRunWithPrefixes("true;");
-        configureByText(content);
-        assertHasWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+        configureByText("true");
+        inspection.assertHasWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 
     @Test
-    void testHasWarningWhenIgnoredCommandCall() {
-        String content = insideProcedureRunWithPrefixes("" +
-                "DEFINE COMMAND command => { RETURN true; }\n" +
-                "@command();");
-        configureByText(content);
-        assertHasWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    void testHasNoWarningWhenODTStatement() {
+        ODTFileTestImpl odtFileTest = configureByText("true");
+        odtFileTest.setIsStatement(true);
+        inspection.assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 
     @Test
-    void testHasNoWarningWhenCommandCallWithoutReturn() {
-        String content = insideProcedureRunWithPrefixes("" +
-                "DEFINE COMMAND command => { @LOG('test'); }\n" +
-                "@command();");
-        configureByText(content);
-        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    void testHasWarningWhenNotVoid() {
+        ODTFileTestImpl odtFileTest = configureByText("@command();");
+        Callable callable = mock(Callable.class);
+        doReturn("@command").when(callable).getCallId();
+        doReturn(false).when(callable).isVoid();
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
+        odtFileTest.addCallable(callable);
+        inspection.assertHasWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 
     @Test
-    void testHasNoWarningForVoidCommandCall() {
-        String content = insideProcedureRunWithPrefixes("@LOG('test');");
-        configureByText(content);
-        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    void testNoWarningWhenVoid() {
+        ODTFileTestImpl odtFileTest = configureByText("@command();");
+        Callable callable = mock(Callable.class);
+        doReturn("@command").when(callable).getCallId();
+        doReturn(true).when(callable).isVoid();
+        odtFileTest.addCallable(callable);
+        inspection.assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 
     @Test
-    void testHasNoWarningForSimpleInjectableCommandCall() {
-        String content = insideActivityWithPrefixes("" +
-                "watchers:\n" +
-                "   - query: true;");
-        configureByText(content);
-        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
-    }
-
-    @Test
-    void testHasNoWarningForVariableAssignment() {
-        String content = insideProcedureRunWithPrefixes("VAR $x = 12;");
-        configureByText(content);
-        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
-    }
-
-    @Test
-    void testHasWarningForActivityWithReturnValue() {
-        String content = "model:\n" +
-                "   Activity: !Activity\n" +
-                "       returns: true\n" +
-                "   Procedure: !Procedure\n" +
-                "       onRun: |\n" +
-                "           @Activity();";
-        configureByText(content);
-        assertHasWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
-    }
-
-    @Test
-    void testNoWarningForActivityWithoutReturnValue() {
-        String content = "model:\n" +
-                "   Activity: !Activity\n" +
-                "       onStart: |\n" +
-                "           @LOG(true);\n" +
-                "   Procedure: !Procedure\n" +
-                "       onRun: |\n" +
-                "           @Activity();";
-        configureByText(content);
-        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
-    }
-
-    @Test
-    void testNoWarningForBuiltinCommands() {
-        String content = "model:\n" +
-                "   Procedure: !Procedure\n" +
-                "       params:\n" +
-                "       - $subject\n" +
-                "       - $predicate\n" +
-                "       - $value\n" +
-                "       onRun: |\n" +
-                "           @ASSIGN($subject, $predicate, $value);\n";
-        configureByText(content);
-        assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    void testHasNoWarningWhenCallableIsBuiltin() {
+        ODTFileTestImpl odtFileTest = configureByText("@command();");
+        Callable callable = mock(Callable.class);
+        doReturn("@command").when(callable).getCallId();
+        doReturn(false).when(callable).isVoid();
+        doReturn(true).when(callable).isBuiltin();
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
+        odtFileTest.addCallable(callable);
+        odtFileTest.setIsStatement(true);
+        inspection.assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
 }

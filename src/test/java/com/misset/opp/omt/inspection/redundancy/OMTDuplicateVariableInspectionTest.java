@@ -1,17 +1,18 @@
 package com.misset.opp.omt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTDuplicateVariableInspectionTest extends OMTInspectionTestCase {
+class OMTDuplicateVariableInspectionTest extends OMTTestCase {
 
     @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTDuplicateVariableInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTDuplicateVariableInspection.class));
     }
 
     @Test
@@ -22,7 +23,7 @@ class OMTDuplicateVariableInspectionTest extends OMTInspectionTestCase {
                         "-  name: $test\n"
         );
         configureByText(content);
-        assertHasWarning("Duplication");
+        inspection.assertHasWarning("Duplication");
     }
 
     @Test
@@ -34,7 +35,7 @@ class OMTDuplicateVariableInspectionTest extends OMTInspectionTestCase {
                         "-  name: $test\n"
         );
         configureByText(content);
-        assertHasWarning("Duplication");
+        inspection.assertHasWarning("Duplication");
     }
 
     @Test
@@ -46,7 +47,7 @@ class OMTDuplicateVariableInspectionTest extends OMTInspectionTestCase {
                         "   test: $test\n"
         );
         configureByText(content);
-        assertHasWarning("Duplication");
+        inspection.assertHasWarning("Duplication");
     }
 
     @Test
@@ -58,7 +59,7 @@ class OMTDuplicateVariableInspectionTest extends OMTInspectionTestCase {
                         "   test: $test\n"
         );
         configureByText(content);
-        assertHasWarning("Duplication");
+        inspection.assertHasWarning("Duplication");
     }
 
     @Test
@@ -68,7 +69,7 @@ class OMTDuplicateVariableInspectionTest extends OMTInspectionTestCase {
                         "-  $test\n" +
                         "base: $test\n");
         configureByText(content);
-        assertHasWarning("Duplication");
+        inspection.assertHasWarning("Duplication");
     }
 
 }

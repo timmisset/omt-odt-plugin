@@ -34,7 +34,7 @@ class HttpCallCommandGetTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testReturnsSecondArgument() {
+    void testReturnsSecondArgument() {
         final Set<OntResource> secondReturnArgument = HttpCallCommandGet.INSTANCE.getSecondReturnArgument();
         Assertions.assertEquals(1, secondReturnArgument.size());
         Assertions.assertTrue(secondReturnArgument.contains(OppModelConstants.getXsdIntegerInstance()));

@@ -20,7 +20,7 @@ class MinusOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveDecimal() {
+    void testResolveDecimal() {
         assertResolved(MinusOperator.INSTANCE,
                 Set.of(OppModelConstants.getXsdIntegerInstance()),
                 Set.of(OppModelConstants.getXsdDecimalInstance()),
@@ -29,7 +29,7 @@ class MinusOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveDecimalLeading() {
+    void testResolveDecimalLeading() {
         assertResolved(MinusOperator.INSTANCE,
                 Set.of(OppModelConstants.getXsdDecimalInstance()),
                 Set.of(OppModelConstants.getXsdDecimalInstance()),
@@ -38,7 +38,7 @@ class MinusOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveMoreThan2Arguments() {
+    void testResolveMoreThan2Arguments() {
         assertResolved(MinusOperator.INSTANCE,
                 Set.of(OppModelConstants.getXsdIntegerInstance()),
                 Set.of(OppModelConstants.getXsdIntegerInstance()),

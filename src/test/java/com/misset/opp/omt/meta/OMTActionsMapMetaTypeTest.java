@@ -1,19 +1,19 @@
 package com.misset.opp.omt.meta;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Set;
 
-class OMTActionsMapMetaTypeTest extends OMTInspectionTestCase {
+class OMTActionsMapMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Set.of(OMTUnkownKeysInspection.class, OMTValueInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Set.of(OMTUnkownKeysInspection.class, OMTValueInspection.class));
     }
 
     @Test
@@ -26,7 +26,7 @@ class OMTActionsMapMetaTypeTest extends OMTInspectionTestCase {
                         "       disabled: true\n" +
                         ""
         ));
-        assertNoErrors();
+        inspection.assertNoErrors();
     }
 
     @Test
@@ -36,7 +36,7 @@ class OMTActionsMapMetaTypeTest extends OMTInspectionTestCase {
                         "   myAction:\n" +
                         "       id: id\n"
         ));
-        assertHasWarning("Unnecessary id field when action is mapped to a key");
+        inspection.assertHasWarning("Unnecessary id field when action is mapped to a key");
     }
 
 }
