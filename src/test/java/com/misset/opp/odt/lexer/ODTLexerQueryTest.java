@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 
 import static com.misset.opp.odt.psi.ODTTypes.SCHEMALESS_IRI;
 
-public class ODTLexerQueryTest extends ODTLexerTestCase {
+class ODTLexerQueryTest extends ODTLexerTestCase {
 
     @Test
     void testQueryWithSchemalessIri() {
         final String content = "DEFINE QUERY query => <something> / prefix:localName;";
-        noBadCharacter(content);
-        hasElement(content, SCHEMALESS_IRI);
+        assertFalse(hasBadCharacter(content));
+        assertTrue(hasElement(content, SCHEMALESS_IRI));
     }
 
 }

@@ -4,14 +4,14 @@ import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.testcase.ODTLexerTestCase;
 import org.junit.jupiter.api.Test;
 
-public class ODTInterpolatedStringTest extends ODTLexerTestCase {
+class ODTInterpolatedStringTest extends ODTLexerTestCase {
 
     @Test
     void testInterpolatedString() {
-        final String content =
-                "`test ${ call }`";
-        noBadCharacter(content);
-        hasElement(content, ODTTypes.SYMBOL, ODTTypes.INTERPOLATED_STRING_START, ODTTypes.INTERPOLATED_STRING_END, ODTTypes.INTERPOLATION_START, ODTTypes.INTERPOLATION_END);
+        final String content = "`test ${ call }`";
+        assertFalse(hasBadCharacter(content));
+        assertTrue(
+                hasElement(content, ODTTypes.SYMBOL, ODTTypes.INTERPOLATED_STRING_START, ODTTypes.INTERPOLATED_STRING_END, ODTTypes.INTERPOLATION_START, ODTTypes.INTERPOLATION_END));
     }
 
 }

@@ -7,7 +7,7 @@ import org.jetbrains.yaml.psi.YAMLFile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class YamlFileImplTest extends BasicTestCase<YAMLFile> {
+class YamlFileImplTest extends BasicTestCase<YAMLFile> {
     public YamlFileImplTest() {
         super(YAMLFileType.YML);
     }

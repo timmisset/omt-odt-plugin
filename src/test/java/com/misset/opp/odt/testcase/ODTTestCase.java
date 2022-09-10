@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ODTTestCase extends BasicTestCase<ODTFileTestImpl> {
+public abstract class ODTTestCase extends BasicTestCase<ODTFileTestImpl> {
 
     static {
         ODTParserDefinition.setFileViewProvider2ODTFile(ODTFileTestImpl::new);

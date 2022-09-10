@@ -3,23 +3,23 @@ package com.misset.opp.ttl.model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.misset.opp.testcase.BasicTestCase;
 import com.misset.opp.ttl.model.constants.XSD;
-import com.misset.opp.ttl.testcase.TTLTestCase;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-class OppModelTest extends TTLTestCase {
+class OppModelTest {
     public static final String CLASS_A_INSTANCE_A = "http://ontology#ClassA_InstanceA";
     public static final String ONTOLOGY_CLASS_A = "http://ontology#ClassA";
     public static final String ONTOLOGY_CLASS_B = "http://ontology#ClassB";
@@ -31,9 +31,11 @@ class OppModelTest extends TTLTestCase {
     private Individual CLASS_B_INDIVIDUAL;
     private Individual CLASS_BSUB_INDIVIDUAL;
 
+    private OppModel oppModel;
+
     @BeforeEach
     public void setUp() {
-        setOntologyModel();
+        oppModel = BasicTestCase.initOntologyModel();
         CLASS_A = createClass("ClassA");
         CLASS_B = createClass("ClassB");
         CLASS_BSUB = createClass("ClassBSub");
@@ -43,51 +45,42 @@ class OppModelTest extends TTLTestCase {
         CLASS_BSUB_INDIVIDUAL = oppModel.createIndividual(CLASS_BSUB, CLASS_BSUB.getURI() + "_INSTANCE");
     }
 
-    @Override
-    @AfterEach
-    protected void tearDown() {
-        /*
-            noop
-            do not interact with the fixture for this Test class
-        */
-    }
-
     @Test
     void listPredicateOnClass() {
         final Set<Property> predicates = oppModel.listPredicates(CLASS_A);
-        Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
-        Assertions.assertTrue(predicates.contains(OppModelConstants.getRdfType()));
-        Assertions.assertTrue(predicates.contains(OppModelConstants.getRdfsSubclassOf()));
+        assertTrue(predicates.contains(createProperty("booleanPredicate")));
+        assertTrue(predicates.contains(OppModelConstants.getRdfType()));
+        assertTrue(predicates.contains(OppModelConstants.getRdfsSubclassOf()));
     }
 
     @Test
     void listPredicateOnIndividual() {
         final Set<Property> predicates = oppModel.listPredicates(CLASS_A_INDIVIDUAL);
-        Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
-        Assertions.assertTrue(predicates.contains(OppModelConstants.getRdfType()));
-        Assertions.assertFalse(predicates.contains(OppModelConstants.getRdfsSubclassOf()));
+        assertTrue(predicates.contains(createProperty("booleanPredicate")));
+        assertTrue(predicates.contains(OppModelConstants.getRdfType()));
+        assertFalse(predicates.contains(OppModelConstants.getRdfsSubclassOf()));
     }
 
     @Test
     void listPredicatesMultipleClasses() {
         final Set<Property> predicates = oppModel.listPredicates(
                 Set.of(CLASS_A, createClass("ClassB")));
-        Assertions.assertTrue(predicates.contains(createProperty("booleanPredicate")));
-        Assertions.assertTrue(predicates.contains(createProperty("stringPredicate")));
-        Assertions.assertTrue(predicates.contains(OppModelConstants.getRdfType()));
+        assertTrue(predicates.contains(createProperty("booleanPredicate")));
+        assertTrue(predicates.contains(createProperty("stringPredicate")));
+        assertTrue(predicates.contains(OppModelConstants.getRdfType()));
     }
 
     @Test
     void listPredicatesSubclasses() {
         final Set<Property> predicates = oppModel.listPredicates(createClass("ClassBSub"));
-        Assertions.assertTrue(predicates.contains(createProperty("numberPredicate")));
-        Assertions.assertTrue(predicates.contains(createProperty("stringPredicate")));
+        assertTrue(predicates.contains(createProperty("numberPredicate")));
+        assertTrue(predicates.contains(createProperty("stringPredicate")));
     }
 
     @Test
     void testListSubjectsRdfType() {
         final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.getRdfType(), Set.of(CLASS_A));
-        Assertions.assertTrue(resources.stream().anyMatch(
+        assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof Individual && ((Individual) resource).hasOntClass(CLASS_A)
         ));
     }
@@ -96,14 +89,14 @@ class OppModelTest extends TTLTestCase {
     void testListSubjectsResourcePredicate() {
         final Set<OntResource> resources = oppModel.listSubjects(createProperty("booleanPredicate"),
                 Set.of(createXsdResource("boolean")));
-        Assertions.assertTrue(resources.stream().anyMatch(CLASS_A::equals));
+        assertTrue(resources.stream().anyMatch(CLASS_A::equals));
     }
 
     @Test
     void testListSubjectsClassPredicate() {
         final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.getRdfsSubclassOf(),
                 Set.of(createResource("ClassB")));
-        Assertions.assertTrue(resources.stream().anyMatch(
+        assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof OntClass && resource.equals(createResource(
                         "ClassBSub"))
         ));
@@ -113,7 +106,7 @@ class OppModelTest extends TTLTestCase {
     void testListObjectsPredicate() {
         final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
                 createProperty("booleanPredicate"));
-        Assertions.assertTrue(resources.stream().anyMatch(
+        assertTrue(resources.stream().anyMatch(
                 resource -> resource.equals(OppModelConstants.getXsdBooleanInstance())
         ));
     }
@@ -122,7 +115,7 @@ class OppModelTest extends TTLTestCase {
     void testListObjectsInstanceToInstance() {
         final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
                 createProperty("classPredicate"));
-        Assertions.assertTrue(resources.stream().anyMatch(
+        assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof Individual && ((Individual) resource).hasOntClass(createClass(
                         "ClassBSub"))
         ));
@@ -131,7 +124,7 @@ class OppModelTest extends TTLTestCase {
     @Test
     void testListObjectsRdfTypeOnIndividual() {
         final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), OppModelConstants.getRdfType());
-        Assertions.assertTrue(resources.stream().anyMatch(
+        assertTrue(resources.stream().anyMatch(
                 resource -> resource.equals(CLASS_A))
         );
     }
@@ -139,7 +132,7 @@ class OppModelTest extends TTLTestCase {
     @Test
     void testListObjectsRdfTypeOnClass() {
         final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A), OppModelConstants.getRdfType());
-        Assertions.assertTrue(resources.stream().anyMatch(
+        assertTrue(resources.stream().anyMatch(
                 resource -> resource.equals(OppModelConstants.getOwlClass()))
         );
     }
@@ -150,8 +143,8 @@ class OppModelTest extends TTLTestCase {
         final RDFNode booleanPredicate = individual.listPropertyValues(
                 oppModel.getProperty(createProperty("booleanPredicate"))
         ).next();
-        Assertions.assertTrue(booleanPredicate.isLiteral());
-        Assertions.assertTrue(booleanPredicate.asLiteral().getBoolean());
+        assertTrue(booleanPredicate.isLiteral());
+        assertTrue(booleanPredicate.asLiteral().getBoolean());
     }
 
     @Test
@@ -176,48 +169,48 @@ class OppModelTest extends TTLTestCase {
 
     @Test
     void testAreCompatibleTrueWhenEqualIndividuals() {
-        Assertions.assertTrue(areCompatible(CLASS_A_INSTANCE_A, CLASS_A_INSTANCE_A));
+        assertTrue(areCompatible(CLASS_A_INSTANCE_A, CLASS_A_INSTANCE_A));
     }
 
     @Test
     void testAreCompatibleTrueInstanceWithOWLThing() {
-        Assertions.assertTrue(areCompatible(OppModelConstants.getOwlThingInstance().getURI(), CLASS_A_INSTANCE_A));
-        Assertions.assertTrue(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.getOwlThingInstance().getURI()));
+        assertTrue(areCompatible(OppModelConstants.getOwlThingInstance().getURI(), CLASS_A_INSTANCE_A));
+        assertTrue(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.getOwlThingInstance().getURI()));
     }
 
     @Test
     void testAreCompatibleFalseInstanceWithOWLClass() {
-        Assertions.assertFalse(areCompatible(OppModelConstants.getOwlClass().getURI(), CLASS_A_INSTANCE_A));
-        Assertions.assertFalse(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.getOwlClass().getURI()));
+        assertFalse(areCompatible(OppModelConstants.getOwlClass().getURI(), CLASS_A_INSTANCE_A));
+        assertFalse(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.getOwlClass().getURI()));
     }
 
     @Test
     void testAreCompatibleTrueClassWithOWLClass() {
-        Assertions.assertTrue(areCompatible(OppModelConstants.getOwlClass().getURI(), CLASS_A.getURI()));
-        Assertions.assertTrue(areCompatible(OppModelConstants.getRdfsClass().getURI(), CLASS_A.getURI()));
-        Assertions.assertTrue(areCompatible(OppModelConstants.getRdfsResource().getURI(), CLASS_A.getURI()));
+        assertTrue(areCompatible(OppModelConstants.getOwlClass().getURI(), CLASS_A.getURI()));
+        assertTrue(areCompatible(OppModelConstants.getRdfsClass().getURI(), CLASS_A.getURI()));
+        assertTrue(areCompatible(OppModelConstants.getRdfsResource().getURI(), CLASS_A.getURI()));
     }
 
     @Test
     void testAreCompatibleFalseOWLClassWithClass() {
-        Assertions.assertFalse(areCompatible(CLASS_A.getURI(), OppModelConstants.getOwlClass().getURI()));
+        assertFalse(areCompatible(CLASS_A.getURI(), OppModelConstants.getOwlClass().getURI()));
     }
 
     @Test
     void testAreCompatibleFalseClassWithOWLThing() {
-        Assertions.assertFalse(areCompatible(OppModelConstants.getOwlThingInstance().getURI(), ONTOLOGY_CLASS_A));
-        Assertions.assertFalse(areCompatible(ONTOLOGY_CLASS_A, OppModelConstants.getOwlThingInstance().getURI()));
+        assertFalse(areCompatible(OppModelConstants.getOwlThingInstance().getURI(), ONTOLOGY_CLASS_A));
+        assertFalse(areCompatible(ONTOLOGY_CLASS_A, OppModelConstants.getOwlThingInstance().getURI()));
     }
 
     @Test
     void testAreCompatibleFalseInstanceWithClass() {
-        Assertions.assertFalse(areCompatible(CLASS_A_INSTANCE_A, ONTOLOGY_CLASS_A));
+        assertFalse(areCompatible(CLASS_A_INSTANCE_A, ONTOLOGY_CLASS_A));
     }
 
     @Test
     void testAreCompatibleFalseAny2DifferentClasses() {
-        Assertions.assertFalse(areCompatible(ONTOLOGY_CLASS_A, ONTOLOGY_CLASS_B));
-        Assertions.assertFalse(areCompatible(ONTOLOGY_CLASS_B, ONTOLOGY_CLASS_A));
+        assertFalse(areCompatible(ONTOLOGY_CLASS_A, ONTOLOGY_CLASS_B));
+        assertFalse(areCompatible(ONTOLOGY_CLASS_B, ONTOLOGY_CLASS_A));
     }
 
     @Test
@@ -225,50 +218,50 @@ class OppModelTest extends TTLTestCase {
         // Classes that are identical are not compatible
         // Classes are hardly ever directly compatible unless the requirement is owl:Class and the provided
         // is an instance of owl:Class which is any class with a rdf:type owl:Class
-        Assertions.assertFalse(areCompatible(ONTOLOGY_CLASS_A, ONTOLOGY_CLASS_A));
+        assertFalse(areCompatible(ONTOLOGY_CLASS_A, ONTOLOGY_CLASS_A));
     }
 
     @Test
     void testAreCompatibleFalseClassWithSubclass() {
-        Assertions.assertFalse(areCompatible(ONTOLOGY_CLASS_B, ONTOLOGY_CLASS_BSUB));
-        Assertions.assertFalse(areCompatible(ONTOLOGY_CLASS_BSUB, ONTOLOGY_CLASS_B));
+        assertFalse(areCompatible(ONTOLOGY_CLASS_B, ONTOLOGY_CLASS_BSUB));
+        assertFalse(areCompatible(ONTOLOGY_CLASS_BSUB, ONTOLOGY_CLASS_B));
     }
 
     @Test
     void testAreCompatibleTrueInstanceOfSubclass() {
-        Assertions.assertTrue(areCompatible(CLASS_B_INDIVIDUAL.getURI(), CLASS_BSUB_INDIVIDUAL.getURI()));
+        assertTrue(areCompatible(CLASS_B_INDIVIDUAL.getURI(), CLASS_BSUB_INDIVIDUAL.getURI()));
     }
 
     @Test
     void testAreCompatibleFalseInstanceOfSuperclass() {
-        Assertions.assertFalse(areCompatible(CLASS_BSUB_INDIVIDUAL.getURI(), CLASS_B_INDIVIDUAL.getURI()));
+        assertFalse(areCompatible(CLASS_BSUB_INDIVIDUAL.getURI(), CLASS_B_INDIVIDUAL.getURI()));
     }
 
     @Test
     void testAreCompatibleNumbers() {
         // hierarchy is: integer subclassOf decimal subclassOf number
-        Assertions.assertTrue(areCompatible(XSD.NUMBER_INSTANCE.getUri(),
+        assertTrue(areCompatible(XSD.NUMBER_INSTANCE.getUri(),
                 XSD.DECIMAL_INSTANCE.getUri()));
-        Assertions.assertTrue(areCompatible(XSD.DECIMAL_INSTANCE.getUri(),
+        assertTrue(areCompatible(XSD.DECIMAL_INSTANCE.getUri(),
                 XSD.INTEGER_INSTANCE.getUri()));
-        Assertions.assertTrue(areCompatible(XSD.NUMBER_INSTANCE.getUri(),
+        assertTrue(areCompatible(XSD.NUMBER_INSTANCE.getUri(),
                 XSD.INTEGER_INSTANCE.getUri()));
-        Assertions.assertTrue(areCompatible(XSD.NUMBER_INSTANCE.getUri(),
+        assertTrue(areCompatible(XSD.NUMBER_INSTANCE.getUri(),
                 XSD.NUMBER_INSTANCE.getUri()));
 
-        Assertions.assertFalse(areCompatible(XSD.DECIMAL_INSTANCE.getUri(),
+        assertFalse(areCompatible(XSD.DECIMAL_INSTANCE.getUri(),
                 XSD.NUMBER_INSTANCE.getUri()));
-        Assertions.assertFalse(areCompatible(XSD.INTEGER_INSTANCE.getUri(),
+        assertFalse(areCompatible(XSD.INTEGER_INSTANCE.getUri(),
                 XSD.DECIMAL_INSTANCE.getUri()));
     }
 
     @Test
     void testAreCompatibleDates() {
         // hierarchy is: date subclassOf dateTime
-        Assertions.assertTrue(areCompatible(XSD.DATETIME_INSTANCE.getUri(),
+        assertTrue(areCompatible(XSD.DATETIME_INSTANCE.getUri(),
                 XSD.DATE_INSTANCE.getUri()));
 
-        Assertions.assertFalse(areCompatible(XSD.DATE_INSTANCE.getUri(),
+        assertFalse(areCompatible(XSD.DATE_INSTANCE.getUri(),
                 XSD.DATETIME_INSTANCE.getUri()));
     }
 
@@ -297,14 +290,34 @@ class OppModelTest extends TTLTestCase {
                 .toList()
                 .get(0);
         Assertions.assertNotNull(ontResource);
-        Assertions.assertTrue(ontResource.hasProperty(oppModel.getProperty("http://ontology/booleanPredicate")));
-        Assertions.assertTrue(ontResource.isIndividual());
-        Assertions.assertTrue(ontResource.asIndividual().hasOntClass(CLASS_A, true));
+        assertTrue(ontResource.hasProperty(oppModel.getProperty("http://ontology/booleanPredicate")));
+        assertTrue(ontResource.isIndividual());
+        assertTrue(ontResource.asIndividual().hasOntClass(CLASS_A, true));
     }
 
     private boolean areCompatible(String resourceA,
                                   String resourceB) {
         return oppModel.areCompatible(Set.of(oppModel.getOntResource(resourceA, null)),
                 Set.of(oppModel.getOntResource(resourceB, null)));
+    }
+
+    private Property createProperty(String localName) {
+        return oppModel.getProperty(createResource("http://ontology#", localName));
+    }
+
+    private OntClass createClass(String name) {
+        return oppModel.getClass(createResource(name));
+    }
+
+    private OntResource createXsdResource(String localName) {
+        return createResource("http://www.w3.org/2001/XMLSchema#", localName);
+    }
+
+    private OntResource createResource(String localName) {
+        return createResource("http://ontology#", localName);
+    }
+
+    private OntResource createResource(String namespace, String localName) {
+        return oppModel.getModel().createOntResource(namespace + localName);
     }
 }

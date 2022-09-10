@@ -8,11 +8,11 @@ class ODTPrimitiveTest extends ODTLexerTestCase {
 
     @Test
     void testPrimitiveString() {
-        hasElement("$param (string)", ODTTypes.PRIMITIVE);
+        assertTrue(hasElement("$param (string)", ODTTypes.PRIMITIVE));
     }
 
     @Test
     void testPrimitiveNumber() {
-        hasElement("$param (number)", ODTTypes.PRIMITIVE);
+        assertTrue(hasElement("$param (number)", ODTTypes.PRIMITIVE));
     }
 }

@@ -27,7 +27,7 @@ class MergeOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveTwoOrMoreArguments() {
+    void testResolveTwoOrMoreArguments() {
         // combine arguments
         assertResolved(MergeOperator.INSTANCE,
                 Set.of(OppModelConstants.getXsdStringInstance()),

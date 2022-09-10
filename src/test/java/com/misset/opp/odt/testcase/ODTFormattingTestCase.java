@@ -14,7 +14,7 @@ import com.intellij.testFramework.fixtures.JavaCodeInsightTestFixture;
 import com.misset.opp.odt.psi.ODTFile;
 import org.junit.jupiter.api.Assertions;
 
-public class ODTFormattingTestCase extends ODTTestCase {
+public abstract class ODTFormattingTestCase extends ODTTestCase {
 
     private static final int INDENT_SIZE = 4;
 
