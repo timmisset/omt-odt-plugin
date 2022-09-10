@@ -3,6 +3,9 @@ package com.misset.opp.odt.lexer;
 import com.misset.opp.odt.testcase.ODTLexerTestCase;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class ODTLexerDefineTest extends ODTLexerTestCase {
 
     @Test

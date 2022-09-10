@@ -4,6 +4,8 @@ import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.testcase.ODTLexerTestCase;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class ODTPrimitiveTest extends ODTLexerTestCase {
 
     @Test

@@ -4,6 +4,9 @@ import com.intellij.psi.impl.source.tree.JavaDocElementType;
 import com.misset.opp.odt.testcase.ODTLexerTestCase;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class ODTLexerJavadocsTest extends ODTLexerTestCase {
 
     @Test

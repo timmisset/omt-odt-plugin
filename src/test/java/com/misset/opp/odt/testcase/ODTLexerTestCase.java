@@ -2,27 +2,13 @@ package com.misset.opp.odt.testcase;
 
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.odt.ODTLexerAdapter;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class ODTLexerTestCase extends ODTTestCase {
-    @BeforeEach
-    public final void setUp() {
-        // no fixture required, don't call super
-        // extends OMTTestCase for assertion support
-    }
-
-    @AfterEach
-    protected final void tearDown() {
-        // no fixture required, don't call super
-        // extends OMTTestCase for assertion support
-    }
-
+public abstract class ODTLexerTestCase {
     protected boolean hasBadCharacter(String content) {
         return getElements(content).contains("BAD_CHARACTER");
     }
