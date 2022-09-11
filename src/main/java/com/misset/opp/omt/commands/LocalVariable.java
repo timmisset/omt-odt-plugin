@@ -1,4 +1,4 @@
-package com.misset.opp.resolvable.local;
+package com.misset.opp.omt.commands;
 
 import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;

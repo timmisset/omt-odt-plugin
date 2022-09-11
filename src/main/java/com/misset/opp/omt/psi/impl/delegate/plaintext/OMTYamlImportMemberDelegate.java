@@ -26,6 +26,10 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * The OMTYamlImportMemberDelegate serves as a proxy to the actual Callable that it imports
+ * All PsiCallable interface methods are deferred
+ */
 public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
         OMTYamlDelegate,
         SupportsSafeDelete,
@@ -224,6 +228,16 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     @Override
     public Set<OntResource> getParamType(int index) {
         return computeFromCallable(callable -> callable.getParamType(index), Collections.emptySet());
+    }
+
+    @Override
+    public Set<String> getParamValues(int index) {
+        return computeFromCallable(callable -> callable.getParamValues(index), Collections.emptySet());
+    }
+
+    @Override
+    public void validateValue(PsiCall call, ProblemsHolder holder, int i) {
+        runOnCallable(callable -> callable.validateValue(call, holder, i));
     }
 
 }

@@ -1,4 +1,4 @@
-package com.misset.opp.resolvable.global;
+package com.misset.opp.odt;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class GlobalVariableTest extends OMTTestCase {
+class ODTGlobalVariableTest extends OMTTestCase {
 
     @ParameterizedTest
     @ValueSource(strings = {

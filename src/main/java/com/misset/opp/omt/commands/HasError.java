@@ -1,4 +1,4 @@
-package com.misset.opp.resolvable.local;
+package com.misset.opp.omt.commands;
 
 import com.intellij.openapi.project.Project;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -7,26 +7,26 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public class GetErrorState extends LocalCommand {
-    public static final String CALLID = "@GET_ERROR_STATE";
+public class HasError extends LocalCommand {
+    public static final String CALLID = "@HAS_ERROR";
 
-    public GetErrorState(String source) {
+    public HasError(String source) {
         super(source);
     }
 
     @Override
     public String getName() {
-        return "GET_ERROR_STATE";
+        return "HAS_ERROR";
     }
 
     @Override
     public String getDescription(Project project) {
-        return String.format("Get the current error state for the %s", getSource());
+        return String.format("Check if there is an error for the %s", getSource());
     }
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return Set.of(OppModelConstants.getXsdStringInstance());
+        return Set.of(OppModelConstants.getXsdBooleanInstance());
     }
 
     @Override

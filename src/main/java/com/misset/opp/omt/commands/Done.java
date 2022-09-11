@@ -1,4 +1,4 @@
-package com.misset.opp.resolvable.local;
+package com.misset.opp.omt.commands;
 
 import com.intellij.openapi.project.Project;
 
