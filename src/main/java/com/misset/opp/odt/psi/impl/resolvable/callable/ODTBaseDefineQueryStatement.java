@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import org.apache.jena.ontology.OntResource;
@@ -78,7 +79,8 @@ public abstract class ODTBaseDefineQueryStatement extends ODTDefineStatement imp
 
     @Override
     public boolean requiresInput() {
-        return false;
+        ODTResolvableQuery query = (ODTResolvableQuery) getQuery();
+        return query.requiresInput();
     }
 
     @Override

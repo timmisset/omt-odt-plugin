@@ -4,13 +4,16 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import com.misset.opp.odt.psi.ODTQueryOperationStep;
-import com.misset.opp.odt.psi.ODTQueryPath;
-import com.misset.opp.odt.psi.ODTQueryStep;
-import com.misset.opp.odt.psi.ODTTypes;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
+import com.misset.opp.odt.builtin.operators.NotOperator;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableIdentifierStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableNegatedStep;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
+import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -135,5 +138,36 @@ public abstract class ODTResolvableQueryPath extends ODTResolvableQuery implemen
                         .map(PsiElement::getReference)
                         .map(PsiReference::resolve)
                         .isPresent();
+    }
+
+    @Override
+    public boolean requiresInput() {
+        List<ODTResolvableQueryOperationStep> steps = getResolvableQueryOperationStepList();
+        if (steps.isEmpty()) {
+            return false;
+        }
+        ODTResolvableQueryOperationStep step = steps.get(0);
+        ODTQueryStep queryStep = step.getQueryStep();
+
+        boolean requiresInput;
+
+        if (queryStep instanceof ODTNegatedStep) {
+            requiresInput = ((ODTResolvableNegatedStep) queryStep).getQuery() == null;
+        } else if (queryStep instanceof ODTOperatorCall) {
+            Callable callable = ((ODTOperatorCall) queryStep).getCallable();
+            if (callable instanceof NotOperator) {
+                requiresInput = ((NotOperator) callable).requiresInput((ODTOperatorCall) queryStep);
+            } else {
+                requiresInput = callable.requiresInput();
+            }
+        } else if (queryStep instanceof ODTQueryReverseStep) {
+            requiresInput = true;
+        } else {
+            requiresInput =
+                    PsiUtilCore.getElementType(PsiTreeUtil.prevVisibleLeaf(step)) != ODTTypes.FORWARD_SLASH &&
+                            queryStep instanceof ODTResolvableQualifiedUriStep ||
+                            queryStep instanceof ODTResolvableIdentifierStep;
+        }
+        return requiresInput;
     }
 }

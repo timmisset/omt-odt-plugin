@@ -13,7 +13,7 @@ example:
     DEFINE QUERY query => /ont:ClassA / ^rdf:type / ont:somePredicate
 ```
 
-The DEFINE QUERY statement, it's containing query and each individual step implements the ODTResolvable interface and
+The DEFINE QUERY statement, its containing query, and each individual step implements the ODTResolvable interface and
 thus can be analysed to determine a type.
 
 ## QueryStep
