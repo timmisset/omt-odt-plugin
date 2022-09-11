@@ -2,11 +2,11 @@ package com.misset.opp.omt.meta.actions;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.omt.commands.LocalVariable;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.testcase.OMTTestCase;
-import com.misset.opp.resolvable.local.LocalVariable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 import org.junit.jupiter.api.Assertions;

@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.util.CallableUtil;
 import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -111,13 +110,8 @@ public interface Callable extends ContextResolvable {
      */
     default void validate(PsiCall call,
                           ProblemsHolder holder) {
-        LoggerUtil.runWithLogger(LOGGER,
-                "Validation of call " + call.getCallId(),
-                () -> {
-                    CallableUtil.validateCallArguments(this, call, holder);
-                    CallableUtil.validateCallFlag(this, call, holder);
-                });
-
+        CallableUtil.validateCallArguments(this, call, holder);
+        CallableUtil.validateCallFlag(this, call, holder);
     }
 
     /**

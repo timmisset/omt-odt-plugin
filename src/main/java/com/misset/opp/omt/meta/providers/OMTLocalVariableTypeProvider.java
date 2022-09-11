@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta.providers;
 
-import com.misset.opp.resolvable.local.LocalVariable;
+import com.misset.opp.omt.commands.LocalVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;

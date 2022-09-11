@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.omt.commands.LocalVariable;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
 

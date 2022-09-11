@@ -1,10 +1,10 @@
 package com.misset.opp.omt.meta;
 
+import com.misset.opp.omt.commands.LocalVariable;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableProvider;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.resolvable.local.LocalVariable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 

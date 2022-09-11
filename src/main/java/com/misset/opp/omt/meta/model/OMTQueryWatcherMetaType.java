@@ -1,12 +1,12 @@
 package com.misset.opp.omt.meta.model;
 
+import com.misset.opp.omt.commands.LocalVariable;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.omt.meta.providers.util.OMTVariableTypeProviderUtil;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTOnChangeScriptMetaType;
-import com.misset.opp.resolvable.local.LocalVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;

@@ -7,11 +7,11 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.omt.commands.LocalCommand;
 import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.impl.yaml.YAMLOMTScalarList;
 import com.misset.opp.omt.testcase.OMTTestCase;
-import com.misset.opp.resolvable.local.LocalCommand;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import org.junit.jupiter.api.Test;
 

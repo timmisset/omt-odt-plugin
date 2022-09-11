@@ -23,7 +23,6 @@ public abstract class ODTBaseResolvable extends ODTASTWrapperPsiElement implemen
 
     @Override
     public void inspect(ProblemsHolder holder) {
-
     }
 
     @Override

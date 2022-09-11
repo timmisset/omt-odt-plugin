@@ -13,6 +13,7 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTFileType;
+import com.misset.opp.odt.ODTGlobalVariable;
 import com.misset.opp.odt.ODTLanguage;
 import com.misset.opp.odt.builtin.commands.BuiltinCommands;
 import com.misset.opp.odt.builtin.operators.BuiltinOperators;
@@ -23,7 +24,6 @@ import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.odt.psi.util.PsiRelationshipUtil;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.resolvable.global.GlobalVariable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiPrefix;
@@ -115,7 +115,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
 
     @Override
     public Collection<Variable> listVariables() {
-        return GlobalVariable.getVariables();
+        return ODTGlobalVariable.getVariables();
     }
 
     @Override

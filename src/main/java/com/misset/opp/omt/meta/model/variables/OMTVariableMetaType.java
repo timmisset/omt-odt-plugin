@@ -2,6 +2,7 @@ package com.misset.opp.omt.meta.model.variables;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.omt.commands.LocalVariable;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaInjectable;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
@@ -11,7 +12,6 @@ import com.misset.opp.omt.meta.providers.util.OMTVariableTypeProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTOnChangeScriptMetaType;
-import com.misset.opp.resolvable.local.LocalVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.model.YamlBooleanType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
