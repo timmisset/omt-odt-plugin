@@ -16,7 +16,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery implements ODTBooleanStatement, ODTTypeFilterProvider {
+public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery implements
+        ODTBooleanStatement,
+        ODTTypeFilterProvider {
     protected ODTResolvableBooleanStatement(@NotNull ASTNode node) {
         super(node);
     }
@@ -53,5 +55,13 @@ public abstract class ODTResolvableBooleanStatement extends ODTResolvableQuery i
     @Override
     public Predicate<Set<OntResource>> getTypeFilter(PsiElement element) {
         return resources -> resources.isEmpty() || resources.contains(OppModelConstants.getXsdBooleanInstance());
+    }
+
+    @Override
+    public boolean requiresInput() {
+        return getQueryList()
+                .stream()
+                .map(ODTResolvableQuery.class::cast)
+                .anyMatch(ODTResolvableQuery::requiresInput);
     }
 }

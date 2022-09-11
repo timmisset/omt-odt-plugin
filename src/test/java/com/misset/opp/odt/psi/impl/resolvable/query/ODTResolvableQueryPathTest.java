@@ -1,5 +1,8 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
+import com.intellij.openapi.application.ReadAction;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
 import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.Individual;
@@ -8,6 +11,8 @@ import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Set;
 
@@ -93,6 +98,40 @@ class ODTResolvableQueryPathTest extends ODTTestCase {
         Assertions.assertTrue(resources.stream().anyMatch(
                 resource -> isIndividualOfClass(resource, createOntologyUri("ClassA"))
         ));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "ont:predicate",
+            "ont:predicate / ont:anotherPredicate",
+            "DEFINE QUERY query => ont:predicate",
+            "LOG",
+            "^ont:predicate",
+            "NOT",
+            "NOT(ont:predicate)"
+    })
+    void testRequiresInput(String content) {
+        ODTFileTestImpl odtFileTest = configureByText(content);
+        ReadAction.run(() -> {
+            ODTResolvableQueryPath resolvableQueryPath = PsiTreeUtil.findChildOfType(odtFileTest, ODTResolvableQueryPath.class);
+            assertTrue(resolvableQueryPath.requiresInput());
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/ont:predicate",
+            "/ont:predicate / ont:anotherPredicate",
+            "DEFINE QUERY query => /ont:predicate",
+            "$value",
+            "NOT(true)"
+    })
+    void testDoesntRequireInput(String content) {
+        ODTFileTestImpl odtFileTest = configureByText(content);
+        ReadAction.run(() -> {
+            ODTResolvableQueryPath resolvableQueryPath = PsiTreeUtil.findChildOfType(odtFileTest, ODTResolvableQueryPath.class);
+            assertFalse(resolvableQueryPath.requiresInput());
+        });
     }
 
     private boolean isIndividualOfClass(Resource resource, String classResource) {

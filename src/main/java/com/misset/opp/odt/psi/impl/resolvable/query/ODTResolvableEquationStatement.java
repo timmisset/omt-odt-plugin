@@ -16,7 +16,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery implements ODTEquationStatement,
+public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery implements
+        ODTEquationStatement,
         ODTTypeFilterProvider {
     protected ODTResolvableEquationStatement(@NotNull ASTNode node) {
         super(node);
@@ -120,5 +121,13 @@ public abstract class ODTResolvableEquationStatement extends ODTResolvableQuery 
 
         return resources -> resources.isEmpty() || oppositeResources.isEmpty() ||
                 OppModel.getInstance().areCompatible(oppositeResources, resources);
+    }
+
+    @Override
+    public boolean requiresInput() {
+        return getQueryList()
+                .stream()
+                .map(ODTResolvableQuery.class::cast)
+                .anyMatch(ODTResolvableQuery::requiresInput);
     }
 }

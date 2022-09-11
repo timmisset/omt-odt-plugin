@@ -20,4 +20,6 @@ public abstract class ODTResolvableQuery extends ODTBaseResolvable implements OD
             TTLValidationUtil.validateBoolean(resolve(), holder, this);
         }
     }
+
+    public abstract boolean requiresInput();
 }

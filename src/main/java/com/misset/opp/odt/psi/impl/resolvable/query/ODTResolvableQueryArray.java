@@ -36,4 +36,12 @@ public abstract class ODTResolvableQueryArray extends ODTResolvableQuery impleme
     public boolean isMultiple() {
         return true;
     }
+
+    @Override
+    public boolean requiresInput() {
+        return getQueryList()
+                .stream()
+                .map(ODTResolvableQuery.class::cast)
+                .anyMatch(ODTResolvableQuery::requiresInput);
+    }
 }
