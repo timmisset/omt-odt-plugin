@@ -3,7 +3,7 @@
   parserImports="static com.intellij.psi.impl.source.tree.JavaDocElementType.DOC_COMMENT"
   parserClass="org.intellij.sdk.language.parser.ODTParser"
 
-  extends="com.misset.opp.odt.psi.impl.ASTWrapperPsiElement"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
   implements="com.intellij.psi.PsiElement"
 
   psiClassPrefix="ODT"
