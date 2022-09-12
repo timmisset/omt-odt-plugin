@@ -1,4 +1,6 @@
 {
+  // override DOC_COMMENT with the Java one to have builtin functionalities
+  parserImports="static com.intellij.psi.impl.source.tree.JavaDocElementType.DOC_COMMENT"
   parserClass="org.intellij.sdk.language.parser.ODTParser"
 
   extends="com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement"
@@ -8,7 +10,6 @@
   psiImplClassSuffix="Impl"
   psiPackage="com.misset.opp.odt.psi"
   psiImplPackage="com.misset.opp.odt.psi.impl"
-  parserImports="static com.intellij.psi.impl.source.tree.JavaDocElementType.DOC_COMMENT"
   elementTypeHolderClass="com.misset.opp.odt.psi.ODTTypes"
   elementTypeClass="com.misset.opp.odt.psi.ODTElementType"
   tokenTypeClass="com.misset.opp.odt.psi.ODTTokenType"
@@ -57,10 +58,6 @@ script ::=                                  scriptLine+ {
     implements="com.misset.opp.odt.psi.resolvable.ODTResolvable"
 }
 // a scriptline is contained by the addition of the semicolon at the end
-// The DOC_COMMENT is borrowed from Java
-// this requires a workaround for now since this is outside the scope of the Parser Generation process
-// After generating the parser, remove the added ODTTYPES.DOC_COMMENT in the ODTTypes interface and then import the static
-// com.intellij.psi.impl.source.tree.JavaDocElementType.DOC_COMMENT
 scriptLine ::=                              DOC_COMMENT? (commandBlock | logicalBlock | defineCommandStatement | statement) SEMICOLON* {
     implements="com.intellij.psi.PsiJavaDocumentedElement"
     extends="com.misset.opp.odt.psi.impl.ODTBaseScriptLine"
