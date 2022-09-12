@@ -10,9 +10,9 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.omt.commands.LocalCommand;
 import com.misset.opp.omt.meta.model.modelitems.OMTActivityMetaType;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.omt.psi.impl.yaml.YAMLOMTScalarList;
 import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.psi.PsiCallable;
+import org.jetbrains.yaml.psi.YAMLScalarList;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -77,7 +77,7 @@ class OMTODTFragmentTest extends OMTTestCase {
     }
 
     private OMTODTFragment getInjectedFragment(OMTFile omtFile) {
-        PsiLanguageInjectionHost childOfType = PsiTreeUtil.findChildOfType(omtFile, YAMLOMTScalarList.class);
+        PsiLanguageInjectionHost childOfType = PsiTreeUtil.findChildOfType(omtFile, YAMLScalarList.class);
         List<Pair<PsiElement, TextRange>> injectedPsiFiles = InjectedLanguageManager.getInstance(getProject()).getInjectedPsiFiles(childOfType);
         PsiElement injectedFragment = injectedPsiFiles.iterator().next().getFirst();
         assertTrue(injectedFragment instanceof OMTODTFragment);

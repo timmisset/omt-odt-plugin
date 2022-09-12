@@ -1,9 +1,9 @@
 package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTGraphShapeHandlerMemberReference;
 import com.misset.opp.omt.util.OMTRefactoringUtil;
 import com.misset.opp.refactoring.SupportsSafeDelete;
@@ -12,7 +12,7 @@ import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-public class OMTYamlGraphShapeHandlerMemberDelegate extends YAMLPlainTextImpl implements OMTYamlDelegate,
+public class OMTYamlGraphShapeHandlerMemberDelegate extends OMTYamlPlainTextDelegateAbstract implements PsiNamedElement,
         SupportsSafeDelete {
     YAMLPlainTextImpl value;
 
@@ -38,10 +38,6 @@ public class OMTYamlGraphShapeHandlerMemberDelegate extends YAMLPlainTextImpl im
         return new OMTGraphShapeHandlerMemberReference(value);
     }
 
-    @Override
-    public PsiReference @NotNull [] getReferences() {
-        return OMTYamlDelegate.super.getReferences();
-    }
 
     @Override
     public void delete() throws IncorrectOperationException {

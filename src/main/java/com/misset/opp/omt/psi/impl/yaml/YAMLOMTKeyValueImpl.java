@@ -2,12 +2,12 @@ package com.misset.opp.omt.psi.impl.yaml;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.OMTYamlReferenceContributor;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -28,15 +28,14 @@ import java.util.Collection;
  *
  * @see OMTYamlReferenceContributor
  */
-@OMTOverride
 public class YAMLOMTKeyValueImpl extends YAMLKeyValueImpl {
     public YAMLOMTKeyValueImpl(@NotNull ASTNode node) {
         super(node);
     }
 
-    private transient OMTYamlDelegate delegate;
+    private transient PsiNamedElement delegate;
 
-    private OMTYamlDelegate getDelegate() {
+    private PsiNamedElement getDelegate() {
         if (delegate == null) {
             delegate = OMTYamlDelegateFactory.createDelegate(this);
         }

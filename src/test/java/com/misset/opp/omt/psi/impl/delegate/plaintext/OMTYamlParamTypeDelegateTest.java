@@ -43,7 +43,6 @@ class OMTYamlParamTypeDelegateTest extends OMTTestCase {
             Assertions.assertEquals(2, references.length);
             Assertions.assertTrue(Arrays.stream(references).anyMatch(reference -> reference instanceof OMTTTLSubjectReference));
             Assertions.assertTrue(Arrays.stream(references).anyMatch(reference -> reference instanceof OMTParamTypePrefixReference));
-            // StubIndex is not loaded for unit-tests, cannot resolve
         });
     }
 

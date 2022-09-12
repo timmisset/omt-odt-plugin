@@ -2,11 +2,11 @@ package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveResult;
 import com.misset.opp.omt.meta.OMTMetaTreeUtil;
 import com.misset.opp.omt.meta.providers.OMTPrefixProvider;
 import com.misset.opp.omt.meta.scalars.OMTIriMetaType;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.resolvable.psi.PsiPrefix;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ public class OMTPrefixProviderUtil {
             final YAMLMapping prefixBlock = (YAMLMapping) value;
             prefixBlock.getKeyValues().forEach(
                     prefixDefinition -> {
-                        OMTYamlDelegate yamlDelegate = OMTYamlDelegateFactory.createDelegate(prefixDefinition);
+                        PsiNamedElement yamlDelegate = OMTYamlDelegateFactory.createDelegate(prefixDefinition);
                         if (yamlDelegate instanceof PsiPrefix) {
                             map.computeIfAbsent(prefixDefinition.getKeyText(), s -> new ArrayList<>()).add((PsiPrefix) yamlDelegate);
                         }

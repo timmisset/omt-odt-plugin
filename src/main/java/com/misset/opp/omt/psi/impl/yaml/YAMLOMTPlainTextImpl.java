@@ -9,7 +9,6 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLScalar;
@@ -19,7 +18,6 @@ import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
  * By overriding the default YAMLPlainTextImpl we can implement PsiNamedElement and use the
  * refactor-rename, find-usage etc.
  */
-@OMTOverride
 public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedElement, PsiLanguageInjectionHost, YAMLScalar {
     public YAMLOMTPlainTextImpl(@NotNull ASTNode node) {
         super(node);
@@ -30,9 +28,9 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
         return GlobalSearchScope.fileScope(getContainingFile());
     }
 
-    private transient OMTYamlDelegate delegate;
+    private transient PsiNamedElement delegate;
 
-    private OMTYamlDelegate getDelegate() {
+    private PsiNamedElement getDelegate() {
         if (delegate == null) {
             delegate = OMTYamlDelegateFactory.createDelegate(this);
         }

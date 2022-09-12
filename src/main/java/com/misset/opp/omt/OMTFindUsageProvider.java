@@ -6,7 +6,8 @@ import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.omt.meta.scalars.OMTIriMetaType;
-import com.misset.opp.omt.psi.impl.yaml.OMTOverride;
+import com.misset.opp.omt.psi.impl.yaml.YAMLOMTKeyValueImpl;
+import com.misset.opp.omt.psi.impl.yaml.YAMLOMTPlainTextImpl;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -15,19 +16,17 @@ import org.jetbrains.yaml.YAMLFindUsagesProvider;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLValue;
-import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 public class OMTFindUsageProvider extends YAMLFindUsagesProvider implements FindUsagesProvider {
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
-        if (!psiElement.getClass().isAnnotationPresent(OMTOverride.class)) {
-            return super.canFindUsagesFor(psiElement);
+        if (psiElement instanceof YAMLOMTKeyValueImpl || psiElement instanceof YAMLOMTPlainTextImpl) {
+            final YamlMetaType metaType = getMetaValueType(psiElement);
+            return metaType instanceof OMTModelItemMetaType ||
+                    metaType instanceof OMTNamedVariableMetaType ||
+                    metaType instanceof OMTIriMetaType;
         }
-
-        final YamlMetaType metaType = getMetaValueType(psiElement);
-        return metaType instanceof OMTModelItemMetaType ||
-                metaType instanceof OMTNamedVariableMetaType ||
-                metaType instanceof OMTIriMetaType;
+        return super.canFindUsagesFor(psiElement);
     }
 
     @Override
@@ -37,34 +36,28 @@ public class OMTFindUsageProvider extends YAMLFindUsagesProvider implements Find
 
     @Override
     public @Nls @NotNull String getType(@NotNull PsiElement element) {
-        if (!element.getClass().isAnnotationPresent(OMTOverride.class)) {
-            return super.getType(element);
-        }
-
-        final YamlMetaType metaType = getMetaValueType(element);
-        if (metaType instanceof OMTModelItemMetaType) {
-            return metaType.getTypeName();
-        } else if (metaType instanceof OMTIriMetaType) {
-            return "prefix";
-        } else if (metaType instanceof OMTNamedVariableMetaType) {
-            return "variable";
+        if (element instanceof YAMLOMTKeyValueImpl || element instanceof YAMLOMTPlainTextImpl) {
+            final YamlMetaType metaType = getMetaValueType(element);
+            if (metaType instanceof OMTModelItemMetaType) {
+                return metaType.getTypeName();
+            } else if (metaType instanceof OMTIriMetaType) {
+                return "prefix";
+            } else if (metaType instanceof OMTNamedVariableMetaType) {
+                return "variable";
+            }
         }
         return super.getType(element);
     }
 
     @Override
     public @Nls @NotNull String getDescriptiveName(@NotNull PsiElement element) {
-        if (!element.getClass().isAnnotationPresent(OMTOverride.class)) {
-            return super.getDescriptiveName(element);
-        }
-
-        if (element instanceof YAMLKeyValue) {
+        if (element instanceof YAMLOMTKeyValueImpl) {
             final YamlMetaType metaType = getMetaValueType(element);
             if (metaType instanceof OMTModelItemMetaType) {
                 return metaType.getTypeName();
             }
             return ((YAMLKeyValue) element).getKeyText();
-        } else if (element instanceof YAMLPlainTextImpl) {
+        } else if (element instanceof YAMLOMTPlainTextImpl) {
             final YamlMetaType metaType = getMetaType(element);
             if (metaType instanceof OMTNamedVariableMetaType) {
                 return ((OMTNamedVariableMetaType) metaType).getName((YAMLValue) element);
@@ -76,10 +69,10 @@ public class OMTFindUsageProvider extends YAMLFindUsagesProvider implements Find
     @Override
     public @Nls @NotNull String getNodeText(@NotNull PsiElement element,
                                             boolean useFullName) {
-        if (!element.getClass().isAnnotationPresent(OMTOverride.class)) {
-            return super.getNodeText(element, useFullName);
+        if (element instanceof YAMLOMTKeyValueImpl || element instanceof YAMLOMTPlainTextImpl) {
+            return getDescriptiveName(element);
         }
-        return getDescriptiveName(element);
+        return super.getNodeText(element, useFullName);
     }
 
     private YamlMetaType getMetaType(PsiElement element) {
@@ -87,10 +80,10 @@ public class OMTFindUsageProvider extends YAMLFindUsagesProvider implements Find
     }
 
     private YamlMetaType getMetaValueType(PsiElement element) {
-        if (!(element instanceof YAMLKeyValue)) {
-            return getMetaType(element);
+        if (element instanceof YAMLKeyValue) {
+            return OMTMetaTypeProvider.getInstance(element.getProject())
+                    .getResolvedKeyValueMetaTypeMeta((YAMLKeyValue) element);
         }
-        return OMTMetaTypeProvider.getInstance(element.getProject())
-                .getResolvedKeyValueMetaTypeMeta((YAMLKeyValue) element);
+        return getMetaType(element);
     }
 }

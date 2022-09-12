@@ -1,22 +1,18 @@
 package com.misset.opp.omt.psi.impl.delegate.keyvalue;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.meta.model.modelitems.OMTModelItemMetaType;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.util.OMTRefactoringUtil;
 import com.misset.opp.refactoring.SupportsSafeDelete;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
-import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 
-public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate,
-        SupportsSafeDelete {
+public class OMTYamlModelItemDelegate extends OMTYamlKeyValueDelegateAbstract implements SupportsSafeDelete {
 
     private final transient YAMLKeyValue keyValue;
     private final transient OMTModelItemMetaType metaType = OMTModelItemMetaType.getInstance();
@@ -46,11 +42,6 @@ public class OMTYamlModelItemDelegate extends YAMLKeyValueImpl implements OMTYam
     @Override
     public PsiElement getOriginalElement() {
         return keyValue;
-    }
-
-    @Override
-    public PsiReference @NotNull [] getReferences() {
-        return OMTYamlDelegate.super.getReferences();
     }
 
     @Override
