@@ -3,7 +3,6 @@ package com.misset.opp.odt.psi.impl.variable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTDeclareVariable;
@@ -14,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper class for refactoring
  */
-public abstract class ODTBaseDeclaredVariable extends ODTStatementImpl implements ODTDeclareVariable, PsiNameIdentifierOwner {
-    protected ODTBaseDeclaredVariable(@NotNull ASTNode node) {
+public abstract class ODTDeclaredVariableAbstract extends ODTStatementImpl implements ODTDeclareVariable {
+    protected ODTDeclaredVariableAbstract(@NotNull ASTNode node) {
         super(node);
     }
 

@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
+public class ODTUsageVariableDelegate extends ODTVariableDelegateAbstract {
 
     public ODTUsageVariableDelegate(ODTVariable element) {
         super(element);

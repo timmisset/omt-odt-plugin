@@ -1,9 +1,7 @@
-package com.misset.opp.odt.psi.util;
+package com.misset.opp.odt.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 
 public class PsiRelationshipUtil {

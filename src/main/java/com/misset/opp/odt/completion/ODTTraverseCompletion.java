@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTQueryPathImpl;
-import com.misset.opp.odt.psi.impl.ODTTypeFilterProvider;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;

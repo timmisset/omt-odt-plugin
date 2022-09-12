@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * VAR $variable;
  */
-public class ODTDeclaredVariableDelegate extends ODTBaseVariableDelegate {
+public class ODTDeclaredVariableDelegate extends ODTVariableDelegateAbstract {
 
     public ODTDeclaredVariableDelegate(ODTVariable element) {
         super(element);

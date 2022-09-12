@@ -1,4 +1,4 @@
-package com.misset.opp.odt.psi.impl;
+package com.misset.opp.odt.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;

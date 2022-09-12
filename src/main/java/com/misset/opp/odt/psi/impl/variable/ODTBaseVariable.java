@@ -1,5 +1,6 @@
 package com.misset.opp.odt.psi.impl.variable;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
@@ -16,7 +17,6 @@ import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.Variable;
@@ -37,9 +37,8 @@ import java.util.Set;
  * Overlapping logic is confined in this base class
  */
 public abstract class ODTBaseVariable
-        extends ODTASTWrapperPsiElement
+        extends ASTWrapperPsiElement
         implements ODTVariable,
-        ODTVariableWrapper,
         PsiNameIdentifierOwner,
         ODTDocumented,
         SupportsSafeDelete {

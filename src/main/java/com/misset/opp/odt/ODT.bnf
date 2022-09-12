@@ -3,7 +3,7 @@
   parserImports="static com.intellij.psi.impl.source.tree.JavaDocElementType.DOC_COMMENT"
   parserClass="org.intellij.sdk.language.parser.ODTParser"
 
-  extends="com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement"
+  extends="com.misset.opp.odt.psi.impl.ASTWrapperPsiElement"
   implements="com.intellij.psi.PsiElement"
 
   psiClassPrefix="ODT"
@@ -36,7 +36,8 @@ interpolation ::=                           INTERPOLATION_START script? INTERPOL
 // or can be VAR $a = 1, $b = 2 etc.
 declareVariable ::=                         DECLARE_VAR (variableAssignment | variable) (COMMA (variableAssignment | variable))* {
     extends=statement
-    mixin="com.misset.opp.odt.psi.impl.variable.ODTBaseDeclaredVariable"
+    mixin="com.misset.opp.odt.psi.impl.variable.ODTDeclaredVariableAbstract"
+    implements="com.intellij.psi.PsiNameIdentifierOwner"
 }
 // a variable assignment is $var = 1234
 variableAssignment::=                       variable (COMMA variable)* EQUALS variableValue {
@@ -46,7 +47,7 @@ variableAssignment::=                       variable (COMMA variable)* EQUALS va
 variableValue ::=                           queryStatement | commandCall
 variable ::=                                VARIABLE_NAME {
     extends="com.misset.opp.odt.psi.impl.variable.ODTBaseVariable"
-    implements="com.misset.opp.odt.psi.impl.variable.ODTVariableWrapper"
+    implements="com.misset.opp.odt.psi.variable.ODTWrapperVariable"
     }
 
 // SCRIPT
@@ -60,7 +61,7 @@ script ::=                                  scriptLine+ {
 // a scriptline is contained by the addition of the semicolon at the end
 scriptLine ::=                              DOC_COMMENT? (commandBlock | logicalBlock | defineCommandStatement | statement) SEMICOLON* {
     implements="com.intellij.psi.PsiJavaDocumentedElement"
-    extends="com.misset.opp.odt.psi.impl.ODTBaseScriptLine"
+    extends="com.misset.opp.odt.psi.impl.ODTScriptLineAbstract"
 }
 statement ::=                               declareVariable | variableAssignment | definePrefix | commandCall |
                                             collectionStatement | returnStatement | queryStatement | defineQueryStatement

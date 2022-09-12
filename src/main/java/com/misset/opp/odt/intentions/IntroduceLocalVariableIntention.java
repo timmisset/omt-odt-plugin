@@ -20,7 +20,6 @@ import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.ODTFileType;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
-import com.misset.opp.odt.psi.util.PsiRelationshipUtil;
 import com.misset.opp.odt.refactoring.ODTInplaceVariableIntroducer;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,6 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.querystep;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -8,7 +9,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTQueryStep;
-import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQueryStep;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class ODTResolvableQueryStepAbstract extends ODTASTWrapperPsiElement implements ODTResolvableQueryStep, ODTQueryStep {
+public abstract class ODTResolvableQueryStepAbstract extends ASTWrapperPsiElement implements ODTResolvableQueryStep, ODTQueryStep {
     protected ODTResolvableQueryStepAbstract(@NotNull ASTNode node) {
         super(node);
     }

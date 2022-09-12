@@ -6,7 +6,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTEquationStatement;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryPath;
-import com.misset.opp.odt.psi.impl.ODTTypeFilterProvider;
+import com.misset.opp.odt.psi.ODTTypeFilterProvider;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntClass;
