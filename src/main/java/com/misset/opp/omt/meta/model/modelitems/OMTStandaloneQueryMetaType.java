@@ -14,7 +14,6 @@ import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
-import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
@@ -69,7 +68,7 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
     public @NotNull HashMap<String, Collection<PsiVariable>> getVariableMap(YAMLMapping mapping) {
         HashMap<String, Collection<PsiVariable>> variableMap = new HashMap<>();
         addSequenceToMap(mapping, PARAMS, variableMap);
-        OMTVariable baseVariable = OMTVariableProviderUtil.getReferenceTarget(mapping, "base");
+        PsiVariable baseVariable = OMTVariableProviderUtil.getReferenceTarget(mapping, "base");
         if (baseVariable != null) {
             variableMap.computeIfAbsent(baseVariable.getName(), s -> new ArrayList<>()).add(baseVariable);
         }

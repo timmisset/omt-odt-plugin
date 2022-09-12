@@ -1,7 +1,6 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.resolvable.psi.PsiVariable;
@@ -56,16 +55,16 @@ public class OMTVariableProviderUtil {
                                         Map<String, Collection<PsiVariable>> map) {
         for (YAMLSequenceItem sequenceItem : sequence.getItems()) {
             String key = getVariableName(sequenceItem);
-            OMTVariable referenceTarget = getReferenceTarget(sequenceItem);
+            PsiVariable referenceTarget = getReferenceTarget(sequenceItem);
             map.computeIfAbsent(key, s -> new ArrayList<>()).add(referenceTarget);
         }
     }
 
-    private static OMTVariable getReferenceTarget(YAMLSequenceItem sequenceItem) {
+    private static PsiVariable getReferenceTarget(YAMLSequenceItem sequenceItem) {
         return getReferenceTarget(sequenceItem.getValue(), "name");
     }
 
-    public static OMTVariable getReferenceTarget(YAMLValue yamlValue, String nameKeyIfMap) {
+    public static PsiVariable getReferenceTarget(YAMLValue yamlValue, String nameKeyIfMap) {
         if (yamlValue instanceof YAMLMapping) {
             // destructed notation, return the "name":
             final YAMLMapping yamlMapping = (YAMLMapping) yamlValue;
@@ -76,8 +75,8 @@ public class OMTVariableProviderUtil {
             yamlValue = name.getValue();
         }
         OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate(yamlValue);
-        if (delegate instanceof OMTVariable) {
-            return (OMTVariable) delegate;
+        if (delegate instanceof PsiVariable) {
+            return (PsiVariable) delegate;
         }
         return null;
     }

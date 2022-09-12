@@ -7,9 +7,9 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
-import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.refactoring.SupportsSafeDelete;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
@@ -34,7 +34,7 @@ import static com.misset.opp.omt.util.OMTRefactoringUtil.removeFromSequence;
  * represent in order to provide the information
  */
 public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements
-        OMTVariable,
+        PsiVariable,
         OMTYamlDelegate,
         SupportsSafeDelete {
     YAMLPlainTextImpl value;
