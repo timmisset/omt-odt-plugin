@@ -5,23 +5,23 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPathAbstract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ODTQueryPathImpl extends ODTResolvableQueryPath implements ODTQueryPath {
+public class ODTQueryPathImpl extends ODTResolvableQueryPathAbstract implements ODTQueryPath {
 
-  public ODTQueryPathImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTQueryPathImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitQueryPath(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitQueryPath(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

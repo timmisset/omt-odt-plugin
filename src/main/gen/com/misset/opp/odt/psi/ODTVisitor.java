@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiJavaDocumentedElement;
 import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.odt.documentation.ODTDocumented;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.impl.variable.ODTVariableWrapper;
+import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTVisitor extends PsiElementVisitor {

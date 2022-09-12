@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.misset.opp.odt.ODTFileType;
 import com.misset.opp.odt.ODTParserDefinition;
-import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.testcase.BasicTestCase;
 import com.misset.opp.testcase.CompletionUtil;
 import com.misset.opp.testcase.InspectionUtil;

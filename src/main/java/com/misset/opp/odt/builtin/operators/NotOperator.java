@@ -2,10 +2,10 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.odt.builtin.ArgumentValidator;
+import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
@@ -65,8 +65,7 @@ public class NotOperator extends BuiltInBooleanOperator {
         return Optional.ofNullable(call.getSignatureArgument(0))
                 .map(ODTSignatureArgument::getResolvableValue)
                 .map(ODTResolvableValue::getQuery)
-                .map(ODTResolvableQuery.class::cast)
-                .map(ODTResolvableQuery::requiresInput)
+                .map(ODTQuery::requiresInput)
                 .orElse(requiresInput());
     }
 }

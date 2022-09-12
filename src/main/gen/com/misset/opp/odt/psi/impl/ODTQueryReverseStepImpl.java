@@ -6,20 +6,20 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableQueryReverseStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableQueryReverseStepAbstract;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTQueryReverseStepImpl extends ODTResolvableQueryReverseStep implements ODTQueryReverseStep {
+public class ODTQueryReverseStepImpl extends ODTResolvableQueryReverseStepAbstract implements ODTQueryReverseStep {
 
-  public ODTQueryReverseStepImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTQueryReverseStepImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitQueryReverseStep(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitQueryReverseStep(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

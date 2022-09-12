@@ -7,21 +7,21 @@ import com.misset.opp.odt.psi.ODTCommandBlock;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgument;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgumentAbstract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ODTSignatureArgumentImpl extends ODTResolvableSignatureArgument implements ODTSignatureArgument {
+public class ODTSignatureArgumentImpl extends ODTResolvableSignatureArgumentAbstract implements ODTSignatureArgument {
 
-  public ODTSignatureArgumentImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTSignatureArgumentImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitSignatureArgument(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitSignatureArgument(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

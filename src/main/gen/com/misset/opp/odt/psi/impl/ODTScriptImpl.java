@@ -7,22 +7,22 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableScript;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableScriptAbstract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ODTScriptImpl extends ODTResolvableScript implements ODTScript {
+public class ODTScriptImpl extends ODTResolvableScriptAbstract implements ODTScript {
 
-  public ODTScriptImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTScriptImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitScript(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitScript(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

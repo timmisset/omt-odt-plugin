@@ -9,7 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.builtin.commands.ForEachCommand;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTAssignmentStatementImpl;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.CallableType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;

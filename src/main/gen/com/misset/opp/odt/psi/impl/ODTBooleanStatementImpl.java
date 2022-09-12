@@ -7,12 +7,12 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTBooleanStatement;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableBooleanStatement;
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableBooleanStatementAbstract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ODTBooleanStatementImpl extends ODTResolvableBooleanStatement implements ODTBooleanStatement {
+public class ODTBooleanStatementImpl extends ODTResolvableBooleanStatementAbstract implements ODTBooleanStatement {
 
   public ODTBooleanStatementImpl(@NotNull ASTNode node) {
     super(node);

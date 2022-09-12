@@ -5,20 +5,20 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTBaseCallName;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCallNameAbstract;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTCallNameImpl extends ODTBaseCallName implements ODTCallName {
+public class ODTCallNameImpl extends ODTCallNameAbstract implements ODTCallName {
 
-  public ODTCallNameImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTCallNameImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitCallName(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitCallName(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

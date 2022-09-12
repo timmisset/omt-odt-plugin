@@ -9,9 +9,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.ODTChooseBlock;
 import com.misset.opp.odt.psi.ODTOtherwisePath;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableChooseBlockStep;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableWhenPathStep;
+import com.misset.opp.odt.psi.ODTWhenPath;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,14 +39,14 @@ public class ODTOperatorInspectionChoose extends LocalInspectionTool {
             @Override
             public void visitElement(@NotNull PsiElement element) {
                 if (element instanceof ODTChooseBlock) {
-                    inspectChooseOperator(holder, (ODTResolvableChooseBlockStep) element);
+                    inspectChooseOperator(holder, (ODTChooseBlock) element);
                 }
             }
         };
     }
 
     private void inspectChooseOperator(@NotNull ProblemsHolder holder,
-                                       @NotNull ODTResolvableChooseBlockStep chooseBlock) {
+                                       @NotNull ODTChooseBlock chooseBlock) {
         if (chooseBlock.getQueryStepList().isEmpty()) {
             holder.registerProblem(chooseBlock, INCOMPLETE_CHOOSE_EXPECTED_WHEN_CONDITIONS, ProblemHighlightType.ERROR);
         } else if (chooseBlock.getWhenPathList().size() == 1) {
@@ -68,15 +67,15 @@ public class ODTOperatorInspectionChoose extends LocalInspectionTool {
         }
     }
 
-    private @Nullable PsiElement getIIFReplacement(@NotNull ODTResolvableChooseBlockStep chooseBlock) {
+    private @Nullable PsiElement getIIFReplacement(@NotNull ODTChooseBlock chooseBlock) {
         return Optional.ofNullable(chooseBlock.getWhenPathList().get(0))
                 .filter(whenPath -> whenPath.getQueryList().size() == 2)
                 .map(whenPath -> getReplacementFromChooseAndWhen(chooseBlock, whenPath))
                 .orElse(null);
     }
 
-    private ODTCall getReplacementFromChooseAndWhen(@NotNull ODTResolvableChooseBlockStep chooseBlock,
-                                                    ODTResolvableWhenPathStep whenPath) {
+    private ODTCall getReplacementFromChooseAndWhen(@NotNull ODTChooseBlock chooseBlock,
+                                                    ODTWhenPath whenPath) {
         return ODTElementGenerator.getInstance(chooseBlock.getProject())
                 .createCall("IIF", null,
                         Optional.ofNullable(whenPath.getCondition()).map(PsiElement::getText).orElse(null),
@@ -87,7 +86,7 @@ public class ODTOperatorInspectionChoose extends LocalInspectionTool {
                                 .orElse(null));
     }
 
-    private LocalQuickFix getReplaceWithIIFQuickFix(@NotNull ODTResolvableChooseBlockStep chooseBlock) {
+    private LocalQuickFix getReplaceWithIIFQuickFix(@NotNull ODTChooseBlock chooseBlock) {
         final PsiElement replacement = getIIFReplacement(chooseBlock);
         return new LocalQuickFix() {
             @Override

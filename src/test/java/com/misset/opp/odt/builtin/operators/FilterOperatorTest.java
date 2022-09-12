@@ -1,9 +1,9 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
+import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -59,7 +59,7 @@ class FilterOperatorTest extends BaseBuiltinTest {
         PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
         ODTSignatureArgument signatureArgument = mock(ODTSignatureArgument.class);
         ODTResolvableValue resolvableValue = mock(ODTResolvableValue.class);
-        ODTResolvableQuery query = mock(ODTResolvableQuery.class);
+        ODTQuery query = mock(ODTQuery.class);
         doReturn(signatureArgument).when(call).getCallSignatureArgumentElement(0);
         doReturn(resolvableValue).when(signatureArgument).getResolvableValue();
         doReturn(query).when(resolvableValue).getQuery();

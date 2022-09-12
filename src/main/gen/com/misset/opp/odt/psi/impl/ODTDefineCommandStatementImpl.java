@@ -4,11 +4,11 @@ package com.misset.opp.odt.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.callable.ODTBaseDefineCommandStatement;
+import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineCommandStatementAbstract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ODTDefineCommandStatementImpl extends ODTBaseDefineCommandStatement implements ODTDefineCommandStatement {
+public class ODTDefineCommandStatementImpl extends ODTDefineCommandStatementAbstract implements ODTDefineCommandStatement {
 
   public ODTDefineCommandStatementImpl(@NotNull ASTNode node) {
     super(node);

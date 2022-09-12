@@ -5,10 +5,10 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.prefix.ODTBaseNamespacePrefix;
+import com.misset.opp.odt.psi.impl.prefix.ODTNamespacePrefixAbstract;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTNamespacePrefixImpl extends ODTBaseNamespacePrefix implements ODTNamespacePrefix {
+public class ODTNamespacePrefixImpl extends ODTNamespacePrefixAbstract implements ODTNamespacePrefix {
 
     public ODTNamespacePrefixImpl(@NotNull ASTNode node) {
         super(node);

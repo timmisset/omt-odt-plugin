@@ -1,12 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package com.misset.opp.odt.psi;
 
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
 import org.jetbrains.annotations.Nullable;
 
-public interface ODTOtherwisePath extends ODTQueryStep, ODTResolvable {
+public interface ODTOtherwisePath extends ODTQueryStep {
 
-  @Nullable
-  ODTQuery getQuery();
+    @Nullable
+    ODTQuery getQuery();
 
 }

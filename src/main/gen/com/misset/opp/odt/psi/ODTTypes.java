@@ -152,7 +152,7 @@ public interface ODTTypes {
       } else if (type == DEFINE_PREFIX) {
         return new ODTDefinePrefixImpl(node);
       } else if (type == DEFINE_QUERY_STATEMENT) {
-        return new ODTDefineQueryStatementImpl(node);
+        return new ODTDefineQueryStatementImplAbstract(node);
       } else if (type == ELSE_BLOCK) {
         return new ODTElseBlockImpl(node);
       } else if (type == END_PATH) {

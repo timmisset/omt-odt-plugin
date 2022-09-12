@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
+import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.omt.commands.*;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
@@ -138,7 +138,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
         } else {
             return Optional.ofNullable(mapping.getKeyValueByKey(RETURNS))
                     .map(YAMLKeyValue::getValue)
-                    .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTResolvableQuery.class))
+                    .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTQuery.class))
                     .stream()
                     .flatMap(Collection::stream)
                     .map(Resolvable::resolve)

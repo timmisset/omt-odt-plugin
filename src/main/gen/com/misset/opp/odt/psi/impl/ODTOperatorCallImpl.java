@@ -4,10 +4,11 @@ package com.misset.opp.odt.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTOperatorCallAbstract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ODTOperatorCallImpl extends com.misset.opp.odt.psi.impl.resolvable.call.ODTOperatorCallImpl implements ODTOperatorCall {
+public class ODTOperatorCallImpl extends ODTOperatorCallAbstract implements ODTOperatorCall {
 
   public ODTOperatorCallImpl(@NotNull ASTNode node) {
     super(node);
@@ -40,5 +41,4 @@ public class ODTOperatorCallImpl extends com.misset.opp.odt.psi.impl.resolvable.
   public ODTSignature getSignature() {
     return findChildByClass(ODTSignature.class);
   }
-
 }

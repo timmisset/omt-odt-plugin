@@ -43,7 +43,7 @@ class ODTResolvableSignatureArgumentTest extends ODTTestCase {
     void testIsPrimitiveArgumentTrue() {
         ODTFile odtFile = configureByText("@COMMAND(1)");
         ReadAction.run(() -> {
-            ODTResolvableSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTResolvableSignatureArgument.class, true);
+            ODTSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTSignatureArgument.class, true);
             assertTrue(Objects.requireNonNull(signatureArgument).isPrimitiveArgument());
         });
     }
@@ -52,7 +52,7 @@ class ODTResolvableSignatureArgumentTest extends ODTTestCase {
     void testIsPrimitiveArgumentFalse() {
         ODTFile odtFile = configureByText("@COMMAND($value)");
         ReadAction.run(() -> {
-            ODTResolvableSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTResolvableSignatureArgument.class, true);
+            ODTSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTSignatureArgument.class, true);
             assertFalse(Objects.requireNonNull(signatureArgument).isPrimitiveArgument());
         });
     }
@@ -61,7 +61,7 @@ class ODTResolvableSignatureArgumentTest extends ODTTestCase {
     void testTypeFilterDoesntAcceptVoid() {
         ODTFile odtFile = configureByText("@COMMAND({})");
         ReadAction.run(() -> {
-            ODTResolvableSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTResolvableSignatureArgument.class, true);
+            ODTSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTSignatureArgument.class, true);
             Predicate<Set<OntResource>> typeFilter = Objects.requireNonNull(signatureArgument).getTypeFilter(signatureArgument);
             assertFalse(typeFilter.test(Collections.singleton(OppModelConstants.getVoidResponse())));
         });
@@ -72,7 +72,7 @@ class ODTResolvableSignatureArgumentTest extends ODTTestCase {
         initOntologyModel();
         ODTFile odtFile = configureByText("CONTAINS(1)");
         ReadAction.run(() -> {
-            ODTResolvableSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTResolvableSignatureArgument.class, true);
+            ODTSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTSignatureArgument.class, true);
             Predicate<Set<OntResource>> typeFilter = signatureArgument.getTypeFilter(signatureArgument);
             assertFalse(typeFilter.test(Collections.singleton(OppModelConstants.getXsdIntegerInstance())));
             assertTrue(typeFilter.test(Collections.singleton(OppModelConstants.getXsdStringInstance())));

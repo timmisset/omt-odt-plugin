@@ -6,20 +6,20 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTSubQuery;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableSubQueryStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableSubQueryStepAbstract;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTSubQueryImpl extends ODTResolvableSubQueryStep implements ODTSubQuery {
+public class ODTSubQueryImpl extends ODTResolvableSubQueryStepAbstract implements ODTSubQuery {
 
-  public ODTSubQueryImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTSubQueryImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitSubQuery(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitSubQuery(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

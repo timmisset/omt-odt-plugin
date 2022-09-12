@@ -5,20 +5,20 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTIriStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableIriStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableIriStepAbstract;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTIriStepImpl extends ODTResolvableIriStep implements ODTIriStep {
+public class ODTIriStepImpl extends ODTResolvableIriStepAbstract implements ODTIriStep {
 
-  public ODTIriStepImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTIriStepImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitIriStep(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitIriStep(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

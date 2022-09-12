@@ -7,21 +7,21 @@ import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableValueBase;
+import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableValueAbstract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ODTResolvableValueImpl extends ODTResolvableValueBase implements ODTResolvableValue {
+public class ODTResolvableValueImpl extends ODTResolvableValueAbstract implements ODTResolvableValue {
 
-  public ODTResolvableValueImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTResolvableValueImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitResolvableValue(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitResolvableValue(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

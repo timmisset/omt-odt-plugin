@@ -7,10 +7,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.rename.NameSuggestionProvider;
 import com.misset.opp.odt.ODTLanguage;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
+import com.misset.opp.odt.psi.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -38,10 +36,10 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
         if (element instanceof ODTResolvable) {
             suggestions.addAll(forVariables(getTypeSuggestions((Resolvable) element)));
         }
-        if (element instanceof ODTQueryStatement && element.getFirstChild() instanceof ODTResolvableQueryPath) {
-            List<ODTResolvableQueryOperationStep> operationStepList = ((ODTResolvableQueryPath) element.getFirstChild()).getResolvableQueryOperationStepList();
+        if (element instanceof ODTQueryStatement && element.getFirstChild() instanceof ODTQueryPath) {
+            List<ODTQueryOperationStep> operationStepList = ((ODTQueryPath) element.getFirstChild()).getQueryOperationStepList();
             if (!operationStepList.isEmpty()) {
-                ODTResolvableQueryOperationStep operationStep = operationStepList.get(operationStepList.size() - 1);
+                ODTQueryOperationStep operationStep = operationStepList.get(operationStepList.size() - 1);
                 ODTQueryStep queryStep = operationStep.getQueryStep();
                 if (queryStep instanceof ODTCall) {
                     ODTCall call = (ODTCall) queryStep;
@@ -98,9 +96,9 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
     }
 
     private List<String> getNameSuggestions(ODTQuery query) {
-        if (query instanceof ODTResolvableQueryPath) {
-            return Optional.of((ODTResolvableQueryPath) query)
-                    .map(ODTResolvableQueryPath::getResolvableQueryOperationStepList)
+        if (query instanceof ODTQueryPath) {
+            return Optional.of((ODTQueryPath) query)
+                    .map(ODTQueryPath::getQueryOperationStepList)
                     .map(steps -> steps.get(steps.size() - 1))
                     .map(ODTQueryOperationStep::getQueryStep)
                     .filter(ODTOperatorCall.class::isInstance)

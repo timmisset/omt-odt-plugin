@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -66,8 +65,8 @@ public class ODTStyleInspectionUnnecessaryIdentifierOperator extends LocalInspec
                     Instead, filter out the current step and generate a new query, then replace it and catch the error
                  */
                 final PsiElement psiElement = descriptor.getPsiElement();
-                final ODTResolvableQueryOperationStep operationStep = PsiTreeUtil.getParentOfType(psiElement,
-                        ODTResolvableQueryOperationStep.class);
+                final ODTQueryOperationStep operationStep = PsiTreeUtil.getParentOfType(psiElement,
+                        ODTQueryOperationStep.class);
                 if (operationStep == null) {
                     return;
                 }

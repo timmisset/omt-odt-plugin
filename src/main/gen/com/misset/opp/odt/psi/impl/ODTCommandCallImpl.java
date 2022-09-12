@@ -4,20 +4,21 @@ package com.misset.opp.odt.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.impl.resolvable.call.ODTCommandCallAbstract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ODTCommandCallImpl extends com.misset.opp.odt.psi.impl.resolvable.call.ODTCommandCallImpl implements ODTCommandCall {
+public class ODTCommandCallImpl extends ODTCommandCallAbstract implements ODTCommandCall {
 
-  public ODTCommandCallImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTCommandCallImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitCommandCall(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitCommandCall(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

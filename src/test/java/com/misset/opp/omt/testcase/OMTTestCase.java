@@ -6,7 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.misset.opp.indexing.PrefixIndex;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
@@ -103,10 +103,10 @@ public abstract class OMTTestCase extends BasicTestCase<OMTFile> {
                 "   DEFINE QUERY query(%s) => %s", String.join(", ", params), queryStatement));
     }
 
-    protected ODTResolvableCall getCallByName(String callName) {
+    protected ODTCall getCallByName(String callName) {
         final ODTCallName elementByText = myFixture.findElementByText(callName, ODTCallName.class);
         if (elementByText != null) {
-            return (ODTResolvableCall) elementByText.getParent();
+            return (ODTCall) elementByText.getParent();
         }
         fail("Could not find call by name: " + callName + ", make sure the caret is located within an ODT script and includes " +
                 "the @ if it's a Command callname");

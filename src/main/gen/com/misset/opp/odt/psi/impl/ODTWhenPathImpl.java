@@ -7,22 +7,22 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTVisitor;
 import com.misset.opp.odt.psi.ODTWhenPath;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableWhenPathStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableWhenPathStepAbstract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ODTWhenPathImpl extends ODTResolvableWhenPathStep implements ODTWhenPath {
+public class ODTWhenPathImpl extends ODTResolvableWhenPathStepAbstract implements ODTWhenPath {
 
-  public ODTWhenPathImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTWhenPathImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitWhenPath(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitWhenPath(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

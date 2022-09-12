@@ -6,21 +6,21 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTOtherwisePath;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableOtherwisePathStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableOtherwisePathStepAbstract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ODTOtherwisePathImpl extends ODTResolvableOtherwisePathStep implements ODTOtherwisePath {
+public class ODTOtherwisePathImpl extends ODTResolvableOtherwisePathStepAbstract implements ODTOtherwisePath {
 
-  public ODTOtherwisePathImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTOtherwisePathImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitOtherwisePath(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitOtherwisePath(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

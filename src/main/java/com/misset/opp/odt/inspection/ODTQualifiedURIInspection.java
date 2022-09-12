@@ -13,9 +13,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.indexing.PrefixIndex;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableCurieElementStep;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableIriStep;
+import com.misset.opp.odt.psi.ODTIriStep;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,9 +41,9 @@ public class ODTQualifiedURIInspection extends LocalInspectionTool {
 
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (element instanceof ODTResolvableIriStep) {
-                    String namespace = ((ODTResolvableIriStep) element).getNamespace();
-                    String localName = ((ODTResolvableIriStep) element).getLocalName();
+                if (element instanceof ODTIriStep) {
+                    String namespace = ((ODTIriStep) element).getNamespace();
+                    String localName = ((ODTIriStep) element).getLocalName();
                     List<String> prefixes = PrefixIndex.getPrefixes(namespace);
                     if (!prefixes.isEmpty()) {
                         holder.registerProblem(element, WEAK_WARNING,
@@ -73,8 +73,7 @@ public class ODTQualifiedURIInspection extends LocalInspectionTool {
                         ODTFile containingFile = (ODTFile) psiElement.getContainingFile();
 
                         // replace the current element:
-                        ODTResolvableCurieElementStep curie = ODTElementGenerator.getInstance(project)
-                                .fromFile(prefix + ":" + localName, ODTResolvableCurieElementStep.class);
+                        ODTCurieElement curie = ODTElementGenerator.getInstance(project).fromFile(prefix + ":" + localName, ODTCurieElement.class);
                         if (curie != null) {
                             PsiElement replacement = psiElement.replace(curie);
                             ProblemDescriptorImpl newProblemDescriptor = new ProblemDescriptorImpl(

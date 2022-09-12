@@ -8,23 +8,23 @@ import com.misset.opp.odt.psi.ODTChooseBlock;
 import com.misset.opp.odt.psi.ODTEndPath;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableChooseBlockStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.choose.ODTResolvableChooseBlockStepAbstract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ODTChooseBlockImpl extends ODTResolvableChooseBlockStep implements ODTChooseBlock {
+public class ODTChooseBlockImpl extends ODTResolvableChooseBlockStepAbstract implements ODTChooseBlock {
 
-  public ODTChooseBlockImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTChooseBlockImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitChooseBlock(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitChooseBlock(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

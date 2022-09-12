@@ -3,7 +3,6 @@ package com.misset.opp.odt.psi.impl.prefix;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTDefinePrefix;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableCurieElementStep;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
@@ -15,7 +14,7 @@ public class PrefixUtil {
         // empty constructor
     }
 
-    private static final Logger LOGGER = Logger.getInstance(ODTResolvableCurieElementStep.class);
+    private static final Logger LOGGER = Logger.getInstance(PrefixUtil.class);
 
     public static String getFullyQualifiedUri(YAMLKeyValue prefix,
                                               String localName) {

@@ -5,8 +5,8 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableCurieElementStep;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.testcase.OMTTestCase;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -26,8 +26,8 @@ class OMTRegisterPrefixLocalQuickFixTest extends OMTTestCase {
         configureByText("" +
                 "queries: |\n" +
                 "   DEFINE QUERY <caret>query => /ont:ClassA");
-        final ODTResolvableCurieElementStep curieElementStep = ReadAction.compute(() ->
-                PsiTreeUtil.findChildOfType(myFixture.getElementAtCaret().getParent(), ODTResolvableCurieElementStep.class));
+        final ODTCurieElement curieElementStep = ReadAction.compute(() ->
+                PsiTreeUtil.findChildOfType(myFixture.getElementAtCaret().getParent(), ODTCurieElement.class));
         doReturn(curieElementStep).when(problemDescriptor).getPsiElement();
 
         final OMTRegisterPrefixLocalQuickFix odtRegisterPrefixLocalQuickFix = new OMTRegisterPrefixLocalQuickFix(
@@ -60,7 +60,7 @@ class OMTRegisterPrefixLocalQuickFixTest extends OMTTestCase {
     void registerPrefixRegisterInExistingBlock() {
         final ProblemDescriptor problemDescriptor = mock(ProblemDescriptor.class);
         configureByText(insideQueryWithPrefixes("/<caret>prefix:ClassA"));
-        final ODTResolvableCurieElementStep curieElementStep = (ODTResolvableCurieElementStep) ReadAction.compute(() ->
+        final ODTCurieElement curieElementStep = (ODTCurieElement) ReadAction.compute(() ->
                 myFixture.getElementAtCaret().getParent());
         doReturn(curieElementStep).when(problemDescriptor).getPsiElement();
 

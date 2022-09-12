@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTReturnStatement;
 import com.misset.opp.odt.psi.impl.ODTDefineCommandStatementImpl;
-import com.misset.opp.odt.psi.impl.ODTDefineQueryStatementImpl;
+import com.misset.opp.odt.psi.impl.ODTDefineQueryStatementImplAbstract;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
@@ -38,8 +38,8 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (element instanceof ODTDefineQueryStatementImpl) {
-                    inspectODTDefineQueryStatement(holder, (ODTDefineQueryStatementImpl) element);
+                if (element instanceof ODTDefineQueryStatementImplAbstract) {
+                    inspectODTDefineQueryStatement(holder, (ODTDefineQueryStatementImplAbstract) element);
                 } else if (element instanceof ODTDefineCommandStatementImpl) {
                     inspectODTDefineCommandStatement(holder, (ODTDefineCommandStatementImpl) element);
                 }
@@ -48,7 +48,7 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
     }
 
     private void inspectODTDefineQueryStatement(@NotNull ProblemsHolder holder,
-                                                @NotNull ODTDefineQueryStatementImpl defineQueryStatement) {
+                                                @NotNull ODTDefineQueryStatementImplAbstract defineQueryStatement) {
         Set<OntResource> resolve = defineQueryStatement.getQuery().resolve();
         Set<OntResource> returnType = defineQueryStatement.getReturnType();
         if (returnType == null) {

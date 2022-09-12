@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.prefix.ODTBaseNamespacePrefix;
+import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.resolvable.psi.PsiPrefix;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTBaseNamespacePrefix> {
-    public ODTNamespacePrefixReference(@NotNull ODTBaseNamespacePrefix element) {
+public class ODTNamespacePrefixReference extends ODTPolyReferenceBase<ODTNamespacePrefix> {
+    public ODTNamespacePrefixReference(@NotNull ODTNamespacePrefix element) {
         super(element, TextRange.allOf(element.getName()), false);
     }
 

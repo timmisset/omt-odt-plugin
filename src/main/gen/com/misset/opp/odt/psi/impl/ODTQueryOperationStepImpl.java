@@ -5,23 +5,23 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStepAbstract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ODTQueryOperationStepImpl extends ODTResolvableQueryOperationStep implements ODTQueryOperationStep {
+public class ODTQueryOperationStepImpl extends ODTResolvableQueryOperationStepAbstract implements ODTQueryOperationStep {
 
-  public ODTQueryOperationStepImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTQueryOperationStepImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitQueryOperationStep(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitQueryOperationStep(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.builtin.operators.IIfOperator;
 import com.misset.opp.odt.psi.ODTQuery;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Resolvable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;

@@ -2,11 +2,7 @@ package com.misset.opp.omt;
 
 import com.intellij.patterns.PatternCondition;
 import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiReferenceContributor;
-import com.intellij.psi.PsiReferenceProvider;
-import com.intellij.psi.PsiReferenceRegistrar;
+import com.intellij.psi.*;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.omt.psi.impl.yaml.OMTOverride;
 import org.jetbrains.annotations.NotNull;

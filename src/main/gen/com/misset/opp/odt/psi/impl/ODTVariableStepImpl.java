@@ -6,20 +6,20 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableStep;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep;
+import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStepAbstract;
 import org.jetbrains.annotations.NotNull;
 
-public class ODTVariableStepImpl extends ODTResolvableVariableStep implements ODTVariableStep {
+public class ODTVariableStepImpl extends ODTResolvableVariableStepAbstract implements ODTVariableStep {
 
-  public ODTVariableStepImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTVariableStepImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitVariableStep(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitVariableStep(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

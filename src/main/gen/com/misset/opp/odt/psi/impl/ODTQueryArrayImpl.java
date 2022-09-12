@@ -7,22 +7,22 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryArray;
 import com.misset.opp.odt.psi.ODTVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryArray;
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryArrayAbstract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ODTQueryArrayImpl extends ODTResolvableQueryArray implements ODTQueryArray {
+public class ODTQueryArrayImpl extends ODTResolvableQueryArrayAbstract implements ODTQueryArray {
 
-  public ODTQueryArrayImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public ODTQueryArrayImpl(@NotNull ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull ODTVisitor visitor) {
-    visitor.visitQueryArray(this);
-  }
+    public void accept(@NotNull ODTVisitor visitor) {
+        visitor.visitQueryArray(this);
+    }
 
-  @Override
+    @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);
