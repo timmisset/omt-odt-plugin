@@ -3,13 +3,13 @@ package com.misset.opp.omt.testcase;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.indexing.PrefixIndex;
 import com.misset.opp.odt.psi.ODTCallName;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.startup.IndexOMTPrefixes;
 import com.misset.opp.testcase.BasicTestCase;
@@ -130,7 +130,7 @@ public abstract class OMTTestCase extends BasicTestCase<OMTFile> {
         });
     }
 
-    protected OMTYamlDelegate getDelegateAtCaret() {
+    protected PsiNamedElement getDelegateAtCaret() {
         return ReadAction.compute(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
             if (elementAtCaret instanceof YAMLPsiElement) {

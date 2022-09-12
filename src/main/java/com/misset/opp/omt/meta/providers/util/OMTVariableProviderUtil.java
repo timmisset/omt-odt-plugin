@@ -1,7 +1,7 @@
 package com.misset.opp.omt.meta.providers.util;
 
 import com.intellij.psi.PsiElement;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.jetbrains.yaml.psi.*;
@@ -74,7 +74,7 @@ public class OMTVariableProviderUtil {
             }
             yamlValue = name.getValue();
         }
-        OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate(yamlValue);
+        PsiNamedElement delegate = OMTYamlDelegateFactory.createDelegate(yamlValue);
         if (delegate instanceof PsiVariable) {
             return (PsiVariable) delegate;
         }

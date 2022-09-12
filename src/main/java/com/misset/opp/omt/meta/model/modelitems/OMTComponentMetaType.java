@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.arrays.OMTVariablesArrayMetaType;
 import com.misset.opp.omt.meta.arrays.OMTWatchersArrayMetaType;
@@ -14,7 +15,6 @@ import com.misset.opp.omt.meta.scalars.OMTInterpolatedStringMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTScriptMetaType;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCallable;
@@ -106,7 +106,7 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
             value = bindTo.getValue();
         }
         if (value instanceof YAMLPlainTextImpl) {
-            OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate(value);
+            PsiNamedElement delegate = OMTYamlDelegateFactory.createDelegate(value);
             if (delegate instanceof PsiVariable) {
                 return (PsiVariable) delegate;
             }

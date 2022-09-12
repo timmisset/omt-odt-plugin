@@ -7,8 +7,8 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlPrefixIriDelegate;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public class OMTUnusedPrefixIriInspection extends LocalInspectionTool {
                 if (!(element instanceof YAMLPsiElement) || !(element.getContainingFile() instanceof OMTFile)) {
                     return;
                 }
-                final OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
+                final PsiNamedElement delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
                 if (delegate instanceof OMTYamlPrefixIriDelegate) {
                     final OMTYamlPrefixIriDelegate prefixIriDelegate = (OMTYamlPrefixIriDelegate) delegate;
                     if (prefixIriDelegate.getKey() != null && ((OMTYamlPrefixIriDelegate) delegate).isUnused()) {

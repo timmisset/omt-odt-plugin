@@ -3,10 +3,9 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTImportMemberReference;
 import com.misset.opp.omt.util.OMTRefactoringUtil;
 import com.misset.opp.refactoring.SupportsSafeDelete;
@@ -30,8 +29,8 @@ import java.util.function.Function;
  * The OMTYamlImportMemberDelegate serves as a proxy to the actual Callable that it imports
  * All PsiCallable interface methods are deferred
  */
-public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
-        OMTYamlDelegate,
+public class OMTYamlImportMemberDelegate extends OMTYamlPlainTextDelegateAbstract implements
+        PsiNamedElement,
         SupportsSafeDelete,
         PsiReferencedElement,
         PsiCallable {
@@ -53,11 +52,6 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     @NotNull
     public OMTImportMemberReference getReference() {
         return new OMTImportMemberReference(value);
-    }
-
-    @Override
-    public PsiReference @NotNull [] getReferences() {
-        return OMTYamlDelegate.super.getReferences();
     }
 
     /**

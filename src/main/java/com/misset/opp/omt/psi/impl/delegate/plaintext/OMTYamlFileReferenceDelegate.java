@@ -1,15 +1,15 @@
 package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTFileReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-public class OMTYamlFileReferenceDelegate extends YAMLPlainTextImpl implements OMTYamlDelegate {
+public class OMTYamlFileReferenceDelegate extends OMTYamlPlainTextDelegateAbstract implements PsiNamedElement {
     YAMLPlainTextImpl value;
 
     public OMTYamlFileReferenceDelegate(@NotNull YAMLPlainTextImpl yamlValue) {
@@ -32,10 +32,5 @@ public class OMTYamlFileReferenceDelegate extends YAMLPlainTextImpl implements O
     @Override
     public PsiReference getReference() {
         return new OMTFileReference(value);
-    }
-
-    @Override
-    public PsiReference @NotNull [] getReferences() {
-        return OMTYamlDelegate.super.getReferences();
     }
 }

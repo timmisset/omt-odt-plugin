@@ -4,8 +4,8 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlBindingParameterDelegate;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlVariableDelegate;
@@ -25,7 +25,7 @@ public class OMTUnusedVariableInspection extends LocalInspectionTool {
                 if (!(element instanceof YAMLPsiElement) || !(element.getContainingFile() instanceof OMTFile)) {
                     return;
                 }
-                final OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
+                final PsiNamedElement delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
                 if (delegate instanceof OMTYamlVariableDelegate) {
                     OMTYamlVariableDelegate variableDelegate = (OMTYamlVariableDelegate) delegate;
                     if ((variableDelegate).isUnused()) {

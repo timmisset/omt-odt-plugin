@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.meta.OMTGraphShapeHandlerMemberMetaType;
 import com.misset.opp.omt.meta.OMTImportMemberMetaType;
@@ -38,19 +39,19 @@ import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
  * In case there is no delegate compatible with the OMTMetaType a placeholder 'NOT_A_DELEGATE' is returned instead
  */
 public class OMTYamlDelegateFactory {
-    private static final Key<OMTYamlDelegate> DELEGATE = new Key<>("OMT_YAML_DELEGATE");
+    private static final Key<PsiNamedElement> DELEGATE = new Key<>("OMT_YAML_DELEGATE");
 
     private OMTYamlDelegateFactory() {
     }
 
-    public static OMTYamlDelegate createDelegate(YAMLPsiElement psiElement) {
-        final OMTYamlDelegate omtYamlDelegate = DELEGATE.get(psiElement);
+    public static PsiNamedElement createDelegate(YAMLPsiElement psiElement) {
+        final PsiNamedElement omtYamlDelegate = DELEGATE.get(psiElement);
         if (omtYamlDelegate != null) {
             return omtYamlDelegate;
         }
 
         // create delegate by meta-type information:
-        OMTYamlDelegate delegate = null;
+        PsiNamedElement delegate = null;
         if (psiElement instanceof YAMLKeyValue) {
             delegate = createKeyValueDelegate((YAMLKeyValue) psiElement);
         } else if (psiElement instanceof YAMLPlainTextImpl) {
@@ -64,7 +65,7 @@ public class OMTYamlDelegateFactory {
         return delegate;
     }
 
-    private static OMTYamlDelegate createKeyValueDelegate(YAMLKeyValue keyValue) {
+    private static PsiNamedElement createKeyValueDelegate(YAMLKeyValue keyValue) {
         final OMTMetaTypeProvider instance = OMTMetaTypeProvider.getInstance(keyValue.getProject());
         final YamlMetaType valueMetaType = instance.getResolvedKeyValueMetaTypeMeta(keyValue);
         if (valueMetaType instanceof OMTModelItemMetaType) {
@@ -81,7 +82,7 @@ public class OMTYamlDelegateFactory {
         return null;
     }
 
-    private static OMTYamlDelegate createPlainTextDelegate(YAMLPlainTextImpl yamlPlainText) {
+    private static PsiNamedElement createPlainTextDelegate(YAMLPlainTextImpl yamlPlainText) {
         final OMTMetaTypeProvider instance = OMTMetaTypeProvider.getInstance(yamlPlainText.getProject());
         final YamlMetaType metaType = instance.getResolvedMetaType(yamlPlainText);
         if (metaType instanceof OMTParamMetaType) {
@@ -110,7 +111,7 @@ public class OMTYamlDelegateFactory {
         return null;
     }
 
-    private static class NotADelegate extends ASTWrapperPsiElement implements OMTYamlDelegate {
+    private static class NotADelegate extends ASTWrapperPsiElement implements PsiNamedElement {
 
         public NotADelegate(@NotNull ASTNode node) {
             super(node);
