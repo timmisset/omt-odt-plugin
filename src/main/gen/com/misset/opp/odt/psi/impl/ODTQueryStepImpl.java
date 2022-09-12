@@ -10,15 +10,15 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class ODTQueryStepImpl extends ODTResolvableQueryStepAbstract implements ODTQueryStep {
 
-    public ODTQueryStepImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTQueryStepImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitQueryStep(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitQueryStep(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

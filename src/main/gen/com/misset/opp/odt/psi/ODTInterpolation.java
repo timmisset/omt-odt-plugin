@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ODTInterpolation extends PsiElement {
 
-    @Nullable
-    ODTScript getScript();
+  @Nullable
+  ODTScript getScript();
 
 }

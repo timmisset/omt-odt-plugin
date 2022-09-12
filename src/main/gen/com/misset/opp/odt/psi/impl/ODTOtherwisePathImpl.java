@@ -12,15 +12,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class ODTOtherwisePathImpl extends ODTResolvableOtherwisePathStepAbstract implements ODTOtherwisePath {
 
-    public ODTOtherwisePathImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTOtherwisePathImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitOtherwisePath(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitOtherwisePath(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

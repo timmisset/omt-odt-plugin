@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface ODTChooseBlock extends ODTQueryStep, ODTResolvableChooseBlockStep {
 
-    @Nullable
-    ODTEndPath getEndPath();
+  @Nullable
+  ODTEndPath getEndPath();
 
-    @NotNull
-    List<ODTQueryStep> getQueryStepList();
+  @NotNull
+  List<ODTQueryStep> getQueryStepList();
 
 }

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ODTIfBlock extends PsiElement {
 
-    @NotNull
-    ODTQuery getQuery();
+  @NotNull
+  ODTQuery getQuery();
 
 }

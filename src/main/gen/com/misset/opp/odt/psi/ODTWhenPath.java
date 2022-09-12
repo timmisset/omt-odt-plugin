@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ODTWhenPath extends ODTQueryStep, ODTResolvableWhenStep {
 
-    @NotNull
-    List<ODTQuery> getQueryList();
+  @NotNull
+  List<ODTQuery> getQueryList();
 
 }

@@ -33,33 +33,12 @@ class ODTHighlightingLexer implements FlexLexer {
   public static final int DEFINE_PARAMS = 8;
   public static final int INTERPOLATION = 10;
 
-  /**
-   * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
-   * ZZ_LEXSTATE[l+1] is the state in the DFA for the lexical state l
-   *                  at the beginning of a line
-   * l is of the form l = 2*k, k a non negative integer
-   */
-  private static final int ZZ_LEXSTATE[] = {
-          0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5
-  };
-
-  /**
-   * Translates characters to character classes
-   * Chosen bits are [9, 6, 6]
-   * Total runtime size is 1696 bytes
-   */
-  public static int ZZ_CMAP(int ch) {
-    return ZZ_CMAP_A[(ZZ_CMAP_Y[ZZ_CMAP_Z[ch >> 12] | ((ch >> 6) & 0x3f)] << 6) | (ch & 0x3f)];
-  }
-
   /* The ZZ_CMAP_Z table has 272 entries */
   static final char ZZ_CMAP_Z[] = zzUnpackCMap(
           "\1\0\1\100\1\200\u010d\100");
-
   /* The ZZ_CMAP_Y table has 192 entries */
   static final char ZZ_CMAP_Y[] = zzUnpackCMap(
           "\1\0\1\1\1\2\1\3\2\4\172\3\1\5\77\3");
-
   /* The ZZ_CMAP_A table has 384 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
           "\11\0\1\1\1\17\1\21\1\22\1\20\22\0\1\1\1\72\1\15\1\61\1\60\1\0\1\13\1\23\1" +
@@ -69,12 +48,15 @@ class ODTHighlightingLexer implements FlexLexer {
                   "\1\106\1\57\1\3\1\24\1\34\1\53\1\55\1\54\1\32\1\33\1\51\1\2\1\50\2\2\1\35" +
                   "\1\52\1\47\1\56\2\2\1\30\1\36\1\27\1\31\5\2\1\103\1\100\1\104\7\0\1\21\32" +
                   "\0\1\1\137\0\100\5\50\0\2\21\26\0");
-
   /**
-   * Translates DFA states to action switch labels.
+   * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
+   * ZZ_LEXSTATE[l+1] is the state in the DFA for the lexical state l
+   * at the beginning of a line
+   * l is of the form l = 2*k, k a non negative integer
    */
-  private static final int[] ZZ_ACTION = zzUnpackAction();
-
+  private static final int ZZ_LEXSTATE[] = {
+          0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5
+  };
   private static final String ZZ_ACTION_PACKED_0 =
           "\6\0\1\1\1\2\2\3\1\4\1\5\1\6\1\1" +
                   "\1\6\1\7\3\1\1\4\1\10\14\3\1\11\1\1" +
@@ -92,32 +74,10 @@ class ODTHighlightingLexer implements FlexLexer {
                   "\1\31\1\42\1\34\1\0\1\60\2\3\1\61\1\56" +
                   "\1\0\1\62\1\63\1\3\1\31\1\0\1\61\2\0" +
                   "\1\60";
-
-  private static int[] zzUnpackAction() {
-    int[] result = new int[222];
-    int offset = 0;
-    offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
-    return result;
-  }
-
-  private static int zzUnpackAction(String packed, int offset, int[] result) {
-    int i = 0;       /* index in packed string  */
-    int j = offset;  /* index in unpacked array */
-    int l = packed.length();
-    while (i < l) {
-      int count = packed.charAt(i++);
-      int value = packed.charAt(i++);
-      do result[j++] = value; while (--count > 0);
-    }
-    return j;
-  }
-
-
   /**
-   * Translates a state to a row index in the transition table
+   * Translates DFA states to action switch labels.
    */
-  private static final int[] ZZ_ROWMAP = zzUnpackRowMap();
-
+  private static final int[] ZZ_ACTION = zzUnpackAction();
   private static final String ZZ_ROWMAP_PACKED_0 =
           "\0\0\0\115\0\232\0\347\0\u0134\0\u0181\0\u01ce\0\u021b" +
                   "\0\u0268\0\u02b5\0\u0302\0\u034f\0\u039c\0\u03e9\0\u0436\0\u0483" +
@@ -147,30 +107,10 @@ class ODTHighlightingLexer implements FlexLexer {
                   "\0\u3107\0\u3154\0\u01ce\0\u31a1\0\u0f0a\0\u31ee\0\u323b\0\u3288" +
                   "\0\u32d5\0\u3322\0\u01ce\0\u2a1c\0\u336f\0\u0268\0\u0268\0\u33bc" +
                   "\0\u3409\0\u3456\0\u2331\0\u34a3\0\u34f0\0\u01ce";
-
-  private static int[] zzUnpackRowMap() {
-    int[] result = new int[222];
-    int offset = 0;
-    offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
-    return result;
-  }
-
-  private static int zzUnpackRowMap(String packed, int offset, int[] result) {
-    int i = 0;  /* index in packed string  */
-    int j = offset;  /* index in unpacked array */
-    int l = packed.length();
-    while (i < l) {
-      int high = packed.charAt(i++) << 16;
-      result[j++] = high | packed.charAt(i++);
-    }
-    return j;
-  }
-
   /**
-   * The transition table of the DFA
+   * Translates a state to a row index in the transition table
    */
-  private static final int[] ZZ_TRANS = zzUnpackTrans();
-
+  private static final int[] ZZ_ROWMAP = zzUnpackRowMap();
   private static final String ZZ_TRANS_PACKED_0 =
           "\1\7\1\10\1\11\1\12\1\13\1\7\1\14\1\15" +
                   "\1\16\1\17\1\20\1\7\1\15\1\21\1\7\1\10" +
@@ -524,6 +464,140 @@ class ODTHighlightingLexer implements FlexLexer {
                   "\1\335\3\334\2\0\3\334\2\0\2\335\2\0\1\335" +
                   "\1\336\10\0\1\334\1\335\30\334\2\0\3\335\6\334" +
                   "\2\0\4\334\11\0\1\335\3\334";
+  /**
+   * The transition table of the DFA
+   */
+  private static final int[] ZZ_TRANS = zzUnpackTrans();
+  /* error messages for the codes above */
+  private static final String[] ZZ_ERROR_MSG = {
+          "Unknown internal scanner error",
+          "Error: could not match input",
+          "Error: pushback value was too large"
+  };
+  private static final String ZZ_ATTRIBUTE_PACKED_0 =
+          "\6\0\1\11\15\1\1\11\14\1\1\11\3\1\1\11" +
+                  "\12\1\12\11\5\1\1\11\3\1\1\11\1\1\1\11" +
+                  "\1\1\1\11\3\1\2\0\1\1\1\11\2\1\3\0" +
+                  "\1\1\1\0\1\1\5\0\1\11\17\1\1\0\6\1" +
+                  "\1\0\1\11\3\1\1\0\1\11\2\0\1\11\2\1" +
+                  "\1\11\2\1\2\0\1\11\1\0\16\1\1\0\6\1" +
+                  "\2\0\4\1\3\0\12\1\3\0\3\1\2\0\5\1" +
+                  "\1\11\3\0\5\1\1\11\2\0\3\1\1\11\3\1" +
+                  "\1\0\3\1\1\11\1\1\1\0\4\1\1\0\1\1" +
+                  "\2\0\1\11";
+  /**
+   * ZZ_ATTRIBUTE[aState] contains the attributes of state <code>aState</code>
+   */
+  private static final int[] ZZ_ATTRIBUTE = zzUnpackAttribute();
+  /* user code: */
+  boolean inInterpolation = false;
+  /**
+   * the input device
+   */
+  private java.io.Reader zzReader;
+  /**
+   * the current state of the DFA
+   */
+  private int zzState;
+  /**
+   * the current lexical state
+   */
+  private int zzLexicalState = YYINITIAL;
+
+  /* error codes */
+  private static final int ZZ_UNKNOWN_ERROR = 0;
+  private static final int ZZ_NO_MATCH = 1;
+  private static final int ZZ_PUSHBACK_2BIG = 2;
+  /**
+   * this buffer contains the current text to be matched and is
+   * the source of the yytext() string
+   */
+  private CharSequence zzBuffer = "";
+  /**
+   * the textposition at the last accepting state
+   */
+  private int zzMarkedPos;
+  /**
+   * the current text position in the buffer
+   */
+  private int zzCurrentPos;
+  /**
+   * startRead marks the beginning of the yytext() string in the buffer
+   */
+  private int zzStartRead;
+  /**
+   * endRead marks the last character in the buffer, that has been read
+   * from input
+   */
+  private int zzEndRead;
+  /**
+   * zzAtEOF == true <=> the scanner is at the EOF
+   */
+  private boolean zzAtEOF;
+  /**
+   * denotes if the user-EOF-code has already been executed
+   */
+  private boolean zzEOFDone;
+
+  /**
+   * Creates a new scanner
+   *
+   * @param in the java.io.Reader to read input from.
+   */
+  ODTHighlightingLexer(java.io.Reader in) {
+    this.zzReader = in;
+  }
+
+  /**
+   * Translates characters to character classes
+   * Chosen bits are [9, 6, 6]
+   * Total runtime size is 1696 bytes
+   */
+  public static int ZZ_CMAP(int ch) {
+    return ZZ_CMAP_A[(ZZ_CMAP_Y[ZZ_CMAP_Z[ch >> 12] | ((ch >> 6) & 0x3f)] << 6) | (ch & 0x3f)];
+  }
+
+  private static int[] zzUnpackAction() {
+    int[] result = new int[222];
+    int offset = 0;
+    offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
+    return result;
+  }
+
+  private static int zzUnpackAction(String packed, int offset, int[] result) {
+    int i = 0;       /* index in packed string  */
+    int j = offset;  /* index in unpacked array */
+    int l = packed.length();
+    while (i < l) {
+      int count = packed.charAt(i++);
+      int value = packed.charAt(i++);
+      do result[j++] = value; while (--count > 0);
+    }
+    return j;
+  }
+
+  private static int[] zzUnpackRowMap() {
+    int[] result = new int[222];
+    int offset = 0;
+    offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
+    return result;
+  }
+
+  private static int zzUnpackRowMap(String packed, int offset, int[] result) {
+    int i = 0;  /* index in packed string  */
+    int j = offset;  /* index in unpacked array */
+    int l = packed.length();
+    while (i < l) {
+      int high = packed.charAt(i++) << 16;
+      result[j++] = high | packed.charAt(i++);
+    }
+    return j;
+  }
+
+  /**
+   * zzAtBOL == true <=> the scanner is currently at the beginning of a line
+   */
+  private boolean zzAtBOL = true;
 
   private static int[] zzUnpackTrans() {
     int[] result = new int[13629];
@@ -545,36 +619,6 @@ class ODTHighlightingLexer implements FlexLexer {
     return j;
   }
 
-
-  /* error codes */
-  private static final int ZZ_UNKNOWN_ERROR = 0;
-  private static final int ZZ_NO_MATCH = 1;
-  private static final int ZZ_PUSHBACK_2BIG = 2;
-
-  /* error messages for the codes above */
-  private static final String[] ZZ_ERROR_MSG = {
-          "Unknown internal scanner error",
-          "Error: could not match input",
-          "Error: pushback value was too large"
-  };
-
-  /**
-   * ZZ_ATTRIBUTE[aState] contains the attributes of state <code>aState</code>
-   */
-  private static final int[] ZZ_ATTRIBUTE = zzUnpackAttribute();
-
-  private static final String ZZ_ATTRIBUTE_PACKED_0 =
-          "\6\0\1\11\15\1\1\11\14\1\1\11\3\1\1\11" +
-                  "\12\1\12\11\5\1\1\11\3\1\1\11\1\1\1\11" +
-                  "\1\1\1\11\3\1\2\0\1\1\1\11\2\1\3\0" +
-                  "\1\1\1\0\1\1\5\0\1\11\17\1\1\0\6\1" +
-                  "\1\0\1\11\3\1\1\0\1\11\2\0\1\11\2\1" +
-                  "\1\11\2\1\2\0\1\11\1\0\16\1\1\0\6\1" +
-                  "\2\0\4\1\3\0\12\1\3\0\3\1\2\0\5\1" +
-                  "\1\11\3\0\5\1\1\11\2\0\3\1\1\11\3\1" +
-                  "\1\0\3\1\1\11\1\1\1\0\4\1\1\0\1\1" +
-                  "\2\0\1\11";
-
   private static int[] zzUnpackAttribute() {
     int[] result = new int[222];
     int offset = 0;
@@ -595,87 +639,6 @@ class ODTHighlightingLexer implements FlexLexer {
   }
 
   /**
-   * the input device
-   */
-  private java.io.Reader zzReader;
-
-  /**
-   * the current state of the DFA
-   */
-  private int zzState;
-
-  /**
-   * the current lexical state
-   */
-  private int zzLexicalState = YYINITIAL;
-
-  /**
-   * this buffer contains the current text to be matched and is
-   * the source of the yytext() string
-   */
-  private CharSequence zzBuffer = "";
-
-  /**
-   * the textposition at the last accepting state
-   */
-  private int zzMarkedPos;
-
-  /**
-   * the current text position in the buffer
-   */
-  private int zzCurrentPos;
-
-  /**
-   * startRead marks the beginning of the yytext() string in the buffer
-   */
-  private int zzStartRead;
-
-  /**
-   * endRead marks the last character in the buffer, that has been read
-   * from input
-   */
-  private int zzEndRead;
-
-  /**
-   * zzAtBOL == true <=> the scanner is currently at the beginning of a line
-   */
-  private boolean zzAtBOL = true;
-
-  /**
-   * zzAtEOF == true <=> the scanner is at the EOF
-   */
-  private boolean zzAtEOF;
-
-  /**
-   * denotes if the user-EOF-code has already been executed
-   */
-  private boolean zzEOFDone;
-
-  /* user code: */
-  boolean inInterpolation = false;
-
-  void enterInterpolation() {
-    inInterpolation = true;
-    yybegin(INTERPOLATION);
-  }
-
-  void leaveInterpolation() {
-    inInterpolation = false;
-    yybegin(YYINITIAL);
-  }
-
-
-  /**
-   * Creates a new scanner
-   *
-   * @param in the java.io.Reader to read input from.
-   */
-  ODTHighlightingLexer(java.io.Reader in) {
-    this.zzReader = in;
-  }
-
-
-  /**
    * Unpacks the compressed character translation table.
    *
    * @param packed the packed character translation table
@@ -690,11 +653,21 @@ class ODTHighlightingLexer implements FlexLexer {
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
     while (i < packed.length()) {
-      int  count = packed.charAt(i++);
+      int count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);
     }
     return map;
+  }
+
+  void enterInterpolation() {
+    inInterpolation = true;
+    yybegin(INTERPOLATION);
+  }
+
+  void leaveInterpolation() {
+    inInterpolation = false;
+    yybegin(YYINITIAL);
   }
 
   public final int getTokenStart() {
@@ -751,7 +724,6 @@ class ODTHighlightingLexer implements FlexLexer {
     return zzBuffer.subSequence(zzStartRead, zzMarkedPos);
   }
 
-
   /**
    * Returns the character at position {@code pos} from the
    * matched text.
@@ -764,7 +736,7 @@ class ODTHighlightingLexer implements FlexLexer {
    * @return the character at position pos
    */
   public final char yycharat(int pos) {
-    return zzBuffer.charAt(zzStartRead + pos);
+    return zzBuffer.charAt(zzStartRead+pos);
   }
 
 
@@ -830,12 +802,11 @@ class ODTHighlightingLexer implements FlexLexer {
     }
   }
 
-
   /**
    * Resumes scanning until the next regular expression is matched,
    * the end of input is encountered or an I/O-Error occurs.
    *
-   * @return      the next token
+   * @return the next token
    * @exception java.io.IOException  if any I/O-Error occurs
    */
   public IElementType advance() throws java.io.IOException {
@@ -867,7 +838,6 @@ class ODTHighlightingLexer implements FlexLexer {
         zzAction = zzState;
       }
 
-
       zzForAction:
       {
         while (true) {
@@ -896,7 +866,7 @@ class ODTHighlightingLexer implements FlexLexer {
               zzCurrentPosL += Character.charCount(zzInput);
             }
           }
-          int zzNext = zzTransL[ zzRowMapL[zzState] + ZZ_CMAP(zzInput) ];
+          int zzNext = zzTransL[ zzRowMapL[zzState] + ZZ_CMAP(zzInput)];
           if (zzNext == -1) break zzForAction;
           zzState = zzNext;
 
@@ -904,7 +874,7 @@ class ODTHighlightingLexer implements FlexLexer {
           if ((zzAttributes & 1) == 1) {
             zzAction = zzState;
             zzMarkedPosL = zzCurrentPosL;
-            if ( (zzAttributes & 8) == 8 ) break zzForAction;
+            if ( (zzAttributes & 8) == 8) break zzForAction;
           }
 
         }
@@ -1242,7 +1212,7 @@ class ODTHighlightingLexer implements FlexLexer {
           case 51: {
             yybegin(DEFINE);
             return ODTHighlightingTypes.KEYWORD;
-          }
+            } 
             // fall through
           case 102: break;
           default:

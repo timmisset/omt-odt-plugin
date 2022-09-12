@@ -11,15 +11,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class ODTCurieElementImpl extends ODTResolvableCurieElementStepAbstract implements ODTCurieElement {
 
-    public ODTCurieElementImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTCurieElementImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitCurieElement(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitCurieElement(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

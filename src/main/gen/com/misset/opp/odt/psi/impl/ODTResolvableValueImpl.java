@@ -13,15 +13,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class ODTResolvableValueImpl extends ODTResolvableValueAbstract implements ODTResolvableValue {
 
-    public ODTResolvableValueImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTResolvableValueImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitResolvableValue(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitResolvableValue(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

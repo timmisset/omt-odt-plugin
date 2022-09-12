@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ODTSignature extends PsiElement {
 
-    @NotNull
-    List<ODTSignatureArgument> getSignatureArgumentList();
+  @NotNull
+  List<ODTSignatureArgument> getSignatureArgumentList();
 
 }

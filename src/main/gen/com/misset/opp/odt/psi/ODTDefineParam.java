@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ODTDefineParam extends PsiElement {
 
-    @NotNull
-    List<ODTVariable> getVariableList();
+  @NotNull
+  List<ODTVariable> getVariableList();
 
 }

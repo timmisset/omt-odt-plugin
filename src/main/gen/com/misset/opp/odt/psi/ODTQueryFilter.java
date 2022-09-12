@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ODTQueryFilter extends PsiElement {
 
-    @Nullable
-    ODTQuery getQuery();
+  @Nullable
+  ODTQuery getQuery();
 
-    @Nullable
-    ODTRangeSelection getRangeSelection();
+  @Nullable
+  ODTRangeSelection getRangeSelection();
 
 }

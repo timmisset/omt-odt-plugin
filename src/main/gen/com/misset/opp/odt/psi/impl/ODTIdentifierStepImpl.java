@@ -10,15 +10,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class ODTIdentifierStepImpl extends ODTResolvableIdentifierStepAbstract implements ODTIdentifierStep {
 
-    public ODTIdentifierStepImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTIdentifierStepImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitIdentifierStep(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitIdentifierStep(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

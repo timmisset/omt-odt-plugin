@@ -13,15 +13,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class ODTSignatureArgumentImpl extends ODTResolvableSignatureArgumentAbstract implements ODTSignatureArgument {
 
-    public ODTSignatureArgumentImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTSignatureArgumentImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitSignatureArgument(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitSignatureArgument(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

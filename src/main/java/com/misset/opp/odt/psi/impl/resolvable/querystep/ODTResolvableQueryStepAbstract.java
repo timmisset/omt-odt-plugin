@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class ODTResolvableQueryStepAbstract extends ODTASTWrapperPsiElement implements ODTResolvableQueryStep {
+public abstract class ODTResolvableQueryStepAbstract extends ODTASTWrapperPsiElement implements ODTResolvableQueryStep, ODTQueryStep {
     protected ODTResolvableQueryStepAbstract(@NotNull ASTNode node) {
         super(node);
     }
@@ -56,5 +56,10 @@ public abstract class ODTResolvableQueryStepAbstract extends ODTASTWrapperPsiEle
     @Override
     public void inspect(ProblemsHolder holder) {
 
+    }
+
+    @Override
+    public @NotNull Set<OntResource> resolve() {
+        return Collections.emptySet();
     }
 }

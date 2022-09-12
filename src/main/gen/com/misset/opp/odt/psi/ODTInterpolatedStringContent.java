@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ODTInterpolatedStringContent extends PsiElement {
 
-    @Nullable
-    ODTInterpolation getInterpolation();
+  @Nullable
+  ODTInterpolation getInterpolation();
 
 }

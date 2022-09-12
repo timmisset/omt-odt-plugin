@@ -51,4 +51,5 @@ public abstract class ODTOperatorCallAbstract extends ODTResolvableCallAbstract 
     public PsiElement getAnnotationRange() {
         return this;
     }
+
 }

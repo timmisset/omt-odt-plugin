@@ -7,13 +7,13 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ODTDefineCommandStatement extends PsiElement {
 
-    @NotNull
-    ODTCommandBlock getCommandBlock();
+  @NotNull
+  ODTCommandBlock getCommandBlock();
 
-    @NotNull
-    ODTDefineName getDefineName();
+  @NotNull
+  ODTDefineName getDefineName();
 
-    @Nullable
-    ODTDefineParam getDefineParam();
+  @Nullable
+  ODTDefineParam getDefineParam();
 
 }

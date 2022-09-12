@@ -14,15 +14,15 @@ import java.util.List;
 
 public class ODTWhenPathImpl extends ODTResolvableWhenPathStepAbstract implements ODTWhenPath {
 
-    public ODTWhenPathImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTWhenPathImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitWhenPath(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitWhenPath(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface ODTQueryOperationStep extends ODTResolvableQueryOperationStep {
 
-    @NotNull
-    List<ODTQueryFilter> getQueryFilterList();
+  @NotNull
+  List<ODTQueryFilter> getQueryFilterList();
 
-    @Nullable
-    ODTQueryStep getQueryStep();
+  @Nullable
+  ODTQueryStep getQueryStep();
 
-    @Nullable
-    ODTStepDecorator getStepDecorator();
+  @Nullable
+  ODTStepDecorator getStepDecorator();
 
 }

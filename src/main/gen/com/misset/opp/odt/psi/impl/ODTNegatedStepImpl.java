@@ -12,15 +12,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class ODTNegatedStepImpl extends ODTResolvableNegatedStepAbstract implements ODTNegatedStep {
 
-    public ODTNegatedStepImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTNegatedStepImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitNegatedStep(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitNegatedStep(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

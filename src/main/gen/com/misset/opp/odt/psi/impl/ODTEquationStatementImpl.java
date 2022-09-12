@@ -14,15 +14,15 @@ import java.util.List;
 
 public class ODTEquationStatementImpl extends ODTResolvableEquationStatementAbstract implements ODTEquationStatement {
 
-    public ODTEquationStatementImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTEquationStatementImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitEquationStatement(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitEquationStatement(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

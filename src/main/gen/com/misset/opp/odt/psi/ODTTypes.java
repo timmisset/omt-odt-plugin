@@ -86,6 +86,7 @@ public interface ODTTypes {
   IElementType DEFINE_COMMAND = new ODTTokenType("DEFINE_COMMAND");
   IElementType DEFINE_QUERY = new ODTTokenType("DEFINE_QUERY");
   IElementType DEFINE_START = new ODTTokenType("DEFINE_START");
+  IElementType DOC_COMMENT = new ODTTokenType("DOC_COMMENT");
   IElementType DOT = new ODTTokenType("DOT");
   IElementType ELSE_OPERATOR = new ODTTokenType("ELSE_OPERATOR");
   IElementType END_OPERATOR = new ODTTokenType("END_OPERATOR");
@@ -152,7 +153,7 @@ public interface ODTTypes {
       } else if (type == DEFINE_PREFIX) {
         return new ODTDefinePrefixImpl(node);
       } else if (type == DEFINE_QUERY_STATEMENT) {
-        return new ODTDefineQueryStatementImplAbstract(node);
+        return new ODTDefineQueryStatementImpl(node);
       } else if (type == ELSE_BLOCK) {
         return new ODTElseBlockImpl(node);
       } else if (type == END_PATH) {

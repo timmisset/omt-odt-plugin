@@ -8,17 +8,17 @@ import com.misset.opp.odt.psi.impl.resolvable.callable.ODTDefineQueryStatementAb
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ODTDefineQueryStatementImplAbstract extends ODTDefineQueryStatementAbstract implements ODTDefineQueryStatement {
+public class ODTDefineQueryStatementImpl extends ODTDefineQueryStatementAbstract implements ODTDefineQueryStatement {
 
-    public ODTDefineQueryStatementImplAbstract(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTDefineQueryStatementImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitDefineQueryStatement(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitDefineQueryStatement(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

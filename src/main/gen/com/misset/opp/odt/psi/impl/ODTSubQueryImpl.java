@@ -11,15 +11,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class ODTSubQueryImpl extends ODTResolvableSubQueryStepAbstract implements ODTSubQuery {
 
-    public ODTSubQueryImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTSubQueryImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitSubQuery(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitSubQuery(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

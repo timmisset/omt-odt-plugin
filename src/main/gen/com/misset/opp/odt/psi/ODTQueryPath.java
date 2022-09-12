@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface ODTQueryPath extends ODTQuery, ODTResolvableQueryPath {
 
-    @NotNull
-    List<ODTQueryOperationStep> getQueryOperationStepList();
+  @NotNull
+  List<ODTQueryOperationStep> getQueryOperationStepList();
 
-    @Nullable
-    ODTRootIndicator getRootIndicator();
+  @Nullable
+  ODTRootIndicator getRootIndicator();
 
-    @NotNull
-    List<ODTStepSeperator> getStepSeperatorList();
+  @NotNull
+  List<ODTStepSeperator> getStepSeperatorList();
 
 }

@@ -10,15 +10,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class ODTSchemalessIriStepImpl extends ODTResolvableSchemalessIriStepAbstract implements ODTSchemalessIriStep {
 
-    public ODTSchemalessIriStepImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTSchemalessIriStepImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitSchemalessIriStep(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitSchemalessIriStep(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

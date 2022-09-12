@@ -8,6 +8,10 @@ import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.impl.variable.ODTVariableWrapper;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.resolvable.call.ODTResolvableSignatureArgument;
+import com.misset.opp.odt.psi.resolvable.query.ODTResolvableQuery;
+import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQueryOperationStep;
+import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQueryStep;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTVisitor extends PsiElementVisitor {
@@ -30,7 +34,7 @@ public class ODTVisitor extends PsiElementVisitor {
 
   public void visitChooseBlock(@NotNull ODTChooseBlock o) {
     visitQueryStep(o);
-    // visitResolvable(o);
+    // visitResolvableChooseBlockStep(o);
   }
 
   public void visitCollectionStatement(@NotNull ODTCollectionStatement o) {
@@ -77,6 +81,7 @@ public class ODTVisitor extends PsiElementVisitor {
 
   public void visitDefineQueryStatement(@NotNull ODTDefineQueryStatement o) {
     visitStatement(o);
+    // visitResolvableDefineQueryStatement(o);
   }
 
   public void visitElseBlock(@NotNull ODTElseBlock o) {
@@ -117,6 +122,7 @@ public class ODTVisitor extends PsiElementVisitor {
 
   public void visitIriStep(@NotNull ODTIriStep o) {
     visitQueryStep(o);
+    // visitResolvableQualifiedUriStep(o);
   }
 
   public void visitLogicalBlock(@NotNull ODTLogicalBlock o) {
@@ -129,6 +135,7 @@ public class ODTVisitor extends PsiElementVisitor {
 
   public void visitNegatedStep(@NotNull ODTNegatedStep o) {
     visitQueryStep(o);
+    // visitResolvable(o);
   }
 
   public void visitOperatorCall(@NotNull ODTOperatorCall o) {
@@ -138,11 +145,10 @@ public class ODTVisitor extends PsiElementVisitor {
 
   public void visitOtherwisePath(@NotNull ODTOtherwisePath o) {
     visitQueryStep(o);
-    // visitResolvable(o);
   }
 
   public void visitQuery(@NotNull ODTQuery o) {
-    visitResolvable(o);
+    visitResolvableQuery(o);
   }
 
   public void visitQueryArray(@NotNull ODTQueryArray o) {
@@ -154,11 +160,12 @@ public class ODTVisitor extends PsiElementVisitor {
   }
 
   public void visitQueryOperationStep(@NotNull ODTQueryOperationStep o) {
-    visitPsiElement(o);
+    visitResolvableQueryOperationStep(o);
   }
 
   public void visitQueryPath(@NotNull ODTQueryPath o) {
     visitQuery(o);
+    // visitResolvableQueryPath(o);
   }
 
   public void visitQueryReverseStep(@NotNull ODTQueryReverseStep o) {
@@ -210,7 +217,7 @@ public class ODTVisitor extends PsiElementVisitor {
   }
 
   public void visitSignatureArgument(@NotNull ODTSignatureArgument o) {
-    visitResolvable(o);
+    visitResolvableSignatureArgument(o);
   }
 
   public void visitStatement(@NotNull ODTStatement o) {
@@ -247,7 +254,7 @@ public class ODTVisitor extends PsiElementVisitor {
 
   public void visitWhenPath(@NotNull ODTWhenPath o) {
     visitQueryStep(o);
-    // visitResolvable(o);
+    // visitResolvableWhenStep(o);
   }
 
   public void visitPsiJavaDocumentedElement(@NotNull PsiJavaDocumentedElement o) {
@@ -262,15 +269,27 @@ public class ODTVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitVariableWrapper(@NotNull ODTVariableWrapper o) {
+    visitPsiElement(o);
+  }
+
   public void visitResolvable(@NotNull ODTResolvable o) {
     visitPsiElement(o);
   }
 
-  public void visitResolvableQueryStep(@NotNull ODTResolvable o) {
+  public void visitResolvableSignatureArgument(@NotNull ODTResolvableSignatureArgument o) {
     visitPsiElement(o);
   }
 
-  public void visitVariableWrapper(@NotNull ODTVariableWrapper o) {
+  public void visitResolvableQuery(@NotNull ODTResolvableQuery o) {
+    visitPsiElement(o);
+  }
+
+  public void visitResolvableQueryOperationStep(@NotNull ODTResolvableQueryOperationStep o) {
+    visitPsiElement(o);
+  }
+
+  public void visitResolvableQueryStep(@NotNull ODTResolvableQueryStep o) {
     visitPsiElement(o);
   }
 

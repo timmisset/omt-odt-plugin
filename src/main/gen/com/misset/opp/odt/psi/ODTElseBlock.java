@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ODTElseBlock extends PsiElement {
 
-    @NotNull
-    ODTCommandBlock getCommandBlock();
+  @NotNull
+  ODTCommandBlock getCommandBlock();
 
 }

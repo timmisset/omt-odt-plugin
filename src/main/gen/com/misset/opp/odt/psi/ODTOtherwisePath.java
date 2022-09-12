@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ODTOtherwisePath extends ODTQueryStep {
 
-    @Nullable
-    ODTQuery getQuery();
+  @Nullable
+  ODTQuery getQuery();
 
 }

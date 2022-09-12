@@ -8,7 +8,7 @@
   psiImplClassSuffix="Impl"
   psiPackage="com.misset.opp.odt.psi"
   psiImplPackage="com.misset.opp.odt.psi.impl"
-
+  parserImports="static com.intellij.psi.impl.source.tree.JavaDocElementType.DOC_COMMENT"
   elementTypeHolderClass="com.misset.opp.odt.psi.ODTTypes"
   elementTypeClass="com.misset.opp.odt.psi.ODTElementType"
   tokenTypeClass="com.misset.opp.odt.psi.ODTTokenType"
@@ -187,6 +187,7 @@ equationStatement ::=                       query CONDITIONAL_OPERATOR query {
 // A negated stap should not encapsulate a booleanStatement
 // x == 0 AND NOT y == 1 should resolve in a booleanStatement where the latter contains the negation
 negatedStep ::=                             NOT_OPERATOR (equationStatement | queryPath | queryArray)?  {
+    extends=queryStep
     implements="com.misset.opp.odt.psi.resolvable.ODTResolvable"
     mixin="com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableNegatedStepAbstract"
 }

@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ODTSignatureArgument extends ODTResolvableSignatureArgument {
 
-    @Nullable
-    ODTCommandBlock getCommandBlock();
+  @Nullable
+  ODTCommandBlock getCommandBlock();
 
-    @Nullable
-    ODTResolvableValue getResolvableValue();
+  @Nullable
+  ODTResolvableValue getResolvableValue();
 
 }

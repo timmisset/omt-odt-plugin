@@ -14,15 +14,15 @@ import java.util.List;
 
 public class ODTQueryArrayImpl extends ODTResolvableQueryArrayAbstract implements ODTQueryArray {
 
-    public ODTQueryArrayImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public ODTQueryArrayImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull ODTVisitor visitor) {
-        visitor.visitQueryArray(this);
-    }
+  public void accept(@NotNull ODTVisitor visitor) {
+    visitor.visitQueryArray(this);
+  }
 
-    @Override
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ODTVisitor) accept((ODTVisitor) visitor);
     else super.accept(visitor);

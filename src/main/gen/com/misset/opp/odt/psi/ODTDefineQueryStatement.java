@@ -7,13 +7,13 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ODTDefineQueryStatement extends ODTStatement, ODTResolvableDefineQueryStatement {
 
-    @NotNull
-    ODTDefineName getDefineName();
+  @NotNull
+  ODTDefineName getDefineName();
 
-    @Nullable
-    ODTDefineParam getDefineParam();
+  @Nullable
+  ODTDefineParam getDefineParam();
 
-    @NotNull
-    ODTQuery getQuery();
+  @NotNull
+  ODTQuery getQuery();
 
 }
