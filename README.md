@@ -75,3 +75,16 @@ given position.
 ### JDK Compatability
 
 Make sure to target JDK 11 when running the tests
+
+# Building this project
+
+This project requires IntelliJ bundled plugins,
+see: https://plugins.jetbrains.com/docs/intellij/prerequisites.html#install-required-plugins
+Once available, the follow steps are required to generate the classes for the ODT and TTL language in src/main/gen
+
+- src/main/java/odt:
+  - Generate the ODTLexer and ODTHighlightingLexer. Right-click the .flex file and choose 'Run JFlex Generator'
+  - Generate the ODTParser. Right-click the .bnf file and choose 'Generate Parser Code'
+- src/main/java/ttl:
+  - Generate the TTLLexer. Right-click the .flex file and choose 'Run JFlex Generator'
+  - Generate the TTLParser. Right-click the .bnf file and choose 'Generate Parser Code'
