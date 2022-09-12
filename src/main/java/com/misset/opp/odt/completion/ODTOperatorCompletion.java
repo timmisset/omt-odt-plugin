@@ -12,7 +12,7 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.SharedProcessingContext;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQueryStep;
-import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
+import com.misset.opp.odt.psi.impl.ODTTypeFilterProvider;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.ttl.model.OppModel;

@@ -6,7 +6,6 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQueryPath;
 import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -37,13 +36,13 @@ public class ODTCodeInspectionCardinality extends LocalInspectionTool {
             private void inspect(ODTCollectionStatement collectionStatement) {
                 final ODTQuery query = collectionStatement.getQuery();
                 final ODTResolvableValue resolvableValue = collectionStatement.getResolvableValue();
-                if (query instanceof ODTResolvableQueryPath) {
-                    inspectCardinality(collectionStatement, (ODTResolvableQueryPath) query, resolvableValue);
+                if (query instanceof ODTQueryPath) {
+                    inspectCardinality(collectionStatement, (ODTQueryPath) query, resolvableValue);
                 }
             }
 
             private void inspectCardinality(ODTCollectionStatement collectionStatement,
-                                            ODTResolvableQueryPath query,
+                                            ODTQueryPath query,
                                             ODTResolvableValue resolvableValue) {
                 final Pair<Set<OntResource>, Property> subjectPredicate = query.resolveToSubjectPredicate();
                 if (subjectPredicate == null) {

@@ -13,8 +13,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.builtin.operators.BuiltInBooleanOperator;
 import com.misset.opp.odt.psi.ODTQuery;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableEquationStatement;
+import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableEquationStatementAbstract;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -39,15 +39,15 @@ public class ODTStyleInspectionUnnecessaryTrueCondition extends LocalInspectionT
         return new PsiElementVisitor() {
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (element instanceof ODTResolvableEquationStatement) {
-                    inspectBaseOperator(holder, (ODTResolvableEquationStatement) element);
+                if (element instanceof ODTResolvableEquationStatementAbstract) {
+                    inspectBaseOperator(holder, (ODTResolvableEquationStatementAbstract) element);
                 }
             }
         };
     }
 
     private void inspectBaseOperator(@NotNull ProblemsHolder holder,
-                                     @NotNull ODTResolvableEquationStatement equationStatement) {
+                                     @NotNull ODTResolvableEquationStatementAbstract equationStatement) {
 
         boolean insideBooleanOperator = Optional.ofNullable(PsiTreeUtil.getParentOfType(equationStatement, ODTCall.class))
                 .map(PsiCall::getCallable)
@@ -73,7 +73,7 @@ public class ODTStyleInspectionUnnecessaryTrueCondition extends LocalInspectionT
     }
 
     private void addWarning(@NotNull ProblemsHolder holder,
-                            @NotNull ODTResolvableEquationStatement equationStatement,
+                            @NotNull ODTResolvableEquationStatementAbstract equationStatement,
                             ODTQuery necessaryPart) {
         holder.registerProblem(equationStatement,
                 equationStatement.getText() + " can be simplified to " + necessaryPart.getText(),

@@ -3,7 +3,6 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -52,8 +51,6 @@ public class FilterOperator extends BuiltInCollectionOperator {
                 .map(ODTSignatureArgument.class::cast)
                 .map(ODTSignatureArgument::getResolvableValue)
                 .map(ODTResolvableValue::getQuery)
-                .filter(ODTResolvableQuery.class::isInstance)
-                .map(ODTResolvableQuery.class::cast)
                 .filter(Resolvable::isBoolean)
                 .map(query -> query.filter(resources))
                 .orElse(resources);

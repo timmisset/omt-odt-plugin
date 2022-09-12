@@ -17,7 +17,6 @@ import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.Variable;
@@ -173,11 +172,6 @@ public abstract class ODTBaseVariable
             return null;
         }
 
-        ODTResolvableVariableStep variableStep = null;
-        if (getParent() instanceof ODTVariableStep) {
-            variableStep = (ODTResolvableVariableStep) getParent();
-        }
-
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
         sb.append(getName());
@@ -191,7 +185,11 @@ public abstract class ODTBaseVariable
         }
 
         Set<OntResource> unfiltered = resolve();
-        Set<OntResource> filtered = variableStep != null ? variableStep.getResolvableParent().filter(unfiltered) : unfiltered;
+        Set<OntResource> filtered = unfiltered;
+        if (getParent() instanceof ODTVariableStep) {
+            filtered = ((ODTVariableStep) getParent()).getResolvableParent().filter(unfiltered);
+        }
+
         sb.append(DocumentationMarkup.SECTIONS_START);
         String typeLabel = filtered.size() == 1 ? "Type:" : "Types:";
         sb.append(

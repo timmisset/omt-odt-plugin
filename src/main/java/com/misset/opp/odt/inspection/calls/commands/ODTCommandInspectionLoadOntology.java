@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.builtin.commands.LoadOntologyCommand;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableSignatureArgument;
+import com.misset.opp.odt.psi.ODTSignatureArgument;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
@@ -41,7 +41,7 @@ public class ODTCommandInspectionLoadOntology extends LocalInspectionTool {
                 if (element instanceof ODTCall && ((ODTCall) element).getCallable() == LoadOntologyCommand.INSTANCE) {
                     final ODTCall call = (ODTCall) element;
 
-                    final ODTResolvableSignatureArgument signatureArgument = call.getSignatureArgument(0);
+                    final ODTSignatureArgument signatureArgument = call.getSignatureArgument(0);
                     final ODTCall signatureCall = PsiTreeUtil.findChildOfType(signatureArgument, ODTCall.class);
                     if (signatureCall != null) {
                         Boolean isValid = Optional.of(signatureCall)

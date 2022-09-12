@@ -3,7 +3,6 @@ package com.misset.opp.odt.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTScriptLine;
-import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 

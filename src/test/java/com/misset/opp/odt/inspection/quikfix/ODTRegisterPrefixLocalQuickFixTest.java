@@ -4,8 +4,8 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.traverse.ODTResolvableCurieElementStep;
 import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,8 +19,7 @@ class ODTRegisterPrefixLocalQuickFixTest extends ODTTestCase {
     void registerPrefix() {
         final ProblemDescriptor problemDescriptor = mock(ProblemDescriptor.class);
         final ODTFile file = configureByText("/ont:ClassA");
-        final ODTResolvableCurieElementStep curieElementStep = ReadAction.compute(() -> PsiTreeUtil.findChildOfType(file,
-                ODTResolvableCurieElementStep.class));
+        final ODTCurieElement curieElementStep = ReadAction.compute(() -> PsiTreeUtil.findChildOfType(file, ODTCurieElement.class));
         doReturn(curieElementStep).when(problemDescriptor).getPsiElement();
 
         final ODTRegisterPrefixLocalQuickFix odtRegisterPrefixLocalQuickFix = new ODTRegisterPrefixLocalQuickFix(
