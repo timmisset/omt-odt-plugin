@@ -6,6 +6,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.misset.opp.omt.psi.impl.yaml.YAMLOMTKeyValueImpl;
 import com.misset.opp.omt.psi.impl.yaml.YAMLOMTPlainTextImpl;
+import com.misset.opp.omt.psi.impl.yaml.YAMLOMTQuotedStringImpl;
+import com.misset.opp.omt.psi.impl.yaml.YAMLOMTScalarList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLParserDefinition;
 
@@ -24,6 +26,10 @@ public class YAMLOMTParserDefinition extends YAMLParserDefinition implements Par
             return new YAMLOMTKeyValueImpl(node);
         } else if (type == SCALAR_PLAIN_VALUE) {
             return new YAMLOMTPlainTextImpl(node);
+        } else if (type == SCALAR_LIST_VALUE) {
+            return new YAMLOMTScalarList(node);
+        } else if (type == SCALAR_QUOTED_STRING) {
+            return new YAMLOMTQuotedStringImpl(node);
         }
         return super.createElement(node);
     }
