@@ -12,8 +12,8 @@ import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-import static com.misset.opp.omt.meta.scalars.OMTParamTypeType.CURIE_PATTERN;
-import static com.misset.opp.omt.meta.scalars.OMTParamTypeType.URI_PATTERN;
+import static com.misset.opp.omt.meta.scalars.OMTParamTypeMetaType.CURIE_PATTERN;
+import static com.misset.opp.omt.meta.scalars.OMTParamTypeMetaType.URI_PATTERN;
 
 public class OMTYamlParamTypeDelegate extends OMTYamlPlainTextDelegateAbstract implements PsiNamedElement {
     YAMLPlainTextImpl value;
