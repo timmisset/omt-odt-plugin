@@ -20,12 +20,13 @@ import com.misset.opp.omt.meta.module.OMTDeclaredModuleMetaType;
 import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.OMTIriMetaType;
 import com.misset.opp.omt.meta.scalars.OMTOntologyPrefixMetaType;
-import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
+import com.misset.opp.omt.meta.scalars.OMTParamTypeMetaType;
 import com.misset.opp.omt.meta.scalars.references.OMTPayloadQueryReferenceMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTFileReferenceMetaType;
 import com.misset.opp.omt.psi.impl.delegate.keyvalue.*;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
@@ -44,7 +45,7 @@ public class OMTYamlDelegateFactory {
     private OMTYamlDelegateFactory() {
     }
 
-    public static PsiNamedElement createDelegate(YAMLPsiElement psiElement) {
+    public static @Nullable PsiNamedElement createDelegate(YAMLPsiElement psiElement) {
         final PsiNamedElement omtYamlDelegate = DELEGATE.get(psiElement);
         if (omtYamlDelegate != null) {
             return omtYamlDelegate;
@@ -58,7 +59,7 @@ public class OMTYamlDelegateFactory {
             delegate = createPlainTextDelegate((YAMLPlainTextImpl) psiElement);
         }
         if (delegate == null) {
-            delegate = new NotADelegate(psiElement.getNode());
+            delegate = psiElement != null ? new NotADelegate(psiElement.getNode()) : null;
         }
 
         DELEGATE.set(psiElement, delegate);
@@ -101,7 +102,7 @@ public class OMTYamlDelegateFactory {
             return new OMTYamlPayloadQueryReferenceDelegate(yamlPlainText);
         } else if (metaType instanceof OMTOntologyPrefixMetaType) {
             return new OMTYamlOntologyPrefixDelegate(yamlPlainText);
-        } else if (metaType instanceof OMTParamTypeType) {
+        } else if (metaType instanceof OMTParamTypeMetaType) {
             return new OMTYamlParamTypeDelegate(yamlPlainText);
         } else if (metaType instanceof OMTFileReferenceMetaType) {
             return new OMTYamlFileReferenceDelegate(yamlPlainText);

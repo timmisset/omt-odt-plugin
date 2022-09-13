@@ -26,6 +26,9 @@
                                implementationClass="com.misset.opp.omt.YAMLOMTParserDefinition"/>
         <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
                                 order="first" language="yaml"/>
+        <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTParameterShorthandTypeCompletion"
+                                order="first" language="yaml"/>
+
         <psi.referenceContributor language="yaml" implementation="com.misset.opp.omt.OMTYamlReferenceContributor"/>
         <codeInsight.parameterNameHints language="yaml" implementationClass="com.misset.opp.omt.OMTParameterNameHints"/>
 
@@ -51,6 +54,8 @@
         <lang.importOptimizer language="OMT" implementationClass="com.misset.opp.omt.OMTImportOptimizer"/>
         <lang.foldingBuilder language="OMT" order="before YAMLFoldingBuilder"
                              implementationClass="com.misset.opp.omt.OMTFoldingBuilder"/>
+        <lookup.charFilter implementation="com.misset.opp.omt.completion.OMTCompletionCharFilter"/>
+
         <!-- Inspections -->
         <!-- Unused-->
         <localInspection displayName="Unused model items" groupPath="OMT" language="OMT"

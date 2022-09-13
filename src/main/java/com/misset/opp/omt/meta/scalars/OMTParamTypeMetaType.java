@@ -40,21 +40,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class OMTParamTypeType extends YamlScalarType implements OMTOntologyTypeProvider {
+public class OMTParamTypeMetaType extends YamlScalarType implements OMTOntologyTypeProvider {
 
     public static final Pattern CURIE_PATTERN = Pattern.compile("([A-z0-9]+):([A-z0-9]+)");
     public static final Pattern URI_PATTERN = Pattern.compile("<([^\\s]*)>");
     private static final Pattern PRIMITIVE_PATTERN = Pattern.compile("[a-z]+");
 
     protected static final String UNKNOWN_PREFIX = "Unknown prefix";
-    private static final OMTParamTypeType INSTANCE = new OMTParamTypeType();
+    private static final OMTParamTypeMetaType INSTANCE = new OMTParamTypeMetaType();
 
-    public static OMTParamTypeType getInstance() {
-        return INSTANCE;
+    private OMTParamTypeMetaType() {
+        super("OMTParamTypeType");
     }
 
-    private OMTParamTypeType() {
-        super("OMTParamTypeType");
+    public static OMTParamTypeMetaType getInstance() {
+        return INSTANCE;
     }
 
     @Override

@@ -11,9 +11,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.misset.opp.omt.meta.scalars.OMTParamTypeType.UNKNOWN_PREFIX;
+import static com.misset.opp.omt.meta.scalars.OMTParamTypeMetaType.UNKNOWN_PREFIX;
 
-class OMTParamTypeTypeTest extends OMTTestCase {
+class OMTParamTypeMetaTypeTest extends OMTTestCase {
 
     @BeforeEach
     public void setUp() {

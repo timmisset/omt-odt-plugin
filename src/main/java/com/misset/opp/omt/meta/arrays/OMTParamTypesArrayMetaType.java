@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta.arrays;
 
-import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
+import com.misset.opp.omt.meta.scalars.OMTParamTypeMetaType;
 import org.jetbrains.yaml.meta.model.YamlArrayType;
 
 public class OMTParamTypesArrayMetaType extends YamlArrayType {
@@ -11,6 +11,6 @@ public class OMTParamTypesArrayMetaType extends YamlArrayType {
     }
 
     private OMTParamTypesArrayMetaType() {
-        super(OMTParamTypeType.getInstance());
+        super(OMTParamTypeMetaType.getInstance());
     }
 }

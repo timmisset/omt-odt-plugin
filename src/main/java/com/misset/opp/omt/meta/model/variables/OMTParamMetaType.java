@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaShorthandType;
 import com.misset.opp.omt.meta.OMTOntologyTypeProvider;
-import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
+import com.misset.opp.omt.meta.scalars.OMTParamTypeMetaType;
 import com.misset.opp.omt.meta.scalars.OMTVariableNameMetaType;
 import com.misset.opp.omt.util.PatternUtil;
 import org.apache.jena.ontology.OntResource;
@@ -58,7 +58,7 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
 
     static {
         features.put("name", OMTVariableNameMetaType::getInstance);
-        features.put("type", OMTParamTypeType::getInstance);
+        features.put("type", OMTParamTypeMetaType::getInstance);
     }
 
     private OMTParamMetaType() {
@@ -89,14 +89,14 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
         TextRange textRange = getTextRange(text, SHORTHAND_URI_TYPED, 2)
                 .or(() -> getTextRange(text, SHORTHAND, 3))
                 .orElse(TextRange.EMPTY_RANGE);
-        return OMTParamTypeType.resolveType(value, textRange.substring(text));
+        return OMTParamTypeMetaType.resolveType(value, textRange.substring(text));
     }
 
     @Override
     public Set<OntResource> getTypeFromDestructed(YAMLMapping mapping) {
         return Optional.ofNullable(mapping.getKeyValueByKey("type"))
                 .map(YAMLKeyValue::getValue)
-                .map(value -> OMTParamTypeType.resolveType(value, value.getText()))
+                .map(value -> OMTParamTypeMetaType.resolveType(value, value.getText()))
                 .orElse(Collections.emptySet());
     }
 
@@ -124,11 +124,11 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
     @Override
     public void validateValue(@NotNull YAMLValue value, @NotNull ProblemsHolder problemsHolder) {
         super.validateValue(value, problemsHolder);
-        OMTParamTypeType.validatePrefixReference(value, problemsHolder);
+        OMTParamTypeMetaType.validatePrefixReference(value, problemsHolder);
 
         String typeText = getTypeText(value);
         if (typeText != null) {
-            OMTParamTypeType.validateType(value, typeText, problemsHolder);
+            OMTParamTypeMetaType.validateType(value, typeText, problemsHolder);
         } else {
             problemsHolder.registerProblem(value, "Annotate parameter with a type", ProblemHighlightType.WARNING);
         }
@@ -137,7 +137,7 @@ public class OMTParamMetaType extends OMTMetaShorthandType implements
     @Override
     public String getFullyQualifiedURI(YAMLPlainTextImpl value) {
         return Optional.ofNullable(getTypeText(value))
-                .map(type -> OMTParamTypeType.getQualifiedUri(value, type))
+                .map(type -> OMTParamTypeMetaType.getQualifiedUri(value, type))
                 .orElse(null);
     }
 
