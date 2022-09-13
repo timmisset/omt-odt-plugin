@@ -48,6 +48,28 @@ class ODTIgnoredReturnValueInspectionTest extends ODTTestCase {
     }
 
     @Test
+    void testHasNoWarningWhenAssignedToVariable() {
+        ODTFileTestImpl odtFileTest = configureByText("VAR $value = @command();");
+        Callable callable = mock(Callable.class);
+        doReturn("@command").when(callable).getCallId();
+        doReturn(false).when(callable).isVoid();
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
+        odtFileTest.addCallable(callable);
+        inspection.assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    }
+
+    @Test
+    void testHasNoWarningWhenUsedInCommandCall() {
+        ODTFileTestImpl odtFileTest = configureByText("@LOG(@command());");
+        Callable callable = mock(Callable.class);
+        doReturn("@command").when(callable).getCallId();
+        doReturn(false).when(callable).isVoid();
+        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
+        odtFileTest.addCallable(callable);
+        inspection.assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
+    }
+
+    @Test
     void testNoWarningWhenVoid() {
         ODTFileTestImpl odtFileTest = configureByText("@command();");
         Callable callable = mock(Callable.class);
