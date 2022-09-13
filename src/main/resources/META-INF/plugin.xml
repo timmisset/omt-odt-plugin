@@ -137,7 +137,8 @@
                                 implementationClass="com.misset.opp.omt.completion.OMTCompletionLoadableContext"/>
         <completion.contributor order="first" language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.operators.ODTOperatorCompletionCast"/>
-
+        <completion.contributor order="first" language="JAVA"
+                                implementationClass="com.misset.opp.odt.completion.ODTAnnotationTypeClassNameCompletion"/>
         <!-- Annotations -->
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTSemicolonAnnotator"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator"/>

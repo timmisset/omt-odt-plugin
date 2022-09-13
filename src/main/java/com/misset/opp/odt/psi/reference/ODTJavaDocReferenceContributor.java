@@ -28,6 +28,8 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
     private static final Pattern PREFIX = Pattern.compile("\\(([^:]*):[^)]*\\)");
     private static final Pattern ONTOLOGY = Pattern.compile("\\([^:]*:([^)]*)\\)");
 
+    private static final Pattern QUALIFIED_URI = Pattern.compile("\\(<([^>]*)>\\)");
+
     @Override
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(psiElement(PsiDocTag.class), new PsiReferenceProvider() {
@@ -65,6 +67,9 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
     private PsiReference getTypePrefixReference(PsiDocTag docTag, int position) {
         if (docTag.getDataElements().length > position) {
             final PsiElement dataElement = docTag.getDataElements()[position];
+            if (QUALIFIED_URI.matcher(dataElement.getText()).find()) {
+                return null;
+            }
             // @param $param (ont:Class)
             // the dataElement == (ont:Class)
             // Use the RegEx to determine the from-to range within the dataElement to cutOut: ont
@@ -91,12 +96,14 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
 
             // only when the dataElement contains a prefix a reference will be created
             // for primitives there is no reference
-            final Matcher matcher = ONTOLOGY.matcher(dataElement.getText());
-            if (matcher.find()) {
-                // valid match
-                return new ODTJavaDocTTLSubjectReference(docTag,
-                        TextRange.create(matcher.start(1), matcher.end(1))
-                                .shiftRight(dataElement.getStartOffsetInParent()), position);
+            for (Pattern pattern : List.of(QUALIFIED_URI, ONTOLOGY)) {
+                Matcher matcher = pattern.matcher(dataElement.getText());
+                if (matcher.find()) {
+                    // valid match
+                    return new ODTJavaDocTTLSubjectReference(docTag,
+                            TextRange.create(matcher.start(1), matcher.end(1))
+                                    .shiftRight(dataElement.getStartOffsetInParent()), position);
+                }
             }
         }
         return null;

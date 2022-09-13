@@ -29,6 +29,8 @@ public class ODTDocumentationUtil {
 
     private static final Pattern LOCAL_NAME = Pattern.compile("\\(([^:]*):([^)]*)\\)");
 
+    private static final Pattern QUALIFIED_URI = Pattern.compile("\\(<([^>]*)>\\)");
+
     @Nullable
     public static String getJavaDocCommentDescription(@NotNull PsiElement element) {
         PsiDocComment psiDocComment = getJavaDocComment(element);
@@ -114,6 +116,16 @@ public class ODTDocumentationUtil {
             if (curieReference.isPresent()) {
                 // there is a reference available for the type, meaning we should try to resolve it to the prefix
                 // and generate a fully qualified URI from it:
+                Matcher qualifiedUriMatcher = QUALIFIED_URI.matcher(dataElement.getText());
+                if (qualifiedUriMatcher.find()) {
+                    OppModel oppModel = OppModel.getInstance();
+                    return Optional.ofNullable(qualifiedUriMatcher.group(1))
+                            .map(oppModel::toIndividuals)
+                            .orElse(Collections.emptySet())
+                            .stream()
+                            .map(OntResource.class::cast)
+                            .collect(Collectors.toSet());
+                }
                 final PsiElement prefix = curieReference.get().resolve();
                 final Matcher matcher = LOCAL_NAME.matcher(dataElement.getText());
                 if (matcher.find()) {
