@@ -318,4 +318,8 @@ public class OppModelCache {
         }
         return null;
     }
+
+    public Set<Individual> getIndividuals() {
+        return new HashSet<>(individualMap.values());
+    }
 }
