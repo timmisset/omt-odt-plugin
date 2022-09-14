@@ -20,7 +20,7 @@ class TimesOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveDecimal() {
+    void testResolveDecimal() {
         assertResolved(TimesOperator.INSTANCE,
                 Set.of(OppModelConstants.getXsdIntegerInstance()),
                 Set.of(OppModelConstants.getXsdDecimalInstance()),
@@ -29,7 +29,7 @@ class TimesOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveDecimalLeading() {
+    void testResolveDecimalLeading() {
         assertResolved(TimesOperator.INSTANCE,
                 Set.of(OppModelConstants.getXsdDecimalInstance()),
                 Set.of(OppModelConstants.getXsdDecimalInstance()),

@@ -1,51 +1,56 @@
 package com.misset.opp.odt.completion;
 
-import com.misset.opp.testCase.OMTCompletionTestCase;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
+import com.misset.opp.resolvable.Variable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class ODTVariableCompletionTest extends OMTCompletionTestCase {
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+
+class ODTVariableCompletionTest extends ODTTestCase {
 
     @Test
     void testGlobalVariables() {
-        String content = insideProcedureRunWithPrefixes(
+        String content = withPrefixes(
                 "VAR $variableA;\n" +
                         "VAR $anotherVariable = <caret>");
         configureByText(content, true);
-        assertContainsElements(getLookupStrings(), "$username");
+        assertContainsElements(completion.getLookupStrings(), "$username");
     }
 
     @Test
     void testNoVariablesAfterFirstQueryStep() {
-        String content = insideProcedureRunWithPrefixes(
+        String content = withPrefixes(
                 "VAR $variableA;\n" +
                         "VAR $anotherVariable = '' / <caret>");
         configureByText(content, true);
-        Assertions.assertTrue(getLookupStrings().stream().noneMatch(s -> s.startsWith("$")));
+        Assertions.assertTrue(completion.getLookupStrings().stream().noneMatch(s -> s.startsWith("$")));
     }
 
     @Test
     void testODTVariables() {
-        String content = insideProcedureRunWithPrefixes(
+        String content = withPrefixes(
                 "VAR $variableA;\n" +
                         "VAR $anotherVariable = <caret>");
         configureByText(content, true);
-        assertContainsElements(getLookupStrings(), "$variableA");
+        assertContainsElements(completion.getLookupStrings(), "$variableA");
     }
 
     @Test
     void testLocalCallVariables() {
-        String content = insideProcedureRunWithPrefixes(
+        String content = withPrefixes(
                 "@FOREACH('', { @LOG(<caret>) });");
         configureByText(content, true);
-        assertContainsElements(getLookupStrings(), "$value", "$index", "$array");
+        assertContainsElements(completion.getLookupStrings(), "$value", "$index", "$array");
     }
 
     @Test
     void testCallArgumentFiltering() {
-        String content = insideProcedureRunWithPrefixes(
+        String content = withPrefixes(
                 "" +
                         "VAR $stringCollection = 'A' | 'B'\n" +
                         "VAR $stringVariable = '';\n" +
@@ -53,43 +58,28 @@ class ODTVariableCompletionTest extends OMTCompletionTestCase {
                         "@ADD_TO($stringCollection, <caret>);"
         );
         configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         assertContainsElements(lookupStrings, "$stringVariable");
         assertDoesntContain(lookupStrings, "$booleanVariable");
     }
 
     @Test
     void testLocalCallVariablesNotOutsideScope() {
-        String content = insideProcedureRunWithPrefixes(
+        String content = withPrefixes(
                 "@FOREACH('', { @LOG($newValue) });" +
                         "@LOG(<caret>);");
         configureByText(content, true);
-        assertDoesntContain(getLookupStrings(), "$value", "$index", "$array");
+        assertDoesntContain(completion.getLookupStrings(), "$value", "$index", "$array");
     }
 
     @Test
-    void testHostProvidedDeclaredVariables() {
-        String content = insideActivityWithPrefixes(
-                "variables:\n" +
-                        "- $variable\n" +
-                        "params:\n" +
-                        "- $param\n" +
-                        "onStart: \n" +
-                        "   @LOG(<caret>);");
-        configureByText(content, true);
-        assertContainsElements(getLookupStrings(), "$variable", "$param");
+    void testExternalDeclaredVariables() {
+        String content = "@LOG(<caret>);";
+        ODTFileTestImpl file = configureByText(content, true);
+        Variable variable = mock(Variable.class);
+        doReturn("$variable").when(variable).getName();
+        file.addVariable(variable);
+        assertContainsElements(completion.getLookupStrings(), "$variable");
     }
-
-    @Test
-    void testHostProvidedLocalVariables() {
-        String content = insideActivityWithPrefixes(
-                "variables:\n" +
-                        "-  name: $test\n" +
-                        "   onChange: |\n" +
-                        "       @LOG(<caret>)\n");
-        configureByText(content, true);
-        assertContainsElements(getLookupStrings(), "$newValue", "$oldValue");
-    }
-
 
 }

@@ -1,24 +1,18 @@
 package com.misset.opp.omt.psi.impl.delegate.keyvalue;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.util.OMTRefactoringUtil;
 import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.psi.PsiPrefix;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
-import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 
-public class OMTYamlPrefixIriDelegate extends YAMLKeyValueImpl implements
-        PsiPrefix,
-        OMTYamlDelegate,
-        SupportsSafeDelete {
+public class OMTYamlPrefixIriDelegate extends OMTYamlKeyValueDelegateAbstract implements PsiPrefix, SupportsSafeDelete {
     private final transient YAMLKeyValue keyValue;
 
     public OMTYamlPrefixIriDelegate(YAMLKeyValue keyValue) {
@@ -29,11 +23,6 @@ public class OMTYamlPrefixIriDelegate extends YAMLKeyValueImpl implements
     @Override
     public PsiElement getKey() {
         return keyValue.getKey();
-    }
-
-    @Override
-    public PsiReference @NotNull [] getReferences() {
-        return OMTYamlDelegate.super.getReferences();
     }
 
     @Override

@@ -1,20 +1,19 @@
 package com.misset.opp.omt.meta.model.handlers;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTUnkownKeysInspection;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
-class OMTMergeValidationMetaTypeTest extends OMTInspectionTestCase {
-
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return List.of(OMTMissingKeysInspection.class, OMTUnkownKeysInspection.class, OMTValueInspection.class);
+class OMTMergeValidationMetaTypeTest extends OMTTestCase {
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Set.of(OMTMissingKeysInspection.class, OMTUnkownKeysInspection.class, OMTValueInspection.class));
     }
 
     @Test
@@ -26,7 +25,7 @@ class OMTMergeValidationMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertHasError("Missing required key(s): 'query'");
+        inspection.assertHasError("Missing required key(s): 'query'");
     }
 
     @Test
@@ -38,7 +37,7 @@ class OMTMergeValidationMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertHasError("Missing required key(s): 'context'");
+        inspection.assertHasError("Missing required key(s): 'context'");
     }
 
     @Test
@@ -51,6 +50,6 @@ class OMTMergeValidationMetaTypeTest extends OMTInspectionTestCase {
                         ""
         );
         configureByText(content);
-        assertNoErrors();
+        inspection.assertNoErrors();
     }
 }

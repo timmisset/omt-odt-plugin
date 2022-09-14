@@ -1,74 +1,74 @@
 package com.misset.opp.odt.completion;
 
-import com.misset.opp.testCase.OMTCompletionTestCase;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
+import com.misset.opp.resolvable.Callable;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 
-class ODTOperatorCompletionTest extends OMTCompletionTestCase {
+import static org.mockito.Mockito.when;
+
+class ODTOperatorCompletionTest extends ODTTestCase {
 
     @Test
-    void testBuiltinOperators() {
-        configureByText(insideQueryWithPrefixes("<caret>"), true);
-        assertContainsElements(getLookupStrings(), "LOG");
+    void testRootIncludesOperatorsThatDontRequireInput() {
+        String content = "<caret>";
+        configureByText(content, true);
+        List<String> lookupStrings = completion.getLookupStrings();
+        assertContainsElements(lookupStrings, "CURRENT_DATE", "CURRENT_DATETIME");
+    }
+
+    @Test
+    void testIncludesExternalOperators() {
+        String content = "@LOG(<caret>);";
+        ODTFileTestImpl odtFileTest = configureByText(content, true);
+        Callable callable = Mockito.mock(Callable.class);
+        when(callable.getCallId()).thenReturn("callId");
+        when(callable.getName()).thenReturn("callId");
+        when(callable.requiresInput()).thenReturn(false);
+        odtFileTest.addCallable(callable);
+        List<String> lookupStrings = completion.getLookupStrings();
+        assertContainsElements(lookupStrings, "callId");
     }
 
     @Test
     void testSiblingOperators() {
-        String content = "queries: |\n" +
+        String content =
                 "   DEFINE QUERY queryA => '';\n" +
-                "   DEFINE QUERY queryB => <caret>;\n" +
-                "   DEFINE QUERY queryC => '';\n";
+                        "   DEFINE QUERY queryB => <caret>;\n" +
+                        "   DEFINE QUERY queryC => '';\n";
         configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         assertContainsElements(lookupStrings, "queryA", "LOG");
         assertDoesntContain(lookupStrings, "queryC");
     }
 
     @Test
-    void testProviders() {
-        String content = "queries: |\n" +
-                "   DEFINE QUERY queryA => '';\n" +
-                "commands: |\n" +
-                "   DEFINE COMMAND command => { VAR $variable = <caret> }\n";
+    void testInsideCallArgumentOnlyShowsOperatorsWithoutRequiredInput() {
+        String content = "@LOG(<caret>);";
         configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
-        assertContainsElements(lookupStrings, "queryA");
-    }
-
-    @Test
-    void testInsideCallArgument() {
-        String content = "queries: |\n" +
-                "   DEFINE QUERY queryA => '';\n" +
-                "commands: |\n" +
-                "   DEFINE COMMAND command => { @LOG(<caret>); }\n";
-        configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
-        assertContainsElements(lookupStrings, "queryA", "CURRENT_DATE", "CURRENT_DATETIME");
+        List<String> lookupStrings = completion.getLookupStrings();
+        assertContainsElements(lookupStrings, "CURRENT_DATE", "CURRENT_DATETIME");
         assertDoesntContain(lookupStrings, "LOG");
     }
 
     @Test
     void testInsideCallArgumentHasBuiltinOperatorsOnNextStep() {
-        String content = "queries: |\n" +
-                "   DEFINE QUERY queryA => '';\n" +
-                "commands: |\n" +
-                "   DEFINE COMMAND command => { @LOG('' / <caret>); }\n";
+        String content = "@LOG('' / <caret>);";
         configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
-        assertContainsElements(lookupStrings, "queryA", "LOG");
+        List<String> lookupStrings = completion.getLookupStrings();
+        assertContainsElements(lookupStrings, "LOG");
         assertDoesntContain(lookupStrings, "CURRENT_DATE", "CURRENT_DATETIME");
     }
 
     @Test
     void testNoBuiltinOperatorsOnVariableAssignment() {
-        String content = "queries: |\n" +
-                "   DEFINE QUERY queryA => '';\n" +
-                "commands: |\n" +
-                "   DEFINE COMMAND command => { $variable = <caret>; }\n";
+        String content = "$variable = <caret>;";
         configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
-        assertContainsElements(lookupStrings, "queryA", "CURRENT_DATE", "CURRENT_DATETIME");
+        List<String> lookupStrings = completion.getLookupStrings();
+        assertContainsElements(lookupStrings, "CURRENT_DATE", "CURRENT_DATETIME");
         assertDoesntContain(lookupStrings, "LOG");
     }
 }

@@ -1,17 +1,17 @@
 package com.misset.opp.omt.inspection.unused;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTUnusedModelItemInspectionTest extends OMTInspectionTestCase {
+class OMTUnusedModelItemInspectionTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTUnusedModelItemInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTUnusedModelItemInspection.class));
     }
 
     @Test
@@ -21,7 +21,7 @@ class OMTUnusedModelItemInspectionTest extends OMTInspectionTestCase {
                 "       title:\n" +
                 "";
         configureByText(content);
-        assertHasWarning("MyActivity is never used");
+        inspection.assertHasWarning("MyActivity is never used");
     }
 
     @Test
@@ -31,7 +31,7 @@ class OMTUnusedModelItemInspectionTest extends OMTInspectionTestCase {
                 "       title:\n" +
                 "";
         configureByText(content);
-        assertNoWarning("MyComponent is never used");
+        inspection.assertNoWarning("MyComponent is never used");
     }
 
 

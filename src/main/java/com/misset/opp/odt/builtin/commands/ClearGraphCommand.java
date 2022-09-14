@@ -25,11 +25,6 @@ public class ClearGraphCommand extends AbstractBuiltInCommand {
     }
 
     @Override
-    public boolean isVoid() {
-        return false;
-    }
-
-    @Override
     public OntResource resolveSingle() {
         return OppModelConstants.getXsdIntegerInstance();
     }

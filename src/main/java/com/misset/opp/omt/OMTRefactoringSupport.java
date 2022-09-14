@@ -2,7 +2,7 @@ package com.misset.opp.omt;
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlVariableDelegate;
 import com.misset.opp.refactoring.SupportsRefactoring;
@@ -13,7 +13,7 @@ import org.jetbrains.yaml.psi.YAMLPsiElement;
 
 public class OMTRefactoringSupport extends RefactoringSupportProvider {
 
-    private OMTYamlDelegate getDelegate(PsiElement element) {
+    private PsiNamedElement getDelegate(PsiElement element) {
         if (element instanceof YAMLPsiElement) {
             return OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
         } else {
@@ -28,7 +28,7 @@ public class OMTRefactoringSupport extends RefactoringSupportProvider {
 
     @Override
     public boolean isSafeDeleteAvailable(@NotNull PsiElement element) {
-        OMTYamlDelegate delegate = getDelegate(element);
+        PsiNamedElement delegate = getDelegate(element);
         return delegate instanceof SupportsSafeDelete && ((SupportsSafeDelete) delegate).isUnused();
     }
 
@@ -43,7 +43,7 @@ public class OMTRefactoringSupport extends RefactoringSupportProvider {
     }
 
     private boolean isInplaceAvailable(@NotNull PsiElement element) {
-        OMTYamlDelegate delegate = getDelegate(element);
+        PsiNamedElement delegate = getDelegate(element);
         return delegate instanceof OMTYamlVariableDelegate;
     }
 }

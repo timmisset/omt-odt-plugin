@@ -2,20 +2,20 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
+import com.intellij.psi.PsiNamedElement;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.refactoring.SupportsSafeDelete;
-import com.misset.opp.testCase.OMTDelegateTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class OMTYamlParameterDelegateTest extends OMTDelegateTestCase {
+class OMTYamlParameterDelegateTest extends OMTTestCase {
 
     @Test
     void testIsUnusedForUnusedParameter() {
         String content = insideActivityWithPrefixes("params:\n" +
                 "- $pa<caret>ram");
         configureByText(content);
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         underProgress(() -> ReadAction.run(() -> {
             Assertions.assertTrue(delegateAtCaret instanceof SupportsSafeDelete);
             Assertions.assertTrue(((SupportsSafeDelete) delegateAtCaret).isUnused());
@@ -29,7 +29,7 @@ class OMTYamlParameterDelegateTest extends OMTDelegateTestCase {
                 "onStart: |\n" +
                 "   @LOG($param);");
         configureByText(content);
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         underProgress(() -> ReadAction.run(() -> {
             Assertions.assertTrue(delegateAtCaret instanceof SupportsSafeDelete);
             Assertions.assertFalse(((SupportsSafeDelete) delegateAtCaret).isUnused());
@@ -42,7 +42,7 @@ class OMTYamlParameterDelegateTest extends OMTDelegateTestCase {
         String content = insideActivityWithPrefixes("params:\n" +
                 "- $pa<caret>ram");
         configureByText(content);
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         WriteCommandAction.runWriteCommandAction(getProject(), delegateAtCaret::delete);
         String contentAfterDelete = ReadAction.compute(getFile()::getText);
         Assertions.assertEquals(insideActivityWithPrefixes(""), contentAfterDelete);
@@ -54,7 +54,7 @@ class OMTYamlParameterDelegateTest extends OMTDelegateTestCase {
                 "- $dontDeleteMePlease\n" +
                 "- $pa<caret>ram");
         configureByText(content);
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         WriteCommandAction.runWriteCommandAction(getProject(), delegateAtCaret::delete);
         String contentAfterDelete = ReadAction.compute(getFile()::getText);
         Assertions.assertEquals(insideActivityWithPrefixes("params:\n" +
@@ -70,7 +70,7 @@ class OMTYamlParameterDelegateTest extends OMTDelegateTestCase {
                 "onStart:\n" +
                 "   @CallableActivity('persist', 'remove');", "CallableActivity");
         configureByText(content);
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         underProgress(() -> WriteCommandAction.runWriteCommandAction(getProject(), delegateAtCaret::delete));
         String contentAfterDelete = ReadAction.compute(getFile()::getText);
         Assertions.assertEquals(insideActivityWithPrefixes("params:\n" +

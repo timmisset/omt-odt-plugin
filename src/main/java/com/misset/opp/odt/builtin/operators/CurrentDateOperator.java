@@ -25,7 +25,7 @@ public class CurrentDateOperator extends AbstractBuiltInOperator {
     }
 
     @Override
-    public boolean isStatic() {
-        return true;
+    public boolean requiresInput() {
+        return false;
     }
 }

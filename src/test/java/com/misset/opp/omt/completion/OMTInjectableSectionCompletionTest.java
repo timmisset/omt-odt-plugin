@@ -1,7 +1,6 @@
 package com.misset.opp.omt.completion;
 
-import com.misset.opp.testCase.OMTCompletionTestCase;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,14 +9,14 @@ import java.util.List;
 
 import static com.misset.opp.omt.completion.OMTInjectableSectionCompletion.*;
 
-class OMTInjectableSectionCompletionTest extends OMTCompletionTestCase {
+class OMTInjectableSectionCompletionTest extends OMTTestCase {
 
     @Test
     void testHasQueryTemplateCompletions() {
         String content = "queries: |\n" +
                 "   <caret>";
         configureByText(content);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         Assertions.assertTrue(lookupStrings.stream().anyMatch(QUERY_SIMPLE_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().anyMatch(QUERY_PARAMETER_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().anyMatch(QUERY_BASE_TEMPLATE::equals));
@@ -29,7 +28,7 @@ class OMTInjectableSectionCompletionTest extends OMTCompletionTestCase {
                 "   DEFINE QUERY query => '';\n" +
                 "   <caret>";
         configureByText(content);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         Assertions.assertTrue(lookupStrings.stream().anyMatch(QUERY_SIMPLE_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().anyMatch(QUERY_PARAMETER_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().anyMatch(QUERY_BASE_TEMPLATE::equals));
@@ -40,7 +39,7 @@ class OMTInjectableSectionCompletionTest extends OMTCompletionTestCase {
         String content = "queries: |\n" +
                 "   DEFINE QUERY query => <caret>";
         configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         Assertions.assertTrue(lookupStrings.stream().noneMatch(QUERY_SIMPLE_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().noneMatch(QUERY_PARAMETER_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().noneMatch(QUERY_BASE_TEMPLATE::equals));
@@ -51,7 +50,7 @@ class OMTInjectableSectionCompletionTest extends OMTCompletionTestCase {
         String content = "queries: |\n" +
                 "   DEFINE QUERY query => <caret>;";
         configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         Assertions.assertTrue(lookupStrings.stream().noneMatch(QUERY_SIMPLE_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().noneMatch(QUERY_PARAMETER_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().noneMatch(QUERY_BASE_TEMPLATE::equals));
@@ -62,7 +61,7 @@ class OMTInjectableSectionCompletionTest extends OMTCompletionTestCase {
         String content = "commands: |\n" +
                 "   <caret>";
         configureByText(content);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         Assertions.assertTrue(lookupStrings.stream().anyMatch(COMMAND_SIMPLE_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().anyMatch(COMMAND_PARAMETER_TEMPLATE::equals));
     }
@@ -72,14 +71,13 @@ class OMTInjectableSectionCompletionTest extends OMTCompletionTestCase {
         String content = "commands: |\n" +
                 "   DEFINE COMMAND command => { <caret> }";
         configureByText(content, true);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         Assertions.assertTrue(lookupStrings.stream().noneMatch(COMMAND_SIMPLE_TEMPLATE::equals));
         Assertions.assertTrue(lookupStrings.stream().noneMatch(COMMAND_PARAMETER_TEMPLATE::equals));
     }
 
     @Test
     void testHasGraphShapeCompletions() {
-        OMTOntologyTestCase.initOntologyModel();
         OppModelConstants.getGraphShape().createIndividual("http://data/graphshape");
         String content = "model:\n" +
                 "   GraphShapeHandler: !GraphShapeHandlers\n" +
@@ -87,7 +85,7 @@ class OMTInjectableSectionCompletionTest extends OMTCompletionTestCase {
                 "       shape: <caret>\n" +
                 "";
         configureByText(content, true);
-        assertContainsElements(getLookupStrings(), "/<http://data/graphshape>");
+        assertContainsElements(completion.getLookupStrings(), "/<http://data/graphshape>");
     }
 
     @Test
@@ -102,6 +100,6 @@ class OMTInjectableSectionCompletionTest extends OMTCompletionTestCase {
                         "       strict: <caret>\n"
         );
         configureByText(content);
-        assertContainsElements(getLookupStrings(), "true", "false", "$boolean");
+        assertContainsElements(completion.getLookupStrings(), "true", "false", "$boolean");
     }
 }

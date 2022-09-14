@@ -8,13 +8,8 @@ import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.ODTNamespacePrefix;
-import com.misset.opp.odt.psi.ODTQuery;
-import com.misset.opp.odt.psi.ODTQueryReverseStep;
+import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTQueryPathImpl;
-import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
@@ -40,10 +35,6 @@ public class ODTTraverseCompletion extends CompletionContributor {
         FORWARD, REVERSE
     }
 
-    public static boolean isForward(TraverseDirection traverseDirection) {
-        return traverseDirection == TraverseDirection.FORWARD;
-    }
-
     public ODTTraverseCompletion() {
         // the position rules where a Traverse and QueryOperator can be suggested is identical
         extend(CompletionType.BASIC, TRAVERSE, new CompletionProvider<>() {
@@ -61,8 +52,8 @@ public class ODTTraverseCompletion extends CompletionContributor {
                 setProcessingContext(context, position);
 
                 final Set<OntResource> subjects = Optional.of(position)
-                        .map(element -> PsiTreeUtil.getParentOfType(element, ODTResolvableQueryOperationStep.class))
-                        .map(ODTResolvableQueryOperationStep::resolvePreviousStep)
+                        .map(element -> PsiTreeUtil.getParentOfType(element, ODTQueryOperationStep.class))
+                        .map(ODTQueryOperationStep::resolvePreviousStep)
                         .orElse(Collections.emptySet());
 
                 // add model options

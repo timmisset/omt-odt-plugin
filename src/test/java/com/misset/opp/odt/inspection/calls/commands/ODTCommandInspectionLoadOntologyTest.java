@@ -1,44 +1,48 @@
 package com.misset.opp.odt.inspection.calls.commands;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
+import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.CallableType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class ODTCommandInspectionLoadOntologyTest extends OMTInspectionTestCase {
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTCommandInspectionLoadOntology.class);
+class ODTCommandInspectionLoadOntologyTest extends ODTTestCase {
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTCommandInspectionLoadOntology.class));
     }
 
     @Test
     void testLoadOntologyThrowsErrorWhenNotReferencingAnOntology() {
-        String content = "model:\n" +
-                "   Procedure: !Procedure\n" +
-                "       onRun:\n" +
-                "           @LOAD_ONTOLOGY(MyProcedure);\n" +
-                "\n" +
-                "   MyProcedure: !Procedure\n" +
-                "       onRun: \n" +
-                "           @LOG('do something');";
-        configureByText(content);
-        assertHasError(ODTCommandInspectionLoadOntology.REQUIRES_A_REFERENCE_TO_AN_ONTOLOGY);
+        String content = " @LOAD_ONTOLOGY(MyProcedure);";
+        ODTFileTestImpl odtFileTest = configureByText(content);
+
+        Callable callable = mock(Callable.class);
+        doReturn("MyProcedure").when(callable).getCallId();
+        doReturn(CallableType.UNKNOWN).when(callable).getType();
+        odtFileTest.addCallable(callable);
+
+        inspection.assertHasError(ODTCommandInspectionLoadOntology.REQUIRES_A_REFERENCE_TO_AN_ONTOLOGY);
     }
 
     @Test
     void testLoadOntologyThrowsNoErrorWhenReferencingAnOntology() {
-        String content = "model:\n" +
-                "   Procedure: !Procedure\n" +
-                "       onRun:\n" +
-                "           @LOAD_ONTOLOGY(MyOntology);\n" +
-                "\n" +
-                "   MyOntology: !Ontology\n" +
-                "       prefix: abc\n" +
-                "";
-        configureByText(content);
-        assertNoError(ODTCommandInspectionLoadOntology.REQUIRES_A_REFERENCE_TO_AN_ONTOLOGY);
+        String content = "@LOAD_ONTOLOGY(MyOntology);";
+        ODTFileTestImpl odtFileTest = configureByText(content);
+
+        Callable callable = mock(Callable.class);
+        doReturn("MyOntology").when(callable).getCallId();
+        doReturn(CallableType.ONTOLOGY).when(callable).getType();
+        odtFileTest.addCallable(callable);
+
+        inspection.assertNoError(ODTCommandInspectionLoadOntology.REQUIRES_A_REFERENCE_TO_AN_ONTOLOGY);
     }
 }

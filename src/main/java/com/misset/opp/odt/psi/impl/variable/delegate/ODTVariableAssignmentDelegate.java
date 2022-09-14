@@ -3,9 +3,9 @@ package com.misset.opp.odt.psi.impl.variable.delegate;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
+import com.misset.opp.odt.psi.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;
@@ -35,6 +35,7 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
                 .map(odtVariableReference -> odtVariableReference.resolve(false, false))
                 .filter(Variable.class::isInstance)
                 .map(Variable.class::cast)
+                .or(this::getFromFile)
                 .orElse(null);
     }
 

@@ -9,7 +9,6 @@ import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
-import com.misset.opp.odt.psi.impl.variable.ODTVariableWrapper;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsageVariableDelegate;
 import com.misset.opp.resolvable.Variable;
 import org.jetbrains.annotations.Nls;
@@ -53,7 +52,7 @@ public class ODTUnusedVariableAssignmentInspection extends LocalInspectionTool {
                             boolean isUsed = PsiTreeUtil.findChildrenOfType(scope, ODTVariable.class)
                                     .stream()
                                     .filter(usedVariable -> name.equals(usedVariable.getName()))
-                                    .map(ODTVariableWrapper::getDelegate)
+                                    .map(ODTVariable::getDelegate)
                                     .filter(ODTUsageVariableDelegate.class::isInstance)
                                     .map(ODTUsageVariableDelegate.class::cast)
                                     .map(delegate -> {

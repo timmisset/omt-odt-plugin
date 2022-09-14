@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiReferencedElement;
 import com.misset.opp.util.LoggerUtil;
@@ -21,10 +21,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> implements LocalQuickFixProvider, EmptyResolveMessageProvider {
+public class ODTCallReference extends ODTPolyReferenceBase<ODTCall> implements LocalQuickFixProvider, EmptyResolveMessageProvider {
     private static final Logger LOGGER = Logger.getInstance(ODTCallReference.class);
 
-    public ODTCallReference(@NotNull ODTResolvableCall element,
+    public ODTCallReference(@NotNull ODTCall element,
                             TextRange rangeInElement) {
         super(element, rangeInElement, false);
     }
@@ -77,7 +77,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTResolvableCall> im
 
     @Override
     public LocalQuickFix @Nullable [] getQuickFixes() {
-        ODTResolvableCall call = getElement();
+        ODTCall call = getElement();
         PsiFile containingFile = call.getContainingFile();
         if (!(containingFile instanceof ODTFile)) {
             return LocalQuickFix.EMPTY_ARRAY;

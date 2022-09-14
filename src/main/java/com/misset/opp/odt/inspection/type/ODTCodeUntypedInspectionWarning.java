@@ -14,8 +14,7 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryStep;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep;
+import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import com.misset.opp.resolvable.Callable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
@@ -94,14 +93,14 @@ public class ODTCodeUntypedInspectionWarning extends LocalInspectionTool {
         }
     }
 
-    private boolean canBeBaseAnnotated(ODTResolvableQueryStep queryStep) {
-        if (queryStep instanceof ODTResolvableVariableStep) {
+    private boolean canBeBaseAnnotated(ODTResolvable queryStep) {
+        if (queryStep instanceof ODTVariableStep) {
             return false;
         }
         if (queryStep instanceof ODTOperatorCall) {
             ODTOperatorCall operatorCall = (ODTOperatorCall) queryStep;
             Callable callable = operatorCall.getCallable();
-            return callable != null && !callable.isStatic();
+            return callable != null && callable.requiresInput();
         }
         return true;
     }

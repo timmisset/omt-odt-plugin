@@ -1,12 +1,12 @@
 package com.misset.opp.omt.meta.scalars.values;
 
-import com.misset.opp.testCase.OMTCompletionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class OMTFileReferenceMetaTypeCompletionTest extends OMTCompletionTestCase {
+class OMTFileReferenceMetaTypeCompletionTest extends OMTTestCase {
 
     @Test
     void testShowsJsonFilesAsSuggestions() {
@@ -15,7 +15,7 @@ class OMTFileReferenceMetaTypeCompletionTest extends OMTCompletionTestCase {
                 "   MyLoadable: !Loadable\n" +
                 "       path: <caret>";
         configureByText(content);
-        List<String> lookupStrings = getLookupStrings();
+        List<String> lookupStrings = completion.getLookupStrings();
         Assertions.assertEquals(1, lookupStrings.size());
         Assertions.assertEquals("./test.json", lookupStrings.get(0));
     }

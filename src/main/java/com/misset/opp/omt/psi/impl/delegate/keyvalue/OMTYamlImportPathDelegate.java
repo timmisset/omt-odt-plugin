@@ -1,24 +1,16 @@
 package com.misset.opp.omt.psi.impl.delegate.keyvalue;
 
 import com.intellij.psi.PsiReference;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTImportPathReference;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
-import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 
-public class OMTYamlImportPathDelegate extends YAMLKeyValueImpl implements OMTYamlDelegate {
+public class OMTYamlImportPathDelegate extends OMTYamlKeyValueDelegateAbstract {
 
     private final transient YAMLKeyValue keyValue;
 
     public OMTYamlImportPathDelegate(YAMLKeyValue keyValue) {
         super(keyValue.getNode());
         this.keyValue = keyValue;
-    }
-
-    @Override
-    public PsiReference @NotNull [] getReferences() {
-        return OMTYamlDelegate.super.getReferences();
     }
 
     @Override

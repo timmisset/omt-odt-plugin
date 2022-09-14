@@ -1,7 +1,10 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.util.Key;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableScript;
+import com.misset.opp.odt.psi.ODTScript;
+import com.misset.opp.omt.commands.Commit;
+import com.misset.opp.omt.commands.LocalCommand;
+import com.misset.opp.omt.commands.Rollback;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaCallable;
@@ -19,9 +22,6 @@ import com.misset.opp.omt.meta.scalars.values.OMTReasonMetaType;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.Resolvable;
-import com.misset.opp.resolvable.local.Commit;
-import com.misset.opp.resolvable.local.LocalCommand;
-import com.misset.opp.resolvable.local.Rollback;
 import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import com.misset.opp.ttl.model.OppModelConstants;
@@ -114,7 +114,7 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
         }
         Set<OntResource> resources = Optional.ofNullable(mapping.getKeyValueByKey(ON_RUN))
                 .map(YAMLKeyValue::getValue)
-                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTResolvableScript.class))
+                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTScript.class))
                 .stream()
                 .flatMap(Collection::stream)
                 .map(Resolvable::resolve)

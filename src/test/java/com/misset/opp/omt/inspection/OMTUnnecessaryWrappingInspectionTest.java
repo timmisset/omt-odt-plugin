@@ -1,17 +1,18 @@
 package com.misset.opp.omt.inspection;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTUnnecessaryWrappingInspectionTest extends OMTInspectionTestCase {
+class OMTUnnecessaryWrappingInspectionTest extends OMTTestCase {
 
     @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTUnnecessaryWrappingInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTUnnecessaryWrappingInspection.class));
     }
 
     @Test
@@ -21,10 +22,10 @@ class OMTUnnecessaryWrappingInspectionTest extends OMTInspectionTestCase {
                 "   - test\n" +
                 "";
         configureByText(content);
-        assertHasWarning(OMTUnnecessaryWrappingInspection.UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT);
+        inspection.assertHasWarning(OMTUnnecessaryWrappingInspection.UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT);
 
-        invokeQuickFixIntention(OMTUnnecessaryWrappingInspection.UNWRAP_LOCAL_QUICKFIX_FAMILY_NAME);
-        assertNoWarning(OMTUnnecessaryWrappingInspection.UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT);
+        inspection.invokeQuickFixIntention(OMTUnnecessaryWrappingInspection.UNWRAP_LOCAL_QUICKFIX_FAMILY_NAME);
+        inspection.assertNoWarning(OMTUnnecessaryWrappingInspection.UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT);
     }
 
     @Test
@@ -34,7 +35,7 @@ class OMTUnnecessaryWrappingInspectionTest extends OMTInspectionTestCase {
                 "   - test\n" +
                 "";
         configureByText(content);
-        assertNoWarning(OMTUnnecessaryWrappingInspection.UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT);
+        inspection.assertNoWarning(OMTUnnecessaryWrappingInspection.UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT);
     }
     @Test
     void testHasNoWarningWhenNotWrapped() {
@@ -43,6 +44,6 @@ class OMTUnnecessaryWrappingInspectionTest extends OMTInspectionTestCase {
                 "   - test\n" +
                 "";
         configureByText(content);
-        assertNoWarning(OMTUnnecessaryWrappingInspection.UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT);
+        inspection.assertNoWarning(OMTUnnecessaryWrappingInspection.UNNECESSARY_WRAPPING_OF_IMPORT_STATEMENT);
     }
 }

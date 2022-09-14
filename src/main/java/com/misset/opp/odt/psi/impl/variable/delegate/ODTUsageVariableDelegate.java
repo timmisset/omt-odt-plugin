@@ -8,17 +8,17 @@ import com.intellij.psi.PsiVariable;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.builtin.commands.CommandVariableTypeProvider;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
+import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.resolvable.global.GlobalVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
+public class ODTUsageVariableDelegate extends ODTVariableDelegateAbstract {
 
     public ODTUsageVariableDelegate(ODTVariable element) {
         super(element);
@@ -47,14 +47,13 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
     @Override
     public Set<OntResource> resolve() {
         return resolveFromDeclaringVariable()
-                .or(this::resolveFromGlobalVariable)
+                .or(() -> getFromFile().map(Resolvable::resolve))
                 .or(this::resolveFromCallContext)
                 .orElse(resolveFromContext());
     }
 
     private Optional<Variable> getUndeclaredVariable() {
-        return getDeclaringVariable()
-                .or(this::getFromGlobalVariable);
+        return getDeclaringVariable().or(this::getFromFile);
     }
 
     private Set<OntResource> resolveFromContext() {
@@ -192,14 +191,6 @@ public class ODTUsageVariableDelegate extends ODTBaseVariableDelegate {
         } else {
             return Optional.of(variables.iterator().next());
         }
-    }
-
-    private Optional<Set<OntResource>> resolveFromGlobalVariable() {
-        return getFromGlobalVariable().map(Variable::resolve);
-    }
-
-    private Optional<Variable> getFromGlobalVariable() {
-        return Optional.ofNullable(GlobalVariable.getVariable(element.getName()));
     }
 
     private Optional<Set<OntResource>> resolveFromCallContext() {

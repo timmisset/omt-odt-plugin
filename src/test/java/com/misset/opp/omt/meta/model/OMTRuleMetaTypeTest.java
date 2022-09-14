@@ -1,18 +1,18 @@
 package com.misset.opp.omt.meta.model;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTRuleMetaTypeTest extends OMTInspectionTestCase {
+class OMTRuleMetaTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTMissingKeysInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTMissingKeysInspection.class));
     }
 
     @Test
@@ -22,7 +22,7 @@ class OMTRuleMetaTypeTest extends OMTInspectionTestCase {
                         "   ruleA:\n" +
                         "       strict: true\n"
         ));
-        assertHasError("Missing required key(s): 'query'");
+        inspection.assertHasError("Missing required key(s): 'query'");
     }
 
     @Test
@@ -33,6 +33,6 @@ class OMTRuleMetaTypeTest extends OMTInspectionTestCase {
                         "       query: true\n" +
                         "       strict: true\n"
         ));
-        assertNoError("Missing required key(s): 'query'");
+        inspection.assertNoError("Missing required key(s): 'query'");
     }
 }

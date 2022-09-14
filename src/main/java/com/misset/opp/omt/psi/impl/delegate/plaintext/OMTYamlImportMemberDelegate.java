@@ -3,10 +3,9 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTImportMemberReference;
 import com.misset.opp.omt.util.OMTRefactoringUtil;
 import com.misset.opp.refactoring.SupportsSafeDelete;
@@ -26,8 +25,12 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
-        OMTYamlDelegate,
+/**
+ * The OMTYamlImportMemberDelegate serves as a proxy to the actual Callable that it imports
+ * All PsiCallable interface methods are deferred
+ */
+public class OMTYamlImportMemberDelegate extends OMTYamlPlainTextDelegateAbstract implements
+        PsiNamedElement,
         SupportsSafeDelete,
         PsiReferencedElement,
         PsiCallable {
@@ -49,11 +52,6 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     @NotNull
     public OMTImportMemberReference getReference() {
         return new OMTImportMemberReference(value);
-    }
-
-    @Override
-    public PsiReference @NotNull [] getReferences() {
-        return OMTYamlDelegate.super.getReferences();
     }
 
     /**
@@ -192,8 +190,8 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     }
 
     @Override
-    public boolean isStatic() {
-        return computeFromCallable(Callable::isStatic, false);
+    public boolean requiresInput() {
+        return computeFromCallable(Callable::requiresInput, false);
     }
 
     @Override
@@ -224,6 +222,16 @@ public class OMTYamlImportMemberDelegate extends YAMLPlainTextImpl implements
     @Override
     public Set<OntResource> getParamType(int index) {
         return computeFromCallable(callable -> callable.getParamType(index), Collections.emptySet());
+    }
+
+    @Override
+    public Set<String> getParamValues(int index) {
+        return computeFromCallable(callable -> callable.getParamValues(index), Collections.emptySet());
+    }
+
+    @Override
+    public void validateValue(PsiCall call, ProblemsHolder holder, int i) {
+        runOnCallable(callable -> callable.validateValue(call, holder, i));
     }
 
 }

@@ -5,9 +5,9 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiNamedElement;
 import com.misset.opp.omt.OMTImportOptimizer;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.plaintext.OMTYamlImportMemberDelegate;
 import com.misset.opp.util.LoggerUtil;
@@ -29,7 +29,7 @@ public class OMTUnusedImportMemberInspection extends LocalInspectionTool {
                 if (!(element instanceof YAMLPsiElement) || !(element.getContainingFile() instanceof OMTFile)) {
                     return;
                 }
-                final OMTYamlDelegate delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
+                final PsiNamedElement delegate = OMTYamlDelegateFactory.createDelegate((YAMLPsiElement) element);
                 if (delegate instanceof OMTYamlImportMemberDelegate) {
                     LoggerUtil.runWithLogger(LOGGER, "Inspection of " + element.getText(), () -> {
                         if (((OMTYamlImportMemberDelegate) delegate).isUnused()) {

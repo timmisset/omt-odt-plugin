@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTOperatorCall;
 import com.misset.opp.odt.psi.ODTSignature;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 public class ODTStyleInspectionUnnecessaryParentheses extends LocalInspectionTool {
 
-    protected static final String WARNING = "Unnecessary parentheses";
+    protected static final String UNNECESSARY_PARENTHESES = "Unnecessary parentheses";
 
     @Override
     @Nullable
@@ -53,14 +53,14 @@ public class ODTStyleInspectionUnnecessaryParentheses extends LocalInspectionToo
                 operatorCall.getFlagSignature() != null) {
             return;
         }
-        holder.registerProblem(signature, WARNING, ProblemHighlightType.WARNING, getReplaceQuickFix());
+        holder.registerProblem(signature, UNNECESSARY_PARENTHESES, ProblemHighlightType.WARNING, getReplaceQuickFix());
     }
 
     private void inspectDefineStatement(@NotNull ProblemsHolder holder,
                                         @NotNull ODTDefineStatement defineStatement) {
         ODTDefineParam defineParam = defineStatement.getDefineParam();
         if (defineParam != null && defineParam.getVariableList().isEmpty()) {
-            holder.registerProblem(defineParam, WARNING, ProblemHighlightType.WARNING, getReplaceQuickFix());
+            holder.registerProblem(defineParam, UNNECESSARY_PARENTHESES, ProblemHighlightType.WARNING, getReplaceQuickFix());
         }
     }
 

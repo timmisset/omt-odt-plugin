@@ -91,12 +91,12 @@ public class BuiltinOperators {
         addOperator(UpperCaseOperator.INSTANCE);
     }
 
-    public static Collection<Callable> getStaticOperators() {
-        return BUILTIN_OPERATORS.values().stream().filter(Callable::isStatic).collect(Collectors.toList());
+    public static Collection<Callable> getOperatorsWithoutInput() {
+        return BUILTIN_OPERATORS.values().stream().filter(callable -> !callable.requiresInput()).collect(Collectors.toList());
     }
 
-    public static Collection<Callable> getNonStaticOperators() {
-        return BUILTIN_OPERATORS.values().stream().filter(callable -> !callable.isStatic()).collect(Collectors.toList());
+    public static Collection<Callable> getOperatorsWithInput() {
+        return BUILTIN_OPERATORS.values().stream().filter(Callable::requiresInput).collect(Collectors.toList());
     }
 
     public static Collection<Callable> getOperators() {

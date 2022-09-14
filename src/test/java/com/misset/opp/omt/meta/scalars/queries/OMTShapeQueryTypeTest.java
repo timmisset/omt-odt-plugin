@@ -1,29 +1,20 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTShapeQueryTypeTest extends OMTInspectionTestCase {
+class OMTShapeQueryTypeTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTValueInspection.class);
-    }
-
-    @Override
     @BeforeEach
-    protected void setUp() {
+    public void setUp() {
         super.setUp();
-        OMTOntologyTestCase.initOntologyModel();
+        myFixture.enableInspections(Collections.singleton(OMTValueInspection.class));
         OppModel.getInstance().createIndividual(OppModelConstants.getGraphShape(), "http://shapeA");
     }
 
@@ -35,7 +26,7 @@ class OMTShapeQueryTypeTest extends OMTInspectionTestCase {
                 "       shape: /ont:ClassA\n" +
                 "\n");
         configureByText(content);
-        assertHasError("Expected a query that resolves to a GraphShape");
+        inspection.assertHasError("Expected a query that resolves to a GraphShape");
     }
 
     @Test
@@ -46,6 +37,6 @@ class OMTShapeQueryTypeTest extends OMTInspectionTestCase {
                 "       shape: /<http://shapeA>\n" +
                 "\n";
         configureByText(content);
-        assertNoError("Expected a query that resolves to a GraphShape");
+        inspection.assertNoError("Expected a query that resolves to a GraphShape");
     }
 }

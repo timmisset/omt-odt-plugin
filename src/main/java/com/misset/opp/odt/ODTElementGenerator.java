@@ -9,7 +9,7 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.LocalTimeCounter;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -2,12 +2,12 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.testCase.OMTDelegateTestCase;
+import com.intellij.psi.PsiNamedElement;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class OMTYamlBaseParameterDelegateTest extends OMTDelegateTestCase {
+class OMTYamlBaseParameterDelegateTest extends OMTTestCase {
 
     @Test
     void testIsParameter() {
@@ -16,7 +16,7 @@ class OMTYamlBaseParameterDelegateTest extends OMTDelegateTestCase {
                 "       base: $b<caret>ase\n" +
                 "       query: 'test'";
         configureByText(content);
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         Assertions.assertTrue(delegateAtCaret instanceof OMTYamlBaseParameterDelegate);
         Assertions.assertTrue(((OMTYamlBaseParameterDelegate) delegateAtCaret).isParameter());
     }
@@ -28,7 +28,7 @@ class OMTYamlBaseParameterDelegateTest extends OMTDelegateTestCase {
                 "       base: $b<caret>ase\n" +
                 "       query: 'test'";
         configureByText(content);
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         WriteCommandAction.runWriteCommandAction(getProject(), delegateAtCaret::delete);
         ReadAction.run(() -> Assertions.assertEquals("model:\n" +
                 "   StandaloneQuery: !StandaloneQuery\n" +

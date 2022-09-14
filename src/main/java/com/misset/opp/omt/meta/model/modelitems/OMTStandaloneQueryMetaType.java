@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
+import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.OMTMetaCallable;
@@ -14,7 +14,6 @@ import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.omt.meta.providers.util.OMTVariableProviderUtil;
 import com.misset.opp.omt.meta.scalars.OMTBaseParameterMetaType;
 import com.misset.opp.omt.meta.scalars.queries.OMTQueryMetaType;
-import com.misset.opp.omt.psi.OMTVariable;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
@@ -69,7 +68,7 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
     public @NotNull HashMap<String, Collection<PsiVariable>> getVariableMap(YAMLMapping mapping) {
         HashMap<String, Collection<PsiVariable>> variableMap = new HashMap<>();
         addSequenceToMap(mapping, PARAMS, variableMap);
-        OMTVariable baseVariable = OMTVariableProviderUtil.getReferenceTarget(mapping, "base");
+        PsiVariable baseVariable = OMTVariableProviderUtil.getReferenceTarget(mapping, "base");
         if (baseVariable != null) {
             variableMap.computeIfAbsent(baseVariable.getName(), s -> new ArrayList<>()).add(baseVariable);
         }
@@ -104,7 +103,7 @@ public class OMTStandaloneQueryMetaType extends OMTParameterizedModelItemMetaTyp
 
         return Optional.ofNullable(mapping.getKeyValueByKey("query"))
                 .map(YAMLKeyValue::getValue)
-                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTResolvableQuery.class))
+                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTQuery.class))
                 .stream()
                 .flatMap(Collection::stream)
                 .map(psiResolvable -> psiResolvable.resolve(context))

@@ -1,18 +1,18 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTOntologyMetaTypeRequiredKeyTest extends OMTInspectionTestCase {
+class OMTOntologyMetaTypeRequiredKeyTest extends OMTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTMissingKeysInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTMissingKeysInspection.class));
     }
 
     @Test
@@ -21,7 +21,7 @@ class OMTOntologyMetaTypeRequiredKeyTest extends OMTInspectionTestCase {
                 "   Ontology: !Ontology\n" +
                 "       prefix: test\n";
         configureByText(content);
-        assertHasError("Missing required key(s): 'classes'");
+        inspection.assertHasError("Missing required key(s): 'classes'");
     }
 
     @Test
@@ -32,7 +32,7 @@ class OMTOntologyMetaTypeRequiredKeyTest extends OMTInspectionTestCase {
                 "       classes: \n" +
                 "       - id: test\n";
         configureByText(content);
-        assertHasError("Missing required key(s): 'properties'");
+        inspection.assertHasError("Missing required key(s): 'properties'");
     }
 
     @Test
@@ -46,6 +46,6 @@ class OMTOntologyMetaTypeRequiredKeyTest extends OMTInspectionTestCase {
                 "               propA:\n" +
                 "                   multiple: false";
         configureByText(content);
-        assertHasError("Missing required key(s): 'type'");
+        inspection.assertHasError("Missing required key(s): 'type'");
     }
 }

@@ -24,18 +24,13 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
         return false;
     }
 
-    @Override
-    public boolean isVoid() {
-        return false;
-    }
-
     public String getCallId() {
         return getName();
     }
 
     @Override
-    public boolean isStatic() {
-        return false;
+    public boolean requiresInput() {
+        return true;
     }
 
     @Override

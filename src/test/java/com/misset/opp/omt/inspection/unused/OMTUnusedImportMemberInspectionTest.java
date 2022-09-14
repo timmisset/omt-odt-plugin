@@ -1,27 +1,21 @@
 package com.misset.opp.omt.inspection.unused;
 
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
-
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTUnusedImportMemberInspection.class);
-    }
+class OMTUnusedImportMemberInspectionTest extends OMTTestCase {
 
     @BeforeEach
-    protected void setUp() {
+    public void setUp() {
         super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTUnusedImportMemberInspection.class));
         addFileToProject("importing.omt", "" +
                 "queries: |\n" +
                 "   DEFINE QUERY memberA => 'memberA';\n" +
@@ -39,7 +33,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "   ./importing.omt:\n" +
                 "   - memberA";
         configureByText(content);
-        assertHasWarning("Import for memberA is never used");
+        inspection.assertHasWarning("Import for memberA is never used");
     }
 
     @Test
@@ -48,7 +42,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "   ./importing.omt:\n" +
                 "   - memberA";
         configureByText(content);
-        IntentionAction remove_prefix = getQuickFixIntention("Remove import member");
+        IntentionAction remove_prefix = inspection.getQuickFixIntention("Remove import member");
         WriteCommandAction.runWriteCommandAction(getProject(), () -> remove_prefix.invoke(getProject(), getEditor(), getFile()));
         String contentAfterRemoval = ReadAction.compute(getFile()::getText);
         Assertions.assertEquals("import:\n" +
@@ -62,7 +56,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "   - memberA\n" +
                 "   - memberB\n";
         configureByText(content);
-        IntentionAction remove_prefix = getQuickFixIntention("Remove import member");
+        IntentionAction remove_prefix = inspection.getQuickFixIntention("Remove import member");
         WriteCommandAction.runWriteCommandAction(getProject(), () -> remove_prefix.invoke(getProject(), getEditor(), getFile()));
         String contentAfterRemoval = ReadAction.compute(getFile()::getText);
         Assertions.assertEquals("import:\n" +
@@ -80,7 +74,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "   DEFINE QUERY query => memberA;\n" +
                 "";
         configureByText(content);
-        assertNoWarning("Import for memberA is never used");
+        inspection.assertNoWarning("Import for memberA is never used");
     }
 
     @Test
@@ -93,7 +87,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "   DEFINE COMMAND command => { @commandA(); }\n" +
                 "";
         configureByText(content);
-        assertNoWarning("Import for commandA is never used");
+        inspection.assertNoWarning("Import for commandA is never used");
     }
 
     @Test
@@ -106,7 +100,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "   DEFINE COMMAND command => { @ModelItem(); }\n" +
                 "";
         configureByText(content);
-        assertNoWarning("Import for ModelItem is never used");
+        inspection.assertNoWarning("Import for ModelItem is never used");
     }
 
     @Test
@@ -121,7 +115,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "   ./index.omt:\n" +
                 "   - memberA");
 
-        assertNoWarning("Import for memberA is never used");
+        inspection.assertNoWarning("Import for memberA is never used");
     }
 
     @Test
@@ -132,7 +126,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "export:\n" +
                 "- memberA";
         configureByText("myModule.module.omt", content);
-        assertNoWarning("Import for memberA is never used");
+        inspection.assertNoWarning("Import for memberA is never used");
     }
 
     @Test
@@ -147,7 +141,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "            myQuery:\n" +
                 "                query: myQuery\n";
         configureByText(content);
-        assertNoWarning("Import for myQuery is never used");
+        inspection.assertNoWarning("Import for myQuery is never used");
     }
 
     @Test
@@ -164,7 +158,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "            myQuery:\n" +
                 "                query: myQuery\n";
         configureByText(content);
-        assertNoWarning("Import for myQuery is never used");
+        inspection.assertNoWarning("Import for myQuery is never used");
     }
 
     @Test
@@ -180,7 +174,7 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "        rules:\n" +
                 "            myRule: myQuery\n";
         configureByText(content);
-        assertNoWarning("Import for myQuery is never used");
+        inspection.assertNoWarning("Import for myQuery is never used");
     }
 
     @Test
@@ -192,6 +186,6 @@ class OMTUnusedImportMemberInspectionTest extends OMTInspectionTestCase {
                 "procedures:\n" +
                 "- myProcedure\n";
         configureByText("module.omt", content);
-        assertNoWarning("Import for myProcedure is never used");
+        inspection.assertNoWarning("Import for myProcedure is never used");
     }
 }

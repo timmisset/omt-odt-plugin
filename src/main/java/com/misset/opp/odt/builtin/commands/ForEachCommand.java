@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.omt.commands.LocalVariable;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.resolvable.local.LocalVariable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -28,6 +28,11 @@ public class ForEachCommand extends AbstractBuiltInCommand implements CommandVar
     @Override
     public int minNumberOfArguments() {
         return 2;
+    }
+
+    @Override
+    public boolean isVoid() {
+        return true;
     }
 
     @Override

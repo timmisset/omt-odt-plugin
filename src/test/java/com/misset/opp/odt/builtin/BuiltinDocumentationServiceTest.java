@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin;
 
 import com.misset.opp.odt.builtin.operators.LogOperator;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.settings.SettingsState;
-import com.misset.opp.testCase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ import java.util.List;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-class BuiltinDocumentationServiceTest extends OMTTestCase {
+class BuiltinDocumentationServiceTest extends ODTTestCase {
 
     @Test
     void testGetDocumentationIncludesInformationFromTheAPI() {

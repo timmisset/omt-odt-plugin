@@ -2,18 +2,18 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
-import com.misset.opp.testCase.OMTDelegateTestCase;
+import com.intellij.psi.PsiNamedElement;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
+class OMTYamlVariableDelegateTest extends OMTTestCase {
 
     @Test
     void testSetNameWithoutSymbol() {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- $<caret>test"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         WriteCommandAction.runWriteCommandAction(getProject(), () -> {
             delegateAtCaret.setName("newName");
         });
@@ -26,7 +26,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
     void testSetNameWithSymbol() {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- $<caret>test"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         WriteCommandAction.runWriteCommandAction(getProject(), () -> {
             delegateAtCaret.setName("$newName");
         });
@@ -39,7 +39,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
     void testIsParameter() {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- $<caret>test"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         Assertions.assertTrue(delegateAtCaret instanceof OMTYamlVariableDelegate);
         Assertions.assertFalse(((OMTYamlVariableDelegate) delegateAtCaret).isParameter());
     }
@@ -48,7 +48,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
     void testIsReadonlyFalse() {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- $<caret>test"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         Assertions.assertTrue(delegateAtCaret instanceof OMTYamlVariableDelegate);
         ReadAction.run(() -> Assertions.assertFalse(((OMTYamlVariableDelegate) delegateAtCaret).isReadonly()));
     }
@@ -58,7 +58,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- name: $<caret>test\n" +
                 "  readonly: false"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         Assertions.assertTrue(delegateAtCaret instanceof OMTYamlVariableDelegate);
         ReadAction.run(() -> Assertions.assertFalse(((OMTYamlVariableDelegate) delegateAtCaret).isReadonly()));
     }
@@ -68,7 +68,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- name: $<caret>test\n" +
                 "  readonly: true"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         Assertions.assertTrue(delegateAtCaret instanceof OMTYamlVariableDelegate);
         ReadAction.run(() -> Assertions.assertTrue(((OMTYamlVariableDelegate) delegateAtCaret).isReadonly()));
     }
@@ -77,7 +77,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
     void testIsUnusedTrue() {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- $<caret>test"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         underProgress(() -> {
             ReadAction.run(() -> Assertions.assertTrue(((OMTYamlVariableDelegate) delegateAtCaret).isUnused()));
         });
@@ -89,7 +89,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
                 "- $<caret>test\n" +
                 "onStart:\n" +
                 "   LOG($test);"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         underProgress(() -> {
             ReadAction.run(() -> Assertions.assertFalse(((OMTYamlVariableDelegate) delegateAtCaret).isUnused()));
         });
@@ -100,7 +100,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- $<caret>test\n" +
                 "- $another"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         WriteCommandAction.runWriteCommandAction(getProject(), delegateAtCaret::delete);
         String contentAfterDelete = ReadAction.compute(getFile()::getText);
         Assertions.assertEquals(insideActivityWithPrefixes("variables:\n" +
@@ -112,7 +112,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- $test\n" +
                 "- $<caret>another"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         WriteCommandAction.runWriteCommandAction(getProject(), delegateAtCaret::delete);
         String contentAfterDelete = ReadAction.compute(getFile()::getText);
         Assertions.assertEquals(insideActivityWithPrefixes("variables:\n" +
@@ -123,7 +123,7 @@ class OMTYamlVariableDelegateTest extends OMTDelegateTestCase {
     void testDeleteRemovesVariablesBlock() {
         configureByText(insideActivityWithPrefixes("variables:\n" +
                 "- $<caret>test"));
-        OMTYamlDelegate delegateAtCaret = getDelegateAtCaret();
+        PsiNamedElement delegateAtCaret = getDelegateAtCaret();
         WriteCommandAction.runWriteCommandAction(getProject(), delegateAtCaret::delete);
         String contentAfterDelete = ReadAction.compute(getFile()::getText);
         Assertions.assertEquals(insideActivityWithPrefixes(""), contentAfterDelete);

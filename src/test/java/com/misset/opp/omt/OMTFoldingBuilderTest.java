@@ -5,7 +5,7 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.testCase.OMTTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import org.jetbrains.yaml.YAMLElementTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

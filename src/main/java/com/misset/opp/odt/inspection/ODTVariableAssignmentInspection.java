@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;

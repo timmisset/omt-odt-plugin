@@ -11,14 +11,14 @@ class BuiltinOperatorsTest {
 
     @Test
     void getStaticOperators() {
-        Collection<Callable> staticOperators = BuiltinOperators.getStaticOperators();
-        assertTrue(staticOperators.stream().allMatch(Callable::isStatic));
+        Collection<Callable> operatorsWithoutInput = BuiltinOperators.getOperatorsWithoutInput();
+        assertTrue(operatorsWithoutInput.stream().noneMatch(Callable::requiresInput));
     }
 
     @Test
     void getNonStaticOperators() {
-        Collection<Callable> staticOperators = BuiltinOperators.getNonStaticOperators();
-        assertTrue(staticOperators.stream().noneMatch(Callable::isStatic));
+        Collection<Callable> operatorsWithInput = BuiltinOperators.getOperatorsWithInput();
+        assertTrue(operatorsWithInput.stream().allMatch(Callable::requiresInput));
     }
 
     @Test

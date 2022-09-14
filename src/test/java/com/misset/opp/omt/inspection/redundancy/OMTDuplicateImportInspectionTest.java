@@ -1,17 +1,18 @@
 package com.misset.opp.omt.inspection.redundancy;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.misset.opp.omt.testcase.OMTTestCase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
-class OMTDuplicateImportInspectionTest extends OMTInspectionTestCase {
+class OMTDuplicateImportInspectionTest extends OMTTestCase {
 
     @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(OMTDuplicateImportInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(OMTDuplicateImportInspection.class));
     }
 
     @Test
@@ -21,7 +22,7 @@ class OMTDuplicateImportInspectionTest extends OMTInspectionTestCase {
                 "   - memberA\n" +
                 "   - memberA";
         configureByText(content);
-        assertHasWarning("Duplication");
+        inspection.assertHasWarning("Duplication");
     }
 
     @Test
@@ -32,7 +33,7 @@ class OMTDuplicateImportInspectionTest extends OMTInspectionTestCase {
                 "   file.omt:\n" +
                 "   - memberB";
         configureByText(content);
-        assertHasWarning("Duplication");
+        inspection.assertHasWarning("Duplication");
     }
 
     @Test
@@ -43,7 +44,7 @@ class OMTDuplicateImportInspectionTest extends OMTInspectionTestCase {
                 "   '@activiteit/file.omt':\n" +
                 "   - memberB";
         configureByText(content);
-        assertHasWarning("Duplication");
+        inspection.assertHasWarning("Duplication");
     }
 
 }

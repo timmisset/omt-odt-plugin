@@ -1,60 +1,57 @@
 package com.misset.opp.odt.inspection.calls;
 
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.misset.opp.testCase.OMTInspectionTestCase;
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.psi.PsiElement;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
+import com.misset.opp.odt.testcase.ODTFileTestImpl;
+import com.misset.opp.odt.testcase.ODTTestCase;
+import com.misset.opp.resolvable.Callable;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import static com.misset.opp.odt.inspection.calls.ODTCallInspection.ROOT_INDICATOR_EXPECTED;
+import static org.mockito.Mockito.*;
 
-class ODTCallInspectionTest extends OMTInspectionTestCase {
+class ODTCallInspectionTest extends ODTTestCase {
 
-    @Override
-    protected Collection<Class<? extends LocalInspectionTool>> getEnabledInspections() {
-        return Collections.singleton(ODTCallInspection.class);
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        myFixture.enableInspections(Collections.singleton(ODTCallInspection.class));
     }
 
     @Test
-    void testIllegalFlagToActivity() {
-        String content = "" +
-                "model:\n" +
-                "   Activity: !Activity\n" +
-                "       onStart:\n" +
-                "           @LOG('hi');\n" +
-                "   AnotherActivity: !Activity\n" +
-                "       onStart:\n" +
-                "           @Activity!wrongFlag();\n";
-        configureByText(content);
-        assertHasError("Illegal flag");
-    }
+    void testValidatesCallable() {
+        String content = "@Command();";
+        ODTFileTestImpl odtFileTest = configureByText(content);
 
-    @Test
-    void testValidFlagToActivity() {
-        String content = "" +
-                "model:\n" +
-                "   Activity: !Activity\n" +
-                "       onStart:\n" +
-                "           @LOG('hi');\n" +
-                "   AnotherActivity: !Activity\n" +
-                "       onStart:\n" +
-                "           @Activity!nested();\n";
-        configureByText(content);
-        assertNoError("Illegal flag");
+        Callable callable = mock(Callable.class);
+        doReturn("@Command").when(callable).getCallId();
+        doAnswer(invocation -> {
+            PsiElement element = invocation.getArgument(0);
+            ProblemsHolder problemsHolder = invocation.getArgument(1);
+            problemsHolder.registerProblem(element, "Some error", ProblemHighlightType.ERROR);
+            return null;
+        }).when(callable).validate(any(ODTCall.class), any(ProblemsHolder.class));
+        odtFileTest.addCallable(callable);
+
+        inspection.assertHasError("Some error");
     }
 
     @Test
     void testErrorWhenNoRootPathInCommandCall() {
-        String content = insideProcedureRunWithPrefixes("@CALL(ont:ClassA)");
+        String content = "@CALL(ont:ClassA)";
         configureByText(content);
-        assertHasError(ROOT_INDICATOR_EXPECTED);
+        inspection.assertHasError(ROOT_INDICATOR_EXPECTED);
     }
 
     @Test
     void testNoErrorWhenNoRootPathInOperatorCall() {
-        String content = insideProcedureRunWithPrefixes("CALL(ont:ClassA)");
+        String content = "CALL(ont:ClassA)";
         configureByText(content);
-        assertNoError(ROOT_INDICATOR_EXPECTED);
+        inspection.assertNoError(ROOT_INDICATOR_EXPECTED);
     }
 }

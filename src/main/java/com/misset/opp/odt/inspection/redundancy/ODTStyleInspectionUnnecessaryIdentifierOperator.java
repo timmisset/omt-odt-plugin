@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQueryOperationStep;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,8 +21,8 @@ import java.util.stream.Collectors;
  */
 public class ODTStyleInspectionUnnecessaryIdentifierOperator extends LocalInspectionTool {
 
-    protected static final String WARNING = "Unnecessary Identifier operator (.)";
-    protected static final String REMOVE = "Remove operator";
+    protected static final String UNNECESSARY_IDENTIFIER_OPERATOR = "Unnecessary Identifier operator (.)";
+    protected static final String REMOVE_OPERATOR = "Remove operator";
 
     @Override
     public @Nullable @Nls String getStaticDescription() {
@@ -47,7 +46,7 @@ public class ODTStyleInspectionUnnecessaryIdentifierOperator extends LocalInspec
                                      @NotNull ODTQueryStep queryStep) {
         if (queryStep instanceof ODTIdentifierStep && !onlyStepInPath(queryStep)) {
             holder.registerProblem(queryStep,
-                    WARNING, ProblemHighlightType.WARNING, getRemoveQueryStepQuickFix());
+                    UNNECESSARY_IDENTIFIER_OPERATOR, ProblemHighlightType.WARNING, getRemoveQueryStepQuickFix());
         }
     }
 
@@ -55,7 +54,7 @@ public class ODTStyleInspectionUnnecessaryIdentifierOperator extends LocalInspec
         return new LocalQuickFix() {
             @Override
             public @IntentionFamilyName @NotNull String getFamilyName() {
-                return REMOVE;
+                return REMOVE_OPERATOR;
             }
 
             @Override
@@ -66,8 +65,8 @@ public class ODTStyleInspectionUnnecessaryIdentifierOperator extends LocalInspec
                     Instead, filter out the current step and generate a new query, then replace it and catch the error
                  */
                 final PsiElement psiElement = descriptor.getPsiElement();
-                final ODTResolvableQueryOperationStep operationStep = PsiTreeUtil.getParentOfType(psiElement,
-                        ODTResolvableQueryOperationStep.class);
+                final ODTQueryOperationStep operationStep = PsiTreeUtil.getParentOfType(psiElement,
+                        ODTQueryOperationStep.class);
                 if (operationStep == null) {
                     return;
                 }

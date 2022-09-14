@@ -25,11 +25,6 @@ public abstract class AbstractBuiltInCommand extends AbstractBuiltin {
     }
 
     @Override
-    public boolean isVoid() {
-        return true;
-    }
-
-    @Override
     protected Set<OntResource> resolveFrom(PsiCall call) {
         return resolve();
     }
@@ -73,8 +68,8 @@ public abstract class AbstractBuiltInCommand extends AbstractBuiltin {
     }
 
     @Override
-    public boolean isStatic() {
-        return true;
+    public boolean requiresInput() {
+        return false;
     }
 
     @Override

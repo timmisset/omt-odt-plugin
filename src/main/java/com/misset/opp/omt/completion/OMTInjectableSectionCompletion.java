@@ -11,7 +11,7 @@ import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.completion.ODTSharedCompletion;
 import com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTShapeQueryType;

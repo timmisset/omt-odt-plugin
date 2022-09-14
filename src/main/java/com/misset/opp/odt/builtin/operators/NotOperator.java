@@ -2,6 +2,10 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.odt.builtin.ArgumentValidator;
+import com.misset.opp.odt.psi.ODTQuery;
+import com.misset.opp.odt.psi.ODTResolvableValue;
+import com.misset.opp.odt.psi.ODTSignatureArgument;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLValidationUtil;
@@ -9,6 +13,7 @@ import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class NotOperator extends BuiltInBooleanOperator {
@@ -54,5 +59,13 @@ public class NotOperator extends BuiltInBooleanOperator {
     @Override
     protected List<String> getParameters() {
         return PARAMETER_NAMES;
+    }
+
+    public boolean requiresInput(ODTCall call) {
+        return Optional.ofNullable(call.getSignatureArgument(0))
+                .map(ODTSignatureArgument::getResolvableValue)
+                .map(ODTResolvableValue::getQuery)
+                .map(ODTQuery::requiresInput)
+                .orElse(requiresInput());
     }
 }

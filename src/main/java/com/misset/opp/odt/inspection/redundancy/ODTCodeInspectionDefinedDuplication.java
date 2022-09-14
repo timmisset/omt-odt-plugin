@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -35,8 +35,8 @@ public class IIfOperator extends AbstractBuiltInOperator {
     }
 
     @Override
-    public boolean isStatic() {
-        return true;
+    public boolean requiresInput() {
+        return false;
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.callable.ODTDefineStatement;
+import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
 import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.ttl.model.OppModel;
@@ -28,6 +28,8 @@ public class ODTDocumentationUtil {
     );
 
     private static final Pattern LOCAL_NAME = Pattern.compile("\\(([^:]*):([^)]*)\\)");
+
+    private static final Pattern QUALIFIED_URI = Pattern.compile("\\(<([^>]*)>\\)");
 
     @Nullable
     public static String getJavaDocCommentDescription(@NotNull PsiElement element) {
@@ -114,6 +116,16 @@ public class ODTDocumentationUtil {
             if (curieReference.isPresent()) {
                 // there is a reference available for the type, meaning we should try to resolve it to the prefix
                 // and generate a fully qualified URI from it:
+                Matcher qualifiedUriMatcher = QUALIFIED_URI.matcher(dataElement.getText());
+                if (qualifiedUriMatcher.find()) {
+                    OppModel oppModel = OppModel.getInstance();
+                    return Optional.ofNullable(qualifiedUriMatcher.group(1))
+                            .map(oppModel::toIndividuals)
+                            .orElse(Collections.emptySet())
+                            .stream()
+                            .map(OntResource.class::cast)
+                            .collect(Collectors.toSet());
+                }
                 final PsiElement prefix = curieReference.get().resolve();
                 final Matcher matcher = LOCAL_NAME.matcher(dataElement.getText());
                 if (matcher.find()) {

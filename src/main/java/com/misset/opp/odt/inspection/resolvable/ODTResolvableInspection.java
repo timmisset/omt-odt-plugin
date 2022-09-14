@@ -4,7 +4,7 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

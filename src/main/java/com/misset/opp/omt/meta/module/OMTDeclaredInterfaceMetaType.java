@@ -2,7 +2,7 @@ package com.misset.opp.omt.meta.module;
 
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.arrays.OMTParamTypesArrayMetaType;
-import com.misset.opp.omt.meta.scalars.OMTParamTypeType;
+import com.misset.opp.omt.meta.scalars.OMTParamTypeMetaType;
 import com.misset.opp.omt.meta.scalars.values.OMTDeclaredInterfaceTypeMetaType;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
@@ -23,7 +23,7 @@ public class OMTDeclaredInterfaceMetaType extends OMTMetaType {
     static {
         features.put("type", OMTDeclaredInterfaceTypeMetaType::getInstance);
         features.put("params", OMTParamTypesArrayMetaType::getInstance);
-        features.put("returns", OMTParamTypeType::getInstance);
+        features.put("returns", OMTParamTypeMetaType::getInstance);
     }
 
     private OMTDeclaredInterfaceMetaType() {

@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
+import com.misset.opp.odt.psi.ODTTypeFilterProvider;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import org.apache.jena.ontology.OntResource;

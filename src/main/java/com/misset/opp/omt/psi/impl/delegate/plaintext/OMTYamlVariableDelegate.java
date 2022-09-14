@@ -2,14 +2,14 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
-import com.misset.opp.omt.psi.OMTVariable;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.refactoring.SupportsSafeDelete;
+import com.misset.opp.resolvable.psi.PsiVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
@@ -33,9 +33,9 @@ import static com.misset.opp.omt.util.OMTRefactoringUtil.removeFromSequence;
  * The MetaTypes are Psi-less classes which require to be called with the actual PsiElement they
  * represent in order to provide the information
  */
-public class OMTYamlVariableDelegate extends YAMLPlainTextImpl implements
-        OMTVariable,
-        OMTYamlDelegate,
+public class OMTYamlVariableDelegate extends OMTYamlPlainTextDelegateAbstract implements
+        PsiVariable,
+        PsiNamedElement,
         SupportsSafeDelete {
     YAMLPlainTextImpl value;
 

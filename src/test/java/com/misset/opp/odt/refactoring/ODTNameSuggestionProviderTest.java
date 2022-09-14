@@ -3,13 +3,13 @@ package com.misset.opp.odt.refactoring;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.odt.psi.ODTStatement;
-import com.misset.opp.testCase.OMTOntologyTestCase;
+import com.misset.opp.odt.testcase.ODTTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashSet;
 
-class ODTNameSuggestionProviderTest extends OMTOntologyTestCase {
+class ODTNameSuggestionProviderTest extends ODTTestCase {
 
     private ODTNameSuggestionProvider suggestionProvider = new ODTNameSuggestionProvider();
     private LinkedHashSet<String> results;
@@ -41,7 +41,7 @@ class ODTNameSuggestionProviderTest extends OMTOntologyTestCase {
     }
 
     private void testStatementSuggestedNames(String statement, String... expectedNames) {
-        String content = insideProcedureRunWithPrefixes("<caret>" + statement + ";");
+        String content = withPrefixes("<caret>" + statement + ";");
         configureByText(content);
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.findElementByText(statement, ODTStatement.class);

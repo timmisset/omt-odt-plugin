@@ -2,8 +2,8 @@ package com.misset.opp.omt.psi.impl.delegate.plaintext;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
-import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegate;
 import com.misset.opp.omt.psi.references.OMTParamTypePrefixReference;
 import com.misset.opp.omt.psi.references.OMTTTLSubjectReference;
 import com.misset.opp.omt.util.PatternUtil;
@@ -12,10 +12,10 @@ import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
-import static com.misset.opp.omt.meta.scalars.OMTParamTypeType.CURIE_PATTERN;
-import static com.misset.opp.omt.meta.scalars.OMTParamTypeType.URI_PATTERN;
+import static com.misset.opp.omt.meta.scalars.OMTParamTypeMetaType.CURIE_PATTERN;
+import static com.misset.opp.omt.meta.scalars.OMTParamTypeMetaType.URI_PATTERN;
 
-public class OMTYamlParamTypeDelegate extends YAMLPlainTextImpl implements OMTYamlDelegate {
+public class OMTYamlParamTypeDelegate extends OMTYamlPlainTextDelegateAbstract implements PsiNamedElement {
     YAMLPlainTextImpl value;
 
     public OMTYamlParamTypeDelegate(@NotNull YAMLPlainTextImpl yamlValue) {

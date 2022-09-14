@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.util.CallableUtil;
 import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -94,23 +93,25 @@ public interface Callable extends ContextResolvable {
     }
 
     /**
-     * Returns true of the callable can be placed anywhere without any leading information
-     * usually true for all commands but also queries and some operators can be static.
+     * Returns true if the Callable requires an input parameter aside from arguments.
      */
-    boolean isStatic();
+    boolean requiresInput();
+
+    /**
+     * Returns true if the callable closes the script. No more code should be present after
+     * a call to this Callable has been made.
+     */
+    default boolean isFinalCommand() {
+        return false;
+    }
 
     /**
      * Default method to validate a call made by a PsiCall
      */
     default void validate(PsiCall call,
                           ProblemsHolder holder) {
-        LoggerUtil.runWithLogger(LOGGER,
-                "Validation of call " + call.getCallId(),
-                () -> {
-                    CallableUtil.validateCallArguments(this, call, holder);
-                    CallableUtil.validateCallFlag(this, call, holder);
-                });
-
+        CallableUtil.validateCallArguments(this, call, holder);
+        CallableUtil.validateCallFlag(this, call, holder);
     }
 
     /**

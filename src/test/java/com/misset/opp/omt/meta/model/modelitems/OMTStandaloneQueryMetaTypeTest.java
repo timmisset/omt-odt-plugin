@@ -2,10 +2,10 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.testCase.OMTOntologyTestCase;
 import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntResource;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
-class OMTStandaloneQueryMetaTypeTest extends OMTOntologyTestCase {
+class OMTStandaloneQueryMetaTypeTest extends OMTTestCase {
 
     @Test
     void testResolveStandaloneQuery() {

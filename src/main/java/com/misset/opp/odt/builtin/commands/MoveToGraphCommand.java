@@ -25,11 +25,6 @@ public class MoveToGraphCommand extends AbstractBuiltInCommand {
     }
 
     @Override
-    public boolean isVoid() {
-        return false;
-    }
-
-    @Override
     public int minNumberOfArguments() {
         return 2;
     }

@@ -14,9 +14,9 @@ import com.intellij.refactoring.introduce.inplace.AbstractInplaceIntroducer;
 import com.intellij.refactoring.introduce.inplace.OccurrencesChooser;
 import com.misset.opp.exception.OMTODTPluginException;
 import com.misset.opp.odt.ODTElementGenerator;
+import com.misset.opp.odt.psi.ODTDeclareVariable;
 import com.misset.opp.odt.psi.ODTStatement;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
-import com.misset.opp.odt.psi.impl.variable.ODTBaseDeclaredVariable;
+import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,12 +27,17 @@ import java.util.LinkedHashSet;
 /**
  * Class to start the refactoring process after a variable is introduced
  */
-public class ODTInplaceVariableIntroducer extends AbstractInplaceIntroducer<ODTBaseDeclaredVariable, PsiElement> {
+public class ODTInplaceVariableIntroducer extends AbstractInplaceIntroducer<ODTDeclareVariable, PsiElement> {
+    private ODTDeclareVariable declaredVariable = null;
+
+    private final ODTResolvable statement;
+    private final LinkedHashSet<String> suggestedNames;
+
     @SuppressWarnings("java:S107")
     public ODTInplaceVariableIntroducer(Project project,
                                         Editor editor,
                                         @Nullable ODTResolvable statement,
-                                        @Nullable ODTBaseDeclaredVariable localVariable,
+                                        @Nullable ODTDeclareVariable localVariable,
                                         PsiElement[] occurrences,
                                         @NlsContexts.Command String title,
                                         FileType languageFileType, OccurrencesChooser.ReplaceChoice choice) {
@@ -46,10 +51,6 @@ public class ODTInplaceVariableIntroducer extends AbstractInplaceIntroducer<ODTB
         }
         new ODTNameSuggestionProvider().getSuggestedNames(statement, statement, suggestedNames);
     }
-
-    private final ODTResolvable statement;
-    private final LinkedHashSet<String> suggestedNames;
-    private ODTBaseDeclaredVariable declaredVariable = null;
     private final OccurrencesChooser.ReplaceChoice choice;
 
     @Override
@@ -59,12 +60,12 @@ public class ODTInplaceVariableIntroducer extends AbstractInplaceIntroducer<ODTB
 
     @Nullable
     @Override
-    protected ODTBaseDeclaredVariable createFieldToStartTemplateOn(boolean replaceAll, String @NotNull [] names) {
-        ODTBaseDeclaredVariable createdVariable = WriteCommandAction.runWriteCommandAction(myProject, (Computable<ODTBaseDeclaredVariable>) () -> {
+    protected ODTDeclareVariable createFieldToStartTemplateOn(boolean replaceAll, String @NotNull [] names) {
+        ODTDeclareVariable createdVariable = WriteCommandAction.runWriteCommandAction(myProject, (Computable<ODTDeclareVariable>) () -> {
             String variableName = getInitialName();
             String assignment = "VAR " + variableName + " = " + statement.getText();
-            ODTBaseDeclaredVariable variable = ODTElementGenerator.getInstance(myProject).fromFile(assignment, ODTBaseDeclaredVariable.class);
-            declaredVariable = (ODTBaseDeclaredVariable) statement.replace(variable);
+            ODTDeclareVariable variable = ODTElementGenerator.getInstance(myProject).fromFile(assignment, ODTDeclareVariable.class);
+            declaredVariable = (ODTDeclareVariable) statement.replace(variable);
             return declaredVariable;
         });
         myLocalMarker = createMarker(createdVariable.getNameIdentifier());
@@ -73,7 +74,7 @@ public class ODTInplaceVariableIntroducer extends AbstractInplaceIntroducer<ODTB
     }
 
     @Override
-    protected String @NotNull [] suggestNames(boolean replaceAll, @Nullable ODTBaseDeclaredVariable variable) {
+    protected String @NotNull [] suggestNames(boolean replaceAll, @Nullable ODTDeclareVariable variable) {
         return suggestedNames.toArray(String[]::new);
     }
 
@@ -100,23 +101,23 @@ public class ODTInplaceVariableIntroducer extends AbstractInplaceIntroducer<ODTB
     }
 
     @Override
-    protected void saveSettings(@NotNull ODTBaseDeclaredVariable variable) {
+    protected void saveSettings(@NotNull ODTDeclareVariable variable) {
         this.declaredVariable = variable;
     }
 
     @Nullable
     @Override
-    protected ODTBaseDeclaredVariable getVariable() {
+    protected ODTDeclareVariable getVariable() {
         if (myLocalMarker == null) return null;
 
         int offset = myLocalMarker.getStartOffset();
         PsiElement at = myExpr.getContainingFile().findElementAt(offset);
-        return PsiTreeUtil.getParentOfType(at, ODTBaseDeclaredVariable.class);
+        return PsiTreeUtil.getParentOfType(at, ODTDeclareVariable.class);
     }
 
     @Override
     public ODTResolvable restoreExpression(@NotNull PsiFile containingFile,
-                                           @NotNull ODTBaseDeclaredVariable variable,
+                                           @NotNull ODTDeclareVariable variable,
                                            @NotNull RangeMarker marker,
                                            @Nullable String exprText) {
         return (ODTResolvable) ODTElementGenerator.getInstance(variable.getProject())

@@ -1,6 +1,6 @@
 package com.misset.opp.omt.meta.providers.util;
 
-import com.misset.opp.odt.psi.impl.resolvable.query.ODTResolvableQuery;
+import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.providers.OMTLocalVariableTypeProvider;
 import com.misset.opp.resolvable.Resolvable;
@@ -22,7 +22,7 @@ public class OMTVariableTypeProviderUtil {
                                            YAMLMapping mapping) {
         final YAMLValue yamlValue = localVariableTypeProvider.getTypeProviderMap(mapping);
         return Optional.ofNullable(yamlValue)
-                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTResolvableQuery.class))
+                .map(value -> OMTODTInjectionUtil.getInjectedContent(value, ODTQuery.class))
                 .orElse(Collections.emptySet())
                 .stream()
                 .map(Resolvable::resolve)

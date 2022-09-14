@@ -35,7 +35,7 @@ public interface ODTFile extends PsiFile {
     /**
      * Returns true if the source element can access the target element
      *
-     * @see com.misset.opp.odt.psi.util.PsiRelationshipUtil
+     * @see PsiRelationshipUtil
      */
     boolean isAccessible(PsiElement source, PsiElement target);
 

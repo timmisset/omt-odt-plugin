@@ -26,8 +26,13 @@
                                implementationClass="com.misset.opp.omt.YAMLOMTParserDefinition"/>
         <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTCompletions"
                                 order="first" language="yaml"/>
+        <completion.contributor implementationClass="com.misset.opp.omt.completion.OMTParameterShorthandTypeCompletion"
+                                order="first" language="yaml"/>
+
         <psi.referenceContributor language="yaml" implementation="com.misset.opp.omt.OMTYamlReferenceContributor"/>
         <codeInsight.parameterNameHints language="yaml" implementationClass="com.misset.opp.omt.OMTParameterNameHints"/>
+        <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
+                                 implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
 
         <!-- OMT -->
         <fileType name="OMT File" implementationClass="com.misset.opp.omt.OMTFileType" fieldName="INSTANCE"
@@ -51,6 +56,8 @@
         <lang.importOptimizer language="OMT" implementationClass="com.misset.opp.omt.OMTImportOptimizer"/>
         <lang.foldingBuilder language="OMT" order="before YAMLFoldingBuilder"
                              implementationClass="com.misset.opp.omt.OMTFoldingBuilder"/>
+        <lookup.charFilter implementation="com.misset.opp.omt.completion.OMTCompletionCharFilter"/>
+
         <!-- Inspections -->
         <!-- Unused-->
         <localInspection displayName="Unused model items" groupPath="OMT" language="OMT"
@@ -137,7 +144,8 @@
                                 implementationClass="com.misset.opp.omt.completion.OMTCompletionLoadableContext"/>
         <completion.contributor order="first" language="ODT"
                                 implementationClass="com.misset.opp.odt.completion.operators.ODTOperatorCompletionCast"/>
-
+        <completion.contributor order="first" language="ODT"
+                                implementationClass="com.misset.opp.odt.completion.ODTTypeClassNameCompletion"/>
         <!-- Annotations -->
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTSemicolonAnnotator"/>
         <annotator language="ODT" implementationClass="com.misset.opp.odt.annotation.ODTHighlightingAnnotator"/>
@@ -265,12 +273,13 @@
         <stubElementTypeHolder class="com.misset.opp.ttl.psi.TTLTypes"/>
         <stubIndex implementation="com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex"/>
         <stubIndex implementation="com.misset.opp.ttl.stubs.index.TTLObjectStubIndex"/>
+
         <!-- JAVA -->
+        <!-- Interaction with Java is for the JavaDoc elements-->
         <psi.referenceContributor language="JAVA"
                                   implementation="com.misset.opp.odt.psi.reference.ODTJavaDocReferenceContributor"/>
-
-        <lang.elementManipulator forClass="org.jetbrains.yaml.psi.impl.YAMLScalarImpl" order="first"
-                                 implementationClass="com.misset.opp.omt.OMTScalarElementManipulator"/>
+        <completion.contributor order="first" language="JAVA"
+                                implementationClass="com.misset.opp.odt.completion.ODTAnnotationTypeClassNameCompletion"/>
 
 
     </extensions>

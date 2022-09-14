@@ -10,10 +10,10 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.SharedProcessingContext;
-import com.misset.opp.odt.builtin.operators.BuiltinOperators;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQueryStep;
-import com.misset.opp.odt.psi.impl.resolvable.ODTTypeFilterProvider;
+import com.misset.opp.odt.psi.ODTTypeFilterProvider;
+import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
@@ -74,8 +74,15 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
         precedingFilter = acceptableInput -> previousStep.isEmpty() ||
                 OppModel.getInstance().areCompatible(acceptableInput, previousStep);
 
-        // add BuiltinOperators
-        addBuiltinOperators(position, result, context, typeFilter, precedingFilter);
+        // add non-Psi operators
+        if (BUILTIN_OPERATOR_STRICT.accepts(position)) {
+            addCallables(file.listCallables().stream().filter(Callable::requiresInput).collect(Collectors.toList()), result, typeFilter, precedingFilter, context);
+            if (!AFTER_FIRST_QUERY_STEP.accepts(position)) {
+                addCallables(file.listCallables().stream().filter(callable -> !callable.requiresInput()).collect(Collectors.toList()), result, typeFilter, precedingFilter, context);
+            }
+        } else {
+            addCallables(file.listCallables().stream().filter(callable -> !callable.requiresInput()).collect(Collectors.toList()), result, typeFilter, precedingFilter, context);
+        }
 
         PsiElement originalPosition = parameters.getOriginalPosition();
         if (originalPosition == null) {
@@ -87,23 +94,5 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
                 .filter(psiCallable -> file.isAccessible(originalPosition, psiCallable))
                 .collect(Collectors.toList());
         addCallables(callables, result, typeFilter, precedingFilter, context);
-    }
-
-    private void addBuiltinOperators(PsiElement position,
-                                     CompletionResultSet result,
-                                     @NotNull ProcessingContext context,
-                                     Predicate<Set<OntResource>> typeFilter,
-                                     Predicate<Set<OntResource>> precedingFilter) {
-        // static Operators are ones that don't require (actually don't want) to be applied on an input
-        // but only as start. For example, the DATE_TIME stamp or IIF operator.
-        if (BUILTIN_OPERATOR_STRICT.accepts(position)) {
-            addCallables(BuiltinOperators.getNonStaticOperators(), result, typeFilter, precedingFilter, context);
-            if (!AFTER_FIRST_QUERY_STEP.accepts(position)) {
-                addCallables(BuiltinOperators.getStaticOperators(), result, typeFilter, precedingFilter, context);
-            }
-        } else {
-            // only add the static builtin operators:
-            addCallables(BuiltinOperators.getStaticOperators(), result, typeFilter, resources -> true, context);
-        }
     }
 }

@@ -1,13 +1,13 @@
 package com.misset.opp.omt.psi.impl;
 
 import com.intellij.psi.PsiFile;
-import com.misset.opp.testCase.BasicTestCase;
+import com.misset.opp.testcase.BasicTestCase;
 import org.jetbrains.yaml.YAMLFileType;
 import org.jetbrains.yaml.psi.YAMLFile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class YamlFileImplTest extends BasicTestCase<YAMLFile> {
+class YamlFileImplTest extends BasicTestCase<YAMLFile> {
     public YamlFileImplTest() {
         super(YAMLFileType.YML);
     }

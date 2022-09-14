@@ -12,8 +12,8 @@ import com.misset.opp.odt.builtin.operators.EmptyOperator;
 import com.misset.opp.odt.builtin.operators.ExistsOperator;
 import com.misset.opp.odt.builtin.operators.NotOperator;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.resolvable.ODTResolvable;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTCall;
+import com.misset.opp.odt.psi.resolvable.ODTResolvable;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

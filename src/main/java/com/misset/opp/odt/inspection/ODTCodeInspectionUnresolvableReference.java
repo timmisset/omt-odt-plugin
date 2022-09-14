@@ -11,10 +11,10 @@ import com.misset.opp.indexing.PrefixIndex;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTVariable;
-import com.misset.opp.odt.psi.impl.resolvable.call.ODTResolvableCall;
 import com.misset.opp.odt.psi.reference.ODTCallReference;
 import com.misset.opp.odt.psi.reference.ODTJavaDocTTLSubjectReference;
 import com.misset.opp.odt.psi.reference.ODTTypePrefixAnnotationReference;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.Nls;
@@ -45,8 +45,8 @@ public class ODTCodeInspectionUnresolvableReference extends LocalInspectionTool 
                 }
                 if (element instanceof ODTVariable) {
                     LoggerUtil.runWithLogger(LOGGER, "Inspect variable " + ((ODTVariable) element).getName(), () -> inspectVariable(holder, (ODTVariable) element));
-                } else if (element instanceof ODTResolvableCall) {
-                    LoggerUtil.runWithLogger(LOGGER, "Inspect Call " + ((ODTResolvableCall) element).getName(), () -> inspectCall(holder, (ODTResolvableCall) element));
+                } else if (element instanceof ODTCall) {
+                    LoggerUtil.runWithLogger(LOGGER, "Inspect Call " + ((ODTCall) element).getName(), () -> inspectCall(holder, (ODTCall) element));
                 } else if (element instanceof PsiDocTag) {
                     LoggerUtil.runWithLogger(LOGGER, "Inspect DocTag", () -> inspectDocTag(holder, (PsiDocTag) element));
                 } else if (element instanceof ODTNamespacePrefix) {
@@ -65,7 +65,7 @@ public class ODTCodeInspectionUnresolvableReference extends LocalInspectionTool 
     }
 
     private void inspectCall(@NotNull ProblemsHolder holder,
-                             @NotNull ODTResolvableCall call) {
+                             @NotNull ODTCall call) {
         final Callable callable = call.getCallable();
         ODTCallReference reference = call.getReference();
         if (reference != null && callable == null) {

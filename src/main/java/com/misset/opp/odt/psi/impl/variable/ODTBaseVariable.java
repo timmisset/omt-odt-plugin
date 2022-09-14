@@ -1,5 +1,6 @@
 package com.misset.opp.odt.psi.impl.variable;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
@@ -16,12 +17,9 @@ import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.odt.psi.impl.ODTASTWrapperPsiElement;
-import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableVariableStep;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.resolvable.global.GlobalVariable;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
@@ -39,9 +37,8 @@ import java.util.Set;
  * Overlapping logic is confined in this base class
  */
 public abstract class ODTBaseVariable
-        extends ODTASTWrapperPsiElement
+        extends ASTWrapperPsiElement
         implements ODTVariable,
-        ODTVariableWrapper,
         PsiNameIdentifierOwner,
         ODTDocumented,
         SupportsSafeDelete {
@@ -174,11 +171,6 @@ public abstract class ODTBaseVariable
             return null;
         }
 
-        ODTResolvableVariableStep variableStep = null;
-        if (getParent() instanceof ODTVariableStep) {
-            variableStep = (ODTResolvableVariableStep) getParent();
-        }
-
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
         sb.append(getName());
@@ -192,7 +184,11 @@ public abstract class ODTBaseVariable
         }
 
         Set<OntResource> unfiltered = resolve();
-        Set<OntResource> filtered = variableStep != null ? variableStep.getResolvableParent().filter(unfiltered) : unfiltered;
+        Set<OntResource> filtered = unfiltered;
+        if (getParent() instanceof ODTVariableStep) {
+            filtered = ((ODTVariableStep) getParent()).getResolvableParent().filter(unfiltered);
+        }
+
         sb.append(DocumentationMarkup.SECTIONS_START);
         String typeLabel = filtered.size() == 1 ? "Type:" : "Types:";
         sb.append(
@@ -211,7 +207,10 @@ public abstract class ODTBaseVariable
 
     @Override
     public boolean isGlobal() {
-        return GlobalVariable.getVariable(getName()) != null;
+        return Optional.ofNullable(getDeclared())
+                .filter(variable -> variable != this)
+                .map(Variable::isGlobal)
+                .orElse(false);
     }
 
     @Override

@@ -20,7 +20,7 @@ class PlusOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveDecimal() {
+    void testResolveDecimal() {
         assertResolved(PlusOperator.INSTANCE,
                 Set.of(OppModelConstants.getXsdIntegerInstance()),
                 Set.of(OppModelConstants.getXsdDecimalInstance()),
@@ -29,7 +29,7 @@ class PlusOperatorTest extends BaseBuiltinTest {
     }
 
     @Test
-    protected void testResolveDecimalLeading() {
+    void testResolveDecimalLeading() {
         assertResolved(PlusOperator.INSTANCE,
                 Set.of(OppModelConstants.getXsdDecimalInstance()),
                 Set.of(OppModelConstants.getXsdDecimalInstance()),
