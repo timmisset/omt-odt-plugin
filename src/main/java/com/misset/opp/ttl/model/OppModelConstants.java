@@ -145,10 +145,15 @@ public final class OppModelConstants {
 
         oppClass = model.createClass(PLATFORM.CLASS.getUri(), ontologyModel, getOwlThingClass());
         json = model.createClass(PLATFORM.JSON.getUri(), ontologyModel, getOwlThingClass());
+        json.addSuperClass(oppClass);
         graphClass = model.createClass(PLATFORM.GRAPH.getUri(), ontologyModel, getOwlThingClass());
+        graphClass.addSuperClass(oppClass);
         namedGraphClass = model.createClass(PLATFORM.NAMED_GRAPH.getUri(), ontologyModel, getOwlThingClass());
+        namedGraphClass.addSuperClass(graphClass);
         graphShape = model.createClass(PLATFORM.GRAPH_SHAPE.getUri(), ontologyModel, getOwlThingClass());
+        graphShape.addSuperClass(oppClass);
         transientGraphClass = model.createClass(com.misset.opp.ttl.model.constants.PLATFORM.TRANSIENT_GRAPH.getUri(), ontologyModel, getOwlThingClass());
+        transientGraphClass.addSuperClass(graphClass);
     }
 
     public static Set<OntClass> listXSDTypes() {

@@ -94,6 +94,10 @@ public class OppModel {
         return modelCache.getClasses();
     }
 
+    public Set<Individual> listIndividuals() {
+        return modelCache.getIndividuals();
+    }
+
     /**
      * List the subjects that have the specified predicate-object combination
      */
