@@ -205,8 +205,7 @@ public class TTLResourceUtil {
         return LookupElementBuilder.create(lookupText)
                 .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
                 .withTypeText(typeText)
-                .withIcon(Icons.TTLFile)
-                .withPresentableText(title);
+                .withIcon(Icons.TTLFile);
     }
 
     public static LookupElementBuilder getTypeLookupElement(OntResource resource,
