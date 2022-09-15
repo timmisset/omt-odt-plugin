@@ -6,9 +6,13 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.odt.psi.ODTNamespacePrefix;
+import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
@@ -25,6 +29,10 @@ public class ODTTypeClassNameCompletion extends CompletionContributor {
 
     private static final String RDF_TYPE_INSERT = " / ^rdf:type / ";
 
+    private static final TokenSet CLOSING_TOKENS = TokenSet.create(
+            ODTTypes.SEMICOLON, ODTTypes.CURLY_CLOSED
+    );
+
     public ODTTypeClassNameCompletion() {
         extend(CompletionType.BASIC, CompletionPatterns.FIRST_QUERY_STEP_ABSOLUTE, new CompletionProvider<>() {
             private final InsertHandler<LookupElement> withInsertHandler = (insertionContext, lookupElement) -> {
@@ -32,7 +40,9 @@ public class ODTTypeClassNameCompletion extends CompletionContributor {
                 Editor editor = insertionContext.getEditor();
                 int offset = editor.getCaretModel().getOffset();
                 PsiElement elementAt = insertionContext.getFile().findElementAt(offset);
-                if (elementAt == null || PsiTreeUtil.nextVisibleLeaf(elementAt) == null) {
+                if (elementAt == null ||
+                        PsiTreeUtil.nextVisibleLeaf(elementAt) == null ||
+                        CLOSING_TOKENS.contains(PsiUtilCore.getElementType(PsiTreeUtil.nextVisibleLeaf(elementAt)))) {
                     // insert reverse predicate:
                     insertionContext.getDocument().insertString(offset, RDF_TYPE_INSERT);
                     insertionContext.commitDocument();
@@ -52,8 +62,11 @@ public class ODTTypeClassNameCompletion extends CompletionContributor {
                 List<LookupElementBuilder> elements = new ArrayList<>();
 
                 addElements(getFilteredCollection(oppModel.listClasses(), this::filterClasses), resource -> "Class", availableNamespaces, elements);
-
-                CompletionResultSet resultSet = result.withPrefixMatcher("/" + result.getPrefixMatcher().getPrefix());
+                String prefixMatcher = "/";
+                if (parameters.getPosition().getPrevSibling() instanceof ODTNamespacePrefix) {
+                    prefixMatcher += parameters.getPosition().getPrevSibling().getText();
+                }
+                CompletionResultSet resultSet = result.withPrefixMatcher(prefixMatcher + result.getPrefixMatcher().getPrefix());
 
                 elements.stream()
                         .map(element -> element.withInsertHandler(withInsertHandler))

@@ -15,6 +15,8 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTTypes;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 public class ODTTypedHandlerDelegate extends TypedHandlerDelegate {
 
     private static final TokenSet ROOT_INDICATOR = TokenSet.create(
@@ -26,7 +28,7 @@ public class ODTTypedHandlerDelegate extends TypedHandlerDelegate {
                                           @NotNull Project project,
                                           @NotNull Editor editor,
                                           @NotNull PsiFile file) {
-        if (file instanceof ODTFile && charTyped == '/') {
+        if (file instanceof ODTFile && Arrays.asList('/', '@').contains(charTyped)) {
             AutoPopupController.getInstance(project).scheduleAutoPopup(editor, CompletionType.BASIC, f -> true);
             return Result.STOP;
         }

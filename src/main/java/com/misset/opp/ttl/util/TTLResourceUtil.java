@@ -197,7 +197,7 @@ public class TTLResourceUtil {
     public static LookupElementBuilder getRootLookupElement(Resource resource,
                                                             String typeText,
                                                             Map<String, String> availableNamespaces) {
-        String title = ODTTraverseCompletion.parseToCurie(resource, availableNamespaces);
+        String title = parseToCurie(resource, availableNamespaces);
         if (title == null) {
             return null;
         }
@@ -205,13 +205,12 @@ public class TTLResourceUtil {
         return LookupElementBuilder.create(lookupText)
                 .withLookupStrings(Set.of(resource.getURI(), resource.getLocalName()))
                 .withTypeText(typeText)
-                .withIcon(Icons.TTLFile)
-                .withPresentableText(title);
+                .withIcon(Icons.TTLFile);
     }
 
     public static LookupElementBuilder getTypeLookupElement(OntResource resource,
                                                             Map<String, String> availableNamespaces) {
-        String lookupText = ODTTraverseCompletion.parseToCurie(resource, availableNamespaces);
+        String lookupText = parseToCurie(resource, availableNamespaces);
         if (lookupText == null) {
             return null;
         }
@@ -221,5 +220,20 @@ public class TTLResourceUtil {
                 .withTypeText(typeText, Icons.TTLFile, false)
                 .withIcon(Icons.TTLFile)
                 .withPresentableText(lookupText);
+    }
+
+    public static String parseToCurie(Resource resource,
+                                      Map<String, String> availableNamespaces) {
+        return Optional.ofNullable(resource.getURI())
+                .map(uri -> getCurie(resource, availableNamespaces, uri))
+                .orElse(null);
+    }
+
+    private static String getCurie(Resource resource,
+                                   Map<String, String> availableNamespaces,
+                                   String uri) {
+        return availableNamespaces.containsKey(resource.getNameSpace()) ?
+                (availableNamespaces.get(resource.getNameSpace()) + ":" + resource.getLocalName()) :
+                "<" + uri + ">";
     }
 }
