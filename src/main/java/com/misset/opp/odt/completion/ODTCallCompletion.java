@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.util.PlatformIcons;
-import com.intellij.util.ProcessingContext;
 import com.intellij.util.SharedProcessingContext;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.ttl.util.TTLResourceUtil;
@@ -15,7 +14,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.CALLABLE;
-import static com.misset.opp.odt.completion.ODTCommandCompletion.HAS_AT_SYMBOL;
 import static com.misset.opp.odt.completion.ODTSharedCompletion.sharedContext;
 
 public abstract class ODTCallCompletion extends CompletionContributor {
@@ -84,8 +82,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
     protected void addCallables(@NotNull Collection<? extends Callable> callables,
                                 @NotNull CompletionResultSet result,
                                 Predicate<Set<OntResource>> typeFilter,
-                                Predicate<Set<OntResource>> precedingFilter,
-                                @NotNull ProcessingContext context) {
+                                Predicate<Set<OntResource>> precedingFilter) {
         Predicate<Callable> callableFilter = selectionFilter;
         SharedProcessingContext sharedProcessingContext = sharedContext.get();
         if (sharedProcessingContext != null && sharedProcessingContext.get(ODTSharedCompletion.CALLABLE_FILTER) != null) {
@@ -100,20 +97,15 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                     Set<OntResource> resolve = callable.resolve();
                     return resolve.isEmpty() || typeFilter.test(resolve);
                 })
-                .forEach(callable -> addCallable(callable, result, context));
+                .forEach(callable -> addCallable(callable, result));
     }
 
     private void addCallable(Callable callable,
-                             @NotNull CompletionResultSet result,
-                             @NotNull ProcessingContext context) {
+                             @NotNull CompletionResultSet result) {
         LookupElement lookupElement = getLookupElement(callable);
         if (lookupElement != null) {
             LookupElement withPriority = PrioritizedLookupElement.withPriority(lookupElement, CALLABLE.getValue());
-            if (callable.isCommand() && Boolean.TRUE.equals(context.get(HAS_AT_SYMBOL))) {
-                result.withPrefixMatcher("@" + result.getPrefixMatcher().getPrefix()).addElement(withPriority);
-            } else {
-                result.addElement(withPriority);
-            }
+            result.addElement(withPriority);
         }
     }
 }

@@ -10,6 +10,7 @@ import com.misset.opp.odt.builtin.commands.ForEachCommand;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTAssignmentStatementImpl;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
+import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.CallableType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -81,7 +82,11 @@ public class ODTCommandInspectionForEach extends LocalInspectionTool {
 
     private boolean illegalNestedCall(@NotNull ODTCall call) {
         // cannot call a procedure, activity etc. anything that is part of the OMT structure
-        CallableType type = call.getCallable().getType();
+        Callable callable = call.getCallable();
+        if (callable == null) {
+            return false;
+        }
+        CallableType type = callable.getType();
         return !Set.of(CallableType.BUILTIN_COMMAND, CallableType.BUILTIN_OPERATOR, CallableType.DEFINE_QUERY, CallableType.DEFINE_COMMAND)
                 .contains(type);
     }
