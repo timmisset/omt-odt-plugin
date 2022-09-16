@@ -8,6 +8,7 @@ import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.psi.ODTEquationStatement;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQuery;
+import com.misset.opp.odt.psi.ODTQueryPath;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.Individual;
@@ -41,6 +42,8 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
 
                 ODTEquationStatement equationStatement = PsiTreeUtil.getParentOfType(position, ODTEquationStatement.class);
                 if (equationStatement != null) {
+                    String curiePrefixMatcher = ODTCompletionUtil.getCuriePrefixMatcher(parameters, result, ODTQueryPath.class);
+                    result = result.withPrefixMatcher(curiePrefixMatcher);
                     addCompletionsForEquationStatement(result, availableNamespaces, position, equationStatement);
                 }
             }
@@ -73,9 +76,8 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                         .map(OppModel.getInstance()::toClass)
                         .collect(Collectors.toCollection(HashSet::new));
                 classes.addAll(OppModel.getInstance().listSubclasses(classes));
-                classes.stream().map(
-                                resource -> TTLResourceUtil
-                                        .getRootLookupElement(resource, "Class", availableNamespaces))
+                classes.stream()
+                        .map(resource -> TTLResourceUtil.getRootLookupElement(resource, "Class", availableNamespaces))
                         .filter(Objects::nonNull)
                         .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, ROOT_ELEMENT.getValue()))
                         .forEach(result::addElement);

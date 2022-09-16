@@ -7,18 +7,26 @@ import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.odt.builtin.operators.GraphOperator;
+import com.misset.opp.odt.completion.ODTCallCompletion;
 import com.misset.opp.odt.completion.ODTSharedCompletion;
 import com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph;
 import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
+import com.misset.opp.omt.meta.scalars.queries.OMTGraphQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTShapeQueryType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
+import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
+import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
@@ -81,17 +89,31 @@ public class OMTInjectableSectionCompletion extends CompletionContributor {
                                                  YamlMetaType injectionMetaType,
                                                  ODTFile originalFile) {
 
-        PsiElement element = parameters.getPosition();
+        PsiElement position = parameters.getPosition();
         if (injectionMetaType instanceof OMTQueriesMetaType) {
-            insertQueryTemplate(result, originalFile, element);
+            insertQueryTemplate(result, originalFile, position);
         } else if (injectionMetaType instanceof OMTCommandsMetaType) {
-            insertCommandTemplate(element, originalFile, result);
+            insertCommandTemplate(position, originalFile, result);
         } else if (injectionMetaType instanceof OMTShapeQueryType) {
             ODTCommandCompletionNewGraph.addShapeCompletions(parameters, result);
             result.stopHere();
+        } else if (injectionMetaType instanceof OMTGraphQueryType) {
+            ODTCall call = PsiTreeUtil.getParentOfType(position, ODTCall.class);
+            Context context = call != null ? ContextFactory.fromCall(call) : null;
+            insertGraphQuery(result, context);
         } else if (injectionMetaType instanceof OMTBooleanQueryType) {
             insertBooleanQuery(result);
         }
+    }
+
+    private void insertGraphQuery(@NotNull CompletionResultSet result, Context context) {
+        ODTSharedCompletion.sharedContext.get().put(
+                ODTSharedCompletion.TYPE_FILTER,
+                // don't suggest anything that resolves to a primitive type
+                resources -> OppModel.getInstance().toClasses(resources).stream().noneMatch(TTLResourceUtil::isType)
+        );
+        // promote the GRAPH operator:
+        ODTCallCompletion.addPriorityCallable(GraphOperator.INSTANCE, result, context);
     }
 
     private void insertBooleanQuery(@NotNull CompletionResultSet result) {

@@ -4,18 +4,21 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.util.PlatformIcons;
-import com.intellij.util.ProcessingContext;
 import com.intellij.util.SharedProcessingContext;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.Context;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.CALLABLE;
-import static com.misset.opp.odt.completion.ODTCommandCompletion.HAS_AT_SYMBOL;
+import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.PRIORITY_CALLABLE;
 import static com.misset.opp.odt.completion.ODTSharedCompletion.sharedContext;
 
 public abstract class ODTCallCompletion extends CompletionContributor {
@@ -26,13 +29,38 @@ public abstract class ODTCallCompletion extends CompletionContributor {
         this.selectionFilter = selectionFilter;
     }
 
-    protected LookupElement getLookupElement(Callable callable) {
-        return Optional.ofNullable(callable.getCallId())
-                .map(s -> createLookupElement(callable, s))
-                .orElse(null);
+    private static void setInsertHandler(int numberOfParams, boolean callCompletionOnInsert, InsertionContext context) {
+        // when the signature is added, move the caret into the signature
+        if (numberOfParams > 0) {
+            context.getEditor().getCaretModel().moveCaretRelatively(-1, 0, false, false, true);
+            if (callCompletionOnInsert) {
+                context.setLaterRunnable(() -> new CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(
+                        context.getProject(),
+                        context.getEditor()
+                ));
+            }
+        }
     }
 
-    private LookupElementBuilder createLookupElement(Callable callable, String callId) {
+    public static void addPriorityCallable(Callable callable, CompletionResultSet result, Context context) {
+        addCallable(callable, result, PRIORITY_CALLABLE, context);
+    }
+
+    private static void addCallable(Callable callable,
+                                    @NotNull CompletionResultSet result,
+                                    CompletionPatterns.COMPLETION_PRIORITY priority, Context context) {
+        LookupElement lookupElement = createLookupElement(callable, context);
+        if (lookupElement != null) {
+            LookupElement withPriority = PrioritizedLookupElement.withPriority(lookupElement, priority.getValue());
+            result.addElement(withPriority);
+        }
+    }
+
+    private static LookupElementBuilder createLookupElement(Callable callable, Context context) {
+        String callId = callable.getCallId();
+        if (callId == null) {
+            return null;
+        }
         StringBuilder signature = new StringBuilder();
         Map<Integer, String> parameterNames = callable.getParameterNames();
         int numberOfParams = Math.max(callable.maxNumberOfArguments(), parameterNames.size());
@@ -55,7 +83,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
             }
         }
         String lookup = callId + (signature.length() > 0 ? "()" : "");
-        String typeText = callable.isVoid() ? "void" : TTLResourceUtil.describeUrisForLookupJoined(callable.resolve());
+        String typeText = TTLResourceUtil.describeUrisForLookupJoined(callable.resolve(context));
         return LookupElementBuilder.create(lookup)
                 .withLookupString(callId)
                 .withLookupString(callId.toLowerCase())
@@ -64,28 +92,15 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .withPresentableText(callId)
                 .withTailText(signature.toString(), true)
                 .withIcon(PlatformIcons.METHOD_ICON)
-                .withInsertHandler((context, item) -> setInsertHandler(numberOfParams, callable.callCompletionOnInsert(), context))
+                .withInsertHandler((insertionContext, item) -> setInsertHandler(numberOfParams, callable.callCompletionOnInsert(), insertionContext))
                 .withTypeText(typeText);
-    }
-
-    private void setInsertHandler(int numberOfParams, boolean callCompletionOnInsert, InsertionContext context) {
-        // when the signature is added, move the caret into the signature
-        if (numberOfParams > 0) {
-            context.getEditor().getCaretModel().moveCaretRelatively(-1, 0, false, false, true);
-            if (callCompletionOnInsert) {
-                context.setLaterRunnable(() -> new CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(
-                        context.getProject(),
-                        context.getEditor()
-                ));
-            }
-        }
     }
 
     protected void addCallables(@NotNull Collection<? extends Callable> callables,
                                 @NotNull CompletionResultSet result,
                                 Predicate<Set<OntResource>> typeFilter,
                                 Predicate<Set<OntResource>> precedingFilter,
-                                @NotNull ProcessingContext context) {
+                                Context context) {
         Predicate<Callable> callableFilter = selectionFilter;
         SharedProcessingContext sharedProcessingContext = sharedContext.get();
         if (sharedProcessingContext != null && sharedProcessingContext.get(ODTSharedCompletion.CALLABLE_FILTER) != null) {
@@ -97,23 +112,9 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .filter(callableFilter)
                 .filter(callable -> precedingFilter.test(callable.getAcceptableInputType()))
                 .filter(callable -> {
-                    Set<OntResource> resolve = callable.resolve();
+                    Set<OntResource> resolve = callable.resolve(context);
                     return resolve.isEmpty() || typeFilter.test(resolve);
                 })
-                .forEach(callable -> addCallable(callable, result, context));
-    }
-
-    private void addCallable(Callable callable,
-                             @NotNull CompletionResultSet result,
-                             @NotNull ProcessingContext context) {
-        LookupElement lookupElement = getLookupElement(callable);
-        if (lookupElement != null) {
-            LookupElement withPriority = PrioritizedLookupElement.withPriority(lookupElement, CALLABLE.getValue());
-            if (callable.isCommand() && Boolean.TRUE.equals(context.get(HAS_AT_SYMBOL))) {
-                result.withPrefixMatcher("@" + result.getPrefixMatcher().getPrefix()).addElement(withPriority);
-            } else {
-                result.addElement(withPriority);
-            }
-        }
+                .forEach(callable -> addCallable(callable, result, CALLABLE, context));
     }
 }

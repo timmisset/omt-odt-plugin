@@ -5,9 +5,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.builtin.commands.AssignCommand;
+import com.misset.opp.odt.completion.ODTCompletionUtil;
 import com.misset.opp.odt.completion.ODTTraverseCompletion;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
@@ -35,26 +37,23 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                 PsiElement element = parameters.getPosition();
                 ODTCommandCall assignCommand = PsiTreeUtil.getParentOfType(element, ODTCommandCall.class);
                 if (assignCommand != null) {
-                    PsiElement position = parameters.getPosition();
-                    ODTTraverseCompletion.setProcessingContext(context, position);
-                    addAssignCompletions(parameters, result, element, assignCommand, context);
+                    addAssignCompletions(parameters, result, element, assignCommand);
                 }
             }
 
             private void addAssignCompletions(@NotNull CompletionParameters parameters,
                                               @NotNull CompletionResultSet result,
                                               PsiElement element,
-                                              ODTCommandCall assignCommand,
-                                              @NotNull ProcessingContext context) {
+                                              ODTCommandCall assignCommand) {
                 int argumentIndexOf = assignCommand.getArgumentIndexOf(element);
                 if (argumentIndexOf % 2 != 0 && argumentIndexOf > 0) {
-                    addPredicatesCompletion(parameters, result, assignCommand, context);
+                    addPredicatesCompletion(parameters, result, assignCommand);
                 }
             }
 
             private void addPredicatesCompletion(@NotNull CompletionParameters parameters,
                                                  @NotNull CompletionResultSet result,
-                                                 ODTCommandCall assignCommand, @NotNull ProcessingContext context) {
+                                                 ODTCommandCall assignCommand) {
                 if (!(parameters.getOriginalFile() instanceof ODTFile)) {
                     return;
                 }
@@ -74,13 +73,18 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                                             property -> OppModel.getInstance().listObjects(subject, property)
                                     ));
 
+                    result = result.withPrefixMatcher(
+                            // take the prefix for the entire SignatureArgument
+                            // the forward slash should be part of the prefix matcher
+                            ODTCompletionUtil.getCuriePrefixMatcher(parameters, result, ODTSignatureArgument.class)
+                    );
+
                     ODTTraverseCompletion.addModelTraverseLookupElements(
                             subject,
                             predicates,
                             ODTTraverseCompletion.TraverseDirection.FORWARD,
                             ((ODTFile) parameters.getOriginalFile()).getAvailableNamespaces(),
                             result,
-                            context,
                             true
                     );
                     result.stopHere();

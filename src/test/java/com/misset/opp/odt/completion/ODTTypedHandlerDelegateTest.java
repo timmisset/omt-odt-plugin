@@ -51,6 +51,20 @@ class ODTTypedHandlerDelegateTest extends ODTTestCase {
     }
 
     @Test
+    void testDoesntIncludesTrailingSpaceInsideCodeBlock() {
+        String content = "IF true {\n" +
+                "  <caret>\n" +
+                "\n}";
+        ODTFile odtFile = configureByText(content, true);
+
+        typeSlash(odtFile);
+
+        assertEquals("IF true {\n" +
+                "  /\n" +
+                "\n}", odtFile.getText());
+    }
+
+    @Test
     void testDoesntIncludesTrailingSpaceInsideFilter() {
         String content = "$variable[<caret>";
         ODTFile odtFile = configureByText(content, true);

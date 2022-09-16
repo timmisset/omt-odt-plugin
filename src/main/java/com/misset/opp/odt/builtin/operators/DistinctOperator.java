@@ -22,7 +22,7 @@ public class DistinctOperator extends BuiltInCollectionOperator {
 
     @Override
     public int maxNumberOfArguments() {
-        return 2;
+        return 1;
     }
 
     @Override

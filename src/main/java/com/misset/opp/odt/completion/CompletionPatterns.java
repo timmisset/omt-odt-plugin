@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 import static com.intellij.patterns.PsiJavaPatterns.psiElement;
+import static com.intellij.patterns.StandardPatterns.or;
 
 public interface CompletionPatterns {
 
@@ -24,7 +25,9 @@ public interface CompletionPatterns {
         VARIABLE_LOCAL(1),
         VARIABLE_GLOBAL(0),
         TRAVERSE(2),
-        ROOT_ELEMENT(3);
+        ROOT_ELEMENT(3),
+
+        PRIORITY_CALLABLE(100);
 
         private final int value;
 
@@ -44,8 +47,9 @@ public interface CompletionPatterns {
     PsiJavaElementPattern.Capture<PsiElement> FIRST_QUERY_STEP = QUERY_STEP.atStartOf(
             psiElement(ODTQueryPath.class)
     );
-    PsiJavaElementPattern.Capture<PsiElement> FIRST_QUERY_STEP_ABSOLUTE = QUERY_STEP.afterLeaf(
-            PlatformPatterns.psiElement().withElementType(ODTTypes.FORWARD_SLASH).atStartOf(psiElement(ODTQueryPath.class))
+    PsiJavaElementPattern.Capture<PsiElement> FIRST_QUERY_STEP_ABSOLUTE = QUERY_STEP.afterLeafSkipping(
+            or(psiElement(ODTTypes.COLON), psiElement(ODTTypes.SYMBOL)),
+            psiElement().withElementType(ODTTypes.FORWARD_SLASH).atStartOf(psiElement(ODTQueryPath.class))
     );
     PsiJavaElementPattern.Capture<PsiElement> AFTER_FIRST_QUERY_STEP = QUERY_STEP.andNot(FIRST_QUERY_STEP);
     PsiJavaElementPattern.Capture<PsiElement> VARIABLE_ASSIGNMENT_VALUE = psiElement().inside(ODTVariableAssignment.class);

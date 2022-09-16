@@ -5,8 +5,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.builtin.commands.NewGraphCommand;
+import com.misset.opp.odt.completion.ODTCompletionUtil;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +41,9 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
     public static void addShapeCompletions(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
         ODTFile file = (ODTFile) parameters.getOriginalFile();
         Map<String, String> availableNamespaces = file.getAvailableNamespaces();
+
+        String curiePrefixMatcher = ODTCompletionUtil.getCuriePrefixMatcher(parameters, result, ODTSignatureArgument.class);
+        result = result.withPrefixMatcher(curiePrefixMatcher);
 
         // show all graphshape instances:
         OppModelConstants.getGraphShape().listInstances().mapWith(
