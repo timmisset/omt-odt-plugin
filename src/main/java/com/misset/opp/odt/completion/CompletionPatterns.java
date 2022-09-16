@@ -25,7 +25,9 @@ public interface CompletionPatterns {
         VARIABLE_LOCAL(1),
         VARIABLE_GLOBAL(0),
         TRAVERSE(2),
-        ROOT_ELEMENT(3);
+        ROOT_ELEMENT(3),
+
+        PRIORITY_CALLABLE(100);
 
         private final int value;
 

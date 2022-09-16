@@ -102,4 +102,15 @@ class OMTInjectableSectionCompletionTest extends OMTTestCase {
         configureByText(content);
         assertContainsElements(completion.getLookupStrings(), "true", "false", "$boolean");
     }
+
+    @Test
+    void testHasGraphCompletions() {
+        String content = insideActivityWithPrefixes("graphs:\n" +
+                "   live:\n" +
+                "   - /ont:ClassA / ^rdf:type / <caret>");
+        configureByText(content);
+        List<String> lookupStrings = completion.getLookupStrings();
+        assertContainsElements(lookupStrings, "GRAPH");
+        assertDoesntContain(lookupStrings, "ont:booleanPredicate"); // no primitives
+    }
 }

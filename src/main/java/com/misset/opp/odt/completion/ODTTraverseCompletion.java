@@ -7,6 +7,7 @@ import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.intellij.util.SharedProcessingContext;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTTypeFilterProvider;
@@ -22,6 +23,7 @@ import java.util.function.Predicate;
 
 import static com.intellij.patterns.StandardPatterns.or;
 import static com.misset.opp.odt.completion.CompletionPatterns.*;
+import static com.misset.opp.odt.completion.ODTSharedCompletion.sharedContext;
 
 public class ODTTraverseCompletion extends CompletionContributor {
     private static final ElementPattern<PsiElement> TRAVERSE =
@@ -51,18 +53,23 @@ public class ODTTraverseCompletion extends CompletionContributor {
                         .map(element -> PsiTreeUtil.getParentOfType(element, ODTQueryOperationStep.class))
                         .map(ODTQueryOperationStep::resolvePreviousStep)
                         .orElse(Collections.emptySet());
+                Predicate<Set<OntResource>> firstTypeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
+                SharedProcessingContext sharedProcessingContext = sharedContext.get();
+                if (sharedProcessingContext != null && sharedProcessingContext.get(ODTSharedCompletion.TYPE_FILTER) != null) {
+                    firstTypeFilter = firstTypeFilter.and(sharedProcessingContext.get(ODTSharedCompletion.TYPE_FILTER));
+                }
 
                 // add model options
                 addModelTraverseLookupElements(
                         subjects,
-                        getForwardPredicates(ODTTypeFilterProvider.getFirstTypeFilter(position), subjects),
+                        getForwardPredicates(firstTypeFilter, subjects),
                         TraverseDirection.FORWARD,
                         availableNamespaces,
                         result,
                         false);
                 addModelTraverseLookupElements(
                         subjects,
-                        getReversePredicates(ODTTypeFilterProvider.getFirstTypeFilter(position), subjects),
+                        getReversePredicates(firstTypeFilter, subjects),
                         TraverseDirection.REVERSE,
                         availableNamespaces,
                         result,

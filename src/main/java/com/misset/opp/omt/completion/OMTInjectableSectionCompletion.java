@@ -8,17 +8,21 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.odt.builtin.operators.GraphOperator;
+import com.misset.opp.odt.completion.ODTCallCompletion;
 import com.misset.opp.odt.completion.ODTSharedCompletion;
 import com.misset.opp.odt.completion.commands.ODTCommandCompletionNewGraph;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.omt.injection.OMTODTInjectionUtil;
 import com.misset.opp.omt.meta.scalars.queries.OMTBooleanQueryType;
+import com.misset.opp.omt.meta.scalars.queries.OMTGraphQueryType;
 import com.misset.opp.omt.meta.scalars.queries.OMTShapeQueryType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.model.OppModelConstants;
+import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
@@ -89,9 +93,21 @@ public class OMTInjectableSectionCompletion extends CompletionContributor {
         } else if (injectionMetaType instanceof OMTShapeQueryType) {
             ODTCommandCompletionNewGraph.addShapeCompletions(parameters, result);
             result.stopHere();
+        } else if (injectionMetaType instanceof OMTGraphQueryType) {
+            insertGraphQuery(result);
         } else if (injectionMetaType instanceof OMTBooleanQueryType) {
             insertBooleanQuery(result);
         }
+    }
+
+    private void insertGraphQuery(@NotNull CompletionResultSet result) {
+        ODTSharedCompletion.sharedContext.get().put(
+                ODTSharedCompletion.TYPE_FILTER,
+                // don't suggest anything that resolves to a primitive type
+                resources -> OppModel.getInstance().toClasses(resources).stream().noneMatch(TTLResourceUtil::isType)
+        );
+        // promote the GRAPH operator:
+        ODTCallCompletion.addPriorityCallable(GraphOperator.INSTANCE, result);
     }
 
     private void insertBooleanQuery(@NotNull CompletionResultSet result) {
