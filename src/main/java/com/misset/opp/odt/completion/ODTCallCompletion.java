@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.CALLABLE;
+import static com.misset.opp.odt.completion.CompletionPatterns.COMPLETION_PRIORITY.PRIORITY_CALLABLE;
 import static com.misset.opp.odt.completion.ODTSharedCompletion.sharedContext;
 
 public abstract class ODTCallCompletion extends CompletionContributor {
@@ -24,13 +25,13 @@ public abstract class ODTCallCompletion extends CompletionContributor {
         this.selectionFilter = selectionFilter;
     }
 
-    protected LookupElement getLookupElement(Callable callable) {
+    private static LookupElement getLookupElement(Callable callable) {
         return Optional.ofNullable(callable.getCallId())
                 .map(s -> createLookupElement(callable, s))
                 .orElse(null);
     }
 
-    private LookupElementBuilder createLookupElement(Callable callable, String callId) {
+    private static LookupElementBuilder createLookupElement(Callable callable, String callId) {
         StringBuilder signature = new StringBuilder();
         Map<Integer, String> parameterNames = callable.getParameterNames();
         int numberOfParams = Math.max(callable.maxNumberOfArguments(), parameterNames.size());
@@ -66,7 +67,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .withTypeText(typeText);
     }
 
-    private void setInsertHandler(int numberOfParams, boolean callCompletionOnInsert, InsertionContext context) {
+    private static void setInsertHandler(int numberOfParams, boolean callCompletionOnInsert, InsertionContext context) {
         // when the signature is added, move the caret into the signature
         if (numberOfParams > 0) {
             context.getEditor().getCaretModel().moveCaretRelatively(-1, 0, false, false, true);
@@ -100,11 +101,21 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                 .forEach(callable -> addCallable(callable, result));
     }
 
-    private void addCallable(Callable callable,
-                             @NotNull CompletionResultSet result) {
+    public static void addCallable(Callable callable,
+                                   @NotNull CompletionResultSet result) {
+        addCallable(callable, result, CALLABLE);
+    }
+
+    public static void addPriorityCallable(Callable callable, CompletionResultSet result) {
+        addCallable(callable, result, PRIORITY_CALLABLE);
+    }
+
+    private static void addCallable(Callable callable,
+                                    @NotNull CompletionResultSet result,
+                                    CompletionPatterns.COMPLETION_PRIORITY priority) {
         LookupElement lookupElement = getLookupElement(callable);
         if (lookupElement != null) {
-            LookupElement withPriority = PrioritizedLookupElement.withPriority(lookupElement, CALLABLE.getValue());
+            LookupElement withPriority = PrioritizedLookupElement.withPriority(lookupElement, priority.getValue());
             result.addElement(withPriority);
         }
     }
