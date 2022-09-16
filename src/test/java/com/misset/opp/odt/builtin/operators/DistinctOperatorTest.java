@@ -41,7 +41,7 @@ class DistinctOperatorTest extends BaseBuiltinTest {
     @Test
     void testNumberOfArguments() {
         Assertions.assertEquals(0, DistinctOperator.INSTANCE.minNumberOfArguments());
-        Assertions.assertEquals(2, DistinctOperator.INSTANCE.maxNumberOfArguments());
+        Assertions.assertEquals(1, DistinctOperator.INSTANCE.maxNumberOfArguments());
     }
 
     @Test
