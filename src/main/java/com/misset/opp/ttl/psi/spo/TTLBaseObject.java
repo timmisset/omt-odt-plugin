@@ -7,6 +7,7 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
 import com.misset.opp.ttl.model.OppModelConstants;
 import com.misset.opp.ttl.psi.*;
 import com.misset.opp.ttl.psi.iri.TTLIriHolder;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -90,16 +92,27 @@ public abstract class TTLBaseObject extends StubBasedPsiElementBase<TTLObjectStu
     @Override
     public boolean isObjectClass() {
         return getFromStubOrPsi(TTLObjectStub::isPredicate,
-                () -> hasShaclPredicate(OppModelConstants.getShaclClass().getURI()));
+                () -> hasShaclPredicate(OppModelConstants.getShaclClass().getURI(),
+                        OppModelConstants.getRdfsSubclassOf().getURI(),
+                        OppModelConstants.getRdfType().getURI()));
     }
 
-    private boolean hasShaclPredicate(String iri) {
+    private boolean hasShaclPredicate(String... iri) {
         return Optional.ofNullable(PsiTreeUtil.getParentOfType(this, TTLPredicateObject.class))
                 .map(TTLPredicateObject::getVerb)
-                .map(TTLVerb::getPredicate)
-                .map(TTLPredicate::getIri)
-                .map(TTLIriHolder::getQualifiedUri)
-                .map(iri::equals)
+                .map(this::getUri)
+                .map(s -> Arrays.asList(iri).contains(s))
                 .orElse(false);
+    }
+
+    private String getUri(TTLVerb verb) {
+        if (verb.getPredicate() != null) {
+            return verb.getPredicate().getIri().getQualifiedUri();
+        } else {
+            if (PsiUtilCore.getElementType(verb.getFirstChild()) == TTLTypes.A) {
+                return OppModelConstants.getRdfType().getURI();
+            }
+        }
+        return null;
     }
 }
