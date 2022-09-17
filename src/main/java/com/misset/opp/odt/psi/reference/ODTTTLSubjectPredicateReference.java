@@ -1,14 +1,12 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.psi.stubs.StubIndex;
 import com.misset.opp.model.OntologyModel;
 import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
+import com.misset.opp.ttl.psi.TTLLocalname;
 import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.stubs.index.TTLObjectStubIndex;
 import org.apache.jena.ontology.OntResource;
@@ -27,12 +25,11 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        ODTResolvableQualifiedUriStep element = getElement();
-        String fullyQualifiedUri = element.getFullyQualifiedUri();
+        String fullyQualifiedUri = myElement.getFullyQualifiedUri();
         if (fullyQualifiedUri == null) {
             return ResolveResult.EMPTY_ARRAY;
         }
-        Set<OntResource> previousStep = element.resolvePreviousStep();
+        Set<OntResource> previousStep = myElement.resolvePreviousStep();
         List<String> acceptableSubjectClasses = previousStep.stream()
                 .map(OntologyModel.getInstance()::listOntClasses)
                 .flatMap(Collection::stream)
@@ -40,8 +37,8 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
                 .collect(Collectors.toList());
         return StubIndex.getElements(
                         TTLObjectStubIndex.KEY,
-                        element.getFullyQualifiedUri(),
-                        element.getProject(),
+                        myElement.getFullyQualifiedUri(),
+                        myElement.getProject(),
                         OntologyScopeUtil.getModelSearchScope(myElement.getProject()),
                         TTLObject.class
                 ).stream()
@@ -52,5 +49,15 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
                         acceptableSubjectClasses.isEmpty() || acceptableSubjectClasses.contains(ttlObject.getSubjectIri()))
                 .map(PsiElementResolveResult::new)
                 .toArray(ResolveResult[]::new);
+    }
+
+    @Override
+    public boolean isReferenceTo(@NotNull PsiElement element) {
+        if (element instanceof TTLLocalname) {
+            String fullyQualifiedUri = myElement.getFullyQualifiedUri();
+            return fullyQualifiedUri != null &&
+                    fullyQualifiedUri.equals(((TTLLocalname) element).getQualifiedIri());
+        }
+        return super.isReferenceTo(element);
     }
 }

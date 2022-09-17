@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
 public class TTLFindUsagesProvider implements FindUsagesProvider {
     public static final Predicate<PsiElement> CHECK_CAN_FIND_USAGES = element ->
-            isDeclarePrefix(element) || isSubjectIri(element);
+            isDeclarePrefix(element) || isSubjectIri(element) || isPredicateIri(element);
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
@@ -26,6 +26,11 @@ public class TTLFindUsagesProvider implements FindUsagesProvider {
     private static boolean isSubjectIri(PsiElement element) {
         TTLIri iri = PsiTreeUtil.getParentOfType(element, TTLIri.class, false);
         return iri != null && iri.getParent() instanceof TTLSubject;
+    }
+
+    private static boolean isPredicateIri(PsiElement element) {
+        TTLIri iri = PsiTreeUtil.getParentOfType(element, TTLIri.class, false);
+        return iri != null && iri.getParent() instanceof TTLObject && ((TTLObject) iri.getParent()).isPredicate();
     }
 
     private static boolean isDeclarePrefix(PsiElement element) {
