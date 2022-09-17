@@ -5,9 +5,9 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.SharedProcessingContext;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -83,7 +83,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
             }
         }
         String lookup = callId + (signature.length() > 0 ? "()" : "");
-        String typeText = TTLResourceUtil.describeUrisForLookupJoined(callable.resolve(context));
+        String typeText = OntologyResourceUtil.describeUrisForLookupJoined(callable.resolve(context));
         return LookupElementBuilder.create(lookup)
                 .withLookupString(callId)
                 .withLookupString(callId.toLowerCase())

@@ -6,13 +6,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.builtin.operators.NotOperator;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
@@ -90,7 +90,7 @@ public abstract class ODTResolvableQueryPathAbstract extends ODTResolvableQueryA
         if (predicate instanceof ODTResolvableQualifiedUriStep) {
             final ODTResolvableQualifiedUriStep qualifiedUriStep = (ODTResolvableQualifiedUriStep) predicate;
             final String fullyQualifiedUri = qualifiedUriStep.getFullyQualifiedUri();
-            final Property property = OppModel.getInstance().getProperty(fullyQualifiedUri);
+            final Property property = OntologyModel.getInstance().getProperty(fullyQualifiedUri);
             if (property != null) {
                 return new Pair<>(subjectResolved, property);
             }

@@ -10,12 +10,12 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTNamespacePrefix;
 import com.misset.opp.odt.psi.ODTTypes;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -58,10 +58,10 @@ public class ODTTypeClassNameCompletion extends CompletionContributor {
                 ODTFile file = (ODTFile) parameters.getOriginalFile();
                 Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
-                OppModel oppModel = OppModel.getInstance();
+                OntologyModel ontologyModel = OntologyModel.getInstance();
                 List<LookupElementBuilder> elements = new ArrayList<>();
 
-                addElements(getFilteredCollection(oppModel.listClasses(), this::filterClasses), resource -> "Class", availableNamespaces, elements);
+                addElements(getFilteredCollection(ontologyModel.listClasses(), this::filterClasses), resource -> "Class", availableNamespaces, elements);
                 String prefixMatcher = "/";
                 if (parameters.getPosition().getPrevSibling() instanceof ODTNamespacePrefix) {
                     prefixMatcher += parameters.getPosition().getPrevSibling().getText();
@@ -82,7 +82,7 @@ public class ODTTypeClassNameCompletion extends CompletionContributor {
             }
 
             private boolean filterClasses(OntClass ontClass) {
-                return !ontClass.getNameSpace().equals(OppModelConstants.getXsdBoolean().getNameSpace());
+                return !ontClass.getNameSpace().equals(OntologyModelConstants.getXsdBoolean().getNameSpace());
             }
         });
     }
@@ -93,7 +93,7 @@ public class ODTTypeClassNameCompletion extends CompletionContributor {
             Map<String, String> availableNamespaces,
             Collection<LookupElementBuilder> elements) {
         resources.stream().map(
-                        resource -> TTLResourceUtil
+                        resource -> OntologyResourceUtil
                                 .getRootLookupElement(resource, typeText.apply(resource), availableNamespaces))
                 .filter(Objects::nonNull)
                 .forEach(elements::add);

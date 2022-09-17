@@ -10,7 +10,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.ttl.model.OppModelConstants;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.ttl.psi.*;
 import com.misset.opp.ttl.psi.extend.TTLQualifiedIriResolver;
 import com.misset.opp.ttl.stubs.object.TTLObjectStub;
@@ -72,7 +72,7 @@ public abstract class TTLObjectAbstract extends StubBasedPsiElementBase<TTLObjec
     @Override
     public boolean isPredicate() {
         return getFromStubOrPsi(TTLObjectStub::isPredicate,
-                () -> hasShaclPredicate(OppModelConstants.getShaclPath().getURI()));
+                () -> hasShaclPredicate(OntologyModelConstants.getShaclPath().getURI()));
     }
 
     @Override
@@ -95,9 +95,9 @@ public abstract class TTLObjectAbstract extends StubBasedPsiElementBase<TTLObjec
     @Override
     public boolean isClass() {
         return getFromStubOrPsi(TTLObjectStub::isPredicate,
-                () -> hasShaclPredicate(OppModelConstants.getShaclClass().getURI(),
-                        OppModelConstants.getRdfsSubclassOf().getURI(),
-                        OppModelConstants.getRdfType().getURI()));
+                () -> hasShaclPredicate(OntologyModelConstants.getShaclClass().getURI(),
+                        OntologyModelConstants.getRdfsSubclassOf().getURI(),
+                        OntologyModelConstants.getRdfType().getURI()));
     }
 
     private boolean hasShaclPredicate(String... iri) {
@@ -113,7 +113,7 @@ public abstract class TTLObjectAbstract extends StubBasedPsiElementBase<TTLObjec
             return ((TTLPredicate) verb).getIri().getQualifiedIri();
         } else {
             if (verb != null && PsiUtilCore.getElementType(verb.getFirstChild()) == TTLTypes.A) {
-                return OppModelConstants.getRdfType().getURI();
+                return OntologyModelConstants.getRdfType().getURI();
             }
         }
         return null;

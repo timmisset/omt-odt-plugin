@@ -1,7 +1,7 @@
 package com.misset.opp.odt;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.util.IconLoader;
+import com.misset.opp.util.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,7 +9,6 @@ import javax.swing.*;
 
 public class ODTFileType extends LanguageFileType {
 
-    public static final Icon ICON = IconLoader.findIcon("/icons/cartman-16.png", ODTFileType.class.getClassLoader());
     public static final ODTFileType INSTANCE = new ODTFileType();
 
     private ODTFileType() {
@@ -33,7 +32,7 @@ public class ODTFileType extends LanguageFileType {
 
     @Override
     public @Nullable Icon getIcon() {
-        return ICON;
+        return Icons.PLUGIN_ICON;
     }
 
 }

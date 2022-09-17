@@ -9,6 +9,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.builtin.operators.GraphOperator;
 import com.misset.opp.odt.completion.ODTCallCompletion;
 import com.misset.opp.odt.completion.ODTSharedCompletion;
@@ -24,9 +27,6 @@ import com.misset.opp.omt.meta.scalars.scripts.OMTCommandsMetaType;
 import com.misset.opp.omt.meta.scalars.scripts.OMTQueriesMetaType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.ContextFactory;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
@@ -110,7 +110,7 @@ public class OMTInjectableSectionCompletion extends CompletionContributor {
         ODTSharedCompletion.sharedContext.get().put(
                 ODTSharedCompletion.TYPE_FILTER,
                 // don't suggest anything that resolves to a primitive type
-                resources -> OppModel.getInstance().toClasses(resources).stream().noneMatch(TTLResourceUtil::isType)
+                resources -> OntologyModel.getInstance().toClasses(resources).stream().noneMatch(OntologyResourceUtil::isType)
         );
         // promote the GRAPH operator:
         ODTCallCompletion.addPriorityCallable(GraphOperator.INSTANCE, result, context);
@@ -119,7 +119,7 @@ public class OMTInjectableSectionCompletion extends CompletionContributor {
     private void insertBooleanQuery(@NotNull CompletionResultSet result) {
         ODTSharedCompletion.sharedContext.get().put(
                 ODTSharedCompletion.TYPE_FILTER,
-                resources -> OppModel.getInstance().areCompatible(Collections.singleton(OppModelConstants.getXsdBooleanInstance()), resources));
+                resources -> OntologyModel.getInstance().areCompatible(Collections.singleton(OntologyModelConstants.getXsdBooleanInstance()), resources));
         result.addElement(PrioritizedLookupElement.withPriority(
                 LookupElementBuilder.create("true"), 100
         ));

@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +13,12 @@ class TypeOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TypeOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdDateInstance()),
-                Set.of(OppModelConstants.getXsdDate()));
+                Set.of(OntologyModelConstants.getXsdDateInstance()),
+                Set.of(OntologyModelConstants.getXsdDate()));
 
         assertResolved(TypeOperator.INSTANCE,
-                Set.of(OppModelConstants.getMedewerkerGraph()),
-                Set.of(OppModelConstants.getIri()));
+                Set.of(OntologyModelConstants.getMedewerkerGraph()),
+                Set.of(OntologyModelConstants.getIri()));
     }
 
     @Test

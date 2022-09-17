@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ class TraverseOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TraverseOperator.INSTANCE,
-                Set.of(OppModelConstants.getOwlThingInstance()),
-                Set.of(OppModelConstants.getOwlThingInstance()));
+                Set.of(OntologyModelConstants.getOwlThingInstance()),
+                Set.of(OntologyModelConstants.getOwlThingInstance()));
     }
 
     @Test
@@ -30,14 +30,14 @@ class TraverseOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(TraverseOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
-        assertValidArgument(TraverseOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
+        assertValidArgument(TraverseOperator.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance());
+        assertValidArgument(TraverseOperator.INSTANCE, 1, OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
-        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(TraverseOperator.INSTANCE, 1, OntologyModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(TraverseOperator.INSTANCE, 2);
     }
 }

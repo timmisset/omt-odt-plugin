@@ -2,11 +2,11 @@ package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryFilter;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableAbstract;
 import com.misset.opp.odt.psi.resolvable.query.ODTResolvableQuery;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ODTResolvableQueryAbstract extends ODTResolvableAbstract implements ODTQuery, ODTResolvableQuery {
@@ -17,7 +17,7 @@ public abstract class ODTResolvableQueryAbstract extends ODTResolvableAbstract i
     @Override
     public void inspect(ProblemsHolder holder) {
         if (getParent() instanceof ODTQueryFilter) {
-            TTLValidationUtil.validateBoolean(resolve(), holder, this);
+            OntologyValidationUtil.validateBoolean(resolve(), holder, this);
         }
     }
 }

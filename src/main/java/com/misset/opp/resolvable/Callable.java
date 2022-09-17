@@ -3,9 +3,9 @@ package com.misset.opp.resolvable;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.util.CallableUtil;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -129,18 +129,22 @@ public interface Callable extends ContextResolvable {
     /**
      * The acceptable types at the given position, taking the context of the Callable into consideration
      * For example, if @ADD_TO is called with a String type for the collection, the argument should be a string to.
-     * Should return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE) when any input is acceptable
+     * Should return Set.of(OwlThing_INSTANCE) when any input is acceptable
+     *
+     * @see OntologyModelConstants
      */
     default Set<OntResource> getAcceptableArgumentType(int index, PsiCall call) {
-        return getParameterTypes().getOrDefault(index, Set.of(OppModelConstants.getOwlThingInstance()));
+        return getParameterTypes().getOrDefault(index, Set.of(OntologyModelConstants.getOwlThingInstance()));
     }
 
     /**
      * The acceptable input for this Callable
-     * Should return Set.of(OppModel.INSTANCE.OWL_THING_INSTANCE) when any input is acceptable
+     * Should return Set.of(OwlThing_INSTANCE) when any input is acceptable
+     *
+     * @see OntologyModelConstants
      */
     default Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.getOwlThingInstance());
+        return Set.of(OntologyModelConstants.getOwlThingInstance());
     }
 
     default HashMap<Integer, Set<OntResource>> mapCallableParameters(List<Set<OntResource>> resources) {

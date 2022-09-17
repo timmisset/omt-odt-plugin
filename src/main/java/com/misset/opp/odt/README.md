@@ -1,12 +1,13 @@
 # ODT
 
-The ODT language is a domain specific language that uses an ontology to resolve information. It uses the OppModel class
+The ODT language is a domain specific language that uses an ontology to resolve information. It uses the OntologyModel
+class
 to get ontology information and uses basic subject-predicate-object inquiries to determine possible outcomes, valid
 inputs etc.
 
 ## Ontology types
 
-The OppModel (since version 5 of the plugin) makes a clear distinction between an ontology Class and
+The OntologyModel (since version 5 of the plugin) makes a clear distinction between an ontology Class and
 Instance/Individual. This makes it possible to get more specific type validation so that no classes are provided by
 accident when an instance is required.
 

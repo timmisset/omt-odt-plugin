@@ -1,9 +1,9 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.omt.commands.LocalVariable;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -46,7 +46,7 @@ public class ForEachCommand extends AbstractBuiltInCommand implements CommandVar
         }
         return List.of(
                 new LocalVariable("$value", "iterator value", call.resolveSignatureArgument(0), FOR_EACH_VARIABLE),
-                new LocalVariable("$index", "iterator index", Set.of(OppModelConstants.getXsdIntegerInstance()), FOR_EACH_VARIABLE),
+                new LocalVariable("$index", "iterator index", Set.of(OntologyModelConstants.getXsdIntegerInstance()), FOR_EACH_VARIABLE),
                 new LocalVariable("$array", "all input values", call.resolveSignatureArgument(0), FOR_EACH_VARIABLE)
         );
     }

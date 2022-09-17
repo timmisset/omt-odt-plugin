@@ -1,4 +1,4 @@
-package com.misset.opp.ttl.model.constants;
+package com.misset.opp.model.constants;
 
 /**
  * Contains some fake IRIs that are not actually used in the language but required by the plugin

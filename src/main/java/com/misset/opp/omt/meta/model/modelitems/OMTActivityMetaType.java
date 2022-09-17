@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.omt.commands.*;
 import com.misset.opp.omt.documentation.OMTDocumented;
@@ -28,7 +29,6 @@ import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -144,7 +144,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
                     .map(Resolvable::resolve)
                     .filter(resources -> !resources.isEmpty())
                     .findFirst()
-                    .orElse(Set.of(OppModelConstants.getOwlThingInstance()));
+                    .orElse(Set.of(OntologyModelConstants.getOwlThingInstance()));
         }
     }
 
@@ -161,7 +161,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
     @Override
     public Set<OntResource> getSecondReturnArgument() {
         // $committed value
-        return Set.of(OppModelConstants.getXsdBooleanInstance());
+        return Set.of(OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Override

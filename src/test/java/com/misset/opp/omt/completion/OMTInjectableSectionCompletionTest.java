@@ -1,7 +1,7 @@
 package com.misset.opp.omt.completion;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.omt.testcase.OMTTestCase;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -78,7 +78,7 @@ class OMTInjectableSectionCompletionTest extends OMTTestCase {
 
     @Test
     void testHasGraphShapeCompletions() {
-        OppModelConstants.getGraphShape().createIndividual("http://data/graphshape");
+        OntologyModelConstants.getGraphShape().createIndividual("http://data/graphshape");
         String content = "model:\n" +
                 "   GraphShapeHandler: !GraphShapeHandlers\n" +
                 "       id: test\n" +

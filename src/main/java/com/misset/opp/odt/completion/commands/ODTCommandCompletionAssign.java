@@ -4,14 +4,15 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.OntologyTraverseDirection;
 import com.misset.opp.odt.builtin.commands.AssignCommand;
 import com.misset.opp.odt.completion.ODTCompletionUtil;
 import com.misset.opp.odt.completion.ODTTraverseCompletion;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
@@ -63,14 +64,14 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                     Set<Resource> existingPredicates =
                             existingPredicates(assignCommand).stream().map(RDFNode::asResource).collect(Collectors.toSet());
 
-                    Map<Property, Set<OntResource>> predicates = OppModel.getInstance().listPredicates(subject)
+                    Map<Property, Set<OntResource>> predicates = OntologyModel.getInstance().listPredicates(subject)
                             .stream()
-                            .filter(property -> !OppModelConstants.getClassModelProperties().contains(property))
+                            .filter(property -> !OntologyModelConstants.getClassModelProperties().contains(property))
                             .filter(property -> !existingPredicates.contains(property))
                             .collect(
                                     Collectors.toMap(
                                             property -> property,
-                                            property -> OppModel.getInstance().listObjects(subject, property)
+                                            property -> OntologyModel.getInstance().listObjects(subject, property)
                                     ));
 
                     result = result.withPrefixMatcher(
@@ -82,7 +83,7 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                     ODTTraverseCompletion.addModelTraverseLookupElements(
                             subject,
                             predicates,
-                            ODTTraverseCompletion.TraverseDirection.FORWARD,
+                            OntologyTraverseDirection.TraverseDirection.FORWARD,
                             ((ODTFile) parameters.getOriginalFile()).getAvailableNamespaces(),
                             result,
                             true

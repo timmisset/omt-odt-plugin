@@ -1,19 +1,19 @@
-package com.misset.opp.ttl.util;
+package com.misset.opp.model.util;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelLoader;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelLoader;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TTLScopeUtil {
+public class OntologyScopeUtil {
 
-    private TTLScopeUtil() {
+    private OntologyScopeUtil() {
         // empty constructor
     }
 
@@ -25,10 +25,10 @@ public class TTLScopeUtil {
     }
 
     public static List<VirtualFile> getTTLVirtualFiles() {
-        long modificationCount = OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER.getModificationCount();
+        long modificationCount = OntologyModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER.getModificationCount();
         if (modelVersion != modificationCount) {
             VirtualFileManager fileManager = VirtualFileManager.getInstance();
-            virtualFiles = OppModelLoader.getInstance().getModelFiles().stream()
+            virtualFiles = OntologyModelLoader.getInstance().getModelFiles().stream()
                     .map(file -> fileManager.findFileByNioPath(file.toPath()))
                     .collect(Collectors.toList());
             modelVersion = modificationCount;

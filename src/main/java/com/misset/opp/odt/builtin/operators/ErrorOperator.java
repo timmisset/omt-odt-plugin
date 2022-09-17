@@ -1,9 +1,9 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +35,7 @@ public class ErrorOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.getError();
+        return OntologyModelConstants.getError();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ErrorOperator extends AbstractBuiltInOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.getXsdStringInstance());
+            return Set.of(OntologyModelConstants.getXsdStringInstance());
         }
         return null;
     }

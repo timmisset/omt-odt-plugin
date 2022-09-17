@@ -5,8 +5,8 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.psi.*;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.Nls;
@@ -52,7 +52,7 @@ public class ODTCodeInspectionCardinality extends LocalInspectionTool {
                 if (collectionStatement instanceof ODTAddToCollection ||
                         collectionStatement instanceof ODTRemoveFromCollection ||
                         resolvableValue.isMultiple()) {
-                    TTLValidationUtil.validateCardinalityMultiple(subjectPredicate.getFirst(),
+                    OntologyValidationUtil.validateCardinalityMultiple(subjectPredicate.getFirst(),
                             subjectPredicate.getSecond(),
                             holder,
                             resolvableValue);

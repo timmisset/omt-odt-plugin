@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.SharedProcessingContext;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.builtin.commands.CommandVariableTypeProvider;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTTypeFilterProvider;
@@ -17,7 +18,6 @@ import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.psi.PsiVariable;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -102,7 +102,7 @@ public class ODTVariableCompletion extends CompletionContributor {
                 .withLookupString(variable.getName().substring(1).toLowerCase())
                 .withTailText("  " + variable.getSource(), true)
                 .withIcon(variable.isParameter() ? PlatformIcons.PARAMETER_ICON : PlatformIcons.VARIABLE_ICON)
-                .withTypeText(TTLResourceUtil.describeUrisForLookupJoined(variable.resolve()));
+                .withTypeText(OntologyResourceUtil.describeUrisForLookupJoined(variable.resolve()));
 
         double priority = variable.getScope() == Variable.Scope.GLOBAL ?
                 CompletionPatterns.COMPLETION_PRIORITY.VARIABLE_GLOBAL.getValue() :

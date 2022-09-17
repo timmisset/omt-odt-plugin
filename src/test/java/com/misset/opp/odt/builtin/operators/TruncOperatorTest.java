@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,15 +13,15 @@ class TruncOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(TruncOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdDateInstance()),
-                Set.of(OppModelConstants.getXsdDateInstance()));
+                Set.of(OntologyModelConstants.getXsdDateInstance()),
+                Set.of(OntologyModelConstants.getXsdDateInstance()));
     }
 
     @Test
     void testResolveDateTime() {
         assertResolved(TruncOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdDatetimeInstance()),
-                Set.of(OppModelConstants.getXsdDatetimeInstance()));
+                Set.of(OntologyModelConstants.getXsdDatetimeInstance()),
+                Set.of(OntologyModelConstants.getXsdDatetimeInstance()));
     }
 
     @Test
@@ -37,18 +37,18 @@ class TruncOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(TruncOperator.INSTANCE, OppModelConstants.getXsdDatetimeInstance());
-        assertValidArgument(TruncOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertValidInput(TruncOperator.INSTANCE, OntologyModelConstants.getXsdDatetimeInstance());
+        assertValidArgument(TruncOperator.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(TruncOperator.INSTANCE, OppModelConstants.getXsdDatetimeInstance());
+        assertGetAcceptableInputType(TruncOperator.INSTANCE, OntologyModelConstants.getXsdDatetimeInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(TruncOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(TruncOperator.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(TruncOperator.INSTANCE, 1);
     }
 }

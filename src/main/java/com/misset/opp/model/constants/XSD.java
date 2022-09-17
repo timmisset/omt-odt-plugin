@@ -1,4 +1,4 @@
-package com.misset.opp.ttl.model.constants;
+package com.misset.opp.model.constants;
 
 public enum XSD {
 

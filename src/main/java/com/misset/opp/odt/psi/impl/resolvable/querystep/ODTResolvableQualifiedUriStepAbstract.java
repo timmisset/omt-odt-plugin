@@ -10,12 +10,12 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.documentation.ODTUriStepDocumentationUtil;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.reference.ODTTTLSubjectPredicateReference;
 import com.misset.opp.odt.psi.reference.ODTTTLSubjectReference;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +75,7 @@ public abstract class ODTResolvableQualifiedUriStepAbstract extends ODTResolvabl
     private void inspectIri(ProblemsHolder holder) {
         final String fullyQualifiedUri = getFullyQualifiedUri();
         if (fullyQualifiedUri != null) {
-            final Resource resource = OppModel.getInstance().getOntResource(fullyQualifiedUri, getProject());
+            final Resource resource = OntologyModel.getInstance().getOntResource(fullyQualifiedUri, getProject());
             if (resource == null) {
                 // unknown Iri
                 holder.registerProblem(

@@ -1,11 +1,11 @@
-package com.misset.opp.ttl.util;
+package com.misset.opp.model.util;
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.misset.opp.odt.completion.ODTTraverseCompletion;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.model.OppModelTranslator;
-import com.misset.opp.ttl.model.constants.XSD;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.OntologyModelTranslator;
+import com.misset.opp.model.OntologyTraverseDirection;
+import com.misset.opp.model.constants.XSD;
 import com.misset.opp.util.Icons;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -22,20 +22,20 @@ import java.util.stream.Collectors;
  * Helper class that is particularly to describe resources for documentation, completion and error/warning messages
  * Not used for validation, resolving etc.
  */
-public class TTLResourceUtil {
-
-    private TTLResourceUtil() {
-        // empty constructor
-    }
+public class OntologyResourceUtil {
 
     private static final HashMap<Resource, String> descriptions = new HashMap<>();
     private static final HashMap<Resource, String> descriptionsWithType = new HashMap<>();
     private static final HashMap<Resource, Boolean> isType = new HashMap<>();
     private static final HashMap<Resource, Boolean> isXSDType = new HashMap<>();
 
+    private OntologyResourceUtil() {
+        // empty constructor
+    }
+
     public static boolean isType(Resource resource) {
         return isType.computeIfAbsent(resource, r -> r instanceof OntResource &&
-                OppModel.getInstance().isClass((OntResource) r) && isXSDType(r));
+                OntologyModel.getInstance().isClass((OntResource) r) && isXSDType(r));
     }
 
     public static boolean isXSDType(Resource resource) {
@@ -80,13 +80,13 @@ public class TTLResourceUtil {
 
     @Nullable
     private static String describeIndividual(Individual resource, boolean withType) {
-        OntClass ontClass = OppModel.getInstance().toClass(resource);
+        OntClass ontClass = OntologyModel.getInstance().toClass(resource);
         if (ontClass == null) {
             return null;
         }
         if (isXSDType(ontClass)) {
             return ontClass.getURI() + (withType ? " (VALUE)" : "");
-        } else if (ontClass.equals(OppModelConstants.getOppClass())) {
+        } else if (ontClass.equals(OntologyModelConstants.getOppClass())) {
             // Specific OPP_CLASS instances that describe non-ontology values such as ERROR etc
             return resource.getURI();
         } else if (resource.getNameSpace() != null &&
@@ -115,15 +115,15 @@ public class TTLResourceUtil {
 
     public static List<String> describeUrisLookup(Set<? extends OntResource> resources) {
         return resources.stream()
-                .map(TTLResourceUtil::describeUriForLookup)
+                .map(OntologyResourceUtil::describeUriForLookup)
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
     }
 
     public static String describeUriForLookup(OntResource resource) {
-        return Optional.ofNullable(OppModel.getInstance().toClass(resource))
-                .map(ontClass -> ontClass.equals(OppModelConstants.getOppClass()) ? resource : ontClass)
+        return Optional.ofNullable(OntologyModel.getInstance().toClass(resource))
+                .map(ontClass -> ontClass.equals(OntologyModelConstants.getOppClass()) ? resource : ontClass)
                 .map(Resource::getLocalName)
                 .orElse("Ontology class could not be found in the model");
     }
@@ -133,15 +133,15 @@ public class TTLResourceUtil {
             return null;
         }
         if (resources.isEmpty()) {
-            OntResource unambigiousResource = OppModel.getInstance().getUnambigiousResource(property);
+            OntResource unambigiousResource = OntologyModel.getInstance().getUnambigiousResource(property);
             if (unambigiousResource == null) {
                 return null;
             }
             resources = Set.of(unambigiousResource);
         }
-        boolean isMultiple = OppModelTranslator.isMultiple(resources, property);
-        boolean isSingle = OppModelTranslator.isSingleton(resources, property);
-        boolean isRequired = OppModelTranslator.isRequired(resources, property);
+        boolean isMultiple = OntologyModelTranslator.isMultiple(resources, property);
+        boolean isSingle = OntologyModelTranslator.isSingleton(resources, property);
+        boolean isRequired = OntologyModelTranslator.isRequired(resources, property);
         if (isRequired) {
             if (isMultiple) {
                 return "+";
@@ -163,25 +163,25 @@ public class TTLResourceUtil {
     public static LookupElementBuilder getPredicateLookupElement(Set<OntResource> subjects,
                                                                  Property property,
                                                                  Set<OntResource> objects,
-                                                                 ODTTraverseCompletion.TraverseDirection direction,
+                                                                 OntologyTraverseDirection.TraverseDirection direction,
                                                                  String title) {
         if (title == null || property == null) {
             return null;
         }
-        String cardinality = direction == ODTTraverseCompletion.TraverseDirection.FORWARD ? getCardinalityLabel(subjects, property) : getCardinalityLabel(objects, property);
+        String cardinality = direction == OntologyTraverseDirection.TraverseDirection.FORWARD ? getCardinalityLabel(subjects, property) : getCardinalityLabel(objects, property);
         if (cardinality == null) {
             cardinality = "";
         }
         String typeText = "";
         if (!objects.isEmpty()) {
-            typeText = TTLResourceUtil.describeUrisForLookupJoined(objects.stream().limit(2).collect(Collectors.toSet()));
+            typeText = OntologyResourceUtil.describeUrisForLookupJoined(objects.stream().limit(2).collect(Collectors.toSet()));
             if (objects.size() > 2) {
                 typeText += "...";
             }
         }
         return LookupElementBuilder.create(title)
                 .withLookupStrings(Set.of(property.getURI(), property.getLocalName()))
-                .withTailText((direction == ODTTraverseCompletion.TraverseDirection.FORWARD ? " -> forward " : " <- reverse ") + cardinality)
+                .withTailText((direction == OntologyTraverseDirection.TraverseDirection.FORWARD ? " -> forward " : " <- reverse ") + cardinality)
                 .withTypeText(typeText)
                 .withIcon(Icons.TTLFile)
                 .withPresentableText(title);
@@ -229,4 +229,5 @@ public class TTLResourceUtil {
                 (availableNamespaces.get(resource.getNameSpace()) + ":" + resource.getLocalName()) :
                 "<" + uri + ">";
     }
+
 }

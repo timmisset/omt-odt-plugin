@@ -1,11 +1,11 @@
-package com.misset.opp.ttl.model;
+package com.misset.opp.model;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.io.FileUtil;
+import com.misset.opp.model.constants.OWL;
+import com.misset.opp.model.constants.RDF;
 import com.misset.opp.ttl.TTLFileType;
-import com.misset.opp.ttl.model.constants.OWL;
-import com.misset.opp.ttl.model.constants.RDF;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
@@ -21,9 +21,9 @@ import java.util.*;
   Helper class to generate a OntologyModel (Apache Jena) with all imports recursively processed as SubModels
   The default import handler doesn't work with the current setup of the Opp Model
  */
-public final class OppModelLoader {
+public final class OntologyModelLoader {
 
-    private static final OppModelLoader INSTANCE = new OppModelLoader();
+    private static final OntologyModelLoader INSTANCE = new OntologyModelLoader();
     private Collection<File> modelFiles = Collections.emptyList();
 
     private static final String TTL = "TTL";
@@ -31,25 +31,25 @@ public final class OppModelLoader {
     private static final String REFERENTIEDATA = "http://ontologie.politie.nl/referentiedata";
     private final HashMap<Resource, OntModel> ontologies = new HashMap<>();
     private ProgressIndicator indicator = ProgressIndicatorProvider.getGlobalProgressIndicator();
-    private OppModel currentModel;
+    private OntologyModel currentModel;
 
-    private OppModelLoader() {
+    private OntologyModelLoader() {
 
     }
 
-    public static OppModelLoader getInstance() {
+    public static OntologyModelLoader getInstance() {
         return INSTANCE;
     }
 
-    public OppModel read(File file) {
+    public OntologyModel read(File file) {
         return read(file, indicator);
     }
 
-    public OppModel read(File file, ProgressIndicator indicator) {
+    public OntologyModel read(File file, ProgressIndicator indicator) {
         this.indicator = indicator;
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         init(file, model);
-        currentModel = new OppModel(model);
+        currentModel = new OntologyModel(model);
         return currentModel;
     }
 
@@ -57,7 +57,7 @@ public final class OppModelLoader {
         return modelFiles;
     }
 
-    public OppModel getCurrentModel() {
+    public OntologyModel getCurrentModel() {
         return currentModel;
     }
 

@@ -1,10 +1,10 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,18 +29,18 @@ public class ReplaceOperator extends BuiltInStringOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
         ArgumentValidator.validateAllArguments(call, holder, ArgumentValidator::validateStringArgument);
     }
 
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        return Set.of(OppModelConstants.getXsdStringInstance());
+        return Set.of(OntologyModelConstants.getXsdStringInstance());
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.getXsdStringInstance());
+        return Set.of(OntologyModelConstants.getXsdStringInstance());
     }
 
     @Override

@@ -8,12 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.SharedProcessingContext;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.OntologyTraverseDirection;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQueryOperationStep;
 import com.misset.opp.odt.psi.ODTTypeFilterProvider;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
@@ -28,10 +29,6 @@ import static com.misset.opp.odt.completion.ODTSharedCompletion.sharedContext;
 public class ODTTraverseCompletion extends CompletionContributor {
     private static final ElementPattern<PsiElement> TRAVERSE =
             or(AFTER_FIRST_QUERY_STEP, INSIDE_DEFINED_QUERY, INSIDE_QUERY_FILTER);
-
-    public enum TraverseDirection {
-        FORWARD, REVERSE
-    }
 
     public ODTTraverseCompletion() {
         // the position rules where a Traverse and QueryOperator can be suggested is identical
@@ -63,14 +60,14 @@ public class ODTTraverseCompletion extends CompletionContributor {
                 addModelTraverseLookupElements(
                         subjects,
                         getForwardPredicates(firstTypeFilter, subjects),
-                        TraverseDirection.FORWARD,
+                        OntologyTraverseDirection.TraverseDirection.FORWARD,
                         availableNamespaces,
                         result,
                         false);
                 addModelTraverseLookupElements(
                         subjects,
                         getReversePredicates(firstTypeFilter, subjects),
-                        TraverseDirection.REVERSE,
+                        OntologyTraverseDirection.TraverseDirection.REVERSE,
                         availableNamespaces,
                         result,
                         false);
@@ -83,11 +80,11 @@ public class ODTTraverseCompletion extends CompletionContributor {
                                                                        Set<OntResource> subjects) {
         HashMap<Property, Set<OntResource>> predicates = new HashMap<>();
         if (subjects.isEmpty()) {
-            predicates.put(OppModelConstants.getRdfType(), Collections.emptySet());
+            predicates.put(OntologyModelConstants.getRdfType(), Collections.emptySet());
         } else {
-            Set<Property> properties = OppModel.getInstance().listReversePredicates(subjects);
+            Set<Property> properties = OntologyModel.getInstance().listReversePredicates(subjects);
             for (Property property : properties) {
-                Set<OntResource> predicateSubjects = OppModel.getInstance().listSubjects(property, subjects);
+                Set<OntResource> predicateSubjects = OntologyModel.getInstance().listSubjects(property, subjects);
                 if (typeFilter.test(predicateSubjects)) {
                     predicates.put(property, predicateSubjects);
                 }
@@ -100,11 +97,11 @@ public class ODTTraverseCompletion extends CompletionContributor {
                                                                        Set<OntResource> subjects) {
         HashMap<Property, Set<OntResource>> predicates = new HashMap<>();
         if (subjects.isEmpty()) {
-            predicates.put(OppModelConstants.getRdfType(), Collections.emptySet());
+            predicates.put(OntologyModelConstants.getRdfType(), Collections.emptySet());
         } else {
-            Set<Property> properties = OppModel.getInstance().listPredicates(subjects);
+            Set<Property> properties = OntologyModel.getInstance().listPredicates(subjects);
             for (Property property : properties) {
-                Set<OntResource> predicateObjects = OppModel.getInstance().listObjects(subjects, property);
+                Set<OntResource> predicateObjects = OntologyModel.getInstance().listObjects(subjects, property);
                 if (typeFilter.test(predicateObjects)) {
                     predicates.put(property, predicateObjects);
                 }
@@ -116,21 +113,21 @@ public class ODTTraverseCompletion extends CompletionContributor {
     public static void addModelTraverseLookupElements(
             Set<OntResource> subjects,
             Map<Property, Set<OntResource>> predicates,
-            TraverseDirection direction,
+            OntologyTraverseDirection.TraverseDirection direction,
             Map<String, String> availableNamespaces,
             CompletionResultSet result,
             boolean rootIndicator) {
         predicates.keySet()
                 .forEach(predicate -> {
-                    String curie = TTLResourceUtil.parseToCurie(predicate, availableNamespaces);
-                    if (direction == TraverseDirection.REVERSE) {
+                    String curie = OntologyResourceUtil.parseToCurie(predicate, availableNamespaces);
+                    if (direction == OntologyTraverseDirection.TraverseDirection.REVERSE) {
                         curie = "^" + curie;
                     } else if (rootIndicator) {
                         curie = "/" + curie;
                     }
 
                     LookupElementBuilder predicateLookupElement =
-                            TTLResourceUtil.getPredicateLookupElement(subjects, predicate, predicates.get(predicate), direction, curie);
+                            OntologyResourceUtil.getPredicateLookupElement(subjects, predicate, predicates.get(predicate), direction, curie);
 
                     LookupElement withPriority =
                             PrioritizedLookupElement.withPriority(predicateLookupElement, COMPLETION_PRIORITY.TRAVERSE.getValue());

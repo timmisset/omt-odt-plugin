@@ -8,10 +8,10 @@ import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelLoader;
 import com.misset.opp.odt.psi.impl.ODTFileImpl;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelLoader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsightFixtureTestCase {
 
-    protected OppModel oppModel;
+    protected OntologyModel ontologyModel;
 
     /**
      * Set with prefix/namespace declarations used during tests
@@ -138,10 +138,10 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
 
     /**
      * When the ontology is required in a test that is not inheriting from OMTOntologyTestCase
-     * this method can be used to load the ontology and return the OppModel
+     * this method can be used to load the ontology and return the OntologyModel
      */
-    public static OppModel initOntologyModel() {
-        return OppModelLoader.getInstance().read(getRootPath());
+    public static OntologyModel initOntologyModel() {
+        return OntologyModelLoader.getInstance().read(getRootPath());
     }
 
     private static File getRootPath() {
@@ -154,7 +154,7 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
     }
 
     protected void setOntologyModel() {
-        oppModel = initOntologyModel();
+        ontologyModel = initOntologyModel();
     }
 
     protected String createOntologyUri(String localName) {

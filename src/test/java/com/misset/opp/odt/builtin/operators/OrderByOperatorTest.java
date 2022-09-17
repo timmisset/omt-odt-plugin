@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ class OrderByOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(OrderByOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()));
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -30,6 +30,6 @@ class OrderByOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(OrderByOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
+        assertValidArgument(OrderByOperator.INSTANCE, 1, OntologyModelConstants.getXsdBooleanInstance());
     }
 }

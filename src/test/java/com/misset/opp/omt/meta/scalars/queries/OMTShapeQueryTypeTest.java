@@ -1,9 +1,9 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.omt.inspection.structure.OMTValueInspection;
 import com.misset.opp.omt.testcase.OMTTestCase;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ class OMTShapeQueryTypeTest extends OMTTestCase {
     public void setUp() {
         super.setUp();
         myFixture.enableInspections(Collections.singleton(OMTValueInspection.class));
-        OppModel.getInstance().createIndividual(OppModelConstants.getGraphShape(), "http://shapeA");
+        OntologyModel.getInstance().createIndividual(OntologyModelConstants.getGraphShape(), "http://shapeA");
     }
 
     @Test

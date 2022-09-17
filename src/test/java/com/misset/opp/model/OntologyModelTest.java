@@ -1,10 +1,10 @@
-package com.misset.opp.ttl.model;
+package com.misset.opp.model;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.misset.opp.model.constants.XSD;
 import com.misset.opp.testcase.BasicTestCase;
-import com.misset.opp.ttl.model.constants.XSD;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -19,7 +19,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-class OppModelTest {
+class OntologyModelTest {
     public static final String CLASS_A_INSTANCE_A = "http://ontology#ClassA_InstanceA";
     public static final String ONTOLOGY_CLASS_A = "http://ontology#ClassA";
     public static final String ONTOLOGY_CLASS_B = "http://ontology#ClassB";
@@ -31,55 +31,55 @@ class OppModelTest {
     private Individual CLASS_B_INDIVIDUAL;
     private Individual CLASS_BSUB_INDIVIDUAL;
 
-    private OppModel oppModel;
+    private OntologyModel ontologyModel;
 
     @BeforeEach
     public void setUp() {
-        oppModel = BasicTestCase.initOntologyModel();
+        ontologyModel = BasicTestCase.initOntologyModel();
         CLASS_A = createClass("ClassA");
         CLASS_B = createClass("ClassB");
         CLASS_BSUB = createClass("ClassBSub");
         CLASS_BSUB.setSuperClass(CLASS_B);
-        CLASS_A_INDIVIDUAL = oppModel.createIndividual(CLASS_A, CLASS_A.getURI() + "_INSTANCE");
-        CLASS_B_INDIVIDUAL = oppModel.createIndividual(CLASS_B, CLASS_B.getURI() + "_INSTANCE");
-        CLASS_BSUB_INDIVIDUAL = oppModel.createIndividual(CLASS_BSUB, CLASS_BSUB.getURI() + "_INSTANCE");
+        CLASS_A_INDIVIDUAL = ontologyModel.createIndividual(CLASS_A, CLASS_A.getURI() + "_INSTANCE");
+        CLASS_B_INDIVIDUAL = ontologyModel.createIndividual(CLASS_B, CLASS_B.getURI() + "_INSTANCE");
+        CLASS_BSUB_INDIVIDUAL = ontologyModel.createIndividual(CLASS_BSUB, CLASS_BSUB.getURI() + "_INSTANCE");
     }
 
     @Test
     void listPredicateOnClass() {
-        final Set<Property> predicates = oppModel.listPredicates(CLASS_A);
+        final Set<Property> predicates = ontologyModel.listPredicates(CLASS_A);
         assertTrue(predicates.contains(createProperty("booleanPredicate")));
-        assertTrue(predicates.contains(OppModelConstants.getRdfType()));
-        assertTrue(predicates.contains(OppModelConstants.getRdfsSubclassOf()));
+        assertTrue(predicates.contains(OntologyModelConstants.getRdfType()));
+        assertTrue(predicates.contains(OntologyModelConstants.getRdfsSubclassOf()));
     }
 
     @Test
     void listPredicateOnIndividual() {
-        final Set<Property> predicates = oppModel.listPredicates(CLASS_A_INDIVIDUAL);
+        final Set<Property> predicates = ontologyModel.listPredicates(CLASS_A_INDIVIDUAL);
         assertTrue(predicates.contains(createProperty("booleanPredicate")));
-        assertTrue(predicates.contains(OppModelConstants.getRdfType()));
-        assertFalse(predicates.contains(OppModelConstants.getRdfsSubclassOf()));
+        assertTrue(predicates.contains(OntologyModelConstants.getRdfType()));
+        assertFalse(predicates.contains(OntologyModelConstants.getRdfsSubclassOf()));
     }
 
     @Test
     void listPredicatesMultipleClasses() {
-        final Set<Property> predicates = oppModel.listPredicates(
+        final Set<Property> predicates = ontologyModel.listPredicates(
                 Set.of(CLASS_A, createClass("ClassB")));
         assertTrue(predicates.contains(createProperty("booleanPredicate")));
         assertTrue(predicates.contains(createProperty("stringPredicate")));
-        assertTrue(predicates.contains(OppModelConstants.getRdfType()));
+        assertTrue(predicates.contains(OntologyModelConstants.getRdfType()));
     }
 
     @Test
     void listPredicatesSubclasses() {
-        final Set<Property> predicates = oppModel.listPredicates(createClass("ClassBSub"));
+        final Set<Property> predicates = ontologyModel.listPredicates(createClass("ClassBSub"));
         assertTrue(predicates.contains(createProperty("numberPredicate")));
         assertTrue(predicates.contains(createProperty("stringPredicate")));
     }
 
     @Test
     void testListSubjectsRdfType() {
-        final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.getRdfType(), Set.of(CLASS_A));
+        final Set<OntResource> resources = ontologyModel.listSubjects(OntologyModelConstants.getRdfType(), Set.of(CLASS_A));
         assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof Individual && ((Individual) resource).hasOntClass(CLASS_A)
         ));
@@ -87,14 +87,14 @@ class OppModelTest {
 
     @Test
     void testListSubjectsResourcePredicate() {
-        final Set<OntResource> resources = oppModel.listSubjects(createProperty("booleanPredicate"),
+        final Set<OntResource> resources = ontologyModel.listSubjects(createProperty("booleanPredicate"),
                 Set.of(createXsdResource("boolean")));
         assertTrue(resources.stream().anyMatch(CLASS_A::equals));
     }
 
     @Test
     void testListSubjectsClassPredicate() {
-        final Set<OntResource> resources = oppModel.listSubjects(OppModelConstants.getRdfsSubclassOf(),
+        final Set<OntResource> resources = ontologyModel.listSubjects(OntologyModelConstants.getRdfsSubclassOf(),
                 Set.of(createResource("ClassB")));
         assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof OntClass && resource.equals(createResource(
@@ -104,16 +104,16 @@ class OppModelTest {
 
     @Test
     void testListObjectsPredicate() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
+        final Set<OntResource> resources = ontologyModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
                 createProperty("booleanPredicate"));
         assertTrue(resources.stream().anyMatch(
-                resource -> resource.equals(OppModelConstants.getXsdBooleanInstance())
+                resource -> resource.equals(OntologyModelConstants.getXsdBooleanInstance())
         ));
     }
 
     @Test
     void testListObjectsInstanceToInstance() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
+        final Set<OntResource> resources = ontologyModel.listObjects(Set.of(CLASS_A_INDIVIDUAL),
                 createProperty("classPredicate"));
         assertTrue(resources.stream().anyMatch(
                 resource -> resource instanceof Individual && ((Individual) resource).hasOntClass(createClass(
@@ -123,7 +123,7 @@ class OppModelTest {
 
     @Test
     void testListObjectsRdfTypeOnIndividual() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), OppModelConstants.getRdfType());
+        final Set<OntResource> resources = ontologyModel.listObjects(Set.of(CLASS_A_INDIVIDUAL), OntologyModelConstants.getRdfType());
         assertTrue(resources.stream().anyMatch(
                 resource -> resource.equals(CLASS_A))
         );
@@ -131,17 +131,17 @@ class OppModelTest {
 
     @Test
     void testListObjectsRdfTypeOnClass() {
-        final Set<OntResource> resources = oppModel.listObjects(Set.of(CLASS_A), OppModelConstants.getRdfType());
+        final Set<OntResource> resources = ontologyModel.listObjects(Set.of(CLASS_A), OntologyModelConstants.getRdfType());
         assertTrue(resources.stream().anyMatch(
-                resource -> resource.equals(OppModelConstants.getOwlClass()))
+                resource -> resource.equals(OntologyModelConstants.getOwlClass()))
         );
     }
 
     @Test
     void testInstanceValues() {
-        final Individual individual = oppModel.getIndividual(CLASS_A_INSTANCE_A);
+        final Individual individual = ontologyModel.getIndividual(CLASS_A_INSTANCE_A);
         final RDFNode booleanPredicate = individual.listPropertyValues(
-                oppModel.getProperty(createProperty("booleanPredicate"))
+                ontologyModel.getProperty(createProperty("booleanPredicate"))
         ).next();
         assertTrue(booleanPredicate.isLiteral());
         assertTrue(booleanPredicate.asLiteral().getBoolean());
@@ -149,22 +149,22 @@ class OppModelTest {
 
     @Test
     void testAnOppClassIsAnOwlClass() {
-        final OntClass ontClass = oppModel.getClass(CLASS_A.getURI());
-        assertEquals(ontClass.getRDFType(), OppModelConstants.getOwlClass());
+        final OntClass ontClass = ontologyModel.getClass(CLASS_A.getURI());
+        assertEquals(ontClass.getRDFType(), OntologyModelConstants.getOwlClass());
     }
 
     @Test
     void testAnOppClassIsNotASubclassOfAnOwlClass() {
-        final Individual individual = oppModel.getIndividual(CLASS_A_INSTANCE_A);
-        OntClass ontClass = oppModel.toClass(individual);
-        assertFalse(ontClass.listSuperClasses(false).toList().contains(OppModelConstants.getOwlClass()));
+        final Individual individual = ontologyModel.getIndividual(CLASS_A_INSTANCE_A);
+        OntClass ontClass = ontologyModel.toClass(individual);
+        assertFalse(ontClass.listSuperClasses(false).toList().contains(OntologyModelConstants.getOwlClass()));
     }
 
     @Test
     void testAnOppClassIsASubclassOfAnOwlThing() {
-        final Individual individual = oppModel.getIndividual(CLASS_A_INSTANCE_A);
-        OntClass ontClass = oppModel.toClass(individual);
-        assertTrue(ontClass.listSuperClasses(false).toList().contains(OppModelConstants.getOwlThingClass()));
+        final Individual individual = ontologyModel.getIndividual(CLASS_A_INSTANCE_A);
+        OntClass ontClass = ontologyModel.toClass(individual);
+        assertTrue(ontClass.listSuperClasses(false).toList().contains(OntologyModelConstants.getOwlThingClass()));
     }
 
     @Test
@@ -174,32 +174,32 @@ class OppModelTest {
 
     @Test
     void testAreCompatibleTrueInstanceWithOWLThing() {
-        assertTrue(areCompatible(OppModelConstants.getOwlThingInstance().getURI(), CLASS_A_INSTANCE_A));
-        assertTrue(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.getOwlThingInstance().getURI()));
+        assertTrue(areCompatible(OntologyModelConstants.getOwlThingInstance().getURI(), CLASS_A_INSTANCE_A));
+        assertTrue(areCompatible(CLASS_A_INSTANCE_A, OntologyModelConstants.getOwlThingInstance().getURI()));
     }
 
     @Test
     void testAreCompatibleFalseInstanceWithOWLClass() {
-        assertFalse(areCompatible(OppModelConstants.getOwlClass().getURI(), CLASS_A_INSTANCE_A));
-        assertFalse(areCompatible(CLASS_A_INSTANCE_A, OppModelConstants.getOwlClass().getURI()));
+        assertFalse(areCompatible(OntologyModelConstants.getOwlClass().getURI(), CLASS_A_INSTANCE_A));
+        assertFalse(areCompatible(CLASS_A_INSTANCE_A, OntologyModelConstants.getOwlClass().getURI()));
     }
 
     @Test
     void testAreCompatibleTrueClassWithOWLClass() {
-        assertTrue(areCompatible(OppModelConstants.getOwlClass().getURI(), CLASS_A.getURI()));
-        assertTrue(areCompatible(OppModelConstants.getRdfsClass().getURI(), CLASS_A.getURI()));
-        assertTrue(areCompatible(OppModelConstants.getRdfsResource().getURI(), CLASS_A.getURI()));
+        assertTrue(areCompatible(OntologyModelConstants.getOwlClass().getURI(), CLASS_A.getURI()));
+        assertTrue(areCompatible(OntologyModelConstants.getRdfsClass().getURI(), CLASS_A.getURI()));
+        assertTrue(areCompatible(OntologyModelConstants.getRdfsResource().getURI(), CLASS_A.getURI()));
     }
 
     @Test
     void testAreCompatibleFalseOWLClassWithClass() {
-        assertFalse(areCompatible(CLASS_A.getURI(), OppModelConstants.getOwlClass().getURI()));
+        assertFalse(areCompatible(CLASS_A.getURI(), OntologyModelConstants.getOwlClass().getURI()));
     }
 
     @Test
     void testAreCompatibleFalseClassWithOWLThing() {
-        assertFalse(areCompatible(OppModelConstants.getOwlThingInstance().getURI(), ONTOLOGY_CLASS_A));
-        assertFalse(areCompatible(ONTOLOGY_CLASS_A, OppModelConstants.getOwlThingInstance().getURI()));
+        assertFalse(areCompatible(OntologyModelConstants.getOwlThingInstance().getURI(), ONTOLOGY_CLASS_A));
+        assertFalse(areCompatible(ONTOLOGY_CLASS_A, OntologyModelConstants.getOwlThingInstance().getURI()));
     }
 
     @Test
@@ -284,29 +284,29 @@ class OppModelTest {
         references.add(CLASS_A.getURI(), array);
 
         ProgressIndicator progressIndicator = mock(ProgressIndicator.class);
-        oppModel.addFromJson(references, progressIndicator, true);
+        ontologyModel.addFromJson(references, progressIndicator, true);
 
         OntResource ontResource = CLASS_A.listInstances(true).filterKeep(resource -> resource.getURI() != null && resource.getURI().equals("http://ontology/ClassA_InstanceZ"))
                 .toList()
                 .get(0);
         Assertions.assertNotNull(ontResource);
-        assertTrue(ontResource.hasProperty(oppModel.getProperty("http://ontology/booleanPredicate")));
+        assertTrue(ontResource.hasProperty(ontologyModel.getProperty("http://ontology/booleanPredicate")));
         assertTrue(ontResource.isIndividual());
         assertTrue(ontResource.asIndividual().hasOntClass(CLASS_A, true));
     }
 
     private boolean areCompatible(String resourceA,
                                   String resourceB) {
-        return oppModel.areCompatible(Set.of(oppModel.getOntResource(resourceA, null)),
-                Set.of(oppModel.getOntResource(resourceB, null)));
+        return ontologyModel.areCompatible(Set.of(ontologyModel.getOntResource(resourceA, null)),
+                Set.of(ontologyModel.getOntResource(resourceB, null)));
     }
 
     private Property createProperty(String localName) {
-        return oppModel.getProperty(createResource("http://ontology#", localName));
+        return ontologyModel.getProperty(createResource("http://ontology#", localName));
     }
 
     private OntClass createClass(String name) {
-        return oppModel.getClass(createResource(name));
+        return ontologyModel.getClass(createResource(name));
     }
 
     private OntResource createXsdResource(String localName) {
@@ -318,6 +318,6 @@ class OppModelTest {
     }
 
     private OntResource createResource(String namespace, String localName) {
-        return oppModel.getModel().createOntResource(namespace + localName);
+        return ontologyModel.getModel().createOntResource(namespace + localName);
     }
 }

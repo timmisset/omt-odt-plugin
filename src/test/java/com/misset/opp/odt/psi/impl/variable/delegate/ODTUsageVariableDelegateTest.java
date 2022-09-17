@@ -2,11 +2,11 @@ package com.misset.opp.odt.psi.impl.variable.delegate;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.testcase.ODTFileTestImpl;
 import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,12 +24,12 @@ class ODTUsageVariableDelegateTest extends ODTTestCase {
 
         Variable variable = mock(Variable.class);
         doReturn("$variable").when(variable).getName();
-        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(variable).resolve();
+        doReturn(Set.of(OntologyModelConstants.getXsdStringInstance())).when(variable).resolve();
         odtFileTest.addVariable(variable);
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OntologyModelConstants.getXsdStringInstance());
         });
     }
 
@@ -39,7 +39,7 @@ class ODTUsageVariableDelegateTest extends ODTTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OntologyModelConstants.getXsdStringInstance());
         });
     }
 
@@ -49,7 +49,7 @@ class ODTUsageVariableDelegateTest extends ODTTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdIntegerInstance());
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OntologyModelConstants.getXsdIntegerInstance());
         });
     }
 
@@ -61,7 +61,7 @@ class ODTUsageVariableDelegateTest extends ODTTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OntologyModelConstants.getXsdStringInstance());
         });
     }
 
@@ -73,7 +73,7 @@ class ODTUsageVariableDelegateTest extends ODTTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdStringInstance());
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OntologyModelConstants.getXsdStringInstance());
         });
     }
 
@@ -87,7 +87,7 @@ class ODTUsageVariableDelegateTest extends ODTTestCase {
         ReadAction.run(() -> {
             final PsiElement elementAtCaret = myFixture.getElementAtCaret();
             Assertions.assertTrue(elementAtCaret instanceof ODTVariable);
-            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OppModelConstants.getXsdIntegerInstance());
+            assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OntologyModelConstants.getXsdIntegerInstance());
         });
     }
 }

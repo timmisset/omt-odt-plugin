@@ -1,13 +1,13 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.application.ReadAction;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.inspection.calls.ODTCallInspection;
 import com.misset.opp.omt.inspection.structure.OMTMissingKeysInspection;
 import com.misset.opp.omt.psi.impl.delegate.OMTYamlDelegateFactory;
 import com.misset.opp.omt.psi.impl.delegate.keyvalue.OMTYamlModelItemDelegate;
 import com.misset.opp.omt.psi.impl.yaml.YAMLOMTKeyValueImpl;
 import com.misset.opp.omt.testcase.OMTTestCase;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +61,7 @@ class OMTLoadableMetaTypeTest extends OMTTestCase {
 
     @Test
     void testResolvesToJson() {
-        Assertions.assertEquals(Set.of(OppModelConstants.getJsonObject()), OMTLoadableMetaType.getInstance().resolve(null, null));
+        Assertions.assertEquals(Set.of(OntologyModelConstants.getJsonObject()), OMTLoadableMetaType.getInstance().resolve(null, null));
     }
 
     @Test

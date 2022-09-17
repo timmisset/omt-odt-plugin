@@ -4,13 +4,13 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableAbstract;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Resolvable;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +24,7 @@ public abstract class ODTResolvableSignatureArgumentAbstract extends ODTResolvab
         implements ODTSignatureArgument, ODTTypeFilterProvider {
 
     private static final Predicate<Set<OntResource>> ACCEPT_NON_VOID =
-            resources -> !resources.contains(OppModelConstants.getVoidResponse());
+            resources -> !resources.contains(OntologyModelConstants.getVoidResponse());
 
     protected ODTResolvableSignatureArgumentAbstract(@NotNull ASTNode node) {
         super(node);
@@ -71,7 +71,7 @@ public abstract class ODTResolvableSignatureArgumentAbstract extends ODTResolvab
         Set<OntResource> acceptableArgumentType = callable.getAcceptableArgumentType(argumentIndexOf, call);
 
         return ACCEPT_NON_VOID.and(
-                resources -> resources.isEmpty() || OppModel.getInstance().areCompatible(acceptableArgumentType, resources)
+                resources -> resources.isEmpty() || OntologyModel.getInstance().areCompatible(acceptableArgumentType, resources)
         );
     }
 }

@@ -1,8 +1,8 @@
 package com.misset.opp.omt.meta.scalars.queries;
 
 import com.intellij.codeInspection.ProblemsHolder;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLScalar;
@@ -26,9 +26,9 @@ public class OMTGraphQueryType extends OMTQueryMetaType {
         final Set<OntResource> resolve = resolve(scalarValue);
         if (resolve.isEmpty() || resolve.stream()
                 .allMatch(resource -> resource != null &&
-                        OppModel.getInstance().isIndividual(resource) &&
-                        Optional.ofNullable(OppModel.getInstance().toClass(resource))
-                                .map(OppModelConstants.getNamedGraphClass()::equals)
+                        OntologyModel.getInstance().isIndividual(resource) &&
+                        Optional.ofNullable(OntologyModel.getInstance().toClass(resource))
+                                .map(OntologyModelConstants.getNamedGraphClass()::equals)
                                 .orElse(false))) {
             return;
         }

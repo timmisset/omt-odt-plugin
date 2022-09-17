@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,19 +18,19 @@ class CopyInGraphCommandTest extends BaseBuiltinTest {
     void testArgumentTypes() {
         testArgument(CopyInGraphCommand.INSTANCE,
                 0,
-                OppModelConstants.getXsdStringInstance(),
-                TTLValidationUtil.ERROR_MESSAGE_INSTANCES,
-                OppModelConstants.getXsdString());
+                OntologyModelConstants.getXsdStringInstance(),
+                OntologyValidationUtil.ERROR_MESSAGE_INSTANCES,
+                OntologyModelConstants.getXsdString());
 
         testArgument(CopyInGraphCommand.INSTANCE,
                 1,
-                OppModelConstants.getMedewerkerGraph(),
-                TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
+                OntologyModelConstants.getMedewerkerGraph(),
+                OntologyValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
 
         testArgument(CopyInGraphCommand.INSTANCE,
                 2,
-                OppModelConstants.getXsdBooleanInstance(),
-                TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+                OntologyModelConstants.getXsdBooleanInstance(),
+                OntologyValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
@@ -40,8 +40,8 @@ class CopyInGraphCommandTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 1, OppModelConstants.getNamedGraph());
-        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 2, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 1, OntologyModelConstants.getNamedGraph());
+        assertGetAcceptableArgumentType(CopyInGraphCommand.INSTANCE, 2, OntologyModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(CopyInGraphCommand.INSTANCE, 3);
     }
 

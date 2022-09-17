@@ -2,10 +2,10 @@ package com.misset.opp.odt.builtin;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.project.Project;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +50,7 @@ public abstract class AbstractBuiltin implements Callable {
     protected abstract Set<OntResource> resolveError(Set<OntResource> resources, PsiCall call);
 
     private boolean hasError(Set<OntResource> resources) {
-        return resources.stream().anyMatch(OppModelConstants.getError()::equals);
+        return resources.stream().anyMatch(OntologyModelConstants.getError()::equals);
     }
 
     @Override
@@ -61,7 +61,7 @@ public abstract class AbstractBuiltin implements Callable {
     @Override
     public final @NotNull Set<OntResource> resolve(Context context) {
         if (isVoid()) {
-            return Collections.singleton(OppModelConstants.getVoidResponse());
+            return Collections.singleton(OntologyModelConstants.getVoidResponse());
         }
         if (hasFixedReturnType()) {
             return resolve();

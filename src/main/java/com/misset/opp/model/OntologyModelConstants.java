@@ -1,6 +1,6 @@
-package com.misset.opp.ttl.model;
+package com.misset.opp.model;
 
-import com.misset.opp.ttl.model.constants.*;
+import com.misset.opp.model.constants.*;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
@@ -11,7 +11,7 @@ import org.apache.jena.rdf.model.Property;
 import java.util.List;
 import java.util.Set;
 
-public final class OppModelConstants {
+public final class OntologyModelConstants {
     private static Property shaclPath;
     private static Property shaclClass;
     private static Property shaclMincount;
@@ -59,25 +59,25 @@ public final class OppModelConstants {
     private static Individual xsdDurationInstance;
 
     static {
-        // create the static members with an initial model. Once the OppModel is actually loaded
+        // create the static members with an initial model. Once the OntologyModel is actually loaded
         // these resources have to be registered there to be part of the caching mechanism
         OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        OppModel oppModel = new OppModel(ontModel);
-        setConstants(oppModel, ontModel);
+        OntologyModel ontologyModel = new OntologyModel(ontModel);
+        setConstants(ontologyModel, ontModel);
     }
 
-    private OppModelConstants() {
+    private OntologyModelConstants() {
         // empty constructor
     }
 
-    public static void setConstants(OppModel model, OntModel ontologyModel) {
+    public static void setConstants(OntologyModel model, OntModel ontologyModel) {
         setProperties(model, ontologyModel);
         setClasses(model, ontologyModel);
         setIndividuals(model);
         setPrimitives(model, ontologyModel);
     }
 
-    private static void setPrimitives(OppModel model, OntModel ontologyModel) {
+    private static void setPrimitives(OntologyModel model, OntModel ontologyModel) {
         xsdBoolean = model.createClass(XSD.BOOLEAN.getUri(), ontologyModel, getOwlThingClass());
         xsdBooleanInstance = model.createIndividual(getXsdBoolean(), XSD.BOOLEAN_INSTANCE.getUri());
 
@@ -107,7 +107,7 @@ public final class OppModelConstants {
         xsdDurationInstance = model.createIndividual(getXsdDuration(), XSD.DURATION_INSTANCE.getUri());
     }
 
-    private static void setProperties(OppModel model, OntModel ontologyModel) {
+    private static void setProperties(OntologyModel model, OntModel ontologyModel) {
         shaclPath = model.createProperty(SHACL.PATH.getUri(), ontologyModel);
         shaclClass = model.createProperty(SHACL.CLASS.getUri(), ontologyModel);
         shaclDatatype = model.createProperty(SHACL.DATATYPE.getUri(), ontologyModel);
@@ -122,7 +122,7 @@ public final class OppModelConstants {
         classModelProperties = List.of(getRdfsSubclassOf(), getRdfType());
     }
 
-    private static void setIndividuals(OppModel model) {
+    private static void setIndividuals(OntologyModel model) {
         owlThingInstance = model.createIndividual(getOwlThingClass(), OWL.THING_INSTANCE.getUri());
 
         jsonObject = model.createIndividual(getJson(), PLATFORM.JSON_OBJECT.getUri());
@@ -136,7 +136,7 @@ public final class OppModelConstants {
         blankNode = model.createIndividual(getOppClass(), PLATFORM.BLANK_NODE.getUri());
     }
 
-    private static void setClasses(OppModel model, OntModel ontologyModel) {
+    private static void setClasses(OntologyModel model, OntModel ontologyModel) {
         rdfsResource = model.createClass(RDFS.RESOURCE.getUri(), ontologyModel);
         rdfsClass = model.createClass(RDFS.CLASS.getUri(), ontologyModel, getRdfsResource());
         owlClass = model.createClass(OWL.CLASS.getUri(), ontologyModel, getRdfsClass());
@@ -152,7 +152,7 @@ public final class OppModelConstants {
         namedGraphClass.addSuperClass(graphClass);
         graphShape = model.createClass(PLATFORM.GRAPH_SHAPE.getUri(), ontologyModel, getOwlThingClass());
         graphShape.addSuperClass(oppClass);
-        transientGraphClass = model.createClass(com.misset.opp.ttl.model.constants.PLATFORM.TRANSIENT_GRAPH.getUri(), ontologyModel, getOwlThingClass());
+        transientGraphClass = model.createClass(PLATFORM.TRANSIENT_GRAPH.getUri(), ontologyModel, getOwlThingClass());
         transientGraphClass.addSuperClass(graphClass);
     }
 

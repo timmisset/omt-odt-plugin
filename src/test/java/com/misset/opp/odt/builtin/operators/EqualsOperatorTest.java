@@ -2,9 +2,9 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,13 +19,13 @@ class EqualsOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(EqualsOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
+        assertResolved(EqualsOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testFlagShowsWarningWhenUsedOnNonStringValuesDefault() {
         PsiElement flagElement = mock(PsiElement.class);
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdBooleanInstance()), Set.of(OntologyModelConstants.getXsdBooleanInstance()));
         doReturn(flagElement).when(call).getFlagElement();
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
@@ -36,7 +36,7 @@ class EqualsOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationShowsWarningWhenIncompatibleArgumentTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdBooleanInstance()));
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 
@@ -46,7 +46,7 @@ class EqualsOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationShowsNoWarningWhenTooManyArgumentsToCompare() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdBooleanInstance()), Set.of(OntologyModelConstants.getXsdBooleanInstance()));
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 
@@ -56,8 +56,8 @@ class EqualsOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationShowsWarningWhenIncompatiblePreviousStepAndArgumentTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
-        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdBooleanInstance()));
+        doReturn(Set.of(OntologyModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
         doReturn("true").when(call).getSignatureValue(1);
         doReturn("!ignoreCase").when(call).getFlag();
 

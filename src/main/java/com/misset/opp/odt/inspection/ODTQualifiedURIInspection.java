@@ -14,11 +14,11 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.misset.opp.indexing.PrefixIndex;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTIriStep;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.jena.ontology.OntClass;
 import org.jetbrains.annotations.Nls;
@@ -91,7 +91,7 @@ public class ODTQualifiedURIInspection extends LocalInspectionTool {
         PsiElement dataElement = docTag.getDataElements()[position];
         Matcher matcher = QUALIFIED_URI.matcher(dataElement.getText());
         if (matcher.find()) {
-            OntClass ontClass = OppModel.getInstance().getClass(matcher.group(1));
+            OntClass ontClass = OntologyModel.getInstance().getClass(matcher.group(1));
             if (ontClass != null) {
                 pair.setLeft(ontClass.getNameSpace());
                 pair.setRight(ontClass.getLocalName());

@@ -2,10 +2,10 @@ package com.misset.opp.odt.psi.impl.callable;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class ODTDefineStatementAbstractTest extends ODTTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
-            Assertions.assertEquals(Set.of(OppModelConstants.getXsdStringInstance()), defineStatement.getParamType(0));
+            Assertions.assertEquals(Set.of(OntologyModelConstants.getXsdStringInstance()), defineStatement.getParamType(0));
         });
     }
 
@@ -95,7 +95,7 @@ class ODTDefineStatementAbstractTest extends ODTTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
-            Assertions.assertEquals(Set.of(OppModelConstants.getXsdIntegerInstance()), defineStatement.resolve());
+            Assertions.assertEquals(Set.of(OntologyModelConstants.getXsdIntegerInstance()), defineStatement.resolve());
         });
     }
 
@@ -112,7 +112,7 @@ class ODTDefineStatementAbstractTest extends ODTTestCase {
         ReadAction.run(() -> {
             ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
             Set<OntResource> resolve = defineStatement.resolve();
-            Assertions.assertEquals(OppModel.getInstance().toIndividuals("http://ontology#ClassA"), resolve);
+            Assertions.assertEquals(OntologyModel.getInstance().toIndividuals("http://ontology#ClassA"), resolve);
         });
     }
 }

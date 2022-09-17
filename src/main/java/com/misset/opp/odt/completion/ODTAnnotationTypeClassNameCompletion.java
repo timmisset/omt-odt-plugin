@@ -5,9 +5,9 @@ import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.psi.ODTFile;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -39,8 +39,8 @@ public class ODTAnnotationTypeClassNameCompletion extends CompletionContributor 
         Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
         // show all classes instances:
-        OppModel.getInstance().listClasses().stream()
-                .map(resource -> TTLResourceUtil.getTypeLookupElement(resource, availableNamespaces))
+        OntologyModel.getInstance().listClasses().stream()
+                .map(resource -> OntologyResourceUtil.getTypeLookupElement(resource, availableNamespaces))
                 .filter(Objects::nonNull)
                 // sort so that items with prefixes are shown first
                 .map(lookupElementBuilder -> PrioritizedLookupElement.withPriority(

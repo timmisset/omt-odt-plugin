@@ -4,10 +4,10 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.psi.ODTCollectionStatement;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTResolvableValue;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +32,7 @@ public class ODTCodeInspectionCollectionStatement extends LocalInspectionTool {
             private void inspect(ODTCollectionStatement collectionStatement) {
                 final ODTQuery query = collectionStatement.getQuery();
                 final ODTResolvableValue resolvableValue = collectionStatement.getResolvableValue();
-                TTLValidationUtil.validateCompatibleTypes(query.resolve(),
+                OntologyValidationUtil.validateCompatibleTypes(query.resolve(),
                         resolvableValue.resolve(),
                         holder,
                         resolvableValue);

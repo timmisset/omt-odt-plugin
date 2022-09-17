@@ -1,7 +1,7 @@
 package com.misset.opp.odt.completion;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -19,7 +19,7 @@ class ODTTypeClassNameCompletionTest extends ODTTestCase {
         configureByText(withPrefixes(content), true);
         List<String> lookupStrings = completion.getLookupStrings();
         assertContainsElements(lookupStrings, "/ont:ClassA");
-        assertDoesntContain(lookupStrings, "/" + OppModelConstants.getXsdString().getURI(), "/" + OppModelConstants.getXsdStringInstance().getURI());
+        assertDoesntContain(lookupStrings, "/" + OntologyModelConstants.getXsdString().getURI(), "/" + OntologyModelConstants.getXsdStringInstance().getURI());
     }
 
 }

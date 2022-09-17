@@ -1,9 +1,9 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
@@ -26,16 +26,16 @@ public class FloorOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.getXsdIntegerInstance();
+        return OntologyModelConstants.getXsdIntegerInstance();
     }
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateDecimal(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.validateDecimal(call.resolvePreviousStep(), holder, call);
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.getXsdDecimalInstance());
+        return Set.of(OntologyModelConstants.getXsdDecimalInstance());
     }
 }

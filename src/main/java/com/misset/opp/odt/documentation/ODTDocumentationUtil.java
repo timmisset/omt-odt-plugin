@@ -7,12 +7,12 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyValueParserUtil;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
 import com.misset.opp.resolvable.psi.PsiPrefix;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -118,9 +118,9 @@ public class ODTDocumentationUtil {
                 // and generate a fully qualified URI from it:
                 Matcher qualifiedUriMatcher = QUALIFIED_URI.matcher(dataElement.getText());
                 if (qualifiedUriMatcher.find()) {
-                    OppModel oppModel = OppModel.getInstance();
+                    OntologyModel ontologyModel = OntologyModel.getInstance();
                     return Optional.ofNullable(qualifiedUriMatcher.group(1))
-                            .map(oppModel::toIndividuals)
+                            .map(ontologyModel::toIndividuals)
                             .orElse(Collections.emptySet())
                             .stream()
                             .map(OntResource.class::cast)
@@ -135,7 +135,7 @@ public class ODTDocumentationUtil {
                 // no curie reference, probably a primitive type:
                 // (string)
                 final String value = dataElement.getText().replaceAll("[()]", "");
-                return Optional.ofNullable(TTLValueParserUtil.parsePrimitive(value))
+                return Optional.ofNullable(OntologyValueParserUtil.parsePrimitive(value))
                         .map(OntResource.class::cast)
                         .map(Set::of)
                         .orElse(Collections.emptySet());
@@ -161,7 +161,7 @@ public class ODTDocumentationUtil {
                         .findFirst();
             }
         }
-        return uri.map(OppModel.getInstance()::toIndividuals)
+        return uri.map(OntologyModel.getInstance()::toIndividuals)
                 .orElse(new HashSet<>())
                 .stream()
                 .map(OntResource.class::cast)

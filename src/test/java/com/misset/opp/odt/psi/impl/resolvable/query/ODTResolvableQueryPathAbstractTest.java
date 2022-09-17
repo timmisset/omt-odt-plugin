@@ -2,10 +2,10 @@ package com.misset.opp.odt.psi.impl.resolvable.query;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.ODTQueryPath;
 import com.misset.opp.odt.testcase.ODTFileTestImpl;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -45,7 +45,7 @@ class ODTResolvableQueryPathAbstractTest extends ODTTestCase {
     @Test
     void testCurieStepResolves() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / ont:booleanPredicate");
-        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
+        Assertions.assertTrue(resources.contains(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -70,19 +70,19 @@ class ODTResolvableQueryPathAbstractTest extends ODTTestCase {
     @Test
     void testNegatedStep() {
         final Set<OntResource> resources = resolveQueryStatement("NOT IN(/ont:ClassA)");
-        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
+        Assertions.assertTrue(resources.contains(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     void testNegatedStepTerminal() {
         final Set<OntResource> resources = resolveQueryStatement("IN(/ont:ClassA) / NOT");
-        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
+        Assertions.assertTrue(resources.contains(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     void testSubqueryWithoutPath() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassA / ^rdf:type / (ont:booleanPredicate)*");
-        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance()));
+        Assertions.assertTrue(resources.contains(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test

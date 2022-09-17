@@ -3,12 +3,12 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.AbstractBuiltin;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -93,7 +93,7 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
         if (!resources.isEmpty() &&
                 flag != null &&
                 flag.contains("!ignoreCase") &&
-                !resources.contains(OppModelConstants.getXsdStringInstance())) {
+                !resources.contains(OntologyModelConstants.getXsdStringInstance())) {
             holder.registerProblem(call.getFlagElement(), "Using ignoreCase on non-string values", ProblemHighlightType.WARNING);
         }
     }
@@ -108,7 +108,7 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
         if (leftRight.getFirst() == null || leftRight.getSecond() == null) {
             return Collections.emptySet();
         }
-        TTLValidationUtil.validateCompatibleTypes(leftRight.getFirst(), leftRight.getSecond(), holder, call);
+        OntologyValidationUtil.validateCompatibleTypes(leftRight.getFirst(), leftRight.getSecond(), holder, call);
         return leftRight.getFirst();
     }
 
@@ -134,7 +134,7 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
             return;
         }
 
-        boolean b = OppModel.getInstance().areCompatible(possibilities.getFirst(), possibilities.getSecond());
+        boolean b = OntologyModel.getInstance().areCompatible(possibilities.getFirst(), possibilities.getSecond());
         if (!b) {
             holder.registerProblem(call,
                     "Possible outcomes are incompatible, not illegal but it smells fishy",

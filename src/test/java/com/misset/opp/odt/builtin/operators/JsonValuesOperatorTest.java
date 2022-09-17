@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ class JsonValuesOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(JsonValuesOperator.INSTANCE, OppModelConstants.getOwlThingInstance());
+        assertResolved(JsonValuesOperator.INSTANCE, OntologyModelConstants.getOwlThingInstance());
     }
 
     @Test
@@ -26,12 +26,12 @@ class JsonValuesOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(JsonValuesOperator.INSTANCE, OppModelConstants.getJsonObject());
-        assertInvalidInput(JsonValuesOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance(), TTLValidationUtil.ERROR_MESSAGE_JSON);
+        assertValidInput(JsonValuesOperator.INSTANCE, OntologyModelConstants.getJsonObject());
+        assertInvalidInput(JsonValuesOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance(), OntologyValidationUtil.ERROR_MESSAGE_JSON);
     }
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableInputType(JsonValuesOperator.INSTANCE, OppModelConstants.getJsonObject());
+        assertGetAcceptableInputType(JsonValuesOperator.INSTANCE, OntologyModelConstants.getJsonObject());
     }
 }

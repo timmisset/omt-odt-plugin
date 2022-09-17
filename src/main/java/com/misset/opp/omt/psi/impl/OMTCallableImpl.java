@@ -3,6 +3,7 @@ package com.misset.opp.omt.psi.impl;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.exception.OMTODTPluginException;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.OMTMetaType;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
@@ -14,7 +15,6 @@ import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallableImpl;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -134,7 +134,7 @@ public class OMTCallableImpl extends PsiCallableImpl implements Callable {
     @Override
     public @NotNull Set<OntResource> resolve(Context context) {
         if (isVoid()) {
-            return Collections.singleton(OppModelConstants.getVoidResponse());
+            return Collections.singleton(OntologyModelConstants.getVoidResponse());
         }
         return computeFromMeta(OMTMetaCallable.class,
                 omtMetaCallable -> omtMetaCallable.resolve(mapping, context),

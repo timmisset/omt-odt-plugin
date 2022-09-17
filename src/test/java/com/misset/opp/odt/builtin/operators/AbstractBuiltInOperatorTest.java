@@ -3,10 +3,10 @@ package com.misset.opp.odt.builtin.operators;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ final class AbstractBuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testCanBeAppliedTo() {
-        Assertions.assertTrue(LogOperator.INSTANCE.canBeAppliedTo(Set.of(OppModelConstants.getXsdStringInstance())));
+        Assertions.assertTrue(LogOperator.INSTANCE.canBeAppliedTo(Set.of(OntologyModelConstants.getXsdStringInstance())));
     }
 
     @Test
@@ -59,7 +59,7 @@ final class AbstractBuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidateCompatibleOutcomePossibilitiesReturnsWithoutValidationWhenResourceEmpty() {
-        Set<OntResource> withValues = Set.of(OppModelConstants.getXsdStringInstance());
+        Set<OntResource> withValues = Set.of(OntologyModelConstants.getXsdStringInstance());
         Set<OntResource> emptySet = Collections.emptySet();
 
         PsiCall call = mock(PsiCall.class);
@@ -77,7 +77,7 @@ final class AbstractBuiltInOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testResolveError() {
-        Set<OntResource> resources = Set.of(OppModelConstants.getXsdStringInstance());
+        Set<OntResource> resources = Set.of(OntologyModelConstants.getXsdStringInstance());
         Assertions.assertEquals(resources, LogOperator.INSTANCE.resolveError(resources, null));
     }
 

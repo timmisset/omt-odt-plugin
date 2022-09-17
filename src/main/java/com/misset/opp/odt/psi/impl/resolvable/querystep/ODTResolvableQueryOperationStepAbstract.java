@@ -11,13 +11,13 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.ODTQueryArrayImpl;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableAbstract;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
@@ -137,7 +137,7 @@ public abstract class ODTResolvableQueryOperationStepAbstract extends ODTResolva
             Set<OntResource> resources = Optional.ofNullable(getQueryStep())
                     .map(ODTResolvable::resolve)
                     .orElse(Collections.emptySet());
-            return new CachedValueProvider.Result<>(resources, containingFile, OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
+            return new CachedValueProvider.Result<>(resources, containingFile, OntologyModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }
 

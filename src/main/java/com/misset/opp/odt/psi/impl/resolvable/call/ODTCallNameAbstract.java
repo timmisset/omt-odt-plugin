@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
 import com.misset.opp.documentation.DocumentationProvider;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.builtin.AbstractBuiltin;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.psi.ODTCallName;
@@ -12,7 +13,6 @@ import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.ContextFactory;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,7 +64,7 @@ public abstract class ODTCallNameAbstract extends ODTResolvableAbstract implemen
         parameterNames.keySet().forEach(
                 i -> params.add(
                         callable.maxNumberOfArguments() == -1 && i == parameterNames.size() - 1 ? "..." : "" +
-                                parameterNames.get(i) + " (" + TTLResourceUtil.describeUrisForLookupJoined(parameterTypes.get(i)) + ")")
+                                parameterNames.get(i) + " (" + OntologyResourceUtil.describeUrisForLookupJoined(parameterTypes.get(i)) + ")")
         );
         if (!params.isEmpty()) {
             sb.append(DocumentationProvider.getKeyValueSection("Params: ", String.join("<br>", params)));
@@ -94,12 +94,12 @@ public abstract class ODTCallNameAbstract extends ODTResolvableAbstract implemen
             Set<OntResource> resolve = callable.resolve(ContextFactory.fromCall(call));
             sb.append(
                     DocumentationProvider.getKeyValueSection("Returns:",
-                            resolve.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(resolve))
+                            resolve.isEmpty() ? "Unknown" : OntologyResourceUtil.describeUrisForLookupJoined(resolve))
             );
             if (!callable.getSecondReturnArgument().isEmpty()) {
                 sb.append(
                         DocumentationProvider.getKeyValueSection("Secondary return:",
-                                TTLResourceUtil.describeUrisForLookupJoined(callable.getSecondReturnArgument())));
+                                OntologyResourceUtil.describeUrisForLookupJoined(callable.getSecondReturnArgument())));
             }
         }
     }

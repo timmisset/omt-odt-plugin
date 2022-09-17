@@ -13,15 +13,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.misset.opp.indexing.PrefixIndex;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyResourceUtil;
+import com.misset.opp.model.util.OntologyValueParserUtil;
 import com.misset.opp.omt.inspection.quickfix.OMTRegisterPrefixLocalQuickFix;
 import com.misset.opp.omt.meta.OMTOntologyTypeProvider;
 import com.misset.opp.omt.meta.providers.util.OMTPrefixProviderUtil;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.psi.references.OMTParamTypePrefixReference;
 import com.misset.opp.omt.util.PatternUtil;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.util.TTLResourceUtil;
-import com.misset.opp.ttl.util.TTLValueParserUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
@@ -125,7 +125,7 @@ public class OMTParamTypeMetaType extends YamlScalarType implements OMTOntologyT
     }
 
     private static void validatePrimitivePattern(PsiElement element, String text, ProblemsHolder holder) {
-        OntClass ontClass = TTLValueParserUtil.parsePrimitiveClass(text);
+        OntClass ontClass = OntologyValueParserUtil.parsePrimitiveClass(text);
         if (ontClass == null) {
             holder.registerProblem(element, "Unknown primitive type");
         }
@@ -157,10 +157,10 @@ public class OMTParamTypeMetaType extends YamlScalarType implements OMTOntologyT
     }
 
     public static void validateResource(String uri, PsiElement element, ProblemsHolder holder) {
-        OntResource ontResource = OppModel.getInstance().getOntResource(uri, holder.getProject());
+        OntResource ontResource = OntologyModel.getInstance().getOntResource(uri, holder.getProject());
         if (ontResource == null) {
             holder.registerProblem(element, "Could not find resource <" + uri + "> in the Opp Model", ProblemHighlightType.ERROR);
-        } else if (!TTLResourceUtil.isType(ontResource) && Boolean.FALSE.equals(OppModel.getInstance().isClass(ontResource))) {
+        } else if (!OntologyResourceUtil.isType(ontResource) && Boolean.FALSE.equals(OntologyModel.getInstance().isClass(ontResource))) {
             holder.registerProblem(element, "Expected a class or type", ProblemHighlightType.ERROR);
         }
     }
@@ -178,33 +178,16 @@ public class OMTParamTypeMetaType extends YamlScalarType implements OMTOntologyT
     public static Set<OntResource> resolveType(PsiElement element,
                                                String type) {
         return Optional.ofNullable(getQualifiedUri(element, type))
-                .map(OppModel.getInstance()::toIndividuals)
+                .map(OntologyModel.getInstance()::toIndividuals)
                 .stream()
                 .flatMap(Collection::stream)
                 .map(OntResource.class::cast)
                 .collect(Collectors.toSet());
     }
 
-    @Override
-    public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar,
-                                                                  @Nullable CompletionContext completionContext) {
-        // add completions for classes and types:
-        PsiFile containingFile = insertedScalar.getContainingFile();
-        if (containingFile instanceof OMTFile) {
-            ArrayList<LookupElementBuilder> list = OppModel.getInstance().listClasses().stream()
-                    .map(ontClass -> TTLResourceUtil.getTypeLookupElement(ontClass, ((OMTFile) containingFile)
-                            .getAvailableNamespaces(insertedScalar)))
-                    .collect(Collectors.toCollection(ArrayList::new));
-            list.add(LookupElementBuilder.create("string"));
-            list.add(LookupElementBuilder.create("boolean"));
-            list.add(LookupElementBuilder.create("integer"));
-            list.add(LookupElementBuilder.create("decimal"));
-            list.add(LookupElementBuilder.create("date"));
-            list.add(LookupElementBuilder.create("dateTime"));
-            list.add(LookupElementBuilder.create("number"));
-            return list;
-        }
-        return Collections.emptyList();
+    private static Optional<String> resolveTypeFromPrimitive(String type) {
+        return Optional.ofNullable(OntologyValueParserUtil.parsePrimitiveClass(type))
+                .map(Resource::getURI);
     }
 
     public static String getQualifiedUri(PsiElement element, String type) {
@@ -229,9 +212,26 @@ public class OMTParamTypeMetaType extends YamlScalarType implements OMTOntologyT
         return Optional.empty();
     }
 
-    private static Optional<String> resolveTypeFromPrimitive(String type) {
-        return Optional.ofNullable(TTLValueParserUtil.parsePrimitiveClass(type))
-                .map(Resource::getURI);
+    @Override
+    public @NotNull List<? extends LookupElement> getValueLookups(@NotNull YAMLScalar insertedScalar,
+                                                                  @Nullable CompletionContext completionContext) {
+        // add completions for classes and types:
+        PsiFile containingFile = insertedScalar.getContainingFile();
+        if (containingFile instanceof OMTFile) {
+            ArrayList<LookupElementBuilder> list = OntologyModel.getInstance().listClasses().stream()
+                    .map(ontClass -> OntologyResourceUtil.getTypeLookupElement(ontClass, ((OMTFile) containingFile)
+                            .getAvailableNamespaces(insertedScalar)))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            list.add(LookupElementBuilder.create("string"));
+            list.add(LookupElementBuilder.create("boolean"));
+            list.add(LookupElementBuilder.create("integer"));
+            list.add(LookupElementBuilder.create("decimal"));
+            list.add(LookupElementBuilder.create("date"));
+            list.add(LookupElementBuilder.create("dateTime"));
+            list.add(LookupElementBuilder.create("number"));
+            return list;
+        }
+        return Collections.emptyList();
     }
 
     private static LocalQuickFix getQuickFix(String prefix, String namespace, String localName) {

@@ -2,8 +2,8 @@ package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.psi.ODTSchemalessIriStep;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public abstract class ODTResolvableSchemalessIriStepAbstract extends ODTResolvab
         // we require the preceding step to resolve the current IRI
         String localName = getText();
         return resolvePreviousStep().stream()
-                .map(OppModel.getInstance()::toClass)
+                .map(OntologyModel.getInstance()::toClass)
                 .filter(Objects::nonNull)
                 .map(Resource::getNameSpace)
                 .map(nameSpace -> nameSpace + localName.substring(1, localName.length() - 1))

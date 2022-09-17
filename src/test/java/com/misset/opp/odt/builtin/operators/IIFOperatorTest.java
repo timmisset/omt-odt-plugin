@@ -1,10 +1,10 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,19 +21,19 @@ class IIFOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         assertResolved(IIfOperator.INSTANCE,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdStringInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdStringInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()));
+                Set.of(OntologyModelConstants.getXsdBooleanInstance(), OntologyModelConstants.getXsdStringInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdStringInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     void testResolveSingleArgument() {
         assertResolved(IIfOperator.INSTANCE,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.getXsdStringInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdStringInstance()));
+                Set.of(OntologyModelConstants.getXsdStringInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdStringInstance()));
     }
 
     @Test
@@ -49,7 +49,7 @@ class IIFOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(IIfOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(IIfOperator.INSTANCE, 0, OntologyModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeSameAsArgument(IIfOperator.INSTANCE, 1, 2);
         assertGetAcceptableArgumentTypeSameAsArgument(IIfOperator.INSTANCE, 2, 1);
         assertGetAcceptableArgumentTypeIsNull(IIfOperator.INSTANCE, 3);
@@ -57,13 +57,13 @@ class IIFOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(IIfOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
-        assertInvalidArgument(IIfOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(IIfOperator.INSTANCE, 0, OntologyModelConstants.getXsdBooleanInstance());
+        assertInvalidArgument(IIfOperator.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance(), OntologyValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testSpecificValidationHasWarningWhenIncompatibleTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdBooleanInstance()), Set.of(OntologyModelConstants.getXsdBooleanInstance()), Set.of(OntologyModelConstants.getXsdStringInstance()));
         IIfOperator.INSTANCE.validate(call, holder);
         verify(holder)
                 .registerProblem(call, "Possible outcomes are incompatible, not illegal but it smells fishy", ProblemHighlightType.WEAK_WARNING);
@@ -71,7 +71,7 @@ class IIFOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasNoWarningWhenNoIncompatibleTypes() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()), Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdBooleanInstance()), Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdStringInstance()));
         IIfOperator.INSTANCE.validate(call, holder);
         verify(holder, never())
                 .registerProblem(call, "Possible outcomes are incompatible, not illegal but it smells fishy", ProblemHighlightType.WEAK_WARNING);

@@ -1,10 +1,10 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,10 +40,10 @@ public class FindSubjectsOperator extends AbstractBuiltInOperator {
         final int numberOfArguments = call.getNumberOfArguments();
         if (numberOfArguments == 1) {
             // only a predicate:
-            return OppModel.getInstance().filterSubjects(resources, call.resolveSignatureArgument(0));
+            return OntologyModel.getInstance().filterSubjects(resources, call.resolveSignatureArgument(0));
         } else if (numberOfArguments >= 2) {
             // predicate + object OR predicate + object + graphname (ignored)
-            return OppModel.getInstance().filterSubjects(resources,
+            return OntologyModel.getInstance().filterSubjects(resources,
                     call.resolveSignatureArgument(0),
                     call.resolveSignatureArgument(1));
         }
@@ -58,7 +58,7 @@ public class FindSubjectsOperator extends AbstractBuiltInOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 2) {
-            return Set.of(OppModelConstants.getNamedGraph());
+            return Set.of(OntologyModelConstants.getNamedGraph());
         }
         return null;
     }

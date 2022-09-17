@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ class SkipOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(SkipOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()));
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -30,12 +30,12 @@ class SkipOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(SkipOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
+        assertValidArgument(SkipOperator.INSTANCE, 0, OntologyModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(SkipOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
+        assertGetAcceptableArgumentType(SkipOperator.INSTANCE, 0, OntologyModelConstants.getXsdIntegerInstance());
         assertGetAcceptableArgumentTypeIsNull(SkipOperator.INSTANCE, 1);
     }
 

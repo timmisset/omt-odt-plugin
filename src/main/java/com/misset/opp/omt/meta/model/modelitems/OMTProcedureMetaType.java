@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.util.Key;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.ODTScript;
 import com.misset.opp.omt.commands.Commit;
 import com.misset.opp.omt.commands.LocalCommand;
@@ -24,7 +25,6 @@ import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
@@ -140,7 +140,7 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     @Override
     public Set<OntResource> getSecondReturnArgument() {
         // $committed value
-        return Set.of(OppModelConstants.getXsdBooleanInstance());
+        return Set.of(OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Override

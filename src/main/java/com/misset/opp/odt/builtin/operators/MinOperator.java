@@ -1,9 +1,9 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
@@ -34,12 +34,12 @@ public class MinOperator extends BuiltInCollectionOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        Set<OntClass> acceptableTypes = Set.of(OppModelConstants.getXsdNumber(), OppModelConstants.getXsdDatetime());
-        TTLValidationUtil.validateHasOntClass(call.resolvePreviousStep(),
+        Set<OntClass> acceptableTypes = Set.of(OntologyModelConstants.getXsdNumber(), OntologyModelConstants.getXsdDatetime());
+        OntologyValidationUtil.validateHasOntClass(call.resolvePreviousStep(),
                 holder,
                 call,
                 acceptableTypes);
-        TTLValidationUtil.validateHasOntClass(call.resolveSignatureArgument(0),
+        OntologyValidationUtil.validateHasOntClass(call.resolveSignatureArgument(0),
                 holder,
                 call.getCallSignatureArgumentElement(0),
                 acceptableTypes);
@@ -48,14 +48,14 @@ public class MinOperator extends BuiltInCollectionOperator {
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.getXsdNumberInstance(), OppModelConstants.getXsdDatetimeInstance());
+            return Set.of(OntologyModelConstants.getXsdNumberInstance(), OntologyModelConstants.getXsdDatetimeInstance());
         }
         return null;
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.getXsdNumberInstance(), OppModelConstants.getXsdDatetimeInstance());
+        return Set.of(OntologyModelConstants.getXsdNumberInstance(), OntologyModelConstants.getXsdDatetimeInstance());
     }
 
     @Override

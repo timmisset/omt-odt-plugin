@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,17 +11,17 @@ class DurationOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(DurationOperator.INSTANCE, OppModelConstants.getXsdDurationInstance());
+        assertResolved(DurationOperator.INSTANCE, OntologyModelConstants.getXsdDurationInstance());
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdDecimalInstance());
-        assertValidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance());
-        assertValidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdNumberInstance());
-        assertInvalidArgument(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_NUMBER);
-        assertValidArgument(DurationOperator.INSTANCE, 1, OppModelConstants.getXsdStringInstance());
-        assertInvalidArgument(DurationOperator.INSTANCE, 1, OppModelConstants.getXsdNumberInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidArgument(DurationOperator.INSTANCE, 0, OntologyModelConstants.getXsdDecimalInstance());
+        assertValidArgument(DurationOperator.INSTANCE, 0, OntologyModelConstants.getXsdIntegerInstance());
+        assertValidArgument(DurationOperator.INSTANCE, 0, OntologyModelConstants.getXsdNumberInstance());
+        assertInvalidArgument(DurationOperator.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance(), OntologyValidationUtil.ERROR_MESSAGE_NUMBER);
+        assertValidArgument(DurationOperator.INSTANCE, 1, OntologyModelConstants.getXsdStringInstance());
+        assertInvalidArgument(DurationOperator.INSTANCE, 1, OntologyModelConstants.getXsdNumberInstance(), OntologyValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test
@@ -37,8 +37,8 @@ class DurationOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 0, OppModelConstants.getXsdNumberInstance());
-        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 1, OppModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 0, OntologyModelConstants.getXsdNumberInstance());
+        assertGetAcceptableArgumentType(DurationOperator.INSTANCE, 1, OntologyModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(DurationOperator.INSTANCE, 2);
     }
 

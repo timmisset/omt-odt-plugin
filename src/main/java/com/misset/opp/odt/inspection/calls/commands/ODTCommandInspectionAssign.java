@@ -6,14 +6,14 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.commands.AssignCommand;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.ODTTypes;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.Nls;
@@ -62,7 +62,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
                                @NotNull ODTCall call) {
         if (call.getNumberOfArguments() >= 3 && call.getNumberOfArguments() % 2 != 0) {
             final Set<OntResource> subject = call.resolveSignatureArgument(0);
-            if (!subject.isEmpty() && !subject.contains(OppModelConstants.getOwlThingInstance())) {
+            if (!subject.isEmpty() && !subject.contains(OntologyModelConstants.getOwlThingInstance())) {
                 inspectSubject(holder, call, subject);
             }
         }
@@ -88,7 +88,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
 
             final List<Property> predicates = call.resolveSignatureArgument(i)
                     .stream()
-                    .map(resource -> OppModel.getInstance().getProperty(resource))
+                    .map(resource -> OntologyModel.getInstance().getProperty(resource))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
@@ -105,14 +105,14 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
             }
             final Property predicate = predicates.get(0);
 
-            final Set<OntResource> object = OppModel.getInstance().listObjects(subject, predicate);
+            final Set<OntResource> object = OntologyModel.getInstance().listObjects(subject, predicate);
             if (object.isEmpty()) {
                 holder.registerProblem(predicateArgument,
                         "Could not traverse FORWARD using predicate: " + predicate.toString());
             }
 
             final Set<OntResource> value = call.resolveSignatureArgument(i + 1);
-            TTLValidationUtil.validateCompatibleTypes(object, value, holder, call.getSignatureArgument(i + 1));
+            OntologyValidationUtil.validateCompatibleTypes(object, value, holder, call.getSignatureArgument(i + 1));
         }
     }
 }

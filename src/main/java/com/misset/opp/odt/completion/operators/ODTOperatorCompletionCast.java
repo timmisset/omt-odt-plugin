@@ -5,12 +5,12 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.builtin.operators.CastOperator;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTOperatorCall;
 import com.misset.opp.odt.psi.ODTSignature;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -45,9 +45,9 @@ public class ODTOperatorCompletionCast extends CompletionContributor {
             Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
             // show all classes instances:
-            OppModelConstants.listXSDTypes().stream().map(
-                            resource -> TTLResourceUtil
-                                    .getRootLookupElement(resource, TTLResourceUtil.describeUriForLookup(resource), availableNamespaces))
+            OntologyModelConstants.listXSDTypes().stream().map(
+                            resource -> OntologyResourceUtil
+                                    .getRootLookupElement(resource, OntologyResourceUtil.describeUriForLookup(resource), availableNamespaces))
                     .filter(Objects::nonNull)
                     .forEach(result::addElement);
 

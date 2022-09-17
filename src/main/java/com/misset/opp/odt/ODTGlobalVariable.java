@@ -1,7 +1,7 @@
 package com.misset.opp.odt;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collection;
@@ -15,14 +15,14 @@ public class ODTGlobalVariable implements Variable {
 
     static {
         List<ODTGlobalVariable> globalVariables = List.of(
-                new ODTGlobalVariable("$medewerkerGraph", "Graph of the currently logged in user", OppModelConstants.getMedewerkerGraph()),
-                new ODTGlobalVariable("$username", "Name of current user", OppModelConstants.getXsdStringInstance()),
-                new ODTGlobalVariable("$user", "Iri of current user", OppModelConstants.getOwlThingInstance()),
-                new ODTGlobalVariable("$rollen", "The current roles of the user", OppModelConstants.getJsonObject()),
-                new ODTGlobalVariable("$offline", "Checks if the user is currently working in offline mode", OppModelConstants.getXsdBooleanInstance()),
-                new ODTGlobalVariable("$heeftPreviewRol", "Checks if the user can preview functionality not ready for production", OppModelConstants.getXsdBooleanInstance()),
-                new ODTGlobalVariable("$activityConfig", "Returns specific activity configuration based on the context", OppModelConstants.getJsonObject()),
-                new ODTGlobalVariable("$geoApiKey", "The API key used for the GeoViewer plugin", OppModelConstants.getXsdStringInstance())
+                new ODTGlobalVariable("$medewerkerGraph", "Graph of the currently logged in user", OntologyModelConstants.getMedewerkerGraph()),
+                new ODTGlobalVariable("$username", "Name of current user", OntologyModelConstants.getXsdStringInstance()),
+                new ODTGlobalVariable("$user", "Iri of current user", OntologyModelConstants.getOwlThingInstance()),
+                new ODTGlobalVariable("$rollen", "The current roles of the user", OntologyModelConstants.getJsonObject()),
+                new ODTGlobalVariable("$offline", "Checks if the user is currently working in offline mode", OntologyModelConstants.getXsdBooleanInstance()),
+                new ODTGlobalVariable("$heeftPreviewRol", "Checks if the user can preview functionality not ready for production", OntologyModelConstants.getXsdBooleanInstance()),
+                new ODTGlobalVariable("$activityConfig", "Returns specific activity configuration based on the context", OntologyModelConstants.getJsonObject()),
+                new ODTGlobalVariable("$geoApiKey", "The API key used for the GeoViewer plugin", OntologyModelConstants.getXsdStringInstance())
         );
         globalVariableHashMap.putAll(globalVariables.stream().collect(Collectors.toMap(ODTGlobalVariable::getName, gv -> gv)));
     }

@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,19 +11,19 @@ class SomeOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(SomeOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
+        assertResolved(SomeOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testValidInputs() {
-        assertValidInput(SomeOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
-        assertInvalidInput(SomeOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidInput(SomeOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance());
+        assertInvalidInput(SomeOperator.INSTANCE, OntologyModelConstants.getXsdIntegerInstance(), OntologyValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(SomeOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
-        assertInvalidArgument(SomeOperator.INSTANCE, 0, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+        assertValidArgument(SomeOperator.INSTANCE, 0, OntologyModelConstants.getXsdBooleanInstance());
+        assertInvalidArgument(SomeOperator.INSTANCE, 0, OntologyModelConstants.getXsdIntegerInstance(), OntologyValidationUtil.ERROR_MESSAGE_BOOLEAN);
     }
 
     @Test
@@ -39,12 +39,12 @@ class SomeOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(SomeOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(SomeOperator.INSTANCE, 0, OntologyModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(SomeOperator.INSTANCE, 1);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(SomeOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableInputType(SomeOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance());
     }
 }

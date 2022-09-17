@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableAbstract;
@@ -16,7 +17,6 @@ import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.ContextFactory;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +70,7 @@ public abstract class ODTResolvableCallAbstract extends ODTResolvableAbstract im
                     // if resolved, only depend on the included files, otherwise stay safe with the entire PsiModificationTracker
                     // this is required to dump the cache after a broken import link is repaired (for example)
                     !resources.isEmpty() ? files : PsiModificationTracker.MODIFICATION_COUNT,
-                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
+                    OntologyModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }
 

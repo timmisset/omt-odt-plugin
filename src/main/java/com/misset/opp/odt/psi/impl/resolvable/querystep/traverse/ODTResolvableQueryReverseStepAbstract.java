@@ -4,12 +4,12 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQualifiedUriStepAbstract;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ public abstract class ODTResolvableQueryReverseStepAbstract extends ODTResolvabl
         // - a curie => ont:somePredicate)
         // - an iri  => <http://ontology/somePredicate>
         if (queryStep instanceof ODTResolvableQualifiedUriStep) {
-            final OppModel model = OppModel.getInstance();
+            final OntologyModel model = OntologyModel.getInstance();
             // a reverse path indicator can only be applied to a curie step
             final String fullyQualified = ((ODTResolvableQualifiedUriStep) queryStep).getFullyQualifiedUri();
             final Property property = model.getProperty(fullyQualified);

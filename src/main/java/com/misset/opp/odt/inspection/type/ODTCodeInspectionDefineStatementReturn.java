@@ -6,12 +6,12 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.psi.ODTDefineQueryStatement;
 import com.misset.opp.odt.psi.ODTReturnStatement;
 import com.misset.opp.odt.psi.impl.ODTDefineCommandStatementImpl;
 import com.misset.opp.resolvable.Resolvable;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -54,11 +54,11 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
         if (returnType == null) {
             return;
         }
-        TTLValidationUtil.validateCompatibleTypes(
+        OntologyValidationUtil.validateCompatibleTypes(
                 returnType, resolve, holder, defineQueryStatement
         );
 
-        if (returnType.contains(OppModelConstants.getVoidResponse())) {
+        if (returnType.contains(OntologyModelConstants.getVoidResponse())) {
             holder.registerProblem(defineQueryStatement,
                     "A query should not be typed void",
                     ProblemHighlightType.WARNING);
@@ -78,11 +78,11 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
             Set<OntResource> resources = Optional.ofNullable(returnStatement.getResolvableValue())
                     .map(Resolvable::resolve)
                     .orElse(Collections.emptySet());
-            TTLValidationUtil.validateCompatibleTypes(
+            OntologyValidationUtil.validateCompatibleTypes(
                     returnType, resources, holder, returnStatement
             );
 
-            if (returnType.contains(OppModelConstants.getVoidResponse())) {
+            if (returnType.contains(OntologyModelConstants.getVoidResponse())) {
                 holder.registerProblem(returnStatement,
                         "A void command should not contain RETURN statements",
                         ProblemHighlightType.WARNING);
