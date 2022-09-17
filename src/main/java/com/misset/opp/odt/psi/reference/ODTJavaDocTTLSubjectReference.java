@@ -4,15 +4,13 @@ import com.intellij.codeInsight.daemon.EmptyResolveMessageProvider;
 import com.intellij.codeInspection.util.InspectionMessage;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.stubs.StubIndex;
 import com.misset.opp.model.OntologyModel;
 import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
+import com.misset.opp.ttl.psi.TTLLocalname;
 import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
 import com.misset.opp.util.LoggerUtil;
@@ -62,9 +60,18 @@ public class ODTJavaDocTTLSubjectReference extends PsiReferenceBase.Poly<PsiDocT
         });
     }
 
-
     @Override
     public @InspectionMessage @NotNull String getUnresolvedMessagePattern() {
         return "Cannot resolve type to ontology class / type";
+    }
+
+    @Override
+    public boolean isReferenceTo(@NotNull PsiElement element) {
+        if (element instanceof TTLLocalname) {
+            String fullyQualifiedUri = getClassFromModel().getURI();
+            return fullyQualifiedUri != null &&
+                    fullyQualifiedUri.equals(((TTLLocalname) element).getQualifiedIri());
+        }
+        return super.isReferenceTo(element);
     }
 }
