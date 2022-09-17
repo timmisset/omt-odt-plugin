@@ -20,14 +20,14 @@ TTLFile                 ::= declaredBaseUri? declaredImportUri* statement*
 declaredBaseUri         ::= BASE_URI
 declaredImportUri       ::= IMPORT_URI
 statement               ::=	directive | triples DOT
-directive	            ::=	prefixId | base | sparqlPrefix | sparqlBase
-prefixId	            ::=	ATPREFIX PNAME_NS IRIREF DOT {
-    implements="com.misset.opp.ttl.psi.prefix.TTLPrefixHolder"
-    extends="com.misset.opp.ttl.psi.prefix.TTLBasePrefixId"
+directive	            ::=	declarePrefix | base | sparqlPrefix | sparqlBase
+declarePrefix           ::=	ATPREFIX prefix IRIREF DOT {
+    implements="com.misset.opp.ttl.psi.extend.TTLDeclarePrefix"
+    mixin="com.misset.opp.ttl.psi.impl.iri.TTLDeclarePrefixAbstract"
 }
 base	                ::=	ATBASE IRIREF DOT                                   { extends=directive }
 sparqlBase	            ::=	BASE_LEADING IRIREF                                 { extends=directive }
-sparqlPrefix	        ::=	PREFIX_LEADING PNAME_NS IRIREF                      { extends=directive }
+sparqlPrefix	        ::=	PREFIX_LEADING prefix IRIREF               { extends=directive }
 triples	                ::=	subject predicateObjectList | blankNodePropertyList predicateObjectList?
 // predicateObject is not part of the TTL literature but makes it easier to navigate the Psi Tree
 predicateObject         ::= verb objectList
@@ -35,29 +35,38 @@ predicateObjectList	    ::=	predicateObject (SEMICOLON (predicateObject)?)*
 objectList	            ::=	object (COMMA object)*
 verb	                ::=	predicate | A
 subject	                ::=	iri | blankNode | collection {
-    extends="com.misset.opp.ttl.psi.spo.TTLBaseSubject"
-    implements="com.misset.opp.ttl.psi.spo.TTLSPO<com.misset.opp.ttl.stubs.subject.TTLSubjectStub>"
+    extends="com.misset.opp.ttl.psi.impl.spo.TTLSubjectAbstract"
+    implements="com.intellij.psi.StubBasedPsiElement<com.misset.opp.ttl.stubs.subject.TTLSubjectStub>, com.misset.opp.ttl.psi.extend.TTLQualifiedIriResolver"
     elementTypeClass="com.misset.opp.ttl.stubs.subject.TTLSubjectStubElementType"
 }
-predicate	            ::=	iri
+predicate	            ::=	iri { extends=verb }
 object	                ::=	iri | blankNode | collection | blankNodePropertyList | literal {
-    extends="com.misset.opp.ttl.psi.spo.TTLBaseObject"
-    implements="com.misset.opp.ttl.psi.spo.TTLSPO<com.misset.opp.ttl.stubs.object.TTLObjectStub>"
+    extends="com.misset.opp.ttl.psi.impl.spo.TTLObjectAbstract"
+    implements="com.misset.opp.ttl.psi.TTLStubBasedObject"
     elementTypeClass="com.misset.opp.ttl.stubs.object.TTLObjectStubElementType"
 }
 literal	                ::=	rdfLiteral | numericLiteral | booleanLiteral
 blankNodePropertyList	::=	BRACKET_OPEN predicateObjectList BRACKET_CLOSE
 collection	            ::=	PARENTHESES_OPEN object* PARENTHESES_CLOSE
-numericLiteral	        ::=	INTEGER | DECIMAL | DOUBLE
-rdfLiteral	            ::=	string (LANGTAG | DATATYPE_LEADING iri)?
-booleanLiteral	        ::=	TRUE | FALSE
+numericLiteral	        ::=	INTEGER | DECIMAL | DOUBLE { extends=literal }
+rdfLiteral	            ::=	string (LANGTAG | DATATYPE_LEADING iri)? { extends=literal }
+booleanLiteral	        ::=	TRUE | FALSE { extends=literal }
 string	                ::=	STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE
-iri	                    ::=	IRIREF | prefixedName {
-    extends="com.misset.opp.ttl.psi.iri.TTLBaseIri"
-    implements="com.misset.opp.ttl.psi.iri.TTLIriHolder"
-}
-prefixedName	        ::=	PNAME_LN | PNAME_NS {
-    implements="com.misset.opp.ttl.psi.prefix.TTLPrefixedNameHolder"
-    extends="com.misset.opp.ttl.psi.prefix.TTLBasePrefixedName"
-}
+iri	                    ::=	iriReference | curie { implements="com.misset.opp.ttl.psi.extend.TTLQualifiedIriResolver" }
+curie	                ::= prefix localname {
+                                    mixin="com.misset.opp.ttl.psi.impl.iri.TTLCurieAbstract"
+                                    extends=iri
+                                    }
+prefix                  ::= PNAME_NS {
+                                        mixin="com.misset.opp.ttl.psi.impl.iri.TTLPrefixAbstract"
+                                        implements="com.intellij.psi.PsiNamedElement"
+                                      }
+localname               ::= PN_LOCAL {
+                                     mixin="com.misset.opp.ttl.psi.impl.iri.TTLLocalnameAbstract"
+                                     implements="com.misset.opp.ttl.psi.extend.TTLQualifiedIriResolver"
+                                     }
 blankNode	            ::=	BLANK_NODE_LABEL | ANON
+iriReference            ::= IRIREF {
+                                       mixin="com.misset.opp.ttl.psi.impl.iri.TTLIriReferenceAbstract"
+                                       extends=iri
+                                   }

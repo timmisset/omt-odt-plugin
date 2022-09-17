@@ -18,6 +18,8 @@ import com.misset.opp.testcase.InspectionUtil;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.stream.Collectors;
+
 public abstract class OMTTestCase extends BasicTestCase<OMTFile> {
 
     protected InspectionUtil inspection;
@@ -40,15 +42,10 @@ public abstract class OMTTestCase extends BasicTestCase<OMTFile> {
      * Provides prefixes ont, rdf and rdfs in a root prefixes block
      */
     protected String withPrefixes(String content) {
-        return String.format("prefixes:\n" +
-                "    ont:       <http://ontology#>\n" +
-                "    rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                "    rdfs:      <http://www.w3.org/2000/01/rdf-schema#>\n" +
-                "    owl:       <http://www.w3.org/2002/07/owl#>\n" +
-                "    xsd:       <http://www.w3.org/2001/XMLSchema#>\n" +
-                "    unique:    <http://unique#>\n" +
-                "\n" +
-                "%s", content);
+        String prefixes = testPrefixes.entrySet().stream()
+                .map(entry -> String.format("    %s: <%s>\n", entry.getKey(), entry.getValue()))
+                .collect(Collectors.joining());
+        return String.format("prefixes:\n%s\n%s", prefixes, content);
     }
 
     protected String insideProcedureRunWithPrefixes(String onRunContent) {

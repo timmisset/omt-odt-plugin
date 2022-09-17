@@ -2,11 +2,11 @@ package com.misset.opp.ttl.stubs.object;
 
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
-import com.misset.opp.ttl.psi.TTLObject;
+import com.misset.opp.ttl.psi.TTLStubBasedObject;
 import com.misset.opp.ttl.psi.TTLTypes;
 import org.jetbrains.annotations.Nullable;
 
-public class TTLObjectStubImpl extends StubBase<TTLObject> implements TTLObjectStub {
+public class TTLObjectStubImpl extends StubBase<TTLStubBasedObject> implements TTLObjectStub {
     private final String iri;
     private final boolean isPredicate;
     private final boolean isObject;

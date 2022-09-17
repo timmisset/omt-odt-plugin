@@ -2,16 +2,15 @@ package com.misset.opp.ttl.psi.reference;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.misset.opp.ttl.psi.TTLPrefixId;
+import com.intellij.usageView.UsageInfo;
+import com.misset.opp.ttl.psi.TTLPrefix;
 import com.misset.opp.ttl.testcase.TTLTestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-class TTLPrefixReferenceTest extends TTLTestCase {
+class TTLCurieReferenceTest extends TTLTestCase {
 
     @Test
     void testHasReferenceToPrefixId() {
@@ -25,7 +24,7 @@ class TTLPrefixReferenceTest extends TTLTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            Assertions.assertTrue(elementAtCaret instanceof TTLPrefixId);
+            Assertions.assertTrue(elementAtCaret instanceof TTLPrefix);
         });
     }
 
@@ -41,9 +40,8 @@ class TTLPrefixReferenceTest extends TTLTestCase {
         configureByText(content);
         underProgress(() -> ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            Collection<PsiReference> all = ReferencesSearch.search(elementAtCaret)
-                    .findAll();
-            Assertions.assertEquals(3, all.size());
+            Collection<UsageInfo> usages = myFixture.findUsages(elementAtCaret);
+            Assertions.assertEquals(3, usages.size());
         }));
     }
 
@@ -59,10 +57,8 @@ class TTLPrefixReferenceTest extends TTLTestCase {
         configureByText(content);
         underProgress(() -> ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            Collection<PsiReference> all = ReferencesSearch.search(elementAtCaret)
-                    .filtering(psiReference -> psiReference.isReferenceTo(elementAtCaret))
-                    .findAll();
-            Assertions.assertEquals(3, all.size());
+            Collection<UsageInfo> usages = myFixture.findUsages(elementAtCaret);
+            Assertions.assertEquals(3, usages.size());
         }));
     }
 

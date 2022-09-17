@@ -28,9 +28,9 @@ public class TTLObjectStubElementType extends IStubElementType<TTLObjectStub, TT
     @Override
     public @NotNull TTLObjectStub createStub(@NotNull TTLObject psi, StubElement<? extends PsiElement> parentStub) {
         return new TTLObjectStubImpl(parentStub,
-                psi.getQualifiedUri(),
+                psi.getQualifiedIri(),
                 psi.isPredicate(),
-                psi.isObjectClass(),
+                psi.isClass(),
                 psi.getSubjectIri());
     }
 

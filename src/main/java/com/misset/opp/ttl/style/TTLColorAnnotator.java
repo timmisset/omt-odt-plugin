@@ -8,8 +8,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.psi.TTLPredicate;
+import com.misset.opp.ttl.psi.TTLStubBasedObject;
 import com.misset.opp.ttl.psi.TTLSubject;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ public class TTLColorAnnotator implements Annotator {
         IElementType elementType = element.getNode().getElementType();
         if (elementType == IRI) {
             PsiElement firstParent = PsiTreeUtil.findFirstParent(element,
-                    parent -> parent instanceof TTLSubject || parent instanceof TTLObject || parent instanceof TTLPredicate);
+                    parent -> parent instanceof TTLSubject || parent instanceof TTLStubBasedObject || parent instanceof TTLPredicate);
             elementType = Optional.ofNullable(firstParent)
                     .map(PsiElement::getNode)
                     .map(ASTNode::getElementType)

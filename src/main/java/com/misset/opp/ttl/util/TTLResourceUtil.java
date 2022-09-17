@@ -105,13 +105,6 @@ public class TTLResourceUtil {
         return resource.getURI() + (withType ? " (CLASS)" : "");
     }
 
-    public static String fromIriRef(String iriRef) {
-        if (iriRef.startsWith("<") && iriRef.endsWith(">")) {
-            return iriRef.substring(1, iriRef.length() - 1);
-        }
-        return iriRef;
-    }
-
     public static String describeUrisForLookupJoined(Set<? extends OntResource> resources) {
         return describeUrisForLookupJoined(resources, ", ");
     }
