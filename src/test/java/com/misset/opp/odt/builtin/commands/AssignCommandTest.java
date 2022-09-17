@@ -2,9 +2,9 @@ package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,16 +22,16 @@ class AssignCommandTest extends BaseBuiltinTest {
 
     @Test
     void testAcceptableArgumentType() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdBooleanInstance()));
 
         Assertions.assertTrue(AssignCommand.INSTANCE.getAcceptableArgumentType(0, call)
-                .contains(OppModelConstants.getOwlThingInstance()));
+                .contains(OntologyModelConstants.getOwlThingInstance()));
         Assertions.assertTrue(AssignCommand.INSTANCE.getAcceptableArgumentType(1, call)
-                .contains(OppModelConstants.getOwlThingInstance()));
+                .contains(OntologyModelConstants.getOwlThingInstance()));
         Assertions.assertTrue(AssignCommand.INSTANCE.getAcceptableArgumentType(2, call)
-                .contains(OppModelConstants.getXsdBooleanInstance()));
+                .contains(OntologyModelConstants.getXsdBooleanInstance()));
         Assertions.assertFalse(AssignCommand.INSTANCE.getAcceptableArgumentType(2, call)
-                .contains(OppModelConstants.getXsdStringInstance()));
+                .contains(OntologyModelConstants.getXsdStringInstance()));
     }
 
     @Test

@@ -6,10 +6,10 @@ import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.stubs.StubIndex;
+import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
-import com.misset.opp.ttl.util.TTLScopeUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class ODTTTLSubjectReference extends PsiReferenceBase.Poly<ODTResolvableQualifiedUriStep> implements PsiPolyVariantReference {
@@ -28,7 +28,7 @@ public class ODTTTLSubjectReference extends PsiReferenceBase.Poly<ODTResolvableQ
                         TTLSubjectStubIndex.KEY,
                         fullyQualifiedUri,
                         element.getProject(),
-                        TTLScopeUtil.getModelSearchScope(myElement.getProject()),
+                        OntologyScopeUtil.getModelSearchScope(myElement.getProject()),
                         TTLSubject.class
                 ).stream()
                 .map(PsiElementResolveResult::new)

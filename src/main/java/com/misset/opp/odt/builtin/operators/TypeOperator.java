@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.operators;
 
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLResourceUtil;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 
@@ -30,11 +30,11 @@ public class TypeOperator extends AbstractBuiltInOperator {
         return resources.stream().map(this::mapToType).collect(Collectors.toSet());
     }
     private OntResource mapToType(OntResource resource) {
-        OntClass ontClass = OppModel.getInstance().toClass(resource);
-        if (TTLResourceUtil.isType(ontClass)) {
+        OntClass ontClass = OntologyModel.getInstance().toClass(resource);
+        if (OntologyResourceUtil.isType(ontClass)) {
             return ontClass;
         } else {
-            return OppModelConstants.getIri();
+            return OntologyModelConstants.getIri();
         }
     }
 }

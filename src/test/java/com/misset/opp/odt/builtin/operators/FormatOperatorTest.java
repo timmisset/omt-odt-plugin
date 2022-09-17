@@ -1,10 +1,10 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,12 +20,12 @@ class FormatOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(FormatOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertResolved(FormatOperator.INSTANCE, OntologyModelConstants.getXsdStringInstance());
     }
 
     @Test
     void testUnequalNumberOfArguments() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()));
         doReturn("Test %s").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
@@ -34,20 +34,20 @@ class FormatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testWrongTypesString() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdIntegerInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdIntegerInstance()));
         doReturn("Test %s").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
-        verify(holder).registerProblem(secondArgument, TTLValidationUtil.ERROR_MESSAGE_STRING, ProblemHighlightType.ERROR);
+        verify(holder).registerProblem(secondArgument, OntologyValidationUtil.ERROR_MESSAGE_STRING, ProblemHighlightType.ERROR);
     }
 
     @Test
     void testWrongTypesNumber() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdStringInstance()));
         doReturn("Test %d").when(call).getSignatureValue(0);
         FormatOperator.INSTANCE.validate(call, holder);
 
-        verify(holder).registerProblem(secondArgument, TTLValidationUtil.ERROR_MESSAGE_NUMBER, ProblemHighlightType.ERROR);
+        verify(holder).registerProblem(secondArgument, OntologyValidationUtil.ERROR_MESSAGE_NUMBER, ProblemHighlightType.ERROR);
     }
 
     @Test
@@ -63,7 +63,7 @@ class FormatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(FormatOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(FormatOperator.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance());
         assertGetAcceptableArgumentTypeIsNull(FormatOperator.INSTANCE, 1);
     }
 

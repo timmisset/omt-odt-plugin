@@ -2,9 +2,9 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
 public abstract class BuiltInBooleanOperator extends AbstractBuiltInOperator {
@@ -13,7 +13,7 @@ public abstract class BuiltInBooleanOperator extends AbstractBuiltInOperator {
 
     protected void validateSingleArgumentInputBoolean(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            boolean b = TTLValidationUtil.validateBoolean(call.resolvePreviousStep(), holder, call);
+            boolean b = OntologyValidationUtil.validateBoolean(call.resolvePreviousStep(), holder, call);
             if (!b) {
                 holder.registerProblem(call, ERROR, ProblemHighlightType.ERROR);
             }
@@ -22,7 +22,7 @@ public abstract class BuiltInBooleanOperator extends AbstractBuiltInOperator {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.getXsdBooleanInstance();
+        return OntologyModelConstants.getXsdBooleanInstance();
     }
 
     @Override

@@ -2,11 +2,11 @@ package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -26,7 +26,7 @@ class OMTStandaloneQueryMetaTypeTest extends OMTTestCase {
                 "   /ont:ClassA"));
         assertResolvedContainsResource(Collections.emptySet(),
                 mock(PsiCall.class),
-                OppModel.getInstance().getClass("http://ontology#ClassA"));
+                OntologyModel.getInstance().getClass("http://ontology#ClassA"));
     }
 
     @Test
@@ -36,13 +36,13 @@ class OMTStandaloneQueryMetaTypeTest extends OMTTestCase {
                 "query: $paramA"));
         assertResolvedContainsResource(Collections.emptySet(),
                 mock(PsiCall.class),
-                OppModel.getInstance().getIndividual("http://ontology#ClassA_INSTANCE"));
+                OntologyModel.getInstance().getIndividual("http://ontology#ClassA_INSTANCE"));
     }
 
     @Test
     void testResolveStandaloneQueryWithNonAnnotatedParameters() {
         final PsiCall call = mock(PsiCall.class);
-        final Individual individual = OppModel.getInstance().getIndividual("http://ontology#ClassA_INSTANCE");
+        final Individual individual = OntologyModel.getInstance().getIndividual("http://ontology#ClassA_INSTANCE");
         final Set<OntResource> resources = Set.of(individual);
         doReturn(resources).when(call).resolveSignatureArgument(0);
         doReturn(resources).when(call).getParamType("$paramA");

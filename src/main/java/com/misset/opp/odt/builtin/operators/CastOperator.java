@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.List;
@@ -29,10 +29,10 @@ public class CastOperator extends AbstractBuiltInOperator {
     public Set<OntResource> resolveFrom(Set<OntResource> resources,
                                         PsiCall call) {
         Set<OntResource> argument = call.resolveSignatureArgument(0);
-        if (argument.contains(OppModelConstants.getIri())) {
-            return Set.of(OppModelConstants.getOwlThingInstance());
+        if (argument.contains(OntologyModelConstants.getIri())) {
+            return Set.of(OntologyModelConstants.getOwlThingInstance());
         }
-        return OppModel.getInstance().toIndividuals(argument)
+        return OntologyModel.getInstance().toIndividuals(argument)
                 .stream()
                 .map(OntResource.class::cast)
                 .collect(Collectors.toSet());

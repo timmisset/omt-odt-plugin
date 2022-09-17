@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,10 +15,10 @@ class JsonParseCommandTest extends BaseBuiltinTest {
     protected void testResolve() {
         assertResolved(JsonParseCommand.INSTANCE,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.getXsdStringInstance()),
-                Set.of(OppModelConstants.getJsonObject()),
-                Set.of(OppModelConstants.getXsdString()),
-                Set.of(OppModelConstants.getNamedGraph()));
+                Set.of(OntologyModelConstants.getXsdStringInstance()),
+                Set.of(OntologyModelConstants.getJsonObject()),
+                Set.of(OntologyModelConstants.getXsdString()),
+                Set.of(OntologyModelConstants.getNamedGraph()));
     }
 
     @Test
@@ -44,18 +44,16 @@ class JsonParseCommandTest extends BaseBuiltinTest {
 
     @Test
     void testArgumentTypes() {
-//        testArgument(JsonParseCommand.INSTANCE, 0, oppModel.JSON_OBJECT, TTLValidationUtil.ERROR_MESSAGE_JSON);
-//        testArgument(JsonParseCommand.INSTANCE, 1, oppModel.XSD_STRING, TTLValidationUtil.ERROR_MESSAGE_CLASSNAME);
         testArgument(JsonParseCommand.INSTANCE,
                 2,
-                OppModelConstants.getMedewerkerGraph(),
-                TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
+                OntologyModelConstants.getMedewerkerGraph(),
+                OntologyValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(JsonParseCommand.INSTANCE, 0, OppModelConstants.getJsonObject());
-        assertGetAcceptableArgumentType(JsonParseCommand.INSTANCE, 2, OppModelConstants.getNamedGraph());
+        assertGetAcceptableArgumentType(JsonParseCommand.INSTANCE, 0, OntologyModelConstants.getJsonObject());
+        assertGetAcceptableArgumentType(JsonParseCommand.INSTANCE, 2, OntologyModelConstants.getNamedGraph());
         assertGetAcceptableArgumentTypeIsNull(JsonParseCommand.INSTANCE, 1);
     }
 }

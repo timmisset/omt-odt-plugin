@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.OntResource;
@@ -17,26 +17,26 @@ class FindSubjectsOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        final OntClass classWithPredicateWithObject = oppModel.createClass("http://classWithPredicateWithObject");
-        final OntClass classWithoutPredicate = oppModel.createClass("http://classWithoutPredicate");
-        final OntClass classWithPredicateWithoutObject = oppModel.createClass("http://classWithPredicateWithoutObject");
-        final OntProperty property = oppModel.createProperty("http://property");
-        oppModel.createStatement(classWithPredicateWithObject, property, OppModelConstants.getXsdIntegerInstance());
-        oppModel.createStatement(classWithPredicateWithoutObject, property, OppModelConstants.getXsdBooleanInstance());
+        final OntClass classWithPredicateWithObject = ontologyModel.createClass("http://classWithPredicateWithObject");
+        final OntClass classWithoutPredicate = ontologyModel.createClass("http://classWithoutPredicate");
+        final OntClass classWithPredicateWithoutObject = ontologyModel.createClass("http://classWithPredicateWithoutObject");
+        final OntProperty property = ontologyModel.createProperty("http://property");
+        ontologyModel.createStatement(classWithPredicateWithObject, property, OntologyModelConstants.getXsdIntegerInstance());
+        ontologyModel.createStatement(classWithPredicateWithoutObject, property, OntologyModelConstants.getXsdBooleanInstance());
 
-        final OntResource individualWithClass = oppModel.createIndividual(classWithPredicateWithObject);
+        final OntResource individualWithClass = ontologyModel.createIndividual(classWithPredicateWithObject);
         final Set<OntResource> individuals = Set.of(individualWithClass,
-                oppModel.createIndividual(classWithPredicateWithoutObject),
-                oppModel.createIndividual(classWithoutPredicate));
+                ontologyModel.createIndividual(classWithPredicateWithoutObject),
+                ontologyModel.createIndividual(classWithoutPredicate));
 
         // return a class that has the property and object (xsd_integer_instance)
-        assertResolved(FindSubjectsOperator.INSTANCE, individuals, Set.of(individualWithClass), Set.of(property), Set.of(OppModelConstants.getXsdIntegerInstance()));
+        assertResolved(FindSubjectsOperator.INSTANCE, individuals, Set.of(individualWithClass), Set.of(property), Set.of(OntologyModelConstants.getXsdIntegerInstance()));
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(FindSubjectsOperator.INSTANCE, 2, OppModelConstants.getNamedGraph());
-        assertInvalidArgument(FindSubjectsOperator.INSTANCE, 2, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
+        assertValidArgument(FindSubjectsOperator.INSTANCE, 2, OntologyModelConstants.getNamedGraph());
+        assertInvalidArgument(FindSubjectsOperator.INSTANCE, 2, OntologyModelConstants.getXsdIntegerInstance(), OntologyValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     @Test
@@ -52,7 +52,7 @@ class FindSubjectsOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(FindSubjectsOperator.INSTANCE, 2, OppModelConstants.getNamedGraph());
+        assertGetAcceptableArgumentType(FindSubjectsOperator.INSTANCE, 2, OntologyModelConstants.getNamedGraph());
         assertGetAcceptableArgumentTypeIsNull(FindSubjectsOperator.INSTANCE, 1);
     }
 

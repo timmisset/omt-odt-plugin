@@ -2,9 +2,9 @@ package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.util.TriConsumer;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.HashSet;
@@ -13,13 +13,13 @@ import java.util.Set;
 public abstract class BuiltinMathOperator extends AbstractBuiltInOperator {
 
     protected static final Set<OntResource> validInputs =
-            Set.of(OppModelConstants.getXsdNumberInstance(),
-                    OppModelConstants.getXsdDateInstance(),
-                    OppModelConstants.getXsdDatetimeInstance(),
-                    OppModelConstants.getXsdDurationInstance());
+            Set.of(OntologyModelConstants.getXsdNumberInstance(),
+                    OntologyModelConstants.getXsdDateInstance(),
+                    OntologyModelConstants.getXsdDatetimeInstance(),
+                    OntologyModelConstants.getXsdDurationInstance());
     protected static final TriConsumer<Integer, PsiCall, ProblemsHolder> validator = (i, call, holder) -> {
         Set<OntResource> ontResources = call.resolveSignatureArgument(i);
-        TTLValidationUtil.validateRequiredTypes(validInputs, ontResources, holder, call.getCallSignatureArgumentElement(i));
+        OntologyValidationUtil.validateRequiredTypes(validInputs, ontResources, holder, call.getCallSignatureArgumentElement(i));
     };
 
     @Override
@@ -35,10 +35,10 @@ public abstract class BuiltinMathOperator extends AbstractBuiltInOperator {
             values.addAll(call.resolveSignatureArgument(0));
             values.addAll(call.resolveSignatureArgument(1));
         }
-        if (values.stream().allMatch(OppModelConstants.getXsdIntegerInstance()::equals)) {
-            return Set.of(OppModelConstants.getXsdIntegerInstance());
+        if (values.stream().allMatch(OntologyModelConstants.getXsdIntegerInstance()::equals)) {
+            return Set.of(OntologyModelConstants.getXsdIntegerInstance());
         } else {
-            return Set.of(OppModelConstants.getXsdDecimalInstance());
+            return Set.of(OntologyModelConstants.getXsdDecimalInstance());
         }
     }
 

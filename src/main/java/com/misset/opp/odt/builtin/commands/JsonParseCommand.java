@@ -3,10 +3,10 @@ package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.project.Project;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +47,7 @@ public class JsonParseCommand extends AbstractBuiltInCommand {
                                         PsiCall call) {
         return call.resolveSignatureArgument(1).stream()
                 .map(Objects::toString)
-                .map(OppModel.getInstance()::toIndividuals)
+                .map(OntologyModel.getInstance()::toIndividuals)
                 .flatMap(Collection::stream)
                 .map(individual -> Set.of((OntResource) individual))
                 .findFirst()
@@ -65,9 +65,9 @@ public class JsonParseCommand extends AbstractBuiltInCommand {
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.getJsonObject());
+            return Set.of(OntologyModelConstants.getJsonObject());
         } else if (index == 2) {
-            return Set.of(OppModelConstants.getNamedGraph());
+            return Set.of(OntologyModelConstants.getNamedGraph());
         }
         return null;
     }

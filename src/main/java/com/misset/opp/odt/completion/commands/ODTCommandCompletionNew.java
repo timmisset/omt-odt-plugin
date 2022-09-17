@@ -4,13 +4,13 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.builtin.commands.NewCommand;
 import com.misset.opp.odt.completion.ODTCompletionUtil;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -47,8 +47,8 @@ public class ODTCommandCompletionNew extends CompletionContributor {
             String curiePrefixMatcher = ODTCompletionUtil.getCuriePrefixMatcher(parameters, result, ODTSignatureArgument.class);
             result = result.withPrefixMatcher(curiePrefixMatcher);
             // show all classes instances:
-            OppModel.getInstance().listClasses().stream().map(
-                            resource -> TTLResourceUtil
+            OntologyModel.getInstance().listClasses().stream().map(
+                            resource -> OntologyResourceUtil
                                     .getRootLookupElement(resource, "Class", availableNamespaces))
                     .filter(Objects::nonNull)
                     .forEach(result::addElement);

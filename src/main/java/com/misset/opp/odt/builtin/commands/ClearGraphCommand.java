@@ -1,9 +1,9 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +26,7 @@ public class ClearGraphCommand extends AbstractBuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.getXsdIntegerInstance();
+        return OntologyModelConstants.getXsdIntegerInstance();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ClearGraphCommand extends AbstractBuiltInCommand {
     @Override
     protected @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
         if (index == 0) {
-            return Set.of(OppModelConstants.getNamedGraph());
+            return Set.of(OntologyModelConstants.getNamedGraph());
         }
         return null;
     }

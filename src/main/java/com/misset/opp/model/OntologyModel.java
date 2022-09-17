@@ -1,4 +1,4 @@
-package com.misset.opp.ttl.model;
+package com.misset.opp.model;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -9,8 +9,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SimpleModificationTracker;
-import com.misset.opp.omt.OMTFileType;
 import com.misset.opp.settings.SettingsState;
+import com.misset.opp.util.Icons;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  * Since we have a good handle on when the model is updated we can safely assume that, when there is no change in the TTL model,
  * using the same query multiple times will always return the same result and thus should be cached.
  */
-public class OppModel {
+public class OntologyModel {
     /*
         The modification count whenever the model is loaded
         Any RDF resolving cached values should subscribe to this modification tracker to drop their
@@ -45,8 +45,8 @@ public class OppModel {
      */
     public static final SimpleModificationTracker ONTOLOGY_MODEL_MODIFICATION_TRACKER = new SimpleModificationTracker();
 
-    private static final Logger LOGGER = Logger.getInstance(OppModel.class);
-    private final OppModelCache modelCache;
+    private static final Logger LOGGER = Logger.getInstance(OntologyModel.class);
+    private final OntologyModelCache modelCache;
 
     HashMap<String, OntResource> mappedResourcesCache = new HashMap<>();
     /**
@@ -54,25 +54,25 @@ public class OppModel {
      */
     private final OntModel model;
 
-    public OppModel(OntModel shaclModel) {
-        modelCache = new OppModelCache();
+    public OntologyModel(OntModel shaclModel) {
+        modelCache = new OntologyModelCache();
         OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
 
         // the OWL_DL restricts types, a resource can only be either a class, a property or an instance, not multiple at the same time
         // the RDFS_INF inferencing provides the support for sub/superclass logic
         incrementModificationCount();
-        OppModelConstants.setConstants(this, ontologyModel);
-        OppModelTranslator.loadSimpleModel(this, modelCache, ontologyModel, shaclModel);
+        OntologyModelConstants.setConstants(this, ontologyModel);
+        OntologyModelTranslator.loadSimpleModel(this, modelCache, ontologyModel, shaclModel);
         modelCache.cacheClassesTree();
         this.model = ontologyModel;
     }
 
-    public static OppModel getInstance() {
-        return OppModelLoader.getInstance().getCurrentModel();
+    public static OntologyModel getInstance() {
+        return OntologyModelLoader.getInstance().getCurrentModel();
     }
 
     /**
-     * Every time a new instance of OppModel is created, the entire model cache is flushed and the model is reloaded
+     * Every time a new instance of OntologyModel is created, the entire model cache is flushed and the model is reloaded
      * The modification tracker is used by the CacheValuesManager of IntelliJ to determine if resolved values on PsiElements
      * need to be recalculated.
      */
@@ -83,7 +83,7 @@ public class OppModel {
     }
 
     protected OntModel getShaclModel() {
-        return OppModelTranslator.getShaclModel();
+        return OntologyModelTranslator.getShaclModel();
     }
 
     public OntModel getModel() {
@@ -103,8 +103,8 @@ public class OppModel {
      */
     public Set<OntResource> listSubjects(Property predicate,
                                          Set<OntResource> objects) {
-        if (objects.contains(OppModelConstants.getOwlThingInstance())) {
-            return Set.of(OppModelConstants.getOwlThingInstance());
+        if (objects.contains(OntologyModelConstants.getOwlThingInstance())) {
+            return Set.of(OntologyModelConstants.getOwlThingInstance());
         }
         return objects.stream()
                 .map(classObject -> listSubjects(predicate, classObject))
@@ -118,16 +118,16 @@ public class OppModel {
     public Set<OntResource> listSubjects(Property predicate,
                                          OntResource object) {
 
-        if (isIndividual(object) && OppModelConstants.getRdfType().equals(predicate)) {
+        if (isIndividual(object) && OntologyModelConstants.getRdfType().equals(predicate)) {
             // /ont:instanceOfClass / rdf:type => return ontology class of individual
             return toResources(Optional.ofNullable(toClass(object))
                     .map(Set::of)
                     .orElse(Collections.emptySet()));
         } else if (isClass(object)) {
-            if (OppModelConstants.getRdfType().equals(predicate)) {
+            if (OntologyModelConstants.getRdfType().equals(predicate)) {
                 // /ont:Class / ^rdf:type => return all individuals of the class
                 return toResources(toIndividuals(object));
-            } else if (OppModelConstants.getRdfsSubclassOf().equals(predicate)) {
+            } else if (OntologyModelConstants.getRdfsSubclassOf().equals(predicate)) {
                 // return the subclasses of the provided object
                 // /ont:ClassA / ^rdfs:subclassOf => /ont:ClassB (given B is a subclass of A)
                 return toResources(modelCache.listSubclasses(getResourceId(object)));
@@ -219,8 +219,8 @@ public class OppModel {
      */
     public Set<OntResource> listObjects(Set<? extends OntResource> classSubjects,
                                         Property predicate) {
-        if (classSubjects.contains(OppModelConstants.getOwlThingInstance())) {
-            return Set.of(OppModelConstants.getOwlThingInstance());
+        if (classSubjects.contains(OntologyModelConstants.getOwlThingInstance())) {
+            return Set.of(OntologyModelConstants.getOwlThingInstance());
         }
         return classSubjects.stream()
                 .map(subject -> listObjects(subject, predicate))
@@ -231,14 +231,14 @@ public class OppModel {
 
     private Set<OntResource> listObjects(OntResource subject,
                                          Property predicate) {
-        if (isClass(subject) && OppModelConstants.getRdfType().equals(predicate)) {
-            if (OppModelConstants.getRdfType().equals(predicate)) {
+        if (isClass(subject) && OntologyModelConstants.getRdfType().equals(predicate)) {
+            if (OntologyModelConstants.getRdfType().equals(predicate)) {
                 // /ont:Class / rdf:type => return OWL_CLASS
-                return Set.of(OppModelConstants.getOwlClass());
-            } else if (OppModelConstants.getRdfsSubclassOf().equals(predicate)) {
+                return Set.of(OntologyModelConstants.getOwlClass());
+            } else if (OntologyModelConstants.getRdfsSubclassOf().equals(predicate)) {
                 return toResources(modelCache.listSuperclasses(getResourceId(subject)));
             }
-        } else if (isIndividual(subject) && OppModelConstants.getRdfType().equals(predicate)) {
+        } else if (isIndividual(subject) && OntologyModelConstants.getRdfType().equals(predicate)) {
             return toResources(Optional.ofNullable(toClass(subject)).map(Set::of).orElse(Collections.emptySet()));
         }
         return toType(modelCache.listObjects(predicate, subject), subject);
@@ -248,7 +248,7 @@ public class OppModel {
      * Returns all possible subclasses for the provided instances
      */
     public Set<OntResource> appendInstancesWithSubclasses(Set<OntResource> resources) {
-        if (resources.stream().noneMatch(OppModelConstants.getOwlThingInstance()::equals) &&
+        if (resources.stream().noneMatch(OntologyModelConstants.getOwlThingInstance()::equals) &&
                 resources.stream().allMatch(this::isIndividual)) {
             HashSet<OntResource> subclasses = resources.stream().map(this::toClass)
                     .map(this::listSubclasses)
@@ -320,9 +320,9 @@ public class OppModel {
         Set<Property> properties = new HashSet<>(
                 modelCache.listSubjectPredicates(toClass(ontResource)));
         if (isClass(ontResource)) {
-            properties.addAll(Set.of(OppModelConstants.getRdfType(), OppModelConstants.getRdfsSubclassOf()));
+            properties.addAll(Set.of(OntologyModelConstants.getRdfType(), OntologyModelConstants.getRdfsSubclassOf()));
         } else if (isIndividual(ontResource)) {
-            properties.add(OppModelConstants.getRdfType());
+            properties.add(OntologyModelConstants.getRdfType());
         }
         return properties;
     }
@@ -344,7 +344,7 @@ public class OppModel {
         Set<Property> properties = new HashSet<>(
                 modelCache.listObjectPredicates(toClass(ontResource)));
         if (isClass(ontResource)) {
-            properties.addAll(Set.of(OppModelConstants.getRdfType(), OppModelConstants.getRdfsSubclassOf()));
+            properties.addAll(Set.of(OntologyModelConstants.getRdfType(), OntologyModelConstants.getRdfsSubclassOf()));
         }
         return properties;
     }
@@ -372,7 +372,7 @@ public class OppModel {
     }
 
     public boolean isIndividual(OntResource resource) {
-        return !resource.equals(OppModelConstants.getVoidResponse()) &&
+        return !resource.equals(OntologyModelConstants.getVoidResponse()) &&
                 modelCache.isIndividual(getResourceId(resource));
     }
 
@@ -474,9 +474,9 @@ public class OppModel {
         final Individual individual = createIndividual(ontClass, uri);
         NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
                 .createNotification(
-                        "Added " + getResourceId(individual) + " as " + OppModel.getInstance().toClass(individual),
+                        "Added " + getResourceId(individual) + " as " + OntologyModel.getInstance().toClass(individual),
                         NotificationType.INFORMATION)
-                .setIcon(OMTFileType.INSTANCE.getIcon())
+                .setIcon(Icons.PLUGIN_ICON)
                 .notify(project);
         mappedResourcesCache.put(uri, individual);
 
@@ -540,7 +540,7 @@ public class OppModel {
     private boolean areCompatible(OntResource required,
                                   OntResource provided) {
         if (isIndividual(required)) {
-            return OppModelConstants.getOwlThingInstance().equals(provided) || isInstanceOf(provided, toClass(required));
+            return OntologyModelConstants.getOwlThingInstance().equals(provided) || isInstanceOf(provided, toClass(required));
         } else if (isClass(required)) {
             return isInstanceOf(provided, (OntClass) required);
         } else {
@@ -552,7 +552,7 @@ public class OppModel {
      * Returns true if the resource is an instance of the provided class or any of its superclasses
      */
     public boolean isInstanceOf(@Nullable OntResource resource, @Nullable OntClass ontClass) {
-        if (resource == null || ontClass == null || OppModelConstants.getVoidResponse().equals(resource)) {
+        if (resource == null || ontClass == null || OntologyModelConstants.getVoidResponse().equals(resource)) {
             return false;
         }
 
@@ -656,7 +656,7 @@ public class OppModel {
                 String object = jsonStatement.get("o").getAsString();
                 Property property = getModel().getProperty(propertyIri);
                 // the individual is already added to a class, no need to add the rdf_type predicate again
-                if (!property.equals(OppModelConstants.getRdfType())) {
+                if (!property.equals(OntologyModelConstants.getRdfType())) {
                     individual.addProperty(property, object);
                 }
             }

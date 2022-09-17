@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ class HttpCallCommandPutTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(HttpCallCommandPut.INSTANCE, OppModelConstants.getJsonObject());
+        assertReturns(HttpCallCommandPut.INSTANCE, OntologyModelConstants.getJsonObject());
     }
 
     @Test
@@ -31,7 +31,7 @@ class HttpCallCommandPutTest extends BaseBuiltinTest {
     void testReturnsSecondArgument() {
         final Set<OntResource> secondReturnArgument = HttpCallCommandPut.INSTANCE.getSecondReturnArgument();
         Assertions.assertEquals(1, secondReturnArgument.size());
-        Assertions.assertTrue(secondReturnArgument.contains(OppModelConstants.getXsdIntegerInstance()));
+        Assertions.assertTrue(secondReturnArgument.contains(OntologyModelConstants.getXsdIntegerInstance()));
     }
 
     @Test
@@ -44,28 +44,28 @@ class HttpCallCommandPutTest extends BaseBuiltinTest {
     void testArgumentTypes() {
         testArgument(HttpCallCommandPut.INSTANCE,
                 0,
-                OppModelConstants.getXsdStringInstance(),
-                TTLValidationUtil.ERROR_MESSAGE_STRING);
+                OntologyModelConstants.getXsdStringInstance(),
+                OntologyValidationUtil.ERROR_MESSAGE_STRING);
         testArgument(HttpCallCommandPut.INSTANCE,
                 1,
-                OppModelConstants.getJsonObject(),
-                TTLValidationUtil.ERROR_MESSAGE_JSON);
+                OntologyModelConstants.getJsonObject(),
+                OntologyValidationUtil.ERROR_MESSAGE_JSON);
         testArgument(HttpCallCommandPut.INSTANCE,
                 2,
-                OppModelConstants.getXsdBooleanInstance(),
-                TTLValidationUtil.ERROR_MESSAGE_BOOLEAN);
+                OntologyModelConstants.getXsdBooleanInstance(),
+                OntologyValidationUtil.ERROR_MESSAGE_BOOLEAN);
         testArgument(HttpCallCommandPut.INSTANCE,
                 3,
-                OppModelConstants.getJsonObject(),
-                TTLValidationUtil.ERROR_MESSAGE_JSON);
+                OntologyModelConstants.getJsonObject(),
+                OntologyValidationUtil.ERROR_MESSAGE_JSON);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(HttpCallCommandPut.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
-        assertGetAcceptableArgumentType(HttpCallCommandPut.INSTANCE, 1, OppModelConstants.getJsonObject());
-        assertGetAcceptableArgumentType(HttpCallCommandPut.INSTANCE, 2, OppModelConstants.getXsdBooleanInstance());
-        assertGetAcceptableArgumentType(HttpCallCommandPut.INSTANCE, 3, OppModelConstants.getJsonObject());
+        assertGetAcceptableArgumentType(HttpCallCommandPut.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(HttpCallCommandPut.INSTANCE, 1, OntologyModelConstants.getJsonObject());
+        assertGetAcceptableArgumentType(HttpCallCommandPut.INSTANCE, 2, OntologyModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(HttpCallCommandPut.INSTANCE, 3, OntologyModelConstants.getJsonObject());
         assertGetAcceptableArgumentTypeIsNull(HttpCallCommandPut.INSTANCE, 4);
     }
 }

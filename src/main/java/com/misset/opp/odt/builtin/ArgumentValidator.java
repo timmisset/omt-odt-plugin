@@ -2,8 +2,8 @@ package com.misset.opp.odt.builtin;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.util.TriConsumer;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Set;
@@ -18,7 +18,7 @@ public class ArgumentValidator {
                                                   PsiCall call,
                                                   ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            TTLValidationUtil.validateNamedGraph(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.validateNamedGraph(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -28,7 +28,7 @@ public class ArgumentValidator {
                                                  PsiCall call,
                                                  ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            TTLValidationUtil.validateInstances(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.validateInstances(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -38,7 +38,7 @@ public class ArgumentValidator {
                                                   PsiCall call,
                                                   ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            return TTLValidationUtil.validateBoolean(call.resolveSignatureArgument(index),
+            return OntologyValidationUtil.validateBoolean(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -49,7 +49,7 @@ public class ArgumentValidator {
                                               PsiCall call,
                                               ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            TTLValidationUtil.validateNumber(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.validateNumber(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -59,7 +59,7 @@ public class ArgumentValidator {
                                                PsiCall call,
                                                ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            TTLValidationUtil.validateInteger(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.validateInteger(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -69,7 +69,7 @@ public class ArgumentValidator {
                                             PsiCall call,
                                             ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            TTLValidationUtil.validateJSON(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.validateJSON(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -79,7 +79,7 @@ public class ArgumentValidator {
                                               PsiCall call,
                                               ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            TTLValidationUtil.validateString(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.validateString(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -89,7 +89,7 @@ public class ArgumentValidator {
                                                  PsiCall call,
                                                  ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            TTLValidationUtil.validateClassName(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.validateClassName(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -99,7 +99,7 @@ public class ArgumentValidator {
                                                   PsiCall call,
                                                   ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            TTLValidationUtil.validateGraphShape(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.validateGraphShape(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -118,13 +118,13 @@ public class ArgumentValidator {
     public static void validateAllArgumentsCompatible(PsiCall call,
                                                       ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            TTLValidationUtil.validateCompatibleTypes(
+            OntologyValidationUtil.validateCompatibleTypes(
                     call.resolvePreviousStep(), call.resolveSignatureArgument(0),
                     holder, call);
         } else if (call.getNumberOfArguments() >= 2) {
             Set<OntResource> ontResources = call.resolveSignatureArgument(0);
             for (int i = 1; i < call.getNumberOfArguments(); i++) {
-                TTLValidationUtil.validateCompatibleTypes(
+                OntologyValidationUtil.validateCompatibleTypes(
                         ontResources, call.resolveSignatureArgument(i),
                         holder, call.getCallSignatureElement());
             }

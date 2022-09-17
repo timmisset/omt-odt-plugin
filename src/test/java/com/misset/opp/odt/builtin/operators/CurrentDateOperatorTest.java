@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ class CurrentDateOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(CurrentDateOperator.INSTANCE, OppModelConstants.getXsdDateInstance());
+        assertResolved(CurrentDateOperator.INSTANCE, OntologyModelConstants.getXsdDateInstance());
     }
 
     @Test

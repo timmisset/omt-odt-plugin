@@ -1,12 +1,12 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
@@ -30,13 +30,13 @@ public class FilterOperator extends BuiltInCollectionOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        Set<OntClass> acceptableTypes = Set.of(OppModelConstants.getXsdBoolean(), OppModelConstants.getXsdInteger());
-        TTLValidationUtil.validateHasOntClass(call.resolveSignatureArgument(0), holder, call, acceptableTypes);
+        Set<OntClass> acceptableTypes = Set.of(OntologyModelConstants.getXsdBoolean(), OntologyModelConstants.getXsdInteger());
+        OntologyValidationUtil.validateHasOntClass(call.resolveSignatureArgument(0), holder, call, acceptableTypes);
     }
 
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        return Set.of(OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdIntegerInstance());
+        return Set.of(OntologyModelConstants.getXsdBooleanInstance(), OntologyModelConstants.getXsdIntegerInstance());
     }
 
     @Override

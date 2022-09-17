@@ -6,8 +6,8 @@ import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.intellij.openapi.util.NlsContexts;
-import com.misset.opp.odt.ODTFileType;
 import com.misset.opp.odt.ODTSyntaxHighlighter;
+import com.misset.opp.util.Icons;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +31,7 @@ public class ODTColorSettingsPage implements ColorSettingsPage {
 
     @Override
     public @Nullable Icon getIcon() {
-        return ODTFileType.ICON;
+        return Icons.PLUGIN_ICON;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.Variable;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -21,7 +21,7 @@ public interface CommandVariableTypeProvider {
                                      int argumentIndex) {
         return Optional.ofNullable(getLocalVariable(name, call, argumentIndex))
                 .map(Variable::resolve)
-                .map(resources -> resources.isEmpty() ? Set.of((OntResource) OppModelConstants.getOwlThingInstance()) : resources)
+                .map(resources -> resources.isEmpty() ? Set.of((OntResource) OntologyModelConstants.getOwlThingInstance()) : resources)
                 .orElse(Collections.emptySet());
     }
 

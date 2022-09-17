@@ -1,8 +1,8 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.application.ReadAction;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.omt.testcase.OMTTestCase;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -43,7 +43,7 @@ class OMTActivityMetaTypeTest extends OMTTestCase {
         ReadAction.run(() -> {
             YAMLMapping value = (YAMLMapping) ((YAMLKeyValue) myFixture.getElementAtCaret()).getValue();
             Set<OntResource> resolve = new OMTActivityMetaType().resolve(value, null);
-            Assertions.assertTrue(resolve.stream().anyMatch(OppModelConstants.getXsdBooleanInstance()::equals));
+            Assertions.assertTrue(resolve.stream().anyMatch(OntologyModelConstants.getXsdBooleanInstance()::equals));
         });
     }
 
@@ -58,7 +58,7 @@ class OMTActivityMetaTypeTest extends OMTTestCase {
         ReadAction.run(() -> {
             YAMLMapping value = (YAMLMapping) ((YAMLKeyValue) myFixture.getElementAtCaret()).getValue();
             Set<OntResource> resolve = new OMTActivityMetaType().resolve(value, null);
-            Assertions.assertTrue(resolve.stream().anyMatch(OppModelConstants.getOwlThingInstance()::equals));
+            Assertions.assertTrue(resolve.stream().anyMatch(OntologyModelConstants.getOwlThingInstance()::equals));
         });
     }
 

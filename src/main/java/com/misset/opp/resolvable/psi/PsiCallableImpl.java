@@ -5,7 +5,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.ttl.util.TTLValidationUtil;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,7 @@ public abstract class PsiCallableImpl extends ASTWrapperPsiElement implements Ps
 
         if (paramType != null && !argumentType.isEmpty() && !paramType.isEmpty()) {
             PsiElement signatureArgumentElement = call.getCallSignatureArgumentElement(i);
-            TTLValidationUtil.validateCompatibleTypes(paramType, argumentType, holder, signatureArgumentElement);
+            OntologyValidationUtil.validateCompatibleTypes(paramType, argumentType, holder, signatureArgumentElement);
         }
     }
 
@@ -51,7 +51,7 @@ public abstract class PsiCallableImpl extends ASTWrapperPsiElement implements Ps
         if (argumentValue != null) {
             argumentValue = argumentValue.replaceAll("^['\"](.*)['\"]$", "$1");
             PsiElement signatureArgumentElement = call.getCallSignatureArgumentElement(i);
-            TTLValidationUtil.validateValues(paramValues, argumentValue, holder, signatureArgumentElement);
+            OntologyValidationUtil.validateValues(paramValues, argumentValue, holder, signatureArgumentElement);
         }
 
     }

@@ -1,7 +1,8 @@
 package com.misset.opp.ttl.util;
 
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.testcase.BasicTestCase;
-import com.misset.opp.ttl.model.OppModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -12,22 +13,22 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TTLResourceUtilTest {
+class OntologyResourceUtilTest {
 
-    OppModel oppModel;
+    OntologyModel ontologyModel;
 
     @BeforeEach
     void setUp() {
         BasicTestCase.initOntologyModel();
-        oppModel = OppModel.getInstance();
+        ontologyModel = OntologyModel.getInstance();
     }
 
     @ParameterizedTest
     @MethodSource("getCardinalityScenarios")
     void testGetCardinalityLabel(String classId, String propertyId, String expected) {
-        String cardinalityLabel = TTLResourceUtil.getCardinalityLabel(
-                Set.of(oppModel.getClass(classId)),
-                oppModel.getProperty(propertyId)
+        String cardinalityLabel = OntologyResourceUtil.getCardinalityLabel(
+                Set.of(ontologyModel.getClass(classId)),
+                ontologyModel.getProperty(propertyId)
         );
         assertEquals(expected, cardinalityLabel);
     }

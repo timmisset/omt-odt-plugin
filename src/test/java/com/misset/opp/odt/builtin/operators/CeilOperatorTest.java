@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,15 +11,15 @@ class CeilOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(CeilOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance(), OppModelConstants.getXsdIntegerInstance());
-        assertResolved(CeilOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdIntegerInstance());
+        assertResolved(CeilOperator.INSTANCE, OntologyModelConstants.getXsdDecimalInstance(), OntologyModelConstants.getXsdIntegerInstance());
+        assertResolved(CeilOperator.INSTANCE, OntologyModelConstants.getXsdIntegerInstance(), OntologyModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testArgumentTypes() {
-        assertValidInput(CeilOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
-        assertInvalidInput(CeilOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
-        assertInvalidInput(CeilOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertValidInput(CeilOperator.INSTANCE, OntologyModelConstants.getXsdDecimalInstance());
+        assertInvalidInput(CeilOperator.INSTANCE, OntologyModelConstants.getXsdIntegerInstance(), OntologyValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertInvalidInput(CeilOperator.INSTANCE, OntologyModelConstants.getXsdStringInstance(), OntologyValidationUtil.ERROR_MESSAGE_DECIMAL);
     }
 
     @Test
@@ -35,6 +35,6 @@ class CeilOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(CeilOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
+        assertGetAcceptableInputType(CeilOperator.INSTANCE, OntologyModelConstants.getXsdDecimalInstance());
     }
 }

@@ -2,10 +2,10 @@ package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.openapi.util.Pair;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateShowsWarningWhenDifferentTypes() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
+        final PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdBooleanInstance()));
         AddToCommand.INSTANCE.validate(call, holder);
         verify(holder).registerProblem(eq(signature),
                 startsWith("Incompatible types"),
@@ -35,7 +35,7 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateShowsNoWarningWhenCompatibleTypes() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
+        final PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdStringInstance()));
         AddToCommand.INSTANCE.validate(call, holder);
         verify(holder, never()).registerProblem(eq(signature),
                 startsWith("Incompatible types"),
@@ -44,9 +44,9 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testValidateShowsWarningWhenNonMultiple() {
-        final PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
-        doReturn(new Pair<>(oppModel.toIndividuals("http://ontology#ClassA"),
-                oppModel.getProperty("http://ontology#classPredicate")))
+        final PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdStringInstance()));
+        doReturn(new Pair<>(ontologyModel.toIndividuals("http://ontology#ClassA"),
+                ontologyModel.getProperty("http://ontology#classPredicate")))
                 .when(call).getSignatureLeadingInformation(0);
         AddToCommand.INSTANCE.validate(call, holder);
         verify(holder).registerProblem(eq(signature),
@@ -56,11 +56,11 @@ class AddToCommandTest extends BaseBuiltinTest {
 
     @Test
     void testAcceptableArgumentType() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()));
         Assertions.assertTrue(AddToCommand.INSTANCE.getAcceptableArgumentType(1, call)
-                .contains(OppModelConstants.getXsdStringInstance()));
+                .contains(OntologyModelConstants.getXsdStringInstance()));
         Assertions.assertFalse(AddToCommand.INSTANCE.getAcceptableArgumentType(1, call)
-                .contains(OppModelConstants.getXsdBooleanInstance()));
+                .contains(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test

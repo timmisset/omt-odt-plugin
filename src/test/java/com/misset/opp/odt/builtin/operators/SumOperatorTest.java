@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,9 +12,9 @@ class SumOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(SumOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdIntegerInstance());
-        assertResolved(SumOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance(), OppModelConstants.getXsdDecimalInstance());
-        assertResolved(SumOperator.INSTANCE, Set.of(OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdDecimalInstance()), Set.of(OppModelConstants.getXsdDecimalInstance()));
+        assertResolved(SumOperator.INSTANCE, OntologyModelConstants.getXsdIntegerInstance(), OntologyModelConstants.getXsdIntegerInstance());
+        assertResolved(SumOperator.INSTANCE, OntologyModelConstants.getXsdDecimalInstance(), OntologyModelConstants.getXsdDecimalInstance());
+        assertResolved(SumOperator.INSTANCE, Set.of(OntologyModelConstants.getXsdIntegerInstance(), OntologyModelConstants.getXsdDecimalInstance()), Set.of(OntologyModelConstants.getXsdDecimalInstance()));
     }
 
     @Test
@@ -30,11 +30,11 @@ class SumOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(SumOperator.INSTANCE, OppModelConstants.getXsdNumberInstance());
+        assertValidInput(SumOperator.INSTANCE, OntologyModelConstants.getXsdNumberInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(SumOperator.INSTANCE, OppModelConstants.getXsdNumberInstance());
+        assertGetAcceptableInputType(SumOperator.INSTANCE, OntologyModelConstants.getXsdNumberInstance());
     }
 }

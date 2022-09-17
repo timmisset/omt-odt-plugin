@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,18 +34,18 @@ class MoveToGraphCommandTest extends BaseBuiltinTest {
     void testArgumentTypes() {
         testArgument(MoveToGraphCommand.INSTANCE,
                 0,
-                OppModelConstants.getXsdStringInstance(),
-                TTLValidationUtil.ERROR_MESSAGE_INSTANCES,
-                OppModelConstants.getXsdString());
+                OntologyModelConstants.getXsdStringInstance(),
+                OntologyValidationUtil.ERROR_MESSAGE_INSTANCES,
+                OntologyModelConstants.getXsdString());
         testArgument(MoveToGraphCommand.INSTANCE,
                 1,
-                OppModelConstants.getMedewerkerGraph(),
-                TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
+                OntologyModelConstants.getMedewerkerGraph(),
+                OntologyValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(MoveToGraphCommand.INSTANCE, 1, OppModelConstants.getNamedGraph());
+        assertGetAcceptableArgumentType(MoveToGraphCommand.INSTANCE, 1, OntologyModelConstants.getNamedGraph());
         assertGetAcceptableArgumentTypeIsNull(MoveToGraphCommand.INSTANCE, 0);
     }
 }

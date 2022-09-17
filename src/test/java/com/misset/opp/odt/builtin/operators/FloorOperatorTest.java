@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,14 +11,14 @@ class FloorOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(FloorOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance(), OppModelConstants.getXsdIntegerInstance());
-        assertResolved(FloorOperator.INSTANCE, OppModelConstants.getXsdIntegerInstance(), OppModelConstants.getXsdIntegerInstance());
+        assertResolved(FloorOperator.INSTANCE, OntologyModelConstants.getXsdDecimalInstance(), OntologyModelConstants.getXsdIntegerInstance());
+        assertResolved(FloorOperator.INSTANCE, OntologyModelConstants.getXsdIntegerInstance(), OntologyModelConstants.getXsdIntegerInstance());
     }
 
     @Test
     void testValidInputs() {
-        assertValidInput(FloorOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
-        assertInvalidInput(FloorOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), TTLValidationUtil.ERROR_MESSAGE_DECIMAL);
+        assertValidInput(FloorOperator.INSTANCE, OntologyModelConstants.getXsdDecimalInstance());
+        assertInvalidInput(FloorOperator.INSTANCE, OntologyModelConstants.getXsdStringInstance(), OntologyValidationUtil.ERROR_MESSAGE_DECIMAL);
     }
 
     @Test
@@ -34,6 +34,6 @@ class FloorOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableInput() {
-        assertGetAcceptableInputType(FloorOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance());
+        assertGetAcceptableInputType(FloorOperator.INSTANCE, OntologyModelConstants.getXsdDecimalInstance());
     }
 }

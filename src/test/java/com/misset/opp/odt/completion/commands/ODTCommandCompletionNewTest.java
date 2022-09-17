@@ -11,9 +11,9 @@ class ODTCommandCompletionNewTest extends ODTTestCase {
     void testShowsPredicates() {
         String content = "@NEW(<caret>)";
         configureByText(content, true);
-        oppModel.createClass("http://test1");
-        oppModel.createClass("http://test2");
-        oppModel.createClass("http://test3");
+        ontologyModel.createClass("http://test1");
+        ontologyModel.createClass("http://test2");
+        ontologyModel.createClass("http://test3");
         List<String> lookupStrings = completion.getLookupStrings();
         assertContainsElements(lookupStrings, "/<http://test1>", "/<http://test2>", "/<http://test3>");
     }

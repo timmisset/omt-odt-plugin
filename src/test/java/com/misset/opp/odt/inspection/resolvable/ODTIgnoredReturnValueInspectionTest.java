@@ -1,10 +1,10 @@
 package com.misset.opp.odt.inspection.resolvable;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.testcase.ODTFileTestImpl;
 import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +42,7 @@ class ODTIgnoredReturnValueInspectionTest extends ODTTestCase {
         Callable callable = mock(Callable.class);
         doReturn("@command").when(callable).getCallId();
         doReturn(false).when(callable).isVoid();
-        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
+        doReturn(Set.of(OntologyModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
         odtFileTest.addCallable(callable);
         inspection.assertHasWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
@@ -53,7 +53,7 @@ class ODTIgnoredReturnValueInspectionTest extends ODTTestCase {
         Callable callable = mock(Callable.class);
         doReturn("@command").when(callable).getCallId();
         doReturn(false).when(callable).isVoid();
-        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
+        doReturn(Set.of(OntologyModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
         odtFileTest.addCallable(callable);
         inspection.assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
@@ -64,7 +64,7 @@ class ODTIgnoredReturnValueInspectionTest extends ODTTestCase {
         Callable callable = mock(Callable.class);
         doReturn("@command").when(callable).getCallId();
         doReturn(false).when(callable).isVoid();
-        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
+        doReturn(Set.of(OntologyModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
         odtFileTest.addCallable(callable);
         inspection.assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);
     }
@@ -86,7 +86,7 @@ class ODTIgnoredReturnValueInspectionTest extends ODTTestCase {
         doReturn("@command").when(callable).getCallId();
         doReturn(false).when(callable).isVoid();
         doReturn(true).when(callable).isBuiltin();
-        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
+        doReturn(Set.of(OntologyModelConstants.getXsdStringInstance())).when(callable).resolve(any(Context.class));
         odtFileTest.addCallable(callable);
         odtFileTest.setIsStatement(true);
         inspection.assertNoWeakWarning(ODTIgnoredReturnValueInspection.RESULT_IS_IGNORED);

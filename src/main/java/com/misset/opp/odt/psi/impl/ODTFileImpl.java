@@ -12,6 +12,7 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.ODTFileType;
 import com.misset.opp.odt.ODTGlobalVariable;
 import com.misset.opp.odt.ODTLanguage;
@@ -28,7 +29,6 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
-import com.misset.opp.ttl.model.OppModel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -64,7 +64,7 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
             final Map<String, String> namespaces = listPrefixes()
                     .stream()
                     .collect(Collectors.toMap(PsiPrefix::getNamespace, PsiPrefix::getName, (o, o2) -> o));
-            return new CachedValueProvider.Result<>(namespaces, this, OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
+            return new CachedValueProvider.Result<>(namespaces, this, OntologyModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }
 

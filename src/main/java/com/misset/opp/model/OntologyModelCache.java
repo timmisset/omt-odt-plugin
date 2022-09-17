@@ -1,4 +1,4 @@
-package com.misset.opp.ttl.model;
+package com.misset.opp.model;
 
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Helper class to manage OppModel caching
+ * Helper class to manage OntologyModel caching
  * Apache Jena is not the best when it comes to performance and multi-thread handling.
  * <p>
  * We register/cache 3 types of OntResources:
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * - Individual: Instances of ontology classes
  * - OntProperty: Ontology properties used as predicates in rdf statements
  */
-public class OppModelCache {
+public class OntologyModelCache {
 
     /*
      * Cache register

@@ -1,14 +1,13 @@
 package com.misset.opp.omt;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.util.IconLoader;
+import com.misset.opp.util.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
 public class OMTFileType extends LanguageFileType {
-    public static final Icon ICON = IconLoader.findIcon("/icons/cartman-16.png", OMTFileType.class.getClassLoader());
     public static final OMTFileType INSTANCE = new OMTFileType();
 
     private OMTFileType() {
@@ -32,7 +31,7 @@ public class OMTFileType extends LanguageFileType {
 
     @Override
     public @Nullable Icon getIcon() {
-        return ICON;
+        return Icons.PLUGIN_ICON;
     }
 }
 

@@ -37,8 +37,10 @@ of the curie and resolves to the fully qualified IRI <http://ontology#ClassA>.
 
 The next step ^rdf:type is not the first step. It uses the resolvePreviousStep() to obtain the input for its step, which
 is <http://ontology#ClassA>. This is obtained from the cache of the previous step if its already resolved, or otherwise
-it will be resolved at that moment. Then it will use the OppModel helper class to traverse the path, in reverse order in
-this case. It asks the OppModel, give me anything that points to <http://ontology#ClassA> using the predicate rdf:type.
+it will be resolved at that moment. Then it will use the OntologyModel helper class to traverse the path, in reverse
+order in
+this case. It asks the OntologyModel, give me anything that points to <http://ontology#ClassA> using the predicate rdf:
+type.
 This will be all instances of <http://ontology#ClassA> present in the model.
 
 ### OPP MODEL

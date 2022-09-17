@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ class NotOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(NotOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
+        assertResolved(NotOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Test
@@ -26,18 +26,18 @@ class NotOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(NotOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
-        assertValidArgument(NotOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertValidInput(NotOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance());
+        assertValidArgument(NotOperator.INSTANCE, 0, OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(NotOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableInputType(NotOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(NotOperator.INSTANCE, 0, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(NotOperator.INSTANCE, 0, OntologyModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(NotOperator.INSTANCE, 1);
     }
 }

@@ -1,7 +1,7 @@
 package com.misset.opp.odt.inspection.type;
 
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,8 +43,8 @@ class ODTCodeInspectionCollectionStatementTest extends ODTTestCase {
 
     @Test
     void testHasNoWarningWhenAssigningSubClass() {
-        final OntClass classBSub = OppModel.getInstance().getClass("http://ontology#ClassBSub");
-        final OntClass subclassOfClassBSub = OppModel.getInstance().getModel()
+        final OntClass classBSub = OntologyModel.getInstance().getClass("http://ontology#ClassBSub");
+        final OntClass subclassOfClassBSub = OntologyModel.getInstance().getModel()
                 .createClass(classBSub.getNameSpace() + "#SubclassOfClassBSub");
         subclassOfClassBSub.addSuperClass(classBSub);
         assertHasNoTypeWarning("/ont:ClassA / ^rdf:type / ont:classPredicate = /ont:SubclassOfClassBSub / ^rdf:type;");

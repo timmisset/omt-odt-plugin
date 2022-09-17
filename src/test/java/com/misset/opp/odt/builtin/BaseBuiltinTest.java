@@ -3,12 +3,12 @@ package com.misset.opp.odt.builtin;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.testcase.BasicTestCase;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 public abstract class BaseBuiltinTest {
 
-    protected OppModel oppModel;
+    protected OntologyModel ontologyModel;
     protected ProblemsHolder holder = mock(ProblemsHolder.class);
     protected PsiElement signature = mock(PsiElement.class);
     protected PsiElement firstArgument = mock(PsiElement.class);
@@ -35,7 +35,7 @@ public abstract class BaseBuiltinTest {
 
     @BeforeEach
     protected void setUp() {
-        oppModel = BasicTestCase.initOntologyModel();
+        ontologyModel = BasicTestCase.initOntologyModel();
     }
 
     @AfterEach
@@ -100,18 +100,18 @@ public abstract class BaseBuiltinTest {
     protected final void assertCombinesInput(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.getXsdBooleanInstance(),
-                        OppModelConstants.getXsdStringInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdStringInstance()));
+                Set.of(OntologyModelConstants.getXsdBooleanInstance(),
+                        OntologyModelConstants.getXsdStringInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdStringInstance()));
     }
 
     protected final void assertReturnsFirstArgument(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdStringInstance()));
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdStringInstance()));
     }
 
     /**
@@ -121,16 +121,16 @@ public abstract class BaseBuiltinTest {
         assertResolved(builtin,
                 Collections.emptySet(),
                 Set.of(resource),
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdStringInstance()));
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdStringInstance()));
     }
 
     protected final void assertReturnsVoid(AbstractBuiltin builtin) {
         assertResolved(builtin,
                 Collections.emptySet(),
-                Set.of(OppModelConstants.getVoidResponse()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdStringInstance()));
+                Set.of(OntologyModelConstants.getVoidResponse()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdStringInstance()));
     }
 
     protected abstract void testResolve();
@@ -139,7 +139,7 @@ public abstract class BaseBuiltinTest {
                                 int index,
                                 OntResource expected,
                                 String errorMessage) {
-        OntResource invalidArgument = expected.equals(OppModelConstants.getXsdBooleanInstance()) ? OppModelConstants.getXsdStringInstance() : OppModelConstants.getXsdBooleanInstance();
+        OntResource invalidArgument = expected.equals(OntologyModelConstants.getXsdBooleanInstance()) ? OntologyModelConstants.getXsdStringInstance() : OntologyModelConstants.getXsdBooleanInstance();
         testArgument(builtin, index, expected, errorMessage, invalidArgument);
     }
 
@@ -221,7 +221,7 @@ public abstract class BaseBuiltinTest {
 
     protected void assertGetAcceptableArgumentTypeSameAsPreviousStep(AbstractBuiltin builtin, int index) {
         PsiCall call = mock(PsiCall.class);
-        Set<OntResource> previousStep = Set.of(OppModelConstants.getXsdStringInstance());
+        Set<OntResource> previousStep = Set.of(OntologyModelConstants.getXsdStringInstance());
         doReturn(previousStep).when(call).resolvePreviousStep();
 
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);
@@ -234,7 +234,7 @@ public abstract class BaseBuiltinTest {
 
     protected void assertGetAcceptableArgumentTypeSameAsArgument(AbstractBuiltin builtin, int index, int sameAsIndex) {
         PsiCall call = mock(PsiCall.class);
-        Set<OntResource> atIndex = Set.of(OppModelConstants.getXsdStringInstance());
+        Set<OntResource> atIndex = Set.of(OntologyModelConstants.getXsdStringInstance());
         doReturn(atIndex).when(call).resolveSignatureArgument(sameAsIndex);
 
         Set<OntResource> acceptableArgumentTypeWithContext = builtin.getAcceptableArgumentTypeWithContext(index, call);

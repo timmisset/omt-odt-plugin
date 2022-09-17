@@ -4,11 +4,11 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.stubs.StubIndex;
+import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.OMTOntologyTypeProvider;
 import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
-import com.misset.opp.ttl.util.TTLScopeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
@@ -33,7 +33,7 @@ public class OMTTTLSubjectReference extends OMTPlainTextReference {
                             TTLSubjectStubIndex.KEY,
                             fullyQualifiedUri,
                             element.getProject(),
-                            TTLScopeUtil.getModelSearchScope(myElement.getProject()),
+                            OntologyScopeUtil.getModelSearchScope(myElement.getProject()),
                             TTLSubject.class
                     ).stream()
                     .map(PsiElementResolveResult::new)

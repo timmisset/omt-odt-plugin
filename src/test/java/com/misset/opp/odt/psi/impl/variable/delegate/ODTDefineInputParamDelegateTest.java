@@ -2,11 +2,11 @@ package com.misset.opp.odt.psi.impl.variable.delegate;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ class ODTDefineInputParamDelegateTest extends ODTTestCase {
                 " */\n" +
                 "DEFINE QUERY <caret>query($param) => $param;";
         assertContainsElements(resolveQueryAtCaret(content),
-                OppModelConstants.getXsdStringInstance());
+                OntologyModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -29,7 +29,7 @@ class ODTDefineInputParamDelegateTest extends ODTTestCase {
                 " */\n" +
                 "DEFINE QUERY <caret>query($param) => $param;";
         assertContainsElements(resolveQueryAtCaret(withPrefixes(content)),
-                OppModel.getInstance().getIndividual("http://ontology#ClassA_InstanceA"));
+                OntologyModel.getInstance().getIndividual("http://ontology#ClassA_InstanceA"));
     }
 
     @Test

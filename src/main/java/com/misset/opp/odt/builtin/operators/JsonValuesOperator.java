@@ -1,9 +1,9 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -27,16 +27,16 @@ public class JsonValuesOperator extends AbstractBuiltInOperator {
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Collections.singleton(OppModelConstants.getJsonObject());
+        return Collections.singleton(OntologyModelConstants.getJsonObject());
     }
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        TTLValidationUtil.validateJSON(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.validateJSON(call.resolvePreviousStep(), holder, call);
     }
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.getOwlThingInstance();
+        return OntologyModelConstants.getOwlThingInstance();
     }
 }

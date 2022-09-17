@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -34,6 +34,6 @@ public class AssertCommand extends AbstractBuiltInCommand {
 
     @Override
     protected Set<OntResource> resolveFrom(PsiCall call) {
-        return Collections.singleton(OppModelConstants.getXsdBooleanInstance());
+        return Collections.singleton(OntologyModelConstants.getXsdBooleanInstance());
     }
 }

@@ -3,8 +3,8 @@ package com.misset.opp.odt.intentions;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class IntroduceLocalVariableIntentionTest extends ODTTestCase {
     @Test
     @Disabled("Unit-test doesn't work due to the in-place refactoring mechanism")
     void testInvokeHasClassName() {
-        configureByText(String.format("<caret>/<http://ontology#ClassA> / ^<%s>;", OppModelConstants.getRdfType().getURI()));
+        configureByText(String.format("<caret>/<http://ontology#ClassA> / ^<%s>;", OntologyModelConstants.getRdfType().getURI()));
         IntentionAction singleIntention = myFixture.findSingleIntention(IntroduceLocalVariableIntention.TEXT);
         WriteCommandAction.runWriteCommandAction(getProject(), () -> singleIntention.invoke(getProject(), getEditor(), getFile()));
         String text = ReadAction.compute(() -> getFile().getText());

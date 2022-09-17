@@ -3,10 +3,10 @@ package com.misset.opp.odt.builtin.commands;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.junit.jupiter.api.Assertions;
@@ -39,7 +39,7 @@ class RemoveFromCommandTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasWarningWhenNonMultiple() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getOwlThingInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getOwlThingInstance()));
         PsiElement element = call.getCallSignatureElement();
 
         Pair<Set<OntResource>, Property> pair = mock(Pair.class);
@@ -51,10 +51,10 @@ class RemoveFromCommandTest extends BaseBuiltinTest {
         doReturn(pair).when(call).getSignatureLeadingInformation(0);
         ProblemsHolder problemsHolder = mock(ProblemsHolder.class);
 
-        try (MockedStatic<TTLValidationUtil> mockedStatic = mockStatic(TTLValidationUtil.class)) {
+        try (MockedStatic<OntologyValidationUtil> mockedStatic = mockStatic(OntologyValidationUtil.class)) {
             RemoveFromCommand.INSTANCE.specificValidation(call, problemsHolder);
             mockedStatic.verify(times(1),
-                    () -> TTLValidationUtil.validateCardinalityMultiple(eq(subject), eq(predicate), eq(problemsHolder), eq(element)));
+                    () -> OntologyValidationUtil.validateCardinalityMultiple(eq(subject), eq(predicate), eq(problemsHolder), eq(element)));
         }
     }
 }

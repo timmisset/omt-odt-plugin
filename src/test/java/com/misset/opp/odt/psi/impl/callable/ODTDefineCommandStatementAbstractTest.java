@@ -1,9 +1,9 @@
 package com.misset.opp.odt.psi.impl.callable;
 
 import com.intellij.openapi.application.ReadAction;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class ODTDefineCommandStatementAbstractTest extends ODTTestCase {
         configureByText(content);
         ODTDefineStatement defineStatement = (ODTDefineStatement) ReadAction.compute(myFixture::getElementAtCaret);
         Set<OntResource> resolve = ReadAction.compute(defineStatement::resolve);
-        assertContainsElements(resolve, OppModelConstants.getXsdStringInstance());
+        assertContainsElements(resolve, OntologyModelConstants.getXsdStringInstance());
     }
 
     @Test
@@ -33,7 +33,7 @@ class ODTDefineCommandStatementAbstractTest extends ODTTestCase {
         configureByText(content);
         ODTDefineStatement defineStatement = (ODTDefineStatement) ReadAction.compute(myFixture::getElementAtCaret);
         Set<OntResource> resolve = ReadAction.compute(defineStatement::resolve);
-        assertContainsElements(resolve, OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdIntegerInstance());
+        assertContainsElements(resolve, OntologyModelConstants.getXsdStringInstance(), OntologyModelConstants.getXsdIntegerInstance());
     }
 
 }

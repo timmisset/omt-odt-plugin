@@ -5,12 +5,12 @@ import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.psi.ODTEquationStatement;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTQueryPath;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -72,12 +72,12 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                                     Map<String, String> availableNamespaces,
                                     CompletionResultSet result) {
                 Set<OntClass> classes = leftSideResolved.stream()
-                        .filter(OppModel.getInstance()::isClass)
-                        .map(OppModel.getInstance()::toClass)
+                        .filter(OntologyModel.getInstance()::isClass)
+                        .map(OntologyModel.getInstance()::toClass)
                         .collect(Collectors.toCollection(HashSet::new));
-                classes.addAll(OppModel.getInstance().listSubclasses(classes));
+                classes.addAll(OntologyModel.getInstance().listSubclasses(classes));
                 classes.stream()
-                        .map(resource -> TTLResourceUtil.getRootLookupElement(resource, "Class", availableNamespaces))
+                        .map(resource -> OntologyResourceUtil.getRootLookupElement(resource, "Class", availableNamespaces))
                         .filter(Objects::nonNull)
                         .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, ROOT_ELEMENT.getValue()))
                         .forEach(result::addElement);
@@ -87,16 +87,16 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                                       Map<String, String> availableNamespaces,
                                       CompletionResultSet result) {
                 leftSideResolved.stream()
-                        .filter(OppModel.getInstance()::isIndividual)
+                        .filter(OntologyModel.getInstance()::isIndividual)
                         .map(Individual.class::cast)
                         .map(Individual::getOntClass)
                         .map(Resource::getURI)
                         .filter(Objects::nonNull)
-                        .map(OppModel.getInstance()::toIndividuals)
+                        .map(OntologyModel.getInstance()::toIndividuals)
                         .flatMap(Collection::stream)
                         .filter(this::isRealInstance)
                         .map(
-                                resource -> TTLResourceUtil
+                                resource -> OntologyResourceUtil
                                         .getRootLookupElement(resource, "Instance", availableNamespaces))
                         .filter(Objects::nonNull)
                         .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, ROOT_ELEMENT.getValue()))

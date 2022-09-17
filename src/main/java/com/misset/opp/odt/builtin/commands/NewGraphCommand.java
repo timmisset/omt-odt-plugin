@@ -1,9 +1,9 @@
 package com.misset.opp.odt.builtin.commands;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class NewGraphCommand extends AbstractBuiltInCommand {
 
     @Override
     public OntResource resolveSingle() {
-        return OppModelConstants.getNamedGraph();
+        return OntologyModelConstants.getNamedGraph();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.misset.opp.ttl.model;
+package com.misset.opp.model;
 
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Resource;
@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-class OppModelLoaderTest {
+class OntologyModelLoaderTest {
 
     @Test
     void testLoadModel() {
@@ -26,7 +26,7 @@ class OppModelLoaderTest {
 
     @Test
     void testLoadModelWithRecursion() {
-        final OntModel ontModel = OppModelLoader.getInstance()
+        final OntModel ontModel = OntologyModelLoader.getInstance()
                 .read(getRootPath("model-with-recursion", "root.ttl"))
                 .getShaclModel();
         Assertions.assertEquals(1, ontModel.listSubModels().toList().size());
@@ -36,14 +36,14 @@ class OppModelLoaderTest {
     @Ignore("Add a full ontology to the test folder before enabling this test, not included in the repo")
     void testLoadFullOntology() {
         Assertions.assertDoesNotThrow(() -> {
-            OppModelLoader.getInstance()
+            OntologyModelLoader.getInstance()
                     .read(getRootPath("full-opp-model", "root.ttl"))
                     .getShaclModel();
         });
     }
 
     private OntModel getOntologyModel() {
-        return OppModelLoader.getInstance().read(getRootPath()).getShaclModel();
+        return OntologyModelLoader.getInstance().read(getRootPath()).getShaclModel();
     }
 
     private File getRootPath() {

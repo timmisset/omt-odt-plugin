@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,15 +12,15 @@ class LessThanEqualsOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(LessThanEqualsOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
+        assertResolved(LessThanEqualsOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testValidArguments() {
-        assertValidArgument(LessThanEqualsOperator.INSTANCE, 1, OppModelConstants.getXsdStringInstance());
-        assertValidArgument(LessThanEqualsOperator.INSTANCE, 1, OppModelConstants.getXsdNumberInstance());
-        assertValidArgument(LessThanEqualsOperator.INSTANCE, 1, OppModelConstants.getXsdIntegerInstance());
-        assertValidArgument(LessThanEqualsOperator.INSTANCE, 1, OppModelConstants.getXsdDecimalInstance());
+        assertValidArgument(LessThanEqualsOperator.INSTANCE, 1, OntologyModelConstants.getXsdStringInstance());
+        assertValidArgument(LessThanEqualsOperator.INSTANCE, 1, OntologyModelConstants.getXsdNumberInstance());
+        assertValidArgument(LessThanEqualsOperator.INSTANCE, 1, OntologyModelConstants.getXsdIntegerInstance());
+        assertValidArgument(LessThanEqualsOperator.INSTANCE, 1, OntologyModelConstants.getXsdDecimalInstance());
     }
 
     @Test
@@ -36,12 +36,12 @@ class LessThanEqualsOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentTypes() {
-        assertGetAcceptableArgumentType(LessThanEqualsOperator.INSTANCE, 0, Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdNumberInstance()));
-        assertGetAcceptableArgumentType(LessThanEqualsOperator.INSTANCE, 1, Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdNumberInstance()));
+        assertGetAcceptableArgumentType(LessThanEqualsOperator.INSTANCE, 0, Set.of(OntologyModelConstants.getXsdStringInstance(), OntologyModelConstants.getXsdNumberInstance()));
+        assertGetAcceptableArgumentType(LessThanEqualsOperator.INSTANCE, 1, Set.of(OntologyModelConstants.getXsdStringInstance(), OntologyModelConstants.getXsdNumberInstance()));
     }
 
     @Test
     void testGetAcceptableInput() {
-        assertGetAcceptableInputType(LessThanEqualsOperator.INSTANCE, Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdNumberInstance()));
+        assertGetAcceptableInputType(LessThanEqualsOperator.INSTANCE, Set.of(OntologyModelConstants.getXsdStringInstance(), OntologyModelConstants.getXsdNumberInstance()));
     }
 }

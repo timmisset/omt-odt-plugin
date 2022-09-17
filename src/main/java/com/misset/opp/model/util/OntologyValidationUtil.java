@@ -1,12 +1,12 @@
-package com.misset.opp.ttl.util;
+package com.misset.opp.model.util;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.text.Strings;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.model.OppModelTranslator;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.OntologyModelTranslator;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
@@ -17,9 +17,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class TTLValidationUtil {
+public class OntologyValidationUtil {
 
-    private TTLValidationUtil() {
+    private OntologyValidationUtil() {
         // empty constructor
     }
 
@@ -43,13 +43,13 @@ public class TTLValidationUtil {
                 resourcesB == null ||
                 resourcesA.isEmpty() ||
                 resourcesB.isEmpty() ||
-                resourcesA.contains(OppModelConstants.getOwlThingInstance()) ||
-                resourcesB.contains(OppModelConstants.getOwlThingInstance())
+                resourcesA.contains(OntologyModelConstants.getOwlThingInstance()) ||
+                resourcesB.contains(OntologyModelConstants.getOwlThingInstance())
         ) {
             // don't register problem
             return;
         }
-        if (!OppModel.getInstance().areCompatible(resourcesA, resourcesB)) {
+        if (!OntologyModel.getInstance().areCompatible(resourcesA, resourcesB)) {
             holder.registerProblem(element,
                     createIncompatibleTypesWarning(resourcesA, resourcesB),
                     ProblemHighlightType.WARNING);
@@ -64,7 +64,7 @@ public class TTLValidationUtil {
             // don't register problem
             return;
         }
-        if (!OppModel.getInstance().areCompatible(required, provided)) {
+        if (!OntologyModel.getInstance().areCompatible(required, provided)) {
             holder.registerProblem(element,
                     createRequiredTypesWarning(required, provided),
                     ProblemHighlightType.WARNING);
@@ -75,7 +75,7 @@ public class TTLValidationUtil {
                                                    Property predicate,
                                                    ProblemsHolder holder,
                                                    PsiElement element) {
-        if (OppModelTranslator.isSingleton(subject, predicate)) {
+        if (OntologyModelTranslator.isSingleton(subject, predicate)) {
             // assigning a collection or creating a collection where a singleton is expected
             holder.registerProblem(element,
                     "Suspicious assignment: " + predicate.getLocalName() + " maxCount == 1",
@@ -93,19 +93,19 @@ public class TTLValidationUtil {
         if (!resources.stream().allMatch(
                 ontResource -> hasOntClass(ontResource, classes)
         )) {
-            Set<OntResource> acceptableIndividuals = classes.stream().map(ontClass -> OppModel.getInstance().toIndividuals(ontClass.getURI()))
+            Set<OntResource> acceptableIndividuals = classes.stream().map(ontClass -> OntologyModel.getInstance().toIndividuals(ontClass.getURI()))
                     .flatMap(Collection::stream)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
-            String message = "Acceptable types: " + TTLResourceUtil.describeUrisJoined(acceptableIndividuals);
+            String message = "Acceptable types: " + OntologyResourceUtil.describeUrisJoined(acceptableIndividuals);
             holder.registerProblem(element, message, ProblemHighlightType.ERROR);
         }
     }
 
     private static boolean hasOntClass(OntResource resource,
                                        Set<OntClass> classes) {
-        return OppModel.getInstance().isIndividual(resource) &&
-                OppModel.getInstance().listOntClasses(resource).stream().anyMatch(classes::contains);
+        return OntologyModel.getInstance().isIndividual(resource) &&
+                OntologyModel.getInstance().listOntClasses(resource).stream().anyMatch(classes::contains);
     }
 
     private static boolean validate(Set<OntResource> resources,
@@ -114,7 +114,7 @@ public class TTLValidationUtil {
                                     Predicate<OntResource> condition,
                                     String error) {
         if (!resources.isEmpty() &&
-                !resources.contains(OppModelConstants.getOwlThingInstance()) &&
+                !resources.contains(OntologyModelConstants.getOwlThingInstance()) &&
                 !resources.stream().allMatch(condition)) {
             holder.registerProblem(element, error, ProblemHighlightType.ERROR);
             return false;
@@ -125,13 +125,13 @@ public class TTLValidationUtil {
     public static void validateNamedGraph(Set<OntResource> resources,
                                           ProblemsHolder holder,
                                           PsiElement element) {
-        validate(resources, holder, element, TTLValidationUtil::isNamedGraphInstance, ERROR_MESSAGE_NAMED_GRAPH);
+        validate(resources, holder, element, OntologyValidationUtil::isNamedGraphInstance, ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     public static void validateInstances(Set<OntResource> resources,
                                          ProblemsHolder holder,
                                          PsiElement element) {
-        validate(resources, holder, element, OppModel.getInstance()::isIndividual, ERROR_MESSAGE_INSTANCES);
+        validate(resources, holder, element, OntologyModel.getInstance()::isIndividual, ERROR_MESSAGE_INSTANCES);
     }
 
     public static boolean validateBoolean(Set<OntResource> resources,
@@ -140,7 +140,7 @@ public class TTLValidationUtil {
         return validate(resources,
                 holder,
                 element,
-                OppModelConstants.getXsdBooleanInstance()::equals,
+                OntologyModelConstants.getXsdBooleanInstance()::equals,
                 ERROR_MESSAGE_BOOLEAN);
     }
 
@@ -150,7 +150,7 @@ public class TTLValidationUtil {
         validate(resources,
                 holder,
                 element,
-                OppModelConstants.getXsdDecimalInstance()::equals,
+                OntologyModelConstants.getXsdDecimalInstance()::equals,
                 ERROR_MESSAGE_DECIMAL);
     }
 
@@ -158,7 +158,7 @@ public class TTLValidationUtil {
         validate(resources,
                 holder,
                 element,
-                OppModelConstants.getXsdIntegerInstance()::equals,
+                OntologyModelConstants.getXsdIntegerInstance()::equals,
                 ERROR_MESSAGE_INTEGER);
     }
 
@@ -166,14 +166,14 @@ public class TTLValidationUtil {
                                       ProblemsHolder holder,
                                       PsiElement element) {
         validate(resources, holder, element,
-                resource -> isIndividualOfType(resource, OppModelConstants.getXsdNumber()),
+                resource -> isIndividualOfType(resource, OntologyModelConstants.getXsdNumber()),
                 ERROR_MESSAGE_NUMBER);
     }
 
     public static void validateJSON(Set<OntResource> resources,
                                     ProblemsHolder holder,
                                     PsiElement element) {
-        validate(resources, holder, element, OppModelConstants.getJsonObject()::equals, ERROR_MESSAGE_JSON);
+        validate(resources, holder, element, OntologyModelConstants.getJsonObject()::equals, ERROR_MESSAGE_JSON);
     }
 
     public static boolean validateString(Set<OntResource> resources,
@@ -182,58 +182,58 @@ public class TTLValidationUtil {
         return validate(resources,
                 holder,
                 element,
-                OppModelConstants.getXsdStringInstance()::equals,
+                OntologyModelConstants.getXsdStringInstance()::equals,
                 ERROR_MESSAGE_STRING);
     }
 
     public static void validateClassName(Set<OntResource> resources,
                                          ProblemsHolder holder,
                                          PsiElement element) {
-        validate(resources, holder, element, OppModel.getInstance()::isClass, ERROR_MESSAGE_CLASSNAME);
+        validate(resources, holder, element, OntologyModel.getInstance()::isClass, ERROR_MESSAGE_CLASSNAME);
     }
 
     public static void validateGraphShape(Set<OntResource> resources,
                                           ProblemsHolder holder,
                                           PsiElement element) {
-        validate(resources, holder, element, TTLValidationUtil::isGraphshapeInstance, ERROR_MESSAGE_GRAPH_SHAPE);
+        validate(resources, holder, element, OntologyValidationUtil::isGraphshapeInstance, ERROR_MESSAGE_GRAPH_SHAPE);
     }
 
     public static void validateDateTime(Set<OntResource> resources, ProblemsHolder holder, PsiElement element) {
         validate(resources, holder, element,
                 resource ->
-                        isIndividualOfType(resource, OppModelConstants.getXsdDatetime()),
+                        isIndividualOfType(resource, OntologyModelConstants.getXsdDatetime()),
                 ERROR_MESSAGE_DATE_TIME);
     }
 
     private static boolean isNamedGraphInstance(OntResource resource) {
-        return isIndividualOfType(resource, OppModelConstants.getNamedGraphClass());
+        return isIndividualOfType(resource, OntologyModelConstants.getNamedGraphClass());
     }
 
     public static boolean isGraphshapeInstance(OntResource resource) {
-        return isIndividualOfType(resource, OppModelConstants.getGraphShape());
+        return isIndividualOfType(resource, OntologyModelConstants.getGraphShape());
     }
 
     private static boolean isIndividualOfType(OntResource resource, OntClass type) {
-        return OppModel.getInstance().isIndividual(resource) &&
-                OppModel.getInstance().listOntClasses(resource).contains(type);
+        return OntologyModel.getInstance().isIndividual(resource) &&
+                OntologyModel.getInstance().listOntClasses(resource).contains(type);
     }
 
     private static String createIncompatibleTypesWarning(Set<OntResource> resourcesA,
                                                          Set<OntResource> resourcesB) {
         return "Incompatible types:" + "\n" +
                 "cannot assign " + "\n" +
-                TTLResourceUtil.describeUrisJoined(resourcesB) + "\n" +
+                OntologyResourceUtil.describeUrisJoined(resourcesB) + "\n" +
                 "to" + "\n" +
-                TTLResourceUtil.describeUrisJoined(resourcesA);
+                OntologyResourceUtil.describeUrisJoined(resourcesA);
     }
 
     private static String createRequiredTypesWarning(Set<OntResource> required,
                                                      Set<OntResource> provided) {
         return "Incompatible types:" + "\n" +
                 "required " + "\n" +
-                TTLResourceUtil.describeUrisJoined(required) + "\n" +
+                OntologyResourceUtil.describeUrisJoined(required) + "\n" +
                 "provided" + "\n" +
-                TTLResourceUtil.describeUrisJoined(provided);
+                OntologyResourceUtil.describeUrisJoined(provided);
     }
 
     public static void validateValues(Set<String> paramValues,

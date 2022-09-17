@@ -1,7 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.query;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ class ODTResolvableQueryArrayTest extends ODTTestCase {
         final Set<String> resources = getUris(
                 resolveQueryStatement("/ont:ClassA / ^rdf:type / ont:booleanPredicate | ont:classPredicate"));
         Assertions.assertTrue(resources.contains(createOntologyUri("ClassBSub_INSTANCE")));
-        Assertions.assertTrue(resources.contains(OppModelConstants.getXsdBooleanInstance().getURI()));
+        Assertions.assertTrue(resources.contains(OntologyModelConstants.getXsdBooleanInstance().getURI()));
     }
 
 }

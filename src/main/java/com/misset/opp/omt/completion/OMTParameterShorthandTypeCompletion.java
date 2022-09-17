@@ -4,11 +4,11 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.patterns.PatternCondition;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
 import com.misset.opp.omt.meta.model.variables.OMTParamMetaType;
 import com.misset.opp.omt.psi.OMTFile;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 
@@ -61,8 +61,8 @@ public class OMTParameterShorthandTypeCompletion extends CompletionContributor {
         Map<String, String> availableNamespaces = file.getAvailableNamespaces(parameters.getPosition());
 
         // show all classes instances:
-        OppModel.getInstance().listClasses().stream()
-                .map(resource -> TTLResourceUtil.getTypeLookupElement(resource, availableNamespaces))
+        OntologyModel.getInstance().listClasses().stream()
+                .map(resource -> OntologyResourceUtil.getTypeLookupElement(resource, availableNamespaces))
                 .filter(Objects::nonNull)
                 // sort so that items with prefixes are shown first
                 .map(lookupElementBuilder -> PrioritizedLookupElement.withPriority(

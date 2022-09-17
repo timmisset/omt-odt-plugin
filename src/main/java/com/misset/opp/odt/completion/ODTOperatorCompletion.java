@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.SharedProcessingContext;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.ODTTypeFilterProvider;
@@ -18,7 +19,6 @@ import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.ContextFactory;
 import com.misset.opp.resolvable.psi.PsiCallable;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,7 +74,7 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
         Predicate<Set<OntResource>> precedingFilter;
         Set<OntResource> previousStep = queryStep.resolvePreviousStep();
         precedingFilter = acceptableInput -> previousStep.isEmpty() ||
-                OppModel.getInstance().areCompatible(acceptableInput, previousStep);
+                OntologyModel.getInstance().areCompatible(acceptableInput, previousStep);
 
         ODTCall call = PsiTreeUtil.getParentOfType(position, ODTCall.class);
         Context context = call != null ? ContextFactory.fromCall(call) : null;

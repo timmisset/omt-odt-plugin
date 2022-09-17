@@ -6,9 +6,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.resolvable.psi.PsiResolvable;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +68,7 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
 
     private void validateReturnValue(PsiResolvable resolvable, @NotNull ProblemsHolder holder) {
         Set<OntResource> resolved = resolvable.resolve();
-        if (!resolved.isEmpty() && !resolved.contains(OppModelConstants.getVoidResponse())) {
+        if (!resolved.isEmpty() && !resolved.contains(OntologyModelConstants.getVoidResponse())) {
             // something is being returned, show warning:
             holder.registerProblem(resolvable, RESULT_IS_IGNORED, WEAK_WARNING);
         }

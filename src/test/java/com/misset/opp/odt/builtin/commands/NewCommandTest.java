@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -32,13 +32,13 @@ class NewCommandTest extends BaseBuiltinTest {
 
     @Test
     void testArgumentTypes() {
-        testArgument(NewCommand.INSTANCE, 0, OppModelConstants.getXsdString(), TTLValidationUtil.ERROR_MESSAGE_CLASSNAME);
-        testArgument(NewCommand.INSTANCE, 1, OppModelConstants.getMedewerkerGraph(), TTLValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
+        testArgument(NewCommand.INSTANCE, 0, OntologyModelConstants.getXsdString(), OntologyValidationUtil.ERROR_MESSAGE_CLASSNAME);
+        testArgument(NewCommand.INSTANCE, 1, OntologyModelConstants.getMedewerkerGraph(), OntologyValidationUtil.ERROR_MESSAGE_NAMED_GRAPH);
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(NewCommand.INSTANCE, 1, OppModelConstants.getNamedGraph());
+        assertGetAcceptableArgumentType(NewCommand.INSTANCE, 1, OntologyModelConstants.getNamedGraph());
         assertGetAcceptableArgumentTypeIsNull(NewCommand.INSTANCE, 0);
     }
 }

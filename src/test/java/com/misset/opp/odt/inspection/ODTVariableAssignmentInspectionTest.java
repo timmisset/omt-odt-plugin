@@ -1,10 +1,10 @@
 package com.misset.opp.odt.inspection;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.testcase.ODTFileTestImpl;
 import com.misset.opp.odt.testcase.ODTTestCase;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +62,7 @@ class ODTVariableAssignmentInspectionTest extends ODTTestCase {
         ODTFileTestImpl odtFileTest = configureByText(content);
         Callable callable = mock(Callable.class);
         doReturn("@callable").when(callable).getCallId();
-        doReturn(Collections.singleton(OppModelConstants.getXsdStringInstance())).when(callable).getSecondReturnArgument();
+        doReturn(Collections.singleton(OntologyModelConstants.getXsdStringInstance())).when(callable).getSecondReturnArgument();
         odtFileTest.addCallable(callable);
         inspection.assertNoWarning(WARNING_NO_SECOND_ARGUMENT);
     }

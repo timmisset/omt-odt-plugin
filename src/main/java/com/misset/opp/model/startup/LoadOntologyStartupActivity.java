@@ -1,4 +1,4 @@
-package com.misset.opp.ttl.startup;
+package com.misset.opp.model.startup;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,11 +21,11 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.misset.opp.omt.OMTFileType;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelLoader;
+import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.settings.SettingsState;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelLoader;
-import com.misset.opp.ttl.util.TTLScopeUtil;
+import com.misset.opp.util.Icons;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.ontology.OntClass;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +59,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                         .createNotification(
                                 "Change detected in TTL file that is part of the current model, entire model will be reloaded",
                                 NotificationType.INFORMATION)
-                        .setIcon(OMTFileType.INSTANCE.getIcon())
+                        .setIcon(Icons.PLUGIN_ICON)
                         .notify(project);
 
                 task.run(progressIndicator);
@@ -128,7 +128,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                         .createNotification(
                                 "Could not find the Ontology, please provide the root.ttl location in the Settings",
                                 NotificationType.ERROR)
-                        .setIcon(OMTFileType.INSTANCE.getIcon())
+                        .setIcon(Icons.PLUGIN_ICON)
                         .notify(project);
             }
 
@@ -148,7 +148,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                 project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
                     @Override
                     public void after(@NotNull List<? extends @NotNull VFileEvent> events) {
-                        List<VirtualFile> ttlVirtualFiles = TTLScopeUtil.getTTLVirtualFiles();
+                        List<VirtualFile> ttlVirtualFiles = OntologyScopeUtil.getTTLVirtualFiles();
                         if (events.stream().anyMatch(vFileEvent -> ttlVirtualFiles.contains(vFileEvent.getFile()))) {
                             // reload the model
                             scheduleTask(getBackgroundableTask(project), indicator, project);
@@ -158,7 +158,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
             }
 
             private void loadOntology(VirtualFile rootFile) {
-                OppModelLoader.getInstance().read(rootFile.toNioPath().toFile());
+                OntologyModelLoader.getInstance().read(rootFile.toNioPath().toFile());
             }
         };
     }
@@ -170,9 +170,9 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                 SettingsState instance = SettingsState.getInstance(project);
                 instance.getKnownInstances().forEach(
                         (instanceUri, typeUri) -> {
-                            OntClass ontClass = OppModel.getInstance().getClass(typeUri);
+                            OntClass ontClass = OntologyModel.getInstance().getClass(typeUri);
                             if (ontClass != null) {
-                                OppModel.getInstance().createIndividual(ontClass, instanceUri);
+                                OntologyModel.getInstance().createIndividual(ontClass, instanceUri);
                             }
                         }
                 );
@@ -192,9 +192,9 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                 getReferenceFiles(project)
                         .forEach(file -> processJson(file, references));
                 SettingsState instance = SettingsState.getInstance(project);
-                OppModel oppModel = OppModel.getInstance();
-                if (oppModel != null) {
-                    oppModel.addFromJson(references, indicator, instance.getReferenceDetails());
+                OntologyModel ontologyModel = OntologyModel.getInstance();
+                if (ontologyModel != null) {
+                    ontologyModel.addFromJson(references, indicator, instance.getReferenceDetails());
                 }
             }
 

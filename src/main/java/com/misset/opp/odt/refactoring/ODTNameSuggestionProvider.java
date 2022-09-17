@@ -5,13 +5,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.rename.NameSuggestionProvider;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.ODTLanguage;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Resolvable;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
@@ -130,7 +130,7 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
 
     private List<String> getTypeSuggestions(Resolvable resolvable) {
         return resolvable.resolve().stream()
-                .map(OppModel.getInstance()::toClass)
+                .map(OntologyModel.getInstance()::toClass)
                 .map(this::getSuperClasses)
                 .flatMap(Collection::stream)
                 .distinct()
@@ -148,8 +148,8 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
         List<String> classLocalNames = new ArrayList<>();
         classLocalNames.add(ontClass.getLocalName());
         classLocalNames.addAll(ontClasses.stream()
-                .filter(superClass -> superClass != OppModelConstants.getOwlClass() &&
-                        superClass != OppModelConstants.getOwlThingClass())
+                .filter(superClass -> superClass != OntologyModelConstants.getOwlClass() &&
+                        superClass != OntologyModelConstants.getOwlThingClass())
                 .map(Resource::getLocalName)
                 .collect(Collectors.toList()));
         return classLocalNames;

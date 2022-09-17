@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,10 +14,10 @@ class RepeatOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         // no known error state, return input + catch
         assertResolved(RepeatOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdStringInstance()),
-                Set.of(OppModelConstants.getXsdStringInstance(),
-                        OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()));
+                Set.of(OntologyModelConstants.getXsdStringInstance()),
+                Set.of(OntologyModelConstants.getXsdStringInstance(),
+                        OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -33,14 +33,14 @@ class RepeatOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidArgument(RepeatOperator.INSTANCE, 1, OppModelConstants.getXsdNumberInstance());
-        assertValidArgument(RepeatOperator.INSTANCE, 2, OppModelConstants.getXsdNumberInstance());
+        assertValidArgument(RepeatOperator.INSTANCE, 1, OntologyModelConstants.getXsdNumberInstance());
+        assertValidArgument(RepeatOperator.INSTANCE, 2, OntologyModelConstants.getXsdNumberInstance());
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 1, OppModelConstants.getXsdNumberInstance());
-        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 2, OppModelConstants.getXsdNumberInstance());
+        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 1, OntologyModelConstants.getXsdNumberInstance());
+        assertGetAcceptableArgumentType(RepeatOperator.INSTANCE, 2, OntologyModelConstants.getXsdNumberInstance());
         assertGetAcceptableArgumentTypeIsNull(RepeatOperator.INSTANCE, 0);
     }
 }

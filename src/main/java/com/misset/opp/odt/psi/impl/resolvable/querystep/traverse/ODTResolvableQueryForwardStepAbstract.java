@@ -1,8 +1,8 @@
 package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
 import com.intellij.lang.ASTNode;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.psi.impl.resolvable.querystep.ODTResolvableQualifiedUriStepAbstract;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public abstract class ODTResolvableQueryForwardStepAbstract extends ODTResolvabl
             return Collections.emptySet();
         }
 
-        final OppModel model = OppModel.getInstance();
+        final OntologyModel model = OntologyModel.getInstance();
         if (isRootStep()) {
             // when the path start with a root curie, resolve the curie and return it:
             final OntResource resource = model.getOntResource(fullyQualifiedUri, getProject());

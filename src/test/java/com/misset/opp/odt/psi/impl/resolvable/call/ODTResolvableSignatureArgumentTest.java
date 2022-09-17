@@ -2,10 +2,10 @@ package com.misset.opp.odt.psi.impl.resolvable.call;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,9 +22,9 @@ class ODTResolvableSignatureArgumentTest extends ODTTestCase {
 
     public static Stream<Arguments> getCommandArguments() {
         return Stream.of(
-                Arguments.of("{ RETURN 'a'; }", OppModelConstants.getXsdStringInstance()),
-                Arguments.of("{ 'a'; }", OppModelConstants.getVoidResponse()),
-                Arguments.of("'a'", OppModelConstants.getXsdStringInstance())
+                Arguments.of("{ RETURN 'a'; }", OntologyModelConstants.getXsdStringInstance()),
+                Arguments.of("{ 'a'; }", OntologyModelConstants.getVoidResponse()),
+                Arguments.of("'a'", OntologyModelConstants.getXsdStringInstance())
         );
     }
 
@@ -63,7 +63,7 @@ class ODTResolvableSignatureArgumentTest extends ODTTestCase {
         ReadAction.run(() -> {
             ODTSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTSignatureArgument.class, true);
             Predicate<Set<OntResource>> typeFilter = Objects.requireNonNull(signatureArgument).getTypeFilter(signatureArgument);
-            assertFalse(typeFilter.test(Collections.singleton(OppModelConstants.getVoidResponse())));
+            assertFalse(typeFilter.test(Collections.singleton(OntologyModelConstants.getVoidResponse())));
         });
     }
 
@@ -74,8 +74,8 @@ class ODTResolvableSignatureArgumentTest extends ODTTestCase {
         ReadAction.run(() -> {
             ODTSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTSignatureArgument.class, true);
             Predicate<Set<OntResource>> typeFilter = signatureArgument.getTypeFilter(signatureArgument);
-            assertFalse(typeFilter.test(Collections.singleton(OppModelConstants.getXsdIntegerInstance())));
-            assertTrue(typeFilter.test(Collections.singleton(OppModelConstants.getXsdStringInstance())));
+            assertFalse(typeFilter.test(Collections.singleton(OntologyModelConstants.getXsdIntegerInstance())));
+            assertTrue(typeFilter.test(Collections.singleton(OntologyModelConstants.getXsdStringInstance())));
         });
     }
 }

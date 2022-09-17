@@ -1,10 +1,10 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.ArgumentValidator;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,19 +36,19 @@ public class TimesOperator extends BuiltinMathOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            TTLValidationUtil.validateNumber(call.resolvePreviousStep(), holder, call);
+            OntologyValidationUtil.validateNumber(call.resolvePreviousStep(), holder, call);
         }
         ArgumentValidator.validateAllArguments(call, holder, ArgumentValidator::validateNumberArgument);
     }
 
     @Override
     public @Nullable Set<OntResource> getAcceptableArgumentTypeWithContext(int index, PsiCall call) {
-        return Set.of(OppModelConstants.getXsdNumberInstance());
+        return Set.of(OntologyModelConstants.getXsdNumberInstance());
     }
 
     @Override
     public Set<OntResource> getAcceptableInputType() {
-        return Set.of(OppModelConstants.getXsdNumberInstance());
+        return Set.of(OntologyModelConstants.getXsdNumberInstance());
     }
 
     @Override

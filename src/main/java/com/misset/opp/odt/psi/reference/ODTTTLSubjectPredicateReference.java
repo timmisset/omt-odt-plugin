@@ -6,11 +6,11 @@ import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.stubs.StubIndex;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
-import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.stubs.index.TTLObjectStubIndex;
-import com.misset.opp.ttl.util.TTLScopeUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +34,7 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
         }
         Set<OntResource> previousStep = element.resolvePreviousStep();
         List<String> acceptableSubjectClasses = previousStep.stream()
-                .map(OppModel.getInstance()::listOntClasses)
+                .map(OntologyModel.getInstance()::listOntClasses)
                 .flatMap(Collection::stream)
                 .map(Resource::getURI)
                 .collect(Collectors.toList());
@@ -42,7 +42,7 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
                         TTLObjectStubIndex.KEY,
                         element.getFullyQualifiedUri(),
                         element.getProject(),
-                        TTLScopeUtil.getModelSearchScope(myElement.getProject()),
+                        OntologyScopeUtil.getModelSearchScope(myElement.getProject()),
                         TTLObject.class
                 ).stream()
                 .filter(TTLObject::isPredicate)

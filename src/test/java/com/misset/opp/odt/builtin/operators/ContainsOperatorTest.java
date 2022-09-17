@@ -1,8 +1,8 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,13 +11,13 @@ class ContainsOperatorTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertResolved(ContainsOperator.INSTANCE, OppModelConstants.getXsdBooleanInstance());
+        assertResolved(ContainsOperator.INSTANCE, OntologyModelConstants.getXsdBooleanInstance());
     }
 
     @Test
     void testArgumentTypes() {
-        assertValidInput(ContainsOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
-        assertInvalidInput(ContainsOperator.INSTANCE, OppModelConstants.getXsdDecimalInstance(), TTLValidationUtil.ERROR_MESSAGE_STRING);
+        assertValidInput(ContainsOperator.INSTANCE, OntologyModelConstants.getXsdStringInstance());
+        assertInvalidInput(ContainsOperator.INSTANCE, OntologyModelConstants.getXsdDecimalInstance(), OntologyValidationUtil.ERROR_MESSAGE_STRING);
     }
 
     @Test
@@ -33,14 +33,14 @@ class ContainsOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(ContainsOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance());
-        assertGetAcceptableArgumentType(ContainsOperator.INSTANCE, 1, OppModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(ContainsOperator.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(ContainsOperator.INSTANCE, 1, OntologyModelConstants.getXsdBooleanInstance());
         assertGetAcceptableArgumentTypeIsNull(ContainsOperator.INSTANCE, 2);
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(ContainsOperator.INSTANCE, OppModelConstants.getXsdStringInstance());
+        assertGetAcceptableInputType(ContainsOperator.INSTANCE, OntologyModelConstants.getXsdStringInstance());
     }
 
     @Test

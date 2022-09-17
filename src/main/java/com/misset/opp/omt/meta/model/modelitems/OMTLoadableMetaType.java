@@ -3,6 +3,8 @@ package com.misset.opp.omt.meta.model.modelitems;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.scalars.values.OMTLoadablePathMetaType;
@@ -10,8 +12,6 @@ import com.misset.opp.omt.meta.scalars.values.OMTLoadableSchemaMetaType;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.meta.model.YamlStringType;
@@ -54,7 +54,7 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
 
         parameterNames.put(0, "$context");
 
-        parameterTypes.put(0, Collections.singleton(OppModelConstants.getXsdStringInstance()));
+        parameterTypes.put(0, Collections.singleton(OntologyModelConstants.getXsdStringInstance()));
 
         CONTEXT_SELECTORS.put("local", "returns the calling context");
         CONTEXT_SELECTORS.put("parent", "returns the parent of the calling context");
@@ -79,7 +79,7 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
 
     @Override
     public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
-        return Set.of(OppModelConstants.getJsonObject());
+        return Set.of(OntologyModelConstants.getJsonObject());
     }
 
     @Override
@@ -177,7 +177,7 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
         if (argumentValue != null) {
             argumentValue = argumentValue.replaceAll("^['\"](.*)['\"]$", "$1");
             PsiElement signatureArgumentElement = call.getCallSignatureArgumentElement(i);
-            TTLValidationUtil.validateValues(paramValues, argumentValue, holder, signatureArgumentElement);
+            OntologyValidationUtil.validateValues(paramValues, argumentValue, holder, signatureArgumentElement);
         }
 
     }

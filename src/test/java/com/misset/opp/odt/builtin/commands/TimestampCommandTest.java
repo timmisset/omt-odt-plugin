@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.commands;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ class TimestampCommandTest extends BaseBuiltinTest {
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(TimeStampCommand.INSTANCE, OppModelConstants.getXsdIntegerInstance());
+        assertReturns(TimeStampCommand.INSTANCE, OntologyModelConstants.getXsdIntegerInstance());
     }
 
     @Test

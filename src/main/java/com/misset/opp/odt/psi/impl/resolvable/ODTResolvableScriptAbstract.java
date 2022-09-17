@@ -2,11 +2,11 @@ package com.misset.opp.odt.psi.impl.resolvable;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.ODTReturnStatement;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiResolvable;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ public abstract class ODTResolvableScriptAbstract extends ODTResolvableAbstract 
     public @NotNull Set<OntResource> resolve() {
         Collection<ODTReturnStatement> returnStatements = PsiTreeUtil.findChildrenOfType(this, ODTReturnStatement.class);
         if (returnStatements.isEmpty()) {
-            return Collections.singleton(OppModelConstants.getVoidResponse());
+            return Collections.singleton(OntologyModelConstants.getVoidResponse());
         }
         return returnStatements
                 .stream()

@@ -1,7 +1,7 @@
 package com.misset.opp.odt.completion;
 
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntClass;
 import org.junit.jupiter.api.Test;
 
@@ -25,9 +25,9 @@ class ODTEquationStatementCompletionTest extends ODTTestCase {
 
     @Test
     void testShowsInstancesForInstanceOfClass() {
-        OntClass ontClass = OppModel.getInstance().getClass("http://ontology#ClassB");
-        oppModel.createIndividual(ontClass, "http://ontology#ClassB_1");
-        oppModel.createIndividual(ontClass, "http://ontology#ClassB_2");
+        OntClass ontClass = OntologyModel.getInstance().getClass("http://ontology#ClassB");
+        ontologyModel.createIndividual(ontClass, "http://ontology#ClassB_1");
+        ontologyModel.createIndividual(ontClass, "http://ontology#ClassB_2");
         String content = withPrefixes("/ont:ClassB / ^rdf:type == <caret>");
         configureByText(content, true);
         List<String> lookupStrings = completion.getLookupStrings();

@@ -4,13 +4,13 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.builtin.commands.NewGraphCommand;
 import com.misset.opp.odt.completion.ODTCompletionUtil;
 import com.misset.opp.odt.psi.ODTCommandCall;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.ttl.model.OppModelConstants;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -46,8 +46,8 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
         result = result.withPrefixMatcher(curiePrefixMatcher);
 
         // show all graphshape instances:
-        OppModelConstants.getGraphShape().listInstances().mapWith(
-                        resource -> TTLResourceUtil
+        OntologyModelConstants.getGraphShape().listInstances().mapWith(
+                        resource -> OntologyResourceUtil
                                 .getRootLookupElement(resource, "Graphshape", availableNamespaces))
                 .forEachRemaining(result::addElement);
     }

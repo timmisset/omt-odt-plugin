@@ -10,11 +10,11 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.stubs.StubIndex;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
-import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
-import com.misset.opp.ttl.util.TTLScopeUtil;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntClass;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class ODTJavaDocTTLSubjectReference extends PsiReferenceBase.Poly<PsiDocT
     public OntClass getClassFromModel() {
         return ODTDocumentationUtil.getTypeFromDocTag(getElement(), position)
                 .stream()
-                .map(OppModel.getInstance()::toClass)
+                .map(OntologyModel.getInstance()::toClass)
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
@@ -53,7 +53,7 @@ public class ODTJavaDocTTLSubjectReference extends PsiReferenceBase.Poly<PsiDocT
                                 TTLSubjectStubIndex.KEY,
                                 classFromModel.getURI(),
                                 element.getProject(),
-                                TTLScopeUtil.getModelSearchScope(myElement.getProject()),
+                                OntologyScopeUtil.getModelSearchScope(myElement.getProject()),
                                 TTLSubject.class
                         ).stream()
                         .map(PsiElementResolveResult::new)

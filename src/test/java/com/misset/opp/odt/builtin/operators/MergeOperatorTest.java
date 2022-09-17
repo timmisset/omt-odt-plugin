@@ -1,9 +1,9 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemHighlightType;
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
 import com.misset.opp.resolvable.psi.PsiCall;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,19 +21,19 @@ class MergeOperatorTest extends BaseBuiltinTest {
     protected void testResolve() {
         // combine input + argument
         assertResolved(MergeOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdStringInstance()),
-                Set.of(OppModelConstants.getXsdStringInstance(), OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()));
+                Set.of(OntologyModelConstants.getXsdStringInstance()),
+                Set.of(OntologyModelConstants.getXsdStringInstance(), OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
     void testResolveTwoOrMoreArguments() {
         // combine arguments
         assertResolved(MergeOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdStringInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance(), OppModelConstants.getXsdDateInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdDateInstance()));
+                Set.of(OntologyModelConstants.getXsdStringInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance(), OntologyModelConstants.getXsdDateInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdDateInstance()));
     }
 
     @Test
@@ -49,7 +49,7 @@ class MergeOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationsHasWarningWhenNotAllArgumentsAreEqual() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdBooleanInstance()));
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdBooleanInstance()));
         MergeOperator.INSTANCE.validate(call, holder);
 
         verify(holder).registerProblem(eq(call.getCallSignatureElement()), startsWith("Incompatible types:"), eq(ProblemHighlightType.WARNING));
@@ -57,8 +57,8 @@ class MergeOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationsHasWarningWhenInputAndArgumentAreNotEqual() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdBooleanInstance()));
-        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdBooleanInstance()));
+        doReturn(Set.of(OntologyModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
         MergeOperator.INSTANCE.validate(call, holder);
 
         verify(holder).registerProblem(eq(call), startsWith("Incompatible types:"), eq(ProblemHighlightType.WARNING));
@@ -66,8 +66,8 @@ class MergeOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testSpecificValidationHasWarningWhen2OrMoreArgumentsAreCombinedWithAnInput() {
-        PsiCall call = getCall(Set.of(OppModelConstants.getXsdStringInstance()), Set.of(OppModelConstants.getXsdStringInstance()));
-        doReturn(Set.of(OppModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
+        PsiCall call = getCall(Set.of(OntologyModelConstants.getXsdStringInstance()), Set.of(OntologyModelConstants.getXsdStringInstance()));
+        doReturn(Set.of(OntologyModelConstants.getXsdStringInstance())).when(call).resolvePreviousStep();
         MergeOperator.INSTANCE.validate(call, holder);
 
         verify(holder).registerProblem(eq(call), startsWith("Using 2 or more arguments will ignore the input value"), eq(ProblemHighlightType.WARNING));

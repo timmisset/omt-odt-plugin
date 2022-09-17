@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,27 +13,27 @@ class PlusOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(PlusOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdIntegerInstance()),
-                Set.of(OppModelConstants.getXsdIntegerInstance()),
-                Set.of(OppModelConstants.getXsdIntegerInstance())
+                Set.of(OntologyModelConstants.getXsdIntegerInstance()),
+                Set.of(OntologyModelConstants.getXsdIntegerInstance()),
+                Set.of(OntologyModelConstants.getXsdIntegerInstance())
         );
     }
 
     @Test
     void testResolveDecimal() {
         assertResolved(PlusOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdIntegerInstance()),
-                Set.of(OppModelConstants.getXsdDecimalInstance()),
-                Set.of(OppModelConstants.getXsdDecimalInstance())
+                Set.of(OntologyModelConstants.getXsdIntegerInstance()),
+                Set.of(OntologyModelConstants.getXsdDecimalInstance()),
+                Set.of(OntologyModelConstants.getXsdDecimalInstance())
         );
     }
 
     @Test
     void testResolveDecimalLeading() {
         assertResolved(PlusOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdDecimalInstance()),
-                Set.of(OppModelConstants.getXsdDecimalInstance()),
-                Set.of(OppModelConstants.getXsdIntegerInstance())
+                Set.of(OntologyModelConstants.getXsdDecimalInstance()),
+                Set.of(OntologyModelConstants.getXsdDecimalInstance()),
+                Set.of(OntologyModelConstants.getXsdIntegerInstance())
         );
     }
 

@@ -13,6 +13,8 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.*;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.documentation.DocumentationProvider;
+import com.misset.opp.model.OntologyModel;
+import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.documentation.ODTDocumented;
 import com.misset.opp.odt.inspection.type.ODTCodeUntypedInspectionWarning;
@@ -20,8 +22,6 @@ import com.misset.opp.odt.psi.*;
 import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.Variable;
-import com.misset.opp.ttl.model.OppModel;
-import com.misset.opp.ttl.util.TTLResourceUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -160,7 +160,7 @@ public abstract class ODTBaseVariable
                     containingFile,
                     PsiModificationTracker.MODIFICATION_COUNT,
                     ODTCodeUntypedInspectionWarning.PARAM_ANNOTATION,
-                    OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
+                    OntologyModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER);
         });
     }
 
@@ -193,11 +193,11 @@ public abstract class ODTBaseVariable
         String typeLabel = filtered.size() == 1 ? "Type:" : "Types:";
         sb.append(
                 DocumentationProvider.getKeyValueSection(typeLabel,
-                        filtered.isEmpty() ? "Unknown" : TTLResourceUtil.describeUrisForLookupJoined(filtered)));
+                        filtered.isEmpty() ? "Unknown" : OntologyResourceUtil.describeUrisForLookupJoined(filtered)));
         if (!unfiltered.equals(filtered)) {
             sb.append(
                     DocumentationProvider.getKeyValueSection("Unfiltered:",
-                            TTLResourceUtil.describeUrisForLookupJoined(unfiltered, "<br>")));
+                            OntologyResourceUtil.describeUrisForLookupJoined(unfiltered, "<br>")));
         }
         sb.append(DocumentationProvider.getKeyValueSection("Scope:", isGlobal() ? "Global" : "Local"));
         sb.append(DocumentationProvider.getKeyValueSection("Readonly:", isGlobal() || isReadonly() ? "Yes" : "No"));

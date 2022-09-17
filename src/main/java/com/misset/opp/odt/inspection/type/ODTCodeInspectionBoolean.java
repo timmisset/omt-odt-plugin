@@ -4,9 +4,9 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.psi.ODTBooleanStatement;
 import com.misset.opp.odt.psi.ODTIfBlock;
-import com.misset.opp.ttl.util.TTLValidationUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,12 +40,12 @@ public class ODTCodeInspectionBoolean extends LocalInspectionTool {
                                          @NotNull ODTBooleanStatement booleanStatement) {
         booleanStatement.getQueryList().forEach(
                 query ->
-                        TTLValidationUtil.validateBoolean(query.resolve(), holder, query)
+                        OntologyValidationUtil.validateBoolean(query.resolve(), holder, query)
         );
     }
 
     private void inspectIfBlock(@NotNull ProblemsHolder holder,
                                 @NotNull ODTIfBlock ifBlock) {
-        TTLValidationUtil.validateBoolean(ifBlock.getQuery().resolve(), holder, ifBlock.getQuery());
+        OntologyValidationUtil.validateBoolean(ifBlock.getQuery().resolve(), holder, ifBlock.getQuery());
     }
 }

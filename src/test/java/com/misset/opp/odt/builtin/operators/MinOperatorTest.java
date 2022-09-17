@@ -1,7 +1,7 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.builtin.BaseBuiltinTest;
-import com.misset.opp.ttl.model.OppModelConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ class MinOperatorTest extends BaseBuiltinTest {
     @Test
     protected void testResolve() {
         assertResolved(MinOperator.INSTANCE,
-                Set.of(OppModelConstants.getXsdBooleanInstance()),
-                Set.of(OppModelConstants.getXsdBooleanInstance()));
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()),
+                Set.of(OntologyModelConstants.getXsdBooleanInstance()));
     }
 
     @Test
@@ -30,23 +30,23 @@ class MinOperatorTest extends BaseBuiltinTest {
 
     @Test
     void testValidArguments() {
-        assertValidInput(MinOperator.INSTANCE, OppModelConstants.getXsdNumberInstance());
-        assertValidInput(MinOperator.INSTANCE, OppModelConstants.getXsdDatetimeInstance());
-        assertInvalidInput(MinOperator.INSTANCE, OppModelConstants.getXsdStringInstance(), "Acceptable types:");
+        assertValidInput(MinOperator.INSTANCE, OntologyModelConstants.getXsdNumberInstance());
+        assertValidInput(MinOperator.INSTANCE, OntologyModelConstants.getXsdDatetimeInstance());
+        assertInvalidInput(MinOperator.INSTANCE, OntologyModelConstants.getXsdStringInstance(), "Acceptable types:");
 
-        assertValidArgument(MinOperator.INSTANCE, 0, OppModelConstants.getXsdNumberInstance());
-        assertValidArgument(MinOperator.INSTANCE, 0, OppModelConstants.getXsdDatetimeInstance());
-        assertInvalidArgument(MinOperator.INSTANCE, 0, OppModelConstants.getXsdStringInstance(), "Acceptable types:");
+        assertValidArgument(MinOperator.INSTANCE, 0, OntologyModelConstants.getXsdNumberInstance());
+        assertValidArgument(MinOperator.INSTANCE, 0, OntologyModelConstants.getXsdDatetimeInstance());
+        assertInvalidArgument(MinOperator.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance(), "Acceptable types:");
     }
 
     @Test
     void testGetAcceptableInputType() {
-        assertGetAcceptableInputType(MinOperator.INSTANCE, Set.of(OppModelConstants.getXsdNumberInstance(), OppModelConstants.getXsdDatetimeInstance()));
+        assertGetAcceptableInputType(MinOperator.INSTANCE, Set.of(OntologyModelConstants.getXsdNumberInstance(), OntologyModelConstants.getXsdDatetimeInstance()));
     }
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(MinOperator.INSTANCE, 0, Set.of(OppModelConstants.getXsdNumberInstance(), OppModelConstants.getXsdDatetimeInstance()));
+        assertGetAcceptableArgumentType(MinOperator.INSTANCE, 0, Set.of(OntologyModelConstants.getXsdNumberInstance(), OntologyModelConstants.getXsdDatetimeInstance()));
         assertGetAcceptableArgumentTypeIsNull(MinOperator.INSTANCE, 1);
     }
 }

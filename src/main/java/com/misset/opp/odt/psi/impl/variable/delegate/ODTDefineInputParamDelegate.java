@@ -10,6 +10,7 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.*;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.odt.psi.ODTDefineParam;
 import com.misset.opp.odt.psi.ODTScript;
@@ -18,7 +19,6 @@ import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 
 import java.util.Collections;
@@ -47,7 +47,7 @@ public class ODTDefineInputParamDelegate extends ODTDeclaredVariableDelegate {
         return CachedValuesManager.getCachedValue(element, ONT_TYPE, () ->
                 new CachedValueProvider.Result<>(calculateType(),
                         containingFile,
-                        OppModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
+                        OntologyModel.ONTOLOGY_MODEL_MODIFICATION_TRACKER));
     }
 
     private PsiElement getScope() {

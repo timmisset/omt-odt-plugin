@@ -1,7 +1,7 @@
 package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.testcase.ODTTestCase;
-import com.misset.opp.ttl.model.OppModel;
 import org.apache.jena.ontology.OntResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class ODTResolvableQueryForwardStepAbstractTest extends ODTTestCase {
         final Set<String> resourceUris = getUris(resources);
         Assertions.assertTrue(resourceUris.contains(createOntologyUri("ClassB_INSTANCE")));
         Assertions.assertTrue(resourceUris.contains(createOntologyUri("ClassBSub_INSTANCE")));
-        Assertions.assertTrue(resources.stream().allMatch(OppModel.getInstance()::isIndividual));
+        Assertions.assertTrue(resources.stream().allMatch(OntologyModel.getInstance()::isIndividual));
     }
 
     @Test
@@ -35,6 +35,6 @@ class ODTResolvableQueryForwardStepAbstractTest extends ODTTestCase {
     void testResolveWithoutTypeShouldResolveToClass() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassD / ont:classB");
         Assertions.assertTrue(getUris(resources).contains(createOntologyUri("ClassB")));
-        Assertions.assertTrue(resources.stream().allMatch(OppModel.getInstance()::isClass));
+        Assertions.assertTrue(resources.stream().allMatch(OntologyModel.getInstance()::isClass));
     }
 }
