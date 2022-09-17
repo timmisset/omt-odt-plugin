@@ -26,6 +26,11 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
 
     protected OppModel oppModel;
 
+    /**
+     * Set with prefix/namespace declarations used during tests
+     * Key: Prefix
+     * Value: Namespace, not! wrapped with <>
+     */
     protected final static Map<String, String> testPrefixes = new HashMap<>();
 
     static {
@@ -35,6 +40,7 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
         testPrefixes.put("owl", "http://www.w3.org/2002/07/owl#");
         testPrefixes.put("xsd", "http://www.w3.org/2001/XMLSchema#");
         testPrefixes.put("unique", "http://unique#");
+        testPrefixes.put("sh", "http://www.w3.org/ns/shacl#");
     }
 
     @BeforeEach

@@ -22,7 +22,7 @@ public class TTLSubjectStubElementType extends IStubElementType<TTLSubjectStub, 
 
     @Override
     public @NotNull TTLSubjectStub createStub(@NotNull TTLSubject psi, StubElement<? extends PsiElement> parentStub) {
-        return new TTLSubjectStubImpl(parentStub, psi.getQualifiedUri());
+        return new TTLSubjectStubImpl(parentStub, psi.getQualifiedIri());
     }
 
     @Override

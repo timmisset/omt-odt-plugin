@@ -1,26 +1,25 @@
 package com.misset.opp.ttl.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.misset.opp.ttl.TTLFileType;
-import com.misset.opp.ttl.psi.TTLIri;
 import com.misset.opp.ttl.psi.TTLSubject;
+import com.misset.opp.ttl.psi.extend.TTLQualifiedIriResolver;
 import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
 import org.jetbrains.annotations.NotNull;
 
-public class TTLObjectClassReference extends PsiReferenceBase.Poly<TTLIri> implements PsiPolyVariantReference {
-    public TTLObjectClassReference(TTLIri ttlIri, TextRange textRange) {
-        super(ttlIri, textRange, false);
+import java.util.Objects;
+
+public class TTLClassReference extends PsiReferenceBase.Poly<TTLQualifiedIriResolver> implements PsiPolyVariantReference {
+    public TTLClassReference(TTLQualifiedIriResolver localname, TextRange textRange) {
+        super(localname, textRange, false);
     }
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        String qualifiedUri = getElement().getQualifiedUri();
+        String qualifiedUri = getElement().getQualifiedIri();
         if (qualifiedUri == null) {
             return ResolveResult.EMPTY_ARRAY;
         }
@@ -32,7 +31,17 @@ public class TTLObjectClassReference extends PsiReferenceBase.Poly<TTLIri> imple
                         searchScope,
                         TTLSubject.class)
                 .stream()
+                .map(TTLSubject::getIri)
+                .filter(Objects::nonNull)
                 .map(PsiElementResolveResult::new)
                 .toArray(ResolveResult[]::new);
+    }
+
+    @Override
+    public boolean isReferenceTo(@NotNull PsiElement element) {
+        String qualifiedIri = myElement.getQualifiedIri();
+        return qualifiedIri != null &&
+                element instanceof TTLQualifiedIriResolver &&
+                qualifiedIri.equals(((TTLQualifiedIriResolver) element).getQualifiedIri());
     }
 }

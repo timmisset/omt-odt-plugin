@@ -20,6 +20,8 @@ import com.misset.opp.ttl.psi.TTLIgnored;
 %eof{  return;
 %eof}
 
+%state PREFIX
+
 IRIREF	                                =	"<" ([^\x00-\x20\<\>\"\{\}\|\^\`\\] | {UCHAR})+ ">" /* #x00=NULL #01-#x1F=control codes #x20=space */
 PNAME_NS                                =	{PN_PREFIX}? ":"
 PNAME_LN                                =	{PNAME_NS} {PN_LOCAL}
@@ -70,13 +72,16 @@ PARENTHESES_CLOSE                       =   ")"
 DATATYPE_LEADING                        =   "^^"
 TRUE                                    =   "true"
 FALSE                                   =   "false"
-
 %%
 <YYINITIAL> {
 
     {IRIREF}                            { return TTLTypes.IRIREF; }
     {PNAME_NS}                          { return TTLTypes.PNAME_NS; }
-    {PNAME_LN}                          { return TTLTypes.PNAME_LN; }
+    {PNAME_LN}                          {
+          yypushback(yylength() - yytext().toString().indexOf(":") - 1);
+          yybegin(PREFIX);
+          return TTLTypes.PNAME_NS;
+      }
     {BLANK_NODE_LABEL}                  { return TTLTypes.BLANK_NODE_LABEL; }
     {INTEGER}                           { return TTLTypes.INTEGER; }
     {DECIMAL}                           { return TTLTypes.DECIMAL; }
@@ -110,5 +115,12 @@ FALSE                                   =   "false"
 
     {LANGTAG}                           { return TTLTypes.LANGTAG; }
 
+    [^]                                 { return TokenType.BAD_CHARACTER; }
+}
+
+<PREFIX> {
+    {PN_LOCAL}                          {
+          yybegin(YYINITIAL);
+          return TTLTypes.PN_LOCAL; }
     [^]                                 { return TokenType.BAD_CHARACTER; }
 }

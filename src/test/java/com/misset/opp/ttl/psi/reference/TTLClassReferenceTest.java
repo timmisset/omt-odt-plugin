@@ -2,11 +2,14 @@ package com.misset.opp.ttl.psi.reference;
 
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.ttl.psi.TTLSubject;
+import com.intellij.usageView.UsageInfo;
+import com.misset.opp.ttl.psi.extend.TTLQualifiedIriResolver;
 import com.misset.opp.ttl.testcase.TTLTestCase;
 import org.junit.jupiter.api.Test;
 
-class TTLObjectClassReferenceTest extends TTLTestCase {
+import java.util.Collection;
+
+class TTLClassReferenceTest extends TTLTestCase {
 
     @Test
     void testHasReferenceToSuperclass() {
@@ -23,7 +26,7 @@ class TTLObjectClassReferenceTest extends TTLTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            assertTrue(elementAtCaret instanceof TTLSubject);
+            assertTrue(elementAtCaret instanceof TTLQualifiedIriResolver);
             assertEquals("ont:SuperclassName", elementAtCaret.getText());
         });
     }
@@ -41,9 +44,47 @@ class TTLObjectClassReferenceTest extends TTLTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            assertTrue(elementAtCaret instanceof TTLSubject);
+            assertTrue(elementAtCaret instanceof TTLQualifiedIriResolver);
             assertEquals("ont:ClassName", elementAtCaret.getText());
         });
+    }
+
+    @Test
+    void testCanFindusage() {
+        String content = withPrefixes(
+                "ont:Class<caret>Name\n" +
+                        "  a owl:Class ;\n" +
+                        "  a sh:NodeShape ;\n" +
+                        ".\n" +
+                        "ont:Individual\n" +
+                        "  rdf:type ont:ClassName ;\n" +
+                        ".\n");
+        configureByText(content);
+        underProgress(() -> ReadAction.run(() -> {
+            PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            assertTrue(elementAtCaret instanceof TTLQualifiedIriResolver);
+            Collection<UsageInfo> usages = myFixture.findUsages(elementAtCaret);
+            assertEquals(1, usages.size());
+        }));
+    }
+
+    @Test
+    void testCanFindUsageFromIriRef() {
+        String content = withPrefixes(
+                "<http://ontologie/<caret>ClassName>\n" +
+                        "  a owl:Class ;\n" +
+                        "  a sh:NodeShape ;\n" +
+                        ".\n" +
+                        "ont:Individual\n" +
+                        "  rdf:type <http://ontologie/ClassName> ;\n" +
+                        ".\n");
+        configureByText(content);
+        underProgress(() -> ReadAction.run(() -> {
+            PsiElement elementAtCaret = myFixture.getElementAtCaret();
+            assertTrue(elementAtCaret instanceof TTLQualifiedIriResolver);
+            Collection<UsageInfo> usages = myFixture.findUsages(elementAtCaret);
+            assertEquals(1, usages.size());
+        }));
     }
 
     @Test
@@ -59,7 +100,7 @@ class TTLObjectClassReferenceTest extends TTLTestCase {
         configureByText(content);
         ReadAction.run(() -> {
             PsiElement elementAtCaret = myFixture.getElementAtCaret();
-            assertTrue(elementAtCaret instanceof TTLSubject);
+            assertTrue(elementAtCaret instanceof TTLQualifiedIriResolver);
             assertEquals("ont:ClassName", elementAtCaret.getText());
         });
     }

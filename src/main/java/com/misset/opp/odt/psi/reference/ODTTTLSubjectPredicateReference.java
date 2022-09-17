@@ -9,7 +9,6 @@ import com.intellij.psi.stubs.StubIndex;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.ttl.model.OppModel;
 import com.misset.opp.ttl.psi.TTLObject;
-import com.misset.opp.ttl.psi.spo.TTLSPO;
 import com.misset.opp.ttl.stubs.index.TTLObjectStubIndex;
 import com.misset.opp.ttl.util.TTLScopeUtil;
 import org.apache.jena.ontology.OntResource;
@@ -46,7 +45,7 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
                         TTLScopeUtil.getModelSearchScope(myElement.getProject()),
                         TTLObject.class
                 ).stream()
-                .filter(TTLSPO::isPredicate)
+                .filter(TTLObject::isPredicate)
                 .filter(ttlObject ->
                         // when the previous step cannot be resolved, resolve to every class in the model
                         // that has this predicate. The user can select one when multiple options are available

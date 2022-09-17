@@ -4,28 +4,33 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.misset.opp.ttl.psi.TTLObject;
-import com.misset.opp.ttl.psi.TTLPrefixId;
-import com.misset.opp.ttl.psi.TTLSubject;
-import com.misset.opp.ttl.psi.prefix.TTLBasePrefixedName;
-import com.misset.opp.ttl.psi.spo.TTLSPO;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.ttl.psi.*;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class TTLFindUsagesProvider implements FindUsagesProvider {
     public static final Predicate<PsiElement> CHECK_CAN_FIND_USAGES = element ->
-            element instanceof TTLPrefixId ||
-                    element instanceof TTLBasePrefixedName ||
-                    element instanceof TTLSubject ||
-                    element instanceof TTLObject;
+            isDeclarePrefix(element) || isSubjectIri(element);
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
         return CHECK_CAN_FIND_USAGES.test(psiElement);
+    }
+
+    private static boolean isSubjectIri(PsiElement element) {
+        TTLIri iri = PsiTreeUtil.getParentOfType(element, TTLIri.class, false);
+        return iri != null && iri.getParent() instanceof TTLSubject;
+    }
+
+    private static boolean isDeclarePrefix(PsiElement element) {
+        return element instanceof TTLPrefix &&
+                element.getParent() instanceof TTLDeclarePrefix;
     }
 
     @Override
@@ -35,29 +40,22 @@ public class TTLFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public @Nls @NotNull String getType(@NotNull PsiElement element) {
-        if (element instanceof TTLPrefixId) {
-            return "prefix";
-        } else if (element instanceof TTLBasePrefixedName) {
+        if (element instanceof TTLPrefix) {
             return "prefix";
         } else if (element instanceof TTLSubject) {
             return "subject";
-        } else if (element instanceof TTLSPO) {
-            TTLSPO<?> ttlSPO = (TTLSPO<?>) element;
-            if (ttlSPO.isSubject()) {
-                return "subject";
-            } else if (ttlSPO.isPredicate()) {
-                return "predicate";
-            } else if (ttlSPO.isObjectClass()) {
-                return "object";
-            }
+        } else if (element instanceof TTLPredicate) {
+            return "predicate";
+        } else if (element instanceof TTLStubBasedObject) {
+            return "object";
         }
         return "unknown type";
     }
 
     @Override
     public @Nls @NotNull String getDescriptiveName(@NotNull PsiElement element) {
-        if (element instanceof TTLSPO) {
-            return ((TTLSPO) element).getQualifiedUri();
+        if (element instanceof TTLIri) {
+            return Optional.ofNullable(((TTLIri) element).getQualifiedIri()).orElse(element.getText());
         }
         return element.getText();
     }
