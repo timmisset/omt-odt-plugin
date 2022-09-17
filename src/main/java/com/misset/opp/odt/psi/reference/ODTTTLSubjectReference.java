@@ -1,13 +1,11 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.psi.stubs.StubIndex;
 import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
+import com.misset.opp.ttl.psi.TTLLocalname;
 import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
 import org.jetbrains.annotations.NotNull;
@@ -19,15 +17,14 @@ public class ODTTTLSubjectReference extends PsiReferenceBase.Poly<ODTResolvableQ
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        ODTResolvableQualifiedUriStep element = getElement();
-        String fullyQualifiedUri = element.getFullyQualifiedUri();
+        String fullyQualifiedUri = myElement.getFullyQualifiedUri();
         if (fullyQualifiedUri == null) {
             return ResolveResult.EMPTY_ARRAY;
         }
         return StubIndex.getElements(
                         TTLSubjectStubIndex.KEY,
                         fullyQualifiedUri,
-                        element.getProject(),
+                        myElement.getProject(),
                         OntologyScopeUtil.getModelSearchScope(myElement.getProject()),
                         TTLSubject.class
                 ).stream()
@@ -35,5 +32,13 @@ public class ODTTTLSubjectReference extends PsiReferenceBase.Poly<ODTResolvableQ
                 .toArray(ResolveResult[]::new);
     }
 
-
+    @Override
+    public boolean isReferenceTo(@NotNull PsiElement element) {
+        if (element instanceof TTLLocalname) {
+            String fullyQualifiedUri = myElement.getFullyQualifiedUri();
+            return fullyQualifiedUri != null &&
+                    fullyQualifiedUri.equals(((TTLLocalname) element).getQualifiedIri());
+        }
+        return super.isReferenceTo(element);
+    }
 }
