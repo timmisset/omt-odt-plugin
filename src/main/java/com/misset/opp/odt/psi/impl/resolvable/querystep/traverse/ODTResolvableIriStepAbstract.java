@@ -1,7 +1,11 @@
 package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.ODTIriStep;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,5 +27,12 @@ public abstract class ODTResolvableIriStepAbstract extends ODTResolvableQueryFor
     @Override
     public TextRange getModelReferenceTextRange() {
         return TextRange.create(1, getTextLength() - 1);
+    }
+
+    @Override
+    public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
+        String iri = getNamespace() + name;
+        ODTIriStep iriStep = ODTElementGenerator.getInstance(getProject()).fromFile(String.format("<%s>", iri), ODTIriStep.class);
+        return replace(iriStep);
     }
 }

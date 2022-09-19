@@ -7,9 +7,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.ttl.TTLElementGenerator;
 import com.misset.opp.ttl.psi.TTLIriReference;
 import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.psi.reference.TTLClassReference;
+import com.misset.opp.util.UriPatternUtil;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class TTLIriReferenceAbstract extends TTLIriAbstract implements TTLIriReference {
@@ -19,6 +21,15 @@ public abstract class TTLIriReferenceAbstract extends TTLIriAbstract implements 
 
     @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
+        String qualifiedIri = getQualifiedIri();
+        if (!UriPatternUtil.isUri(qualifiedIri)) {
+            return null;
+        }
+        String namespace = UriPatternUtil.getNamespace(qualifiedIri);
+        TTLIriReference iriReference = TTLElementGenerator.getInstance(getProject()).getIriReference(namespace + name);
+        if (iriReference != null) {
+            return replace(iriReference);
+        }
         return null;
     }
 

@@ -3,6 +3,7 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.StubIndex;
+import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.ttl.psi.TTLLocalname;
@@ -40,5 +41,10 @@ public class ODTTTLSubjectReference extends PsiReferenceBase.Poly<ODTResolvableQ
                     fullyQualifiedUri.equals(((TTLLocalname) element).getQualifiedIri());
         }
         return super.isReferenceTo(element);
+    }
+
+    @Override
+    public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
+        return myElement.setName(newElementName);
     }
 }

@@ -8,7 +8,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.misset.opp.ttl.psi.TTLCurie;
+import com.misset.opp.ttl.TTLElementGenerator;
+import com.misset.opp.ttl.psi.TTLIri;
 import com.misset.opp.ttl.psi.TTLLocalname;
 import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.psi.reference.TTLClassReference;
@@ -38,17 +39,13 @@ public abstract class TTLLocalnameAbstract extends ASTWrapperPsiElement implemen
 
     @Override
     public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
-        return null;
-    }
-
-    @Override
-    public TTLCurie getParent() {
-        return (TTLCurie) super.getParent();
+        TTLLocalname replacement = TTLElementGenerator.getInstance(getProject()).getLocalName(name);
+        return replacement != null ? replace(replacement) : null;
     }
 
     @Override
     public @Nullable String getQualifiedIri() {
-        return getParent().getQualifiedIri();
+        return ((TTLIri) getParent()).getQualifiedIri();
     }
 
     @Override

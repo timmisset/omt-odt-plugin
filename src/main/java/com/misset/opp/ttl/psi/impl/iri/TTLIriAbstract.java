@@ -3,7 +3,7 @@ package com.misset.opp.ttl.psi.impl.iri;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.misset.opp.ttl.psi.extend.TTLQualifiedIriResolver;
-import org.apache.jena.graph.NodeFactory;
+import com.misset.opp.util.UriPatternUtil;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class TTLIriAbstract extends ASTWrapperPsiElement implements TTLQualifiedIriResolver {
@@ -13,7 +13,6 @@ public abstract class TTLIriAbstract extends ASTWrapperPsiElement implements TTL
 
     @Override
     public String getName() {
-        String qualifiedIri = getQualifiedIri();
-        return qualifiedIri != null ? NodeFactory.createURI(qualifiedIri).getLocalName() : null;
+        return UriPatternUtil.getLocalname(getQualifiedIri());
     }
 }

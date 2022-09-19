@@ -3,10 +3,13 @@ package com.misset.opp.odt.psi.reference;
 import com.intellij.codeInsight.daemon.EmptyResolveMessageProvider;
 import com.intellij.codeInspection.util.InspectionMessage;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.PsiJavaParserFacadeImpl;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.stubs.StubIndex;
+import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.model.OntologyModel;
 import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
@@ -14,6 +17,7 @@ import com.misset.opp.ttl.psi.TTLLocalname;
 import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
 import com.misset.opp.util.LoggerUtil;
+import com.misset.opp.util.UriPatternUtil;
 import org.apache.jena.ontology.OntClass;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,5 +77,19 @@ public class ODTJavaDocTTLSubjectReference extends PsiReferenceBase.Poly<PsiDocT
                     fullyQualifiedUri.equals(((TTLLocalname) element).getQualifiedIri());
         }
         return super.isReferenceTo(element);
+    }
+
+    @Override
+    public PsiElement handleElementRename(@NotNull String newElementName) throws IncorrectOperationException {
+        String currentValue = getRangeInElement().substring(myElement.getText());
+        if (UriPatternUtil.isUri(currentValue)) {
+            String newUri = UriPatternUtil.getNamespace(currentValue) + newElementName;
+            Project project = getElement().getProject();
+            PsiDocTag docTag = new PsiJavaParserFacadeImpl(project)
+                    .createDocTagFromText(myElement.getText().replace(currentValue, newUri));
+            return myElement.replace(docTag);
+        } else {
+            return super.handleElementRename(newElementName);
+        }
     }
 }
