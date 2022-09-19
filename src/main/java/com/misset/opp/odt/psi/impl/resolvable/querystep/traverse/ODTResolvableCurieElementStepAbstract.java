@@ -2,9 +2,12 @@ package com.misset.opp.odt.psi.impl.resolvable.querystep.traverse;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
+import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.impl.ODTNamespacePrefixImpl;
 import com.misset.opp.util.LoggerUtil;
@@ -38,5 +41,12 @@ public abstract class ODTResolvableCurieElementStepAbstract extends ODTResolvabl
     @Override
     public TextRange getModelReferenceTextRange() {
         return getLastChild().getTextRangeInParent();
+    }
+
+    @Override
+    public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
+        String prefix = getNamespacePrefix().getName();
+        ODTCurieElement odtCurieElement = ODTElementGenerator.getInstance(getProject()).fromFile(String.format("%s:%s", prefix, name), ODTCurieElement.class);
+        return replace(odtCurieElement);
     }
 }

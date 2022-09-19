@@ -4,12 +4,15 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.NlsSafe;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.model.OntologyModel;
 import com.misset.opp.odt.documentation.ODTUriStepDocumentationUtil;
 import com.misset.opp.odt.psi.ODTQueryReverseStep;
@@ -108,5 +111,10 @@ public abstract class ODTResolvableQualifiedUriStepAbstract extends ODTResolvabl
     @Override
     public String getLocalName() {
         return ResourceFactory.createResource(getFullyQualifiedUri()).getLocalName();
+    }
+
+    @Override
+    public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
+        return null;
     }
 }

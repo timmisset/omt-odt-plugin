@@ -19,6 +19,7 @@ import com.misset.opp.odt.ODTElementGenerator;
 import com.misset.opp.odt.psi.ODTCurieElement;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.ODTIriStep;
+import com.misset.opp.util.UriPatternUtil;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.jena.ontology.OntClass;
 import org.jetbrains.annotations.Nls;
@@ -28,14 +29,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ODTQualifiedURIInspection extends LocalInspectionTool {
 
     protected static final String USING_FULLY_QUALIFIED_URI = "Using fully qualified URI";
-
-    private static final Pattern QUALIFIED_URI = Pattern.compile("\\(<([^>]*)>\\)");
 
     @Override
     public @Nullable
@@ -88,17 +85,22 @@ public class ODTQualifiedURIInspection extends LocalInspectionTool {
 
     private PsiElement visitDocTag(PsiDocTag docTag, MutablePair<String, String> pair) {
         int position = docTag.getName().equals("param") ? 1 : 0;
-        PsiElement dataElement = docTag.getDataElements()[position];
-        Matcher matcher = QUALIFIED_URI.matcher(dataElement.getText());
-        if (matcher.find()) {
-            OntClass ontClass = OntologyModel.getInstance().getClass(matcher.group(1));
-            if (ontClass != null) {
-                pair.setLeft(ontClass.getNameSpace());
-                pair.setRight(ontClass.getLocalName());
-                return dataElement;
+        if (docTag.getDataElements().length > position) {
+            PsiElement dataElement = docTag.getDataElements()[position];
+            String uri = dataElement.getText();
+            if (UriPatternUtil.isUri(uri)) {
+                String namespace = UriPatternUtil.getNamespace(uri);
+                String localName = UriPatternUtil.getLocalname(uri);
+                OntClass ontClass = OntologyModel.getInstance().getClass(namespace + localName);
+                if (ontClass != null) {
+                    pair.setLeft(namespace);
+                    pair.setRight(localName);
+                    return dataElement;
+                }
             }
+            return docTag;
         }
-        return docTag;
+        return null;
     }
 
     private LocalQuickFix getRegisterQuickFix(String prefix, String namespace, String localName) {

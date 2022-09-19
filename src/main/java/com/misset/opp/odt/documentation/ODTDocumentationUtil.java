@@ -13,23 +13,18 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.resolvable.callable.ODTDefineStatement;
 import com.misset.opp.odt.refactoring.ODTRefactoringUtil;
 import com.misset.opp.resolvable.psi.PsiPrefix;
+import com.misset.opp.util.UriPatternUtil;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ODTDocumentationUtil {
     private static final List<Class<? extends PsiElement>> validDocOwners = List.of(
             ODTDefineStatement.class
     );
-
-    private static final Pattern LOCAL_NAME = Pattern.compile("\\(([^:]*):([^)]*)\\)");
-
-    private static final Pattern QUALIFIED_URI = Pattern.compile("\\(<([^>]*)>\\)");
 
     @Nullable
     public static String getJavaDocCommentDescription(@NotNull PsiElement element) {
@@ -113,28 +108,26 @@ public class ODTDocumentationUtil {
                     .filter(psiReference -> psiReference.getRangeInElement()
                             .intersects(dataElement.getTextRangeInParent()))
                     .findFirst();
+            String resourceReference = dataElement.getText();
             if (curieReference.isPresent()) {
                 // there is a reference available for the type, meaning we should try to resolve it to the prefix
                 // and generate a fully qualified URI from it:
-                Matcher qualifiedUriMatcher = QUALIFIED_URI.matcher(dataElement.getText());
-                if (qualifiedUriMatcher.find()) {
+                if (UriPatternUtil.isUri(resourceReference)) {
                     OntologyModel ontologyModel = OntologyModel.getInstance();
-                    return Optional.ofNullable(qualifiedUriMatcher.group(1))
+                    return Optional.ofNullable(UriPatternUtil.unwrap(resourceReference))
                             .map(ontologyModel::toIndividuals)
                             .orElse(Collections.emptySet())
                             .stream()
                             .map(OntResource.class::cast)
                             .collect(Collectors.toSet());
-                }
-                final PsiElement prefix = curieReference.get().resolve();
-                final Matcher matcher = LOCAL_NAME.matcher(dataElement.getText());
-                if (matcher.find()) {
-                    return getType(docTag, prefix, matcher);
+                } else if (UriPatternUtil.isCurie(resourceReference)) {
+                    final PsiElement prefix = curieReference.get().resolve();
+                    return getType(docTag, prefix, resourceReference);
                 }
             } else {
                 // no curie reference, probably a primitive type:
                 // (string)
-                final String value = dataElement.getText().replaceAll("[()]", "");
+                final String value = resourceReference.replaceAll("[()]", "");
                 return Optional.ofNullable(OntologyValueParserUtil.parsePrimitive(value))
                         .map(OntResource.class::cast)
                         .map(Set::of)
@@ -145,19 +138,19 @@ public class ODTDocumentationUtil {
     }
 
     @NotNull
-    private static Set<OntResource> getType(@NotNull PsiDocTag docTag, PsiElement prefix, Matcher matcher) {
+    private static Set<OntResource> getType(@NotNull PsiDocTag docTag, PsiElement prefix, String resourceReference) {
         Optional<String> uri = Optional.empty();
         if (prefix instanceof PsiPrefix) {
-            uri = Optional.of(((PsiPrefix) prefix).getNamespace() + matcher.group(2));
+            uri = Optional.of(((PsiPrefix) prefix).getNamespace() + UriPatternUtil.getLocalname(resourceReference));
         } else {
             PsiFile containingFile = docTag.getContainingFile();
             if (containingFile instanceof ODTFile) {
                 uri = ((ODTFile) containingFile).getAvailableNamespaces()
                         .entrySet()
                         .stream()
-                        .filter(entry -> entry.getValue().equals(matcher.group(1)))
+                        .filter(entry -> entry.getValue().equals(UriPatternUtil.getPrefix(resourceReference)))
                         .map(Map.Entry::getKey)
-                        .map(s -> s + matcher.group(2))
+                        .map(s -> s + UriPatternUtil.getLocalname(resourceReference))
                         .findFirst();
             }
         }

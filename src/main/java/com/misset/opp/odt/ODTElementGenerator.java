@@ -31,10 +31,11 @@ public final class ODTElementGenerator {
     }
 
     @NotNull
-    public ODTFile createDummyOMTFileWithText(@NotNull String text) {
+    private ODTFile createDummyOMTFileWithText(@NotNull String text) {
         return (ODTFile) PsiFileFactory.getInstance(project)
                 .createFileFromText("temp." + ODTFileType.INSTANCE.getDefaultExtension(), ODTFileType.INSTANCE, text, LocalTimeCounter.currentTime(), true);
     }
+
     public <T extends PsiElement> T fromFile(String text, Class<T> classToReturn) {
         final ODTFile dummyOMTFileWithText = createDummyOMTFileWithText(text);
         return PsiTreeUtil.findChildOfType(dummyOMTFileWithText, classToReturn);

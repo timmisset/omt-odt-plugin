@@ -6,12 +6,12 @@ import com.intellij.psi.impl.source.javadoc.PsiDocTagImpl;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.util.UriPatternUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -25,7 +25,6 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
  * @see PsiDocTagImpl#getReferences()
  */
 public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
-    private static final Pattern PREFIX = Pattern.compile("\\(([^:]*):[^)]*\\)");
     private static final Pattern ONTOLOGY = Pattern.compile("\\([^:]*:([^)]*)\\)");
 
     private static final Pattern QUALIFIED_URI = Pattern.compile("\\(<([^>]*)>\\)");
@@ -67,20 +66,12 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
     private PsiReference getTypePrefixReference(PsiDocTag docTag, int position) {
         if (docTag.getDataElements().length > position) {
             final PsiElement dataElement = docTag.getDataElements()[position];
-            if (QUALIFIED_URI.matcher(dataElement.getText()).find()) {
-                return null;
-            }
-            // @param $param (ont:Class)
-            // the dataElement == (ont:Class)
-            // Use the RegEx to determine the from-to range within the dataElement to cutOut: ont
-
-            // only when the dataElement contains a prefix a reference will be created
-            // for primitives there is no reference
-            final Matcher matcher = PREFIX.matcher(dataElement.getText());
-            if (matcher.find()) {
-                // valid match
+            String resourceReference = dataElement.getText();
+            if (UriPatternUtil.isCurie(resourceReference)) {
+                String prefix = UriPatternUtil.getPrefix(resourceReference);
+                int offset = resourceReference.indexOf(prefix);
                 return new ODTTypePrefixAnnotationReference(docTag,
-                        TextRange.create(matcher.start(1), matcher.end(1))
+                        TextRange.create(offset, offset + prefix.length())
                                 .shiftRight(dataElement.getStartOffsetInParent()));
             }
         }
@@ -90,20 +81,12 @@ public class ODTJavaDocReferenceContributor extends PsiReferenceContributor {
     private PsiReference getTypeOntologyReference(PsiDocTag docTag, int position) {
         if (docTag.getDataElements().length > position) {
             final PsiElement dataElement = docTag.getDataElements()[position];
-            // @param $param (ont:Class)
-            // the dataElement == (ont:Class)
-            // Use the RegEx to determine the from-to range within the dataElement to cutOut: Class
-
-            // only when the dataElement contains a prefix a reference will be created
-            // for primitives there is no reference
-            for (Pattern pattern : List.of(QUALIFIED_URI, ONTOLOGY)) {
-                Matcher matcher = pattern.matcher(dataElement.getText());
-                if (matcher.find()) {
-                    // valid match
-                    return new ODTJavaDocTTLSubjectReference(docTag,
-                            TextRange.create(matcher.start(1), matcher.end(1))
-                                    .shiftRight(dataElement.getStartOffsetInParent()), position);
-                }
+            String resourceReference = dataElement.getText();
+            if (UriPatternUtil.isUri(resourceReference) ||
+                    UriPatternUtil.isCurie(resourceReference)) {
+                TextRange localnameRange = UriPatternUtil.getLocalnameRange(resourceReference)
+                        .shiftRight(dataElement.getStartOffsetInParent());
+                return new ODTJavaDocTTLSubjectReference(docTag, localnameRange, position);
             }
         }
         return null;
