@@ -273,6 +273,10 @@
         <stubElementTypeHolder class="com.misset.opp.ttl.psi.TTLTypes"/>
         <stubIndex implementation="com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex"/>
         <stubIndex implementation="com.misset.opp.ttl.stubs.index.TTLObjectStubIndex"/>
+        <colorSettingsPage implementation="com.misset.opp.ttl.style.TTLColorSettingsPage"/>
+        <lang.syntaxHighlighterFactory language="Turtle"
+                                       implementationClass="com.misset.opp.ttl.style.TTLSyntaxHighlighterFactory"/>
+
 
         <!-- JAVA -->
         <!-- Interaction with Java is for the JavaDoc elements-->

@@ -10,18 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.HashMap;
 import java.util.Map;
 
 public class TTLColorSettingsPage implements ColorSettingsPage {
-    private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-            new AttributesDescriptor("String", TTLSyntaxHighlighter.STRING),
-            new AttributesDescriptor("Comment", TTLSyntaxHighlighter.COMMENT),
-            new AttributesDescriptor("Subjects", TTLSyntaxHighlighter.SUBJECTS),
-            new AttributesDescriptor("Predicates", TTLSyntaxHighlighter.PREDICATES),
-            new AttributesDescriptor("Objects", TTLSyntaxHighlighter.OBJECTS),
-    };
-
     @Nullable
     @Override
     public Icon getIcon() {
@@ -37,39 +28,48 @@ public class TTLColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        return "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" +
-                "@prefix dc: <http://purl.org/dc/elements/1.1/> .\n" +
-                "@prefix ex: <http://example.org/stuff/1.0/> .\n" +
+        return "# baseURI: http://ontologyBase#\n" +
+                "# imports: http://ontology/anotherOntology\n" +
+                "\n" +
+                "@base <http://ontologyBase#> . # a regular line comment\n" +
+                "@prefix ont: <http://ontology#> .\n" +
                 "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n" +
+                "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" +
+                "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n" +
+                "@prefix sh: <http://www.w3.org/ns/shacl#> .\n" +
+                "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n" +
                 "\n" +
-                "<SUBJECT><http://www.w3.org/TR/rdf-syntax-grammar></SUBJECT>\n" +
-                "  <PREDICATE>dc:title</PREDICATE> \"RDF/XML Syntax Specification (Revised)\" ;\n" +
-                "  <PREDICATE>ex:editor</PREDICATE> [\n" +
-                "    <PREDICATE>ex:fullname</PREDICATE> \"Dave Beckett\";\n" +
-                "    <PREDICATE>ex:homePage</PREDICATE> <OBJECT><http://purl.org/net/dajobe/></OBJECT>\n" +
-                "  ] .\n" +
-                "\n" +
-                "# Comments\n" +
-                "<SUBJECT>ex:Class</SUBJECT>\n" +
-                "   <PREDICATE>a</PREDICATE> <OBJECT>owl:Class</OBJECT> ;\n" +
-                "   <PREDICATE>owl:versionInfo</PREDICATE> \"Created manually\"; \n" +
-                "  .\n";
+                "<http://http://ontology/myOntology>\n" +
+                "  a owl:Ontology ;\n" +
+                "  owl:versionInfo \"Created manually\" ;\n" +
+                ".\n" +
+                "<#Class>\n" +
+                "  a owl:Class ;\n" +
+                "  rdf:type sh:NodeShape ;\n" +
+                "  rdfs:subClassOf ont:Superclass, ont:AnotherSuperclass ;\n" +
+                "  ont:booleanValue true;\n" +
+                "  rdfs:label \"Taal\" ;\n" +
+                "  rdfs:label \"Label 1\"^^xsd:string ;\n" +
+                "  rdfs:label \"Label 2\"^^<http://www.w3.org/2001/XMLSchema#string> ;\n" +
+                "  ont:number 1 ;\n" +
+                "  ont:multiline: \"\"\" The first line\n" +
+                "                     The second line\n" +
+                "                     more \"\"\"\n" +
+                ".\n";
     }
 
-    @Nullable
     @Override
-    public Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-        HashMap<String, TextAttributesKey> mapping = new HashMap<>();
-        mapping.put("SUBJECT", TTLSyntaxHighlighter.SUBJECTS);
-        mapping.put("PREDICATE", TTLSyntaxHighlighter.PREDICATES);
-        mapping.put("OBJECT", TTLSyntaxHighlighter.OBJECTS);
-        return mapping;
+    public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
+        return null;
     }
 
     @NotNull
     @Override
     public AttributesDescriptor @NotNull [] getAttributeDescriptors() {
-        return DESCRIPTORS;
+        return TTLSyntaxHighlighter.getAttributes()
+                .stream()
+                .map(textAttributesKey -> new AttributesDescriptor(getPresentableName(textAttributesKey.getExternalName()), textAttributesKey))
+                .toArray(AttributesDescriptor[]::new);
     }
 
     @NotNull
@@ -82,5 +82,12 @@ public class TTLColorSettingsPage implements ColorSettingsPage {
     @Override
     public String getDisplayName() {
         return "Turtle";
+    }
+
+    private String getPresentableName(String externalName) {
+        if (externalName.startsWith("TTL_")) {
+            return externalName.substring(4);
+        }
+        return externalName;
     }
 }
