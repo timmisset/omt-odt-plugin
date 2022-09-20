@@ -10,6 +10,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.ttl.TTLElementGenerator;
 import com.misset.opp.ttl.psi.TTLIriReference;
 import com.misset.opp.ttl.psi.TTLObject;
+import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.psi.reference.TTLClassReference;
 import com.misset.opp.util.UriPatternUtil;
 import org.jetbrains.annotations.NotNull;
@@ -39,8 +40,7 @@ public abstract class TTLIriReferenceAbstract extends TTLIriAbstract implements 
      */
     @Override
     public PsiReference getReference() {
-        TTLObject object = PsiTreeUtil.getParentOfType(this, TTLObject.class);
-        if (object != null && object.isClass()) {
+        if (PsiTreeUtil.getParentOfType(this, TTLObject.class, TTLSubject.class) instanceof TTLObject) {
             return new TTLClassReference(this, TextRange.allOf(getText()));
         }
         return null;

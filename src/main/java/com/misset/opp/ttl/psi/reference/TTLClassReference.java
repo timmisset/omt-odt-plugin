@@ -1,5 +1,7 @@
 package com.misset.opp.ttl.psi.reference;
 
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -23,7 +25,13 @@ public class TTLClassReference extends PsiReferenceBase.Poly<TTLQualifiedIriReso
         if (qualifiedUri == null) {
             return ResolveResult.EMPTY_ARRAY;
         }
-        GlobalSearchScope searchScope = GlobalSearchScope.everythingScope(myElement.getProject());
+
+        ProjectFileIndex projectFileIndex = ProjectFileIndex.getInstance(myElement.getProject());
+        Module module = projectFileIndex.getModuleForFile(myElement.getContainingFile().getVirtualFile());
+
+        GlobalSearchScope searchScope = module != null ?
+                GlobalSearchScope.moduleWithDependentsScope(module) :
+                GlobalSearchScope.everythingScope(myElement.getProject());
         searchScope = GlobalSearchScope.getScopeRestrictedByFileTypes(searchScope, TTLFileType.INSTANCE);
         return StubIndex.getElements(TTLSubjectStubIndex.KEY,
                         qualifiedUri,
