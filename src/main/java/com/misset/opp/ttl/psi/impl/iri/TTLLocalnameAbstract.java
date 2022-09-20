@@ -12,6 +12,7 @@ import com.misset.opp.ttl.TTLElementGenerator;
 import com.misset.opp.ttl.psi.TTLIri;
 import com.misset.opp.ttl.psi.TTLLocalname;
 import com.misset.opp.ttl.psi.TTLObject;
+import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.psi.reference.TTLClassReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,8 +31,7 @@ public abstract class TTLLocalnameAbstract extends ASTWrapperPsiElement implemen
      */
     @Override
     public PsiReference getReference() {
-        TTLObject object = PsiTreeUtil.getParentOfType(this, TTLObject.class);
-        if (object != null && object.isClass()) {
+        if (PsiTreeUtil.getParentOfType(this, TTLObject.class, TTLSubject.class) instanceof TTLObject) {
             return new TTLClassReference(this, TextRange.allOf(getText()));
         }
         return null;
