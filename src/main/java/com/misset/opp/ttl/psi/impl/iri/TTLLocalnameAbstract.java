@@ -6,6 +6,8 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.ttl.TTLElementGenerator;
@@ -51,5 +53,10 @@ public abstract class TTLLocalnameAbstract extends ASTWrapperPsiElement implemen
     @Override
     public String getName() {
         return getText();
+    }
+
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        return GlobalSearchScope.allScope(getProject());
     }
 }

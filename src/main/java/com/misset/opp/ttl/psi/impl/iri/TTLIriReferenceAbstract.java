@@ -5,6 +5,8 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.ttl.TTLElementGenerator;
@@ -49,5 +51,10 @@ public abstract class TTLIriReferenceAbstract extends TTLIriAbstract implements 
     @Override
     public String getQualifiedIri() {
         return getText().substring(1, getTextLength() - 1);
+    }
+
+    @Override
+    public @NotNull SearchScope getUseScope() {
+        return GlobalSearchScope.allScope(getProject());
     }
 }
