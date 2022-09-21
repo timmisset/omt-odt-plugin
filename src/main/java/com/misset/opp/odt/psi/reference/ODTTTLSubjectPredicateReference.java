@@ -1,15 +1,16 @@
 package com.misset.opp.odt.psi.reference;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.stubs.StubIndex;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.ResolveResult;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.model.OntologyModel;
-import com.misset.opp.model.util.OntologyScopeUtil;
+import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.ttl.psi.TTLLocalname;
-import com.misset.opp.ttl.psi.TTLObject;
-import com.misset.opp.ttl.stubs.index.TTLObjectStubIndex;
+import com.misset.opp.util.TTLElementFinderUtil;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Resource;
 import org.jetbrains.annotations.NotNull;
@@ -26,30 +27,16 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        String fullyQualifiedUri = myElement.getFullyQualifiedUri();
-        if (fullyQualifiedUri == null) {
-            return ResolveResult.EMPTY_ARRAY;
-        }
-        Set<OntResource> previousStep = myElement.resolvePreviousStep();
+        Set<OntResource> previousStep = myElement instanceof ODTQueryReverseStep ?
+                myElement.resolve() :
+                myElement.resolvePreviousStep();
         List<String> acceptableSubjectClasses = previousStep.stream()
                 .map(OntologyModel.getInstance()::listOntClasses)
                 .flatMap(Collection::stream)
                 .map(Resource::getURI)
                 .collect(Collectors.toList());
-        return StubIndex.getElements(
-                        TTLObjectStubIndex.KEY,
-                        myElement.getFullyQualifiedUri(),
-                        myElement.getProject(),
-                        OntologyScopeUtil.getModelSearchScope(myElement.getProject()),
-                        TTLObject.class
-                ).stream()
-                .filter(TTLObject::isPredicate)
-                .filter(ttlObject ->
-                        // when the previous step cannot be resolved, resolve to every class in the model
-                        // that has this predicate. The user can select one when multiple options are available
-                        acceptableSubjectClasses.isEmpty() || acceptableSubjectClasses.contains(ttlObject.getSubjectIri()))
-                .map(PsiElementResolveResult::new)
-                .toArray(ResolveResult[]::new);
+        return TTLElementFinderUtil.getObjectResolveResult(myElement.getProject(), myElement.getFullyQualifiedUri(),
+                ttlObject -> acceptableSubjectClasses.isEmpty() || acceptableSubjectClasses.contains(ttlObject.getSubjectIri()));
     }
 
     @Override
