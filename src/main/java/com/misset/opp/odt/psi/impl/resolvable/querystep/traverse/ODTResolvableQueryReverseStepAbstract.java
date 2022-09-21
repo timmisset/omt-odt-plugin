@@ -73,7 +73,7 @@ public abstract class ODTResolvableQueryReverseStepAbstract extends ODTResolvabl
     public TextRange getModelReferenceTextRange() {
         final ODTQueryStep queryStep = getQueryStep();
         return queryStep instanceof ODTResolvableQualifiedUriStep ?
-                ((ODTResolvableQualifiedUriStep) queryStep).getModelReferenceTextRange() :
+                ((ODTResolvableQualifiedUriStep) queryStep).getModelReferenceTextRange().shiftRight(1) :
                 null;
     }
 }

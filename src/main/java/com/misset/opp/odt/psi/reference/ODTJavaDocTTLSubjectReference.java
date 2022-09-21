@@ -5,18 +5,18 @@ import com.intellij.codeInspection.util.InspectionMessage;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.impl.PsiJavaParserFacadeImpl;
 import com.intellij.psi.javadoc.PsiDocTag;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.model.OntologyModel;
-import com.misset.opp.model.util.OntologyScopeUtil;
 import com.misset.opp.odt.documentation.ODTDocumentationUtil;
 import com.misset.opp.ttl.psi.TTLLocalname;
-import com.misset.opp.ttl.psi.TTLSubject;
-import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
 import com.misset.opp.util.LoggerUtil;
+import com.misset.opp.util.TTLElementFinderUtil;
 import com.misset.opp.util.UriPatternUtil;
 import org.apache.jena.ontology.OntClass;
 import org.jetbrains.annotations.NotNull;
@@ -46,20 +46,11 @@ public class ODTJavaDocTTLSubjectReference extends PsiReferenceBase.Poly<PsiDocT
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         return LoggerUtil.computeWithLogger(LOGGER, "Resolving ODTJavaDocTTLSubjectReference", () -> {
-            PsiDocTag element = getElement();
             OntClass classFromModel = getClassFromModel();
             if (classFromModel == null) {
                 return ResolveResult.EMPTY_ARRAY;
             } else {
-                return StubIndex.getElements(
-                                TTLSubjectStubIndex.KEY,
-                                classFromModel.getURI(),
-                                element.getProject(),
-                                OntologyScopeUtil.getModelSearchScope(myElement.getProject()),
-                                TTLSubject.class
-                        ).stream()
-                        .map(PsiElementResolveResult::new)
-                        .toArray(ResolveResult[]::new);
+                return TTLElementFinderUtil.getSubjectResolveResult(getElement().getProject(), classFromModel.getURI());
             }
         });
     }
