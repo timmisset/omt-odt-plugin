@@ -6,7 +6,9 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.ttl.TTLFileType;
+import com.misset.opp.ttl.psi.TTLObject;
 import com.misset.opp.ttl.psi.TTLSubject;
 import com.misset.opp.ttl.psi.extend.TTLQualifiedIriResolver;
 import com.misset.opp.ttl.stubs.index.TTLSubjectStubIndex;
@@ -47,8 +49,10 @@ public class TTLClassReference extends PsiReferenceBase.Poly<TTLQualifiedIriReso
 
     @Override
     public boolean isReferenceTo(@NotNull PsiElement element) {
+        boolean isSubject = PsiTreeUtil.getParentOfType(element, TTLSubject.class, TTLObject.class) instanceof TTLSubject;
         String qualifiedIri = myElement.getQualifiedIri();
-        return qualifiedIri != null &&
+        return isSubject &&
+                qualifiedIri != null &&
                 element instanceof TTLQualifiedIriResolver &&
                 qualifiedIri.equals(((TTLQualifiedIriResolver) element).getQualifiedIri());
     }
