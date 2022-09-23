@@ -140,7 +140,7 @@ public class OntologyValidationUtil {
         return validate(resources,
                 holder,
                 element,
-                OntologyModelConstants.getXsdBooleanInstance()::equals,
+                resource -> OntologyModel.getInstance().isInstanceOf(resource, OntologyModelConstants.getXsdBoolean()),
                 ERROR_MESSAGE_BOOLEAN);
     }
 

@@ -28,6 +28,6 @@ class ODTOperatorCallImplTest extends ODTTestCase {
 
     @Test
     void testResolveOperatorCallWithCallContent() {
-        Assertions.assertEquals(OntologyModelConstants.getXsdBooleanInstance(), resolveQueryStatementToSingleResult("'test' / MAP(true)"));
+        Assertions.assertEquals(OntologyModelConstants.getXsdTrue(), resolveQueryStatementToSingleResult("'test' / MAP(true)"));
     }
 }

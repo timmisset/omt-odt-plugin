@@ -58,6 +58,10 @@ public final class OntologyModelConstants {
     private static Individual xsdDatetimeInstance;
     private static Individual xsdDurationInstance;
 
+    private static Individual xsdTrue;
+
+    private static Individual xsdFalse;
+
     static {
         // create the static members with an initial model. Once the OntologyModel is actually loaded
         // these resources have to be registered there to be part of the caching mechanism
@@ -80,6 +84,8 @@ public final class OntologyModelConstants {
     private static void setPrimitives(OntologyModel model, OntModel ontologyModel) {
         xsdBoolean = model.createClass(XSD.BOOLEAN.getUri(), ontologyModel, getOwlThingClass());
         xsdBooleanInstance = model.createIndividual(getXsdBoolean(), XSD.BOOLEAN_INSTANCE.getUri());
+        xsdTrue = model.createIndividual(getXsdBoolean(), "\"true\"^^" + XSD.BOOLEAN.getUri());
+        xsdFalse = model.createIndividual(getXsdBoolean(), "\"false\"^^" + XSD.BOOLEAN.getUri());
 
         xsdString = model.createClass(XSD.STRING.getUri(), ontologyModel, getOwlThingClass());
         xsdStringInstance = model.createIndividual(getXsdString(), XSD.STRING_INSTANCE.getUri());
@@ -317,6 +323,14 @@ public final class OntologyModelConstants {
 
     public static Individual getXsdBooleanInstance() {
         return xsdBooleanInstance;
+    }
+
+    public static Individual getXsdTrue() {
+        return xsdTrue;
+    }
+
+    public static Individual getXsdFalse() {
+        return xsdFalse;
     }
 
     public static Individual getXsdStringInstance() {

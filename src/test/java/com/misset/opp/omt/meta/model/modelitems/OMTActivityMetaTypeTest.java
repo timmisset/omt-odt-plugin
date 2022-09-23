@@ -1,6 +1,7 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
 import com.intellij.openapi.application.ReadAction;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.omt.testcase.OMTTestCase;
 import org.apache.jena.ontology.OntResource;
@@ -43,7 +44,9 @@ class OMTActivityMetaTypeTest extends OMTTestCase {
         ReadAction.run(() -> {
             YAMLMapping value = (YAMLMapping) ((YAMLKeyValue) myFixture.getElementAtCaret()).getValue();
             Set<OntResource> resolve = new OMTActivityMetaType().resolve(value, null);
-            Assertions.assertTrue(resolve.stream().anyMatch(OntologyModelConstants.getXsdBooleanInstance()::equals));
+            Assertions.assertTrue(resolve.stream().allMatch(
+                    resource -> OntologyModel.getInstance().isInstanceOf(resource, OntologyModelConstants.getXsdBoolean())
+            ));
         });
     }
 
