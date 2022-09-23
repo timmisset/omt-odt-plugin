@@ -9,6 +9,7 @@ import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.model.util.OntologyResourceUtil;
 import com.misset.opp.model.util.OntologyValueParserUtil;
 import com.misset.opp.odt.psi.ODTConstantValue;
+import com.misset.opp.odt.psi.ODTInterpolatedString;
 import com.misset.opp.odt.psi.ODTTypes;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntResource;
@@ -18,6 +19,9 @@ import java.util.Collections;
 import java.util.Set;
 
 public abstract class ODTResolvableConstantValueStepAbstract extends ODTResolvableQueryStepAbstract implements ODTConstantValue {
+
+    private static final Set<String> TRUES = Set.of("true", "True", "TRUE");
+
     protected ODTResolvableConstantValueStepAbstract(@NotNull ASTNode node) {
         super(node);
     }
@@ -28,14 +32,14 @@ public abstract class ODTResolvableConstantValueStepAbstract extends ODTResolvab
 
         final OntResource result;
         if (elementType == ODTTypes.BOOLEAN) {
-            result = OntologyModelConstants.getXsdBooleanInstance();
+            result = getBooleanInstance();
         } else if (elementType == ODTTypes.STRING) {
             result = OntologyModelConstants.getXsdStringInstance();
         } else if (elementType == ODTTypes.INTEGER) {
             result = OntologyModelConstants.getXsdIntegerInstance();
         } else if (elementType == ODTTypes.DECIMAL) {
             result = OntologyModelConstants.getXsdDecimalInstance();
-        } else if (elementType == ODTTypes.INTERPOLATED_STRING) {
+        } else if (this instanceof ODTInterpolatedString) {
             result = OntologyModelConstants.getXsdStringInstance();
         } else if (elementType == ODTTypes.NULL) {
             result = null; // returns an emptySet which is the ODT equivalent of null
@@ -53,11 +57,16 @@ public abstract class ODTResolvableConstantValueStepAbstract extends ODTResolvab
 
     @Override
     public String getDocumentation(Project project) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(DocumentationMarkup.DEFINITION_START);
-        sb.append("Constant<br>");
-        sb.append(OntologyResourceUtil.describeUrisJoined(resolve(), "<br>", false));
-        sb.append(DocumentationMarkup.DEFINITION_END);
-        return sb.toString();
+        return DocumentationMarkup.DEFINITION_START +
+                "Constant<br>" +
+                OntologyResourceUtil.describeUrisJoined(resolve(), "<br>", false) +
+                DocumentationMarkup.DEFINITION_END;
+    }
+
+    private OntResource getBooleanInstance() {
+        return TRUES.contains(getText()) ?
+                OntologyModelConstants.getXsdTrue() :
+                OntologyModelConstants.getXsdFalse();
+
     }
 }

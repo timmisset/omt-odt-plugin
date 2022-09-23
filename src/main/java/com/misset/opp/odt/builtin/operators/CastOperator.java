@@ -31,6 +31,8 @@ public class CastOperator extends AbstractBuiltInOperator {
         Set<OntResource> argument = call.resolveSignatureArgument(0);
         if (argument.contains(OntologyModelConstants.getIri())) {
             return Set.of(OntologyModelConstants.getOwlThingInstance());
+        } else if (argument.contains(OntologyModelConstants.getXsdBoolean())) {
+            return Set.of(OntologyModelConstants.getXsdBooleanInstance());
         }
         return OntologyModel.getInstance().toIndividuals(argument)
                 .stream()

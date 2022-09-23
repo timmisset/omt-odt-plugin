@@ -4,6 +4,8 @@ public enum XSD {
 
     BOOLEAN("boolean"),
     BOOLEAN_INSTANCE("boolean_INSTANCE"),
+    BOOLEAN_TRUE("booleanTrue_INSTANCE"),
+    BOOLEAN_FALSE("booleanFalse_INSTANCE"),
     NUMBER("number"),
     NUMBER_INSTANCE("number_INSTANCE"),
 
