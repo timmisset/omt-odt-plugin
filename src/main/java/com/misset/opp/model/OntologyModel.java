@@ -564,6 +564,18 @@ public class OntologyModel {
         return rdfTypeClass != null && listSuperClasses(rdfTypeClass).contains(ontClass);
     }
 
+    public boolean isBooleanInstance(Set<OntResource> resources) {
+        return resources.stream().allMatch(resource -> isInstanceOf(resource, OntologyModelConstants.getXsdBoolean()));
+    }
+
+    public boolean isBooleanFalse(Set<OntResource> resources) {
+        return resources.stream().allMatch(OntologyModelConstants.getXsdFalse()::equals);
+    }
+
+    public boolean isBooleanTrue(Set<OntResource> resources) {
+        return resources.stream().allMatch(OntologyModelConstants.getXsdTrue()::equals);
+    }
+
     public Set<OntClass> listSuperClasses(OntClass ontClass) {
         return modelCache.listSuperclasses(getResourceId(ontClass));
     }
