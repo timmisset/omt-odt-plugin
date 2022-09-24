@@ -145,16 +145,6 @@ public class OMTYamlImportMemberDelegate extends OMTYamlPlainTextDelegateAbstrac
     }
 
     @Override
-    public boolean isBoolean() {
-        return computeFromCallable(Callable::isBoolean, false);
-    }
-
-    @Override
-    public boolean isMultiple() {
-        return computeFromCallable(Callable::isMultiple, false);
-    }
-
-    @Override
     public String getName() {
         return getText();
     }

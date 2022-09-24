@@ -56,7 +56,7 @@ public class ODTOperatorInspectionIIf extends LocalInspectionTool {
         OntologyModel ontologyModel = OntologyModel.getInstance();
         List<ODTSignatureArgument> signatureArguments = call.getSignatureArguments();
         if (signatureArguments.size() == 2) {
-            return signatureArguments.get(1).isBoolean();
+            return OntologyModel.getInstance().isBooleanInstance(signatureArguments.get(1).resolve());
         } else if (signatureArguments.size() == 3) {
             return (ontologyModel.isBooleanTrue(signatureArguments.get(1).resolve()) &&
                     ontologyModel.isBooleanInstance(signatureArguments.get(2).resolve())) ||

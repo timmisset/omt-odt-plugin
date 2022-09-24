@@ -1,11 +1,11 @@
 package com.misset.opp.odt.builtin.operators;
 
 import com.intellij.codeInspection.ProblemsHolder;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.model.util.OntologyValidationUtil;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
-import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
@@ -51,7 +51,7 @@ public class FilterOperator extends BuiltInCollectionOperator {
                 .map(ODTSignatureArgument.class::cast)
                 .map(ODTSignatureArgument::getResolvableValue)
                 .map(ODTResolvableValue::getQuery)
-                .filter(Resolvable::isBoolean)
+                .filter(query -> OntologyModel.getInstance().isBooleanInstance(query.resolve()))
                 .map(query -> query.filter(resources))
                 .orElse(resources);
     }

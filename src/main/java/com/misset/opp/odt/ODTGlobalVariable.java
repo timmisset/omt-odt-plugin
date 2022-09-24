@@ -3,6 +3,7 @@ package com.misset.opp.odt;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -57,7 +58,7 @@ public class ODTGlobalVariable implements Variable {
     }
 
     @Override
-    public Set<OntResource> resolve() {
+    public @NotNull Set<OntResource> resolve() {
         return Set.of(type);
     }
 

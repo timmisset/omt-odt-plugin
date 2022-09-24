@@ -63,7 +63,6 @@ class FilterOperatorTest extends BaseBuiltinTest {
         doReturn(signatureArgument).when(call).getCallSignatureArgumentElement(0);
         doReturn(resolvableValue).when(signatureArgument).getResolvableValue();
         doReturn(query).when(resolvableValue).getQuery();
-        doReturn(true).when(query).isBoolean();
         Set<OntResource> resources = Set.of(OntologyModelConstants.getXsdStringInstance(), OntologyModelConstants.getXsdDate());
 
         doReturn(Set.of(OntologyModelConstants.getXsdStringInstance())).when(query).filter(resources);

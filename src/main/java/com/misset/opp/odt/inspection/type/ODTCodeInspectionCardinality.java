@@ -50,8 +50,7 @@ public class ODTCodeInspectionCardinality extends LocalInspectionTool {
                 }
 
                 if (collectionStatement instanceof ODTAddToCollection ||
-                        collectionStatement instanceof ODTRemoveFromCollection ||
-                        resolvableValue.isMultiple()) {
+                        collectionStatement instanceof ODTRemoveFromCollection) {
                     OntologyValidationUtil.validateCardinalityMultiple(subjectPredicate.getFirst(),
                             subjectPredicate.getSecond(),
                             holder,

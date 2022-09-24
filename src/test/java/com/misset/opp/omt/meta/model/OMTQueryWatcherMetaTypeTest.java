@@ -3,9 +3,9 @@ package com.misset.opp.omt.meta.model;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.misset.opp.model.OntologyModel;
 import com.misset.opp.omt.commands.LocalVariable;
 import com.misset.opp.omt.testcase.OMTTestCase;
-import com.misset.opp.resolvable.Resolvable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class OMTQueryWatcherMetaTypeTest extends OMTTestCase {
                     OMTQueryWatcherMetaType.getInstance().getLocalVariables(mapping);
             Assertions.assertEquals(2, localVariables.size());
             Assertions.assertTrue(localVariables.stream().allMatch(
-                    Resolvable::isBoolean
+                    localVariable -> OntologyModel.getInstance().isBooleanInstance(localVariable.resolve())
             ));
         });
     }
