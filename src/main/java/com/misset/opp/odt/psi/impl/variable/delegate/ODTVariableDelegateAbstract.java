@@ -4,7 +4,10 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.*;
 import com.misset.opp.resolvable.Variable;
+import org.apache.jena.rdf.model.Literal;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class ODTVariableDelegateAbstract implements ODTVariableDelegate {
@@ -59,5 +62,10 @@ public abstract class ODTVariableDelegateAbstract implements ODTVariableDelegate
             return ((ODTFile) containingFile).getVariables(element.getName()).stream().findFirst();
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<Literal> resolveLiteral() {
+        return Collections.emptyList();
     }
 }

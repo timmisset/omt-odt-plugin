@@ -3,7 +3,6 @@ package com.misset.opp.odt.psi.impl.resolvable;
 import com.intellij.lang.ASTNode;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
-import com.misset.opp.resolvable.Resolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,11 +31,5 @@ public abstract class ODTResolvableValueAbstract extends ODTResolvableAbstract i
                 .map(ODTResolvable.class::cast)
                 .orElse(getCommandCall());
     }
-
-    @Override
-    public boolean isMultiple() {
-        return Optional.ofNullable(getResolvable()).map(Resolvable::isMultiple).orElse(false);
-    }
-
 
 }

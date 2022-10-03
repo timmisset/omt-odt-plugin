@@ -12,10 +12,12 @@ import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiReferencedElement;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -145,16 +147,6 @@ public class OMTYamlImportMemberDelegate extends OMTYamlPlainTextDelegateAbstrac
     }
 
     @Override
-    public boolean isBoolean() {
-        return computeFromCallable(Callable::isBoolean, false);
-    }
-
-    @Override
-    public boolean isMultiple() {
-        return computeFromCallable(Callable::isMultiple, false);
-    }
-
-    @Override
     public String getName() {
         return getText();
     }
@@ -234,4 +226,8 @@ public class OMTYamlImportMemberDelegate extends OMTYamlPlainTextDelegateAbstrac
         runOnCallable(callable -> callable.validateValue(call, holder, i));
     }
 
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return computeFromCallable(Resolvable::resolveLiteral, Collections.emptyList());
+    }
 }

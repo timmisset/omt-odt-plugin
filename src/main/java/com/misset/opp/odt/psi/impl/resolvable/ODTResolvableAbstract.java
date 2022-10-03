@@ -6,9 +6,11 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public abstract class ODTResolvableAbstract extends ASTWrapperPsiElement implements ODTResolvable {
@@ -29,5 +31,10 @@ public abstract class ODTResolvableAbstract extends ASTWrapperPsiElement impleme
     @Override
     public String getDocumentation(Project project) {
         return null;
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Collections.emptyList();
     }
 }

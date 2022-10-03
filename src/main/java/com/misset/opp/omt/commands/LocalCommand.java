@@ -3,10 +3,10 @@ package com.misset.opp.omt.commands;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.CallableType;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class LocalCommand implements Callable {
 
@@ -70,5 +70,10 @@ public abstract class LocalCommand implements Callable {
     @Override
     public boolean isBuiltin() {
         return true;
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Collections.emptyList();
     }
 }

@@ -7,8 +7,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.model.util.OntologyValidationUtil;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -64,5 +67,10 @@ public abstract class PsiCallableImpl extends ASTWrapperPsiElement implements Ps
     @Override
     public boolean isBuiltin() {
         return false;
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Collections.emptyList();
     }
 }

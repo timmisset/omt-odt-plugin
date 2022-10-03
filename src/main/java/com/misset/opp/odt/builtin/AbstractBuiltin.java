@@ -7,6 +7,7 @@ import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -141,5 +142,10 @@ public abstract class AbstractBuiltin implements Callable {
     @Override
     public boolean isBuiltin() {
         return true;
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Collections.emptyList();
     }
 }

@@ -11,9 +11,11 @@ import com.misset.opp.odt.psi.ODTQueryReverseStep;
 import com.misset.opp.odt.psi.ODTQueryStep;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQueryStep;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -61,5 +63,10 @@ public abstract class ODTResolvableQueryStepAbstract extends ASTWrapperPsiElemen
     @Override
     public @NotNull Set<OntResource> resolve() {
         return Collections.emptySet();
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Collections.emptyList();
     }
 }

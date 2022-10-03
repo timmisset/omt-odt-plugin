@@ -13,7 +13,9 @@ import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.resolvable.querystep.ODTResolvableQualifiedUriStep;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.Resolvable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
 
@@ -154,5 +156,12 @@ public abstract class ODTResolvableQueryPathAbstract extends ODTResolvableQueryA
                             queryStep instanceof ODTIdentifierStep;
         }
         return requiresInput;
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Optional.ofNullable(getLastOperation())
+                .map(Resolvable::resolveLiteral)
+                .orElse(Collections.emptyList());
     }
 }

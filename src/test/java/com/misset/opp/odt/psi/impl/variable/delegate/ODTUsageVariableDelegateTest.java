@@ -90,4 +90,19 @@ class ODTUsageVariableDelegateTest extends ODTTestCase {
             assertContainsElements(((ODTVariable) elementAtCaret).resolve(), OntologyModelConstants.getXsdIntegerInstance());
         });
     }
+
+    @Test
+    void testGetLiteralValue() {
+        String content = "VAR $boolean = true;\n" +
+                "@LOG(<caret>$boolean);";
+        ODTFileTestImpl file = configureByText(content);
+        ReadAction.run(() -> {
+            int offset = getEditor().getCaretModel().getOffset();
+            PsiElement variable = file.findElementAt(offset).getParent();
+            assertTrue(variable instanceof ODTVariable);
+            assertEquals(
+                    "true^^http://www.w3.org/2001/XMLSchema#boolean",
+                    ((ODTVariable) variable).resolveLiteral().get(0).toString());
+        });
+    }
 }

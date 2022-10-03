@@ -11,11 +11,15 @@ import com.misset.opp.model.util.OntologyValueParserUtil;
 import com.misset.opp.odt.psi.ODTConstantValue;
 import com.misset.opp.odt.psi.ODTInterpolatedString;
 import com.misset.opp.odt.psi.ODTTypes;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public abstract class ODTResolvableConstantValueStepAbstract extends ODTResolvableQueryStepAbstract implements ODTConstantValue {
@@ -68,5 +72,26 @@ public abstract class ODTResolvableConstantValueStepAbstract extends ODTResolvab
                 OntologyModelConstants.getXsdTrue() :
                 OntologyModelConstants.getXsdFalse();
 
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        final IElementType elementType = getNode().getFirstChildNode().getElementType();
+        OntModel ontModel = OntologyModel.getInstance().getModel();
+        final Literal result;
+        if (elementType == ODTTypes.BOOLEAN) {
+            result = TRUES.contains(getText()) ? ontModel.createTypedLiteral(true) : ontModel.createTypedLiteral(false);
+        } else if (elementType == ODTTypes.STRING) {
+            String unwrapped = StringUtils.unwrap(getText(), '\'');
+            unwrapped = StringUtils.unwrap(unwrapped, '"');
+            result = ontModel.createTypedLiteral(unwrapped);
+        } else if (elementType == ODTTypes.INTEGER) {
+            result = ontModel.createTypedLiteral(Integer.parseInt(getText()));
+        } else if (elementType == ODTTypes.DECIMAL) {
+            result = ontModel.createTypedLiteral(Double.parseDouble(getText()));
+        } else {
+            result = null; // returns an emptySet which is the ODT equivalent of null
+        }
+        return result == null ? Collections.emptyList() : List.of(result);
     }
 }

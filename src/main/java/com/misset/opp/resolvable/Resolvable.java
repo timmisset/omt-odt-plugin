@@ -1,10 +1,10 @@
 package com.misset.opp.resolvable;
 
-import com.misset.opp.model.OntologyModel;
-import com.misset.opp.model.OntologyModelConstants;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,19 +26,10 @@ public interface Resolvable {
     Set<OntResource> resolve();
 
     /**
-     * Returns true if resolve contains a single value which is XSD_BOOLEAN_INSTANCE
+     * Resolves to a literal value
+     * Example:
+     * 'test' resolves to "'test'^^xsd:string";
      */
-    default boolean isBoolean() {
-        return resolve().stream().allMatch(
-                resource -> OntologyModel.getInstance().isInstanceOf(resource, OntologyModelConstants.getXsdBoolean())
-        );
-    }
+    @NotNull List<Literal> resolveLiteral();
 
-    /**
-     * Returns true if, and only if, it is absolutely certain that the Resolvable will contain multiple values
-     * For example, an Array query
-     */
-    default boolean isMultiple() {
-        return false;
-    }
 }
