@@ -2,10 +2,7 @@ package com.misset.opp.omt.psi.impl.yaml;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.NlsSafe;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiReference;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
@@ -25,7 +22,8 @@ public class YAMLOMTPlainTextImpl extends YAMLPlainTextImpl implements PsiNamedE
 
     @Override
     public @NotNull SearchScope getUseScope() {
-        return GlobalSearchScope.fileScope(getContainingFile());
+        PsiFile containingFile = getContainingFile();
+        return containingFile != null ? GlobalSearchScope.fileScope(containingFile) : GlobalSearchScope.EMPTY_SCOPE;
     }
 
     private transient PsiNamedElement delegate;
