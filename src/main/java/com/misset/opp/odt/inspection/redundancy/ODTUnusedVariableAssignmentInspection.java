@@ -6,10 +6,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTScript;
-import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.odt.psi.ODTVariableAssignment;
-import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsageVariableDelegate;
+import com.misset.opp.odt.psi.PsiRelationshipUtil;
 import com.misset.opp.resolvable.Variable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -52,15 +51,7 @@ public class ODTUnusedVariableAssignmentInspection extends LocalInspectionTool {
                             boolean isUsed = PsiTreeUtil.findChildrenOfType(scope, ODTVariable.class)
                                     .stream()
                                     .filter(usedVariable -> name.equals(usedVariable.getName()))
-                                    .map(ODTVariable::getDelegate)
-                                    .filter(ODTUsageVariableDelegate.class::isInstance)
-                                    .map(ODTUsageVariableDelegate.class::cast)
-                                    .map(delegate -> {
-                                        ODTScriptLine scriptLine = PsiTreeUtil.getParentOfType(
-                                                delegate.getElement(),
-                                                ODTScriptLine.class);
-                                        return delegate.getVariablesFromAssignments(scriptLine, declaredPsiElement);
-                                    })
+                                    .map(PsiRelationshipUtil::getRelatedElements)
                                     .anyMatch(variables -> variables.stream().anyMatch(assignedVariable::equals));
                             if (!isUsed) {
                                 holder.registerProblem(

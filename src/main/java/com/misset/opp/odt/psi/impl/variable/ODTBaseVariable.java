@@ -23,10 +23,12 @@ import com.misset.opp.odt.psi.impl.variable.delegate.*;
 import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -256,5 +258,10 @@ public abstract class ODTBaseVariable
     @Override
     public Scope getScope() {
         return Scope.LOCAL;
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return delegate.resolveLiteral();
     }
 }

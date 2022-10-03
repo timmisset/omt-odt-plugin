@@ -7,8 +7,10 @@ import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
+import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,27 +48,15 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
 
     @Override
     public Set<OntResource> resolve() {
-        final ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(element,
-                ODTVariableAssignment.class);
-        if (variableAssignment == null) {
-            return Collections.emptySet();
-        }
-
-        final List<ODTVariable> variableList = variableAssignment.getVariableList();
-        final int i = variableList.indexOf(element);
-        final ODTVariableValue variableValue = variableAssignment.getVariableValue();
-        if (i == 0) {
-            ODTStatement statement = variableValue.getStatement();
-            if (statement instanceof ODTResolvable) {
-                return ((ODTResolvable) statement).resolve();
+        int index = getVariableIndex();
+        Resolvable resolvable = getResolvableValue();
+        if (resolvable != null) {
+            if (index == 0) {
+                return resolvable.resolve();
             }
-        } else if (i == 1) {
-            return Optional.of(variableValue.getStatement())
-                    .filter(ODTCommandCall.class::isInstance)
-                    .map(ODTCommandCall.class::cast)
-                    .map(ODTCall::getCallable)
-                    .map(Callable::getSecondReturnArgument)
-                    .orElse(Collections.emptySet());
+            if (index == 1 && resolvable instanceof Callable) {
+                return ((Callable) resolvable).getSecondReturnArgument();
+            }
         }
         return Collections.emptySet();
     }
@@ -74,5 +64,46 @@ public class ODTVariableAssignmentDelegate extends ODTDeclaredVariableDelegate {
     @Override
     public PsiReference getReference() {
         return !isDeclaredVariable() ? ODTVariableReference.forVariable(element) : null;
+    }
+
+    @Override
+    public List<Literal> resolveLiteral() {
+        return Optional.ofNullable(getResolvableValue())
+                .map(Resolvable::resolveLiteral)
+                .orElse(Collections.emptyList());
+    }
+
+    private Resolvable getResolvableValue() {
+        final ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(element,
+                ODTVariableAssignment.class);
+        if (variableAssignment == null) {
+            return null;
+        }
+
+        final int i = getVariableIndex();
+        final ODTVariableValue variableValue = variableAssignment.getVariableValue();
+        if (i == 0) {
+            ODTStatement statement = variableValue.getStatement();
+            if (statement instanceof ODTResolvable) {
+                return (Resolvable) statement;
+            }
+        } else if (i == 1) {
+            return Optional.of(variableValue.getStatement())
+                    .filter(ODTCommandCall.class::isInstance)
+                    .map(ODTCommandCall.class::cast)
+                    .map(ODTCall::getCallable)
+                    .orElse(null);
+        }
+        return null;
+    }
+
+    private int getVariableIndex() {
+        final ODTVariableAssignment variableAssignment = PsiTreeUtil.getParentOfType(element,
+                ODTVariableAssignment.class);
+        if (variableAssignment == null) {
+            return -1;
+        }
+        final List<ODTVariable> variableList = variableAssignment.getVariableList();
+        return variableList.indexOf(element);
     }
 }

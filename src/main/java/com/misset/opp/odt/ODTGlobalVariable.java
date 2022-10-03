@@ -3,12 +3,10 @@ package com.misset.opp.odt;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ODTGlobalVariable implements Variable {
@@ -82,4 +80,8 @@ public class ODTGlobalVariable implements Variable {
         return Scope.GLOBAL;
     }
 
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Collections.emptyList();
+    }
 }

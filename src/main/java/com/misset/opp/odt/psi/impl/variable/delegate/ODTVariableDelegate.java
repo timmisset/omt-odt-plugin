@@ -4,7 +4,9 @@ import com.intellij.psi.PsiReference;
 import com.misset.opp.odt.psi.ODTVariable;
 import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ODTVariableDelegate {
@@ -19,6 +21,8 @@ public interface ODTVariableDelegate {
     PsiReference getReference();
 
     Set<OntResource> resolve();
+
+    List<Literal> resolveLiteral();
 
     Variable getDeclared();
 

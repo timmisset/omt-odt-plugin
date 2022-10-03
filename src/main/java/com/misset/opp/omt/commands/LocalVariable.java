@@ -2,8 +2,11 @@ package com.misset.opp.omt.commands;
 
 import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class LocalVariable implements Variable {
@@ -50,5 +53,10 @@ public class LocalVariable implements Variable {
     @Override
     public Scope getScope() {
         return Scope.LOCAL;
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Collections.emptyList();
     }
 }

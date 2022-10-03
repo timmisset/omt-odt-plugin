@@ -11,6 +11,7 @@ import com.misset.opp.omt.meta.model.variables.OMTNamedVariableMetaType;
 import com.misset.opp.refactoring.SupportsSafeDelete;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
@@ -19,6 +20,7 @@ import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -126,4 +128,8 @@ public class OMTYamlVariableDelegate extends OMTYamlPlainTextDelegateAbstract im
         return Scope.LOCAL;
     }
 
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Collections.emptyList();
+    }
 }

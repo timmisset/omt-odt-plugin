@@ -17,9 +17,11 @@ import com.misset.opp.odt.psi.impl.ODTQueryArrayImpl;
 import com.misset.opp.odt.psi.impl.resolvable.ODTResolvableAbstract;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
 import com.misset.opp.resolvable.Context;
+import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -189,13 +191,10 @@ public abstract class ODTResolvableQueryOperationStepAbstract extends ODTResolva
      */
     @Override
     public @NotNull Set<OntResource> resolve() {
-        return LoggerUtil.computeWithLogger(LOGGER, "Resolving " + getText(), () -> {
-            if (getQueryStep() != null) {
-                return filter(getQueryStep().resolve());
-            } else {
-                return Collections.emptySet();
-            }
-        });
+        return Optional.ofNullable(getQueryStep())
+                .map(Resolvable::resolve)
+                .map(this::filter)
+                .orElse(Collections.emptySet());
     }
 
     @Override
@@ -204,5 +203,12 @@ public abstract class ODTResolvableQueryOperationStepAbstract extends ODTResolva
                 () -> Optional.ofNullable(getQueryStep())
                         .map(queryStep -> queryStep.resolve(context))
                         .orElse(Collections.emptySet()));
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Optional.ofNullable(getQueryStep())
+                .map(Resolvable::resolveLiteral)
+                .orElse(Collections.emptyList());
     }
 }

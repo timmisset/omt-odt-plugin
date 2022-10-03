@@ -4,15 +4,17 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiVariable;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.builtin.commands.CommandVariableTypeProvider;
-import com.misset.opp.odt.psi.*;
+import com.misset.opp.odt.psi.ODTFile;
+import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.psi.PsiRelationshipUtil;
 import com.misset.opp.odt.psi.reference.ODTVariableReference;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.Variable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -66,24 +68,7 @@ public class ODTUsageVariableDelegate extends ODTVariableDelegateAbstract {
     }
 
     private Optional<Set<OntResource>> getTypeFromAssignment() {
-        // find the closest variable assignment to determine earlier instances or assignments
-        // of this variable to determine the type
-        // the 'other' variable must resolve to the same declared variable as this instance
-        final PsiElement resolve = Optional.ofNullable(getReference())
-                .filter(ODTVariableReference.class::isInstance)
-                .map(ODTVariableReference.class::cast)
-                .map(odtVariableReference -> odtVariableReference.resolve(false, false))
-                .filter(PsiVariable.class::isInstance)
-                .map(PsiVariable.class::cast)
-                .orElse(null);
-
-        if (resolve == null) {
-            return Optional.empty();
-        }
-
-        final List<ODTVariable> variablesFromAssignments = getVariablesFromAssignments(PsiTreeUtil.getParentOfType(
-                element,
-                ODTScriptLine.class), resolve);
+        final List<ODTVariable> variablesFromAssignments = getVariablesFromAssignments();
         if (variablesFromAssignments.isEmpty()) {
             return Optional.empty();
         }
@@ -93,60 +78,16 @@ public class ODTUsageVariableDelegate extends ODTVariableDelegateAbstract {
                 .collect(Collectors.toSet()));
     }
 
-    public List<ODTVariable> getVariablesFromAssignments(@Nullable ODTScriptLine scriptLine,
-                                                         PsiElement target) {
-        List<ODTVariable> assignmentVariables = new ArrayList<>();
-        if (scriptLine == null) {
-            return assignmentVariables;
-        }
-        ODTScript script = PsiTreeUtil.getParentOfType(scriptLine, ODTScript.class);
-        if (script == null) {
-            return assignmentVariables;
-        }
-
-        // no self-referencing
-        // for example:
-        // VAR $total = $total / PLUS(1)
-        // the value $total should not be resolved by resolving the assignment
-        scriptLine = PsiTreeUtil.getPrevSiblingOfType(scriptLine, ODTScriptLine.class);
-
-        while (scriptLine != null) {
-            assignmentVariables.addAll(PsiTreeUtil.findChildrenOfType(scriptLine, ODTVariable.class)
-                    .stream()
-                    .filter(variable ->
-                            variable != element &&
-                                    variable.getParent() instanceof ODTVariableAssignment &&
-                                    variable.getName() != null && variable.getName().equals(element.getName()))
-                    .map(variable -> (ODTVariableAssignment) variable.getParent())
-                    .map(assignment -> getVariableFromAssignment(assignment, target))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList()));
-            scriptLine = PsiTreeUtil.getPrevSiblingOfType(scriptLine, ODTScriptLine.class);
-        }
-
-        final ODTScriptLine parentScriptline = PsiTreeUtil.getParentOfType(script, ODTScriptLine.class);
-        assignmentVariables.addAll(getVariablesFromAssignments(parentScriptline, target));
-        return assignmentVariables;
-    }
-
-    private ODTVariable getVariableFromAssignment(ODTVariableAssignment variableAssignment,
-                                                  PsiElement target) {
-        return variableAssignment.getVariableList().stream()
-                .filter(variable -> hasSameTarget(variable, target))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private boolean hasSameTarget(ODTVariable variable,
-                                  PsiElement target) {
-        return variable == target || Optional.ofNullable(variable.getReference())
-                .filter(ODTVariableReference.class::isInstance)
-                .map(ODTVariableReference.class::cast)
-                .map(odtVariableReference -> odtVariableReference.resolve(false, false))
-                .filter(Variable.class::isInstance)
-                .map(Variable.class::cast)
-                .map(target::equals)
-                .orElse(false);
+    private List<ODTVariable> getVariablesFromAssignments() {
+        // find the closest variable assignment to determine earlier instances or assignments
+        // of this variable to determine the type
+        // the 'other' variable must resolve to the same declared variable as this instance
+        List<PsiElement> relatedElements = PsiRelationshipUtil.getRelatedElements(getElement());
+        return relatedElements.stream()
+                .filter(ODTVariable.class::isInstance)
+                .map(ODTVariable.class::cast)
+                .filter(ODTVariableDelegate::isAssignedVariable)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -211,5 +152,15 @@ public class ODTUsageVariableDelegate extends ODTVariableDelegateAbstract {
                 .filter(pair -> pair.second instanceof CommandVariableTypeProvider)
                 .map(pair -> new Pair<>(pair.first, (CommandVariableTypeProvider) pair.second))
                 .findFirst();
+    }
+
+    @Override
+    public List<Literal> resolveLiteral() {
+        List<ODTVariable> variablesFromAssignments = getVariablesFromAssignments();
+        if (variablesFromAssignments.isEmpty()) {
+            return Collections.emptyList();
+        }
+        ODTVariable variable = variablesFromAssignments.get(0);
+        return variable.resolveLiteral();
     }
 }

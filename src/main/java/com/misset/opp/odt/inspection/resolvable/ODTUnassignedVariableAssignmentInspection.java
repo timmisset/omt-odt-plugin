@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.odt.psi.ODTAssignmentStatement;
-import com.misset.opp.odt.psi.ODTScriptLine;
 import com.misset.opp.odt.psi.ODTVariable;
+import com.misset.opp.odt.psi.PsiRelationshipUtil;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTUsageVariableDelegate;
 import com.misset.opp.odt.psi.impl.variable.delegate.ODTVariableDelegate;
 import com.misset.opp.resolvable.Variable;
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.intellij.codeInspection.ProblemHighlightType.WARNING;
 
@@ -44,12 +45,13 @@ public class ODTUnassignedVariableAssignmentInspection extends LocalInspectionTo
                     if (!(declared instanceof ODTVariable) || declared.isParameter() || isAssignee(variable)) {
                         return;
                     }
-                    ODTScriptLine scriptLine = PsiTreeUtil.getParentOfType(
-                            variable,
-                            ODTScriptLine.class);
-                    List<ODTVariable> variablesFromAssignments =
-                            ((ODTUsageVariableDelegate) variableDelegate).getVariablesFromAssignments(scriptLine, (PsiElement) declared);
-                    if (variablesFromAssignments.isEmpty()) {
+                    List<ODTVariable> variableAssignments = PsiRelationshipUtil.getRelatedElements(variable)
+                            .stream()
+                            .filter(ODTVariable.class::isInstance)
+                            .map(ODTVariable.class::cast)
+                            .filter(ODTVariableDelegate::isAssignedVariable)
+                            .collect(Collectors.toList());
+                    if (variableAssignments.isEmpty()) {
                         holder.registerProblem(
                                 variable,
                                 variable.getName() + " is used before it is assigned a value",

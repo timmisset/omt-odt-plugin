@@ -1,8 +1,10 @@
 package com.misset.opp.resolvable;
 
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,5 +24,12 @@ public interface Resolvable {
      */
     @NotNull
     Set<OntResource> resolve();
+
+    /**
+     * Resolves to a literal value
+     * Example:
+     * 'test' resolves to "'test'^^xsd:string";
+     */
+    @NotNull List<Literal> resolveLiteral();
 
 }

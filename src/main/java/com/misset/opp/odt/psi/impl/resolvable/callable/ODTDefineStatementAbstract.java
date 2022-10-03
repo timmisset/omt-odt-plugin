@@ -190,4 +190,5 @@ public abstract class ODTDefineStatementAbstract extends PsiCallableImpl impleme
     public Set<OntResource> resolvePreviousStep() {
         return Collections.emptySet();
     }
+
 }
