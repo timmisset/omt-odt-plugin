@@ -87,7 +87,7 @@ public class OMTYamlVariableDelegate extends OMTYamlPlainTextDelegateAbstract im
 
     private <T> T getFromMeta(BiFunction<OMTNamedVariableMetaType, YAMLValue, T> ifPresent,
                               T orElse) {
-        if (value == null) {
+        if (value == null || !value.isValid()) {
             return orElse;
         }
         return Optional.ofNullable(OMTMetaTypeProvider.getInstance(value.getProject()).getValueMetaType(value))
