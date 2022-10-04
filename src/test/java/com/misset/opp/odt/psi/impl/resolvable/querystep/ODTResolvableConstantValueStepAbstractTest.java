@@ -22,8 +22,8 @@ class ODTResolvableConstantValueStepAbstractTest extends ODTTestCase {
     private static Stream<Arguments> getExpectedLiterals() {
         OntModel model = initOntologyModel().getModel();
         return Stream.of(
-                Arguments.of("true", model.createTypedLiteral(true)),
-                Arguments.of("false", model.createTypedLiteral(false)),
+                Arguments.of("true", OntologyModelConstants.getXsdBooleanTrue()),
+                Arguments.of("false", OntologyModelConstants.getXsdBooleanFalse()),
                 Arguments.of("'string'", model.createTypedLiteral("string")),
                 Arguments.of("1", model.createTypedLiteral(1)),
                 Arguments.of("1.0", model.createTypedLiteral(1.0)),
@@ -33,8 +33,8 @@ class ODTResolvableConstantValueStepAbstractTest extends ODTTestCase {
 
     private static Stream<Arguments> getExpectedTypes() {
         return Stream.of(
-                Arguments.of("true", OntologyModelConstants.getXsdTrue()),
-                Arguments.of("false", OntologyModelConstants.getXsdFalse()),
+                Arguments.of("true", OntologyModelConstants.getXsdBooleanInstance()),
+                Arguments.of("false", OntologyModelConstants.getXsdBooleanInstance()),
                 Arguments.of("'string'", OntologyModelConstants.getXsdStringInstance()),
                 Arguments.of("1", OntologyModelConstants.getXsdIntegerInstance()),
                 Arguments.of("1.0", OntologyModelConstants.getXsdDecimalInstance()),

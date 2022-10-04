@@ -11,13 +11,12 @@ import com.misset.opp.odt.builtin.operators.IIfOperator;
 import com.misset.opp.odt.psi.ODTQuery;
 import com.misset.opp.odt.psi.ODTSignatureArgument;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
-import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Code inspection for all unused declarations
@@ -58,10 +57,10 @@ public class ODTOperatorInspectionIIf extends LocalInspectionTool {
         if (signatureArguments.size() == 2) {
             return OntologyModel.getInstance().isBooleanInstance(signatureArguments.get(1).resolve());
         } else if (signatureArguments.size() == 3) {
-            return (ontologyModel.isBooleanTrue(signatureArguments.get(1).resolve()) &&
+            return (ontologyModel.isBooleanTrue(signatureArguments.get(1).resolveLiteral()) &&
                     ontologyModel.isBooleanInstance(signatureArguments.get(2).resolve())) ||
-                    (ontologyModel.isBooleanFalse(signatureArguments.get(1).resolve()) &&
-                            ontologyModel.isBooleanTrue(signatureArguments.get(2).resolve()));
+                    (ontologyModel.isBooleanFalse(signatureArguments.get(1).resolveLiteral()) &&
+                            ontologyModel.isBooleanTrue(signatureArguments.get(2).resolveLiteral()));
         }
         return false;
     }
@@ -69,7 +68,8 @@ public class ODTOperatorInspectionIIf extends LocalInspectionTool {
     @Nullable
     private LocalQuickFix getSimplifyQuickfix(@NotNull ODTCall call) {
         List<ODTSignatureArgument> signatureArguments = call.getSignatureArguments();
-        Set<OntResource> ifTrue = call.getSignatureArgument(1).resolve();
+        ODTSignatureArgument firstArgument = call.getSignatureArgument(1);
+        List<Literal> ifTrue = firstArgument.resolveLiteral();
         String condition = getCondition(call);
         OntologyModel ontologyModel = OntologyModel.getInstance();
         String query = null;
@@ -80,36 +80,28 @@ public class ODTOperatorInspectionIIf extends LocalInspectionTool {
             } else if (ontologyModel.isBooleanTrue(ifTrue)) {
                 // IIF(<condition>, true) => NOT <condition>
                 query = condition;
-            } else if (ontologyModel.isBooleanInstance(ifTrue)) {
+            } else if (ontologyModel.isBooleanInstance(firstArgument.resolve())) {
                 // IIF(<condition>, <boolean>) => <condition> AND <boolean>
-                query = condition + " AND " + call.getSignatureArgument(1).getText();
+                query = condition + " AND " + firstArgument.getText();
             }
         } else if (signatureArguments.size() == 3) {
-            Set<OntResource> ifFalse = call.getSignatureArgument(2).resolve();
+            ODTSignatureArgument secondArgument = call.getSignatureArgument(2);
+            List<Literal> ifFalse = secondArgument.resolveLiteral();
             if (ontologyModel.isBooleanTrue(ifTrue) && ontologyModel.isBooleanFalse(ifFalse)) {
                 // IIF(<condition>, true, false) => <condition>
                 query = condition;
             } else if (ontologyModel.isBooleanTrue(ifFalse) && ontologyModel.isBooleanFalse(ifTrue)) {
                 // IIF(<condition>, false, true) => NOT <condition>
                 query = "NOT " + condition;
-            } else if (ontologyModel.isBooleanTrue(ifTrue) && ontologyModel.isBooleanInstance(ifFalse)) {
+            } else if (ontologyModel.isBooleanTrue(ifTrue) && ontologyModel.isBooleanInstance(secondArgument.resolve())) {
                 // IIF(<condition>, true, <boolean>) => <condition> OR <boolean>
-                query = condition + " OR " + call.getSignatureArgument(2).getText();
+                query = condition + " OR " + secondArgument.getText();
             }
         }
         return query != null ? getQuickFix(SIMPLIFY, query) : null;
     }
 
-    @NotNull
-    private LocalQuickFix getCombineQuickfix(@NotNull ODTCall call) {
-        String query = String.format("%s AND %s",
-                call.getSignatureValue(0),
-                call.getSignatureValue(1));
-        return getQuickFix(COMBINE, query);
-    }
-
-    private LocalQuickFix getQuickFix(String familyName,
-                                      String query) {
+    private LocalQuickFix getQuickFix(String familyName, String query) {
 
         return new LocalQuickFix() {
             @Override

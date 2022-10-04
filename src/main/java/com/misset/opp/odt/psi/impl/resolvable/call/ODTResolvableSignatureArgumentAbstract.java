@@ -12,12 +12,10 @@ import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Resolvable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public abstract class ODTResolvableSignatureArgumentAbstract extends ODTResolvableAbstract
@@ -36,6 +34,13 @@ public abstract class ODTResolvableSignatureArgumentAbstract extends ODTResolvab
                 .map(Resolvable::resolve)
                 .or(this::resolveCommandBlock)
                 .orElse(Collections.emptySet());
+    }
+
+    @Override
+    public @NotNull List<Literal> resolveLiteral() {
+        return Optional.ofNullable(getResolvableValue())
+                .map(Resolvable::resolveLiteral)
+                .orElse(Collections.emptyList());
     }
 
     private Optional<Set<OntResource>> resolveCommandBlock() {

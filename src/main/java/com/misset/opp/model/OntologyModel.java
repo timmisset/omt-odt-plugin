@@ -13,6 +13,7 @@ import com.misset.opp.settings.SettingsState;
 import com.misset.opp.util.Icons;
 import com.misset.opp.util.LoggerUtil;
 import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -568,12 +569,12 @@ public class OntologyModel {
         return resources.stream().allMatch(resource -> isInstanceOf(resource, OntologyModelConstants.getXsdBoolean()));
     }
 
-    public boolean isBooleanFalse(Set<OntResource> resources) {
-        return resources.stream().allMatch(OntologyModelConstants.getXsdFalse()::equals);
+    public boolean isBooleanFalse(List<Literal> resources) {
+        return !resources.isEmpty() && resources.stream().allMatch(OntologyModelConstants.getXsdBooleanFalse()::equals);
     }
 
-    public boolean isBooleanTrue(Set<OntResource> resources) {
-        return resources.stream().allMatch(OntologyModelConstants.getXsdTrue()::equals);
+    public boolean isBooleanTrue(List<Literal> resources) {
+        return !resources.isEmpty() && resources.stream().allMatch(OntologyModelConstants.getXsdBooleanTrue()::equals);
     }
 
     public Set<OntClass> listSuperClasses(OntClass ontClass) {

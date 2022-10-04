@@ -36,7 +36,7 @@ public abstract class ODTResolvableConstantValueStepAbstract extends ODTResolvab
 
         final OntResource result;
         if (elementType == ODTTypes.BOOLEAN) {
-            result = getBooleanInstance();
+            result = OntologyModelConstants.getXsdBooleanInstance();
         } else if (elementType == ODTTypes.STRING) {
             result = OntologyModelConstants.getXsdStringInstance();
         } else if (elementType == ODTTypes.INTEGER) {
@@ -65,13 +65,6 @@ public abstract class ODTResolvableConstantValueStepAbstract extends ODTResolvab
                 "Constant<br>" +
                 OntologyResourceUtil.describeUrisJoined(resolve(), "<br>", false) +
                 DocumentationMarkup.DEFINITION_END;
-    }
-
-    private OntResource getBooleanInstance() {
-        return TRUES.contains(getText()) ?
-                OntologyModelConstants.getXsdTrue() :
-                OntologyModelConstants.getXsdFalse();
-
     }
 
     @Override
