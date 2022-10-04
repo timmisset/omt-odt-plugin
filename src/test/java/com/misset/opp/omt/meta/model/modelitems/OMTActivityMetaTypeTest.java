@@ -3,6 +3,8 @@ package com.misset.opp.omt.meta.model.modelitems;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.model.OntologyModel;
 import com.misset.opp.model.OntologyModelConstants;
+import com.misset.opp.omt.inspection.structure.OMTValueInspection;
+import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
 import com.misset.opp.omt.testcase.OMTTestCase;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -10,6 +12,7 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -78,5 +81,21 @@ class OMTActivityMetaTypeTest extends OMTTestCase {
             Set<OntResource> resolve = new OMTActivityMetaType().resolve(value, null);
             Assertions.assertTrue(resolve.isEmpty());
         });
+    }
+
+    @Test
+    void testHasWarningWhenCombiningOverwriteAllWithOtherHandlers() {
+        myFixture.enableInspections(Collections.singleton(OMTValueInspection.class));
+        String content = "model:\n" +
+                "   MyActivity: !Activity\n" +
+                "       handlers:\n" +
+                "       -  !OverwriteAll {} \n" +
+                "       -  !MergePredicates\n" +
+                "          subjects: /a:b\n" +
+                "          predicates: /a:b\n" +
+                "          from: parent\n" +
+                "\n";
+        configureByText(content);
+        inspection.assertHasWarning(OMTHandlersArrayMetaType.OVERWRITE_ALL_SHOULD_NOT_BE_COMBINED_WITH_OTHER_HANDLERS);
     }
 }

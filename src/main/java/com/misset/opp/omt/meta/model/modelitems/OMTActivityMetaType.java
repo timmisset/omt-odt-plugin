@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.ODTQuery;
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -182,5 +184,15 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
     @Override
     public @NotNull Map<String, String> getNamespaces(YAMLMapping yamlMapping) {
         return OMTPrefixProviderUtil.getNamespaces(yamlMapping);
+    }
+
+    @Override
+    public void validateValue(@NotNull YAMLValue value, @NotNull ProblemsHolder problemsHolder) {
+        Optional.of(value)
+                .filter(YAMLMapping.class::isInstance)
+                .map(YAMLMapping.class::cast)
+                .map(mapping -> mapping.getKeyValueByKey("handlers"))
+                .map(YAMLKeyValue::getValue)
+                .ifPresent(handlers -> OMTHandlersArrayMetaType.getInstance().validateValue(handlers, problemsHolder));
     }
 }
