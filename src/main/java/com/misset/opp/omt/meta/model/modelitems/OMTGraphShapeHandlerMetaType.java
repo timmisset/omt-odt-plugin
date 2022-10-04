@@ -1,5 +1,6 @@
 package com.misset.opp.omt.meta.model.modelitems;
 
+import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.omt.documentation.OMTDocumented;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.arrays.OMTHandlersArrayMetaType;
@@ -7,12 +8,16 @@ import com.misset.opp.omt.meta.scalars.queries.OMTShapeQueryType;
 import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.meta.model.YamlStringType;
+import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLValue;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -79,5 +84,15 @@ public class OMTGraphShapeHandlerMetaType extends OMTParameterizedModelItemMetaT
     @Override
     public String getDocumentationClass() {
         return "GraphShapeHandler";
+    }
+
+    @Override
+    public void validateValue(@NotNull YAMLValue value, @NotNull ProblemsHolder problemsHolder) {
+        Optional.of(value)
+                .filter(YAMLMapping.class::isInstance)
+                .map(YAMLMapping.class::cast)
+                .map(mapping -> mapping.getKeyValueByKey("handlers"))
+                .map(YAMLKeyValue::getValue)
+                .ifPresent(handlers -> OMTHandlersArrayMetaType.getInstance().validateValue(handlers, problemsHolder));
     }
 }

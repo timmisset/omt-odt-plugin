@@ -95,7 +95,7 @@ public abstract class OMTMetaTaggedType<T extends YamlMetaType> extends OMTMetaT
                 .orElse(false);
     }
 
-    private LookupElement getTagLookup(String s) {
+    protected LookupElement getTagLookup(String s) {
         return LookupElementBuilder.create(s).withPresentableText(s.substring(1))
                 .withLookupStrings(List.of(s, s.substring(1)));
     }
