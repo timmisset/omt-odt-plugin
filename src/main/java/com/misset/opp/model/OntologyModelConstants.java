@@ -5,6 +5,7 @@ import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 
@@ -58,9 +59,8 @@ public final class OntologyModelConstants {
     private static Individual xsdDatetimeInstance;
     private static Individual xsdDurationInstance;
 
-    private static Individual xsdTrue;
-
-    private static Individual xsdFalse;
+    private static Literal xsdBooleanFalse;
+    private static Literal xsdBooleanTrue;
 
     static {
         // create the static members with an initial model. Once the OntologyModel is actually loaded
@@ -84,8 +84,8 @@ public final class OntologyModelConstants {
     private static void setPrimitives(OntologyModel model, OntModel ontologyModel) {
         xsdBoolean = model.createClass(XSD.BOOLEAN.getUri(), ontologyModel, getOwlThingClass());
         xsdBooleanInstance = model.createIndividual(getXsdBoolean(), XSD.BOOLEAN_INSTANCE.getUri());
-        xsdTrue = model.createIndividual(getXsdBoolean(), "\"true\"^^" + XSD.BOOLEAN.getUri());
-        xsdFalse = model.createIndividual(getXsdBoolean(), "\"false\"^^" + XSD.BOOLEAN.getUri());
+        xsdBooleanTrue = ontologyModel.createTypedLiteral(true);
+        xsdBooleanFalse = ontologyModel.createTypedLiteral(false);
 
         xsdString = model.createClass(XSD.STRING.getUri(), ontologyModel, getOwlThingClass());
         xsdStringInstance = model.createIndividual(getXsdString(), XSD.STRING_INSTANCE.getUri());
@@ -325,14 +325,6 @@ public final class OntologyModelConstants {
         return xsdBooleanInstance;
     }
 
-    public static Individual getXsdTrue() {
-        return xsdTrue;
-    }
-
-    public static Individual getXsdFalse() {
-        return xsdFalse;
-    }
-
     public static Individual getXsdStringInstance() {
         return xsdStringInstance;
     }
@@ -359,5 +351,13 @@ public final class OntologyModelConstants {
 
     public static Individual getXsdDurationInstance() {
         return xsdDurationInstance;
+    }
+
+    public static Literal getXsdBooleanFalse() {
+        return xsdBooleanFalse;
+    }
+
+    public static Literal getXsdBooleanTrue() {
+        return xsdBooleanTrue;
     }
 }

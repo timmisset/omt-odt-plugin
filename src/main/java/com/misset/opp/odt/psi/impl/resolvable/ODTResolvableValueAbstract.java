@@ -3,10 +3,13 @@ package com.misset.opp.odt.psi.impl.resolvable;
 import com.intellij.lang.ASTNode;
 import com.misset.opp.odt.psi.ODTResolvableValue;
 import com.misset.opp.odt.psi.resolvable.ODTResolvable;
+import com.misset.opp.resolvable.Resolvable;
 import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,13 +20,17 @@ public abstract class ODTResolvableValueAbstract extends ODTResolvableAbstract i
 
     @Override
     public @NotNull Set<OntResource> resolve() {
-        if (getQuery() != null) {
-            return getQuery().resolve();
-        }
-        if (getCommandCall() != null) {
-            return getCommandCall().resolve();
-        }
-        return Collections.emptySet();
+        return Optional.ofNullable(getResolvable())
+                .map(Resolvable::resolve)
+                .orElse(Collections.emptySet());
+    }
+
+    @Override
+    @NotNull
+    public List<Literal> resolveLiteral() {
+        return Optional.ofNullable(getResolvable())
+                .map(Resolvable::resolveLiteral)
+                .orElse(Collections.emptyList());
     }
 
     private ODTResolvable getResolvable() {
