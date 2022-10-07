@@ -9,6 +9,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
@@ -18,6 +19,7 @@ import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTCall> implements L
                         .stream()
                         .filter(PsiCallable.class::isInstance)
                         .map(PsiCallable.class::cast)
+                        .filter(callable -> !PsiTreeUtil.isAncestor(callable, myElement, false))
                         .filter(psiCallable -> file.isAccessible(myElement, psiCallable))
                         .collect(Collectors.toList())
                 , resolveToOriginalElement, resolveToFinalElement);
@@ -73,6 +76,45 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTCall> implements L
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         return multiResolve(true, true);
+    }
+
+    @Override
+    public @Nullable PsiElement resolve() {
+        ResolveResult[] resolveResults = multiResolve(false);
+        if (resolveResults.length == 1) {
+            return resolveResults[0].getElement();
+        }
+        Arrays.sort(resolveResults, 0, resolveResults.length, this::compareByProximity);
+        return resolveResults[0].getElement();
+    }
+
+    private int compareByProximity(ResolveResult result1, ResolveResult result2) {
+        PsiElement element1 = result1.getElement();
+        PsiElement element2 = result2.getElement();
+        if (element1 == null || element2 == null) {
+            return 0;
+        }
+        PsiFile containingFile = myElement.getContainingFile();
+        if (element1.getContainingFile() == containingFile && element2.getContainingFile() != containingFile) {
+            return -1;
+        } else if (element1.getContainingFile() != containingFile && element2.getContainingFile() == containingFile) {
+            return 1;
+        } else {
+            PsiElement commonParent1 = PsiTreeUtil.findCommonParent(element1, myElement);
+            PsiElement commonParent2 = PsiTreeUtil.findCommonParent(element2, myElement);
+            if (commonParent1 == null && commonParent2 == null) {
+                return 0;
+            }
+            if (commonParent1 == null) {
+                return 1;
+            }
+            if (commonParent2 == null) {
+                return -1;
+            }
+            return Integer.compare(
+                    PsiTreeUtil.getDepth(commonParent1, commonParent1.getContainingFile()),
+                    PsiTreeUtil.getDepth(commonParent2, commonParent2.getContainingFile()));
+        }
     }
 
     @Override
