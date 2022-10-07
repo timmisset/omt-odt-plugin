@@ -44,7 +44,9 @@ public class TTLElementFinderUtil {
     public static ResolveResult[] getObjectResolveResult(Project project,
                                                          String fullyQualifiedUri,
                                                          Predicate<TTLObject> filter) {
-
+        if (fullyQualifiedUri == null) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
         return StubIndex.getElements(
                         TTLObjectStubIndex.KEY,
                         fullyQualifiedUri,
