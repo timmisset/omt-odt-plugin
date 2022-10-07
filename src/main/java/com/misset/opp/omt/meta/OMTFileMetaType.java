@@ -78,7 +78,10 @@ public class OMTFileMetaType extends OMTMetaType implements OMTCallableProvider,
                         map.putAll(getInterfaceMap(yamlMapping));
                     } else {
                         map.putAll(getDeclaredCallableMap(yamlMapping, host));
-                        map.putAll(getImportingMembers(yamlMapping));
+                        Map<String, Collection<PsiCallable>> importingMembers = getImportingMembers(yamlMapping);
+                        importingMembers.forEach(
+                                (s, psiCallables) -> map.computeIfAbsent(s, s1 -> new ArrayList<>()).addAll(psiCallables)
+                        );
                     }
                     return map;
                 });
