@@ -40,11 +40,17 @@ public abstract class ODTResolvableCallAbstract extends ODTResolvableAbstract im
 
     @Override
     public Callable getCallable() {
-        PsiFile containingFile = getContainingFile();
-        if (!(containingFile instanceof ODTFile)) {
-            return null;
-        }
-        return ((ODTFile) containingFile).getCallables(getCallId()).stream().findFirst().orElse(null);
+        return Optional.ofNullable(getReference())
+                .map(ODTCallReference::resolve)
+                .filter(Callable.class::isInstance)
+                .map(Callable.class::cast)
+                .orElseGet(() -> {
+                    PsiFile containingFile = getContainingFile();
+                    if (!(containingFile instanceof ODTFile)) {
+                        return null;
+                    }
+                    return ((ODTFile) containingFile).getCallables(getCallId()).stream().findFirst().orElse(null);
+                });
     }
 
     @Override
