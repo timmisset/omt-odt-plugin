@@ -81,11 +81,14 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTCall> implements L
     @Override
     public @Nullable PsiElement resolve() {
         ResolveResult[] resolveResults = multiResolve(false);
-        if (resolveResults.length == 1) {
+        if (resolveResults.length == 0) {
+            return null;
+        } else if (resolveResults.length == 1) {
+            return resolveResults[0].getElement();
+        } else {
+            Arrays.sort(resolveResults, 0, resolveResults.length, this::compareByProximity);
             return resolveResults[0].getElement();
         }
-        Arrays.sort(resolveResults, 0, resolveResults.length, this::compareByProximity);
-        return resolveResults[0].getElement();
     }
 
     private int compareByProximity(ResolveResult result1, ResolveResult result2) {
