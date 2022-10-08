@@ -31,18 +31,14 @@ import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ODTFileImpl extends PsiFileBase implements ODTFile {
     private static final Key<CachedValue<Map<String, String>>> NAMESPACES = new Key<>("NAMESPACES");
-
-    private final HashMap<String, Collection<PsiPrefix>> prefixes = new HashMap<>();
-    private final HashMap<String, Collection<Variable>> allVariables = new HashMap<>();
-    private final HashMap<String, Collection<Callable>> allCallables = new HashMap<>();
 
     public ODTFileImpl(@NotNull FileViewProvider provider) {
         super(provider, ODTLanguage.INSTANCE);
@@ -70,23 +66,23 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
 
     @Override
     public Collection<PsiPrefix> getPrefixes(String key) {
-        return Optional.ofNullable(
-                withCache(prefixes, this::listPrefixes, PsiPrefix::getName).get(key)
-        ).orElse(new ArrayList<>());
+        return this.listPrefixes().stream()
+                .filter(prefix -> prefix.getName().equals(key))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Collection<Variable> getVariables(String key) {
-        return Optional.ofNullable(
-                withCache(allVariables, this::listAllVariables, Variable::getName).get(key)
-        ).orElse(new ArrayList<>());
+        return this.listAllVariables().stream()
+                .filter(variable -> variable.getName().equals(key))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Collection<Callable> getCallables(String callId) {
-        return Optional.ofNullable(
-                withCache(allCallables, this::listAllCallables, Callable::getCallId).get(callId)
-        ).orElse(new ArrayList<>());
+        return this.listAllCallables().stream()
+                .filter(callable -> callable.getCallId().equals(callId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -138,18 +134,6 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
                 .collect(Collectors.toList());
     }
 
-    private <T> HashMap<String, Collection<T>> withCache(
-            HashMap<String, Collection<T>> cache,
-            Supplier<Collection<T>> ifEmpty,
-            Function<T, String> getKey
-    ) {
-        if (cache.isEmpty()) {
-            // recalculate
-            cache.putAll(ifEmpty.get().stream().collect(Collectors.groupingBy(getKey)));
-        }
-        return cache;
-    }
-
     @Override
     public LocalQuickFix getRegisterPrefixQuickfix(String prefix, String namespace) {
         return new ODTRegisterPrefixLocalQuickFix(prefix, namespace);
@@ -168,13 +152,5 @@ public class ODTFileImpl extends PsiFileBase implements ODTFile {
     @Override
     public Collection<LocalQuickFix> getRegisterImportQuickfixes(PsiCall callable) {
         return Collections.emptyList();
-    }
-
-    @Override
-    public void clearCaches() {
-        prefixes.clear();
-        allVariables.clear();
-        allCallables.clear();
-        super.clearCaches();
     }
 }
