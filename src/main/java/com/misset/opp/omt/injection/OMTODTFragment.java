@@ -36,17 +36,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class OMTODTFragment extends ODTFileImpl implements ODTFile {
-
-    private final HashMap<String, Collection<PsiPrefix>> prefixes = new HashMap<>();
-    private final HashMap<String, Collection<PsiVariable>> psiVariables = new HashMap<>();
-    private final HashMap<String, Collection<PsiCallable>> psiCallables = new HashMap<>();
-    private final HashMap<String, Collection<? extends Callable>> nonPsiCallables = new HashMap<>();
-    private final HashMap<String, Collection<? extends Variable>> nonPsiVariables = new HashMap<>();
-
-    private final List<PsiElement> allInjectedPsiElements = new ArrayList<>();
-
-    private boolean isContextLoaded = false;
-
     public OMTODTFragment(@NotNull FileViewProvider provider) {
         super(provider);
     }
@@ -60,41 +49,34 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
 
     @Override
     public boolean isAccessible(PsiElement source, PsiElement target) {
-        // check if the target element was injected by the OMT framework, in which case it is always
-        // accessible to an ODT element
-        return allInjectedPsiElements.contains(target) || super.isAccessible(source, target);
+        return target.getContainingFile() != this || super.isAccessible(source, target);
     }
 
     @Override
     public Collection<PsiCallable> listPsiCallables() {
-        initContext();
-        return joinedCollection(super.listPsiCallables(), psiCallables.values());
+        return joinedCollection(super.listPsiCallables(), getPsiCallables().values());
     }
 
     @Override
     public Collection<Callable> listCallables() {
-        initContext();
-        return Stream.concat(super.listCallables().stream(), nonPsiCallables.values().stream().flatMap(Collection::stream))
+        return Stream.concat(super.listCallables().stream(), getNonPsiCallables().values().stream().flatMap(Collection::stream))
                 .distinct()
                 .collect(Collectors.toList());
     }
 
     @Override
     public Collection<PsiPrefix> listPrefixes() {
-        initContext();
-        return joinedCollection(super.listPrefixes(), prefixes.values());
+        return joinedCollection(super.listPrefixes(), getPrefixes().values());
     }
 
     @Override
     public Collection<PsiVariable> listPsiVariables() {
-        initContext();
-        return joinedCollection(super.listPsiVariables(), psiVariables.values());
+        return joinedCollection(super.listPsiVariables(), getPsiVariables().values());
     }
 
     @Override
     public Collection<Variable> listVariables() {
-        initContext();
-        return Stream.concat(super.listVariables().stream(), nonPsiVariables.values().stream().flatMap(Collection::stream))
+        return Stream.concat(super.listVariables().stream(), getNonPsiVariables().values().stream().flatMap(Collection::stream))
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -106,16 +88,11 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
                 .collect(Collectors.toList());
     }
 
-    private void addPrefixes(Map<String, Collection<PsiPrefix>> prefixes) {
-        addToCollectionMap(this.prefixes, prefixes);
-    }
-
     private synchronized <T extends PsiElement> void addToCollectionMap(Map<String, Collection<T>> collectionHashMap,
                                                                         Map<String, Collection<T>> newItems) {
         for (Map.Entry<String, Collection<T>> entry : newItems.entrySet()) {
             collectionHashMap.computeIfAbsent(entry.getKey(), ignored -> new ArrayList<>())
                     .addAll(entry.getValue());
-            allInjectedPsiElements.addAll(entry.getValue());
         }
     }
 
@@ -156,37 +133,19 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
         return injectionMetaType != null && !(injectionMetaType instanceof OMTScriptMetaType);
     }
 
-    @Override
-    public void clearCaches() {
-        allInjectedPsiElements.clear();
-        psiVariables.clear();
-        prefixes.clear();
-        psiCallables.clear();
-        isContextLoaded = false;
-        super.clearCaches();
-    }
-
-    private void initContext() {
-        if (isContextLoaded) {
-            return;
-        }
-        setContext();
-    }
-
-    private void setContext() {
-        setVariables();
-        setCallables();
-        setPrefixes();
-        isContextLoaded = true;
-    }
-
-    private void setVariables() {
+    private HashMap<String, Collection<PsiVariable>> getPsiVariables() {
+        HashMap<String, Collection<PsiVariable>> psiVariables = new HashMap<>();
         Map<YAMLMapping, OMTVariableProvider> variableProviders =
                 OMTMetaTreeUtil.collectMetaParents(getHost(), YAMLMapping.class, OMTVariableProvider.class);
 
         variableProviders.entrySet().stream()
                 .map(entry -> entry.getValue().getVariableMap(entry.getKey()))
-                .forEach(map -> addToCollectionMap(this.psiVariables, map));
+                .forEach(map -> addToCollectionMap(psiVariables, map));
+        return psiVariables;
+    }
+
+    private HashMap<String, Collection<? extends Variable>> getNonPsiVariables() {
+        HashMap<String, Collection<? extends Variable>> nonPsiVariables = new HashMap<>();
 
         Map<YAMLPsiElement, OMTLocalVariableProvider> localVariableProviders =
                 OMTMetaTreeUtil.collectMetaParents(getHost(), YAMLPsiElement.class, OMTLocalVariableProvider.class);
@@ -194,16 +153,24 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
         localVariableProviders.entrySet().stream()
                 .map(entry -> entry.getValue().getLocalVariableMap(entry.getKey()))
                 .forEach(map -> map.forEach((key, variable) -> nonPsiVariables.put(key, Collections.singleton(variable))));
+
+        return nonPsiVariables;
     }
 
-    private void setCallables() {
+    private HashMap<String, Collection<PsiCallable>> getPsiCallables() {
+        HashMap<String, Collection<PsiCallable>> psiCallables = new HashMap<>();
         // PsiCallables provided by the normal Psi tree
         Map<YAMLMapping, OMTCallableProvider> callableProviders =
                 OMTMetaTreeUtil.collectMetaParents(getHost(), YAMLMapping.class, OMTCallableProvider.class);
 
         callableProviders.entrySet().stream()
                 .map(entry -> entry.getValue().getCallableMap(entry.getKey(), getHost()))
-                .forEach(map -> addToCollectionMap(this.psiCallables, map));
+                .forEach(map -> addToCollectionMap(psiCallables, map));
+        return psiCallables;
+    }
+
+    private HashMap<String, Collection<? extends Callable>> getNonPsiCallables() {
+        HashMap<String, Collection<? extends Callable>> nonPsiCallables = new HashMap<>();
 
         // Callables that are available based on the fragments position in the OMT file:
         Map<YAMLPsiElement, OMTLocalCommandProvider> localCommandProviders =
@@ -212,14 +179,19 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
         localCommandProviders.values().stream()
                 .map(OMTLocalCommandProvider::getLocalCommandsMap)
                 .forEach(map -> map.forEach((key, value) -> nonPsiCallables.put(key, Collections.singleton(value))));
+
+        return nonPsiCallables;
     }
 
-    private void setPrefixes() {
+    private HashMap<String, Collection<PsiPrefix>> getPrefixes() {
+        HashMap<String, Collection<PsiPrefix>> prefixes = new HashMap<>();
+
         Map<YAMLMapping, OMTPrefixProvider> prefixProviders =
                 OMTMetaTreeUtil.collectMetaParents(getHost(), YAMLMapping.class, OMTPrefixProvider.class);
         prefixProviders.entrySet().stream()
                 .map(entry -> entry.getValue().getPrefixMap(entry.getKey()))
-                .forEach(this::addPrefixes);
+                .forEach(prefixSet -> addToCollectionMap(prefixes, prefixSet));
+        return prefixes;
     }
 
     @Override

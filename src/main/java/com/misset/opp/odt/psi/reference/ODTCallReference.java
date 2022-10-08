@@ -4,7 +4,6 @@ import com.intellij.codeInsight.daemon.EmptyResolveMessageProvider;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.LocalQuickFixProvider;
 import com.intellij.codeInspection.util.InspectionMessage;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -15,7 +14,6 @@ import com.misset.opp.odt.psi.ODTFile;
 import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.resolvable.psi.PsiReferencedElement;
-import com.misset.opp.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,8 +22,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ODTCallReference extends ODTPolyReferenceBase<ODTCall> implements LocalQuickFixProvider, EmptyResolveMessageProvider {
-    private static final Logger LOGGER = Logger.getInstance(ODTCallReference.class);
-
     public ODTCallReference(@NotNull ODTCall element,
                             TextRange rangeInElement) {
         super(element, rangeInElement, false);
@@ -36,10 +32,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTCall> implements L
     }
 
     public PsiElement resolve(boolean resolveToOriginalElement, boolean resolveToFinalElement) {
-        return LoggerUtil.computeWithLogger(LOGGER, "Resolving ODTCallReference " + myElement.getCallId(), () -> {
-            ResolveResult[] resolveResults = multiResolve(resolveToOriginalElement, resolveToFinalElement);
-            return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
-        });
+        return resolveToSingleResult(multiResolve(resolveToOriginalElement, resolveToFinalElement));
     }
 
     public ResolveResult @NotNull [] multiResolve(boolean resolveToOriginalElement,
@@ -62,6 +55,7 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTCall> implements L
                         .stream()
                         .filter(PsiCallable.class::isInstance)
                         .map(PsiCallable.class::cast)
+                        .filter(PsiElement::isValid)
                         .filter(callable -> !PsiTreeUtil.isAncestor(callable, myElement, false))
                         .filter(psiCallable -> file.isAccessible(myElement, psiCallable))
                         .collect(Collectors.toList())
@@ -80,7 +74,10 @@ public class ODTCallReference extends ODTPolyReferenceBase<ODTCall> implements L
 
     @Override
     public @Nullable PsiElement resolve() {
-        ResolveResult[] resolveResults = multiResolve(false);
+        return resolveToSingleResult(multiResolve(false));
+    }
+
+    private @Nullable PsiElement resolveToSingleResult(ResolveResult[] resolveResults) {
         if (resolveResults.length == 0) {
             return null;
         } else if (resolveResults.length == 1) {

@@ -8,6 +8,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.odt.psi.*;
+import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.psi.PsiResolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.Nls;
@@ -45,7 +46,8 @@ public class ODTIgnoredReturnValueInspection extends LocalInspectionTool {
 
     private void validateCall(ODTCommandCall call, @NotNull ProblemsHolder holder) {
         PsiElement parentOfType = PsiTreeUtil.getParentOfType(call, ODTScriptLine.class, ODTSignatureArgument.class, ODTVariableAssignment.class);
-        if (call.getCallable() == null || call.getCallable().isBuiltin() || !(parentOfType instanceof ODTScriptLine)) {
+        Callable callable = call.getCallable();
+        if (callable == null || callable.isBuiltin() || !(parentOfType instanceof ODTScriptLine)) {
             return;
         }
         validateReturnValue(call, holder);
