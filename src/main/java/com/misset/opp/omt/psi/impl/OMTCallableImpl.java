@@ -2,7 +2,6 @@ package com.misset.opp.omt.psi.impl;
 
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
-import com.misset.opp.exception.OMTODTPluginException;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.omt.meta.OMTMetaCallable;
 import com.misset.opp.omt.meta.OMTMetaType;
@@ -46,7 +45,9 @@ public class OMTCallableImpl extends PsiCallableImpl implements Callable {
         super(keyValue.getNode());
 
         if (!(keyValue.getValue() instanceof YAMLMapping)) {
-            throw new OMTODTPluginException("Cannot parse " + keyValue.getValue() + " to map");
+            this.keyValue = null;
+            this.mapping = null;
+            return;
         }
         this.keyValue = keyValue;
         this.mapping = (YAMLMapping) keyValue.getValue();
