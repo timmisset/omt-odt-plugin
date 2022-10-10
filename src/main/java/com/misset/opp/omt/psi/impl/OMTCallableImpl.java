@@ -16,6 +16,7 @@ import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallableImpl;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeProvider;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -38,7 +39,9 @@ import java.util.function.Function;
  */
 public class OMTCallableImpl extends PsiCallableImpl implements Callable {
 
+    @Nullable
     private final transient YAMLMapping mapping;
+    @Nullable
     private final transient YAMLKeyValue keyValue;
 
     public OMTCallableImpl(YAMLKeyValue keyValue) {
@@ -56,7 +59,8 @@ public class OMTCallableImpl extends PsiCallableImpl implements Callable {
     @Override
     @SuppressWarnings("java:S2637")
     public String getName() {
-        return Optional.ofNullable(mapping.getParent())
+        return Optional.ofNullable(mapping)
+                .map(PsiElement::getParent)
                 .filter(YAMLKeyValue.class::isInstance)
                 .map(YAMLKeyValue.class::cast)
                 .map(YAMLKeyValue::getKeyText)
@@ -113,6 +117,9 @@ public class OMTCallableImpl extends PsiCallableImpl implements Callable {
 
     @SuppressWarnings("java:S2637")
     private OMTMetaType getMetaType() {
+        if (mapping == null) {
+            return null;
+        }
         return (OMTMetaType) Optional.ofNullable(OMTMetaTypeProvider.getInstance(mapping.getProject())
                         .getMetaTypeProxy(mapping))
                 .map(YamlMetaTypeProvider.MetaTypeProxy::getMetaType)
