@@ -31,7 +31,7 @@ public class ODTTTLSubjectPredicateReference extends PsiReferenceBase.Poly<ODTRe
                 myElement.resolve() :
                 myElement.resolvePreviousStep();
         List<String> acceptableSubjectClasses = previousStep.stream()
-                .map(OntologyModel.getInstance()::listOntClasses)
+                .map(OntologyModel.getInstance(myElement.getProject())::listOntClasses)
                 .flatMap(Collection::stream)
                 .map(Resource::getURI)
                 .collect(Collectors.toList());

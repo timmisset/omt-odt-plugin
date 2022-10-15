@@ -3,6 +3,7 @@ package com.misset.opp.odt.completion;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PlatformIcons;
@@ -37,6 +38,7 @@ public class ODTVariableCompletion extends CompletionContributor {
                                           @NotNull CompletionResultSet result) {
 
                 PsiElement position = parameters.getPosition();
+                Project project = position.getProject();
                 Predicate<Set<OntResource>> typeFilter = ODTTypeFilterProvider.getFirstTypeFilter(position);
                 SharedProcessingContext sharedProcessingContext = sharedContext.get();
                 if (sharedProcessingContext != null && sharedProcessingContext.get(TYPE_FILTER) != null) {
@@ -54,29 +56,30 @@ public class ODTVariableCompletion extends CompletionContributor {
                 addVariables(PsiTreeUtil.findChildrenOfType(position.getContainingFile(), ODTBaseVariable.class)
                         .stream()
                         .filter(odtVariable -> PsiRelationshipUtil.canBeRelatedElement(odtVariable, position))
-                        .collect(Collectors.toList()), typeFilter, result);
+                        .collect(Collectors.toList()), typeFilter, result, project);
 
                 // add all non-psi variables declared in the scope of the ODT file
-                addVariables(file.listVariables(), typeFilter, result);
+                addVariables(file.listVariables(), typeFilter, result, project);
 
                 // add local variables from commands such as $value, $index, $array:
-                addVariables(getLocalVariablesForCall(position), typeFilter, result);
+                addVariables(getLocalVariablesForCall(position), typeFilter, result, project);
 
                 List<PsiVariable> variables = file.listPsiVariables().stream()
                         .filter(psiVariable -> file.isAccessible(position, psiVariable))
                         .collect(Collectors.toList());
 
-                addVariables(variables, typeFilter, result);
+                addVariables(variables, typeFilter, result, project);
             }
         });
     }
 
     private void addVariables(Collection<? extends Variable> variables,
                               Predicate<Set<OntResource>> typeFilter,
-                              @NotNull CompletionResultSet result) {
+                              @NotNull CompletionResultSet result,
+                              Project project) {
         variables.stream()
                 .filter(variable -> typeFilter.test(variable.resolve()))
-                .map(this::getLookupElement)
+                .map(variable -> getLookupElement(variable, project))
                 .forEach(result::addElement);
     }
 
@@ -96,13 +99,13 @@ public class ODTVariableCompletion extends CompletionContributor {
         return Collections.emptyList();
     }
 
-    private @NotNull LookupElement getLookupElement(Variable variable) {
+    private @NotNull LookupElement getLookupElement(Variable variable, Project project) {
         LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(variable.getName())
                 .withLookupString(variable.getName().substring(1))
                 .withLookupString(variable.getName().substring(1).toLowerCase())
                 .withTailText("  " + variable.getSource(), true)
                 .withIcon(variable.isParameter() ? PlatformIcons.PARAMETER_ICON : PlatformIcons.VARIABLE_ICON)
-                .withTypeText(OntologyResourceUtil.describeUrisForLookupJoined(variable.resolve()));
+                .withTypeText(OntologyResourceUtil.getInstance(project).describeUrisForLookupJoined(variable.resolve()));
 
         double priority = variable.getScope() == Variable.Scope.GLOBAL ?
                 CompletionPatterns.COMPLETION_PRIORITY.VARIABLE_GLOBAL.getValue() :

@@ -47,8 +47,9 @@ public class ODTCommandCompletionNew extends CompletionContributor {
             String curiePrefixMatcher = ODTCompletionUtil.getCuriePrefixMatcher(parameters, result, ODTSignatureArgument.class);
             result = result.withPrefixMatcher(curiePrefixMatcher);
             // show all classes instances:
-            OntologyModel.getInstance().listClasses().stream().map(
+            OntologyModel.getInstance(element.getProject()).listClasses().stream().map(
                             resource -> OntologyResourceUtil
+                                    .getInstance(element.getProject())
                                     .getRootLookupElement(resource, "Class", availableNamespaces))
                     .filter(Objects::nonNull)
                     .forEach(result::addElement);

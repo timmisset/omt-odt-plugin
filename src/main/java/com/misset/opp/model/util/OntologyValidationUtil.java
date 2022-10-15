@@ -2,6 +2,8 @@ package com.misset.opp.model.util;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.components.Service;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.Strings;
 import com.intellij.psi.PsiElement;
 import com.misset.opp.model.OntologyModel;
@@ -17,10 +19,19 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class OntologyValidationUtil {
+@Service
+public final class OntologyValidationUtil {
 
-    private OntologyValidationUtil() {
-        // empty constructor
+    private final OntologyModel ontologyModel;
+    private final OntologyResourceUtil resourceUtil;
+
+    public OntologyValidationUtil(Project project) {
+        ontologyModel = OntologyModel.getInstance(project);
+        resourceUtil = OntologyResourceUtil.getInstance(project);
+    }
+
+    public static OntologyValidationUtil getInstance(Project project) {
+        return project.getService(OntologyValidationUtil.class);
     }
 
     public static final String ERROR_MESSAGE_BOOLEAN = "Boolean type required";
@@ -35,10 +46,10 @@ public class OntologyValidationUtil {
     public static final String ERROR_MESSAGE_INSTANCES = "Instance of class required";
     public static final String ERROR_MESSAGE_GRAPH_SHAPE = "GraphShape required";
 
-    public static void validateCompatibleTypes(Set<OntResource> resourcesA,
-                                               Set<OntResource> resourcesB,
-                                               ProblemsHolder holder,
-                                               PsiElement element) {
+    public void validateCompatibleTypes(Set<OntResource> resourcesA,
+                                        Set<OntResource> resourcesB,
+                                        ProblemsHolder holder,
+                                        PsiElement element) {
         if (resourcesA == null ||
                 resourcesB == null ||
                 resourcesA.isEmpty() ||
@@ -49,33 +60,33 @@ public class OntologyValidationUtil {
             // don't register problem
             return;
         }
-        if (!OntologyModel.getInstance().areCompatible(resourcesA, resourcesB)) {
+        if (!ontologyModel.areCompatible(resourcesA, resourcesB)) {
             holder.registerProblem(element,
                     createIncompatibleTypesWarning(resourcesA, resourcesB),
                     ProblemHighlightType.WARNING);
         }
     }
 
-    public static void validateRequiredTypes(Set<OntResource> required,
-                                             Set<OntResource> provided,
-                                             ProblemsHolder holder,
-                                             PsiElement element) {
+    public void validateRequiredTypes(Set<OntResource> required,
+                                      Set<OntResource> provided,
+                                      ProblemsHolder holder,
+                                      PsiElement element) {
         if (required == null || provided == null || required.isEmpty() || provided.isEmpty()) {
             // don't register problem
             return;
         }
-        if (!OntologyModel.getInstance().areCompatible(required, provided)) {
+        if (!ontologyModel.areCompatible(required, provided)) {
             holder.registerProblem(element,
                     createRequiredTypesWarning(required, provided),
                     ProblemHighlightType.WARNING);
         }
     }
 
-    public static void validateCardinalityMultiple(Set<OntResource> subject,
-                                                   Property predicate,
-                                                   ProblemsHolder holder,
-                                                   PsiElement element) {
-        if (OntologyModelTranslator.isSingleton(subject, predicate)) {
+    public void validateCardinalityMultiple(Set<OntResource> subject,
+                                            Property predicate,
+                                            ProblemsHolder holder,
+                                            PsiElement element) {
+        if (OntologyModelTranslator.getInstance(holder.getProject()).isSingleton(subject, predicate)) {
             // assigning a collection or creating a collection where a singleton is expected
             holder.registerProblem(element,
                     "Suspicious assignment: " + predicate.getLocalName() + " maxCount == 1",
@@ -83,36 +94,37 @@ public class OntologyValidationUtil {
         }
     }
 
-    public static void validateHasOntClass(Set<OntResource> resources,
-                                           ProblemsHolder holder,
-                                           PsiElement element,
-                                           Set<OntClass> classes) {
+    public void validateHasOntClass(Set<OntResource> resources,
+                                    ProblemsHolder holder,
+                                    PsiElement element,
+                                    Set<OntClass> classes) {
         if (resources.isEmpty()) {
             return;
         }
         if (!resources.stream().allMatch(
                 ontResource -> hasOntClass(ontResource, classes)
         )) {
-            Set<OntResource> acceptableIndividuals = classes.stream().map(ontClass -> OntologyModel.getInstance().toIndividuals(ontClass.getURI()))
-                    .flatMap(Collection::stream)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
-            String message = "Acceptable types: " + OntologyResourceUtil.describeUrisJoined(acceptableIndividuals);
+            Set<OntResource> acceptableIndividuals =
+                    classes.stream().map(ontClass -> ontologyModel.toIndividuals(ontClass.getURI()))
+                            .flatMap(Collection::stream)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+            String message = "Acceptable types: " + OntologyResourceUtil.getInstance(holder.getProject()).describeUrisJoined(acceptableIndividuals);
             holder.registerProblem(element, message, ProblemHighlightType.ERROR);
         }
     }
 
-    private static boolean hasOntClass(OntResource resource,
-                                       Set<OntClass> classes) {
-        return OntologyModel.getInstance().isIndividual(resource) &&
-                OntologyModel.getInstance().listOntClasses(resource).stream().anyMatch(classes::contains);
+    private boolean hasOntClass(OntResource resource,
+                                Set<OntClass> classes) {
+        return ontologyModel.isIndividual(resource) &&
+                ontologyModel.listOntClasses(resource).stream().anyMatch(classes::contains);
     }
 
-    private static boolean validate(Set<OntResource> resources,
-                                    ProblemsHolder holder,
-                                    PsiElement element,
-                                    Predicate<OntResource> condition,
-                                    String error) {
+    private boolean validate(Set<OntResource> resources,
+                             ProblemsHolder holder,
+                             PsiElement element,
+                             Predicate<OntResource> condition,
+                             String error) {
         if (!resources.isEmpty() &&
                 !resources.contains(OntologyModelConstants.getOwlThingInstance()) &&
                 !resources.stream().allMatch(condition)) {
@@ -122,31 +134,31 @@ public class OntologyValidationUtil {
         return true;
     }
 
-    public static void validateNamedGraph(Set<OntResource> resources,
-                                          ProblemsHolder holder,
-                                          PsiElement element) {
-        validate(resources, holder, element, OntologyValidationUtil::isNamedGraphInstance, ERROR_MESSAGE_NAMED_GRAPH);
+    public void validateNamedGraph(Set<OntResource> resources,
+                                   ProblemsHolder holder,
+                                   PsiElement element) {
+        validate(resources, holder, element, this::isNamedGraphInstance, ERROR_MESSAGE_NAMED_GRAPH);
     }
 
-    public static void validateInstances(Set<OntResource> resources,
-                                         ProblemsHolder holder,
-                                         PsiElement element) {
-        validate(resources, holder, element, OntologyModel.getInstance()::isIndividual, ERROR_MESSAGE_INSTANCES);
+    public void validateInstances(Set<OntResource> resources,
+                                  ProblemsHolder holder,
+                                  PsiElement element) {
+        validate(resources, holder, element, ontologyModel::isIndividual, ERROR_MESSAGE_INSTANCES);
     }
 
-    public static boolean validateBoolean(Set<OntResource> resources,
-                                          ProblemsHolder holder,
-                                          PsiElement element) {
+    public boolean validateBoolean(Set<OntResource> resources,
+                                   ProblemsHolder holder,
+                                   PsiElement element) {
         return validate(resources,
                 holder,
                 element,
-                resource -> OntologyModel.getInstance().isInstanceOf(resource, OntologyModelConstants.getXsdBoolean()),
+                resource -> ontologyModel.isInstanceOf(resource, OntologyModelConstants.getXsdBoolean()),
                 ERROR_MESSAGE_BOOLEAN);
     }
 
-    public static void validateDecimal(Set<OntResource> resources,
-                                       ProblemsHolder holder,
-                                       PsiElement element) {
+    public void validateDecimal(Set<OntResource> resources,
+                                ProblemsHolder holder,
+                                PsiElement element) {
         validate(resources,
                 holder,
                 element,
@@ -154,7 +166,7 @@ public class OntologyValidationUtil {
                 ERROR_MESSAGE_DECIMAL);
     }
 
-    public static void validateInteger(Set<OntResource> resources, ProblemsHolder holder, PsiElement element) {
+    public void validateInteger(Set<OntResource> resources, ProblemsHolder holder, PsiElement element) {
         validate(resources,
                 holder,
                 element,
@@ -162,23 +174,23 @@ public class OntologyValidationUtil {
                 ERROR_MESSAGE_INTEGER);
     }
 
-    public static void validateNumber(Set<OntResource> resources,
-                                      ProblemsHolder holder,
-                                      PsiElement element) {
+    public void validateNumber(Set<OntResource> resources,
+                               ProblemsHolder holder,
+                               PsiElement element) {
         validate(resources, holder, element,
                 resource -> isIndividualOfType(resource, OntologyModelConstants.getXsdNumber()),
                 ERROR_MESSAGE_NUMBER);
     }
 
-    public static void validateJSON(Set<OntResource> resources,
-                                    ProblemsHolder holder,
-                                    PsiElement element) {
+    public void validateJSON(Set<OntResource> resources,
+                             ProblemsHolder holder,
+                             PsiElement element) {
         validate(resources, holder, element, OntologyModelConstants.getJsonObject()::equals, ERROR_MESSAGE_JSON);
     }
 
-    public static boolean validateString(Set<OntResource> resources,
-                                         ProblemsHolder holder,
-                                         PsiElement element) {
+    public boolean validateString(Set<OntResource> resources,
+                                  ProblemsHolder holder,
+                                  PsiElement element) {
         return validate(resources,
                 holder,
                 element,
@@ -186,60 +198,60 @@ public class OntologyValidationUtil {
                 ERROR_MESSAGE_STRING);
     }
 
-    public static void validateClassName(Set<OntResource> resources,
-                                         ProblemsHolder holder,
-                                         PsiElement element) {
-        validate(resources, holder, element, OntologyModel.getInstance()::isClass, ERROR_MESSAGE_CLASSNAME);
+    public void validateClassName(Set<OntResource> resources,
+                                  ProblemsHolder holder,
+                                  PsiElement element) {
+        validate(resources, holder, element, OntologyModel.getInstance(holder.getProject())::isClass, ERROR_MESSAGE_CLASSNAME);
     }
 
-    public static void validateGraphShape(Set<OntResource> resources,
-                                          ProblemsHolder holder,
-                                          PsiElement element) {
-        validate(resources, holder, element, OntologyValidationUtil::isGraphshapeInstance, ERROR_MESSAGE_GRAPH_SHAPE);
+    public void validateGraphShape(Set<OntResource> resources,
+                                   ProblemsHolder holder,
+                                   PsiElement element) {
+        validate(resources, holder, element, this::isGraphshapeInstance, ERROR_MESSAGE_GRAPH_SHAPE);
     }
 
-    public static void validateDateTime(Set<OntResource> resources, ProblemsHolder holder, PsiElement element) {
+    public void validateDateTime(Set<OntResource> resources, ProblemsHolder holder, PsiElement element) {
         validate(resources, holder, element,
                 resource ->
                         isIndividualOfType(resource, OntologyModelConstants.getXsdDatetime()),
                 ERROR_MESSAGE_DATE_TIME);
     }
 
-    private static boolean isNamedGraphInstance(OntResource resource) {
+    private boolean isNamedGraphInstance(OntResource resource) {
         return isIndividualOfType(resource, OntologyModelConstants.getNamedGraphClass());
     }
 
-    public static boolean isGraphshapeInstance(OntResource resource) {
+    public boolean isGraphshapeInstance(OntResource resource) {
         return isIndividualOfType(resource, OntologyModelConstants.getGraphShape());
     }
 
-    private static boolean isIndividualOfType(OntResource resource, OntClass type) {
-        return OntologyModel.getInstance().isIndividual(resource) &&
-                OntologyModel.getInstance().listOntClasses(resource).contains(type);
+    private boolean isIndividualOfType(OntResource resource, OntClass type) {
+        return ontologyModel.isIndividual(resource) &&
+                ontologyModel.listOntClasses(resource).contains(type);
     }
 
-    private static String createIncompatibleTypesWarning(Set<OntResource> resourcesA,
-                                                         Set<OntResource> resourcesB) {
+    private String createIncompatibleTypesWarning(Set<OntResource> resourcesA,
+                                                  Set<OntResource> resourcesB) {
         return "Incompatible types:" + "\n" +
                 "cannot assign " + "\n" +
-                OntologyResourceUtil.describeUrisJoined(resourcesB) + "\n" +
+                resourceUtil.describeUrisJoined(resourcesB) + "\n" +
                 "to" + "\n" +
-                OntologyResourceUtil.describeUrisJoined(resourcesA);
+                resourceUtil.describeUrisJoined(resourcesA);
     }
 
-    private static String createRequiredTypesWarning(Set<OntResource> required,
-                                                     Set<OntResource> provided) {
+    private String createRequiredTypesWarning(Set<OntResource> required,
+                                              Set<OntResource> provided) {
         return "Incompatible types:" + "\n" +
                 "required " + "\n" +
-                OntologyResourceUtil.describeUrisJoined(required) + "\n" +
+                resourceUtil.describeUrisJoined(required) + "\n" +
                 "provided" + "\n" +
-                OntologyResourceUtil.describeUrisJoined(provided);
+                resourceUtil.describeUrisJoined(provided);
     }
 
-    public static void validateValues(Set<String> paramValues,
-                                      String argumentValue,
-                                      ProblemsHolder holder,
-                                      PsiElement signatureArgumentElement) {
+    public void validateValues(Set<String> paramValues,
+                               String argumentValue,
+                               ProblemsHolder holder,
+                               PsiElement signatureArgumentElement) {
         if (paramValues.isEmpty() || argumentValue.isBlank() || paramValues.contains(argumentValue)) {
             return;
         }

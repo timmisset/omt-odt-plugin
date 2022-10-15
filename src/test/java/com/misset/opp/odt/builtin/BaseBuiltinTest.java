@@ -3,6 +3,7 @@ package com.misset.opp.odt.builtin;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import com.misset.opp.model.OntologyModel;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.resolvable.Context;
@@ -18,11 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public abstract class BaseBuiltinTest {
+public abstract class BaseBuiltinTest extends LightJavaCodeInsightFixtureTestCase {
 
     protected OntologyModel ontologyModel;
     protected ProblemsHolder holder = mock(ProblemsHolder.class);
@@ -34,13 +34,15 @@ public abstract class BaseBuiltinTest {
     private final PsiElement[] mockArguments = new PsiElement[]{firstArgument, secondArgument, thirdArgument, fourthArgument};
 
     @BeforeEach
-    protected void setUp() {
-        ontologyModel = BasicTestCase.initOntologyModel();
+    protected void setUp() throws Exception {
+        super.setUp();
+        ontologyModel = BasicTestCase.initOntologyModel(getProject());
+        doReturn(getProject()).when(holder).getProject();
     }
 
     @AfterEach
-    protected void tearDown() {
-
+    protected void tearDown() throws Exception {
+        super.tearDown();
     }
 
     @SafeVarargs
@@ -50,6 +52,7 @@ public abstract class BaseBuiltinTest {
         doReturn(List.of(arguments)).when(call).resolveSignatureArguments();
         doReturn(arguments.length).when(call).getNumberOfArguments();
         doReturn(signature).when(call).getCallSignatureElement();
+        doReturn(getProject()).when(call).getProject();
         for (int i = 0; i < mockArguments.length; i++) {
             doReturn(mockArguments[i]).when(call).getCallSignatureArgumentElement(i);
         }
@@ -173,6 +176,7 @@ public abstract class BaseBuiltinTest {
                                 int index,
                                 OntResource argumentType) {
         reset(holder);
+        doReturn(getProject()).when(holder).getProject();
         List<Set<OntResource>> invalidArguments = new ArrayList<>();
         while (invalidArguments.size() <= index) {
             invalidArguments.add(Set.of(argumentType));

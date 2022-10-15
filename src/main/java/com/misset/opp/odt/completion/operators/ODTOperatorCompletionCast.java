@@ -44,10 +44,10 @@ public class ODTOperatorCompletionCast extends CompletionContributor {
             ODTFile file = (ODTFile) parameters.getOriginalFile();
             Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
+            OntologyResourceUtil resourceUtil = OntologyResourceUtil.getInstance(file.getProject());
             // show all classes instances:
             OntologyModelConstants.listXSDTypes().stream().map(
-                            resource -> OntologyResourceUtil
-                                    .getRootLookupElement(resource, OntologyResourceUtil.describeUriForLookup(resource), availableNamespaces))
+                            resource -> resourceUtil.getRootLookupElement(resource, resourceUtil.describeUriForLookup(resource), availableNamespaces))
                     .filter(Objects::nonNull)
                     .forEach(result::addElement);
 

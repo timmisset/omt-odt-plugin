@@ -47,7 +47,7 @@ public class JsonParseCommand extends AbstractBuiltInCommand {
                                         PsiCall call) {
         return call.resolveSignatureArgument(1).stream()
                 .map(Objects::toString)
-                .map(OntologyModel.getInstance()::toIndividuals)
+                .map(OntologyModel.getInstance(call.getProject())::toIndividuals)
                 .flatMap(Collection::stream)
                 .map(individual -> Set.of((OntResource) individual))
                 .findFirst()

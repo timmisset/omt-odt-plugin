@@ -148,7 +148,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                 project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
                     @Override
                     public void after(@NotNull List<? extends @NotNull VFileEvent> events) {
-                        List<VirtualFile> ttlVirtualFiles = OntologyScopeUtil.getTTLVirtualFiles();
+                        List<VirtualFile> ttlVirtualFiles = OntologyScopeUtil.getTTLVirtualFiles(project);
                         if (events.stream().anyMatch(vFileEvent -> ttlVirtualFiles.contains(vFileEvent.getFile()))) {
                             // reload the model
                             scheduleTask(getBackgroundableTask(project), indicator, project);
@@ -158,7 +158,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
             }
 
             private void loadOntology(VirtualFile rootFile) {
-                OntologyModelLoader.getInstance().read(rootFile.toNioPath().toFile());
+                OntologyModelLoader.getInstance(project).read(rootFile.toNioPath().toFile());
             }
         };
     }
@@ -167,12 +167,16 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
         return new Task.Backgroundable(project, "Loading known instances") {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
+                if (project == null) {
+                    return;
+                }
                 SettingsState instance = SettingsState.getInstance(project);
                 instance.getKnownInstances().forEach(
                         (instanceUri, typeUri) -> {
-                            OntClass ontClass = OntologyModel.getInstance().getClass(typeUri);
+                            OntologyModel ontologyModel = OntologyModel.getInstance(project);
+                            OntClass ontClass = ontologyModel.getClass(typeUri);
                             if (ontClass != null) {
-                                OntologyModel.getInstance().createIndividual(ontClass, instanceUri);
+                                ontologyModel.createIndividual(ontClass, instanceUri);
                             }
                         }
                 );
@@ -192,7 +196,7 @@ public class LoadOntologyStartupActivity implements StartupActivity.RequiredForS
                 getReferenceFiles(project)
                         .forEach(file -> processJson(file, references));
                 SettingsState instance = SettingsState.getInstance(project);
-                OntologyModel ontologyModel = OntologyModel.getInstance();
+                OntologyModel ontologyModel = OntologyModel.getInstance(project);
                 if (ontologyModel != null) {
                     ontologyModel.addFromJson(references, indicator, instance.getReferenceDetails());
                 }

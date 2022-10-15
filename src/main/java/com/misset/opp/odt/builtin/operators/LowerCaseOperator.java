@@ -26,7 +26,7 @@ public class LowerCaseOperator extends BuiltInStringOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        OntologyValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateString(call.resolvePreviousStep(), holder, call);
     }
 
     @Override

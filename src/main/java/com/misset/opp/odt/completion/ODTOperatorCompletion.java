@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.openapi.project.Project;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -70,11 +71,12 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
         }
 
         ODTFile file = (ODTFile) originalFile;
+        Project project = originalFile.getProject();
 
         Predicate<Set<OntResource>> precedingFilter;
         Set<OntResource> previousStep = queryStep.resolvePreviousStep();
         precedingFilter = acceptableInput -> previousStep.isEmpty() ||
-                OntologyModel.getInstance().areCompatible(acceptableInput, previousStep);
+                OntologyModel.getInstance(position.getProject()).areCompatible(acceptableInput, previousStep);
 
         ODTCall call = PsiTreeUtil.getParentOfType(position, ODTCall.class);
         Context context = call != null ? ContextFactory.fromCall(call) : null;
@@ -83,12 +85,12 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
         List<Callable> callablesWithInput = file.listCallables().stream().filter(Callable::requiresInput).collect(Collectors.toList());
         List<Callable> callablesWithoutInput = file.listCallables().stream().filter(callable -> !callable.requiresInput()).collect(Collectors.toList());
         if (BUILTIN_OPERATOR_STRICT.accepts(position)) {
-            addCallables(callablesWithInput, result, typeFilter, precedingFilter, context);
+            addCallables(callablesWithInput, result, typeFilter, precedingFilter, context, project);
             if (!AFTER_FIRST_QUERY_STEP.accepts(position)) {
-                addCallables(callablesWithoutInput, result, typeFilter, precedingFilter, context);
+                addCallables(callablesWithoutInput, result, typeFilter, precedingFilter, context, project);
             }
         } else {
-            addCallables(callablesWithoutInput, result, typeFilter, precedingFilter, context);
+            addCallables(callablesWithoutInput, result, typeFilter, precedingFilter, context, project);
         }
 
         PsiElement originalPosition = parameters.getOriginalPosition();
@@ -100,6 +102,6 @@ public class ODTOperatorCompletion extends ODTCallCompletion {
         List<PsiCallable> callables = file.listPsiCallables().stream()
                 .filter(psiCallable -> file.isAccessible(originalPosition, psiCallable))
                 .collect(Collectors.toList());
-        addCallables(callables, result, typeFilter, precedingFilter, context);
+        addCallables(callables, result, typeFilter, precedingFilter, context, project);
     }
 }

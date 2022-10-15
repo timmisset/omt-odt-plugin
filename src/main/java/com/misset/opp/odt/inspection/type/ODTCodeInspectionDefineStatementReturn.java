@@ -54,7 +54,7 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
         if (returnType == null) {
             return;
         }
-        OntologyValidationUtil.validateCompatibleTypes(
+        OntologyValidationUtil.getInstance(holder.getProject()).validateCompatibleTypes(
                 returnType, resolve, holder, defineQueryStatement
         );
 
@@ -78,7 +78,7 @@ public class ODTCodeInspectionDefineStatementReturn extends LocalInspectionTool 
             Set<OntResource> resources = Optional.ofNullable(returnStatement.getResolvableValue())
                     .map(Resolvable::resolve)
                     .orElse(Collections.emptySet());
-            OntologyValidationUtil.validateCompatibleTypes(
+            OntologyValidationUtil.getInstance(holder.getProject()).validateCompatibleTypes(
                     returnType, resources, holder, returnStatement
             );
 

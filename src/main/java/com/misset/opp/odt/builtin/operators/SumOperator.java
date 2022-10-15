@@ -33,7 +33,7 @@ public class SumOperator extends AbstractBuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        OntologyValidationUtil.validateNumber(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateNumber(call.resolvePreviousStep(), holder, call);
     }
 
     @Override

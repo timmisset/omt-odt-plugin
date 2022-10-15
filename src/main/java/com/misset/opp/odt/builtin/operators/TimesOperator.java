@@ -36,7 +36,7 @@ public class TimesOperator extends BuiltinMathOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            OntologyValidationUtil.validateNumber(call.resolvePreviousStep(), holder, call);
+            OntologyValidationUtil.getInstance(call.getProject()).validateNumber(call.resolvePreviousStep(), holder, call);
         }
         ArgumentValidator.validateAllArguments(call, holder, ArgumentValidator::validateNumberArgument);
     }

@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
@@ -40,6 +41,7 @@ public class ODTCommandCompletion extends ODTCallCompletion {
                             return;
                         }
                         ODTFile file = (ODTFile) parameters.getOriginalFile();
+                        Project project = file.getProject();
 
                         result = result.withPrefixMatcher(getPrefixMatcher(parameters, result));
 
@@ -49,7 +51,7 @@ public class ODTCommandCompletion extends ODTCallCompletion {
                         Context callContext = call != null ? ContextFactory.fromCall(call) : null;
 
                         // add non-psi callables:
-                        addCallables(file.listCallables(), result, typeFilter, precedingFilter, callContext);
+                        addCallables(file.listCallables(), result, typeFilter, precedingFilter, callContext, project);
 
                         PsiElement originalPosition = parameters.getOriginalPosition();
                         if (originalPosition == null) {
@@ -59,7 +61,7 @@ public class ODTCommandCompletion extends ODTCallCompletion {
                         List<PsiCallable> callables = file.listPsiCallables().stream()
                                 .filter(psiCallable -> file.isAccessible(originalPosition, psiCallable))
                                 .collect(Collectors.toList());
-                        addCallables(callables, result, typeFilter, precedingFilter, callContext);
+                        addCallables(callables, result, typeFilter, precedingFilter, callContext, project);
                     }
                 });
     }

@@ -88,7 +88,7 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
 
             final List<Property> predicates = call.resolveSignatureArgument(i)
                     .stream()
-                    .map(resource -> OntologyModel.getInstance().getProperty(resource))
+                    .map(resource -> OntologyModel.getInstance(call.getProject()).getProperty(resource))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
@@ -105,14 +105,14 @@ public class ODTCommandInspectionAssign extends LocalInspectionTool {
             }
             final Property predicate = predicates.get(0);
 
-            final Set<OntResource> object = OntologyModel.getInstance().listObjects(subject, predicate);
+            final Set<OntResource> object = OntologyModel.getInstance(call.getProject()).listObjects(subject, predicate);
             if (object.isEmpty()) {
                 holder.registerProblem(predicateArgument,
                         "Could not traverse FORWARD using predicate: " + predicate.toString());
             }
 
             final Set<OntResource> value = call.resolveSignatureArgument(i + 1);
-            OntologyValidationUtil.validateCompatibleTypes(object, value, holder, call.getSignatureArgument(i + 1));
+            OntologyValidationUtil.getInstance(call.getProject()).validateCompatibleTypes(object, value, holder, call.getSignatureArgument(i + 1));
         }
     }
 }

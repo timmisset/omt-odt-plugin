@@ -46,7 +46,7 @@ public class AddToCommand extends AbstractBuiltInCommand {
     public void specificValidation(PsiCall call,
                                    ProblemsHolder holder) {
         // validate type compatibility
-        OntologyValidationUtil.validateCompatibleTypes(call.resolveSignatureArgument(0),
+        OntologyValidationUtil.getInstance(call.getProject()).validateCompatibleTypes(call.resolveSignatureArgument(0),
                 call.resolveSignatureArgument(1),
                 holder,
                 call.getCallSignatureElement()
@@ -55,7 +55,7 @@ public class AddToCommand extends AbstractBuiltInCommand {
         // validate modality
         final Pair<Set<OntResource>, Property> signatureLeadingInformation = call.getSignatureLeadingInformation(0);
         if (call.getCallSignatureElement() != null && signatureLeadingInformation != null) {
-            OntologyValidationUtil.validateCardinalityMultiple(signatureLeadingInformation.getFirst(),
+            OntologyValidationUtil.getInstance(call.getProject()).validateCardinalityMultiple(signatureLeadingInformation.getFirst(),
                     signatureLeadingInformation.getSecond(),
                     holder,
                     call.getCallSignatureElement());

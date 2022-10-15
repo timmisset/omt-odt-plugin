@@ -23,7 +23,7 @@ class ODTResolvableQueryForwardStepAbstractTest extends ODTTestCase {
         final Set<String> resourceUris = getUris(resources);
         Assertions.assertTrue(resourceUris.contains(createOntologyUri("ClassB_INSTANCE")));
         Assertions.assertTrue(resourceUris.contains(createOntologyUri("ClassBSub_INSTANCE")));
-        Assertions.assertTrue(resources.stream().allMatch(OntologyModel.getInstance()::isIndividual));
+        Assertions.assertTrue(resources.stream().allMatch(OntologyModel.getInstance(getProject())::isIndividual));
     }
 
     @Test
@@ -35,6 +35,6 @@ class ODTResolvableQueryForwardStepAbstractTest extends ODTTestCase {
     void testResolveWithoutTypeShouldResolveToClass() {
         final Set<OntResource> resources = resolveQueryStatement("/ont:ClassD / ont:classB");
         Assertions.assertTrue(getUris(resources).contains(createOntologyUri("ClassB")));
-        Assertions.assertTrue(resources.stream().allMatch(OntologyModel.getInstance()::isClass));
+        Assertions.assertTrue(resources.stream().allMatch(OntologyModel.getInstance(getProject())::isClass));
     }
 }

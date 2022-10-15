@@ -47,7 +47,7 @@ public class ODTCommandCompletionNewGraph extends CompletionContributor {
 
         // show all graphshape instances:
         OntologyModelConstants.getGraphShape().listInstances().mapWith(
-                        resource -> OntologyResourceUtil
+                        resource -> OntologyResourceUtil.getInstance(file.getProject())
                                 .getRootLookupElement(resource, "Graphshape", availableNamespaces))
                 .forEachRemaining(result::addElement);
     }

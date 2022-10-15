@@ -64,7 +64,7 @@ public abstract class ODTCallNameAbstract extends ODTResolvableAbstract implemen
         parameterNames.keySet().forEach(
                 i -> params.add(
                         callable.maxNumberOfArguments() == -1 && i == parameterNames.size() - 1 ? "..." : "" +
-                                parameterNames.get(i) + " (" + OntologyResourceUtil.describeUrisForLookupJoined(parameterTypes.get(i)) + ")")
+                                parameterNames.get(i) + " (" + OntologyResourceUtil.getInstance(project).describeUrisForLookupJoined(parameterTypes.get(i)) + ")")
         );
         if (!params.isEmpty()) {
             sb.append(DocumentationProvider.getKeyValueSection("Params: ", String.join("<br>", params)));
@@ -91,15 +91,16 @@ public abstract class ODTCallNameAbstract extends ODTResolvableAbstract implemen
 
     private void appendReturnInformation(Callable callable, ODTCall call, StringBuilder sb) {
         if (!callable.isVoid()) {
+            OntologyResourceUtil resourceUtil = OntologyResourceUtil.getInstance(call.getProject());
             Set<OntResource> resolve = callable.resolve(ContextFactory.fromCall(call));
             sb.append(
                     DocumentationProvider.getKeyValueSection("Returns:",
-                            resolve.isEmpty() ? "Unknown" : OntologyResourceUtil.describeUrisForLookupJoined(resolve))
+                            resolve.isEmpty() ? "Unknown" : resourceUtil.describeUrisForLookupJoined(resolve))
             );
             if (!callable.getSecondReturnArgument().isEmpty()) {
                 sb.append(
                         DocumentationProvider.getKeyValueSection("Secondary return:",
-                                OntologyResourceUtil.describeUrisForLookupJoined(callable.getSecondReturnArgument())));
+                                resourceUtil.describeUrisForLookupJoined(callable.getSecondReturnArgument())));
             }
         }
     }

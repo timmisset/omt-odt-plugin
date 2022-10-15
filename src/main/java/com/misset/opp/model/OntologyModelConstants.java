@@ -1,28 +1,24 @@
 package com.misset.opp.model;
 
 import com.misset.opp.model.constants.*;
-import org.apache.jena.ontology.Individual;
-import org.apache.jena.ontology.OntClass;
-import org.apache.jena.ontology.OntModel;
-import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
 
 import java.util.List;
 import java.util.Set;
 
 public final class OntologyModelConstants {
-    private static Property shaclPath;
-    private static Property shaclClass;
-    private static Property shaclMincount;
-    private static Property shaclMaxcount;
-    private static Property shaclDatatype;
-    private static Property shaclProperty;
-    private static Property shaclProperyshape;
-    private static Property rdfsSubclassOf;
-    private static Property rdfType;
-    private static List<Property> classModelProperties;
+    private static final OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_TRANS_INF);
+    private static OntProperty shaclPath;
+    private static OntProperty shaclClass;
+    private static OntProperty shaclMincount;
+    private static OntProperty shaclMaxcount;
+    private static OntProperty shaclDatatype;
+    private static OntProperty shaclProperty;
+    private static OntProperty shaclProperyshape;
+    private static OntProperty rdfsSubclassOf;
+    private static OntProperty rdfType;
     private static OntClass rdfsClass;
     private static OntClass rdfsResource;
     private static OntClass owlClass;
@@ -61,104 +57,125 @@ public final class OntologyModelConstants {
 
     private static Literal xsdBooleanFalse;
     private static Literal xsdBooleanTrue;
+    private static List<OntProperty> classModelProperties;
 
     static {
         // create the static members with an initial model. Once the OntologyModel is actually loaded
         // these resources have to be registered there to be part of the caching mechanism
-        OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        OntologyModel ontologyModel = new OntologyModel(ontModel);
-        setConstants(ontologyModel, ontModel);
+        initConstants(ontModel);
     }
 
     private OntologyModelConstants() {
         // empty constructor
     }
 
-    public static void setConstants(OntologyModel model, OntModel ontologyModel) {
-        setProperties(model, ontologyModel);
-        setClasses(model, ontologyModel);
-        setIndividuals(model);
-        setPrimitives(model, ontologyModel);
+    public static OntModel getOntModel() {
+        return ontModel;
     }
 
-    private static void setPrimitives(OntologyModel model, OntModel ontologyModel) {
-        xsdBoolean = model.createClass(XSD.BOOLEAN.getUri(), ontologyModel, getOwlThingClass());
-        xsdBooleanInstance = model.createIndividual(getXsdBoolean(), XSD.BOOLEAN_INSTANCE.getUri());
+    public static void initConstants(OntModel ontologyModel) {
+        setProperties(ontologyModel);
+        setClasses(ontologyModel);
+        setIndividuals(ontologyModel);
+        setPrimitives(ontologyModel);
+    }
+
+    private static void setPrimitives(OntModel ontologyModel) {
+        xsdBoolean = ontologyModel.createClass(XSD.BOOLEAN.getUri());
+        xsdBoolean.setSuperClass(owlThingClass);
+        xsdBooleanInstance = ontologyModel.createIndividual(XSD.BOOLEAN_INSTANCE.getUri(), xsdBoolean);
         xsdBooleanTrue = ontologyModel.createTypedLiteral(true);
         xsdBooleanFalse = ontologyModel.createTypedLiteral(false);
 
-        xsdString = model.createClass(XSD.STRING.getUri(), ontologyModel, getOwlThingClass());
-        xsdStringInstance = model.createIndividual(getXsdString(), XSD.STRING_INSTANCE.getUri());
+        xsdString = ontologyModel.createClass(XSD.STRING.getUri());
+        xsdString.setSuperClass(owlThingClass);
+        xsdStringInstance = ontologyModel.createIndividual(XSD.STRING_INSTANCE.getUri(), xsdString);
 
-        xsdNumber = model.createClass(XSD.NUMBER.getUri(), ontologyModel, getOwlThingClass());
-        xsdNumberInstance = model.createIndividual(getXsdNumber(), XSD.NUMBER_INSTANCE.getUri());
+        xsdNumber = ontologyModel.createClass(XSD.NUMBER.getUri());
+        xsdNumber.setSuperClass(owlThingClass);
+        xsdNumberInstance = ontologyModel.createIndividual(XSD.NUMBER_INSTANCE.getUri(), xsdNumber);
 
-        xsdDecimal = model.createClass(XSD.DECIMAL.getUri(), ontologyModel, List.of(getOwlThingClass(), getXsdNumber()));
-        xsdDecimalInstance = model.createIndividual(getXsdDecimal(), XSD.DECIMAL_INSTANCE.getUri());
+        xsdDecimal = ontologyModel.createClass(XSD.DECIMAL.getUri());
+        xsdDecimal.addSuperClass(xsdNumber);
+        xsdDecimalInstance = ontologyModel.createIndividual(XSD.DECIMAL_INSTANCE.getUri(), xsdDecimal);
 
-        xsdInteger = model.createClass(XSD.INTEGER.getUri(), ontologyModel, List.of(getOwlThingClass(), getXsdDecimal()));
+        xsdInteger = ontologyModel.createClass(XSD.INTEGER.getUri());
         // by making XSD_INTEGER a subclass of XSD_DECIMAL, it will allow type checking
         // to accept an integer at a decimal position, but not the other way around
-        xsdIntegerInstance = model.createIndividual(getXsdInteger(), XSD.INTEGER_INSTANCE.getUri());
+        xsdInteger.addSuperClass(xsdDecimal);
+        xsdIntegerInstance = ontologyModel.createIndividual(XSD.INTEGER_INSTANCE.getUri(), xsdInteger);
 
-        xsdDatetime = model.createClass(XSD.DATETIME.getUri(), ontologyModel, getOwlThingClass());
-        xsdDatetimeInstance = model.createIndividual(getXsdDatetime(), XSD.DATETIME_INSTANCE.getUri());
+        xsdDatetime = ontologyModel.createClass(XSD.DATETIME.getUri());
+        xsdDatetime.setSuperClass(owlThingClass);
+        xsdDatetimeInstance = ontologyModel.createIndividual(XSD.DATETIME_INSTANCE.getUri(), xsdDatetime);
 
-        xsdDate = model.createClass(XSD.DATE.getUri(), ontologyModel, List.of(getOwlThingClass(), getXsdDatetime()));
+        xsdDate = ontologyModel.createClass(XSD.DATE.getUri());
         // by making XSD_DATE a subclass of XSD_DATETIME, it will allow type checking
         // to accept a date at a datetime position, but not the other way around
-        xsdDateInstance = model.createIndividual(getXsdDate(), XSD.DATE_INSTANCE.getUri());
+        xsdDate.addSuperClass(xsdDatetime);
+        xsdDateInstance = ontologyModel.createIndividual(XSD.DATE_INSTANCE.getUri(), xsdDate);
 
-        xsdDuration = model.createClass(XSD.DURATION.getUri(), ontologyModel, getOwlThingClass());
-        xsdDurationInstance = model.createIndividual(getXsdDuration(), XSD.DURATION_INSTANCE.getUri());
+        xsdDuration = ontologyModel.createClass(XSD.DURATION.getUri());
+        xsdDuration.setSuperClass(owlThingClass);
+        xsdDurationInstance = ontologyModel.createIndividual(XSD.DURATION_INSTANCE.getUri(), xsdDuration);
     }
 
-    private static void setProperties(OntologyModel model, OntModel ontologyModel) {
-        shaclPath = model.createProperty(SHACL.PATH.getUri(), ontologyModel);
-        shaclClass = model.createProperty(SHACL.CLASS.getUri(), ontologyModel);
-        shaclDatatype = model.createProperty(SHACL.DATATYPE.getUri(), ontologyModel);
-        shaclMincount = model.createProperty(SHACL.MIN_COUNT.getUri(), ontologyModel);
-        shaclMaxcount = model.createProperty(SHACL.MAX_COUNT.getUri(), ontologyModel);
-        shaclProperty = model.createProperty(SHACL.PROPERTY.getUri(), ontologyModel);
-        shaclProperyshape = model.createProperty(SHACL.PROPERTY_SHAPE.getUri(), ontologyModel);
+    private static void setProperties(OntModel ontologyModel) {
+        shaclPath = ontologyModel.createOntProperty(SHACL.PATH.getUri());
+        shaclClass = ontologyModel.createOntProperty(SHACL.CLASS.getUri());
+        shaclDatatype = ontologyModel.createOntProperty(SHACL.DATATYPE.getUri());
+        shaclMincount = ontologyModel.createOntProperty(SHACL.MIN_COUNT.getUri());
+        shaclMaxcount = ontologyModel.createOntProperty(SHACL.MAX_COUNT.getUri());
+        shaclProperty = ontologyModel.createOntProperty(SHACL.PROPERTY.getUri());
+        shaclProperyshape = ontologyModel.createOntProperty(SHACL.PROPERTY_SHAPE.getUri());
 
-        rdfsSubclassOf = model.createProperty(RDFS.SUBCLASS_OF.getUri(), ontologyModel);
-        rdfType = model.createProperty(RDF.TYPE.getUri(), ontologyModel);
+        rdfsSubclassOf = ontologyModel.createOntProperty(RDFS.SUBCLASS_OF.getUri());
+        rdfType = ontologyModel.createOntProperty(RDF.TYPE.getUri());
 
-        classModelProperties = List.of(getRdfsSubclassOf(), getRdfType());
+        classModelProperties = List.of(rdfsSubclassOf, rdfType);
     }
 
-    private static void setIndividuals(OntologyModel model) {
-        owlThingInstance = model.createIndividual(getOwlThingClass(), OWL.THING_INSTANCE.getUri());
+    private static void setIndividuals(OntModel ontologyModel) {
+        owlThingInstance = ontologyModel.createIndividual(OWL.THING_INSTANCE.getUri(), getOwlThingClass());
 
-        jsonObject = model.createIndividual(getJson(), PLATFORM.JSON_OBJECT.getUri());
-        iri = model.createIndividual(getOppClass(), PLATFORM.IRI.getUri());
-        error = model.createIndividual(getOppClass(), PLATFORM.ERROR.getUri());
-        voidResponse = model.createIndividual(getOppClass(), PLATFORM.VOID.getUri());
+        jsonObject = ontologyModel.createIndividual(PLATFORM.JSON_OBJECT.getUri(), getJson());
+        iri = ontologyModel.createIndividual(PLATFORM.IRI.getUri(), getOppClass());
+        error = ontologyModel.createIndividual(PLATFORM.ERROR.getUri(), getOppClass());
+        voidResponse = ontologyModel.createIndividual(PLATFORM.VOID.getUri(), getOppClass());
 
-        namedGraph = model.createIndividual(getNamedGraphClass(), getNamedGraphClass().getURI() + "_INSTANCE");
-        medewerkerGraph = model.createIndividual(getNamedGraphClass(), getNamedGraphClass().getURI() + "_MEDEWERKERGRAPH");
-        transientGraph = model.createIndividual(getTransientGraphClass(), getTransientGraphClass().getURI() + "_INSTANCE");
-        blankNode = model.createIndividual(getOppClass(), PLATFORM.BLANK_NODE.getUri());
+        namedGraph = ontologyModel.createIndividual(getNamedGraphClass().getURI() + "_INSTANCE", getNamedGraphClass());
+        medewerkerGraph = ontologyModel.createIndividual(getNamedGraphClass().getURI() + "_MEDEWERKERGRAPH", getNamedGraphClass());
+        transientGraph = ontologyModel.createIndividual(getTransientGraphClass().getURI() + "_INSTANCE", getTransientGraphClass());
+        blankNode = ontologyModel.createIndividual(PLATFORM.BLANK_NODE.getUri(), getOppClass());
     }
 
-    private static void setClasses(OntologyModel model, OntModel ontologyModel) {
-        rdfsResource = model.createClass(RDFS.RESOURCE.getUri(), ontologyModel);
-        rdfsClass = model.createClass(RDFS.CLASS.getUri(), ontologyModel, getRdfsResource());
-        owlClass = model.createClass(OWL.CLASS.getUri(), ontologyModel, getRdfsClass());
-        owlThingClass = model.createClass(OWL.THING.getUri(), ontologyModel);
-        getOwlThingClass().setRDFType(getOwlClass());
+    private static void setClasses(OntModel ontologyModel) {
+        rdfsResource = ontologyModel.createClass(RDFS.RESOURCE.getUri());
+        rdfsClass = ontologyModel.createClass(RDFS.CLASS.getUri());
+        rdfsClass.addSuperClass(rdfsResource);
 
-        oppClass = model.createClass(PLATFORM.CLASS.getUri(), ontologyModel, getOwlThingClass());
-        json = model.createClass(PLATFORM.JSON.getUri(), ontologyModel, getOwlThingClass());
+        owlClass = ontologyModel.createClass(OWL.CLASS.getUri());
+        owlClass.addSuperClass(rdfsClass);
+
+        owlThingClass = ontologyModel.createClass(OWL.THING.getUri());
+        owlThingClass.setRDFType(owlClass);
+
+        oppClass = ontologyModel.createClass(PLATFORM.CLASS.getUri());
+        oppClass.addSuperClass(owlThingClass);
+
+        json = ontologyModel.createClass(PLATFORM.JSON.getUri());
         json.addSuperClass(oppClass);
-        graphClass = model.createClass(PLATFORM.GRAPH.getUri(), ontologyModel, getOwlThingClass());
+
+        graphClass = ontologyModel.createClass(PLATFORM.GRAPH.getUri());
         graphClass.addSuperClass(oppClass);
-        namedGraphClass = model.createClass(PLATFORM.NAMED_GRAPH.getUri(), ontologyModel, getOwlThingClass());
+
+        namedGraphClass = ontologyModel.createClass(PLATFORM.NAMED_GRAPH.getUri());
         namedGraphClass.addSuperClass(graphClass);
-        graphShape = model.createClass(PLATFORM.GRAPH_SHAPE.getUri(), ontologyModel, getOwlThingClass());
+
+        graphShape = ontologyModel.createClass(PLATFORM.GRAPH_SHAPE.getUri());
         graphShape.addSuperClass(oppClass);
-        transientGraphClass = model.createClass(PLATFORM.TRANSIENT_GRAPH.getUri(), ontologyModel, getOwlThingClass());
+
+        transientGraphClass = ontologyModel.createClass(PLATFORM.TRANSIENT_GRAPH.getUri());
         transientGraphClass.addSuperClass(graphClass);
     }
 
@@ -173,43 +190,43 @@ public final class OntologyModelConstants {
                 getXsdDuration());
     }
 
-    public static Property getShaclPath() {
+    public static OntProperty getShaclPath() {
         return shaclPath;
     }
 
-    public static Property getShaclClass() {
+    public static OntProperty getShaclClass() {
         return shaclClass;
     }
 
-    public static Property getShaclMincount() {
+    public static OntProperty getShaclMincount() {
         return shaclMincount;
     }
 
-    public static Property getShaclMaxcount() {
+    public static OntProperty getShaclMaxcount() {
         return shaclMaxcount;
     }
 
-    public static Property getShaclDatatype() {
+    public static OntProperty getShaclDatatype() {
         return shaclDatatype;
     }
 
-    public static Property getShaclProperty() {
+    public static OntProperty getShaclProperty() {
         return shaclProperty;
     }
 
-    public static Property getShaclProperyshape() {
+    public static OntProperty getShaclProperyshape() {
         return shaclProperyshape;
     }
 
-    public static Property getRdfsSubclassOf() {
+    public static OntProperty getRdfsSubclassOf() {
         return rdfsSubclassOf;
     }
 
-    public static Property getRdfType() {
+    public static OntProperty getRdfType() {
         return rdfType;
     }
 
-    public static List<Property> getClassModelProperties() {
+    public static List<OntProperty> getClassModelProperties() {
         return classModelProperties;
     }
 

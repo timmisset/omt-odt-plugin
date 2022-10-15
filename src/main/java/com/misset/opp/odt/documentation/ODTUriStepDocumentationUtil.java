@@ -1,6 +1,7 @@
 package com.misset.opp.odt.documentation;
 
 import com.intellij.lang.documentation.DocumentationMarkup;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.jgoodies.common.base.Strings;
 import com.misset.opp.documentation.DocumentationProvider;
@@ -25,15 +26,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ODTUriStepDocumentationUtil {
+public final class ODTUriStepDocumentationUtil {
+    private final OntologyModel ontologyModel;
+    private final OntologyResourceUtil resourceUtil;
+    private final Pattern pattern = Pattern.compile("\"(.*)\"");
 
-    private ODTUriStepDocumentationUtil() {
-        // empty constructor
+    public ODTUriStepDocumentationUtil(Project project) {
+        ontologyModel = OntologyModel.getInstance(project);
+        resourceUtil = OntologyResourceUtil.getInstance(project);
     }
 
-    private static final Pattern pattern = Pattern.compile("\"(.*)\"");
+    public static ODTUriStepDocumentationUtil getInstance(Project project) {
+        return project.getService(ODTUriStepDocumentationUtil.class);
+    }
 
-    public static String getDocumentation(ODTResolvableQualifiedUriStep step) {
+    public String getDocumentation(ODTResolvableQualifiedUriStep step) {
         if (isClassUri(step)) {
             return getClassDocumentation(step);
         } else if (isIndividualUri(step)) {
@@ -43,13 +50,13 @@ public class ODTUriStepDocumentationUtil {
         }
     }
 
-    private static String getIndividualDocumentation(ODTResolvableQualifiedUriStep step) {
+    private String getIndividualDocumentation(ODTResolvableQualifiedUriStep step) {
         String fullyQualifiedUri = step.getFullyQualifiedUri();
-        @Nullable Individual individual = OntologyModel.getInstance().getIndividual(fullyQualifiedUri);
+        @Nullable Individual individual = OntologyModel.getInstance(step.getProject()).getIndividual(fullyQualifiedUri);
         if (individual == null) {
             return null;
         }
-        OntClass ontClass = OntologyModel.getInstance().toClass(individual);
+        OntClass ontClass = OntologyModel.getInstance(step.getProject()).toClass(individual);
 
         StringBuilder sb = new StringBuilder();
         sb.append(DocumentationMarkup.DEFINITION_START);
@@ -69,9 +76,9 @@ public class ODTUriStepDocumentationUtil {
         return sb.toString();
     }
 
-    private static String getClassDocumentation(ODTResolvableQualifiedUriStep step) {
+    private String getClassDocumentation(ODTResolvableQualifiedUriStep step) {
         String fullyQualifiedUri = step.getFullyQualifiedUri();
-        OntClass ontClass = OntologyModel.getInstance().getClass(fullyQualifiedUri);
+        OntClass ontClass = OntologyModel.getInstance(step.getProject()).getClass(fullyQualifiedUri);
         if (ontClass == null) {
             return null;
         }
@@ -87,18 +94,18 @@ public class ODTUriStepDocumentationUtil {
 
         sb.append(DocumentationMarkup.SECTIONS_START);
         setClassInfo(ontClass, sb);
-        Set<? extends OntResource> instances = OntologyModel.getInstance().toIndividuals(ontClass).stream()
+        Set<? extends OntResource> instances = OntologyModel.getInstance(step.getProject()).toIndividuals(ontClass).stream()
                 .filter(resource -> resource.getURI() != null && !resource.getURI().endsWith("_INSTANCE"))
                 .collect(Collectors.toSet());
         if (!instances.isEmpty()) {
             sb.append(DocumentationProvider.getKeyValueSection("Instances:",
-                    OntologyResourceUtil.describeUrisJoined(instances, "<br>", false)));
+                    OntologyResourceUtil.getInstance(step.getProject()).describeUrisJoined(instances, "<br>", false)));
         }
         sb.append(DocumentationMarkup.SECTIONS_END);
         return sb.toString();
     }
 
-    private static void setPredicateInfo(OntResource resource, String header, StringBuilder sb) {
+    private void setPredicateInfo(OntResource resource, String header, StringBuilder sb) {
         Set<Property> properties = getProperties(resource);
 
         String propertiesMap = properties.stream()
@@ -111,8 +118,8 @@ public class ODTUriStepDocumentationUtil {
         }
     }
 
-    private static String getPropertyInfo(OntResource resource,
-                                          Property property) {
+    private String getPropertyInfo(OntResource resource,
+                                   Property property) {
         if (!property.equals(OntologyModelConstants.getRdfType())) {
             RDFNode propertyValue = resource.getPropertyValue(property);
             if (propertyValue == null && resource instanceof OntClass) {
@@ -120,7 +127,7 @@ public class ODTUriStepDocumentationUtil {
             }
 
             return Optional.ofNullable(propertyValue)
-                    .map(ODTUriStepDocumentationUtil::getQualifiedPropertyName)
+                    .map(this::getQualifiedPropertyName)
                     .map(propertyUri -> getPropertyDescription(property.getLocalName(), propertyUri))
                     .orElse(null);
 
@@ -128,7 +135,7 @@ public class ODTUriStepDocumentationUtil {
         return null;
     }
 
-    private static String getPropertyDescription(String localname, String propertyUri) {
+    private String getPropertyDescription(String localname, String propertyUri) {
         return "<tr><td style=\"padding-right: 5px\">" +
                 localname +
                 "</td><td>" +
@@ -136,7 +143,7 @@ public class ODTUriStepDocumentationUtil {
                 + "</td></tr>";
     }
 
-    private static String getQualifiedPropertyName(RDFNode propertyValue) {
+    private String getQualifiedPropertyName(RDFNode propertyValue) {
         if (propertyValue.isLiteral()) {
             return propertyValue.asLiteral().getValue().toString();
         } else if (propertyValue.isResource()) {
@@ -146,8 +153,8 @@ public class ODTUriStepDocumentationUtil {
         }
     }
 
-    private static RDFNode getFromSuperclass(OntClass ontClass, Property property) {
-        return OntologyModel.getInstance().listSuperClasses(ontClass)
+    private RDFNode getFromSuperclass(OntClass ontClass, Property property) {
+        return ontologyModel.listSuperClasses(ontClass)
                 .stream()
                 .map(superClass -> superClass.getPropertyValue(property))
                 .filter(Objects::nonNull)
@@ -155,7 +162,7 @@ public class ODTUriStepDocumentationUtil {
                 .orElse(null);
     }
 
-    private static String extractValue(String fullyQualifiedLiteral) {
+    private String extractValue(String fullyQualifiedLiteral) {
         Matcher matcher = pattern.matcher(fullyQualifiedLiteral);
         if (matcher.find()) {
             return matcher.group(1);
@@ -164,27 +171,27 @@ public class ODTUriStepDocumentationUtil {
         }
     }
 
-    private static Set<Property> getProperties(OntResource resource) {
-        return OntologyModel.getInstance().listPredicates(OntologyModel.getInstance().toClass(resource))
+    private Set<Property> getProperties(OntResource resource) {
+        return ontologyModel.listPredicates(ontologyModel.toClass(resource))
                 .stream()
                 .filter(property -> !OntologyModelConstants.getClassModelProperties().contains(property))
                 .collect(Collectors.toSet());
     }
 
-    private static void setClassInfo(OntClass ontClass, StringBuilder sb) {
+    private void setClassInfo(OntClass ontClass, StringBuilder sb) {
         // the order is important for super and subclasses, use list instead of set
-        Set<OntClass> superClasses = OntologyModel.getInstance().listSuperClasses(ontClass);
+        Set<OntClass> superClasses = ontologyModel.listSuperClasses(ontClass);
         if (!superClasses.isEmpty()) {
             sb.append(DocumentationProvider.getKeyValueSection("Superclasses:",
-                    superClasses.stream().map(uri -> OntologyResourceUtil.describeUri(uri, false))
+                    superClasses.stream().map(uri -> resourceUtil.describeUri(uri, false))
                             .distinct()
                             .collect(Collectors.joining("<br>"))));
         }
 
-        Set<OntClass> subClasses = OntologyModel.getInstance().listSubclasses(ontClass);
+        Set<OntClass> subClasses = ontologyModel.listSubclasses(ontClass);
         if (!subClasses.isEmpty()) {
             sb.append(DocumentationProvider.getKeyValueSection("Subclasses:",
-                    subClasses.stream().map(uri -> OntologyResourceUtil.describeUri(uri, false))
+                    subClasses.stream().map(uri -> resourceUtil.describeUri(uri, false))
                             .distinct()
                             .collect(Collectors.joining("<br>"))));
         }
@@ -192,7 +199,7 @@ public class ODTUriStepDocumentationUtil {
         setPredicateInfo(ontClass, "Predicates", sb);
     }
 
-    private static String getCardinalityDetail(String cardinality) {
+    private String getCardinalityDetail(String cardinality) {
         if (cardinality == null) {
             return null;
         }
@@ -211,7 +218,7 @@ public class ODTUriStepDocumentationUtil {
         return "";
     }
 
-    private static String getTraverseDocumentation(ODTResolvableQualifiedUriStep step) {
+    private String getTraverseDocumentation(ODTResolvableQualifiedUriStep step) {
         PsiElement parent = step.getParent();
         boolean isReversed = parent instanceof ODTQueryReverseStep;
         Set<OntResource> unfiltered = isReversed ? ((ODTResolvable) parent).resolve() : step.resolve();
@@ -237,29 +244,29 @@ public class ODTUriStepDocumentationUtil {
         return sb.toString();
     }
 
-    private static void addNextStep(String fullyQualifiedUri,
-                                    boolean isReversed,
-                                    Set<OntResource> unfiltered,
-                                    Set<OntResource> filtered,
-                                    StringBuilder sb) {
-        if (OntologyModel.getInstance().getProperty(fullyQualifiedUri) != null) {
+    private void addNextStep(String fullyQualifiedUri,
+                             boolean isReversed,
+                             Set<OntResource> unfiltered,
+                             Set<OntResource> filtered,
+                             StringBuilder sb) {
+        if (ontologyModel.getProperty(fullyQualifiedUri) != null) {
             String label = isReversed ? "Subject(s)" : "Object(s)";
-            sb.append(DocumentationProvider.getKeyValueSection("Result", "<u>" + label + "</u><br>" + OntologyResourceUtil.describeUrisJoined(filtered, "<br>", false)));
+            sb.append(DocumentationProvider.getKeyValueSection("Result", "<u>" + label + "</u><br>" + resourceUtil.describeUrisJoined(filtered, "<br>", false)));
             if (unfiltered.size() != filtered.size()) {
-                sb.append(DocumentationProvider.getKeyValueSection("Unfiltered:", OntologyResourceUtil.describeUrisJoined(unfiltered, "<br>", false)));
+                sb.append(DocumentationProvider.getKeyValueSection("Unfiltered:", resourceUtil.describeUrisJoined(unfiltered, "<br>", false)));
             }
         }
     }
 
-    private static void addPreviousStep(ODTResolvableQualifiedUriStep step, boolean isReversed, StringBuilder sb) {
+    private void addPreviousStep(ODTResolvableQualifiedUriStep step, boolean isReversed, StringBuilder sb) {
         Set<OntResource> previousStep = step.resolvePreviousStep();
         if (!previousStep.isEmpty()) {
             String label = isReversed ? "Object(s)" : "Subject(s)";
-            sb.append(DocumentationProvider.getKeyValueSection("Previous step", "<u>" + label + "</u><br>" + OntologyResourceUtil.describeUrisJoined(previousStep, "<br>", false)));
+            sb.append(DocumentationProvider.getKeyValueSection("Previous step", "<u>" + label + "</u><br>" + resourceUtil.describeUrisJoined(previousStep, "<br>", false)));
         }
     }
 
-    private static String getContentMessage(boolean reversed) {
+    private String getContentMessage(boolean reversed) {
         if (reversed) {
             return "When traversing the model <u>reversed</u>, the query will return anything in the TTL ontology which " +
                     "has the predicate (sh:path) and has the previous query step as object (sh:dataType / sh:class)";
@@ -269,11 +276,11 @@ public class ODTUriStepDocumentationUtil {
         }
     }
 
-    private static void addCardinality(PsiElement parent,
-                                       ODTResolvableQualifiedUriStep step,
-                                       Set<OntResource> filtered,
-                                       boolean isReversed,
-                                       StringBuilder sb) {
+    private void addCardinality(PsiElement parent,
+                                ODTResolvableQualifiedUriStep step,
+                                Set<OntResource> filtered,
+                                boolean isReversed,
+                                StringBuilder sb) {
         String cardinality = getCardinality(parent, step, filtered, isReversed);
         if (cardinality != null) {
             sb.append("<br>Cardinality");
@@ -285,24 +292,24 @@ public class ODTUriStepDocumentationUtil {
         }
     }
 
-    private static String getCardinality(PsiElement parent, ODTResolvableQualifiedUriStep step,
-                                         Set<OntResource> filtered, boolean isReversed) {
+    private String getCardinality(PsiElement parent, ODTResolvableQualifiedUriStep step,
+                                  Set<OntResource> filtered, boolean isReversed) {
         if (parent instanceof ODTQueryOperationStepImpl) {
             Set<OntResource> previous = ((ODTQueryOperationStepImpl) parent).resolvePreviousStep();
-            return OntologyResourceUtil.getCardinalityLabel(previous, OntologyModel.getInstance().getProperty(step.getFullyQualifiedUri()));
+            return resourceUtil.getCardinalityLabel(previous, ontologyModel.getProperty(step.getFullyQualifiedUri()));
         } else if (isReversed) {
-            return OntologyResourceUtil.getCardinalityLabel(filtered, OntologyModel.getInstance().getProperty(step.getFullyQualifiedUri()));
+            return resourceUtil.getCardinalityLabel(filtered, ontologyModel.getProperty(step.getFullyQualifiedUri()));
         } else {
             return null;
         }
     }
 
-    private static boolean isClassUri(ODTResolvableQualifiedUriStep step) {
-        return OntologyModel.getInstance().getClass(step.getFullyQualifiedUri()) != null;
+    private boolean isClassUri(ODTResolvableQualifiedUriStep step) {
+        return ontologyModel.getClass(step.getFullyQualifiedUri()) != null;
     }
 
-    private static boolean isIndividualUri(ODTResolvableQualifiedUriStep step) {
-        return OntologyModel.getInstance().getIndividual(step.getFullyQualifiedUri()) != null;
+    private boolean isIndividualUri(ODTResolvableQualifiedUriStep step) {
+        return ontologyModel.getIndividual(step.getFullyQualifiedUri()) != null;
     }
 
 }

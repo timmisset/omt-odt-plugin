@@ -157,10 +157,11 @@ public class OMTParamTypeMetaType extends YamlScalarType implements OMTOntologyT
     }
 
     public static void validateResource(String uri, PsiElement element, ProblemsHolder holder) {
-        OntResource ontResource = OntologyModel.getInstance().getOntResource(uri, holder.getProject());
+        OntResource ontResource = OntologyModel.getInstance(holder.getProject()).getOntResource(uri, holder.getProject());
         if (ontResource == null) {
             holder.registerProblem(element, "Could not find resource <" + uri + "> in the Opp Model", ProblemHighlightType.ERROR);
-        } else if (!OntologyResourceUtil.isType(ontResource) && Boolean.FALSE.equals(OntologyModel.getInstance().isClass(ontResource))) {
+        } else if (!OntologyResourceUtil.getInstance(holder.getProject()).isType(ontResource) &&
+                Boolean.FALSE.equals(OntologyModel.getInstance(holder.getProject()).isClass(ontResource))) {
             holder.registerProblem(element, "Expected a class or type", ProblemHighlightType.ERROR);
         }
     }
@@ -178,7 +179,7 @@ public class OMTParamTypeMetaType extends YamlScalarType implements OMTOntologyT
     public static Set<OntResource> resolveType(PsiElement element,
                                                String type) {
         return Optional.ofNullable(getQualifiedUri(element, type))
-                .map(OntologyModel.getInstance()::toIndividuals)
+                .map(OntologyModel.getInstance(element.getProject())::toIndividuals)
                 .stream()
                 .flatMap(Collection::stream)
                 .map(OntResource.class::cast)
@@ -218,10 +219,11 @@ public class OMTParamTypeMetaType extends YamlScalarType implements OMTOntologyT
         // add completions for classes and types:
         PsiFile containingFile = insertedScalar.getContainingFile();
         if (containingFile instanceof OMTFile) {
-            ArrayList<LookupElementBuilder> list = OntologyModel.getInstance().listClasses().stream()
-                    .map(ontClass -> OntologyResourceUtil.getTypeLookupElement(ontClass, ((OMTFile) containingFile)
-                            .getAvailableNamespaces(insertedScalar)))
-                    .collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<LookupElementBuilder> list =
+                    OntologyModel.getInstance(insertedScalar.getProject()).listClasses().stream()
+                            .map(ontClass -> OntologyResourceUtil.getInstance(insertedScalar.getProject()).getTypeLookupElement(ontClass, ((OMTFile) containingFile)
+                                    .getAvailableNamespaces(insertedScalar)))
+                            .collect(Collectors.toCollection(ArrayList::new));
             list.add(LookupElementBuilder.create("string"));
             list.add(LookupElementBuilder.create("boolean"));
             list.add(LookupElementBuilder.create("integer"));

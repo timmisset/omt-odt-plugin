@@ -25,7 +25,7 @@ public abstract class ODTResolvableSchemalessIriStepAbstract extends ODTResolvab
         // we require the preceding step to resolve the current IRI
         String localName = getText();
         return resolvePreviousStep().stream()
-                .map(OntologyModel.getInstance()::toClass)
+                .map(OntologyModel.getInstance(getProject())::toClass)
                 .filter(Objects::nonNull)
                 .map(Resource::getNameSpace)
                 .map(nameSpace -> nameSpace + localName.substring(1, localName.length() - 1))

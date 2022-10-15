@@ -25,7 +25,7 @@ public class IndexOfOperator extends BuiltInIntegerOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        OntologyValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateString(call.resolvePreviousStep(), holder, call);
         ArgumentValidator.validateStringArgument(0, call, holder);
     }
 

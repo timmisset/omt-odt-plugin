@@ -4,6 +4,7 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -140,8 +141,8 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
      * When the ontology is required in a test that is not inheriting from OMTOntologyTestCase
      * this method can be used to load the ontology and return the OntologyModel
      */
-    public static OntologyModel initOntologyModel() {
-        return OntologyModelLoader.getInstance().read(getRootPath());
+    public static OntologyModel initOntologyModel(Project project) {
+        return OntologyModelLoader.getInstance(project).read(getRootPath());
     }
 
     private static File getRootPath() {
@@ -154,7 +155,7 @@ public abstract class BasicTestCase<T extends PsiFile> extends LightJavaCodeInsi
     }
 
     protected void setOntologyModel() {
-        ontologyModel = initOntologyModel();
+        ontologyModel = initOntologyModel(getProject());
     }
 
     protected String createOntologyUri(String localName) {

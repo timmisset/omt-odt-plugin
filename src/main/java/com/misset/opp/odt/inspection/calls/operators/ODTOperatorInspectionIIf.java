@@ -52,10 +52,10 @@ public class ODTOperatorInspectionIIf extends LocalInspectionTool {
     }
 
     private boolean canBeSimplified(@NotNull ODTCall call) {
-        OntologyModel ontologyModel = OntologyModel.getInstance();
+        OntologyModel ontologyModel = OntologyModel.getInstance(call.getProject());
         List<ODTSignatureArgument> signatureArguments = call.getSignatureArguments();
         if (signatureArguments.size() == 2) {
-            return OntologyModel.getInstance().isBooleanInstance(signatureArguments.get(1).resolve());
+            return OntologyModel.getInstance(call.getProject()).isBooleanInstance(signatureArguments.get(1).resolve());
         } else if (signatureArguments.size() == 3) {
             return (ontologyModel.isBooleanTrue(signatureArguments.get(1).resolveLiteral()) &&
                     ontologyModel.isBooleanInstance(signatureArguments.get(2).resolve())) ||
@@ -71,7 +71,7 @@ public class ODTOperatorInspectionIIf extends LocalInspectionTool {
         ODTSignatureArgument firstArgument = call.getSignatureArgument(1);
         List<Literal> ifTrue = firstArgument.resolveLiteral();
         String condition = getCondition(call);
-        OntologyModel ontologyModel = OntologyModel.getInstance();
+        OntologyModel ontologyModel = OntologyModel.getInstance(call.getProject());
         String query = null;
         if (signatureArguments.size() == 2) {
             if (ontologyModel.isBooleanFalse(ifTrue)) {

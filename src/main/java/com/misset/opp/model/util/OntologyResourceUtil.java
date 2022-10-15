@@ -1,6 +1,8 @@
 package com.misset.opp.model.util;
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.components.Service;
+import com.intellij.openapi.project.Project;
 import com.misset.opp.model.OntologyModel;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.model.OntologyModelTranslator;
@@ -22,35 +24,43 @@ import java.util.stream.Collectors;
  * Helper class that is particularly to describe resources for documentation, completion and error/warning messages
  * Not used for validation, resolving etc.
  */
-public class OntologyResourceUtil {
+@Service
+public final class OntologyResourceUtil {
 
     private static final HashMap<Resource, String> descriptions = new HashMap<>();
     private static final HashMap<Resource, String> descriptionsWithType = new HashMap<>();
     private static final HashMap<Resource, Boolean> isType = new HashMap<>();
     private static final HashMap<Resource, Boolean> isXSDType = new HashMap<>();
+    private final OntologyModel ontologyModel;
+    private final OntologyModelTranslator ontologyModelTranslator;
 
-    private OntologyResourceUtil() {
-        // empty constructor
+    public OntologyResourceUtil(@NotNull Project project) {
+        ontologyModel = OntologyModel.getInstance(project);
+        ontologyModelTranslator = OntologyModelTranslator.getInstance(project);
     }
 
-    public static boolean isType(Resource resource) {
+    public static OntologyResourceUtil getInstance(@NotNull Project project) {
+        return project.getService(OntologyResourceUtil.class);
+    }
+
+    public boolean isType(Resource resource) {
         return isType.computeIfAbsent(resource, r -> r instanceof OntResource &&
-                OntologyModel.getInstance().isClass((OntResource) r) && isXSDType(r));
+                ontologyModel.isClass((OntResource) r) && isXSDType(r));
     }
 
-    public static boolean isXSDType(Resource resource) {
+    public boolean isXSDType(Resource resource) {
         return isXSDType.computeIfAbsent(resource, r -> r.getNameSpace().equals(XSD.NAMESPACE));
     }
 
-    public static String describeUrisJoined(Set<? extends Resource> resources) {
+    public String describeUrisJoined(Set<? extends Resource> resources) {
         return describeUrisJoined(resources, ", ", true);
     }
 
-    public static String describeUrisJoined(Set<? extends Resource> resources, String delimiter, boolean withType) {
+    public String describeUrisJoined(Set<? extends Resource> resources, String delimiter, boolean withType) {
         return String.join(delimiter, describeUris(resources, withType));
     }
 
-    public static List<String> describeUris(Set<? extends Resource> resources, boolean withType) {
+    public List<String> describeUris(Set<? extends Resource> resources, boolean withType) {
         return resources.stream()
                 .map(resource -> describeUri(resource, withType))
                 .filter(Objects::nonNull)
@@ -58,7 +68,7 @@ public class OntologyResourceUtil {
                 .collect(Collectors.toList());
     }
 
-    public static String describeUri(Resource resource, boolean withType) {
+    public String describeUri(Resource resource, boolean withType) {
         HashMap<Resource, String> cache = withType ? descriptionsWithType : descriptions;
         if (cache.containsKey(resource)) {
             return cache.get(resource);
@@ -68,7 +78,7 @@ public class OntologyResourceUtil {
         return describedUri;
     }
 
-    private static String doDescribeUri(Resource resource, boolean withType) {
+    private String doDescribeUri(Resource resource, boolean withType) {
         if (resource instanceof OntResource && ((OntResource) resource).isClass()) {
             return describeClass(resource, withType);
         } else if (resource instanceof Individual) {
@@ -79,8 +89,8 @@ public class OntologyResourceUtil {
     }
 
     @Nullable
-    private static String describeIndividual(Individual resource, boolean withType) {
-        OntClass ontClass = OntologyModel.getInstance().toClass(resource);
+    private String describeIndividual(Individual resource, boolean withType) {
+        OntClass ontClass = ontologyModel.toClass(resource);
         if (ontClass == null) {
             return null;
         }
@@ -98,50 +108,50 @@ public class OntologyResourceUtil {
     }
 
     @NotNull
-    private static String describeClass(Resource resource, boolean withType) {
+    private String describeClass(Resource resource, boolean withType) {
         if (resource.getNameSpace().equals(XSD.NAMESPACE)) {
             return resource.getURI() + (withType ? " (TYPE)" : "");
         }
         return resource.getURI() + (withType ? " (CLASS)" : "");
     }
 
-    public static String describeUrisForLookupJoined(Set<? extends OntResource> resources) {
+    public String describeUrisForLookupJoined(Set<? extends OntResource> resources) {
         return describeUrisForLookupJoined(resources, ", ");
     }
 
-    public static String describeUrisForLookupJoined(Set<? extends OntResource> resources, String delimiter) {
+    public String describeUrisForLookupJoined(Set<? extends OntResource> resources, String delimiter) {
         return String.join(delimiter, describeUrisLookup(resources));
     }
 
-    public static List<String> describeUrisLookup(Set<? extends OntResource> resources) {
+    public List<String> describeUrisLookup(Set<? extends OntResource> resources) {
         return resources.stream()
-                .map(OntologyResourceUtil::describeUriForLookup)
+                .map(this::describeUriForLookup)
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
     }
 
-    public static String describeUriForLookup(OntResource resource) {
-        return Optional.ofNullable(OntologyModel.getInstance().toClass(resource))
+    public String describeUriForLookup(OntResource resource) {
+        return Optional.ofNullable(ontologyModel.toClass(resource))
                 .map(ontClass -> ontClass.equals(OntologyModelConstants.getOppClass()) ? resource : ontClass)
                 .map(Resource::getLocalName)
                 .orElse("Ontology class could not be found in the model");
     }
 
-    public static String getCardinalityLabel(Set<OntResource> resources, Property property) {
+    public String getCardinalityLabel(Set<OntResource> resources, Property property) {
         if (property == null) {
             return null;
         }
         if (resources.isEmpty()) {
-            OntResource unambigiousResource = OntologyModel.getInstance().getUnambigiousResource(property);
+            OntResource unambigiousResource = ontologyModel.getUnambigiousResource(property);
             if (unambigiousResource == null) {
                 return null;
             }
             resources = Set.of(unambigiousResource);
         }
-        boolean isMultiple = OntologyModelTranslator.isMultiple(resources, property);
-        boolean isSingle = OntologyModelTranslator.isSingleton(resources, property);
-        boolean isRequired = OntologyModelTranslator.isRequired(resources, property);
+        boolean isMultiple = ontologyModelTranslator.isMultiple(resources, property);
+        boolean isSingle = ontologyModelTranslator.isSingleton(resources, property);
+        boolean isRequired = ontologyModelTranslator.isRequired(resources, property);
         if (isRequired) {
             if (isMultiple) {
                 return "+";
@@ -160,11 +170,11 @@ public class OntologyResourceUtil {
         return null;
     }
 
-    public static LookupElementBuilder getPredicateLookupElement(Set<OntResource> subjects,
-                                                                 Property property,
-                                                                 Set<OntResource> objects,
-                                                                 OntologyTraverseDirection.TraverseDirection direction,
-                                                                 String title) {
+    public LookupElementBuilder getPredicateLookupElement(Set<OntResource> subjects,
+                                                          Property property,
+                                                          Set<OntResource> objects,
+                                                          OntologyTraverseDirection.TraverseDirection direction,
+                                                          String title) {
         if (title == null || property == null) {
             return null;
         }
@@ -174,7 +184,7 @@ public class OntologyResourceUtil {
         }
         String typeText = "";
         if (!objects.isEmpty()) {
-            typeText = OntologyResourceUtil.describeUrisForLookupJoined(objects.stream().limit(2).collect(Collectors.toSet()));
+            typeText = describeUrisForLookupJoined(objects.stream().limit(2).collect(Collectors.toSet()));
             if (objects.size() > 2) {
                 typeText += "...";
             }
@@ -187,9 +197,9 @@ public class OntologyResourceUtil {
                 .withPresentableText(title);
     }
 
-    public static LookupElementBuilder getRootLookupElement(Resource resource,
-                                                            String typeText,
-                                                            Map<String, String> availableNamespaces) {
+    public LookupElementBuilder getRootLookupElement(Resource resource,
+                                                     String typeText,
+                                                     Map<String, String> availableNamespaces) {
         String title = parseToCurie(resource, availableNamespaces);
         if (title == null) {
             return null;
@@ -201,8 +211,8 @@ public class OntologyResourceUtil {
                 .withIcon(Icons.TTLFile);
     }
 
-    public static LookupElementBuilder getTypeLookupElement(OntResource resource,
-                                                            Map<String, String> availableNamespaces) {
+    public LookupElementBuilder getTypeLookupElement(OntResource resource,
+                                                     Map<String, String> availableNamespaces) {
         String lookupText = parseToCurie(resource, availableNamespaces);
         if (lookupText == null) {
             return null;
@@ -215,16 +225,16 @@ public class OntologyResourceUtil {
                 .withPresentableText(lookupText);
     }
 
-    public static String parseToCurie(Resource resource,
-                                      Map<String, String> availableNamespaces) {
+    public String parseToCurie(Resource resource,
+                               Map<String, String> availableNamespaces) {
         return Optional.ofNullable(resource.getURI())
                 .map(uri -> getCurie(resource, availableNamespaces, uri))
                 .orElse(null);
     }
 
-    private static String getCurie(Resource resource,
-                                   Map<String, String> availableNamespaces,
-                                   String uri) {
+    private String getCurie(Resource resource,
+                            Map<String, String> availableNamespaces,
+                            String uri) {
         return availableNamespaces.containsKey(resource.getNameSpace()) ?
                 (availableNamespaces.get(resource.getNameSpace()) + ":" + resource.getLocalName()) :
                 "<" + uri + ">";

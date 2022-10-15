@@ -34,7 +34,7 @@ public class PlusOperator extends BuiltinMathOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            OntologyValidationUtil.validateRequiredTypes(validInputs, call.resolvePreviousStep(), holder, call);
+            OntologyValidationUtil.getInstance(call.getProject()).validateRequiredTypes(validInputs, call.resolvePreviousStep(), holder, call);
         }
         ArgumentValidator.validateAllArguments(call, holder, validator);
     }

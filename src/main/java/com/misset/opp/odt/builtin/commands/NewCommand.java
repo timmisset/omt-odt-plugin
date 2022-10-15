@@ -34,7 +34,7 @@ public class NewCommand extends AbstractBuiltInCommand {
     @Override
     protected Set<OntResource> resolveFrom(PsiCall call) {
         // create an instance from the class
-        return OntologyModel.getInstance().toIndividuals(call.resolveSignatureArgument(0))
+        return OntologyModel.getInstance(call.getProject()).toIndividuals(call.resolveSignatureArgument(0))
                 .stream()
                 .map(OntResource.class::cast)
                 .collect(Collectors.toSet());

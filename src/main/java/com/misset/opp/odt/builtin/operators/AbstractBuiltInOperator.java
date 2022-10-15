@@ -108,7 +108,7 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
         if (leftRight.getFirst() == null || leftRight.getSecond() == null) {
             return Collections.emptySet();
         }
-        OntologyValidationUtil.validateCompatibleTypes(leftRight.getFirst(), leftRight.getSecond(), holder, call);
+        OntologyValidationUtil.getInstance(holder.getProject()).validateCompatibleTypes(leftRight.getFirst(), leftRight.getSecond(), holder, call);
         return leftRight.getFirst();
     }
 
@@ -134,7 +134,7 @@ public abstract class AbstractBuiltInOperator extends AbstractBuiltin {
             return;
         }
 
-        boolean b = OntologyModel.getInstance().areCompatible(possibilities.getFirst(), possibilities.getSecond());
+        boolean b = OntologyModel.getInstance(call.getProject()).areCompatible(possibilities.getFirst(), possibilities.getSecond());
         if (!b) {
             holder.registerProblem(call,
                     "Possible outcomes are incompatible, not illegal but it smells fishy",

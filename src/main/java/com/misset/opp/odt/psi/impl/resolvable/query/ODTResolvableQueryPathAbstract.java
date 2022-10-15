@@ -92,7 +92,7 @@ public abstract class ODTResolvableQueryPathAbstract extends ODTResolvableQueryA
         if (predicate instanceof ODTResolvableQualifiedUriStep) {
             final ODTResolvableQualifiedUriStep qualifiedUriStep = (ODTResolvableQualifiedUriStep) predicate;
             final String fullyQualifiedUri = qualifiedUriStep.getFullyQualifiedUri();
-            final Property property = OntologyModel.getInstance().getProperty(fullyQualifiedUri);
+            final Property property = OntologyModel.getInstance(getProject()).getProperty(fullyQualifiedUri);
             if (property != null) {
                 return new Pair<>(subjectResolved, property);
             }

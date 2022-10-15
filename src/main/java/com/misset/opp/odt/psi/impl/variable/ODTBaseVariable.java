@@ -193,13 +193,14 @@ public abstract class ODTBaseVariable
 
         sb.append(DocumentationMarkup.SECTIONS_START);
         String typeLabel = filtered.size() == 1 ? "Type:" : "Types:";
+        OntologyResourceUtil resourceUtil = OntologyResourceUtil.getInstance(project);
         sb.append(
                 DocumentationProvider.getKeyValueSection(typeLabel,
-                        filtered.isEmpty() ? "Unknown" : OntologyResourceUtil.describeUrisForLookupJoined(filtered)));
+                        filtered.isEmpty() ? "Unknown" : resourceUtil.describeUrisForLookupJoined(filtered)));
         if (!unfiltered.equals(filtered)) {
             sb.append(
                     DocumentationProvider.getKeyValueSection("Unfiltered:",
-                            OntologyResourceUtil.describeUrisForLookupJoined(unfiltered, "<br>")));
+                            resourceUtil.describeUrisForLookupJoined(unfiltered, "<br>")));
         }
         sb.append(DocumentationProvider.getKeyValueSection("Scope:", isGlobal() ? "Global" : "Local"));
         sb.append(DocumentationProvider.getKeyValueSection("Readonly:", isGlobal() || isReadonly() ? "Yes" : "No"));

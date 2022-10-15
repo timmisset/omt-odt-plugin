@@ -55,7 +55,7 @@ public class RoundOperator extends AbstractBuiltInOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         Set<OntResource> callInputType = call.resolvePreviousStep();
-        OntologyValidationUtil.validateNumber(callInputType, holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateNumber(callInputType, holder, call);
         ArgumentValidator.validateNumberArgument(0, call, holder);
 
         if ("0".equals(call.getSignatureValue(0))) {

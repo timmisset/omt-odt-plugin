@@ -48,7 +48,7 @@ class OMTActivityMetaTypeTest extends OMTTestCase {
             YAMLMapping value = (YAMLMapping) ((YAMLKeyValue) myFixture.getElementAtCaret()).getValue();
             Set<OntResource> resolve = new OMTActivityMetaType().resolve(value, null);
             Assertions.assertTrue(resolve.stream().allMatch(
-                    resource -> OntologyModel.getInstance().isInstanceOf(resource, OntologyModelConstants.getXsdBoolean())
+                    resource -> OntologyModel.getInstance(getProject()).isInstanceOf(resource, OntologyModelConstants.getXsdBoolean())
             ));
         });
     }

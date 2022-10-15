@@ -72,13 +72,13 @@ public abstract class ODTResolvableQualifiedUriStepAbstract extends ODTResolvabl
 
     @Override
     public String getDocumentation(Project project) {
-        return ODTUriStepDocumentationUtil.getDocumentation(this);
+        return ODTUriStepDocumentationUtil.getInstance(getProject()).getDocumentation(this);
     }
 
     private void inspectIri(ProblemsHolder holder) {
         final String fullyQualifiedUri = getFullyQualifiedUri();
         if (fullyQualifiedUri != null) {
-            final Resource resource = OntologyModel.getInstance().getOntResource(fullyQualifiedUri, getProject());
+            final Resource resource = OntologyModel.getInstance(getProject()).getOntResource(fullyQualifiedUri, getProject());
             if (resource == null) {
                 // unknown Iri
                 holder.registerProblem(

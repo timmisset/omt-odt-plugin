@@ -40,10 +40,10 @@ public class FindSubjectsOperator extends AbstractBuiltInOperator {
         final int numberOfArguments = call.getNumberOfArguments();
         if (numberOfArguments == 1) {
             // only a predicate:
-            return OntologyModel.getInstance().filterSubjects(resources, call.resolveSignatureArgument(0));
+            return OntologyModel.getInstance(call.getProject()).filterSubjects(resources, call.resolveSignatureArgument(0));
         } else if (numberOfArguments >= 2) {
             // predicate + object OR predicate + object + graphname (ignored)
-            return OntologyModel.getInstance().filterSubjects(resources,
+            return OntologyModel.getInstance(call.getProject()).filterSubjects(resources,
                     call.resolveSignatureArgument(0),
                     call.resolveSignatureArgument(1));
         }

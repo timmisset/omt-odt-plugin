@@ -26,8 +26,8 @@ public class OMTGraphQueryType extends OMTQueryMetaType {
         final Set<OntResource> resolve = resolve(scalarValue);
         if (resolve.isEmpty() || resolve.stream()
                 .allMatch(resource -> resource != null &&
-                        OntologyModel.getInstance().isIndividual(resource) &&
-                        Optional.ofNullable(OntologyModel.getInstance().toClass(resource))
+                        OntologyModel.getInstance(holder.getProject()).isIndividual(resource) &&
+                        Optional.ofNullable(OntologyModel.getInstance(holder.getProject()).toClass(resource))
                                 .map(OntologyModelConstants.getNamedGraphClass()::equals)
                                 .orElse(false))) {
             return;

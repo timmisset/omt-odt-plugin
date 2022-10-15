@@ -40,12 +40,12 @@ public class ODTCodeInspectionBoolean extends LocalInspectionTool {
                                          @NotNull ODTBooleanStatement booleanStatement) {
         booleanStatement.getQueryList().forEach(
                 query ->
-                        OntologyValidationUtil.validateBoolean(query.resolve(), holder, query)
+                        OntologyValidationUtil.getInstance(holder.getProject()).validateBoolean(query.resolve(), holder, query)
         );
     }
 
     private void inspectIfBlock(@NotNull ProblemsHolder holder,
                                 @NotNull ODTIfBlock ifBlock) {
-        OntologyValidationUtil.validateBoolean(ifBlock.getQuery().resolve(), holder, ifBlock.getQuery());
+        OntologyValidationUtil.getInstance(holder.getProject()).validateBoolean(ifBlock.getQuery().resolve(), holder, ifBlock.getQuery());
     }
 }

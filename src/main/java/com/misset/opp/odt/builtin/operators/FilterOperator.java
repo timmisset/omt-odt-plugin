@@ -31,7 +31,7 @@ public class FilterOperator extends BuiltInCollectionOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         Set<OntClass> acceptableTypes = Set.of(OntologyModelConstants.getXsdBoolean(), OntologyModelConstants.getXsdInteger());
-        OntologyValidationUtil.validateHasOntClass(call.resolveSignatureArgument(0), holder, call, acceptableTypes);
+        OntologyValidationUtil.getInstance(holder.getProject()).validateHasOntClass(call.resolveSignatureArgument(0), holder, call, acceptableTypes);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class FilterOperator extends BuiltInCollectionOperator {
                 .map(ODTSignatureArgument.class::cast)
                 .map(ODTSignatureArgument::getResolvableValue)
                 .map(ODTResolvableValue::getQuery)
-                .filter(query -> OntologyModel.getInstance().isBooleanInstance(query.resolve()))
+                .filter(query -> OntologyModel.getInstance(call.getProject()).isBooleanInstance(query.resolve()))
                 .map(query -> query.filter(resources))
                 .orElse(resources);
     }

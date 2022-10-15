@@ -31,7 +31,7 @@ public class FloorOperator extends AbstractBuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        OntologyValidationUtil.validateDecimal(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateDecimal(call.resolvePreviousStep(), holder, call);
     }
 
     @Override

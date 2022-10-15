@@ -35,7 +35,7 @@ public class ContainsOperator extends BuiltInBooleanOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        OntologyValidationUtil.validateString(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateString(call.resolvePreviousStep(), holder, call);
         ArgumentValidator.validateStringArgument(0, call, holder);
         ArgumentValidator.validateBooleanArgument(1, call, holder);
         validateIgnoreCaseFlagUsage(1, call, holder);

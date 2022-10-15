@@ -15,7 +15,7 @@ class OMTShapeQueryTypeTest extends OMTTestCase {
     public void setUp() {
         super.setUp();
         myFixture.enableInspections(Collections.singleton(OMTValueInspection.class));
-        OntologyModel.getInstance().createIndividual(OntologyModelConstants.getGraphShape(), "http://shapeA");
+        OntologyModel.getInstance(getProject()).createIndividual(OntologyModelConstants.getGraphShape(), "http://shapeA");
     }
 
     @Test

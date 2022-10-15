@@ -29,7 +29,7 @@ class ODTDefineInputParamDelegateTest extends ODTTestCase {
                 " */\n" +
                 "DEFINE QUERY <caret>query($param) => $param;";
         assertContainsElements(resolveQueryAtCaret(withPrefixes(content)),
-                OntologyModel.getInstance().getIndividual("http://ontology#ClassA_InstanceA"));
+                OntologyModel.getInstance(getProject()).getIndividual("http://ontology#ClassA_InstanceA"));
     }
 
     @Test

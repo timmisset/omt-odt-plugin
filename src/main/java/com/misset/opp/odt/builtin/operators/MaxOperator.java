@@ -35,11 +35,11 @@ public class MaxOperator extends BuiltInCollectionOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         Set<OntClass> acceptableTypes = Set.of(OntologyModelConstants.getXsdNumber(), OntologyModelConstants.getXsdDatetime());
-        OntologyValidationUtil.validateHasOntClass(call.resolvePreviousStep(),
+        OntologyValidationUtil.getInstance(call.getProject()).validateHasOntClass(call.resolvePreviousStep(),
                 holder,
                 call,
                 acceptableTypes);
-        OntologyValidationUtil.validateHasOntClass(call.resolveSignatureArgument(0),
+        OntologyValidationUtil.getInstance(call.getProject()).validateHasOntClass(call.resolveSignatureArgument(0),
                 holder,
                 call.getCallSignatureArgumentElement(0),
                 acceptableTypes);

@@ -17,7 +17,7 @@ public abstract class ODTResolvableQueryAbstract extends ODTResolvableAbstract i
     @Override
     public void inspect(ProblemsHolder holder) {
         if (getParent() instanceof ODTQueryFilter) {
-            OntologyValidationUtil.validateBoolean(resolve(), holder, this);
+            OntologyValidationUtil.getInstance(holder.getProject()).validateBoolean(resolve(), holder, this);
         }
     }
 }

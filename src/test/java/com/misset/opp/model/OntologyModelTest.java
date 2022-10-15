@@ -3,6 +3,7 @@ package com.misset.opp.model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import com.misset.opp.model.constants.XSD;
 import com.misset.opp.testcase.BasicTestCase;
 import org.apache.jena.ontology.Individual;
@@ -10,16 +11,16 @@ import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-class OntologyModelTest {
+class OntologyModelTest extends LightJavaCodeInsightFixtureTestCase {
     public static final String CLASS_A_INSTANCE_A = "http://ontology#ClassA_InstanceA";
     public static final String ONTOLOGY_CLASS_A = "http://ontology#ClassA";
     public static final String ONTOLOGY_CLASS_B = "http://ontology#ClassB";
@@ -34,8 +35,9 @@ class OntologyModelTest {
     private OntologyModel ontologyModel;
 
     @BeforeEach
-    public void setUp() {
-        ontologyModel = BasicTestCase.initOntologyModel();
+    public void setUp() throws Exception {
+        super.setUp();
+        ontologyModel = BasicTestCase.initOntologyModel(getProject());
         CLASS_A = createClass("ClassA");
         CLASS_B = createClass("ClassB");
         CLASS_BSUB = createClass("ClassBSub");
@@ -43,6 +45,11 @@ class OntologyModelTest {
         CLASS_A_INDIVIDUAL = ontologyModel.createIndividual(CLASS_A, CLASS_A.getURI() + "_INSTANCE");
         CLASS_B_INDIVIDUAL = ontologyModel.createIndividual(CLASS_B, CLASS_B.getURI() + "_INSTANCE");
         CLASS_BSUB_INDIVIDUAL = ontologyModel.createIndividual(CLASS_BSUB, CLASS_BSUB.getURI() + "_INSTANCE");
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        super.tearDown();
     }
 
     @Test
@@ -302,7 +309,7 @@ class OntologyModelTest {
     }
 
     private Property createProperty(String localName) {
-        return ontologyModel.getProperty(createResource("http://ontology#", localName));
+        return ontologyModel.createProperty(createResource("http://ontology#", localName).getURI());
     }
 
     private OntClass createClass(String name) {

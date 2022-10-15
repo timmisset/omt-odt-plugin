@@ -24,7 +24,7 @@ public class DateFormatOperator extends BuiltInStringOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        OntologyValidationUtil.validateDateTime(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateDateTime(call.resolvePreviousStep(), holder, call);
         ArgumentValidator.validateStringArgument(0, call, holder);
     }
 
