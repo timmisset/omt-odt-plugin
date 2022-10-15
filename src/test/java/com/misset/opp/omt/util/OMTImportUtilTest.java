@@ -1,6 +1,5 @@
 package com.misset.opp.omt.util;
 
-import com.intellij.application.options.CodeStyle;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.openapi.application.ReadAction;
 import com.misset.opp.odt.inspection.ODTCodeInspectionUnresolvableReference;
@@ -9,7 +8,6 @@ import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.psi.PsiCall;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import com.misset.opp.settings.SettingsState;
-import org.jetbrains.yaml.formatter.YAMLCodeStyleSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,11 +27,6 @@ class OMTImportUtilTest extends OMTTestCase {
     public void setUp() {
         super.setUp();
         myFixture.enableInspections(Collections.singleton(ODTCodeInspectionUnresolvableReference.class));
-    }
-
-    private void setYamlIndentation(OMTFile file) {
-        YAMLCodeStyleSettings yamlCodeStyleSettings = CodeStyle.getCustomSettings(file, YAMLCodeStyleSettings.class);
-        yamlCodeStyleSettings.INDENT_SEQUENCE_VALUE = false;
     }
 
     @Test
