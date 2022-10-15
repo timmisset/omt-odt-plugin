@@ -67,6 +67,14 @@ public abstract class OMTMetaType extends YamlMetaType {
     public void buildInsertionSuffixMarkup(@NotNull YamlInsertionMarkup markup,
                                            Field.@NotNull Relation relation,
                                            ForcedCompletionPath.@NotNull Iteration iteration) {
+        markup.append(":");
+        if (relation == Field.Relation.SEQUENCE_ITEM) {
+            markup.doTabbedBlockForSequenceItem();
+        } else {
+            markup.increaseTabs(1);
+            markup.newLineAndTabs();
+        }
+        markup.appendCaret();
     }
 
     public Set<OntResource> resolveValue(YAMLValue value) {

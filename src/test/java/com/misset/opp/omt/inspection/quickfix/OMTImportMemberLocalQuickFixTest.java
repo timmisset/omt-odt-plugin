@@ -1,6 +1,5 @@
 package com.misset.opp.omt.inspection.quickfix;
 
-import com.intellij.application.options.CodeStyle;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ex.ProblemDescriptorImpl;
@@ -11,16 +10,10 @@ import com.misset.opp.odt.psi.resolvable.call.ODTCall;
 import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.psi.PsiCallable;
-import org.jetbrains.yaml.formatter.YAMLCodeStyleSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class OMTImportMemberLocalQuickFixTest extends OMTTestCase {
-
-    private void setYamlIndentation(OMTFile file) {
-        YAMLCodeStyleSettings yamlCodeStyleSettings = CodeStyle.getCustomSettings(file, YAMLCodeStyleSettings.class);
-        yamlCodeStyleSettings.INDENT_SEQUENCE_VALUE = false;
-    }
 
     @Test
     void testAddsImportToFile() {

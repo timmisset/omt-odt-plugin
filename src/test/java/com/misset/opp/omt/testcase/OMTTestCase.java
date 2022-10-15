@@ -1,5 +1,6 @@
 package com.misset.opp.omt.testcase;
 
+import com.intellij.application.options.CodeStyle;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -15,6 +16,7 @@ import com.misset.opp.omt.startup.IndexOMTPrefixes;
 import com.misset.opp.testcase.BasicTestCase;
 import com.misset.opp.testcase.CompletionUtil;
 import com.misset.opp.testcase.InspectionUtil;
+import org.jetbrains.yaml.formatter.YAMLCodeStyleSettings;
 import org.jetbrains.yaml.psi.YAMLPsiElement;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -135,5 +137,10 @@ public abstract class OMTTestCase extends BasicTestCase<OMTFile> {
             }
             return null;
         });
+    }
+
+    protected void setYamlIndentation(OMTFile file) {
+        YAMLCodeStyleSettings yamlCodeStyleSettings = CodeStyle.getCustomSettings(file, YAMLCodeStyleSettings.class);
+        yamlCodeStyleSettings.INDENT_SEQUENCE_VALUE = false;
     }
 }
