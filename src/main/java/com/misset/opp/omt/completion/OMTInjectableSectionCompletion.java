@@ -3,6 +3,7 @@ package com.misset.opp.omt.completion;
 import com.google.common.base.Strings;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.project.Project;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -100,26 +101,27 @@ public class OMTInjectableSectionCompletion extends CompletionContributor {
         } else if (injectionMetaType instanceof OMTGraphQueryType) {
             ODTCall call = PsiTreeUtil.getParentOfType(position, ODTCall.class);
             Context context = call != null ? ContextFactory.fromCall(call) : null;
-            insertGraphQuery(result, context);
+            insertGraphQuery(result, context, position.getProject());
         } else if (injectionMetaType instanceof OMTBooleanQueryType) {
-            insertBooleanQuery(result);
+            insertBooleanQuery(result, position.getProject());
         }
     }
 
-    private void insertGraphQuery(@NotNull CompletionResultSet result, Context context) {
+    private void insertGraphQuery(@NotNull CompletionResultSet result, Context context, Project project) {
         ODTSharedCompletion.sharedContext.get().put(
                 ODTSharedCompletion.TYPE_FILTER,
                 // don't suggest anything that resolves to a primitive type
-                resources -> OntologyModel.getInstance().toClasses(resources).stream().noneMatch(OntologyResourceUtil::isType)
+                resources -> OntologyModel.getInstance(project)
+                        .toClasses(resources).stream().noneMatch(OntologyResourceUtil.getInstance(project)::isType)
         );
         // promote the GRAPH operator:
-        ODTCallCompletion.addPriorityCallable(GraphOperator.INSTANCE, result, context);
+        ODTCallCompletion.addPriorityCallable(GraphOperator.INSTANCE, result, context, project);
     }
 
-    private void insertBooleanQuery(@NotNull CompletionResultSet result) {
+    private void insertBooleanQuery(@NotNull CompletionResultSet result, Project project) {
         ODTSharedCompletion.sharedContext.get().put(
                 ODTSharedCompletion.TYPE_FILTER,
-                resources -> OntologyModel.getInstance().areCompatible(Collections.singleton(OntologyModelConstants.getXsdBooleanInstance()), resources));
+                resources -> OntologyModel.getInstance(project).areCompatible(Collections.singleton(OntologyModelConstants.getXsdBooleanInstance()), resources));
         result.addElement(PrioritizedLookupElement.withPriority(
                 LookupElementBuilder.create("true"), 100
         ));

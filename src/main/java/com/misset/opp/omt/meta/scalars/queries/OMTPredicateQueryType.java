@@ -22,7 +22,7 @@ public class OMTPredicateQueryType extends OMTQueryMetaType {
     protected void validateScalarValue(@NotNull YAMLScalar scalarValue,
                                        @NotNull ProblemsHolder holder) {
         final Set<OntResource> resolve = resolve(scalarValue);
-        if (resolve.isEmpty() || resolve.stream().allMatch(OntologyModel.getInstance()::isPredicate)) {
+        if (resolve.isEmpty() || resolve.stream().allMatch(OntologyModel.getInstance(holder.getProject())::isPredicate)) {
             return;
         }
         holder.registerProblem(scalarValue, "Expected a query that resolves to predicates");

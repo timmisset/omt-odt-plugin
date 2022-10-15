@@ -32,7 +32,7 @@ public class ODTCodeInspectionCollectionStatement extends LocalInspectionTool {
             private void inspect(ODTCollectionStatement collectionStatement) {
                 final ODTQuery query = collectionStatement.getQuery();
                 final ODTResolvableValue resolvableValue = collectionStatement.getResolvableValue();
-                OntologyValidationUtil.validateCompatibleTypes(query.resolve(),
+                OntologyValidationUtil.getInstance(holder.getProject()).validateCompatibleTypes(query.resolve(),
                         resolvableValue.resolve(),
                         holder,
                         resolvableValue);

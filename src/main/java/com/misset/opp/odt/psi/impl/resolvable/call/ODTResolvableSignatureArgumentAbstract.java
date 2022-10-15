@@ -76,7 +76,7 @@ public abstract class ODTResolvableSignatureArgumentAbstract extends ODTResolvab
         Set<OntResource> acceptableArgumentType = callable.getAcceptableArgumentType(argumentIndexOf, call);
 
         return ACCEPT_NON_VOID.and(
-                resources -> resources.isEmpty() || OntologyModel.getInstance().areCompatible(acceptableArgumentType, resources)
+                resources -> resources.isEmpty() || OntologyModel.getInstance(getProject()).areCompatible(acceptableArgumentType, resources)
         );
     }
 }

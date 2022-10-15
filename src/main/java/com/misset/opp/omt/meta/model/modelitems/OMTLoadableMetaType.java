@@ -177,7 +177,7 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
         if (argumentValue != null) {
             argumentValue = argumentValue.replaceAll("^['\"](.*)['\"]$", "$1");
             PsiElement signatureArgumentElement = call.getCallSignatureArgumentElement(i);
-            OntologyValidationUtil.validateValues(paramValues, argumentValue, holder, signatureArgumentElement);
+            OntologyValidationUtil.getInstance(holder.getProject()).validateValues(paramValues, argumentValue, holder, signatureArgumentElement);
         }
 
     }

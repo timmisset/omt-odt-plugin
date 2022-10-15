@@ -1,8 +1,10 @@
 package com.misset.opp.odt.builtin.operators;
 
+import com.intellij.openapi.project.Project;
 import com.misset.opp.model.OntologyModel;
 import com.misset.opp.model.OntologyModelConstants;
 import com.misset.opp.model.util.OntologyResourceUtil;
+import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntResource;
 
@@ -26,12 +28,13 @@ public class TypeOperator extends AbstractBuiltInOperator {
     }
 
     @Override
-    protected Set<OntResource> resolveFrom(Set<OntResource> resources) {
-        return resources.stream().map(this::mapToType).collect(Collectors.toSet());
+    protected Set<OntResource> resolveFrom(Set<OntResource> resources, PsiCall call) {
+        return resources.stream().map(resource -> mapToType(resource, call.getProject())).collect(Collectors.toSet());
     }
-    private OntResource mapToType(OntResource resource) {
-        OntClass ontClass = OntologyModel.getInstance().toClass(resource);
-        if (OntologyResourceUtil.isType(ontClass)) {
+
+    private OntResource mapToType(OntResource resource, Project project) {
+        OntClass ontClass = OntologyModel.getInstance(project).toClass(resource);
+        if (OntologyResourceUtil.getInstance(project).isType(ontClass)) {
             return ontClass;
         } else {
             return OntologyModelConstants.getIri();

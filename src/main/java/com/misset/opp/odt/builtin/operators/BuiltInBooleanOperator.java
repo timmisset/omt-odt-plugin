@@ -13,7 +13,7 @@ public abstract class BuiltInBooleanOperator extends AbstractBuiltInOperator {
 
     protected void validateSingleArgumentInputBoolean(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            boolean b = OntologyValidationUtil.validateBoolean(call.resolvePreviousStep(), holder, call);
+            boolean b = OntologyValidationUtil.getInstance(call.getProject()).validateBoolean(call.resolvePreviousStep(), holder, call);
             if (!b) {
                 holder.registerProblem(call, ERROR, ProblemHighlightType.ERROR);
             }

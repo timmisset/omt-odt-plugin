@@ -1,7 +1,9 @@
 package com.misset.opp.model;
 
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.misset.opp.model.constants.OWL;
 import com.misset.opp.model.constants.RDF;
@@ -10,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,9 +24,10 @@ import java.util.*;
   Helper class to generate a OntologyModel (Apache Jena) with all imports recursively processed as SubModels
   The default import handler doesn't work with the current setup of the Opp Model
  */
+@Service
 public final class OntologyModelLoader {
 
-    private static final OntologyModelLoader INSTANCE = new OntologyModelLoader();
+    private final Project project;
     private Collection<File> modelFiles = Collections.emptyList();
 
     private static final String TTL = "TTL";
@@ -31,14 +35,14 @@ public final class OntologyModelLoader {
     private static final String REFERENTIEDATA = "http://ontologie.politie.nl/referentiedata";
     private final HashMap<Resource, OntModel> ontologies = new HashMap<>();
     private ProgressIndicator indicator = ProgressIndicatorProvider.getGlobalProgressIndicator();
-    private OntologyModel currentModel;
+    private OntologyModel ontologyModel;
 
-    private OntologyModelLoader() {
-
+    public OntologyModelLoader(Project project) {
+        this.project = project;
     }
 
-    public static OntologyModelLoader getInstance() {
-        return INSTANCE;
+    public static OntologyModelLoader getInstance(@NotNull Project project) {
+        return project.getService(OntologyModelLoader.class);
     }
 
     public OntologyModel read(File file) {
@@ -49,16 +53,17 @@ public final class OntologyModelLoader {
         this.indicator = indicator;
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         init(file, model);
-        currentModel = new OntologyModel(model);
-        return currentModel;
+        ontologyModel = new OntologyModel(project);
+        ontologyModel.init(model);
+        return ontologyModel;
     }
 
     public Collection<File> getModelFiles() {
         return modelFiles;
     }
 
-    public OntologyModel getCurrentModel() {
-        return currentModel;
+    public OntologyModel getOntologyModel() {
+        return ontologyModel;
     }
 
     private void setIndicatorText(String text) {
@@ -131,9 +136,9 @@ public final class OntologyModelLoader {
     }
 
     private OntModel getSubmodel(InputStream inputStream) {
-        final OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
-        ontologyModel.read(inputStream, null, TTL);
-        return ontologyModel;
+        final OntModel subModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
+        subModel.read(inputStream, null, TTL);
+        return subModel;
     }
 
     private Resource getOntologyResource(OntModel model) {

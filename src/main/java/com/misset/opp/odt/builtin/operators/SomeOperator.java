@@ -36,7 +36,7 @@ public class SomeOperator extends BuiltInBooleanOperator {
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 0) {
-            OntologyValidationUtil.validateBoolean(call.resolvePreviousStep(), holder, call);
+            OntologyValidationUtil.getInstance(call.getProject()).validateBoolean(call.resolvePreviousStep(), holder, call);
         } else {
             ArgumentValidator.validateBooleanArgument(0, call, holder);
         }

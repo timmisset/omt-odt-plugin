@@ -34,7 +34,7 @@ public class CastOperator extends AbstractBuiltInOperator {
         } else if (argument.contains(OntologyModelConstants.getXsdBoolean())) {
             return Set.of(OntologyModelConstants.getXsdBooleanInstance());
         }
-        return OntologyModel.getInstance().toIndividuals(argument)
+        return OntologyModel.getInstance(call.getProject()).toIndividuals(argument)
                 .stream()
                 .map(OntResource.class::cast)
                 .collect(Collectors.toSet());

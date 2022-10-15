@@ -39,8 +39,10 @@ public class ODTAnnotationTypeClassNameCompletion extends CompletionContributor 
         Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
         // show all classes instances:
-        OntologyModel.getInstance().listClasses().stream()
-                .map(resource -> OntologyResourceUtil.getTypeLookupElement(resource, availableNamespaces))
+        OntologyModel.getInstance(file.getProject()).listClasses().stream()
+                .map(resource -> OntologyResourceUtil
+                        .getInstance(file.getProject())
+                        .getTypeLookupElement(resource, availableNamespaces))
                 .filter(Objects::nonNull)
                 // sort so that items with prefixes are shown first
                 .map(lookupElementBuilder -> PrioritizedLookupElement.withPriority(

@@ -3,6 +3,7 @@ package com.misset.opp.odt.completion;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.project.Project;
 import com.intellij.util.PlatformIcons;
 import com.intellij.util.SharedProcessingContext;
 import com.misset.opp.model.util.OntologyResourceUtil;
@@ -42,21 +43,25 @@ public abstract class ODTCallCompletion extends CompletionContributor {
         }
     }
 
-    public static void addPriorityCallable(Callable callable, CompletionResultSet result, Context context) {
-        addCallable(callable, result, PRIORITY_CALLABLE, context);
+    public static void addPriorityCallable(Callable callable,
+                                           CompletionResultSet result,
+                                           Context context,
+                                           Project project) {
+        addCallable(callable, result, PRIORITY_CALLABLE, context, project);
     }
 
     private static void addCallable(Callable callable,
                                     @NotNull CompletionResultSet result,
-                                    CompletionPatterns.COMPLETION_PRIORITY priority, Context context) {
-        LookupElement lookupElement = createLookupElement(callable, context);
+                                    CompletionPatterns.COMPLETION_PRIORITY priority, Context context,
+                                    Project project) {
+        LookupElement lookupElement = createLookupElement(callable, context, project);
         if (lookupElement != null) {
             LookupElement withPriority = PrioritizedLookupElement.withPriority(lookupElement, priority.getValue());
             result.addElement(withPriority);
         }
     }
 
-    private static LookupElementBuilder createLookupElement(Callable callable, Context context) {
+    private static LookupElementBuilder createLookupElement(Callable callable, Context context, Project project) {
         String callId = callable.getCallId();
         if (callId == null) {
             return null;
@@ -83,7 +88,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
             }
         }
         String lookup = callId + (signature.length() > 0 ? "()" : "");
-        String typeText = OntologyResourceUtil.describeUrisForLookupJoined(callable.resolve(context));
+        String typeText = OntologyResourceUtil.getInstance(project).describeUrisForLookupJoined(callable.resolve(context));
         return LookupElementBuilder.create(lookup)
                 .withLookupString(callId)
                 .withLookupString(callId.toLowerCase())
@@ -100,7 +105,8 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                                 @NotNull CompletionResultSet result,
                                 Predicate<Set<OntResource>> typeFilter,
                                 Predicate<Set<OntResource>> precedingFilter,
-                                Context context) {
+                                Context context,
+                                Project project) {
         Predicate<Callable> callableFilter = selectionFilter;
         SharedProcessingContext sharedProcessingContext = sharedContext.get();
         if (sharedProcessingContext != null && sharedProcessingContext.get(ODTSharedCompletion.CALLABLE_FILTER) != null) {
@@ -115,6 +121,6 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                     Set<OntResource> resolve = callable.resolve(context);
                     return resolve.isEmpty() || typeFilter.test(resolve);
                 })
-                .forEach(callable -> addCallable(callable, result, CALLABLE, context));
+                .forEach(callable -> addCallable(callable, result, CALLABLE, context, project));
     }
 }

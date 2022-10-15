@@ -58,7 +58,7 @@ public class ODTQualifiedURIInspection extends LocalInspectionTool {
                     element = visitDocTag((PsiDocTag) element, pair);
                 }
 
-                if (pair.getLeft() != null && pair.getRight() != null && element.getContainingFile() instanceof ODTFile) {
+                if (pair.getLeft() != null && pair.getRight() != null && element != null && element.getContainingFile() instanceof ODTFile) {
                     ODTFile containingFile = (ODTFile) element.getContainingFile();
                     Map<String, String> availableNamespaces = containingFile.getAvailableNamespaces();
                     if (availableNamespaces.containsKey(pair.getLeft())) {
@@ -91,7 +91,7 @@ public class ODTQualifiedURIInspection extends LocalInspectionTool {
             if (UriPatternUtil.isUri(uri)) {
                 String namespace = UriPatternUtil.getNamespace(uri);
                 String localName = UriPatternUtil.getLocalname(uri);
-                OntClass ontClass = OntologyModel.getInstance().getClass(namespace + localName);
+                OntClass ontClass = OntologyModel.getInstance(docTag.getProject()).getClass(namespace + localName);
                 if (ontClass != null) {
                     pair.setLeft(namespace);
                     pair.setRight(localName);

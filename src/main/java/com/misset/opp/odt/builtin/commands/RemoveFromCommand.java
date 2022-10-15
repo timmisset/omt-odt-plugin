@@ -42,7 +42,7 @@ public class RemoveFromCommand extends AbstractBuiltInCommand {
         // validate modality
         final Pair<Set<OntResource>, Property> signatureLeadingInformation = call.getSignatureLeadingInformation(0);
         if (call.getCallSignatureElement() != null && signatureLeadingInformation != null) {
-            OntologyValidationUtil.validateCardinalityMultiple(
+            OntologyValidationUtil.getInstance(holder.getProject()).validateCardinalityMultiple(
                     signatureLeadingInformation.getFirst(),
                     signatureLeadingInformation.getSecond(),
                     holder,

@@ -32,7 +32,7 @@ public class JsonValuesOperator extends AbstractBuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        OntologyValidationUtil.validateJSON(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateJSON(call.resolvePreviousStep(), holder, call);
     }
 
     @Override

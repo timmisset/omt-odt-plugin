@@ -1,5 +1,6 @@
 package com.misset.opp.odt.refactoring;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.Strings;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
@@ -34,7 +35,7 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
             suggestions.addAll(getVariableNameSuggestions((ODTVariable) element));
         }
         if (element instanceof ODTResolvable) {
-            suggestions.addAll(forVariables(getTypeSuggestions((Resolvable) element)));
+            suggestions.addAll(forVariables(getTypeSuggestions((Resolvable) element, element.getProject())));
         }
         if (element instanceof ODTQueryStatement && element.getFirstChild() instanceof ODTQueryPath) {
             List<ODTQueryOperationStep> operationStepList = ((ODTQueryPath) element.getFirstChild()).getQueryOperationStepList();
@@ -128,9 +129,9 @@ public class ODTNameSuggestionProvider implements NameSuggestionProvider {
         return List.of(camelCase(call.getName()));
     }
 
-    private List<String> getTypeSuggestions(Resolvable resolvable) {
+    private List<String> getTypeSuggestions(Resolvable resolvable, Project project) {
         return resolvable.resolve().stream()
-                .map(OntologyModel.getInstance()::toClass)
+                .map(OntologyModel.getInstance(project)::toClass)
                 .map(this::getSuperClasses)
                 .flatMap(Collection::stream)
                 .distinct()

@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -58,10 +59,16 @@ public class ODTTypeClassNameCompletion extends CompletionContributor {
                 ODTFile file = (ODTFile) parameters.getOriginalFile();
                 Map<String, String> availableNamespaces = file.getAvailableNamespaces();
 
-                OntologyModel ontologyModel = OntologyModel.getInstance();
+                OntologyModel ontologyModel = OntologyModel.getInstance(file.getProject());
                 List<LookupElementBuilder> elements = new ArrayList<>();
 
-                addElements(getFilteredCollection(ontologyModel.listClasses(), this::filterClasses), resource -> "Class", availableNamespaces, elements);
+                addElements(
+                        getFilteredCollection(ontologyModel.listClasses(), this::filterClasses),
+                        resource -> "Class",
+                        availableNamespaces,
+                        elements,
+                        file.getProject()
+                );
                 String prefixMatcher = "/";
                 if (parameters.getPosition().getPrevSibling() instanceof ODTNamespacePrefix) {
                     prefixMatcher += parameters.getPosition().getPrevSibling().getText();
@@ -91,9 +98,10 @@ public class ODTTypeClassNameCompletion extends CompletionContributor {
             Collection<? extends OntResource> resources,
             Function<OntResource, String> typeText,
             Map<String, String> availableNamespaces,
-            Collection<LookupElementBuilder> elements) {
+            Collection<LookupElementBuilder> elements,
+            Project project) {
         resources.stream().map(
-                        resource -> OntologyResourceUtil
+                        resource -> OntologyResourceUtil.getInstance(project)
                                 .getRootLookupElement(resource, typeText.apply(resource), availableNamespaces))
                 .filter(Objects::nonNull)
                 .forEach(elements::add);

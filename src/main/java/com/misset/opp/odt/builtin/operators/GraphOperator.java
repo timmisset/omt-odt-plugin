@@ -29,6 +29,6 @@ public class GraphOperator extends AbstractBuiltInOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        OntologyValidationUtil.validateInstances(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateInstances(call.resolvePreviousStep(), holder, call);
     }
 }

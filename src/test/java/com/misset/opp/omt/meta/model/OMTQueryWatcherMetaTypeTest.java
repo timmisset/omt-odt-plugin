@@ -28,7 +28,7 @@ class OMTQueryWatcherMetaTypeTest extends OMTTestCase {
                     OMTQueryWatcherMetaType.getInstance().getLocalVariables(mapping);
             Assertions.assertEquals(2, localVariables.size());
             Assertions.assertTrue(localVariables.stream().allMatch(
-                    localVariable -> OntologyModel.getInstance().isBooleanInstance(localVariable.resolve())
+                    localVariable -> OntologyModel.getInstance(getProject()).isBooleanInstance(localVariable.resolve())
             ));
         });
     }

@@ -74,21 +74,22 @@ public abstract class ODTResolvableEquationStatementAbstract extends ODTResolvab
         if (rightSide.isEmpty() || leftSide.isEmpty()) {
             return Set.of(resource);
         }
+        OntologyModel ontologyModel = OntologyModel.getInstance(getProject());
 
         // check if owl:Thing is part of the equation
         if (leftSide.stream().anyMatch(OntologyModelConstants.getOwlThingInstance()::equals)) {
-            return OntologyModel.getInstance().toType(rightSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
+            return ontologyModel.toType(rightSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
         } else if (rightSide.stream().anyMatch(OntologyModelConstants.getOwlThingInstance()::equals)) {
-            return OntologyModel.getInstance().toType(leftSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
+            return ontologyModel.toType(leftSide, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
         }
 
         // not a direct match, there might be match based on class types. If the left-side is a subclass of the right-side
         // or the other way around, this is also acceptable. It is similar to 'Class instance X' and then casting it to the more
         // specific class rather than the generic super class type it had before the filter
-        if (leftSide.stream().allMatch(OntologyModel.getInstance()::isClass) &&
-                rightSide.stream().allMatch(OntologyModel.getInstance()::isClass)) {
-            Set<OntClass> ontClasses = intersectBothSideSuperClasses(OntologyModel.getInstance().toClasses(leftSide), OntologyModel.getInstance().toClasses(rightSide));
-            return OntologyModel.getInstance().toType(ontClasses, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
+        if (leftSide.stream().allMatch(ontologyModel::isClass) &&
+                rightSide.stream().allMatch(ontologyModel::isClass)) {
+            Set<OntClass> ontClasses = intersectBothSideSuperClasses(ontologyModel.toClasses(leftSide), ontologyModel.toClasses(rightSide));
+            return ontologyModel.toType(ontClasses, resource).stream().map(OntResource.class::cast).collect(Collectors.toSet());
         }
         return Collections.emptySet();
     }
@@ -107,7 +108,7 @@ public abstract class ODTResolvableEquationStatementAbstract extends ODTResolvab
         return sideA.stream()
                 .map(OntClass.class::cast)
                 .filter(leftResource -> {
-                    Set<OntClass> superClasses = OntologyModel.getInstance().getSuperClasses(leftResource);
+                    Set<OntClass> superClasses = OntologyModel.getInstance(getProject()).getSuperClasses(leftResource);
                     return sideB.stream().anyMatch(superClasses::contains);
                 })
                 .collect(Collectors.toSet());
@@ -121,7 +122,7 @@ public abstract class ODTResolvableEquationStatementAbstract extends ODTResolvab
         Set<OntResource> oppositeResources = opposite.resolve();
 
         return resources -> resources.isEmpty() || oppositeResources.isEmpty() ||
-                OntologyModel.getInstance().areCompatible(oppositeResources, resources);
+                OntologyModel.getInstance(getProject()).areCompatible(oppositeResources, resources);
     }
 
     @Override

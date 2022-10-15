@@ -39,7 +39,7 @@ public class NotOperator extends BuiltInBooleanOperator {
 
     @Override
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
-        OntologyValidationUtil.validateBoolean(call.resolvePreviousStep(), holder, call);
+        OntologyValidationUtil.getInstance(call.getProject()).validateBoolean(call.resolvePreviousStep(), holder, call);
         ArgumentValidator.validateBooleanArgument(0, call, holder);
     }
 

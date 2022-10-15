@@ -12,10 +12,10 @@ import org.apache.jena.rdf.model.Property;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class RemoveFromCommandTest extends BaseBuiltinTest {
@@ -52,9 +52,12 @@ class RemoveFromCommandTest extends BaseBuiltinTest {
         ProblemsHolder problemsHolder = mock(ProblemsHolder.class);
 
         try (MockedStatic<OntologyValidationUtil> mockedStatic = mockStatic(OntologyValidationUtil.class)) {
+            OntologyValidationUtil validationUtil = mock(OntologyValidationUtil.class);
+            mockedStatic.when(() -> OntologyValidationUtil.getInstance(getProject()))
+                    .thenReturn(validationUtil);
+            doReturn(getProject()).when(problemsHolder).getProject();
             RemoveFromCommand.INSTANCE.specificValidation(call, problemsHolder);
-            mockedStatic.verify(times(1),
-                    () -> OntologyValidationUtil.validateCardinalityMultiple(eq(subject), eq(predicate), eq(problemsHolder), eq(element)));
+            Mockito.verify(validationUtil).validateCardinalityMultiple(subject, predicate, problemsHolder, element);
         }
     }
 }

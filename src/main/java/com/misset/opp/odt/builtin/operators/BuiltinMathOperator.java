@@ -19,7 +19,7 @@ public abstract class BuiltinMathOperator extends AbstractBuiltInOperator {
                     OntologyModelConstants.getXsdDurationInstance());
     protected static final TriConsumer<Integer, PsiCall, ProblemsHolder> validator = (i, call, holder) -> {
         Set<OntResource> ontResources = call.resolveSignatureArgument(i);
-        OntologyValidationUtil.validateRequiredTypes(validInputs, ontResources, holder, call.getCallSignatureArgumentElement(i));
+        OntologyValidationUtil.getInstance(call.getProject()).validateRequiredTypes(validInputs, ontResources, holder, call.getCallSignatureArgumentElement(i));
     };
 
     @Override

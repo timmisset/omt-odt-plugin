@@ -64,14 +64,14 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                     Set<Resource> existingPredicates =
                             existingPredicates(assignCommand).stream().map(RDFNode::asResource).collect(Collectors.toSet());
 
-                    Map<Property, Set<OntResource>> predicates = OntologyModel.getInstance().listPredicates(subject)
+                    Map<Property, Set<OntResource>> predicates = OntologyModel.getInstance(assignCommand.getProject()).listPredicates(subject)
                             .stream()
                             .filter(property -> !OntologyModelConstants.getClassModelProperties().contains(property))
                             .filter(property -> !existingPredicates.contains(property))
                             .collect(
                                     Collectors.toMap(
                                             property -> property,
-                                            property -> OntologyModel.getInstance().listObjects(subject, property)
+                                            property -> OntologyModel.getInstance(assignCommand.getProject()).listObjects(subject, property)
                                     ));
 
                     result = result.withPrefixMatcher(
@@ -86,7 +86,8 @@ public class ODTCommandCompletionAssign extends CompletionContributor {
                             OntologyTraverseDirection.TraverseDirection.FORWARD,
                             ((ODTFile) parameters.getOriginalFile()).getAvailableNamespaces(),
                             result,
-                            true
+                            true,
+                            parameters.getPosition().getProject()
                     );
                     result.stopHere();
                 }

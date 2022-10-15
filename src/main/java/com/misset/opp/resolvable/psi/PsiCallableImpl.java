@@ -38,7 +38,7 @@ public abstract class PsiCallableImpl extends ASTWrapperPsiElement implements Ps
 
         if (paramType != null && !argumentType.isEmpty() && !paramType.isEmpty()) {
             PsiElement signatureArgumentElement = call.getCallSignatureArgumentElement(i);
-            OntologyValidationUtil.validateCompatibleTypes(paramType, argumentType, holder, signatureArgumentElement);
+            OntologyValidationUtil.getInstance(holder.getProject()).validateCompatibleTypes(paramType, argumentType, holder, signatureArgumentElement);
         }
     }
 
@@ -54,7 +54,7 @@ public abstract class PsiCallableImpl extends ASTWrapperPsiElement implements Ps
         if (argumentValue != null) {
             argumentValue = argumentValue.replaceAll("^['\"](.*)['\"]$", "$1");
             PsiElement signatureArgumentElement = call.getCallSignatureArgumentElement(i);
-            OntologyValidationUtil.validateValues(paramValues, argumentValue, holder, signatureArgumentElement);
+            OntologyValidationUtil.getInstance(holder.getProject()).validateValues(paramValues, argumentValue, holder, signatureArgumentElement);
         }
 
     }

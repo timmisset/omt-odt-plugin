@@ -26,7 +26,7 @@ class OMTStandaloneQueryMetaTypeTest extends OMTTestCase {
                 "   /ont:ClassA"));
         assertResolvedContainsResource(Collections.emptySet(),
                 mock(PsiCall.class),
-                OntologyModel.getInstance().getClass("http://ontology#ClassA"));
+                OntologyModel.getInstance(getProject()).getClass("http://ontology#ClassA"));
     }
 
     @Test
@@ -36,13 +36,13 @@ class OMTStandaloneQueryMetaTypeTest extends OMTTestCase {
                 "query: $paramA"));
         assertResolvedContainsResource(Collections.emptySet(),
                 mock(PsiCall.class),
-                OntologyModel.getInstance().getIndividual("http://ontology#ClassA_INSTANCE"));
+                OntologyModel.getInstance(getProject()).getIndividual("http://ontology#ClassA_INSTANCE"));
     }
 
     @Test
     void testResolveStandaloneQueryWithNonAnnotatedParameters() {
         final PsiCall call = mock(PsiCall.class);
-        final Individual individual = OntologyModel.getInstance().getIndividual("http://ontology#ClassA_INSTANCE");
+        final Individual individual = OntologyModel.getInstance(getProject()).getIndividual("http://ontology#ClassA_INSTANCE");
         final Set<OntResource> resources = Set.of(individual);
         doReturn(resources).when(call).resolveSignatureArgument(0);
         doReturn(resources).when(call).getParamType("$paramA");

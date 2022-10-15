@@ -1,6 +1,7 @@
 package com.misset.opp.omt.completion;
 
 import com.intellij.codeInsight.completion.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.patterns.PatternCondition;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
@@ -60,9 +61,10 @@ public class OMTParameterShorthandTypeCompletion extends CompletionContributor {
         OMTFile file = (OMTFile) parameters.getOriginalFile();
         Map<String, String> availableNamespaces = file.getAvailableNamespaces(parameters.getPosition());
 
+        Project project = file.getProject();
         // show all classes instances:
-        OntologyModel.getInstance().listClasses().stream()
-                .map(resource -> OntologyResourceUtil.getTypeLookupElement(resource, availableNamespaces))
+        OntologyModel.getInstance(project).listClasses().stream()
+                .map(resource -> OntologyResourceUtil.getInstance(project).getTypeLookupElement(resource, availableNamespaces))
                 .filter(Objects::nonNull)
                 // sort so that items with prefixes are shown first
                 .map(lookupElementBuilder -> PrioritizedLookupElement.withPriority(

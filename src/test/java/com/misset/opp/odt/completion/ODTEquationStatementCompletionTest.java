@@ -25,7 +25,7 @@ class ODTEquationStatementCompletionTest extends ODTTestCase {
 
     @Test
     void testShowsInstancesForInstanceOfClass() {
-        OntClass ontClass = OntologyModel.getInstance().getClass("http://ontology#ClassB");
+        OntClass ontClass = OntologyModel.getInstance(getProject()).getClass("http://ontology#ClassB");
         ontologyModel.createIndividual(ontClass, "http://ontology#ClassB_1");
         ontologyModel.createIndividual(ontClass, "http://ontology#ClassB_2");
         String content = withPrefixes("/ont:ClassB / ^rdf:type == <caret>");

@@ -24,7 +24,7 @@ public class OMTBooleanQueryType extends OMTQueryMetaType {
                                        @NotNull ProblemsHolder holder) {
         final Set<OntResource> resolve = resolve(scalarValue);
         if (resolve.stream().anyMatch(
-                resource -> !OntologyModel.getInstance().isInstanceOf(resource, OntologyModelConstants.getXsdBoolean())
+                resource -> !OntologyModel.getInstance(holder.getProject()).isInstanceOf(resource, OntologyModelConstants.getXsdBoolean())
         )) {
             holder.registerProblem(scalarValue, "Expected a query that resolves to a boolean");
         }

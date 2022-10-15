@@ -112,7 +112,7 @@ class ODTDefineStatementAbstractTest extends ODTTestCase {
         ReadAction.run(() -> {
             ODTDefineStatement defineStatement = (ODTDefineStatement) myFixture.getElementAtCaret();
             Set<OntResource> resolve = defineStatement.resolve();
-            Assertions.assertEquals(OntologyModel.getInstance().toIndividuals("http://ontology#ClassA"), resolve);
+            Assertions.assertEquals(OntologyModel.getInstance(getProject()).toIndividuals("http://ontology#ClassA"), resolve);
         });
     }
 }

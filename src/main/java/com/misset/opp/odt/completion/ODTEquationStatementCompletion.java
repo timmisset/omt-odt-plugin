@@ -1,6 +1,7 @@
 package com.misset.opp.odt.completion;
 
 import com.intellij.codeInsight.completion.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -63,21 +64,22 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
                     ODTQuery odtQuery = queryList.get(0);
                     Set<OntResource> leftSideResolved = odtQuery.resolve();
 
-                    addClasses(leftSideResolved, availableNamespaces, result);
-                    addInstances(leftSideResolved, availableNamespaces, result);
+                    addClasses(leftSideResolved, availableNamespaces, result, position.getProject());
+                    addInstances(leftSideResolved, availableNamespaces, result, position.getProject());
                 }
             }
 
             private void addClasses(Set<OntResource> leftSideResolved,
                                     Map<String, String> availableNamespaces,
-                                    CompletionResultSet result) {
+                                    CompletionResultSet result,
+                                    Project project) {
                 Set<OntClass> classes = leftSideResolved.stream()
-                        .filter(OntologyModel.getInstance()::isClass)
-                        .map(OntologyModel.getInstance()::toClass)
+                        .filter(OntologyModel.getInstance(project)::isClass)
+                        .map(OntologyModel.getInstance(project)::toClass)
                         .collect(Collectors.toCollection(HashSet::new));
-                classes.addAll(OntologyModel.getInstance().listSubclasses(classes));
+                classes.addAll(OntologyModel.getInstance(project).listSubclasses(classes));
                 classes.stream()
-                        .map(resource -> OntologyResourceUtil.getRootLookupElement(resource, "Class", availableNamespaces))
+                        .map(resource -> OntologyResourceUtil.getInstance(project).getRootLookupElement(resource, "Class", availableNamespaces))
                         .filter(Objects::nonNull)
                         .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, ROOT_ELEMENT.getValue()))
                         .forEach(result::addElement);
@@ -85,18 +87,20 @@ public class ODTEquationStatementCompletion extends CompletionContributor {
 
             private void addInstances(Set<OntResource> leftSideResolved,
                                       Map<String, String> availableNamespaces,
-                                      CompletionResultSet result) {
+                                      CompletionResultSet result,
+                                      Project project) {
                 leftSideResolved.stream()
-                        .filter(OntologyModel.getInstance()::isIndividual)
+                        .filter(OntologyModel.getInstance(project)::isIndividual)
                         .map(Individual.class::cast)
                         .map(Individual::getOntClass)
                         .map(Resource::getURI)
                         .filter(Objects::nonNull)
-                        .map(OntologyModel.getInstance()::toIndividuals)
+                        .map(OntologyModel.getInstance(project)::toIndividuals)
                         .flatMap(Collection::stream)
                         .filter(this::isRealInstance)
                         .map(
                                 resource -> OntologyResourceUtil
+                                        .getInstance(project)
                                         .getRootLookupElement(resource, "Instance", availableNamespaces))
                         .filter(Objects::nonNull)
                         .map(lookupElement -> PrioritizedLookupElement.withPriority(lookupElement, ROOT_ELEMENT.getValue()))

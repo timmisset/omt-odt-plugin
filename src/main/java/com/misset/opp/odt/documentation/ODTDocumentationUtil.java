@@ -113,7 +113,7 @@ public class ODTDocumentationUtil {
                 // there is a reference available for the type, meaning we should try to resolve it to the prefix
                 // and generate a fully qualified URI from it:
                 if (UriPatternUtil.isUri(resourceReference)) {
-                    OntologyModel ontologyModel = OntologyModel.getInstance();
+                    OntologyModel ontologyModel = OntologyModel.getInstance(docTag.getProject());
                     return Optional.ofNullable(UriPatternUtil.unwrap(resourceReference))
                             .map(ontologyModel::toIndividuals)
                             .orElse(Collections.emptySet())
@@ -154,7 +154,7 @@ public class ODTDocumentationUtil {
                         .findFirst();
             }
         }
-        return uri.map(OntologyModel.getInstance()::toIndividuals)
+        return uri.map(OntologyModel.getInstance(docTag.getProject())::toIndividuals)
                 .orElse(new HashSet<>())
                 .stream()
                 .map(OntResource.class::cast)

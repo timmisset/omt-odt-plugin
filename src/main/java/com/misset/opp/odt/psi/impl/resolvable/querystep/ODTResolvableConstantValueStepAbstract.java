@@ -49,7 +49,7 @@ public abstract class ODTResolvableConstantValueStepAbstract extends ODTResolvab
             result = null; // returns an emptySet which is the ODT equivalent of null
         } else if (elementType == ODTTypes.PRIMITIVE) {
             final Individual individual = OntologyValueParserUtil.parsePrimitive(getText());
-            result = individual != null ? OntologyModel.getInstance().toClass(individual) : null;
+            result = individual != null ? OntologyModel.getInstance(getProject()).toClass(individual) : null;
         } else {
             result = OntologyModelConstants.getOwlThingInstance();
         }
@@ -63,14 +63,14 @@ public abstract class ODTResolvableConstantValueStepAbstract extends ODTResolvab
     public String getDocumentation(Project project) {
         return DocumentationMarkup.DEFINITION_START +
                 "Constant<br>" +
-                OntologyResourceUtil.describeUrisJoined(resolve(), "<br>", false) +
+                OntologyResourceUtil.getInstance(getProject()).describeUrisJoined(resolve(), "<br>", false) +
                 DocumentationMarkup.DEFINITION_END;
     }
 
     @Override
     public @NotNull List<Literal> resolveLiteral() {
         final IElementType elementType = getNode().getFirstChildNode().getElementType();
-        OntModel ontModel = OntologyModel.getInstance().getModel();
+        OntModel ontModel = OntologyModel.getInstance(getProject()).getModel();
         final Literal result;
         if (elementType == ODTTypes.BOOLEAN) {
             result = TRUES.contains(getText()) ? ontModel.createTypedLiteral(true) : ontModel.createTypedLiteral(false);

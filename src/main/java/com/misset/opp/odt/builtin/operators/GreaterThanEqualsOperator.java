@@ -31,7 +31,7 @@ public class GreaterThanEqualsOperator extends BuiltInBooleanOperator {
     protected void specificValidation(PsiCall call, ProblemsHolder holder) {
         Set<OntResource> resources = validateLeftRightCompatible(call, holder);
         Set<OntClass> acceptableTypes = Set.of(OntologyModelConstants.getXsdString(), OntologyModelConstants.getXsdNumber());
-        OntologyValidationUtil.validateHasOntClass(resources, holder, call, acceptableTypes);
+        OntologyValidationUtil.getInstance(call.getProject()).validateHasOntClass(resources, holder, call, acceptableTypes);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
@@ -17,6 +18,7 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -38,7 +40,9 @@ import java.util.stream.Collectors;
  * Since we have a good handle on when the model is updated we can safely assume that, when there is no change in the TTL model,
  * using the same query multiple times will always return the same result and thus should be cached.
  */
-public class OntologyModel {
+@Service
+public final class OntologyModel {
+
     /*
         The modification count whenever the model is loaded
         Any RDF resolving cached values should subscribe to this modification tracker to drop their
@@ -48,6 +52,7 @@ public class OntologyModel {
 
     private static final Logger LOGGER = Logger.getInstance(OntologyModel.class);
     private final OntologyModelCache modelCache;
+    private final Project project;
 
     HashMap<String, OntResource> mappedResourcesCache = new HashMap<>();
     /**
@@ -55,21 +60,26 @@ public class OntologyModel {
      */
     private final OntModel model;
 
-    public OntologyModel(OntModel shaclModel) {
-        modelCache = new OntologyModelCache();
+    public OntologyModel(Project project) {
+        modelCache = OntologyModelCache.getInstance(project);
+        this.project = project;
         OntModel ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF);
 
         // the OWL_DL restricts types, a resource can only be either a class, a property or an instance, not multiple at the same time
         // the RDFS_INF inferencing provides the support for sub/superclass logic
         incrementModificationCount();
-        OntologyModelConstants.setConstants(this, ontologyModel);
-        OntologyModelTranslator.loadSimpleModel(this, modelCache, ontologyModel, shaclModel);
+        OntologyModelConstants.initConstants(ontologyModel);
         modelCache.cacheClassesTree();
         this.model = ontologyModel;
     }
 
-    public static OntologyModel getInstance() {
-        return OntologyModelLoader.getInstance().getCurrentModel();
+    public static OntologyModel getInstance(@NotNull Project project) {
+        return OntologyModelLoader.getInstance(project).getOntologyModel();
+    }
+
+    public void init(OntModel shaclModel) {
+        OntologyModelTranslator.getInstance(project).loadSimpleModel(this, modelCache, model, shaclModel);
+        modelCache.cacheClassesTree();
     }
 
     /**
@@ -81,10 +91,6 @@ public class OntologyModel {
         ONTOLOGY_MODEL_MODIFICATION_TRACKER.incModificationCount();
         mappedResourcesCache.clear();
         modelCache.flush();
-    }
-
-    protected OntModel getShaclModel() {
-        return OntologyModelTranslator.getShaclModel();
     }
 
     public OntModel getModel() {
@@ -434,7 +440,7 @@ public class OntologyModel {
 
     public void createStatement(OntClass ontClass, Property property, Resource node) {
         ontClass.addProperty(property, node);
-        modelCache.cache(ontClass, property, node);
+        modelCache.cacheSubjectPredicateObject(ontClass, property, node);
     }
 
     public OntProperty createProperty(String uri) {
@@ -443,7 +449,7 @@ public class OntologyModel {
 
     OntProperty createProperty(String uri, OntModel model) {
         OntProperty property = model.createOntProperty(uri);
-        modelCache.cache(property);
+        modelCache.cacheClass(property);
         return property;
     }
 
@@ -462,7 +468,7 @@ public class OntologyModel {
     public OntClass createClass(String uri, OntModel model, List<OntClass> superClasses) {
         OntClass ontClass = model.createClass(uri);
         superClasses.forEach(ontClass::addSuperClass);
-        modelCache.cache(ontClass);
+        modelCache.cacheClass(ontClass);
         return ontClass;
     }
 
@@ -475,7 +481,7 @@ public class OntologyModel {
         final Individual individual = createIndividual(ontClass, uri);
         NotificationGroupManager.getInstance().getNotificationGroup("Update Ontology")
                 .createNotification(
-                        "Added " + getResourceId(individual) + " as " + OntologyModel.getInstance().toClass(individual),
+                        "Added " + getResourceId(individual) + " as " + toClass(individual),
                         NotificationType.INFORMATION)
                 .setIcon(Icons.PLUGIN_ICON)
                 .notify(project);
@@ -498,7 +504,7 @@ public class OntologyModel {
                 ontClass;
 
         final Individual individual = uri == null ? ontClass.createIndividual() : ontClass.createIndividual(uri);
-        modelCache.cache(individual);
+        modelCache.cacheIndividual(individual);
         return individual;
     }
 

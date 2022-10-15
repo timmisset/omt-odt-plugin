@@ -9,6 +9,9 @@ import com.misset.opp.odt.testcase.ODTTestCase;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Literal;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,10 +20,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ODTResolvableConstantValueStepAbstractTest extends ODTTestCase {
 
-    private static Stream<Arguments> getExpectedLiterals() {
-        OntModel model = initOntologyModel().getModel();
+    @BeforeAll
+    public void setUp() {
+        super.setUp();
+    }
+
+    @AfterAll
+    public void tearDown() {
+        super.tearDown();
+    }
+
+    private Stream<Arguments> getExpectedLiterals() {
+        OntModel model = initOntologyModel(getProject()).getModel();
         return Stream.of(
                 Arguments.of("true", OntologyModelConstants.getXsdBooleanTrue()),
                 Arguments.of("false", OntologyModelConstants.getXsdBooleanFalse()),
@@ -31,7 +45,7 @@ class ODTResolvableConstantValueStepAbstractTest extends ODTTestCase {
         );
     }
 
-    private static Stream<Arguments> getExpectedTypes() {
+    private Stream<Arguments> getExpectedTypes() {
         return Stream.of(
                 Arguments.of("true", OntologyModelConstants.getXsdBooleanInstance()),
                 Arguments.of("false", OntologyModelConstants.getXsdBooleanInstance()),

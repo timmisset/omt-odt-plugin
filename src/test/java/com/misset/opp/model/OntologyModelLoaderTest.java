@@ -1,9 +1,12 @@
 package com.misset.opp.model;
 
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Resource;
 import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -11,7 +14,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-class OntologyModelLoaderTest {
+class OntologyModelLoaderTest extends LightJavaCodeInsightFixtureTestCase {
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
 
     @Test
     void testLoadModel() {
@@ -26,9 +39,9 @@ class OntologyModelLoaderTest {
 
     @Test
     void testLoadModelWithRecursion() {
-        final OntModel ontModel = OntologyModelLoader.getInstance()
-                .read(getRootPath("model-with-recursion", "root.ttl"))
-                .getShaclModel();
+        OntologyModelLoader.getInstance(getProject())
+                .read(getRootPath("model-with-recursion", "root.ttl"));
+        OntModel ontModel = OntologyModelTranslator.getInstance(getProject()).getShaclModel();
         Assertions.assertEquals(1, ontModel.listSubModels().toList().size());
     }
 
@@ -36,14 +49,14 @@ class OntologyModelLoaderTest {
     @Ignore("Add a full ontology to the test folder before enabling this test, not included in the repo")
     void testLoadFullOntology() {
         Assertions.assertDoesNotThrow(() -> {
-            OntologyModelLoader.getInstance()
-                    .read(getRootPath("full-opp-model", "root.ttl"))
-                    .getShaclModel();
+            OntologyModelLoader.getInstance(getProject())
+                    .read(getRootPath("full-opp-model", "root.ttl"));
         });
     }
 
     private OntModel getOntologyModel() {
-        return OntologyModelLoader.getInstance().read(getRootPath()).getShaclModel();
+        OntologyModelLoader.getInstance(getProject()).read(getRootPath());
+        return OntologyModelTranslator.getInstance(getProject()).getShaclModel();
     }
 
     private File getRootPath() {

@@ -69,7 +69,7 @@ class ODTResolvableSignatureArgumentTest extends ODTTestCase {
 
     @Test
     void testTypeFilterDoesntAcceptStrangeType() {
-        initOntologyModel();
+        initOntologyModel(getProject());
         ODTFile odtFile = configureByText("CONTAINS(1)");
         ReadAction.run(() -> {
             ODTSignatureArgument signatureArgument = PsiTreeUtil.findChildOfType(odtFile, ODTSignatureArgument.class, true);

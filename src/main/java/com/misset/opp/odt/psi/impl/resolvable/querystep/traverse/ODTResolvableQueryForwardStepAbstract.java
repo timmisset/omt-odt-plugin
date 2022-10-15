@@ -26,7 +26,7 @@ public abstract class ODTResolvableQueryForwardStepAbstract extends ODTResolvabl
             return Collections.emptySet();
         }
 
-        final OntologyModel model = OntologyModel.getInstance();
+        final OntologyModel model = OntologyModel.getInstance(getProject());
         if (isRootStep()) {
             // when the path start with a root curie, resolve the curie and return it:
             final OntResource resource = model.getOntResource(fullyQualifiedUri, getProject());

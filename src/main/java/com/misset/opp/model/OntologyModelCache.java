@@ -1,7 +1,10 @@
 package com.misset.opp.model;
 
+import com.intellij.openapi.components.Service;
+import com.intellij.openapi.project.Project;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -18,7 +21,16 @@ import java.util.stream.Collectors;
  * - Individual: Instances of ontology classes
  * - OntProperty: Ontology properties used as predicates in rdf statements
  */
-public class OntologyModelCache {
+@Service
+public final class OntologyModelCache {
+
+    public OntologyModelCache() {
+        cacheConstants();
+    }
+
+    public static OntologyModelCache getInstance(Project project) {
+        return project.getService(OntologyModelCache.class);
+    }
 
     /*
      * Cache register
@@ -63,8 +75,9 @@ public class OntologyModelCache {
                 .collect(Collectors.toSet());
     }
 
-    protected void flush() {
+    void flush() {
         cache.forEach(HashMap::clear);
+        cacheConstants();
     }
 
     /*
@@ -73,19 +86,19 @@ public class OntologyModelCache {
     private final HashMap<String, Individual> individualMap = registerCacheEntity(new HashMap<>());
     private final HashMap<String, Set<Individual>> toIndividualsMap = registerCacheEntity(new HashMap<>());
 
-    protected Individual getIndividual(String resourceId) {
+    Individual getIndividual(String resourceId) {
         return individualMap.get(resourceId);
     }
 
-    protected Set<Individual> toIndividuals(String resourceId) {
+    Set<Individual> toIndividuals(String resourceId) {
         return toIndividualsMap.getOrDefault(resourceId, new HashSet<>());
     }
 
-    protected boolean isIndividual(String resourceId) {
+    boolean isIndividual(String resourceId) {
         return getIndividual(resourceId) != null;
     }
 
-    protected void cache(Individual individual) {
+    void cacheIndividual(Individual individual) {
         String resourceId = getResourceId(individual);
         individualMap.put(resourceId, individual);
         toIndividualsMap.put(resourceId, Set.of(individual));
@@ -117,39 +130,39 @@ public class OntologyModelCache {
     private final HashMap<String, Set<OntClass>> subclassDirectMap = registerCacheEntity(new HashMap<>());
     private final HashMap<String, Set<OntClass>> subclassMap = registerCacheEntity(new HashMap<>());
 
-    protected OntClass getClass(String resourceId) {
+    OntClass getClass(String resourceId) {
         return classMap.get(resourceId);
     }
 
-    protected Set<OntClass> getSuperclasses(String resourceId, boolean direct) {
+    Set<OntClass> getSuperclasses(String resourceId, boolean direct) {
         return direct ?
                 superclassDirectMap.getOrDefault(resourceId, new HashSet<>()) :
                 superclassMap.getOrDefault(resourceId, new HashSet<>());
     }
 
-    protected Set<OntClass> getSubclasses(String resourceId, boolean direct) {
+    Set<OntClass> getSubclasses(String resourceId, boolean direct) {
         return direct ?
                 subclassDirectMap.getOrDefault(resourceId, new HashSet<>()) :
                 subclassMap.getOrDefault(resourceId, new HashSet<>());
     }
 
-    protected Set<OntClass> getClasses() {
+    Set<OntClass> getClasses() {
         return new HashSet<>(classMap.values());
     }
 
-    protected OntClass toClass(String resourceId) {
+    OntClass toClass(String resourceId) {
         return toClassMap.get(resourceId);
     }
 
-    protected String toClassId(String resourceId) {
+    String toClassId(String resourceId) {
         return getResourceId(toClassMap.get(resourceId));
     }
 
-    protected boolean isClass(String resourceId) {
+    boolean isClass(String resourceId) {
         return getClass(resourceId) != null;
     }
 
-    protected void cache(OntClass ontClass) {
+    void cacheClass(OntClass ontClass) {
         String resourceId = getResourceId(ontClass);
         classMap.put(resourceId, ontClass);
         toClassMap.put(resourceId, ontClass);
@@ -160,7 +173,7 @@ public class OntologyModelCache {
      * for every OntClass that has been cached while loading the model.
      * This method should be run AFTER the ontology has been fully loaded.
      */
-    protected void cacheClassesTree() {
+    void cacheClassesTree() {
         classMap.values().forEach(ontClass -> {
             String classResourceId = getResourceId(ontClass);
             cacheSuperclasses(classResourceId, ontClass);
@@ -194,7 +207,7 @@ public class OntologyModelCache {
      * Cache the direct superclasses of the provided ontClass. The full list of superclasses
      * will be generated on the fly since it requires the full ontology to be loaded first
      */
-    protected void cacheSuperclasses(String uri, OntClass ontClass) {
+    void cacheSuperclasses(String uri, OntClass ontClass) {
         if (superclassDirectMap.containsKey(uri)) {
             return;
         }
@@ -210,12 +223,12 @@ public class OntologyModelCache {
         subclassMap.put(uri, ontClass.listSubClasses(false).toSet());
     }
 
-    protected Set<OntClass> listSuperclasses(String uri) {
-        return superclassMap.get(uri);
+    Set<OntClass> listSuperclasses(String uri) {
+        return superclassMap.getOrDefault(uri, new HashSet<>());
     }
 
-    protected Set<OntClass> listSubclasses(String uri) {
-        return subclassMap.get(uri);
+    Set<OntClass> listSubclasses(String uri) {
+        return subclassMap.getOrDefault(uri, new HashSet<>());
     }
 
     /*
@@ -223,19 +236,19 @@ public class OntologyModelCache {
      */
     private final HashMap<String, Property> propertyMap = registerCacheEntity(new HashMap<>());
 
-    protected Property getProperty(String uri) {
+    Property getProperty(String uri) {
         return propertyMap.get(uri);
     }
 
-    protected Property getProperty(Resource resource) {
+    Property getProperty(Resource resource) {
         return propertyMap.get(getResourceId(resource));
     }
 
-    protected boolean isProperty(String uri) {
+    boolean isProperty(String uri) {
         return getProperty(uri) != null;
     }
 
-    protected void cache(Property ontProperty) {
+    void cacheClass(Property ontProperty) {
         propertyMap.put(getResourceId(ontProperty), ontProperty);
     }
 
@@ -249,16 +262,16 @@ public class OntologyModelCache {
     private final HashMap<String, Set<String>> subjectPredicateMap = registerCacheEntity(new HashMap<>());
     private final HashMap<String, Set<String>> objectPredicateMap = registerCacheEntity(new HashMap<>());
 
-    protected void cache(OntClass subject, Property predicate, Resource object) {
+    void cacheSubjectPredicateObject(OntClass subject, Property predicate, Resource object) {
         String subjectId = getResourceId(subject);
         String predicateId = getResourceId(predicate);
         String objectId = getResourceId(object);
 
-        cache(subjectId, predicateId, objectId);
-        cache(predicate);
+        cacheSubjectPredicateObjectIds(subjectId, predicateId, objectId);
+        cacheClass(predicate);
     }
 
-    protected void cache(String subjectId, String predicateId, String objectId) {
+    private void cacheSubjectPredicateObjectIds(String subjectId, String predicateId, String objectId) {
         addToSet(subjectId, predicateId, Set.of(objectId), subjectPredicateObjectsMap);
         addToSet(objectId, predicateId, Set.of(subjectId), objectPredicateSubjectsMap);
         addToSet(subjectId, Set.of(predicateId), subjectPredicateMap);
@@ -268,7 +281,7 @@ public class OntologyModelCache {
     /**
      * Returns the predicates available on the provided resource
      */
-    protected Set<Property> listSubjectPredicates(OntResource resource) {
+    Set<Property> listSubjectPredicates(OntResource resource) {
         return subjectPredicateMap.getOrDefault(getResourceId(resource), new HashSet<>())
                 .stream()
                 .map(this::getProperty)
@@ -276,15 +289,15 @@ public class OntologyModelCache {
                 .collect(Collectors.toSet());
     }
 
-    protected Set<OntResource> listSubjects(Property predicate,
-                                            OntResource object) {
+    Set<OntResource> listSubjects(Property predicate,
+                                  OntResource object) {
         return getResources(objectPredicateSubjectsMap
                 .getOrDefault(toClassId(getResourceId(object)), new HashMap<>())
                 .getOrDefault(getResourceId(predicate), new HashSet<>()));
     }
 
-    protected Set<OntResource> listObjects(Property predicate,
-                                           OntResource subject) {
+    Set<OntResource> listObjects(Property predicate,
+                                 OntResource subject) {
         return getResources(subjectPredicateObjectsMap
                 .getOrDefault(toClassId(getResourceId(subject)), new HashMap<>())
                 .getOrDefault(getResourceId(predicate), new HashSet<>()));
@@ -293,7 +306,7 @@ public class OntologyModelCache {
     /**
      * Returns the predicates that point to the provided resource
      */
-    protected Set<Property> listObjectPredicates(OntResource resource) {
+    Set<Property> listObjectPredicates(OntResource resource) {
         return objectPredicateMap.getOrDefault(getResourceId(resource), new HashSet<>())
                 .stream()
                 .map(this::getProperty)
@@ -305,7 +318,7 @@ public class OntologyModelCache {
      * If only a single resource contains the given property, it will return that resource
      * if zero or more than 1 contain property, it will return null
      */
-    protected OntResource getUnambigiousResource(Property property) {
+    OntResource getUnambigiousResource(Property property) {
         List<OntResource> resources = subjectPredicateMap.entrySet()
                 .stream().filter(
                         stringSetEntry -> stringSetEntry.getValue().contains(getResourceId(property))
@@ -321,5 +334,12 @@ public class OntologyModelCache {
 
     public Set<Individual> getIndividuals() {
         return new HashSet<>(individualMap.values());
+    }
+
+    private void cacheConstants() {
+        OntModel ontModel = OntologyModelConstants.getOntModel();
+        ontModel.listClasses().forEach(this::cacheClass);
+        ontModel.listIndividuals().forEach(this::cacheIndividual);
+        ontModel.listOntProperties().forEach(this::cacheClass);
     }
 }

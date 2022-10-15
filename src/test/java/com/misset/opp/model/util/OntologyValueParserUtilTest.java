@@ -1,7 +1,6 @@
-package com.misset.opp.ttl.util;
+package com.misset.opp.model.util;
 
 import com.misset.opp.model.OntologyModelConstants;
-import com.misset.opp.model.util.OntologyValueParserUtil;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.junit.jupiter.params.ParameterizedTest;

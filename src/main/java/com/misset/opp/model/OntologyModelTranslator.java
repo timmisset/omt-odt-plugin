@@ -1,57 +1,59 @@
 package com.misset.opp.model;
 
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class OntologyModelTranslator {
+@Service
+public final class OntologyModelTranslator {
 
     private static final Logger logger = Logger.getInstance(OntologyModelTranslator.class);
-    private static OntologyModel ontologyModel;
-    private static OntologyModelCache modelCache;
+    // contains information from the SHACL model about the cardinality of the predicates
+    private final HashMap<OntClass, List<Property>> required = new HashMap<>();
+    private final HashMap<OntClass, List<Property>> singles = new HashMap<>();
+    private final HashMap<OntClass, List<Property>> multiple = new HashMap<>();
+    private OntologyModel ontologyModel;
+    private OntologyModelCache modelCache;
+    private OntModel shaclModel;
 
-    private OntologyModelTranslator() {
-        // empty constructor
+    public static OntologyModelTranslator getInstance(@NotNull Project project) {
+        return project.getService(OntologyModelTranslator.class);
     }
 
-    // contains information from the SHACL model about the cardinality of the predicates
-    private static final HashMap<OntClass, List<Property>> required = new HashMap<>();
-    private static final HashMap<OntClass, List<Property>> singles = new HashMap<>();
-    private static final HashMap<OntClass, List<Property>> multiple = new HashMap<>();
-
-    private static OntModel shaclModel;
-
-    static void loadSimpleModel(OntologyModel model,
-                                OntologyModelCache ontologyModelCache,
-                                OntModel ontologyModel, OntModel shaclModel) {
+    void loadSimpleModel(OntologyModel model,
+                         OntologyModelCache ontologyModelCache,
+                         OntModel ontologyModel, OntModel shaclModel) {
         flush();
-        OntologyModelTranslator.ontologyModel = model;
-        OntologyModelTranslator.modelCache = ontologyModelCache;
-        OntologyModelTranslator.shaclModel = shaclModel;
+        this.ontologyModel = model;
+        this.modelCache = ontologyModelCache;
+        this.shaclModel = shaclModel;
         listShaclClasses().forEach(ontClass -> loadSimpleModelClass(ontologyModel, ontClass));
         listShaclIndividuals(ontologyModel).forEach(individual -> loadSimpleModelIndividual(ontologyModel, individual));
         listGraphshapes().forEach(resource -> loadGraphShapes(ontologyModel, resource));
     }
 
-    private static void flush() {
+    private void flush() {
         required.clear();
         singles.clear();
         multiple.clear();
     }
 
-    private static Set<OntClass> listShaclClasses() {
+    private Set<OntClass> listShaclClasses() {
         return shaclModel
                 .listSubjectsWithProperty(OntologyModelConstants.getRdfType(), OntologyModelConstants.getOwlClass())
                 .mapWith(resource -> shaclModel.createClass(resource.getURI()))
                 .toSet();
     }
 
-    private static Set<Individual> listShaclIndividuals(OntModel ontologyModel) {
+    private Set<Individual> listShaclIndividuals(OntModel ontologyModel) {
         return shaclModel
                 .listStatements()
                 .filterKeep(statement -> statement.getPredicate()
@@ -61,7 +63,7 @@ public class OntologyModelTranslator {
                 .toSet();
     }
 
-    private static Set<Resource> listGraphshapes() {
+    private Set<Resource> listGraphshapes() {
         return shaclModel
                 .listStatements()
                 .filterKeep(statement -> statement.getPredicate().equals(OntologyModelConstants.getRdfType()) && statement.getObject()
@@ -70,9 +72,9 @@ public class OntologyModelTranslator {
                 .toSet();
     }
 
-    private static void loadSimpleModelClass(OntModel ontologyModel, OntClass ontClass) {
+    private void loadSimpleModelClass(OntModel ontModel, OntClass ontClass) {
         // create a simple class instance and inherit the superclass(es)
-        final OntClass simpleModelClass = OntologyModelTranslator.ontologyModel.createClass(ontClass.getURI(), ontologyModel);
+        final OntClass simpleModelClass = ontologyModel.createClass(ontClass.getURI(), ontModel);
         // create one individual per class, this is used as a mock when traversing the paths
         // and discriminate between classes and instances of the class being visited.
         final List<Statement> superClasses = ontClass.listProperties(OntologyModelConstants.getRdfsSubclassOf()).toList();
@@ -88,18 +90,18 @@ public class OntologyModelTranslator {
                 .mapWith(Statement::getObject)
                 .mapWith(RDFNode::asResource)
                 .filterKeep(resource -> resource.getProperty(OntologyModelConstants.getRdfType()).getObject().equals(OntologyModelConstants.getShaclProperyshape()))
-                .forEach(shaclPropertyShape -> getSimpleResourceStatement(ontologyModel, simpleModelClass, shaclPropertyShape));
+                .forEach(shaclPropertyShape -> getSimpleResourceStatement(ontModel, simpleModelClass, shaclPropertyShape));
 
-        modelCache.cache(simpleModelClass);
+        modelCache.cacheClass(simpleModelClass);
 
-        OntologyModelTranslator.ontologyModel.createIndividual(simpleModelClass, simpleModelClass.getURI() + "_INSTANCE");
+        ontologyModel.createIndividual(simpleModelClass, simpleModelClass.getURI() + "_INSTANCE");
     }
 
-    private static void loadSimpleModelIndividual(OntModel ontologyModel, Individual individual) {
+    private void loadSimpleModelIndividual(OntModel ontModel, Individual individual) {
         try {
-            if (ontologyModel.getOntResource(individual.getURI()) == null) {
-                OntologyModelTranslator.ontologyModel.createIndividual(individual.getOntClass(), individual.getURI());
-                ontologyModel.add(individual.listProperties());
+            if (ontModel.getOntResource(individual.getURI()) == null) {
+                ontologyModel.createIndividual(individual.getOntClass(), individual.getURI());
+                ontModel.add(individual.listProperties());
             }
         } catch (ConversionException conversionException) {
             // do nothing, there might be an input issue in the ontology or some other reason
@@ -109,15 +111,15 @@ public class OntologyModelTranslator {
         }
     }
 
-    private static void loadGraphShapes(OntModel ontologyModel, Resource resource) {
-        if (ontologyModel.getOntResource(resource.getURI()) == null) {
-            OntologyModelTranslator.ontologyModel.createIndividual(OntologyModelConstants.getGraphShape(), resource.getURI());
+    private void loadGraphShapes(OntModel ontModel, Resource resource) {
+        if (ontModel.getOntResource(resource.getURI()) == null) {
+            ontologyModel.createIndividual(OntologyModelConstants.getGraphShape(), resource.getURI());
         }
     }
 
-    private static void getSimpleResourceStatement(OntModel ontologyModel,
-                                                   OntClass subject,
-                                                   Resource shaclPropertyShape) {
+    private void getSimpleResourceStatement(OntModel ontologyModel,
+                                            OntClass subject,
+                                            Resource shaclPropertyShape) {
         if (!shaclPropertyShape.hasProperty(OntologyModelConstants.getShaclPath())) {
             return;
         }
@@ -134,7 +136,7 @@ public class OntologyModelTranslator {
             return;
         }
         subject.addProperty(predicate, object);
-        modelCache.cache(subject, predicate, object.asResource());
+        modelCache.cacheSubjectPredicateObject(subject, predicate, object.asResource());
 
         // cardinality:
         int min = getShaclPropertyInteger(shaclPropertyShape, OntologyModelConstants.getShaclMincount());
@@ -149,7 +151,7 @@ public class OntologyModelTranslator {
         }
     }
 
-    private static RDFNode getObjectDefinition(Resource shaclPropertyShape) {
+    private RDFNode getObjectDefinition(Resource shaclPropertyShape) {
         if (shaclPropertyShape.hasProperty(OntologyModelConstants.getShaclClass())) {
             return shaclPropertyShape.getProperty(OntologyModelConstants.getShaclClass()).getObject();
         } else if (shaclPropertyShape.hasProperty(OntologyModelConstants.getShaclDatatype())) {
@@ -158,16 +160,16 @@ public class OntologyModelTranslator {
         return null;
     }
 
-    private static void addToMapCollection(HashMap<OntClass, List<Property>> map,
-                                           OntClass subject,
-                                           Property property) {
+    private void addToMapCollection(HashMap<OntClass, List<Property>> map,
+                                    OntClass subject,
+                                    Property property) {
         final List<Property> propertyList = map.getOrDefault(subject, new ArrayList<>());
         propertyList.add(property);
         map.put(subject, propertyList);
     }
 
-    private static int getShaclPropertyInteger(Resource shape,
-                                               Property property) {
+    private int getShaclPropertyInteger(Resource shape,
+                                        Property property) {
         if (shape.hasProperty(property)) {
             try {
                 // catch any wrong usage of the model, not our job to fix that
@@ -179,43 +181,43 @@ public class OntologyModelTranslator {
         return 0;
     }
 
-    public static OntModel getShaclModel() {
+    public OntModel getShaclModel() {
         return shaclModel;
     }
 
-    public static boolean isMultiple(Set<OntResource> resources,
-                                     Property property) {
+    public boolean isMultiple(Set<OntResource> resources,
+                              Property property) {
         return resources.stream().anyMatch(resource -> isMultiple(resource, property));
     }
 
-    public static boolean isMultiple(OntResource resource,
-                                     Property property) {
+    public boolean isMultiple(OntResource resource,
+                              Property property) {
         return isCardinality(multiple, ontologyModel.toClass(resource), property);
     }
 
-    public static boolean isSingleton(Set<OntResource> resources,
-                                      Property property) {
+    public boolean isSingleton(Set<OntResource> resources,
+                               Property property) {
         return resources.stream().anyMatch(resource -> isSingleton(resource, property));
     }
 
-    public static boolean isSingleton(OntResource resource,
-                                      Property property) {
+    public boolean isSingleton(OntResource resource,
+                               Property property) {
         return isCardinality(singles, ontologyModel.toClass(resource), property);
     }
 
-    public static boolean isRequired(Set<OntResource> resources,
-                                     Property property) {
+    public boolean isRequired(Set<OntResource> resources,
+                              Property property) {
         return resources.stream().anyMatch(resource -> isRequired(resource, property));
     }
 
-    public static boolean isRequired(OntResource resource,
-                                     Property property) {
+    public boolean isRequired(OntResource resource,
+                              Property property) {
         return isCardinality(required, ontologyModel.toClass(resource), property);
     }
 
-    private static boolean isCardinality(Map<OntClass, List<Property>> map,
-                                         OntClass ontClass,
-                                         Property property) {
+    private boolean isCardinality(Map<OntClass, List<Property>> map,
+                                  OntClass ontClass,
+                                  Property property) {
         if (ontClass == null) {
             return false;
         }

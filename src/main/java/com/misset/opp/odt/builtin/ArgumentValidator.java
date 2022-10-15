@@ -18,7 +18,7 @@ public class ArgumentValidator {
                                                   PsiCall call,
                                                   ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            OntologyValidationUtil.validateNamedGraph(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.getInstance(call.getProject()).validateNamedGraph(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -28,7 +28,7 @@ public class ArgumentValidator {
                                                  PsiCall call,
                                                  ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            OntologyValidationUtil.validateInstances(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.getInstance(call.getProject()).validateInstances(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -38,7 +38,7 @@ public class ArgumentValidator {
                                                   PsiCall call,
                                                   ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            return OntologyValidationUtil.validateBoolean(call.resolveSignatureArgument(index),
+            return OntologyValidationUtil.getInstance(call.getProject()).validateBoolean(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -49,7 +49,7 @@ public class ArgumentValidator {
                                               PsiCall call,
                                               ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            OntologyValidationUtil.validateNumber(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.getInstance(call.getProject()).validateNumber(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -59,7 +59,7 @@ public class ArgumentValidator {
                                                PsiCall call,
                                                ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            OntologyValidationUtil.validateInteger(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.getInstance(call.getProject()).validateInteger(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -69,7 +69,7 @@ public class ArgumentValidator {
                                             PsiCall call,
                                             ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            OntologyValidationUtil.validateJSON(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.getInstance(call.getProject()).validateJSON(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -79,7 +79,7 @@ public class ArgumentValidator {
                                               PsiCall call,
                                               ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            OntologyValidationUtil.validateString(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.getInstance(call.getProject()).validateString(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -89,7 +89,7 @@ public class ArgumentValidator {
                                                  PsiCall call,
                                                  ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            OntologyValidationUtil.validateClassName(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.getInstance(call.getProject()).validateClassName(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -99,7 +99,7 @@ public class ArgumentValidator {
                                                   PsiCall call,
                                                   ProblemsHolder holder) {
         if (call.getNumberOfArguments() >= index) {
-            OntologyValidationUtil.validateGraphShape(call.resolveSignatureArgument(index),
+            OntologyValidationUtil.getInstance(call.getProject()).validateGraphShape(call.resolveSignatureArgument(index),
                     holder,
                     call.getCallSignatureArgumentElement(index));
         }
@@ -118,13 +118,13 @@ public class ArgumentValidator {
     public static void validateAllArgumentsCompatible(PsiCall call,
                                                       ProblemsHolder holder) {
         if (call.getNumberOfArguments() == 1) {
-            OntologyValidationUtil.validateCompatibleTypes(
+            OntologyValidationUtil.getInstance(call.getProject()).validateCompatibleTypes(
                     call.resolvePreviousStep(), call.resolveSignatureArgument(0),
                     holder, call);
         } else if (call.getNumberOfArguments() >= 2) {
             Set<OntResource> ontResources = call.resolveSignatureArgument(0);
             for (int i = 1; i < call.getNumberOfArguments(); i++) {
-                OntologyValidationUtil.validateCompatibleTypes(
+                OntologyValidationUtil.getInstance(call.getProject()).validateCompatibleTypes(
                         ontResources, call.resolveSignatureArgument(i),
                         holder, call.getCallSignatureElement());
             }
