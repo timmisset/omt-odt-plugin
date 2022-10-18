@@ -72,7 +72,11 @@ public abstract class ODTResolvableQualifiedUriStepAbstract extends ODTResolvabl
 
     @Override
     public String getDocumentation(Project project) {
-        return ODTUriStepDocumentationUtil.getInstance(getProject()).getDocumentation(this);
+        ODTUriStepDocumentationUtil documentationUtil = ODTUriStepDocumentationUtil.getInstance(project);
+        if (documentationUtil == null) {
+            return "no documentation found";
+        }
+        return documentationUtil.getDocumentation(this);
     }
 
     private void inspectIri(ProblemsHolder holder) {
