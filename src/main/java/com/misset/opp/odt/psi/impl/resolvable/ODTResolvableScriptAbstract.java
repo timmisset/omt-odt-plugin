@@ -9,6 +9,7 @@ import com.misset.opp.resolvable.Resolvable;
 import com.misset.opp.resolvable.psi.PsiResolvable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public abstract class ODTResolvableScriptAbstract extends ODTResolvableAbstract 
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Context context) {
+    public @NotNull Set<OntResource> resolve(@Nullable Context context) {
         return Optional.ofNullable(PsiTreeUtil.findChildOfType(this, PsiResolvable.class))
                 .map(psiResolvable -> psiResolvable.resolve(context))
                 .orElse(Collections.emptySet());

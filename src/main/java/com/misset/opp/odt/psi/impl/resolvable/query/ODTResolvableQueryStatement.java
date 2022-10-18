@@ -8,6 +8,7 @@ import com.misset.opp.resolvable.Context;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -23,7 +24,7 @@ public abstract class ODTResolvableQueryStatement extends ODTResolvableAbstract 
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Context context) {
+    public @NotNull Set<OntResource> resolve(@Nullable Context context) {
         return getQuery().resolve(context);
     }
 

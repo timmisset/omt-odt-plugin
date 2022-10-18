@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
 import java.util.*;
@@ -24,7 +25,7 @@ public interface OMTMetaCallable {
     /**
      * Resolve the call with a base set of resource and the call with parameters
      */
-    Set<OntResource> resolve(YAMLMapping mapping, Context context);
+    Set<OntResource> resolve(YAMLMapping mapping, @Nullable Context context);
 
     boolean isVoid(YAMLMapping mapping);
 

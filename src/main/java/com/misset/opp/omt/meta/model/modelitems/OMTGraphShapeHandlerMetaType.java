@@ -9,6 +9,7 @@ import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.meta.model.YamlStringType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
@@ -57,7 +58,7 @@ public class OMTGraphShapeHandlerMetaType extends OMTParameterizedModelItemMetaT
     }
 
     @Override
-    public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
+    public Set<OntResource> resolve(YAMLMapping mapping, @Nullable Context context) {
         return Collections.emptySet();
     }
 

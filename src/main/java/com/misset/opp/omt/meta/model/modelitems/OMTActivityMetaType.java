@@ -32,6 +32,7 @@ import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -134,7 +135,7 @@ public class OMTActivityMetaType extends OMTParameterizedModelItemMetaType imple
     }
 
     @Override
-    public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
+    public Set<OntResource> resolve(YAMLMapping mapping, @Nullable Context context) {
         if (isVoid(mapping)) {
             return Collections.emptySet();
         } else {
