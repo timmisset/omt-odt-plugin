@@ -18,6 +18,7 @@ import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -34,7 +35,7 @@ public abstract class ODTResolvableQueryPathAbstract extends ODTResolvableQueryA
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Context context) {
+    public @NotNull Set<OntResource> resolve(@Nullable Context context) {
         return Optional.ofNullable(getLastOperation())
                 .map(lastStep -> lastStep.resolve(context))
                 .orElse(Collections.emptySet());

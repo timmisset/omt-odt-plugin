@@ -13,6 +13,7 @@ import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import com.misset.opp.resolvable.psi.PsiCall;
 import org.apache.jena.ontology.OntResource;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.meta.model.YamlStringType;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -78,7 +79,7 @@ public class OMTLoadableMetaType extends OMTModelItemDelegateMetaType implements
     }
 
     @Override
-    public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
+    public Set<OntResource> resolve(YAMLMapping mapping, @Nullable Context context) {
         return Set.of(OntologyModelConstants.getJsonObject());
     }
 

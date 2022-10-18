@@ -60,12 +60,15 @@ public abstract class AbstractBuiltin implements Callable {
     }
 
     @Override
-    public final @NotNull Set<OntResource> resolve(Context context) {
+    public final @NotNull Set<OntResource> resolve(@Nullable Context context) {
         if (isVoid()) {
             return Collections.singleton(OntologyModelConstants.getVoidResponse());
         }
         if (hasFixedReturnType()) {
             return resolve();
+        }
+        if (context == null) {
+            return Collections.emptySet();
         }
         PsiCall call = context.getCall();
         Set<OntResource> inputResources = call.resolvePreviousStep();

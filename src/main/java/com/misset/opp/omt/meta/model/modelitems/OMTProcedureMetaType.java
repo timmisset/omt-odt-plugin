@@ -27,6 +27,7 @@ import com.misset.opp.resolvable.psi.PsiPrefix;
 import com.misset.opp.resolvable.psi.PsiVariable;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.model.YamlMetaType;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
@@ -107,7 +108,7 @@ public class OMTProcedureMetaType extends OMTParameterizedModelItemMetaType impl
     }
 
     @Override
-    public Set<OntResource> resolve(YAMLMapping mapping, Context context) {
+    public Set<OntResource> resolve(YAMLMapping mapping, @Nullable Context context) {
         if (Boolean.TRUE.equals(UNRESOLVABLE.get(mapping, false)) && UNRESOLVABLE_TIMESTAMP.get(mapping, -1L).equals(
                 mapping.getContainingFile().getModificationStamp())) {
             return Collections.emptySet();

@@ -11,6 +11,7 @@ import com.misset.opp.resolvable.Callable;
 import com.misset.opp.resolvable.Context;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
@@ -105,7 +106,7 @@ public abstract class ODTCallCompletion extends CompletionContributor {
                                 @NotNull CompletionResultSet result,
                                 Predicate<Set<OntResource>> typeFilter,
                                 Predicate<Set<OntResource>> precedingFilter,
-                                Context context,
+                                @Nullable Context context,
                                 Project project) {
         Predicate<Callable> callableFilter = selectionFilter;
         SharedProcessingContext sharedProcessingContext = sharedContext.get();

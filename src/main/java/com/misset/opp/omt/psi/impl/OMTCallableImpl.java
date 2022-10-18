@@ -140,7 +140,7 @@ public class OMTCallableImpl extends PsiCallableImpl implements Callable {
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Context context) {
+    public @NotNull Set<OntResource> resolve(@Nullable Context context) {
         if (isVoid()) {
             return Collections.singleton(OntologyModelConstants.getVoidResponse());
         }

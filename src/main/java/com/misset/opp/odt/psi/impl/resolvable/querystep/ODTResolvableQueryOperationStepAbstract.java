@@ -198,7 +198,7 @@ public abstract class ODTResolvableQueryOperationStepAbstract extends ODTResolva
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Context context) {
+    public @NotNull Set<OntResource> resolve(@Nullable Context context) {
         return LoggerUtil.computeWithLogger(LOGGER, "Resolving with resources: " + getText(),
                 () -> Optional.ofNullable(getQueryStep())
                         .map(queryStep -> queryStep.resolve(context))

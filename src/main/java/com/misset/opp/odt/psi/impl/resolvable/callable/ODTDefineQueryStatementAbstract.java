@@ -8,6 +8,7 @@ import com.misset.opp.resolvable.CallableType;
 import com.misset.opp.resolvable.Context;
 import org.apache.jena.ontology.OntResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -40,9 +41,9 @@ public abstract class ODTDefineQueryStatementAbstract extends ODTDefineStatement
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Context context) {
+    public @NotNull Set<OntResource> resolve(@Nullable Context context) {
         PsiFile containingFile = getContainingFile();
-        if (containingFile == null) {
+        if (containingFile == null || context == null) {
             return Collections.emptySet();
         }
 

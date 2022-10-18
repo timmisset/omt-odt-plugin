@@ -19,6 +19,7 @@ import com.misset.opp.resolvable.psi.PsiReferencedElement;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.rdf.model.Literal;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.impl.YAMLPlainTextImpl;
@@ -142,7 +143,7 @@ public class OMTYamlImportMemberDelegate extends OMTYamlPlainTextDelegateAbstrac
     }
 
     @Override
-    public @NotNull Set<OntResource> resolve(Context context) {
+    public @NotNull Set<OntResource> resolve(@Nullable Context context) {
         return computeFromCallable(callable -> callable.resolve(context), Collections.emptySet());
     }
 
