@@ -27,6 +27,7 @@ public class BuiltinCommands {
         addCommand(ForEachCommand.INSTANCE);
         addCommand(ForkJoinCommand.INSTANCE);
         addCommand(GuidCommand.INSTANCE);
+        addCommand(HttpCallCommandDelete.INSTANCE);
         addCommand(HttpCallCommandGet.INSTANCE);
         addCommand(HttpCallCommandPost.INSTANCE);
         addCommand(HttpCallCommandPut.INSTANCE);

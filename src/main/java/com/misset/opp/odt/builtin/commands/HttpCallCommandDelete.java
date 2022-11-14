@@ -2,20 +2,15 @@ package com.misset.opp.odt.builtin.commands;
 
 import java.util.List;
 
-public class HttpCallCommandGet extends BuiltInHttpCommand {
+public class HttpCallCommandDelete extends HttpCallCommandGet {
 
+    public static final HttpCallCommandDelete INSTANCE = new HttpCallCommandDelete();
     private static final List<String> PARAMETER_NAMES = List.of("url", "queryParams", "throwsOnError", "headers");
-
-    protected HttpCallCommandGet() {
-    }
-
-    public static final HttpCallCommandGet INSTANCE = new HttpCallCommandGet();
 
     @Override
     public String getName() {
-        return "HTTP_GET";
+        return "HTTP_DELETE";
     }
-
 
     @Override
     protected List<String> getParameters() {

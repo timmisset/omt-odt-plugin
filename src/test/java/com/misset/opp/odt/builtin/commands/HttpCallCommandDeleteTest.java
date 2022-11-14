@@ -9,52 +9,52 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-class HttpCallCommandGetTest extends BaseBuiltinTest {
+class HttpCallCommandDeleteTest extends BaseBuiltinTest {
 
     @Override
     @Test
     protected void testResolve() {
-        assertReturns(HttpCallCommandGet.INSTANCE, OntologyModelConstants.getJsonObject());
+        assertReturns(HttpCallCommandDelete.INSTANCE, OntologyModelConstants.getJsonObject());
     }
 
     @Test
     void testName() {
-        Assertions.assertEquals("HTTP_GET", HttpCallCommandGet.INSTANCE.getName());
+        Assertions.assertEquals("HTTP_DELETE", HttpCallCommandDelete.INSTANCE.getName());
     }
 
     @Test
     void testIsVoidReturnsFalse() {
-        Assertions.assertFalse(HttpCallCommandGet.INSTANCE.isVoid());
+        Assertions.assertFalse(HttpCallCommandDelete.INSTANCE.isVoid());
     }
 
     @Test
     void testNumberOfArguments() {
-        Assertions.assertEquals(1, HttpCallCommandGet.INSTANCE.minNumberOfArguments());
-        Assertions.assertEquals(4, HttpCallCommandGet.INSTANCE.maxNumberOfArguments());
+        Assertions.assertEquals(1, HttpCallCommandDelete.INSTANCE.minNumberOfArguments());
+        Assertions.assertEquals(4, HttpCallCommandDelete.INSTANCE.maxNumberOfArguments());
     }
 
     @Test
     void testReturnsSecondArgument() {
-        final Set<OntResource> secondReturnArgument = HttpCallCommandGet.INSTANCE.getSecondReturnArgument();
+        final Set<OntResource> secondReturnArgument = HttpCallCommandDelete.INSTANCE.getSecondReturnArgument();
         Assertions.assertEquals(1, secondReturnArgument.size());
         Assertions.assertTrue(secondReturnArgument.contains(OntologyModelConstants.getXsdIntegerInstance()));
     }
 
     @Test
     void testArgumentTypes() {
-        testArgument(HttpCallCommandGet.INSTANCE,
+        testArgument(HttpCallCommandDelete.INSTANCE,
                 0,
                 OntologyModelConstants.getXsdStringInstance(),
                 OntologyValidationUtil.ERROR_MESSAGE_STRING);
-        testArgument(HttpCallCommandGet.INSTANCE,
+        testArgument(HttpCallCommandDelete.INSTANCE,
                 1,
                 OntologyModelConstants.getJsonObject(),
                 OntologyValidationUtil.ERROR_MESSAGE_JSON);
-        testArgument(HttpCallCommandGet.INSTANCE,
+        testArgument(HttpCallCommandDelete.INSTANCE,
                 2,
                 OntologyModelConstants.getXsdBooleanInstance(),
                 OntologyValidationUtil.ERROR_MESSAGE_BOOLEAN);
-        testArgument(HttpCallCommandGet.INSTANCE,
+        testArgument(HttpCallCommandDelete.INSTANCE,
                 3,
                 OntologyModelConstants.getJsonObject(),
                 OntologyValidationUtil.ERROR_MESSAGE_JSON);
@@ -62,10 +62,10 @@ class HttpCallCommandGetTest extends BaseBuiltinTest {
 
     @Test
     void testGetAcceptableArgumentType() {
-        assertGetAcceptableArgumentType(HttpCallCommandGet.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance());
-        assertGetAcceptableArgumentType(HttpCallCommandGet.INSTANCE, 1, OntologyModelConstants.getJsonObject());
-        assertGetAcceptableArgumentType(HttpCallCommandGet.INSTANCE, 2, OntologyModelConstants.getXsdBooleanInstance());
-        assertGetAcceptableArgumentType(HttpCallCommandGet.INSTANCE, 3, OntologyModelConstants.getJsonObject());
-        assertGetAcceptableArgumentTypeIsNull(HttpCallCommandGet.INSTANCE, 4);
+        assertGetAcceptableArgumentType(HttpCallCommandDelete.INSTANCE, 0, OntologyModelConstants.getXsdStringInstance());
+        assertGetAcceptableArgumentType(HttpCallCommandDelete.INSTANCE, 1, OntologyModelConstants.getJsonObject());
+        assertGetAcceptableArgumentType(HttpCallCommandDelete.INSTANCE, 2, OntologyModelConstants.getXsdBooleanInstance());
+        assertGetAcceptableArgumentType(HttpCallCommandDelete.INSTANCE, 3, OntologyModelConstants.getJsonObject());
+        assertGetAcceptableArgumentTypeIsNull(HttpCallCommandDelete.INSTANCE, 4);
     }
 }
