@@ -11,6 +11,8 @@ import com.misset.opp.omt.psi.impl.yaml.YAMLOMTScalarList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLParserDefinition;
 
+import static org.jetbrains.yaml.YAMLElementTypes.*;
+
 /**
  * Little hack to hook into the YAML element creation
  * All OMT elements are part of the YAML + OMT language. However, the ParserDefinition selecting
