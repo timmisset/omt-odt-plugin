@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.33'
+version '5.33.1'
 
 sourceCompatibility = 17
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,10 +59,8 @@ patchPluginXml {
     sinceBuild = '223'
 
     changeNotes = """
-        <h1>Update 5.33</h1>
-        Upgraded plugin to IntelliJ 2022.3<br>
-        Upgraded IntelliJ-Gradle plugin to 1.10.0<br>
-        Upgraded to JDK17<br>
+        <h1>Update 5.33.1</h1>
+        See <a href="https://github.com/timmisset/omt-odt-plugin/issues?q=is%3Aissue+milestone%3A5.33.1+is%3Aclosed">milestone 5.33.1</a>
         """
 }
 tasks {
