@@ -44,7 +44,14 @@ public class OMTODTFragment extends ODTFileImpl implements ODTFile {
             Function<? super T, ?> keyExtractor) {
 
         Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+        return t -> {
+            Object key = keyExtractor.apply(t);
+            if (key != null) {
+                return seen.putIfAbsent(key, Boolean.TRUE) == null;
+            } else {
+                return false;
+            }
+        };
     }
 
     @Override
