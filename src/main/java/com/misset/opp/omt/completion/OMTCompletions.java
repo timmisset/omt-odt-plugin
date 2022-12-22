@@ -7,6 +7,7 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.misset.opp.omt.meta.OMTMetaTypeProvider;
+import com.misset.opp.omt.psi.OMTFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.meta.impl.YamlMetaTypeCompletionProviderBase;
@@ -64,9 +65,11 @@ public class OMTCompletions extends CompletionContributor {
         protected void addCompletions(@NotNull CompletionParameters params,
                                       @NotNull ProcessingContext context,
                                       @NotNull CompletionResultSet result) {
-            OMTCompletions.registerCompletionParameters(params);
-            super.addCompletions(params, context, result);
-            OMTCompletions.removeCompletionParameters(params);
+            if (params.getOriginalFile() instanceof OMTFile) {
+                OMTCompletions.registerCompletionParameters(params);
+                super.addCompletions(params, context, result);
+                OMTCompletions.removeCompletionParameters(params);
+            }
         }
 
     }

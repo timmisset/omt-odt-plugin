@@ -47,7 +47,8 @@ public class OMTParameterShorthandTypeCompletion extends CompletionContributor {
                 // check if the token is between the parenthesis of the text:
                 // $someVariable <caret>(ont:Type)  ==> false
                 // $someVariable (<caret>ont:Type)  ==> true
-                if (ENCAPSULATED_TOKEN.matcher(parameters.getPosition().getText()).find()) {
+                if (parameters.getOriginalFile() instanceof OMTFile &&
+                        ENCAPSULATED_TOKEN.matcher(parameters.getPosition().getText()).find()) {
                     Matcher matcher = PREFIX_MATCHER.matcher(parameters.getPosition().getText());
                     String prefixMatcher = matcher.find() ? matcher.group(1) : "";
                     addClassCompletions(parameters, result.withPrefixMatcher(prefixMatcher));
