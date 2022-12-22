@@ -13,12 +13,14 @@ import com.misset.opp.omt.psi.OMTFile;
 import com.misset.opp.omt.testcase.OMTTestCase;
 import com.misset.opp.resolvable.psi.PsiCallable;
 import org.jetbrains.yaml.psi.YAMLScalarList;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 class OMTODTFragmentTest extends OMTTestCase {
     @Test
@@ -76,6 +78,21 @@ class OMTODTFragmentTest extends OMTTestCase {
         });
     }
 
+    @Test
+    void testDistinctByKeyIsNullSafe() {
+        Predicate<Object> objectPredicate = OMTODTFragment.distinctByKey(o -> null);
+        boolean test = objectPredicate.test(new Object());
+        Assertions.assertFalse(test);
+    }
+
+    @Test
+    void testDistinctByKeyIsValidatesOnlyFirst() {
+        Predicate<Object> objectPredicate = OMTODTFragment.distinctByKey(o -> "value");
+        Object o = new Object();
+        Assertions.assertTrue(objectPredicate.test(o));
+        Assertions.assertFalse(objectPredicate.test(o));
+    }
+
     private OMTODTFragment getInjectedFragment(OMTFile omtFile) {
         PsiLanguageInjectionHost childOfType = PsiTreeUtil.findChildOfType(omtFile, YAMLScalarList.class);
         List<Pair<PsiElement, TextRange>> injectedPsiFiles = InjectedLanguageManager.getInstance(getProject()).getInjectedPsiFiles(childOfType);
@@ -83,4 +100,5 @@ class OMTODTFragmentTest extends OMTTestCase {
         assertTrue(injectedFragment instanceof OMTODTFragment);
         return (OMTODTFragment) injectedFragment;
     }
+
 }
