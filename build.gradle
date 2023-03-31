@@ -5,7 +5,7 @@ plugins {
 }
 
 intellij {
-    version = '2022.3'
+    version = '2023.1'
     type = 'IU'
     plugins = [
             'java',
@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.33.1'
+version '5.34'
 
 sourceCompatibility = 17
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -39,7 +39,7 @@ test {
     useJUnitPlatform {
 
     }
-    systemProperty "idea.home.path", "C:/Program Files/JetBrains/IntelliJ IDEA 2022.3"
+    systemProperty "idea.home.path", "C:/Program Files/JetBrains/IntelliJ IDEA 2023.1"
 }
 jacocoTestReport {
     // due to the unpredictability of the IntelliJ Platform, unit tests should not be considered part of the coverage
@@ -56,11 +56,11 @@ buildSearchableOptions.enabled = false
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 
 patchPluginXml {
-    sinceBuild = '223'
+    sinceBuild = '231'
 
     changeNotes = """
-        <h1>Update 5.33.1</h1>
-        See <a href="https://github.com/timmisset/omt-odt-plugin/issues?q=is%3Aissue+milestone%3A5.33.1+is%3Aclosed">milestone 5.33.1</a>
+        <h1>Update 5.34</h1>
+        See <a href="https://github.com/timmisset/omt-odt-plugin/issues?q=is%3Aissue+milestone%3A5.34+is%3Aclosed">milestone 5.34</a>
         """
 }
 tasks {
@@ -68,7 +68,7 @@ tasks {
         jvmArgs("-Xmx2000m")
     }
     runPluginVerifier {
-        ideVersions = ["IC-2021.2", "IC-2021.3", "IC-2022.1", "IC-2022.2", "IC-2022.3"]
+        ideVersions = ["IC-2023.1"]
     }
 }
 publishPlugin {
