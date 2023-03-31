@@ -19,7 +19,7 @@ class OMTFileImplTest extends OMTTestCase {
     void getFileTypeOMT() {
 
         final PsiFile psiFile = configureByText("test.omt", "model:\n");
-        Assertions.assertEquals(OMTFileType.INSTANCE, psiFile.getFileType());
+        assertEquals(OMTFileType.INSTANCE, psiFile.getFileType());
     }
 
 
@@ -38,9 +38,9 @@ class OMTFileImplTest extends OMTTestCase {
         final OMTFile omtFile = configureByText(content);
         final Map<String, Collection<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
         assertNotEmpty(exportingMembersMap.keySet());
-        Assertions.assertTrue(exportingMembersMap.containsKey("MyActivity"));
-        Assertions.assertTrue(exportingMembersMap.containsKey("exportedCommand"));
-        Assertions.assertTrue(exportingMembersMap.containsKey("exportedQuery"));
+        assertTrue(exportingMembersMap.containsKey("MyActivity"));
+        assertTrue(exportingMembersMap.containsKey("exportedCommand"));
+        assertTrue(exportingMembersMap.containsKey("exportedQuery"));
         Assertions.assertFalse(exportingMembersMap.containsKey("notExportedCommand"));
     }
 
@@ -64,8 +64,8 @@ class OMTFileImplTest extends OMTTestCase {
                 "";
         final OMTFile omtFile = configureByText(importingFile);
         final Map<String, Collection<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
-        Assertions.assertTrue(exportingMembersMap.containsKey("MyActivity"));
-        Assertions.assertTrue(exportingMembersMap.containsKey("query"));
+        assertTrue(exportingMembersMap.containsKey("MyActivity"));
+        assertTrue(exportingMembersMap.containsKey("query"));
         Assertions.assertNotNull(exportingMembersMap.get("MyActivity"));
     }
 
@@ -82,7 +82,7 @@ class OMTFileImplTest extends OMTTestCase {
         ReadAction.run(() -> {
             Map<String, Collection<PsiCallable>> declaredExportingMembersMap = omtFile.getDeclaredExportingMembersMap();
             Map<String, Collection<PsiCallable>> exportingMembersMap = omtFile.getExportingMembersMap();
-            Assertions.assertTrue(declaredExportingMembersMap.isEmpty());
+            assertTrue(declaredExportingMembersMap.isEmpty());
             Assertions.assertFalse(exportingMembersMap.isEmpty());
             assertContainsElements(exportingMembersMap.keySet(), "memberA", "memberB");
         });
@@ -97,11 +97,11 @@ class OMTFileImplTest extends OMTTestCase {
                 "   exportingFile.omt:\n" +
                 "   - memberA\n" +
                 "   - memberB\n");
-        underProgress(() -> {
+        underProgress(() -> ReadAction.run(() -> {
             SearchScope useScope = exportingFile.getUseScope();
             assertTrue(useScope.contains(exportingFile.getVirtualFile()));
             assertTrue(useScope.contains(importingFile.getVirtualFile()));
-        });
+        }));
     }
 
     @Test
@@ -117,12 +117,12 @@ class OMTFileImplTest extends OMTTestCase {
                 "   index.omt:\n" +
                 "   - memberA\n" +
                 "   - memberB\n");
-        underProgress(() -> {
+        underProgress(() -> ReadAction.run(() -> {
             SearchScope useScope = exportingFile.getUseScope();
             assertTrue(useScope.contains(exportingFile.getVirtualFile()));
             assertTrue(useScope.contains(importingFile.getVirtualFile()));
             assertTrue(useScope.contains(secondaryImportingFile.getVirtualFile()));
-        });
+        }));
     }
 
     @Test
