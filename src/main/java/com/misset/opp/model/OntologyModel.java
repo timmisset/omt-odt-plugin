@@ -93,7 +93,10 @@ public final class OntologyModel {
         modelCache.flush();
     }
 
-    public OntModel getModel() {
+    /**
+     * Get synchronized access to the model. Jena is not multi-thread safe
+     */
+    public synchronized OntModel getModel() {
         return model;
     }
 
