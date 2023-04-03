@@ -66,6 +66,8 @@ public class OMTComponentMetaType extends OMTModelItemDelegateMetaType implement
         features.put("actions", OMTActionsMapMetaType::getInstance);
         features.put("payload", OMTPayloadMetaType::getInstance);
         features.put("rules", OMTRulesMetaType::getInstance);
+        features.put("onDestroy", OMTScriptMetaType::getInstance);
+        features.put("onActivityDone", OMTScriptMetaType::getInstance);
     }
 
     @Override
