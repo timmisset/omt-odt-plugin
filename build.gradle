@@ -16,7 +16,7 @@ intellij {
 }
 
 group 'com.misset'
-version '5.34'
+version '5.35'
 
 sourceCompatibility = 17
 sourceSets.main.java.srcDirs 'src/main/gen'
@@ -59,8 +59,8 @@ patchPluginXml {
     sinceBuild = '231'
 
     changeNotes = """
-        <h1>Update 5.34</h1>
-        See <a href="https://github.com/timmisset/omt-odt-plugin/issues?q=is%3Aissue+milestone%3A5.34+is%3Aclosed">milestone 5.34</a>
+        <h1>Update 5.35</h1>
+        See <a href="https://github.com/timmisset/omt-odt-plugin/issues?q=is%3Aissue+milestone%3A5.35+is%3Aclosed">milestone 5.35</a>
         """
 }
 tasks {
