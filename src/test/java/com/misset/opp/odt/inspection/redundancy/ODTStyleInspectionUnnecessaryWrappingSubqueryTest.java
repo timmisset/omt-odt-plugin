@@ -35,6 +35,12 @@ class ODTStyleInspectionUnnecessaryWrappingSubqueryTest extends ODTTestCase {
     }
 
     @Test
+    void testDecoratedWrappedSubqueryNoWhenEquationPartOfQuery() {
+        configureByText("(/ont:ClassA == /ont:ClassA) / CAST(boolean)");
+        inspection.assertNoWarning(UNNECESSARY_WRAPPING_OF_SUBQUERY);
+    }
+
+    @Test
     void testWrappedSubqueryInIFBlock() {
         configureByText("IF ('' == '') { @LOG('test'); }");
         inspection.assertHasWarning(UNNECESSARY_WRAPPING_OF_SUBQUERY);
