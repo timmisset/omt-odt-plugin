@@ -46,11 +46,11 @@ public class ODTStyleInspectionUnnecessaryWrappingSubquery extends LocalInspecti
     }
 
     private void inspectSubQuery(@NotNull ProblemsHolder holder,
-                                 @NotNull ODTSubQuery subQuery) {
-        if (shouldBeWrapped(subQuery)) {
+                                 @NotNull ODTSubQuery target) {
+        if (shouldBeWrapped(target)) {
             return;
         }
-        holder.registerProblem(subQuery, UNNECESSARY_WRAPPING_OF_SUBQUERY, ProblemHighlightType.WARNING, getReplaceQuickFix());
+        holder.registerProblem(target, UNNECESSARY_WRAPPING_OF_SUBQUERY, ProblemHighlightType.WARNING, getReplaceQuickFix());
     }
 
     private LocalQuickFix getReplaceQuickFix() {
@@ -71,17 +71,27 @@ public class ODTStyleInspectionUnnecessaryWrappingSubquery extends LocalInspecti
         };
     }
 
-    public boolean shouldBeWrapped(ODTSubQuery subQuery) {
-        if (isDecorated(subQuery)) {
+    public boolean shouldBeWrapped(ODTSubQuery target) {
+        if (isDecorated(target)) {
             return true;
         }
-        final ODTQuery query = subQuery.getQuery();
+        final ODTQuery query = target.getQuery();
         // (true AND false) OR (false AND true) <-- ODTBooleanStatements should be wrapped
         // (1 | 2) / ont:someThing <-- ODTQueryArrays should be wrapped
         // NOT (some / query / path / traversion) <-- should also be wrapped
         return query instanceof ODTBooleanStatement ||
                 query instanceof ODTQueryArray ||
-                PsiTreeUtil.getParentOfType(subQuery, ODTQueryStep.class, true) instanceof ODTNegatedStep;
+                isEquationContainedInQuery(query, target) ||
+                PsiTreeUtil.getParentOfType(target, ODTQueryStep.class, true) instanceof ODTNegatedStep;
+    }
+
+    private boolean isEquationContainedInQuery(ODTQuery query, ODTSubQuery subQuery) {
+        ODTQuery parentQuery = PsiTreeUtil.getParentOfType(subQuery, ODTQuery.class, true);
+        while (parentQuery != null && parentQuery.getText().equals(subQuery.getText())) {
+            parentQuery = PsiTreeUtil.getParentOfType(parentQuery, ODTQuery.class, true);
+        }
+
+        return query instanceof ODTEquationStatement && parentQuery instanceof ODTQueryPath;
     }
 
     private boolean isDecorated(ODTSubQuery subQuery) {
